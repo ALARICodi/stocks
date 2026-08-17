@@ -1,0 +1,448 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ADP · 自动数据处理公司（Automatic Data Processing, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ADP</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">质量前5%，24.9倍不贵不便宜，回本慢</div><h1>ADP · 自动数据处理公司（Automatic Data Processing, Inc.）</h1>
+<p><strong>市值</strong> $1,097.4 亿 | <strong>股价</strong> $276.23（2026-08-13 收盘）| <strong>行业</strong> 科技服务 / 人力资本管理 | <strong>TTM 截止</strong> 2026-06-30 | <strong>交易所</strong> NASDAQ</p>
+<blockquote>
+<p>ADP 的财年就是 7 月到次年 6 月，所以 <strong>TTM 恰好等于刚刚结束的 FY2026 完整财年</strong>（2026 年 7 月 29 日刚发的年报）。这是全篇最干净的一个口径——不用拼接季度，没有任何季节性失真。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>ADP 财报把收入拆成五块。但要看懂这家公司，得先明白一件事：<strong>这五块里有一块是零利润的过手钱、另一块是几乎纯利润的利息，中间三块才是真生意。</strong> 不把这三种东西分开，你算出来的每一个比率都是错的。</p>
+<h3>生意一：HCM 核心工资单与人力系统 —— 41.5% 的收入，利润的大头</h3>
+<p>TTM 营收 <strong>91.11 亿美元</strong>，同比 +5.0%。</p>
+<p>这件事具体是什么？设想一家有 800 名员工的连锁餐饮公司，每两周发一次工资。要发出这笔钱，得先做完这些事：</p>
+<ul>
+<li>把 800 个人的打卡记录变成工时，区分正常工时、加班（1.5 倍）、节假日（2 倍）、餐厅还有小费申报</li>
+<li>每个人扣<strong>联邦所得税</strong>（税率取决于他填的 W-4 表、婚姻状况、抚养人数）</li>
+<li>扣<strong>州所得税</strong>——这家连锁店开在 6 个州，6 套规则；有几个州还有<strong>市一级的工资税</strong>（比如俄亥俄州有几百个市各收各的）</li>
+<li>扣社保和医保（雇主还要配比缴一份）</li>
+<li>扣 401k 退休金供款（每个人的比例不一样）、健康保险自付部分、人寿险</li>
+<li>有 3 个员工被法院判了强制扣划抚养费，必须优先扣、按州法规定的上限扣、直接汇给州政府的收款中心</li>
+<li>然后把 800 笔金额各不相同的钱，在发薪日当天准时打进 800 个银行账户</li>
+<li>同时把代扣的税向 IRS 和 6 个州税局按各自的申报周期缴清（有的按周、有的按月）</li>
+<li>年底给每个人出 W-2，出错了员工报不了税</li>
+</ul>
+<p>美国联邦加州加地方有<strong>一万多个税务辖区</strong>，规则每年都在变。一家 800 人的公司要么养 3–4 个专职薪酬人员天天研究法规，要么把这一整套交给 ADP。</p>
+<p><strong>怎么收钱</strong>：按人头按月收，通常每人每月 $8–15，另加基础平台费。所以这家 800 人的连锁店一年付给 ADP 大约 <strong>10 万到 15 万美元</strong>——比养两个专职薪酬会计还便宜，还不用担责任。ADP 现在替全球约 4,200 万名劳动者发工资。</p>
+<p>产品按客户大小分三档：<strong>RUN</strong>（1–49 人的小店，一年可能只付几千美元）、<strong>Workforce Now</strong>（50–1,000 人，主力产品）、<strong>Vantage / Enterprise HCM</strong>（1,000 人以上大企业）。在工资单之外还加卖排班、招聘、绩效考核、培训、合规报告这些模块，每加一个模块人均月费就往上抬一档，这是这块生意增长的主要来源。</p>
+<p><strong>客户为什么换不掉</strong>：换工资系统要把所有历史工资记录、税务身份登记、福利参保数据、401k 对接全部迁移一遍，通常只能在财年边界做。而且这件事的失败代价是不对称的——省下的钱最多几万美元，但只要有一次工资算错或者税报晚了，全公司当天就知道，HR 负责人直接下课。所以这个行业的客户留存率常年在 90% 以上。</p>
+<h3>生意二：PEO 与 HR 外包（扣除过手保费后）—— 18.1% 的收入</h3>
+<p>TTM 营收 <strong>39.74 亿美元</strong>，同比 +5.1%。</p>
+<p>PEO 叫"专业雇主组织"，是美国特有的一门生意，逻辑很妙。一家 60 人的软件公司想给员工上大公司级别的医保，但保险公司报给 60 人小团体的价格贵得离谱——人少，一个人得癌症就把整个池子拖垮，保险公司必须加价。</p>
+<p>ADP 的解法叫"<strong>共同雇主</strong>"：在法律上，这 60 个人同时是客户公司的员工<strong>也是 ADP TotalSource 的员工</strong>。于是他们被并进 ADP 那个七十多万人的大池子一起买保险，拿到只有大企业才有的费率。同时 ADP 承担工伤保险、失业保险的申报和合规责任——出了劳动纠纷，法律责任 ADP 也担一份。</p>
+<p><strong>怎么收钱</strong>：按人头收服务费，比纯工资单贵得多，通常每人每月 $100 以上；保险费另外原样转收（那部分见下面第三块）。所以一家 60 人的公司一年光服务费就付 ADP 七八万美元。这门生意利润率不如 HCM 高（要担真实的雇主责任），但客单价高、粘性更强——共同雇主关系解除起来比换个软件麻烦得多。</p>
+<h3>生意三：PEO 零毛利过手保费 —— 21.0% 的收入，<strong>利润是零</strong></h3>
+<p>TTM 营收 <strong>46.07 亿美元</strong>，同比 +7.4%。</p>
+<p>这一整块，<strong>利润率就是 0，而且是 ADP 自己在财报里明说的</strong>（分部名字里"Zero Margin Benefits Pass-Through"直译就是"零毛利福利过手"）。就是上面 PEO 客户的员工医保保费——ADP 从客户那儿收上来，一分不少地付给保险公司，账面上同时计入收入和成本，中间不留钱。会计准则要求这笔钱必须计入收入，所以它就在报表上撑着。</p>
+<p><strong>这是理解 ADP 数字的第一个关键</strong>：<strong>它 21% 的"收入"是纯粹的报表虚胖。</strong> ADP 的账面经营利润率是 26.3%，但如果把这 46 亿过手钱剔掉，真实的收入基数只有 173 亿，经营利润率立刻变成 <strong>33.3%</strong>。所有拿 ADP 的利润率去和别的软件公司比的人，如果没做这个调整，都在比错的东西。</p>
+<h3>生意四：国际业务（Global）—— 13.2% 的收入，增长最快</h3>
+<p>TTM 营收 <strong>29.01 亿美元</strong>，同比 <strong>+10.5%</strong>，是五块里增速最快的。</p>
+<p>两部分：一是在欧洲、加拿大、亚太各国自己做当地工资单（各国税法完全不同，等于把美国那套难题重做几十遍）；二是 <strong>GlobalView</strong>——给那种"在 40 个国家有员工"的跨国公司做一套统一的工资平台，客户在一个后台看到全球所有员工的薪酬数据，ADP 在背后对接几十个国家的当地税局。这块单子大、上线周期长（一两年），签下来就是十几年的关系。</p>
+<p>利润率是五块里最差的——每个国家都要养合规团队，但每个国家的客户量都不够摊薄成本。这是 ADP 的战略投入区。</p>
+<h3>生意五：客户资金利息（Interest）—— 6.2% 的收入，<strong>几乎是纯利润</strong></h3>
+<p>TTM 营收 <strong>13.55 亿美元</strong>，同比 <strong>+14.0%</strong>。</p>
+<p><strong>这是理解 ADP 的第二个关键，也是全文最重要的一段。</strong></p>
+<p>回想 ADP 发工资的流程：发薪日前几天，ADP 先从客户的银行账户把钱全额扣走 → 这笔钱在 ADP 手里放几天 → 发薪日再打给每个员工。代扣的税款更夸张：ADP 当天就把税钱从客户账上扣走，但按申报周期，这笔税可能要<strong>在 ADP 手里躺几周甚至几个月</strong>才真正交给税局。</p>
+<p>把所有客户加起来，<strong>任何一个时点 ADP 手上都趴着三百多亿美元别人的钱</strong>。这钱不属于 ADP，一分都不能动本金，但<strong>利息归 ADP</strong>。ADP 把它投在国债和高评级债券上。</p>
+<p>这笔收入的成本近乎为零——钱是客户送上门的、免费的、还必须放在这儿的。所以这 13.55 亿几乎原封不动变成利润，<strong>占了 ADP 全部经营利润的 23%</strong>。</p>
+<p>利率一变，这块就剧烈波动：FY2022 只有 4.518 亿，TTM 是 13.55 亿，<strong>四年涨了两倍</strong>。这三倍不是 ADP 做对了什么，是美联储加息。反过来说也一样成立，这是第三部分要重点算的账。</p>
+<h3>五块生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HCM 工资单与人力系统</td>
+<td>9,111</td>
+<td>+5.0%</td>
+<td>41.5%</td>
+<td>~33%（<strong>估算</strong>）</td>
+<td>~3,007</td>
+</tr>
+<tr>
+<td>PEO / HR 外包（服务费）</td>
+<td>3,974</td>
+<td>+5.1%</td>
+<td>18.1%</td>
+<td>~25%（<strong>估算</strong>）</td>
+<td>~994</td>
+</tr>
+<tr>
+<td>PEO 过手保费</td>
+<td>4,607</td>
+<td>+7.4%</td>
+<td>21.0%</td>
+<td><strong>0%（财报明示）</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>国际业务</td>
+<td>2,901</td>
+<td>+10.5%</td>
+<td>13.2%</td>
+<td>~15%（<strong>估算</strong>）</td>
+<td>~435</td>
+</tr>
+<tr>
+<td>客户资金利息</td>
+<td>1,355</td>
+<td>+14.0%</td>
+<td>6.2%</td>
+<td><strong>~100%（近乎无成本）</strong></td>
+<td>~1,355</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>21,947</strong></td>
+<td><strong>+6.7%</strong></td>
+<td>100%</td>
+<td><strong>26.3%（实际）</strong></td>
+<td><strong>5,779（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>中间三行标"估算"的必须说清楚</strong>：ADP 财报只按分部披露营收，不披露分部经营利润。零毛利过手（0%）和利息（~100%）这两行是可以确定的，剩下 55.5 亿的利润在 HCM / PEO / 国际之间怎么分，是我按各块的成本结构估的。合计等于真实数字，单行不是。</p>
+<p><strong>剔掉过手钱后的真实图景</strong>：有效收入 173.4 亿，经营利润 57.8 亿，<strong>真实经营利润率 33.3%</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：小得几乎可以忽略 —— 这在美股里很罕见</h3>
+<p>TTM SBC <strong>2.426 亿美元</strong>，只占净利润 44.14 亿的 <strong>5.5%</strong>，占收入的 1.1%。而且同比还在下降（上年 2.661 亿）。</p>
+<p>对比一下：多数美国软件公司的 SBC 能占到净利润的 50%–200%，有些干脆靠加回 SBC 才做出"盈利"。ADP 的 GAAP 净利润和它自己吹的调整后利润几乎没有差别——<strong>这家公司没什么可"调整"的</strong>。规范要求把 SBC 当真实成本扣掉，ADP 这里 GAAP 已经扣了，且金额小到不影响任何结论。这是全篇第一个明确的加分项。</p>
+<h3>一次性项目：TTM 期内基本没有</h3>
+<p>TTM 现金收购支出只有 2,280 万美元（上年是 11.65 亿，那年买了 WorkForce Software）。没有大额诉讼、重组、减值。<strong>单期口径看不出任何被藏起来的东西。</strong></p>
+<h3>资本化的支出：这里有一个被官方 FCF 掩盖的窟窿</h3>
+<p>现金流量表上，"资本开支"只有 <strong>1.966 亿美元</strong>，看起来这是一家几乎不花钱的轻资产公司。但往下三行还有一项：</p>
+<p><strong>"购买无形资产 −4.685 亿美元"</strong> —— 这是<strong>资本化的软件开发费用</strong>，也就是 ADP 自己写代码的人工成本，没有当期费用化，而是记成资产慢慢摊销。</p>
+<p>这笔钱是真金白银付出去的工资，<strong>性质上和资本开支没有区别</strong>，但它没被算进官方的自由现金流公式。结果就是：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>官方口径</th>
+<th>剔掉资本化软件后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>54.41 亿</td>
+<td>54.41 亿</td>
+</tr>
+<tr>
+<td>减 资本开支</td>
+<td>−1.97 亿</td>
+<td>−1.97 亿</td>
+</tr>
+<tr>
+<td>减 资本化软件</td>
+<td>—</td>
+<td><strong>−4.69 亿</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流</strong></td>
+<td><strong>52.45 亿</strong></td>
+<td><strong>47.76 亿</strong></td>
+</tr>
+<tr>
+<td><strong>市值 ÷ FCF</strong></td>
+<td><strong>20.9 倍</strong></td>
+<td><strong>23.0 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>差 <strong>4.69 亿美元、9%</strong>。不是天塌下来的数字，但<strong>任何引用"ADP 的 P/FCF 只有 20.9 倍"的人，用的都是虚高了 9% 的数</strong>。这个数字还在逐年加大（FY2022 是 3.79 亿）。</p>
+<h3>回购与稀释：这一项是教科书级别的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通股回购</td>
+<td>20.83 亿美元</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td>2.43 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>8.6 倍</strong></td>
+</tr>
+<tr>
+<td>普通股分红</td>
+<td>26.26 亿美元</td>
+</tr>
+<tr>
+<td>股本净变化</td>
+<td><strong>−1.32%</strong></td>
+</tr>
+<tr>
+<td>分红收益率</td>
+<td>2.46%（每股 $6.80）</td>
+</tr>
+<tr>
+<td>股东总回报率</td>
+<td>3.78%</td>
+</tr>
+</tbody>
+</table></div>
+<p>规范里说"回购÷SBC 接近 1 是走过场，大于 3 才是真回购"。ADP 是 <strong>8.6 倍</strong>——回购的钱里只有 12% 用来对冲员工发股，剩下 88% 是实打实在减少股份。股本一年净减 1.32%，年年如此。</p>
+<p>再加一条：<strong>ADP 已经连续 51 年提高分红</strong>，这是全美股不到 50 家公司做到的事，2026 年的分红比上一年又高了 10.4%。</p>
+<h3>利润和现金流的差：能完整对上，这很少见</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（百万美元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4,414.0</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+585.9</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+242.6</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>+1,305.0</td>
+</tr>
+<tr>
+<td>＋ 应收账款变动</td>
+<td>+1.0</td>
+</tr>
+<tr>
+<td>− 应付账款变动</td>
+<td>−4.5</td>
+</tr>
+<tr>
+<td>＋ 应计费用变动</td>
+<td>+410.1</td>
+</tr>
+<tr>
+<td>− 其他经营性资产负债变动</td>
+<td>−1,512.0</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,441.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>每一分钱都对得上</strong>，加总误差在 0.1 百万以内。这在我做过的公司里属于少数派——很多公司的现金流量表明细根本加不出合计。</p>
+<p>值得说一句的是中间那两个大项："其他非现金调整 +13.05 亿"和"其他经营性变动 −15.12 亿"基本互相抵消，这两行主要是客户托管资金相关的科目在搬家，不是经营性的钱进出。净利润 44.14 亿 → 经营现金流 54.41 亿，多出来的 10 亿主要就是折旧摊销和 SBC 这两项非现金费用加回来的。<strong>利润和现金流之间没有猫腻，现金流质量很高。</strong></p>
+<h3>一个必须点破的假象：ROE 72%、ROIC 60% 是怎么来的</h3>
+<p>统计页上写着 ADP 的净资产收益率 <strong>72.24%</strong>、投入资本回报率 <strong>60.49%</strong>，市净率 <strong>18.22 倍</strong>、有形账面市净率 <strong>100.35 倍</strong>。这几个数字放在一起，很多人第一反应是"这公司赚钱能力惊为天人"。</p>
+<p><strong>真相要平淡得多：ADP 的股东权益只剩 60.3 亿美元。</strong></p>
+<p>一家一年赚 44 亿的公司，账面净资产只有 60 亿——因为它几十年来把赚到的钱几乎全部以分红和回购的形式还给了股东，回购注销的股份直接冲减了留存收益，把资产负债表的分母挖空了。ROE = 利润 ÷ 净资产，分母被挖空，比值自然飙到 72%。</p>
+<p>所以 <strong>ROE 72% 不是"ADP 的钱生钱能力是别人的七倍"，而是"ADP 的账面净资产已经小到没有意义"</strong>。同理，PB 18 倍、P/TBV 100 倍这两个数字对 ADP 完全不可用——不要拿它们做任何判断。对这种轻资产、高回购的公司，只能看利润和现金流，不能看账面。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>市值 1,097.4 亿 ÷ TTM 净利润 44.14 亿</td>
+<td><strong>24.9 倍</strong></td>
+<td><strong>$4.02</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>ADP 的 GAAP 与调整后差异极小（无大额调整项）</td>
+<td>≈24.9 倍</td>
+<td>≈$4.02</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无真一次性损益，SBC 已按 GAAP 扣除</td>
+<td><strong>24.9 倍</strong></td>
+<td><strong>$4.02</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（官方）</td>
+<td>市值 ÷ FCF 52.45 亿</td>
+<td>20.9 倍</td>
+<td>$4.78</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化软件）</strong></td>
+<td>市值 ÷ 真实 FCF 47.76 亿</td>
+<td><strong>23.0 倍</strong></td>
+<td><strong>$4.35</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>EV 1,108.8 亿 ÷ 经营利润 56.56 亿</td>
+<td>19.6 倍</td>
+<td>$5.10</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>市值 ÷ FY24–26 三年平均净利润 40.82 亿</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.72</strong></td>
+</tr>
+<tr>
+<td>远期市盈率（分析师预测）</td>
+<td>—</td>
+<td>22.5 倍</td>
+<td>$4.44</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三年平均那一行：ADP 的与众不同之处</h3>
+<p><strong>当期 24.9 倍，三年平均 26.9 倍，只差 8%。</strong></p>
+<p>这是全表最值得注意的地方——<strong>差得这么小，本身就是一个结论</strong>。上一家公司（BNY）当期 18.9 倍、三年平均 26.0 倍，差 37%，说明它的利润明显处在周期高点。ADP 只差 8%，说明<strong>它现在这个利润不是靠某一年的运气冲出来的，是一条缓慢平滑上升的直线</strong>：净利润 FY22 29.49 亿 → FY23 34.12 亿 → FY24 37.52 亿 → FY25 40.80 亿 → FY26 44.14 亿，每年稳稳涨 8%–10%，四年没有一年掉过。</p>
+<p>这条曲线的平滑程度接近公用事业。它的原因很清楚：客户留存率 90%+、按人头按月收费、合同自动续、需求跟客户的员工人数走而不是跟经济景气度走（就算公司裁员，剩下的人还是要发工资）。</p>
+<p><strong>但有一块除外</strong>：那 13.55 亿的利息收入。它从 FY22 的 4.52 亿涨到 13.55 亿，这九亿的增量占了同期净利润全部增量（14.65 亿）的 <strong>六成以上</strong>。换句话说，<strong>ADP 这四年利润增长里，超过一半不是靠卖服务赚来的，是靠美联储加息白捡的。</strong></p>
+<h3>你投 100 块，一年拿回多少</h3>
+<p><strong>按最保守的三年平均口径，公司一年替你赚 $3.72；按当期口径 $4.02。取 $4 是个诚实的数字。</strong></p>
+<p>这 $4 的去向非常清楚，也是 ADP 最讨人喜欢的地方：</p>
+<ul>
+<li><strong>$2.46 以现金分红直接进你口袋</strong>（派息率 62%，连涨 51 年）</li>
+<li><strong>$1.32 通过回购让你的股份占比自动变厚</strong></li>
+<li><strong>合计 $3.78，也就是这 $4 里有 94% 真正还给了股东</strong></li>
+<li>剩下的极少部分用于小额收购和还债。资本开支加资本化软件一共 6.65 亿，对一家赚 44 亿的公司来说微不足道——<strong>这门生意几乎不需要再投资就能增长</strong></li>
+</ul>
+<h3>这个 $4 未来会变大还是变小</h3>
+<p><strong>大概率小幅变大，但有一个明确的下行风险，一个模糊的长期风险。</strong></p>
+<p><strong>下行风险（明确）：利率</strong>。那 13.55 亿的利息收入是纯利润，占经营利润 23%。如果美国利率从现在的水平回落，客户资金的投资收益率会跟着下来。粗算一下：利率每降 1 个百分点，ADP 三百多亿的托管资金一年就少赚三亿多，<strong>直接砸掉净利润的 6%–7%</strong>，而且没有任何成本可以对冲。这是买 ADP 最需要盯的一个数。</p>
+<p><strong>长期风险（模糊）：按人头收费的模式和 AI</strong>。ADP 的收入 = 客户员工人数 × 人均月费。这意味着它本质上是在赌<strong>美国的就业人数长期增长</strong>。如果 AI 真的让企业用更少的人做同样的事，ADP 的计费基数就会停止增长，只能靠涨价和卖模块。同时中小客户市场正在被 Gusto、Rippling、Paylocity 这些新玩家从下往上啃——它们的产品更现代、上手更快，而 ADP 那套系统积了几十年的历史包袱。</p>
+<p><strong>支撑向上的因素也是真的</strong>：每客户平均加卖的模块数还在稳定上升（这是 HCM 5% 增速的主要来源）、国际业务 10.5% 的增速还有很长跑道、PEO 的共同雇主模式护城河极深、以及每年 1.3% 的回购自动抬高每股收益。</p>
+<p>综合下来，<strong>中性预期是每股收益每年涨 8% 左右</strong>——和过去四年一样，但要减掉利息红利消退的那部分，所以可能是 6%–8% 而不是 10%。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家生意质量顶尖、财务干净得挑不出毛病的公司，价格谈不上便宜也谈不上贵，问题只在于：24.9 倍市盈率买一个每年增长 7% 的东西，你得等很久才回本。</strong></p>
+<p>先把好话说完，而且都是硬事实：客户留存率 90% 以上、收入按人头按月自动进账、净利润连续四年每年涨 8%–10% 没有一次波动、SBC 只占净利润 5.5%、回购是 SBC 的 8.6 倍、连续 51 年提高分红、现金流量表每一行都对得上、利润的 94% 全部还给股东。<strong>这些指标放在一起，在美股大公司里属于前 5% 的水准。</strong></p>
+<p>问题在两个地方。</p>
+<p><strong>第一，那 13.55 亿的利息收入。</strong> 它占经营利润 23%，占过去四年利润增量的六成以上，而它跟 ADP 的经营能力毫无关系——纯粹是美联储送的。市场现在按"ADP 每年稳稳增长 10%"给它 25 倍市盈率，但这 10% 里有一半是利率红利。<strong>利率一回落，你会同时看到增速掉到 5% 和市盈率被下调，这是双杀。</strong> 股票过去一年跌了 7.8%、分析师共识只给"持有"，市场大概已经开始琢磨这件事了。</p>
+<p><strong>第二，价格没有留出安全边际。</strong> 24.9 倍市盈率对应 $4.02 的年回报，三年平均口径只有 $3.72。一家每年增长 7% 的公司值 25 倍吗？如果它能一直这么稳，勉强算合理；但你付的是"完美执行 + 利率不降"的价格，而这两件事只要有一件不成立，25 倍就撑不住。</p>
+<p><strong>结论：好公司，公道价，不是便宜货。</strong> 适合那种要一份稳定分红、不想操心、愿意接受年化 7%–9% 总回报的人；不适合指望这笔钱翻倍的人。真正值得买的时机是利率回落把利息收入砸下去、市盈率被打到 18–20 倍那一天——<strong>那时候利空已经出尽，剩下的才是那门每两周替四千万人算工资的、谁也抢不走的生意。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com（Fiscal.ai 数据），TTM = FY2026，截止 2026-06-30，股价 2026-08-13 收盘。分部利润率中 HCM / PEO / 国际三行为估算，已在文中标注。</em></p>
+</div></body></html>

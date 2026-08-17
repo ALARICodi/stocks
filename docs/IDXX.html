@@ -1,0 +1,406 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IDXX · 爱德士实验室（IDEXX Laboratories, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IDXX</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">质量断层第一，但等跌到30倍以内再动手</div><h1>IDXX · 爱德士实验室（IDEXX Laboratories, Inc.）</h1>
+<p><strong>市值</strong> $434.1 亿 | <strong>股价</strong> $551.00 | <strong>行业</strong> 宠物医疗诊断（NASDAQ） | <strong>TTM 截止</strong> 2026 年 6 月 30 日（2026 年 8 月 4 日发布）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>IDEXX 做的事一句话能讲完：<strong>你家的狗生病了去看兽医，兽医抽血化验——那台化验机、那管试剂、那张化验单，几乎都是 IDEXX 的。</strong></p>
+<p>它在全球宠物诊断市场的份额超过一半，在美国的台式化验机装机量占绝对优势。TTM 营收 $45.53 亿（+12.77%），毛利率 <strong>62.44%</strong>，经营利润率 <strong>32.24%</strong>，净利率 <strong>25.04%</strong>。</p>
+<p>但真正让这家公司特殊的不是利润率，是这个数字：<strong>投入资本回报率 47.23%，对比它的资金成本 12.49%——高出 34.7 个百分点。</strong> 前面五家公司的这个差值分别是 +11.9（Cardinal）、+1.5（L3Harris）、+1.8（纳斯达克）、+14.6（ODFL）、+39.2（Viking，但那是账面权益接近零造成的假象）。<strong>IDEXX 是本批六家里唯一一家资本回报率既高、又不是会计假象的公司。</strong></p>
+<p>财报按产品线披露，我按商业逻辑重新归成七块，其中前五块都属于"宠物诊断"（CAG），合计占 <strong>91.9%</strong>：</p>
+<h3>生意 A：VetLab 化验仪器（刀架）— TTM $1.99 亿，占 4.4%，FY2025 增速 <strong>+51.8%</strong></h3>
+<p>卖给宠物诊所的台式化验机，主要三台：</p>
+<ul>
+<li><strong>Catalyst Dx / Catalyst One（血液生化分析仪）</strong>：护士把 0.3 毫升血滴到一张塑料圆盘上，塞进机器，<strong>8 分钟</strong>出 30 多项结果——肝功能、肾功能、血糖、电解质、胰腺指标。机器售价 $2.5 万~$4 万。</li>
+<li><strong>ProCyte Dx / ProCyte One（血球计数仪）</strong>：用激光流式细胞术数红细胞、白细胞、血小板，还能做五分类。约 $3 万。</li>
+<li><strong>SediVue Dx（尿沉渣分析仪）</strong>：一滴尿进去，机器自动拍 70 张显微照片，用训练好的神经网络识别里面的结晶、细菌、白细胞——这活儿以前要兽医亲自趴在显微镜上看十分钟。</li>
+</ul>
+<p>一家中等规模的宠物诊所通常会买 3~4 台，凑成一个"IDEXX 化验角"，总投入约 $10 万。</p>
+<p><strong>但 IDEXX 常用的打法是：机器几乎白送，签五年耗材合同。</strong> 这就是为什么这一行 FY2025 突然暴涨 51.8%——它在大力推新一代机器，<strong>铺机器不是为了赚机器的钱，是为了铺下一个五年的耗材收入</strong>。这条线的增速，是未来两三年 B 这条线增速的领先指标。</p>
+<h3>生意 B：VetLab 耗材（刀片）— TTM $16.20 亿，占 35.6%，增速 <strong>+14.9%</strong></h3>
+<p><strong>这是全公司最赚钱的一块，也是整个投资逻辑的核心。</strong></p>
+<p>每做一次化验就消耗一张专用试剂盘或试剂包。一张 Catalyst 生化盘卖给诊所 $12~$20，制造成本大概两三美元。</p>
+<p>关键在于<strong>这些耗材只有 IDEXX 自己造</strong>，而且是双重物理锁死：别家的试剂盘塞不进 IDEXX 的机器（形状卡口不对），IDEXX 的机器也认耗材上的芯片（没有认证的耗材机器直接拒绝运行）。</p>
+<p>诊所为什么不换掉？三层原因，一层比一层难解开：
+1. 机器签的是五年合同，中途换要赔钱；
+2. 全诊所的护士都培训过这套流程，肌肉记忆改起来要三个月；
+3. <strong>所有患病动物的历史化验数据都在 IDEXX 的系统里。</strong> 一只 12 岁的狗，兽医要判断它的肾功能有没有恶化，得看它过去五年的肌酐曲线。换供应商意味着这条曲线断了。</p>
+<p><strong>这里还有一个最深层、也最容易被忽略的原因：IDEXX 不跟客户抢钱，它帮客户赚钱。</strong> 诊所花 $15 的耗材做一套血检，向宠物主人收 $120~$180。对兽医来说，IDEXX 的产品不是成本项，是<strong>利润中心</strong>。所以每次 IDEXX 涨价 5%，兽医只要把化验单价从 $150 提到 $158 就完全消化了，而宠物主人对这个数字毫无感觉——他们正为一只病了的狗着急。</p>
+<p><strong>这才是这家公司真正的护城河：它站在客户的同一侧，而不是对面。</strong> 前面五家公司里，Cardinal Health 天天被 CVS 压价，L3Harris 天天被五角大楼审成本，纳斯达克天天被券商压交易费——只有 IDEXX 的客户希望它卖得更贵。</p>
+<h3>生意 C：参考实验室 — TTM $15.05 亿，占 33.1%，增速 +6.6%</h3>
+<p>诊所里那几台机器做不了的化验——病理切片、内分泌、罕见病基因检测、传染病 PCR——装进小盒子送到 IDEXX 自己的实验室。</p>
+<p>IDEXX 在全球有 80 多个实验室，<strong>而且自己养着一支司机队伍</strong>：每天下午沿固定路线跑一圈，把各家诊所当天的样本收走；晚上实验室通宵跑机器；第二天早上八点，结果自动推送到诊所的病历软件里，兽医开门就能看见。</p>
+<p>这块的壁垒和 IDEXX 的产品无关，<strong>和物流密度有关</strong>：血样、尿样有时效，超过一定时间指标就失真了。要在一个国家做这门生意，你必须在每个中等城市附近都有实验室和取样路线，否则样本送到就废了。这跟 ODFL 那 260 个服务中心是同一类护城河——<strong>不是技术门槛，是"重新铺一遍这张网太慢"的门槛。</strong></p>
+<h3>生意 D：快速检测 SNAP — TTM $3.51 亿，占 7.7%，增速 <strong>−3.0%（唯一下滑的一块）</strong></h3>
+<p>就是那种滴几滴血、几分钟看颜色变化的小卡片。最大的品类是<strong>心丝虫 + 蜱传疾病四联检</strong>——美国几乎每只狗每年都要做一次，属于刚需年检项目。</p>
+<p>这块在萎缩，但<strong>萎缩的原因是好事</strong>：部分项目被转移到了 Catalyst 台式机上做（做在机器上，IDEXX 赚得更多）。这是左手换右手，不是丢了客户。</p>
+<h3>生意 E：兽医软件与服务 — TTM $3.66 亿，占 8.0%，增速 +10.6%</h3>
+<p>诊所管理软件（Cornerstone、ezyVet、Neo）——管预约、病历、处方、开票、跟宠物保险结算。</p>
+<p><strong>这是把锁扣死的最后一环。</strong> 装了这套软件之后，兽医在病历页面上点一下"申请血检"，指令直接发到诊室里的 Catalyst 或者当晚的实验室取样单上，结果回来自动贴进这只狗的病历。整个流程没有一步需要手工录入。一旦诊所用了这套软件，换化验供应商就不只是换机器，是要拆掉整条工作流。</p>
+<h3>生意 F：水质检测 — TTM $2.14 亿，占 4.7%，增速 +8.7%</h3>
+<p>一门跟宠物毫无关系、但极其漂亮的小生意：<strong>Colilert 试剂</strong>，全球自来水厂和市政部门用来检测饮用水里有没有大肠杆菌。</p>
+<p>它好在哪：<strong>美国 EPA 和欧盟的法规把这个方法写进了标准。</strong> 被写进法规的产品是世界上最好的产品——客户不是"选择"用它，是"必须"用它，而且换方法要重新走监管审批。</p>
+<h3>生意 G：牲畜家禽奶业（LPD）— TTM $1.39 亿，占 3.1%，增速 +7.9%</h3>
+<p>给养殖场做疫病检测（禽流感、猪瘟、牛结核）和牛奶成分检测。规模小，但禽流感这类疫情爆发时会有脉冲式的需求。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>同比（FY2025 vs FY2024）</th>
+<th>毛利率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B <strong>VetLab 耗材（刀片）</strong></td>
+<td>$16.20 亿</td>
+<td>35.6%</td>
+<td><strong>+14.9%</strong></td>
+<td>~75%</td>
+</tr>
+<tr>
+<td>C 参考实验室</td>
+<td>$15.05 亿</td>
+<td>33.1%</td>
+<td>+6.6%</td>
+<td>~45%</td>
+</tr>
+<tr>
+<td>E 兽医软件与服务</td>
+<td>$3.66 亿</td>
+<td>8.0%</td>
+<td>+10.6%</td>
+<td>~65%</td>
+</tr>
+<tr>
+<td>D 快速检测 SNAP</td>
+<td>$3.51 亿</td>
+<td>7.7%</td>
+<td><strong>−3.0%</strong></td>
+<td>~70%</td>
+</tr>
+<tr>
+<td>F 水质检测</td>
+<td>$2.14 亿</td>
+<td>4.7%</td>
+<td>+8.7%</td>
+<td>~65%</td>
+</tr>
+<tr>
+<td>A VetLab 仪器（刀架）</td>
+<td>$1.99 亿</td>
+<td>4.4%</td>
+<td><strong>+51.8%</strong></td>
+<td>~30%</td>
+</tr>
+<tr>
+<td>G 牲畜家禽奶业</td>
+<td>$1.39 亿</td>
+<td>3.1%</td>
+<td>+7.9%</td>
+<td>~50%</td>
+</tr>
+<tr>
+<td>服务与配件、其他</td>
+<td>$1.59 亿</td>
+<td>3.5%</td>
+<td>+5.4%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$45.53 亿</strong></td>
+<td>100%</td>
+<td><strong>TTM 整体 +12.77%</strong></td>
+<td><strong>62.44%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>毛利率是按各条线的商业模式估算的，财报只披露到收入。</strong> 但结构很清楚：<strong>刀片（耗材，35.6%）+ 软件 + 水质 = 高毛利的锁定型收入，占了近一半营收；实验室那 33.1% 毛利率低一半，因为要养实验室和司机。</strong></p>
+<p><strong>还有一个必须指出来的增速细节：营收增速在加速。</strong> FY2024 +6.46% → FY2025 +10.42% → TTM <strong>+12.77%</strong>。这在一家 $45 亿营收的成熟公司身上不常见。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM $6297 万，占净利润 5.5%。</strong> 五年来从 $3776 万慢慢涨到 $6297 万，跟营收增长同步，很克制。一律按现金成本扣掉，不加回。</p>
+<p><strong>一次性项目：TTM 只有 $500 万的投资处置损失</strong>（占净利润 0.4%，可忽略）。FY2022 之后就没有过减值和重组。<strong>这家公司不做大收购</strong>（TTM 收购支出为零，FY2024 只花了 $7669 万），所以也没有一堆收购留下的无形资产摊销要处理——这一点跟 L3Harris（$7 亿摊销）和纳斯达克（$3.55 亿摊销）完全不同。</p>
+<p><strong>资本化的支出：几乎没有。</strong> 资本开支只有 $1.17 亿，占营收 <strong>2.6%</strong>——这是一家极其轻资产的公司。另有 $1724 万买无形资产，规模可忽略。</p>
+<p><strong>回购与稀释：TTM 回购 $11.87 亿，除以 SBC $0.63 亿 = 18.9 倍。</strong> 这是真回购里的顶级水平。但要扣掉员工行权发出去的新股 $1.20 亿，<strong>净回购 $10.67 亿</strong>，占市值 2.46%。股本一年实际减少 <strong>2.40%</strong>——数字对得上。</p>
+<p><strong>这家公司从未分过红</strong>，一分钱都没有。所有股东回报全部通过回购。</p>
+<p><strong>利润和现金流的差：净利润 $11.40 亿，经营现金流 $13.72 亿，自由现金流 $12.54 亿。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,140</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>154.1</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>63.0</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>10.3</td>
+</tr>
+<tr>
+<td>＋ 投资处置损失</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>＋ <strong>其他经营调整（几乎全是递延所得税，见下）</strong></td>
+<td><strong>+149.1</strong></td>
+</tr>
+<tr>
+<td><strong>小计：不含营运资金的经营现金流</strong></td>
+<td><strong>1,521.5</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款变化</td>
+<td>−76.7</td>
+</tr>
+<tr>
+<td>＋ 存货变化</td>
+<td>+1.5</td>
+</tr>
+<tr>
+<td>＋ 应付账款变化</td>
+<td>+8.0</td>
+</tr>
+<tr>
+<td>＋ 预收款变化</td>
+<td>+6.9</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变化</td>
+<td>−89.4</td>
+</tr>
+<tr>
+<td><strong>＝ 营运资金合计贡献</strong></td>
+<td><strong>−149.7</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,372</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−117.2</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,254</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营运资金净贡献 −$1.50 亿。</strong> 也就是说，这家公司的现金流不但没有被营运资金充气，还倒扣了一块——跟 Cardinal Health（+$16.6 亿充气）和 Viking（+$8.2 亿充气）正好相反。<strong>这张表里没有靠"规模增长借来的钱"。</strong></p>
+<p><strong>但有一处必须点名，它是这份报表里唯一的水分：那笔 $1.49 亿的"其他经营调整"，几乎可以确定是递延所得税。</strong></p>
+<p>证据很直接：TTM 利润表上的所得税费用是 <strong>$2.85 亿</strong>，而现金流量表底部披露的"实际交出去的所得税现金"只有 <strong>$1.37 亿</strong>——差 <strong>$1.48 亿</strong>，跟那笔 $1.49 亿几乎分毫不差。</p>
+<p>这是什么意思：<strong>IDEXX 今年账上按 $2.85 亿计了税，但实际只交了 $1.37 亿，剩下的推到了以后。</strong> 好消息是 GAAP 净利润用的是那个高的税费，所以<strong>利润没有被虚增</strong>；坏消息是<strong>自由现金流被虚增了 $1.48 亿</strong>——这笔税以后要补交。</p>
+<p>看趋势：这一项 FY2024 还是 −$2273 万（当年是净补交），FY2025 突然变成 +$1.36 亿，TTM +$1.49 亿。<strong>连续两年出现同方向的大额递延，说明这不是一次性的，但它也不可能永远延下去。</strong> 挤掉这部分，TTM 真实自由现金流约 <strong>$11.06 亿</strong>，不是 $12.54 亿。</p>
+<p><strong>债务：总债务 $10.96 亿，现金 $1.97 亿，净债务 $9.00 亿。债务/EBITDA 只有 0.66 倍，利息保障 38.8 倍。</strong> 杠杆水平在本批六家里仅次于 ODFL 的零负债，非常安全。</p>
+<p><strong>两个要提醒别误读的比率：市净率 26.95 倍、净资产收益率 74.21%。</strong> 跟 Viking 一样，这是账面股东权益太小（只有 $16.1 亿）造成的——但原因完全不同：Viking 是被历史亏损啃光的，<strong>IDEXX 是被自己连年大额回购买掉的</strong>（过去五年累计回购超 $41 亿）。看这家公司要用 <strong>ROIC 47.23%</strong>，那个数字是真的；ROE 74% 是回购的算术副产品，别当成盈利能力。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>企业价值 $443.0 亿（市值 $434.1 亿 ＋ 净债务 $9.0 亿）。有效税率 19.99%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>434.1 ÷ 11.40</td>
+<td><strong>38.7 倍</strong></td>
+<td><strong>$2.58</strong></td>
+</tr>
+<tr>
+<td>市场用的前瞻数字</td>
+<td>股价 551.00 ÷ 前瞻每股利润约 $15.67</td>
+<td><strong>35.2 倍</strong></td>
+<td><strong>$2.84</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>434.1 ÷ 11.44（净利润 11.40 ＋ 投资处置损失 0.05 税后 0.04；无收购摊销可加回；SBC 已按 GAAP 扣除）</td>
+<td><strong>37.9 倍</strong></td>
+<td><strong>$2.64</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表原值）</td>
+<td>434.1 ÷ 12.54</td>
+<td><strong>34.6 倍</strong></td>
+<td><strong>$2.89</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除递延税水分）</strong></td>
+<td>434.1 ÷ 11.06</td>
+<td><strong>39.2 倍</strong></td>
+<td><strong>$2.55</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>443.0 ÷ 14.68</td>
+<td><strong>30.2 倍</strong></td>
+<td><strong>$3.31</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>434.1 ÷ 10.30（TTM 11.44 / FY2025 10.59 / FY2024 8.88）</td>
+<td><strong>42.1 倍</strong></td>
+<td><strong>$2.37</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：亿美元）</p>
+<p><strong>三处要看懂：</strong></p>
+<p><strong>第一，所有口径挨得极近——从 $2.37 到 $3.31，最高只比最低高 40%。</strong> 对比 Cardinal Health（$2.91 到 $8.27，差 2.8 倍）和 Viking（$1.48 到 $3.50，差 2.4 倍）。<strong>口径之间不打架，是账干净的最强信号。</strong> 这家公司没有藏东西的地方：没有收购摊销可以加回，没有营运资金可以充气，没有一次性项目可以粉饰，甚至那个 35.2 倍的前瞻市盈率也不是会计包装出来的——它跟 ODFL 一样，前瞻低于当期纯粹是因为分析师预期利润会继续涨。</p>
+<p><strong>第二，三年平均口径 42.1 倍高于当期 37.9 倍，说明当前利润确实在近三年的高位。</strong> 但这个"高位"的成因跟别家不同——不是周期景气，是<strong>利润在持续增长</strong>（$8.88 亿 → $10.59 亿 → $11.44 亿，两年涨了 29%）。一家利润稳步上升的公司，三年平均永远会低于当期。这个缺口不是警告信号，是增长的算术结果。</p>
+<p><strong>第三，剔掉递延税水分后，自由现金流口径（39.2 倍）反而高于报表值（34.6 倍），也高于真实市盈率（37.9 倍）。</strong> 这告诉你一件重要的事：<strong>IDEXX 的自由现金流并不比它的会计利润更值钱。</strong> 市场上很多人拿"34.6 倍市现率比 38.7 倍市盈率便宜"来给这只股票辩护，那是被那笔递延所得税骗了。</p>
+<p><strong>现在说人话。</strong></p>
+<p>你今天投 100 块进 IDEXX：</p>
+<ul>
+<li>按 GAAP 利润算，公司一年替你赚 <strong>$2.58</strong>。</li>
+<li>按剔除障眼法的真实利润算，<strong>$2.64</strong>。</li>
+<li>按挤掉递延税的自由现金流算，<strong>$2.55</strong>。</li>
+<li>按三年平均算（最保守），<strong>$2.37</strong>。</li>
+</ul>
+<p><strong>最保守是 $2.37，最接近真相的是 $2.64。这四个数字挨得非常近，说明这个答案是可信的——不像前面几家那样要在 2~3 倍的区间里猜。</strong></p>
+<p>这 $2.64 里有多少到你口袋？<strong>没有分红。净回购 $10.67 亿，占市值 2.46%。</strong> 就这些。</p>
+<p>剩下的钱去哪了？基本没剩下。TTM 自由现金流 $12.54 亿，回购花掉 $11.87 亿（占 95%），还了 $1.35 亿净债务。<strong>这家公司现在把赚到的钱几乎全部买回自己的股票。</strong></p>
+<p>这里有个必须说清楚的问题：<strong>在 38.7 倍市盈率上回购，每花 1 块钱只买回 2.58 分钱的利润。</strong> 这是不是好的资本分配？我的判断是——<strong>对 IDEXX 来说勉强说得过去，但绝不算聪明。</strong> 说得过去的理由是它确实没有别的地方能投：资本开支只需要营收的 2.6%，它不做大收购（这恰恰是它账目干净的原因），生意本身不吃钱。不算聪明的理由是：一家 47% 资本回报率的公司，在 38 倍估值上回购，回报率只有 2.6%——<strong>它在用一门超级生意赚来的钱，去买一个平庸回报的资产（自己的贵股票）。</strong> 如果它愿意在股价便宜时集中回购、贵时攒现金，股东会好得多。</p>
+<p><strong>这个 $2.64 未来会变大还是变小？我判断会明显变大，理由是本批六家里最扎实的：</strong>
+- 营收增速在<strong>加速</strong>（6.46% → 10.42% → 12.77%），而不是像 ODFL 那样连跌四年、或像 L3Harris 那样 62% 业务原地踏步。
+- 仪器铺货增长 51.8%，这是耗材收入的领先指标——<strong>今年铺出去的每一台机器，都是未来五年的耗材年金。</strong>
+- 定价权是真实的，因为它的涨价由宠物主人买单、而兽医还乐见其成。这个结构可以支撑年复一年的提价。
+- 资本极轻（资本开支只占营收 2.6%），增长几乎不吃钱，增量利润几乎全部变成自由现金流。
+- 每年缩股 2.4%，自动抬高每股数字。</p>
+<p><strong>变小的风险：</strong>
+- <strong>美国宠物诊所的到店次数已经连续几年不增长了。</strong> 疫情期间美国人集中养宠物，之后回归常态。IDEXX 现在的增长来自"每次就诊做更多化验 + 提价"，而不是"更多宠物来看病"。这个来源不是无限的。
+- 竞争在逼近：硕腾（Zoetis）和被玛氏收购的 Heska 都在用激进的免费铺机策略抢诊所。IDEXX 的份额过高本身就是它最大的风险来源。
+- 那笔递延所得税以后要还。
+- <strong>股价一年跌了 17.01%</strong>，是本批六家里唯一下跌的，beta 1.54（本批最高，跟 Viking 并列）。市场显然在担心什么。</p>
+<p>关于最后这条我的看法是：<strong>基本面在加速，股价在下跌——跌的是估值倍数，不是生意。</strong> 这只股票以前的估值在 50 倍以上，现在降到 38.7 倍。这是一场估值回归，不是业绩崩塌。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是本批六家里生意质量最高的一家，而且不是勉强第一，是断层第一。</strong></p>
+<p>47.23% 的投入资本回报率对 12.49% 的资金成本、62% 毛利率、只占营收 2.6% 的资本开支、卖一次机器锁五年耗材的刀架刀片模型、被写进 EPA 法规的水质试剂、以及最关键的那条——<strong>它的涨价由宠物主人买单，而它的直接客户（兽医）还从中赚更多钱</strong>。这些加起来是一门几乎无懈可击的生意。它的报表也是本批最干净的：没有收购摊销、没有营运资金充气、没有一次性粉饰，六个估值口径互相之间只差 40%。</p>
+<p>问题还是那个老问题：<strong>价格。</strong></p>
+<p>37.9 倍真实市盈率，意味着你投 100 块一年赚 $2.64，而且一分钱分红都没有，只有 2.46% 的净回购。在无风险利率 4% 出头的环境里，这个即期回报没有吸引力——你买的完全是未来十年的复利。</p>
+<p>但和前面五家不同的是，<strong>IDEXX 的复利故事我信</strong>：营收增速在加速、仪器铺货暴增 51.8% 预示着未来的耗材年金、定价权有结构性支撑、增长几乎不消耗资本。如果它未来五年能保持 10%~12% 的营收增长和轻微的利润率扩张，利润会在五年内翻倍，那么今天的 38 倍在 2031 年就变成 19 倍。</p>
+<p><strong>这是本批六家里唯一一家我会认真放进候选池的公司</strong>——但不是在今天这个价位。股价已经从高点跌了 17%，估值从 50 倍降到 38.7 倍，这个方向是对的。<strong>我会等它跌到 30 倍以内（大约股价 $430）再动手</strong>，那时候即期回报率到 3.3%，加上确定性较高的两位数增长，这笔账才算得过来。</p>
+<p>放进观察名单，设个价格提醒，别急。</p>
+</div></body></html>

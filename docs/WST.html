@@ -1,0 +1,333 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WST · 西部制药服务（West Pharmaceutical Services）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WST</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">质量极好，但43倍太贵，等跌到25倍以下</div><h1>WST · 西部制药服务（West Pharmaceutical Services）</h1>
+<p>市值 245.9 亿美元 / 股价 349.42 美元 / 行业：医疗科技（药品包装与给药部件）/ TTM 截止日期：2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报把公司分成两块：<strong>Proprietary Products（自有产品）</strong> 和 <strong>West Vantage Products（受托制造，即过去财报里的 Contract-Manufactured Products）</strong>。这两块看起来都在"给药企做塑料橡胶件"，但赚钱的方式完全是两种生意。</p>
+<h3>生意 A：自有产品——卖药瓶上的那个胶塞</h3>
+<p><strong>这件事到底是什么。</strong></p>
+<p>你打一针疫苗、或者用一支胰岛素笔、或者现在满大街的司美格鲁肽减肥笔，针头扎进去之前，药是装在一个玻璃小瓶或者玻璃针管里的。玻璃瓶口封着一个灰色的橡胶塞，针管里推药的那个活塞头也是橡胶的。这些橡胶件——<strong>胶塞、铝盖、活塞、针筒头帽</strong>——就是 West 卖的东西。一个胶塞的售价大概在几美分到几十美分之间，一支预灌封针管的完整密封组件贵一些，但也就一两块钱。</p>
+<p>听起来像是卖橡皮圈，为什么能做成 245 亿美元市值、22% 经营利润率的生意？因为这块橡胶<strong>是药的一部分</strong>。</p>
+<p>药液在瓶子里要放两三年。这两三年里，橡胶塞会不会往药里析出微量的锌、硫化物、增塑剂？会不会吸附掉药里的活性蛋白（生物药尤其怕这个，一支单抗药里活性成分可能只有几毫克，被胶塞吸走 5% 就是药效不合格）？扎针的时候会不会掉下橡胶碎屑进药液？这些问题的答案，药企必须在向 FDA 递交新药申请的时候一起证明清楚。</p>
+<p>所以流程是这样的：一家药企做一个新的生物药，从三期临床开始就得选定用哪家的胶塞，然后拿这个胶塞做<strong>两年以上的稳定性试验</strong>，把数据写进递交给 FDA 的申请文件里，文件里会明确写出"本品使用 West NovaPure 4023/50 灰色氯化丁基胶塞"这一级别的细节。FDA 批下来之后，<strong>这个胶塞的型号就被锁死在药证里了</strong>。</p>
+<p>想换个供应商？要重新做两年稳定性试验，重新准备变更申报，走 FDA 的补充申请流程，全程两三年、几百万美元，而且期间万一试验结果不理想就是灾难。<strong>为了省下一个胶塞上的两美分，去冒重做药证的风险，没有一个药企的质量总监会签这个字。</strong></p>
+<p>这就是 West 的护城河：不是技术壁垒，是<strong>监管把客户焊死在了供应商身上</strong>。所以 West 每年提价 3–5%，客户照单全收。</p>
+<p>具体的产品分层：
+- <strong>最便宜的一层</strong>：普通的丁基橡胶胶塞，卖给做普通注射液（生理盐水、抗生素针剂）的仿制药厂，走量，毛利一般。
+- <strong>中间层 Westar</strong>：胶塞已经洗过、灭菌过、真空干燥过，直接送到客户的无菌灌装线上就能用。药厂不用自己建清洗车间——这一步替客户省下的是一整条洁净产线的资本开支，所以能加价。
+- <strong>最贵的一层 NovaPure / Daikyo Crystal Zenith</strong>：NovaPure 是"零缺陷"级别的胶塞，逐个做视觉和颗粒物检验，专供生物药、GLP-1 减肥针、细胞基因治疗这些一支药几百上千美元的场景；Crystal Zenith 是环烯烃聚合物做的针管，不用玻璃，因为有些药在玻璃表面会聚集变质、有些冷冻保存的药玻璃会裂。这一层的单价可能是普通胶塞的十倍。</p>
+<p><strong>过去几年 West 的增长几乎全靠"客户结构往上爬"</strong>——GLP-1 减肥药、生物类似药、自动注射笔这些高价值药越来越多，它们用的都是最贵那一层的部件。这就是为什么营收只涨 12%，但毛利率能从 34.5%（FY2025）拉到 36.8%（TTM）。</p>
+<p><strong>收入模型举个具体的</strong>：一家做 GLP-1 周制剂的药企，一年在美国要发货 5,000 万支预灌封笔。每支笔需要一个活塞头 + 一个针筒头帽，West 这套组件按 NovaPure 级别报价大概 0.25–0.40 美元。这一家客户一年就是 1,200 万到 2,000 万美元的采购额，而且只要这个药还在卖、还没换配方，这笔钱年年都在，还每年涨 3–5%。</p>
+<h3>生意 B：West Vantage——替客户把整个装置组装出来</h3>
+<p><strong>这件事到底是什么。</strong></p>
+<p>生意 A 是卖零件，生意 B 是<strong>卖代工</strong>。客户（药企或者医疗器械公司）设计了一个自动注射笔、一个吸入器、一个诊断试剂盒，自己不想建工厂，就把整个组装外包给 West：West 负责注塑成型出所有塑料件、买来客户指定的弹簧和电子件、在洁净车间里装配、测试、包装、贴标签，最后按"每装配一件多少钱"收费。</p>
+<p>举个具体的：一家药企要上市一个类风湿关节炎的自动注射笔（患者自己按在大腿上一按，弹簧把针推进去自动注射完）。这个笔有大概 15 个零件。West 报价按每支笔 2.5–4 美元的装配费，年产 800 万支，就是 2,000 万到 3,200 万美元的合同。合同一般签五到十年，因为这条产线是为这个笔专门做的模具和工装，中途搬走成本极高。</p>
+<p><strong>这块生意的经济性明显差一档</strong>：它本质上是出卖产能和人工，客户随时能拿产量压价，而且没有"写进药证"那层保护（装配工艺变更的监管门槛比原料变更低得多）。所以它增速慢、利润率低。</p>
+<h3>两门生意的钱（TTM，截至 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>增速参考</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自有产品 Proprietary</td>
+<td>2,726</td>
+<td>81.9%</td>
+<td>半年内比 FY2025 全年高 9.4%，是加速的主力</td>
+<td>~25%（估算）</td>
+<td>~682（估算）</td>
+</tr>
+<tr>
+<td>受托制造 West Vantage</td>
+<td>601</td>
+<td>18.1%</td>
+<td>半年内比 FY2025 全年高 3.2%，基本走平</td>
+<td>~12%（估算）</td>
+<td>~72（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,327</strong></td>
+<td>100%</td>
+<td><strong>同比 +12.38%</strong></td>
+<td><strong>22.0%（实际）</strong></td>
+<td><strong>730.8（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关于增速这一列必须说明清楚</strong>：财报页只给了公司整体的 TTM 同比 +12.38%，没有给分部的 TTM 同比。上表里的分部增速是拿 TTM（截至 2026-06）跟 FY2025 全年比出来的，跨度只有半年，<strong>不是同比数字</strong>，只能用来判断谁在加速。看得出来加速全在自有产品这一边。</p>
+<p><strong>关于利润率这一列</strong>：West 只按分部披露营收，不披露分部经营利润。上表两块的利润率是按"整体 22.0% + 自有产品毛利显著更高"倒推的估算，<strong>标明是估算，不是财报数字</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 3,260 万美元，占净利润 5.8%。</strong></p>
+<p>这是全表最干净的一项。3,260 万对一家 33 亿营收的公司来说少得反常——多数同市值的美股公司这个数字在 2 亿到 5 亿之间。原因是 West 是个百年制造企业，员工主体是工厂里的注塑技师和质检员，不是硅谷工程师，不需要用股票留人。<strong>这项按 GAAP 已经扣在净利润里了，不加回，也没什么好加回的。</strong></p>
+<p><strong>一次性项目：资产减值与重组 1,750 万，股权投资收益 1,050 万（是笔收益，不是损失）。</strong></p>
+<p>两项都是小钱，加起来不到净利润的 5%。但要注意：资产减值/重组这一项在 FY2025 是 1,710 万、FY2024 是 730 万、FY2022 是 2,150 万——<strong>这是一家年年都在"重组"的公司</strong>，说明它长期在关小厂、迁产能。只看 TTM 这一期分不清这笔是真一次性还是常规开销，但从多年都有这一项来看，倾向于把它当经常性成本，不加回。</p>
+<p><strong>资本化的支出：没有软件或内容资本化。</strong></p>
+<p>West 的钱花在真金白银的厂房和注塑模具上——TTM 资本开支 2.253 亿美元，占营收 6.8%，占经营现金流的 34%。这是制造业的宿命，不是会计花招。</p>
+<p><strong>回购与稀释：TTM 回购 4.571 亿，SBC 只有 0.326 亿，比值 14.0 倍。</strong></p>
+<p><strong>这是全篇最漂亮的一个数字。</strong> 回购金额是员工发股成本的 14 倍，意味着回购的钱有 93% 是真正在减少股份、不是在填员工发股的坑。实际效果也对得上：流通股一年减少 1.16%。</p>
+<p>但要泼一盆冷水：TTM 的 4.571 亿回购是异常放大的（FY2025 全年才 1.368 亿，FY2024 是 5.666 亿）。这家公司的回购是<strong>看股价机会主义地打</strong>，不是稳定政策，不能拿 TTM 这个数字外推。另外，这一年公司账上净现金从 4.65 亿降到 1.19 亿——回购的钱是从存量现金里掏的，不是从当期利润里流出来的。<strong>这种回购再打一年账上就没钱了。</strong></p>
+<p>分红 6,240 万，股息率只有 0.25%，忽略不计。</p>
+<p><strong>利润和现金流的差：净利润 5.649 亿，经营现金流 6.622 亿，自由现金流 4.369 亿。</strong></p>
+<p>逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>564.9</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>181.4</td>
+<td>厂房模具的账面折旧，不花钱</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>32.6</td>
+<td>发的是股票不是现金（但股份被稀释了，这是真成本，只是不是现金）</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>17.5</td>
+<td>账面冲销</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−10.5</td>
+<td>是收益但没收到现金</td>
+</tr>
+<tr>
+<td>− 其他经营项</td>
+<td>−18.6</td>
+<td>零碎调整</td>
+</tr>
+<tr>
+<td><strong>= 现金利润（未动营运资金）</strong></td>
+<td><strong>767.3</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>+6.9</td>
+<td>收款略快了</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−62.8</td>
+<td><strong>多囤了 6,280 万的原料和成品</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+17.9</td>
+<td>欠供应商多了点</td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−67.1</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>营运资金合计占用</strong></td>
+<td><strong>−105.1</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>662.2</strong></td>
+<td>对得上</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−225.3</td>
+<td>建厂、买注塑机</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>436.9</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看这张表最该注意的一行是存货多占了 6,280 万。</strong> 一家营收只涨 12% 的公司，存货占用增加了这么多，要么是在为下半年的订单备货（好事），要么是有产品卖不动积压（坏事）。存货周转率从 FY2025 的 4.80 微升到 4.84，说明<strong>暂时是前者</strong>，属于备货而非积压。</p>
+<p>真正的问题在最后一行：<strong>净利润 5.65 亿，自由现金流只有 4.37 亿，差了 1.28 亿，全被资本开支吃掉了。</strong> 这家公司要维持增长必须不停建厂——这就是它跟软件公司的根本差别，账面利润里有相当一部分永远变不成能分给你的现金。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 245.91 亿，企业价值 244.71 亿（账上净现金 1.19 亿，几乎可以忽略）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>245.91 亿 ÷ 5.649 亿</td>
+<td><strong>43.5 倍</strong></td>
+<td><strong>2.30 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页不提供公司调整后口径；参考市场前瞻口径 37.67 倍</td>
+<td>~37.7 倍</td>
+<td>2.65 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>245.91 亿 ÷（5.649 亿 + 重组 0.175×0.8 − 股权投资收益 0.105×0.8）= ÷5.705 亿</td>
+<td><strong>43.1 倍</strong></td>
+<td><strong>2.32 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>245.91 亿 ÷ 4.369 亿</td>
+<td><strong>56.3 倍</strong></td>
+<td><strong>1.78 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>244.71 亿 ÷ 7.308 亿</td>
+<td><strong>33.5 倍</strong></td>
+<td><strong>2.99 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>245.91 亿 ÷（FY23 5.934 + FY24 4.927 + FY25 4.937）/3 = ÷5.266 亿</td>
+<td><strong>46.7 倍</strong></td>
+<td><strong>2.14 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（注：财报页标注的市盈率 44.7 倍用的是 8 月 14 日收盘价，本表统一用 245.91 亿市值自己算，差异来自股价日期，不是口径分歧。）</p>
+<p><strong>这张表最值得说的一点是：所有口径挤在一起，没有大的分歧。</strong> 43.5 / 43.1 / 46.7 三个数字几乎重叠——这说明 <strong>West 的账是干净的</strong>，没有靠 Non-GAAP 化妆，没有一次性项目撑利润，也没有"现在是利润高点"的问题（三年平均口径只比当期贵 7%）。</p>
+<p>唯一分歧大的是两头：自由现金流口径 56 倍（因为资本开支重），企业价值口径 33.5 倍（因为 EV/EBIT 是税前口径，天然比税后的市盈率低一截，不是它便宜）。<strong>真正该用的锚是 43 倍左右。</strong></p>
+<p><strong>所以说人话：你现在投 100 块进 West，按最保守的真实口径算，公司一年替你赚 2 元 3 角。</strong></p>
+<p>这 2 元 3 角里，有多少真到你口袋？TTM 分红 0.62 亿 + 回购 4.57 亿 = 5.19 亿，是市值的 2.11%，也就是<strong>每 100 块回给你 2 元 1 角</strong>。看起来几乎全还给你了，但上面说过，这一年的回购是掏存量现金掏出来的，账上净现金从 4.65 亿掉到 1.19 亿。<strong>按可持续的口径（分红 + 相当于自由现金流的回购），正常年份能还给你的大概是 100 块里的 1 元 5 角到 1 元 8 角</strong>，剩下的进了新厂房和新模具。</p>
+<p><strong>这个 2 元 3 角未来是变大还是变小？大概率缓慢变大，但慢得让人着急。</strong> 变大的理由是真实的：GLP-1 减肥针、生物类似药、细胞治疗这些高价值药还在放量，每一支都要用 West 最贵那一层的部件，产品结构自然往上走，毛利率从 34.5% 走到 36.8% 就是证据。加上每年 3–5% 的合同提价，营收 8–12% 的增长里有一半以上是自动来的。</p>
+<p>但变大的速度受两个东西压制。一是<strong>受托制造那 18% 的营收基本不长</strong>，拖累整体。二是<strong>资本开支下不来</strong>——要接新订单就要建新洁净车间，这活儿的回报周期是三到五年，所以自由现金流永远跟不上净利润。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家质量极好的公司，但 43 倍太贵了。</strong></p>
+<p>护城河是真的：客户被 FDA 的药证焊在它身上，换供应商要重做两年稳定性试验，这种壁垒比大多数科技公司的"技术领先"扎实得多。账也是真的干净：SBC 只占净利润 5.8%，没有一次性项目粉饰，三年平均利润跟当期利润差不多，回购是 SBC 的 14 倍。ROIC 20.6%，负债率极低。<strong>挑不出毛病。</strong></p>
+<p>问题只有一个：<strong>价格</strong>。你花 43 倍的市盈率，买的是一家营收增长 12%、净利率 17%、还得年年拿三分之一现金流去建厂的橡胶件制造商。这价钱要求它未来十年每年赚的钱都得涨 12–15% 才勉强说得过去，而它过去五年的净利润是 661.8 → 585.9 → 593.4 → 492.7 → 493.7 → 564.9（百万美元）——<strong>五年过去，利润比 2021 年还低 15%</strong>。中间 FY2024 那一年更是掉到 4.93 亿。市场现在给的 43 倍，赌的是"这次不一样，GLP-1 会把它带上去"。</p>
+<p>一年 2 元 3 角的回报，还没有美国十年期国债高。这家公司值得放进关注列表，等它跌到 25 倍以下再看。<strong>现在这个价，不值。</strong></p>
+</div></body></html>

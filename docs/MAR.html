@@ -1,0 +1,562 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAR · 万豪国际</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MAR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意最好也最贵，好消息全部计入，等一次衰退</div><h1>MAR · 万豪国际</h1>
+<p><strong>市值</strong> $928.6 亿 | <strong>股价</strong> $356.09 | <strong>行业</strong> 消费服务（酒店品牌与管理） | <strong>TTM 截止</strong> 2026-06-30
+<strong>全榜名次</strong> 第 93 名 | <strong>筛选时 PE</strong> 36.70 | <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>⚠️ 先破一个最容易上当的数字</h2>
+<p>万豪财报上的「营业收入」是 <strong>269.04 亿美元</strong>。</p>
+<p><strong>其中 195.19 亿（72.6%）是「成本报销收入」，毛利为零，纯粹的过路钱。</strong></p>
+<p>这是什么？万豪替业主管理酒店时，酒店里几千名员工的工资、水电费、洗衣费、易耗品，法律上是万豪代业主支付的——钱先从业主账上打给万豪，万豪再发出去。会计准则要求万豪把这笔钱同时记成「收入」和「成本」，一进一出，利润为零。</p>
+<p><strong>所以万豪真正属于自己的收入只有 73.85 亿美元。</strong></p>
+<p>这个区别有多要命，看一眼市销率就知道：
+- 用总收入 269 亿算，市销率 <strong>3.45 倍</strong>（看起来像个便宜的消费股）；
+- 用真实收入 73.85 亿算，市销率 <strong>12.57 倍</strong>（看起来像个软件公司）。</p>
+<p><strong>下文所有比率一律用 73.85 亿的真实收入。看到别人拿 269 亿算万豪的任何指标，那个数就是错的。</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>万豪旗下约 9,500 家酒店、180 万间客房，横跨 30 多个品牌（丽思卡尔顿、W、万豪、喜来登、威斯汀、万怡、万枫、Moxy……）。</p>
+<p><strong>但万豪自己拥有的酒店不到 50 家。</strong></p>
+<p>它不是一家开酒店的公司。<strong>它是一家收版权费和管理费的公司</strong>，客户不是住客，是那些花几亿盖了楼、想挂个招牌的开发商。</p>
+<h3>生意 A：特许经营（Franchise）—— 卖招牌，49% 的真实收入</h3>
+<p><strong>具体是什么：</strong></p>
+<p>一个开发商在成都花 3 亿人民币盖了一栋 200 间房的酒店。楼是他的，地是他的，员工是他雇的，赚了赔了都是他的。他想挂「万枫 Fairfield by Marriott」的牌子，于是跟万豪签一份 20 年的特许经营合同：</p>
+<ul>
+<li>开业前付一笔<strong>加盟费</strong>，通常按房间数算，几十万美元；</li>
+<li>开业后每月按<strong>房费收入的 5%–6%</strong> 交特许权使用费；</li>
+<li>另外还要按房费收入的 1.5%–2% 交<strong>市场营销和订房系统费</strong>（进另一个池子）。</li>
+</ul>
+<p>万豪出什么？一块牌子、Marriott.com 的订房流量、<strong>1.8 亿会员的 Bonvoy 积分体系</strong>、以及一本几百页的品牌标准手册——床垫什么规格、毛巾多少克重、大堂咖啡机什么牌子、前台话术怎么说。万豪派人来验收，不合格就摘牌。</p>
+<p><strong>开发商为什么愿意交这笔钱？</strong> 算一笔账：一家 200 间房的酒店年房费收入 3,000 万人民币，交给万豪约 180 万（6%）。但挂上招牌之后：
+1. 入住率能高 10–20 个百分点（品牌信任 + 出差报销认这个牌子）；
+2. <strong>更关键的是渠道成本</strong>。独立酒店的订单要靠携程、Booking、Expedia，这些 OTA 抽 <strong>15%–18%</strong> 的佣金。挂万豪牌子之后，Bonvoy 会员为了攒积分会直接从万豪 App 订，直销比例大幅提高。<strong>交 6% 给万豪，省下 15% 给 OTA，这笔账开发商随便一算就明白。</strong></p>
+<p><strong>这门生意的经济学好到离谱：</strong> 万豪不投一分钱资本，收的是别人营业额的固定比例，新签一家酒店的边际成本接近于零（加到系统里而已）。这是全世界最好的商业模式之一——<strong>它是特许权（royalty），不是经营（operation）。</strong></p>
+<p>TTM 增长 <strong>+8.7%</strong>，是所有业务里最快的。原因是万豪的新开店几乎全部走特许经营（业主出钱盖，万豪只贴牌），这块的房间数占比在持续上升。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>$36.14 亿</strong></td>
+<td>$33.25 亿</td>
+<td><strong>+8.7%</strong></td>
+</tr>
+<tr>
+<td>占真实收入</td>
+<td>48.9%</td>
+<td>47.6%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>生意 B：委托管理（Managed）—— 替业主开店，29% 的真实收入</h3>
+<p><strong>具体是什么：</strong></p>
+<p>高端酒店（丽思卡尔顿、W、瑞吉、艾迪逊）的业主往往是保险公司、主权基金、家族办公室——他们买的是资产，不想管运营。于是把整栋酒店交给万豪运营：万豪派总经理、定价、招人、管服务标准，业主只收剩下的利润。</p>
+<p>万豪收两笔钱：</p>
+<p><strong>1. 基础管理费（$13.39 亿）</strong> —— 按酒店<strong>总营业额的 3% 左右</strong>收，<strong>不管酒店赚不赚钱都要付</strong>。这是旱涝保收的一块。</p>
+<p><strong>2. 奖励管理费（$8.21 亿）</strong> —— 酒店的经营利润超过业主约定的门槛线（通常是业主投资额的某个回报率）之后，超出部分万豪分走 <strong>10%–20%</strong>。</p>
+<p><strong>奖励管理费这一块必须单独盯，因为它是纯经营杠杆：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>奖励管理费</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>$2.35 亿</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>$5.29 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$7.55 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$7.69 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$7.91 亿</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$8.21 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>五年翻了 3.5 倍。为什么？因为疫情后房价（ADR）大涨，酒店利润普遍越过了门槛线。<strong>但反过来也成立：一旦房价跌 10%、酒店利润跌到门槛线以下，这 8.21 亿会以极高的速度归零——它是利润的「超额部分」的分成，超额部分归零，分成就归零。</strong> 这 8.21 亿占万豪净利润 25.87 亿的 <strong>32%</strong>。</p>
+<p><strong>那 195 亿的成本报销就来自这门生意：</strong> 万豪管理的酒店，员工在法律上是万豪雇的（或万豪代雇），发工资的动作由万豪做，钱先流经万豪的账。这就是本文开头讲的那个数字陷阱的来源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基础管理费</td>
+<td>$13.39 亿</td>
+<td>$13.22 亿</td>
+<td>+1.3%</td>
+</tr>
+<tr>
+<td>奖励管理费</td>
+<td>$8.21 亿</td>
+<td>$7.91 亿</td>
+<td>+3.8%</td>
+</tr>
+<tr>
+<td>合同投资摊销（抵减）</td>
+<td>−$1.44 亿</td>
+<td>−$1.35 亿</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>小计</strong></td>
+<td><strong>$20.16 亿</strong></td>
+<td>$19.78 亿</td>
+<td>+1.9%</td>
+</tr>
+<tr>
+<td>占真实收入</td>
+<td>27.3%</td>
+<td>28.3%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>生意 C：自有、租赁及其他 —— 24% 的真实收入，最杂但藏着好东西</h3>
+<p><strong>$17.55 亿</strong>，包含三样很不一样的东西：</p>
+<p><strong>1. 不到 50 家自有和长租酒店的全部营业收入。</strong> 这部分是真正的「开酒店」——房费、餐饮、宴会全进万豪的账，但成本也全是万豪的，利润率远低于收费业务。万豪一直在卖掉这些资产，方向是越来越轻。</p>
+<p><strong>2. 信用卡分成 —— 这是最被低估的一块。</strong> 万豪把 Bonvoy 积分<strong>批发</strong>卖给摩根大通（Chase）和美国运通，银行再把积分当权益送给持卡人。你办一张 Bonvoy 联名卡，开卡送 10 万积分，那 10 万积分是银行<strong>用现金从万豪买来的</strong>。</p>
+<p>这门生意的性质是：<strong>万豪今天收现金，未来某天你来兑房时才承担成本，而且总有一部分积分永远不会被兑换（沉淀收益）。</strong> 它的现金流质量极高，几乎不占资本，而且跟酒店入住率的相关性比其他业务低——你不住店也照样刷卡消费。</p>
+<p><strong>3. 品牌授权。</strong> 开发商盖公寓楼，挂「丽思卡尔顿公寓」的牌子卖房，付万豪一笔品牌授权费；分时度假业务（Marriott Vacations 已独立上市）也按品牌协议付钱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>$17.55 亿</strong></td>
+<td>$16.79 亿</td>
+<td>+4.5%</td>
+</tr>
+<tr>
+<td>占真实收入</td>
+<td>23.8%</td>
+<td>24.0%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>三门生意合起来有多赚钱</h3>
+<p>财报不按分部披露利润，但因为万豪的成本结构很简单，可以从公开数字直接推出来（单位：亿美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>真实收入</td>
+<td>73.85</td>
+<td>269.04 − 195.19</td>
+</tr>
+<tr>
+<td>− 自有/租赁酒店直接运营成本等</td>
+<td>−20.55</td>
+<td>由毛利倒推</td>
+</tr>
+<tr>
+<td>＝ 毛利</td>
+<td><strong>53.30</strong></td>
+<td>财报数字</td>
+</tr>
+<tr>
+<td>− 总部管理费用等</td>
+<td>−10.80</td>
+<td>倒推</td>
+</tr>
+<tr>
+<td><strong>＝ 经营利润</strong></td>
+<td><strong>42.50</strong></td>
+<td>财报数字</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>按真实收入算，万豪的经营利润率是 57.5%。</strong></p>
+<p>这是个软件公司级别的数字，而且完全说得通：占收入 66% 的费用类业务（特许 + 管理），增量成本几乎为零。<strong>万豪多签一家酒店，收入增加，成本几乎不动。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>$2.49 亿</strong>，占净利润 25.87 亿的 <strong>9.6%</strong>。规模温和，按规矩当真实现金成本扣掉（GAAP 已扣，不加回）。</p>
+<h3>一次性项目</h3>
+<p>TTM 从这四页上<strong>看不到可识别的大额一次性项目</strong>。这条链是通的：经营利润 42.50 亿 → 税前 34.78 亿（差额 7.72 亿基本是利息支出，与利息保障倍数 5.01 吻合）→ 所得税 8.91 亿（有效税率 25.62%）→ 净利润 25.87 亿。</p>
+<p>现金流量表里有一行「其他调整 <strong>−2.85 亿</strong>」（是负的，也就是从利润里往下减），FY2025 是 −5.50 亿、FY2024 是 −7.87 亿。这通常是权益法投资收益、递延税等非现金项目的反向调整。<strong>单期口径看不出成分，我不硬下结论。</strong></p>
+<h3>资本化的支出 —— 这一项万豪做得很诚实</h3>
+<p>万豪为了签下好酒店的合同，有时要付给业主一笔「关键货币」（key money）——本质上是买合同。这笔钱先资本化成资产，然后按合同期逐年摊销。</p>
+<p><strong>万豪把这个摊销直接作为收入的抵减项列出来</strong>（TTM <strong>−1.44 亿</strong>），而不是藏在费用里。这是行业里比较老实的处理方式。</p>
+<h3>回购与稀释 —— 力度很大，但钱是借来的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票（总额）</td>
+<td>−$37.51 亿</td>
+</tr>
+<tr>
+<td>员工行权认购（流入）</td>
+<td>+$1.00 亿</td>
+</tr>
+<tr>
+<td><strong>净回购</strong></td>
+<td><strong>−$36.51 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励计提</td>
+<td>$2.49 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>15.1 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>−$7.31 亿</td>
+</tr>
+<tr>
+<td>股本变化（近一年）</td>
+<td><strong>−3.73%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>15.1 倍远超 3 倍门槛，股本一年实打实少 3.73%——<strong>三家里最猛的</strong>。</p>
+<p><strong>但钱不够：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自由现金流</td>
+<td><strong>+$31.32 亿</strong></td>
+</tr>
+<tr>
+<td>净回购 + 分红</td>
+<td><strong>−$43.82 亿</strong></td>
+</tr>
+<tr>
+<td><strong>缺口</strong></td>
+<td><strong>−$12.50 亿</strong></td>
+</tr>
+<tr>
+<td>长期债务净增</td>
+<td><strong>+$17.91 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>万豪是在借钱回购股票。</strong> 这不是偶发的，是常态：总负债从 FY2021 的 112.36 亿一路涨到现在的 <strong>177.74 亿</strong>，五年增加 65 亿；同期累计回购超过 170 亿。</p>
+<p>后果之一：<strong>万豪的股东权益是负数</strong>（所以统计页上市净率和 ROE 都是 n/a）。长年按远高于账面价值的价格回购股票，会计上就是把权益买成负的。这本身不是危险信号——星巴克、麦当劳、家得宝都是这样——但它意味着<strong>万豪的股价里没有任何资产垫底，你买的 100% 是未来的现金流。</strong></p>
+<h3>利润和现金流的对账 —— 全篇最干净的一张表</h3>
+<p>净利润 25.87 亿 → 经营现金流 37.28 亿，差 11.4 亿，逐项（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,587</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+704</td>
+<td>自有酒店和系统的账面折旧</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+249</td>
+<td>发股票不是发现金</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>−285</td>
+<td>权益法收益、递延税等（反向）</td>
+</tr>
+<tr>
+<td>＋ 其他经营性项目变动</td>
+<td>+473</td>
+<td>营运资金净流入（含积分预收）</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>3,728</strong></td>
+<td><strong>完美对上，无残差</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−596</strong></td>
+<td><strong>只占真实收入的 8.1%</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>3,132</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表证明了轻资产模式：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>万豪</th>
+<th>CSX（同市值）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>$25.87 亿</td>
+<td>$32.23 亿</td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td><strong>$5.96 亿</strong></td>
+<td><strong>$25.68 亿</strong></td>
+</tr>
+<tr>
+<td>自由现金流</td>
+<td><strong>$31.32 亿</strong></td>
+<td>$26.23 亿</td>
+</tr>
+<tr>
+<td>自由现金流 ÷ 净利润</td>
+<td><strong>121%</strong></td>
+<td><strong>81%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>同样接近 930 亿的市值，CSX 赚的钱有 19% 要埋回铁轨，万豪赚的钱比账面利润还多 21%。<strong>这就是「收版权费」和「拥有资产」的差别，一张表说完。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>928.6 亿 ÷ 25.87 亿</td>
+<td><strong>35.9 倍</strong></td>
+<td><strong>¥2.79</strong></td>
+</tr>
+<tr>
+<td>公司/市场远期口径</td>
+<td>网站远期 PE</td>
+<td>28.7 倍</td>
+<td>¥3.49</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无可识别一次性项目，SBC 已按 GAAP 扣</td>
+<td><strong>35.9 倍</strong></td>
+<td><strong>¥2.79</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>928.6 亿 ÷ 31.32 亿</td>
+<td><strong>29.7 倍</strong></td>
+<td><strong>¥3.37</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,101.7 亿 ÷ 42.50 亿</td>
+<td>25.9 倍</td>
+<td>¥3.86</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>928.6 亿 ÷ 25.21 亿</td>
+<td><strong>36.8 倍</strong></td>
+<td><strong>¥2.72</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（网站给的 P/FCF 是 33.04，比我算的 29.7 高，因为它的 TTM 现金流截取时点略有差异。我用现金流量表原始数字算的 29.7，这次是偏乐观的一侧，实际值大概率在 29.7–33 之间。）</p>
+<p><strong>三年平均 36.8 倍 ≈ 当期 35.9 倍</strong>，说明当前利润不是高点也不是低点，是正常水位。这一点比 3M 干净得多。</p>
+<p><strong>关于 EV/EBIT 25.9 倍看着最便宜——这是陷阱。</strong> 万豪的企业价值比市值高 <strong>173 亿</strong>，因为它借了 178 亿。EV/EBIT 把利息支出从分母里剔掉了，所以杠杆越高这个数字越好看。万豪一年实付利息约 <strong>8.5 亿美元</strong>，占经营利润的 20%。<strong>加杠杆不会让生意变便宜，只会让指标变好看。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进万豪，按最保守的 GAAP 口径，公司一年替你赚 2.79 元；按自由现金流口径，赚 3.37 元。这是本批三家里最低的回报率。</strong></p>
+<p>这 3.37 元怎么分配的？</p>
+<ul>
+<li><strong>回购拿走 3.93 元</strong>（净回购 36.51 亿 ÷ 市值 928.6 亿）；</li>
+<li><strong>分红拿走 0.79 元</strong>（股息率 0.79%）；</li>
+<li>两项合计 <strong>4.72 元</strong>，<strong>超出了赚到的 3.37 元</strong>；</li>
+<li><strong>差额 1.35 元是借来的</strong>（长期债务净增 17.91 亿）。</li>
+</ul>
+<p>也就是说，<strong>留在公司里再投资的钱是负的</strong>。万豪的资本开支只有 5.96 亿，投资活动净流出 8.40 亿——它根本不需要投资，因为新酒店的钱是业主出的。它把所有赚到的钱、再加上借来的钱，全都拿去买自己的股票了。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong></p>
+<p><strong>变大的理由（真实的）：</strong>
+1. 房间数每年增长 4–5%，而且新增的几乎全是特许经营——<strong>业主出钱盖楼，万豪坐收 6%</strong>，这个增长几乎不消耗资本；
+2. 特许经营费 TTM +8.7%，业务结构在往最赚钱的一头倾斜；
+3. 股本每年缩 3.73%，光这一项就让每股收益多涨近 4 个点；
+4. 信用卡分成随消费自然增长。</p>
+<p><strong>变小的风险（也是真实的）：</strong>
+1. <strong>8.21 亿的奖励管理费（占净利润 32%）是纯周期性的</strong>。它是酒店利润超过门槛线后的分成——衰退时房价一跌，超额部分先归零，这块收入会以远快于收入下滑的速度蒸发；
+2. 178 亿的债务在利率高位要续借，利息已经吃掉 20% 的经营利润；
+3. 借钱回购的把戏，在股价高位做等于高位接盘；
+4. Airbnb 在休闲端、以及各国本土品牌在中端市场，都在啃份额。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>万豪是本批三家里生意最好的一家，也是最贵的一家——好到 36 倍市盈率不算离谱，但也远称不上便宜。</strong></p>
+<p>「不用自己出钱盖楼、收别人营业额的 6%、每年缩 3.7% 股本」——这是一门接近完美的商业模式，57.5% 的真实经营利润率、121% 的现金转化率都是证据。护城河是 1.8 亿 Bonvoy 会员和 9,500 家酒店的网络效应，不是哪一栋楼。</p>
+<p>但要看清两件事：<strong>第一，你付 36 倍买的这个利润里，有三分之一（奖励管理费）是周期的产物，衰退里会先蒸发；第二，公司正在借钱回购，股东权益已经是负数，这套玩法在顺风时放大回报，逆风时同样放大痛苦。</strong></p>
+<p><strong>轻资产 ≠ 抗周期。</strong> 万豪不承担盖楼的钱，但它承担房价和入住率的全部波动，而且是加着 173 亿净债务的杠杆去承担的。2.79% 的真实盈利收益率，对这种敞口来说太薄了。</p>
+<p><strong>好生意，价格已经把好消息全部计入。想买的话，等一次衰退——上一次衰退（2020）它的市盈率跌到过个位数区间的净亏损状态，那种时候才是买万豪的时候。</strong></p>
+</div></body></html>

@@ -1,0 +1,330 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ILMN · 因美纳（Illumina, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ILMN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">好消息全在价里，坏消息一个都没解决</div><h1>ILMN · 因美纳（Illumina, Inc.）</h1>
+<p>市值 $288.2亿 | 股价约 $190.9 | 行业：健康科技（基因测序设备与耗材） | TTM 截止 2026年6月28日 | 全榜第 239 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>因美纳做的事情一句话说得清：<strong>卖读 DNA 的机器，然后靠机器每天吃掉的试剂赚钱。</strong> 这是典型的"剃须刀 + 刀片"模式，而且刀片的比重比大多数人想的还要高。</p>
+<h3>生意 A：测序（Sequencing，占营收 91.6%）</h3>
+<p>要理解这门生意，先理解客户为什么非买不可。</p>
+<p>人的基因组有 30 亿个碱基对。你要知道一个人的基因序列，得把 DNA 打碎成几亿条小片段，每条片段贴在一块玻璃芯片（flow cell）上，然后一轮一轮加入带荧光的核苷酸——加一个碱基，拍一张照，记下颜色，再加下一个。几十亿个小点同时进行，跑一趟三十多个小时，机器吐出几个 TB 的图像数据，软件拼回成完整基因组。这套化学方法叫 SBS（边合成边测序），是因美纳 2007 年买来的技术，二十年来全球九成以上的基因数据都是这么读出来的。</p>
+<p><strong>机器（约占测序收入 15%）</strong>：
+- NovaSeq X 系列，一台一百多万美元，卖给国家级基因组中心和大药厂。这是产量怪兽，一次能跑几十个全基因组。
+- NextSeq 1000/2000，二三十万美元，卖给中等规模的医院实验室和大学。
+- MiSeq i100，几万到十几万美元，卖给小型诊所、法医实验室、疫情监测机构。</p>
+<p><strong>耗材（约占测序收入 70%，真正的钱）</strong>：
+每台机器跑一次就要消耗一块 flow cell 加一整套试剂盒，用完就扔。NovaSeq X 最大规格的那块 25B flow cell，一块要好几万美元，跑一趟就没了。<strong>这才是营收的主体，而且是复购的、跟机器安装量成正比的。</strong></p>
+<p>举个具体的：美国一家做无创产前筛查（NIPT）的实验室，一年跑 50 万份孕妇血液样本，每份的测序耗材成本大约 15–25 美元，一年就要向因美纳买 1000 万美元左右的试剂。这家实验室能不能换成别家的机器？技术上可以，实际上极难——它的检测项目是经过 FDA 和 CLIA 认证的，换测序平台等于整个检测方法要重新验证，要重跑几千个已知结果的样本证明新平台不出错，走一遍监管流程要 12 到 24 个月、花几百万美元，期间业务不能停。<strong>这就是护城河：不是技术壁垒，是监管认证的转换成本。</strong></p>
+<p><strong>服务（约占 15%）</strong>：机器保修合同（一台 NovaSeq 一年保养费好几万美元）、软件订阅（BaseSpace 云端分析平台按数据量收费）、代测服务。</p>
+<p>买机器的都是谁：学术基因组中心（Broad、Sanger 这类）、大药厂研发部门（新药做患者分层要测基因）、临床诊断实验室（产前筛查、肿瘤基因分型指导用药、罕见病诊断）、国家级人群基因组计划（英国 UK Biobank、美国 All of Us）。</p>
+<h3>生意 B：基因芯片（Microarray，占营收 8.4%）</h3>
+<p>测序是"把整本书从头读一遍"，芯片是"只查你关心的那 70 万个词在不在"。一块芯片上密密麻麻排着几十万个已知变异位点的探针，把样本 DNA 洒上去，哪个位点亮了就说明带这个变异。<strong>便宜得多——一个样本几十美元，测序要几百上千。</strong></p>
+<p>用途都是"只要查已知位点"的场景：消费级基因检测（23andMe 那类祖源和体质报告）、农业育种（一头种牛的基因分型决定它值 5000 还是 50000 美元，牧场每年测几万头）、大型队列研究的初筛。</p>
+<p>这块每年掉一点点（TTM 3.77 亿），因为测序成本在跌，蚕食芯片的地盘。但掉得很慢，因为在农业和消费场景里成本差距还是有意义的。</p>
+<h3>TTM 各条线的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>业务线</th>
+<th>TTM营收(百万)</th>
+<th>较FY2025全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>测序 Sequencing</td>
+<td>4,116</td>
+<td>+3.3%</td>
+<td>91.6%</td>
+<td>未披露</td>
+</tr>
+<tr>
+<td>基因芯片 Microarray</td>
+<td>377</td>
+<td>+5.3%</td>
+<td>8.4%</td>
+<td>未披露</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,493</strong></td>
+<td>整体同比 <strong>+4.9%</strong></td>
+<td>100%</td>
+<td>整体 <strong>19.65%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只把营收拆成这两条线，<strong>不披露分部利润</strong>——因为剥离 GRAIL 之后公司在会计上只有一个经营分部。本文不做估算，整体毛利率 67.94%、经营利润率 19.65% 是唯一可靠的口径。对比列 FY2025 截止 2025年12月，与 TTM 错开半年，所以两条线的增速只作参考，整体 +4.9% 才是真同比。</p>
+</blockquote>
+<h3>一个必须讲的背景：营收五年零增长</h3>
+<p>2021 年营收 45.26 亿，2026 年 TTM 44.94 亿。<strong>五年过去，一分钱没长。</strong> 原因有四个，都还在起作用：</p>
+<ol>
+<li><strong>降价卖得更多，钱反而少了。</strong> NovaSeq X 把单个基因组的测序成本从 600 美元打到 200 美元。客户读的基因组多了两三倍，但因美纳收的钱没变多——这是它自己主动打的价格战，为了不给对手留缝。</li>
+<li><strong>学术经费缩水。</strong> 美国 NIH 预算承压，学术客户是买机器的主力，一台百万美元的采购最容易被推迟。</li>
+<li><strong>中国市场没了。</strong> 2025 年初因美纳被中国列入不可靠实体清单，禁止在中国销售测序仪。中国原本是 7% 左右的营收，而且是增速最快的一块。</li>
+<li><strong>对手终于追上来了。</strong> 华大智造（MGI/Complete Genomics）在中国和新兴市场拿下大片，Element Biosciences 和 Ultima 用不同化学路线做中低通量，罗氏 2025 年发布的 SBX 平台号称速度快一个数量级。二十年的垄断正在变成寡头竞争。</li>
+</ol>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>2.66 亿美元，占净利润 8.24 亿的 32.3%</strong>。这是本篇最大的一项，非常典型的科技型公司做法——用发股票代替发工资，GAAP 里扣了，公司在自己的"调整后利润"里加回来。<strong>我不加回来。</strong> 那 2.66 亿是真实成本：公司每年多印约 1.4% 的股票给员工，稀释你的持股。而且注意五年前这个数是 7.54 亿，现在降到 2.66 亿，说明裁员和股价低迷时期的授予都在起作用——这个数字未来股价高位时可能反弹。</p>
+<p><strong>一次性项目</strong>：TTM 这一期<strong>罕见地干净</strong>。资产减值与重组只有 400 万美元。对比一下前几年：FY2022 减了 39.23 亿，FY2023 减了 9.27 亿，FY2024 减了 19.35 亿。<strong>这三笔加起来 68 亿的减值，全部来自同一件事——GRAIL。</strong></p>
+<p>因美纳 2021 年花 80 亿美元买下 GRAIL（做一滴血查早期癌症的 Galleri 检测），交易没等反垄断批准就硬закрыл，被欧盟罚了 4.32 亿欧元并勒令拆分，2024 年 6 月分拆上市甩了出去。三年时间烧掉几十亿现金、写掉几十亿商誉、股价腰斩、CEO 下台。<strong>FY2022–FY2024 那三年的巨亏全是这件事，跟主业无关，现在已经彻底结束。</strong></p>
+<p><strong>但 TTM 有一笔容易被忽略的一次性收益</strong>：现金流量表上"投资出售的（收益）"是 <strong>−1.79 亿</strong>，意思是 TTM 里有 1.79 亿美元的<strong>投资处置收益</strong>计入了利润。证据在利润表上很明显：<strong>经营利润只有 8.83 亿，税前利润却有 10.15 亿</strong>——经营之外多出来 1.32 亿（1.79 亿收益扣掉 0.95 亿利息支出等）。这笔钱不是卖机器赚的，是卖手里持有的股权/证券赚的，明年不一定有。<strong>这一笔必须剔除。</strong></p>
+<p><strong>资本化的支出</strong>：资本开支 TTM 只有 1.64 亿，占营收 3.65%，比折旧摊销 2.72 亿还低。一家硬件公司资本开支低于折旧，通常意味着两件事之一：产能已经够用不用扩，或者在克扣长期投入。因美纳的情况偏前者——NovaSeq X 的产线是 2022–2023 年建好的，现在只需要维持。研发费用没有资本化（因美纳的研发全部费用化），这点是干净的。</p>
+<p><strong>回购与稀释</strong>：
+- TTM 回购 <strong>5.92 亿</strong>，SBC <strong>2.66 亿</strong>，<strong>回购/SBC = 2.23 倍</strong>。
+- 按标准判断，2.23 倍处在中间地带：既不是"只够抵消发股"（≈1），也算不上"真回馈"（&gt;3）。
+- 但看实际效果：<strong>股本一年真实减少了 2.84%</strong>，说明回购确实吃掉了发股还有富余。
+- 不派股息，所以股东综合回报率 = 回购收益率 = <strong>+2.84%</strong>。这是实实在在的。
+- 对比第一家 LPLA 的 −4.59%，因美纳在这一项上完胜。</p>
+<p><strong>利润和现金流的差</strong>：TTM 净利润 8.24 亿，经营现金流 10.95 亿，自由现金流 9.31 亿。<strong>现金流比利润高，这是好现象</strong>，但要看清楚高在哪：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额(百万)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+824</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+272</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+266</td>
+<td><strong>非现金，但是真成本</strong></td>
+</tr>
+<tr>
+<td>＋ 减值重组</td>
+<td>+4</td>
+<td>今年几乎没有</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td><strong>−179</strong></td>
+<td>← <strong>一次性收益，现金已在投资活动里体现</strong></td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>+110</td>
+<td>递延税等</td>
+</tr>
+<tr>
+<td>− 应收款增加</td>
+<td>−65</td>
+<td></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−20</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应付款增加</td>
+<td>+26</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他净经营性资产变动</td>
+<td>−143</td>
+<td></td>
+</tr>
+<tr>
+<td>＝ 经营现金流</td>
+<td><strong>+1,095</strong></td>
+<td>分毫不差</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说明白了一件事：<strong>经营现金流比净利润多出的 2.71 亿，基本就是 SBC 那 2.66 亿。</strong> 换句话说，如果把发给员工的股票当成现金工资扣掉（本来就该这么算），因美纳的现金创造能力和账面利润是<strong>一样的</strong>，没有额外的惊喜。营运资金变动是小额负数（−2.02 亿），说明存货和应收在温和增长，没有做假账把利润提前确认的迹象。这张表是干净的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>288.2亿 ÷ 8.24亿</td>
+<td><strong>35.0×</strong></td>
+<td><strong>$2.86</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页不提供调整后净利润；以远期市盈率作参照</td>
+<td>33.5×（远期）</td>
+<td>$2.99（预期）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>288.2亿 ÷（8.24亿 − 投资收益1.79亿×税后0.81 ＋ 重组0.04亿×0.81）= 6.82亿</td>
+<td><strong>42.3×</strong></td>
+<td><strong>$2.37</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>288.2亿 ÷ 9.31亿</td>
+<td><strong>31.0×</strong></td>
+<td>$3.23</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>301.8亿 ÷ 8.83亿</td>
+<td><strong>34.2×</strong></td>
+<td>$2.93</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>288.2亿 ÷ FY23–25 剔除减值后平均 4.60亿</td>
+<td><strong>62.7×</strong></td>
+<td><strong>$1.60</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行需要解释，因为它这次会骗人。</strong></p>
+<p>FY2023 净利 −11.61 亿（加回减值 9.27 亿、投资损失 0.4 亿 → −1.94 亿），FY2024 净利 −12.23 亿（加回减值 19.35 亿、投资损失 3.12 亿 → +10.24 亿），FY2025 净利 +8.50 亿（加回减值 0.27 亿、剔除投资收益 3.28 亿 → +5.49 亿）。三年平均 4.60 亿，对应 62.7 倍。（这些调整未做税务折算，因为商誉减值本身不产生税盾。）</p>
+<p><strong>但这一次，"当期远好于三年平均"不等于"利润在高点"。</strong> 那三年的窟窿是 GRAIL 一次性的、已经从公司里物理切走的业务。用三年平均去衡量今天的因美纳，等于用一个已经不存在的公司在算账。</p>
+<p>所以这一行的正确读法是反过来的：<strong>它不是在警告你"利润要跌回去"，它是在提醒你"这家公司刚刚从 ICU 出来，你没有三年的正常盈利记录可以参考"。</strong> 真正的锚点是那个 <strong>42.3 倍的真实市盈率</strong>——这是一家营收五年零增长、TTM 只涨 4.9% 的公司，按 42 倍在交易。</p>
+<h3>你投 100 块，一年替你赚多少</h3>
+<p><strong>按最保守的真实口径算：2 块 3 毛 7。</strong></p>
+<p>这 2.37 块里，回到你口袋的：
+- <strong>股息 0 元</strong>——不派股息。
+- <strong>回购 2.84 元</strong>（按股本实际缩减 2.84% 计）——注意这个数<strong>大于</strong> 2.37 块的真实利润，说明因美纳回购的钱有一部分是从自由现金流（9.31 亿，高于真实净利润 6.82 亿）和账上现金里出的，不完全靠当期盈利支撑。
+- 留在公司里的：投资活动 TTM 净流出 4.31 亿，其中 4.45 亿是买公司（收购），资本开支只有 1.64 亿。<strong>钱主要拿去做外延收购了，不是扩产能。</strong></p>
+<p>这个 2.37 块未来会变大还是变小？</p>
+<p><strong>变大的理由</strong>：
+- <strong>经营杠杆是真的</strong>。毛利率 67.94%，多卖一块钱试剂，六毛七直接落到利润。营收只要能恢复到中个位数增长，利润会以两倍速度增长。
+- <strong>成本已经砍到位</strong>。人均营收 44.6 万美元，1 万名员工，经营利润率从 FY2023 的 −1.71% 修到 19.65%，这是过去两年裁员和砍项目的成果，还有继续修复的空间（历史最好水平在 25% 以上）。
+- <strong>装机基数在赚钱</strong>。全球几万台因美纳机器已经装在那里，每一台每年吃掉几万到几十万美元的试剂，这部分收入不需要新客户就自动来。
+- <strong>GRAIL 的血包拔掉了</strong>，每年少烧十几亿。</p>
+<p><strong>变小的理由，而且更硬</strong>：
+- <strong>五年零增长不是暂时的</strong>。价格战是因美纳自己打的，为了防守；防守成功了，但收入没长。这个动作还得继续做。
+- <strong>中国被彻底关门</strong>，这是永久性损失，不是周期。
+- <strong>对手不再是玩具</strong>。华大智造、Element、Ultima、罗氏 SBX——二十年里第一次有四个可信的对手同时在场。垄断利润率是守不住的，唯一的问题是掉多快。
+- <strong>股价一年涨了 88.79%</strong>，估值扩张已经把未来两三年的修复预期提前吃掉了。远期市盈率 33.5 只比当期 35.0 低一点点，意味着市场预期未来一年利润几乎不增长——但股价已经按修复完成来定价了。
+- <strong>PEG 3.10</strong>，用最宽松的口径算增长都撑不起这个估值。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家垄断被打破、营收五年零增长、刚从自己造的 80 亿美元大坑里爬出来的公司，现在按 42 倍真实市盈率交易，股价一年翻了将近一倍——好消息全在价里了，坏消息一个都还没解决。</strong></p>
+<p>生意本身仍然优秀：67.94% 的毛利率、监管认证锁死的客户、装机基数自动产生的耗材现金流、干净的现金流量表、真金白银的回购。如果你在 2025 年股价腰斩、市场以为它要死的时候买，这是笔好交易。</p>
+<p>但今天 190 块的价格，是在赌它能回到增长。而摆在桌面上的四个问题——自己打的价格战、中国关门、四家对手、学术经费——没有一个是能靠管理层努力解决的。投 100 块一年赚 2 块 3，比十年期美债还低，而你承担的是一家在丢失垄断地位的硬件公司的风险。</p>
+<p>不值。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截止 2026年6月28日，财报最后更新 2026年7月30日。分部利润率为财报未披露项，本文未做估算。GRAIL 与竞争格局部分为公开背景信息，非取自上述财报页。</em></p>
+</div></body></html>

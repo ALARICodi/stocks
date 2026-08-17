@@ -1,0 +1,373 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NTES · 网易</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NTES</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">便宜得有道理，道理不在生意上在国籍上</div><h1>NTES · 网易</h1>
+<p><strong>市值</strong> $789.8 亿 · <strong>股价</strong> 约 $123（每 ADS，1 ADS = 5 股普通股） · <strong>行业</strong> 科技服务（网络游戏） · <strong>TTM 截止</strong> 2026-03-31 · <strong>交易所</strong> NASDAQ
+<strong>全量筛选榜名次</strong> 第 120 名 · <strong>分析日期</strong> 2026-08-14</p>
+<blockquote>
+<p>财报以<strong>人民币</strong>计价，本文所有营收和利润的原始数字用人民币（百万元），估值和"投 100 块"的换算用美元，汇率取财报隐含的 <strong>6.90</strong>。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>网易报四个分部，但从赚钱的角度看，它实质上是<strong>一门生意 + 三门陪跑的</strong>。四个分部里，游戏一家占了 82% 的营收，而且利润率远高于其他三块，其余三块加起来的利润贡献接近于零。</p>
+<h3>1. 游戏及相关增值服务 —— TTM 938.14 亿人民币，占 82.0%，同比 +8.82%</h3>
+<p><strong>这是网易的全部。理解了这一块，就理解了这家公司的 90%。</strong></p>
+<p>具体是什么：网易自己开发、自己运营网络游戏，玩家免费下载、免费玩，<strong>钱赚在游戏里卖东西</strong>——武器、坐骑、时装、抽卡、开箱、通行证。这个模式的经济结构极端特殊：一件游戏内的虚拟时装，制作成本是美术团队画一次（几万块），卖出去 100 万份，边际成本是零。所以游戏公司的毛利率能到 65–70%，这是实体生意想都不敢想的。</p>
+<p>网易手上真正赚钱的东西分三层：</p>
+<p><strong>第一层，两款跑了二十年的"现金牛"：《梦幻西游》和《大话西游》。</strong> 这两款是回合制 MMORPG，2001–2004 年上线，到今天还在运营。它们的用户是三四十岁的老玩家，很多人在里面泡了十几年，社交关系、帮派、装备积累全在游戏里，<strong>沉没成本高到几乎不可能离开</strong>。这两款游戏的收入极其稳定，网易靠它们养活了整个公司二十年。具体怎么收钱：玩家买"点卡"充值，用来买游戏内道具、宠物、装备强化；一个重度玩家一年在里面花两三万人民币是常态，一个轻度玩家一年几百块。<strong>这类游戏的可怕之处在于它几乎不需要研发投入，只需要每年出几个新资料片，收入就能维持——利润率因此极高。</strong></p>
+<p><strong>第二层，这几年跑出来的新品</strong>：《蛋仔派对》（面向低龄用户的休闲派对游戏，靠 UGC 地图和皮肤收费，一度是中国 DAU 最高的手游之一）、《永劫无间》（武侠吃鸡，端游 + 手游，卖皮肤和赛季通行证）、《逆水寒》手游（国风武侠 MMO，2023 年上线后成为新的支柱）。这一层是网易证明"老公司还能出新品"的证据，也是过去两年营收增长的主要来源。</p>
+<p><strong>第三层，暴雪代理。</strong> 网易代理暴雪的《魔兽世界》《炉石传说》《守望先锋》在中国大陆的运营。2023 年这个合作一度中断（谈崩了，游戏在中国停服一年多），2024 年重新签约恢复。<strong>这块生意的经济性和自研完全不同</strong>——网易只是渠道方，要把收入的一大部分分给暴雪，所以它推高营收但不太推高利润。它的真正价值是<strong>用户流量</strong>：把玩魔兽的几百万高付费用户留在网易的账号体系里。</p>
+<p><strong>举个具体的收入账</strong>：《蛋仔派对》在高峰期日活跃用户约 4,000 万，其中付费率约 3%，付费用户每月平均花 60 元，那么一个月的流水就是 4,000 万 × 3% × 60 = 7.2 亿人民币。安卓渠道要分掉 20–30%，剩下的几乎全是毛利。这就是为什么一款爆款手游能顶得上一家中型制造业公司的全部利润。</p>
+<p><strong>这门生意的风险也必须说清楚</strong>：它建立在两个不可控因素上——<strong>版号审批</strong>（中国的游戏必须拿到国家新闻出版署的版号才能商业化运营，审批节奏由监管决定，2021–2022 年曾长期停发），以及<strong>未成年人防沉迷政策</strong>（限制未成年人每周只能玩三小时）。这两条决定了这门生意的天花板不在市场手里，在政策手里。</p>
+<h3>2. 有道 —— TTM 59.59 亿人民币，占 5.2%，同比 +7.70%</h3>
+<p>在线教育。核心产品是<strong>有道词典</strong>（免费的翻译工具，用户量极大但不直接赚钱）、<strong>有道翻译笔</strong>（一支笔扫过英文单词就朗读和翻译，卖给中小学生家长，一支 400–800 元的硬件生意）、以及成人和职业教育的在线课程。2021 年"双减"政策砍掉了 K12 学科培训之后，有道被迫转型到硬件和成人教育，营收规模在 60 亿附近横了几年。<strong>它对网易的估值贡献接近于零，甚至常年微亏。</strong></p>
+<h3>3. 云音乐 —— TTM 78.82 亿人民币，占 6.9%，同比 +1.34%</h3>
+<p>网易云音乐。靠会员订阅（每月十几块听无损音质）和直播打赏赚钱。它的问题是<strong>版权成本</strong>——大部分热门歌曲的版权在腾讯音乐手里，网易云要付高额授权费，或者只能靠独立音乐人和"评论区文化"做差异化。<strong>TTM 同比只有 +1.34%，基本停滞。</strong> 这块生意现在勉强盈利，但在腾讯音乐面前是彻底的老二，没有翻盘路径。</p>
+<h3>4. 创新业务及其他 —— TTM 67.34 亿人民币，占 5.9%，同比 <strong>−13.11%</strong></h3>
+<p>网易严选（自有品牌电商）、网易邮箱、广告等杂项的集合。<strong>唯一一个在萎缩的板块</strong>，而且萎缩得不慢。严选这几年一直在收缩战线，这是管理层主动砍掉不赚钱业务的结果，不算意外。</p>
+<h3>钱：四块生意的账（TTM 截止 2026-03-31，单位百万人民币）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>游戏及相关增值服务</td>
+<td>93,814</td>
+<td>86,210</td>
+<td><strong>+8.82%</strong></td>
+<td>82.0%</td>
+<td>~42%</td>
+<td>~39,400</td>
+</tr>
+<tr>
+<td>云音乐</td>
+<td>7,882</td>
+<td>7,778</td>
+<td>+1.34%</td>
+<td>6.9%</td>
+<td>~10%</td>
+<td>~790</td>
+</tr>
+<tr>
+<td>有道</td>
+<td>5,959</td>
+<td>5,533</td>
+<td>+7.70%</td>
+<td>5.2%</td>
+<td>~2%</td>
+<td>~120</td>
+</tr>
+<tr>
+<td>创新业务及其他</td>
+<td>6,734</td>
+<td>7,750</td>
+<td><strong>−13.11%</strong></td>
+<td>5.9%</td>
+<td>亏损</td>
+<td>~−400</td>
+</tr>
+<tr>
+<td>公司层面费用及研发</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−1,860</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>114,389</strong></td>
+<td><strong>107,271</strong></td>
+<td><strong>+6.63%</strong></td>
+<td>100%</td>
+<td><strong>33.3%</strong></td>
+<td><strong>38,051</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部经营利润率是估算，网易财报只披露到分部营收这一层，不披露分部利润。</strong> 估算方法是按整体 33.3% 的经营利润率倒推，结合各业务的公开毛利率结构配平。<strong>看比例结构就行，别当精确值用。</strong> 但有一个结论是稳的：<strong>游戏贡献了 100% 以上的经营利润，其余三块合计是净拖累。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 33.12 亿人民币，占净利润 341.33 亿的 <strong>9.7%</strong>。对一家互联网公司来说这个比例相当低——中国互联网大厂常见 15–25%，美国科技公司 30–50%。网易的股权激励一直发得克制。这笔钱 GAAP 已扣，本文不加回。</p>
+<p><strong>一次性项目</strong>：TTM 内没有大额重组、减值或诉讼。"其他调整" +22.34 亿人民币是本期唯一较大的非常规项（占净利润 6.5%），主要是投资类资产的公允价值变动和递延税调整——<strong>这类项目在网易账上年年都有，方向随市场波动，不是"真一次性"</strong>。需要说明的是，只看单期 TTM 确实无法区分某一年的投资收益是运气还是常态，但从三年数据看这一项一直存在，我倾向于把它当成经常性的、但金额不稳定的收入。</p>
+<p><strong>资本化的支出</strong>：游戏研发费用<strong>没有资本化，全部费用化</strong>计入当期。这一点很重要——网易把开发一款游戏的钱当期就全扣掉了，如果这款游戏后来成了爆款，利润会在后续年份纯赚。这是保守的、对股东有利的处理方式，和某些把研发资本化再慢慢摊销的公司相反。无形资产购置 TTM 9.78 亿人民币，主要是游戏 IP 授权和音乐版权，规模不大。</p>
+<p><strong>回购与稀释——这是网易最需要盯的一项，而且分数不好看</strong>：</p>
+<ul>
+<li>TTM 回购 16.50 亿人民币 ÷ 同期 SBC 33.12 亿 = <strong>0.50 倍</strong>。</li>
+<li><strong>这个比值远低于 1，意味着回购连抵消员工发股都做不到一半。</strong></li>
+<li>但流通股一年只增加了 <strong>0.11%</strong>，几乎没变。</li>
+</ul>
+<p>这两个数字看起来矛盾，解释是：网易的股权激励很大一部分是用<strong>已经回购在手的库存股</strong>交付的，加上 SBC 里包含现金结算的部分，所以账面股本没有膨胀。<strong>净效果是股东既没被明显稀释，也没享受到股本缩减的好处——原地踏步。</strong></p>
+<p>对比一下就清楚了：ROST 的回购/SBC 是 6.46 倍、股本一年减少 1.92%；网易是 0.50 倍、股本 +0.11%。<strong>网易把钱主要给了分红，而不是回购</strong>（TTM 分红 133.97 亿人民币，是回购金额的 8 倍多）。这不是错，只是风格不同——分红要交税，回购不用，对长期持有者来说回购通常更划算。</p>
+<p><strong>利润和现金流的差</strong>：TTM 净利润 341.33 亿，经营现金流 523.66 亿，差了 182.33 亿人民币，差额高达净利润的 53%。逐项对账（百万人民币）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>34,133</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>2,197</td>
+<td>服务器、办公楼，轻资产公司这项很小</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>3,312</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td>2,234</td>
+<td>投资公允价值变动、递延税</td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>164</td>
+<td>小项</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−28</td>
+<td>忽略</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>211</td>
+<td>小项</td>
+</tr>
+<tr>
+<td>+ 预提费用增加</td>
+<td>2,099</td>
+<td>应付未付的营销费、工资</td>
+</tr>
+<tr>
+<td>+ 应交税费增加</td>
+<td>1,212</td>
+<td>税款延后缴纳</td>
+</tr>
+<tr>
+<td><strong>+ 递延收入（预收款）增加</strong></td>
+<td><strong>4,293</strong></td>
+<td><strong>关键项，见下</strong></td>
+</tr>
+<tr>
+<td>+ 其他经营性变动</td>
+<td>512</td>
+<td>小项</td>
+</tr>
+<tr>
+<td>+ 未单独列示的其他非现金项</td>
+<td>~2,027</td>
+<td>财报明细未拆分</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>52,366</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−923</td>
+<td><strong>极低，只占营收 0.8%</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>51,443</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最值得看的是两行。</strong></p>
+<p><strong>第一行是递延收入 +42.93 亿。</strong> 这是玩家已经充值、但还没在游戏里消耗掉的点卡余额。会计上不能确认成收入（服务还没提供），但<strong>钱已经躺在网易的银行账户里了</strong>。这是游戏行业最好的商业特征之一——<strong>客户预付款给你，你拿着这笔无息资金去运营</strong>。这一项在增长，说明玩家充值的速度快于消耗速度，是需求端健康的直接证据。</p>
+<p><strong>第二行是资本开支只有 9.23 亿人民币，占营收 0.8%。</strong> 对比一下：SLB 的资本开支占营收 4.7%，ROST 占 3.5%。网易几乎不需要花钱维持生意——服务器租一租，人招一招，就能持续产出。<strong>这就是自由现金流 514.43 亿超过净利润 341.33 亿达 50.7% 的根本原因，也是这家公司最被低估的地方。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $789.8 亿，<strong>企业价值只有 $564.8 亿</strong>——因为账上有 <strong>$231.9 亿净现金</strong>（1,599.48 亿人民币），<strong>占市值的 29.4%</strong>。这一点会彻底改变这只股票的估值算术。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>789.8 ÷ 49.5</td>
+<td><strong>15.96 倍</strong></td>
+<td><strong>6.27 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 后净利润 $54.3 亿</td>
+<td>14.55 倍</td>
+<td>6.87 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 按 GAAP 已扣不加回；TTM 无真一次性</td>
+<td><strong>15.96 倍</strong></td>
+<td><strong>6.27 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>789.8 ÷ 74.6</td>
+<td><strong>10.59 倍</strong></td>
+<td><strong>9.44 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>564.8 ÷ 55.15</td>
+<td><strong>10.24 倍</strong></td>
+<td><strong>9.77 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>789.8 ÷ 44.87（FY23–FY25 均值）</td>
+<td><strong>17.60 倍</strong></td>
+<td><strong>5.68 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表和 ROST 那张形成了刺眼的对比：ROST 四个口径挤在 27–38 倍，网易挤在 10–18 倍，而网易的净利率是 29.8%、ROE 22.13%、资本开支占营收 0.8%。</strong></p>
+<p><strong>最后一行的信号</strong>：FY2023 净利润 294.17 亿、FY2024 296.98 亿、FY2025 337.60 亿、TTM 341.33 亿——利润在稳步爬升，所以三年平均口径 17.60 倍略贵于当期 15.96 倍。但差距只有 10%，<strong>远小于那些当期利润暴涨的公司</strong>（对比 NVDA 当期 34 倍 vs 三年平均 73.5 倍）。<strong>这说明网易当前的利润不是靠某一年的爆发堆出来的，是稳定爬坡的结果，不存在明显的利润透支。</strong></p>
+<p><strong>你现在投 100 块进去，按最保守的真实 GAAP 口径算，公司一年替你赚 6.27 元。</strong> 但这个算法有个大漏洞需要修正——<strong>你付的 100 块里，有 29.4 元其实是网易账上的现金，你等于用 100 块买了 29.4 块现金 + 70.6 块的游戏生意。</strong> 用 EV/EBIT 口径看真实的生意价格：<strong>剔除现金后，这门游戏生意只值 10.24 倍经营利润，对应年回报 9.77 元。</strong></p>
+<p>这 6.27 元的去向：</p>
+<ul>
+<li><strong>约 2.46 元以分红形式发到你手上</strong>（TTM 分红 133.97 亿人民币 = $19.4 亿 ÷ 789.8 亿 = 2.46% 股息率）；</li>
+<li><strong>约 0.30 元用于回购</strong>（16.50 亿人民币 = $2.4 亿），但如上所述，这部分基本被 SBC 抵消，你没真正拿到；</li>
+<li><strong>剩下约 3.51 元留在公司里</strong>——但问题是它没有被再投资到生意上（资本开支只有 9.23 亿人民币），而是<strong>堆成了现金和金融资产</strong>。TTM 投资活动净流出 281.04 亿人民币，其中 1,799.17 亿买投资产品、1,700.64 亿卖出投资产品——<strong>这是在做资金管理，不是在做业务投资。</strong></li>
+</ul>
+<p><strong>这个 6.27 元未来大概率变大，但幅度有限</strong>：</p>
+<ul>
+<li>游戏 +8.82% 的增速在 82% 的营收占比上是有分量的，且利润率高于公司平均，会持续拉高整体利润；</li>
+<li>现金堆得越来越高（净现金一年增长 22.76%），<strong>如果哪天管理层决定大幅提高派息或启动真正的大额回购，这笔钱能直接变成股东回报</strong>；</li>
+<li>但天花板也清楚：中国游戏市场已是存量市场，版号数量有限，网易没有明显的海外突破。指望它变成一家增速 20% 的公司是不现实的。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜，而且便宜得有道理——道理不在生意上，在国籍上。</strong></p>
+<p>从纯财务看，这是本系列里少见的好账：净利率 29.8%、毛利率 65.7%、经营利润率 33.3%、ROE 22.13%、资本开支只占营收 0.8%、自由现金流比净利润高 50.7%、研发全部费用化不搞资本化、SBC 只占利润 9.7%、账上净现金 231.9 亿美元占市值近三成、TTM 无任何一次性调整。<strong>剔除现金后，这门每年赚 55 亿美元经营利润的游戏生意，市场只给了 10.24 倍。</strong></p>
+<p>同一时刻，隔壁的 ROST 卖 34.1 倍、SLB 卖 25.6 倍，两家的净利率分别是 9.74% 和 8.5%。<strong>这 10.24 倍和 34.1 倍之间的差距，不是财务差距，是中国资产在美股市场被系统性打折的结果。</strong> 折扣的来源是三条：VIE 架构（美国股东持有的是开曼公司的股份，通过协议控制境内实体，法律上不是直接股权）、版号和防沉迷政策的监管不确定性、以及中概股退市风险的长期悬顶。</p>
+<p><strong>这三条风险是真的，不是杞人忧天。</strong> 但同样真实的是：过去 52 周股价跌了 7.41%，而利润涨了 5.27%——<strong>折扣在扩大，而生意在变好。</strong></p>
+<p>如果你能接受中概股这层折扣（并且清楚它可能永远不消失），网易是这个价位段里财务质量最高的公司之一：<strong>投 100 块一年赚 6.27 元，其中 2.46 元当年就以现金分红打到你账上，而你付的 100 块里还有 29.4 块是它账上的真金白银。</strong> 如果你不能接受这层折扣，那不管数字多好看，这只股票都不该在你的名单上——<strong>因为 15.96 倍这个数字本身，就是市场对这层风险开出的价格，不是市场犯的错。</strong></p>
+</div></body></html>

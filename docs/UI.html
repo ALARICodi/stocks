@@ -1,0 +1,345 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UI · 优倍快（Ubiquiti Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">UI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">极其优秀，卖着一个「一切顺利才配得上」的价格</div><h1>UI · 优倍快（Ubiquiti Inc.）</h1>
+<p>市值 $346.7 亿 / 股价约 $572.9 / 行业：电子科技（网络设备） / TTM 截止日：2026 年 3 月 31 日
+全榜第 215 名 · 分析日期 2026-08-15</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这是一家用 <strong>1,187 名员工</strong>做出 <strong>31 亿美元营收</strong>的网络设备公司。人均创收 261 万美元、人均净利 79.4 万美元——这两个数字在整个美股制造业里几乎找不到第二家。创始人 Robert Pera 一个人持股 <strong>93%</strong>，流通盘只有 421 万股（占总股本 7%）。</p>
+<p>按财报分部，它是两门生意，但实质上是<strong>一门正在爆炸的生意，和一门正在慢慢死掉的旧生意</strong>。</p>
+<h3>生意一：UniFi 企业网络（Enterprise Technology）—— 占 90%，就是全部</h3>
+<p><strong>这是什么</strong>：一整套给中小场所用的网络硬件——无线接入点（AP）、交换机、路由网关、监控摄像头、门禁读卡器、对讲机，全部由同一套叫 <strong>UniFi</strong> 的软件统一管理。</p>
+<p><strong>具体到一单生意长什么样</strong>：</p>
+<p>一家 200 间客房的连锁酒店要重做全楼 WiFi。传统方案是找思科 Meraki：买 150 个接入点，每个约 800 美元硬件费，<strong>再加每个 AP 每年 150 美元的软件订阅费，不续费设备直接变砖</strong>。三年总成本大约 12 万 + 6.75 万 = 18.75 万美元。</p>
+<p>换成 UniFi：150 个 U7 Pro 接入点，每个 189 美元 = 2.84 万美元；加两台 48 口 PoE 交换机约 1,800 美元；加一台 Dream Machine 网关 500 美元。<strong>总共约 3.1 万美元，一次性付清，管理软件免费，永久免费，没有订阅、没有许可证、没有维保合同</strong>。三年总成本 3.1 万 vs 18.75 万。</p>
+<p>这就是这家公司的全部秘密：<strong>它把网络设备行业赖以生存的"软件订阅税"直接砍掉了，用硬件的一次性利润来养软件开发。</strong></p>
+<p><strong>为什么它还能有 46% 的毛利率</strong>：因为它省掉了同行的三大成本块——
+1. <strong>没有销售团队</strong>。1,187 名员工里几乎没有传统意义上的销售。产品靠一个几十万人的社区论坛口口相传，安装商（网络集成商）自己发现、自己推荐给客户。思科一个企业客户经理年薪加提成 30 万美元，Ubiquiti 一个都不养。
+2. <strong>没有渠道折扣</strong>。产品在自家网店和授权分销商卖，定价全球统一，不给经销商打 40% 的返点。
+3. <strong>不自己开工厂</strong>。设计在美国和越南，生产全部外包给代工厂。资本开支 TTM 只有 <strong>$1,952 万</strong>——占营收 0.63%。这是一家实质上没有固定资产的"制造公司"。</p>
+<p><strong>客户是谁</strong>：中小企业、酒店、学校、公寓楼、船舶、露营地、以及大量的网络工程师自己家。UniFi 的杀手锏是它的管理界面——一个非专业的酒店 IT 管家能在浏览器里看到"307 房间的 AP 有 12 台设备在连，其中一台在疯狂占带宽"，然后一键限速。这套体验以前只有花几万美元买 Meraki 才有。</p>
+<p><strong>近几年发生了什么</strong>：营收从 $19.28 亿（2024 财年）→ $25.74 亿（2025 财年）→ <strong>$30.96 亿（TTM）</strong>，两年涨了 60%。同期毛利率从 <strong>38.4% 拉到 46.0%</strong>，经营利润率从 25.9% 拉到 <strong>35.75%</strong>。营收涨 60% 的同时毛利率涨 7.6 个百分点——这意味着<strong>它同时拿到了销量和定价权</strong>。原因大概率是产品线往上走（UniFi Protect 摄像头、门禁、企业级交换机这些单价更高、竞争更少的品类占比提升）以及关税成本成功转嫁给了客户。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniFi 企业网络</td>
+<td><strong>$27.84 亿</strong></td>
+<td>+23.5%</td>
+<td><strong>89.9%</strong></td>
+<td>~38%</td>
+<td>~$10.6 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：airMAX 运营商设备（Service Provider Technology）—— 正在慢慢消失</h3>
+<p><strong>这是什么</strong>：给小型无线宽带运营商（WISP）用的点对点微波设备。想象巴西内陆一个 3,000 人的镇子，拉光纤不划算，当地一个小老板在山头装一个 airFiber 基站，把 20 公里外城里的网络打过来，再用 airMAX 分发给每户屋顶的天线，一户收 25 美元月费。Ubiquiti 卖给他的就是这堆铁盒子，一套基站几千美元。</p>
+<p><strong>为什么在死</strong>：星链（Starlink）来了。同样是那个巴西镇子，现在每户直接装一个卫星锅就行，不需要本地运营商。这块营收从 2021 财年的 $6.23 亿一路掉到 TTM 的 <strong>$3.12 亿</strong>，五年腰斩再腰斩。</p>
+<p>好消息是它已经缩到只占 10%，再怎么跌也伤不了大局了。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>airMAX 运营商设备</td>
+<td>$3.12 亿</td>
+<td>-2.3%</td>
+<td>10.1%</td>
+<td>~15%</td>
+<td>~$0.5 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注：Ubiquiti 只按分部披露营收，不披露分部利润。上面两行的利润率是我按产品结构估算的（UniFi 高于公司平均，运营商业务低于平均），加总约 $11.1 亿，与实际经营利润 $11.07 亿吻合，但不是财报数字。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节会非常短，因为这家公司的账几乎是干净的——干净到不正常。</strong></p>
+<h3>股权激励（SBC）：$727 万，占净利润 0.77%</h3>
+<p>TTM 股权激励 <strong>$727 万</strong>，占 GAAP 净利润 $9.42 亿的 <strong>0.77%</strong>，占营收的 <strong>0.23%</strong>。</p>
+<p>对照：一家典型的美国科技公司 SBC 占营收 10%–20%。Ubiquiti 是 0.23%。原因很直接——<strong>创始人自己持股 93%，他不想被稀释</strong>。员工拿的是工资和奖金，不是股票。</p>
+<p>结果就是：Ubiquiti 的 GAAP 利润和 Non-GAAP 利润几乎是同一个数。<strong>这家公司没有"调整后利润"的故事可讲，因为没什么可调整的。</strong></p>
+<h3>一次性项目：没有</h3>
+<p>TTM 没有重组费用、没有资产减值、没有诉讼和解、没有并购费用。利润表干净得像教科书。</p>
+<p>唯一有点意思的是"坏账计提"$592 万和"其他经营项"-$5,748 万。后者金额不小（占净利润 6%），财报没有细分，可能包含递延所得税和汇兑损益。<strong>单期口径无法判断这是否年年发生</strong>，但它是减项、不是加项，所以不会虚增利润。</p>
+<h3>资本化的支出：没有</h3>
+<p>资本开支 $1,952 万，全部是买设备，没有软件开发费资本化。UniFi 那套管理软件的开发成本是<strong>全额计入当期费用</strong>的——这意味着这家公司的 46% 毛利率和 35.75% 经营利润率，是在<strong>已经扛完了全部软件研发开销</strong>之后的数字。同行把软件成本资本化摊到五年，它没有。</p>
+<h3>回购与稀释：几乎不回购，但也几乎不稀释</h3>
+<p>TTM 回购 <strong>$178 万</strong>，SBC $727 万，<strong>回购/SBC = 0.24 倍</strong>。按常规标准这是"根本没在回购"。</p>
+<p>但这里要反着看：<strong>股本一年只增加了 0.08%</strong>。它不需要回购，因为它根本没在发股票。这跟"回购只是抵消员工发股"的典型骗局是相反的情况——它是"既不发也不买"。</p>
+<p>真正的股东回报走分红：TTM 分红 <strong>$1.815 亿</strong>（每股约 $3，股息率 0.52%）。相对 $7.41 亿的自由现金流，派息率只有 24.5%，剩下的钱在还债——TTM 净还债 $3.4 亿，总债务从 $2.97 亿降到 $6,688 万，公司从净负债变成<strong>净现金 $3.02 亿</strong>。</p>
+<h3>利润与现金流的差：逐项对账（单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>942.10</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>18.52</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>1.31</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>7.27</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>5.92</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>-57.48</td>
+</tr>
+<tr>
+<td><strong>＝ 小计</strong></td>
+<td><strong>917.64</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>-29.54</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>-68.99</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>38.07</td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>36.25</td>
+</tr>
+<tr>
+<td>− 所得税项</td>
+<td>-26.69</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>-106.25</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>760.50</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-19.52</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>740.98</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>净利润 $9.42 亿 → 自由现金流 $7.41 亿，<strong>现金流比利润少了 $2.01 亿（21%）</strong>。这个方向值得注意——大多数公司是现金流大于利润（因为折旧是假成本）。Ubiquiti 反过来，原因是：</p>
+<ol>
+<li><strong>折旧摊销只有 $1,852 万</strong>（因为没有厂房），加不回来多少钱；</li>
+<li><strong>营运资金吃掉了 $1.57 亿</strong>——存货增加 $6,899 万、应收账款增加 $2,954 万。这是<strong>增长的代价</strong>：营收涨 33%，就得多备 33% 的货、多垫 33% 的账期。</li>
+</ol>
+<p>这不是坏事，是快速增长的正常现象。但要认识到：<strong>Ubiquiti 每多赚一块钱营收，就得先把大约两毛钱压在库存和应收上</strong>。哪天增长停了，这两毛钱会一次性吐回来（现金流会短期暴增），但那也意味着故事结束了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>净现金 $3.02 亿，企业价值 $343.7 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>346.7 ÷ 9.42</td>
+<td><strong>36.8 倍</strong></td>
+<td>¥2.72</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回 SBC $727 万后 ≈ 9.48 亿</td>
+<td>36.6 倍</td>
+<td>¥2.73</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>没有可剔除的 = <strong>36.8 倍</strong></td>
+<td><strong>36.8 倍</strong></td>
+<td><strong>¥2.72</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>346.7 ÷ 7.41</td>
+<td>46.8 倍</td>
+<td>¥2.14</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>343.7 ÷ 11.07</td>
+<td>31.0 倍</td>
+<td>¥3.22</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>346.7 ÷ 三年平均净利润 6.68 亿</td>
+<td><strong>51.9 倍</strong></td>
+<td>¥1.93</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>第一行、第二行、第三行几乎是同一个数字——这在美股里是罕见的诚实。</strong> 大多数公司这三行能差出一倍（隔壁 Reddit 就差了近一倍，克罗格差了三倍）。Ubiquiti 的 GAAP 利润就是它的真实利润，不需要打折。</p>
+<p><strong>但最后一行才是真正的警告</strong>：三年平均口径 <strong>51.9 倍</strong>，比当期的 36.8 倍高出 41%。三年净利润分别是 $3.50 亿（2024 财年）、$7.12 亿（2025 财年）、$9.42 亿（TTM）——<strong>利润在两年内翻了 2.7 倍</strong>。你现在按 36.8 倍买的，是一个刚刚经历爆发式增长、处在历史最高盈利水平的公司。如果利润回到三年平均水平，市盈率立刻变成 52 倍。</p>
+<p>同样的信号还有：经营利润率 35.75% 是公司<strong>十年来的最高值</strong>（2024 财年才 25.87%）。46% 的毛利率也是 2021 年以来最高。<strong>你在为一个刚刚创下所有历史纪录的季度组合付钱。</strong></p>
+<h3>你投 100 块，一年能拿回多少</h3>
+<p>按真实口径（36.8 倍），<strong>公司一年替你赚 2.72 元</strong>。</p>
+<p>这 2.72 元里：
+- <strong>约 0.52 元以分红发到你手上</strong>（股息率 0.52%）；
+- <strong>回购几乎为零</strong>（TTM 回购 178 万美元，可以忽略）；
+- <strong>剩下约 2.2 元留在公司里</strong>。留下来干什么了？看投资和融资活动：资本开支只花了 $1,952 万（微不足道），钱主要用来<strong>还债 $3.4 亿</strong>和<strong>囤在营运资金里</strong>（存货 + 应收增加 $1 亿）。</p>
+<p>也就是说：<strong>你拿到手的现金回报只有 0.52%，剩下的钱在还债和铺货。</strong> 这不是一笔现金回报的投资，是一笔纯粹押注增长的投资。</p>
+<p><strong>这个 2.72 元未来会变大还是变小？</strong></p>
+<p>向上的理由是实的：
+- 营收还在以 33% 的速度增长，而且是<strong>加速的</strong>（2024 财年是 -0.6%，2025 财年 +33.5%，TTM +33.3%）；
+- 前瞻市盈率 34.6 倍，说明分析师预期利润继续涨；
+- ROIC 109.8%——这个数字的意思是<strong>它每投入 1 块钱资本，一年赚回 1.1 块</strong>。这种生意扩张几乎不需要钱，增长是纯利润；
+- Meraki、Aruba、Ruckus 的订阅制模式让客户越来越反感，UniFi 的替代逻辑在变强，不在变弱。</p>
+<p>向下的风险也是实的：
+- <strong>35.75% 的经营利润率对硬件公司来说是不正常的高位</strong>。硬件行业的规律是竞争者闻着高毛利来，最后打回 15%–20%。TP-Link 的 Omada 已经在正面抄 UniFi 的作业，价格更低。
+- <strong>93% 的股权在一个人手里，流通盘只有 421 万股</strong>。这个股票的价格是被极小的流通量放大的——空头占流通盘 9.38%（占总股本只有 0.65%），任何消息都会引起剧烈波动。贝塔 1.31。这不是"基本面"，但你买的时候要知道自己在买什么。
+- <strong>关税</strong>。产品在越南和中国生产、卖到美国。过去两年它成功把关税成本转嫁给了客户（毛利率不降反升），但这是有极限的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家极其优秀的公司，卖着一个"一切顺利才配得上"的价格。</strong></p>
+<p>它是我看过的账最干净的美股之一：没有 SBC 游戏、没有一次性调整、没有软件资本化、没有借债回购装点每股收益，GAAP 利润就是真利润。1,187 个人做 31 亿营收、ROIC 110%、净现金、创始人自持 93%——从生意质量上讲，这家公司值得溢价。</p>
+<p>但 36.8 倍市盈率对应的是"利润率永远保持在历史最高点、增长永远保持 33%"。而三年平均口径的 51.9 倍在提醒你：<strong>这个利润水平只存在了一年半</strong>。硬件生意 35.75% 的经营利润率是要被人抢的，不是能守一辈子的。</p>
+<p>如果它的增长在未来两年掉到 15%、利润率回落到 30%，净利润大约是 $10 亿出头，市盈率仍然是 35 倍——<strong>也就是说你需要它继续超预期才不亏，正常发挥只能打平</strong>。</p>
+<p>好公司，不便宜。想买等回调，别追。</p>
+</div></body></html>

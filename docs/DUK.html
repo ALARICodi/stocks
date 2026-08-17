@@ -1,0 +1,394 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DUK · 杜克能源（Duke Energy Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DUK</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">六州监管背书的永续债，修正后23.5倍一点不便宜</div><h1>DUK · 杜克能源（Duke Energy Corporation）</h1>
+<p>市值 <strong>960.4 亿美元</strong> ｜ 股价约 <strong>$123</strong> ｜ 行业：公用事业 / 受监管电力 ｜ 交易所：NYSE
+<strong>TTM 口径截止 2026 年 6 月 30 日</strong>（最近四个季度滚动）｜ 全榜第 87 名</p>
+<blockquote>
+<p>先说一个把这家公司的性质定死的数字：<strong>企业价值 1,876 亿，其中市值只有 960 亿，净负债 915 亿。</strong> 你买这只股票，实际上是买了一家杠杆接近 1:1 的重资产公司里那一半属于股东的部分。这一点贯穿全篇。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>杜克能源的分部只有两个，而且这两个的赚钱逻辑<strong>完全一样</strong>，只是一个送电一个送气。所以本质上，这是一家<strong>只做一件事</strong>的公司——而那件事跟你想象的"卖电赚差价"完全不同。</p>
+<h3>先讲清楚受监管公用事业到底怎么赚钱（这是全篇最重要的一段）</h3>
+<p>普通人以为电力公司的生意是：发电成本 5 分，卖 8 分，赚 3 分。<strong>完全不是这样。</strong></p>
+<p>在美国的受监管市场，电力公司是<strong>政府批准的合法垄断</strong>。杜克在北卡、南卡、佛罗里达、印第安纳、俄亥俄、肯塔基这六个州给约 <strong>860 万户</strong>送电——这些地方的居民没有第二个选择。作为交换，杜克<strong>不能自己定价</strong>，价格由各州的公用事业委员会（PUC）批准。</p>
+<p>委员会批价格的公式大致是这样：</p>
+<blockquote>
+<p><strong>你被允许收的钱 = 燃料成本（原样转嫁给用户）+ 运营成本 + 折旧 + 已投入资产净值 × 批准的回报率</strong></p>
+</blockquote>
+<p>关键就在最后一项。"已投入资产净值"叫<strong>费率基数（rate base）</strong>，"批准的回报率"通常在 <strong>9.5%–10.5%</strong> 之间。</p>
+<p><strong>这意味着一件反直觉的事：杜克的利润不来自多卖电，来自多花钱建东西。</strong></p>
+<p>举个具体的例子：杜克在北卡建一条 10 亿美元的输电线。建完，监管委员会把这 10 亿放进费率基数，然后允许杜克在未来 40 年里：
+- 每年从电费里回收 2,500 万折旧（把本金拿回来）；
+- 同时对还没回收的余额收约 10% 的回报——<strong>第一年就是约 1 亿美元的税前利润</strong>。</p>
+<p>所以杜克的商业模式一句话概括：<strong>向用户借一个稳定的、政府担保的 10% 回报率，用尽可能多的钱去建电网。</strong> 花的钱越多，利润越大。这就是为什么它一年资本开支高达 <strong>158 亿美元</strong>——那不是负担，那是它唯一的增长来源。</p>
+<p>也正因如此，它必须不停借钱（总债务 922 亿，还在以每年 50 亿的速度增加）——<strong>债务是原材料，不是意外</strong>。</p>
+<h3>分部一：电力公用事业与基础设施（营收 302 亿，占 91%）</h3>
+<p>上面说的模式主体在这里。杜克在六个州经营发电、输电、配电全链条：核电、燃气、太阳能、还有正在退役的煤电。</p>
+<p>这块现在真正的看点是<strong>卡罗来纳州的数据中心涌入</strong>。北卡和南卡因为电价低、土地便宜、政策友好，成了 AI 数据中心选址的热门地。对杜克来说这是天上掉的好事：一个数据中心一开就是几百兆瓦的稳定负荷，相当于凭空多出一座小城市的用电量，而且它们要求杜克<strong>为它们专门建新的发电和输电设施</strong>——又是几十亿的费率基数。</p>
+<p>需要注意的是：<strong>新增用电对杜克利润的帮助，远不如新增资本开支大</strong>。多卖电只是多收燃料成本（原样转嫁，不赚钱）加一点边际利润；而为了服务这些负荷建的新电厂，才是真正进入费率基数、按 10% 计提回报的东西。</p>
+<h3>分部二：燃气公用事业与基础设施（营收 32 亿，占 9%）</h3>
+<p>主要是 Piedmont Natural Gas，在北卡、南卡、田纳西给约 170 万户送天然气。管道、燃气表、抄表收费。<strong>赚钱逻辑跟电力一模一样</strong>：铺新管道 → 进费率基数 → 收 10% 回报。营收从 FY2024 的 24 亿涨到 TTM 的 32 亿（+32%），是两块里增速更快的，但盘子太小，影响不大。</p>
+<h3>各分部的钱（单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th style="text-align: right;">TTM 营收</th>
+<th style="text-align: right;">FY2025</th>
+<th style="text-align: right;">增速</th>
+<th style="text-align: right;">占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>电力公用事业与基础设施</td>
+<td style="text-align: right;">30,225</td>
+<td style="text-align: right;">29,357</td>
+<td style="text-align: right;">+3.0%</td>
+<td style="text-align: right;">90.6%</td>
+</tr>
+<tr>
+<td>燃气公用事业与基础设施</td>
+<td style="text-align: right;">3,152</td>
+<td style="text-align: right;">3,003</td>
+<td style="text-align: right;">+5.0%</td>
+<td style="text-align: right;">9.4%</td>
+</tr>
+<tr>
+<td><strong>总营收</strong></td>
+<td style="text-align: right;"><strong>33,250</strong></td>
+<td style="text-align: right;"><strong>32,237</strong></td>
+<td style="text-align: right;"><strong>+6.3%</strong></td>
+<td style="text-align: right;">100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部经营利润。</strong>整体经营利润率是 <strong>27.8%</strong>（92.3 亿 ÷ 332.5 亿）——注意这个利润率远高于星座能源的 14.7%，原因不是杜克更能干，而是<strong>受监管垄断的定价机制本来就保证了这个利润率</strong>，波动很小。这既是它最大的优点，也是它最大的天花板。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：可以忽略</h3>
+<p>现金流量表没有单列 SBC 行（并入"其他调整 −0.27 亿"）。对一家 26,441 名员工、以蓝领和现场作业为主的公用事业公司，股权激励从来不是大项。股本一年只增加了 <strong>0.39%</strong>——这个稀释幅度接近可以忽略。</p>
+<h3>一次性项目：有一笔 25 亿的资产出售</h3>
+<p>TTM 投资活动里有 <strong>25.01 亿</strong>的"业务出售回款"（FY2025 只有 5.59 亿）。这类交易杜克常做：把旗下某个子公司的少数股权卖给基础设施基金，换来现金去投资本开支，<strong>这样就不用增发股票稀释股东</strong>。</p>
+<p><strong>但只看单期财报，我无法判断这笔交易带来了多少一次性利润计入了当期净利润。</strong>这是一个存疑项，尤其考虑到 TTM 净利润 51.89 亿比 FY2025 的 49.12 亿只多了 2.77 亿——如果这里面有出售收益，那么经营层面的实际增长比看起来还要弱。<strong>这一条我下不了结论，只能标出来。</strong></p>
+<h3>障眼法一：利润里有约 7.3 亿不是卖电赚的（AFUDC）</h3>
+<p>把利润表对一下账：</p>
+<ul>
+<li>经营利润：<strong>92.27 亿</strong></li>
+<li>按利息保障倍数 2.45 倍反推的年利息支出：约 <strong>37.66 亿</strong></li>
+<li>92.27 − 37.66 = <strong>54.61 亿</strong></li>
+<li>但实际税前利润是 <strong>61.88 亿</strong>（按所得税 8.23 亿 ÷ 13.3% 有效税率反推）</li>
+<li><strong>中间多出约 7.27 亿</strong></li>
+</ul>
+<p>这多出来的钱主要是一个叫 <strong>AFUDC（建设期资金成本补偿）</strong>的东西。规则是这样的：杜克花三年建一座电厂，这三年里电厂还没发电、还不能收费，但杜克为了建它已经付了利息、占用了自有资金。会计准则允许它<strong>把这段时间的资金成本算成"当期收入"，同时计入在建工程的成本</strong>。</p>
+<p><strong>这是一笔纯纸面的利润：没有任何人给杜克付这笔钱。</strong>它的现金要等电厂建成、进了费率基数以后，才随着未来 40 年的电费一点点收回来。</p>
+<p>杜克一年 158 亿的资本开支，在建工程规模巨大，所以这笔纸面利润也大。<strong>资本开支越猛，纸面利润越多，报表越好看——但当期现金一分不多。</strong>（这 7.27 亿是我用利息保障倍数和有效税率反推的<strong>估算值</strong>，财报没有直接列出这一行。）</p>
+<h3>障眼法二：13.3% 的有效税率是不可持续的</h3>
+<p>TTM 交税 8.23 亿，税前利润 61.88 亿，<strong>有效税率只有 13.3%</strong>——远低于 21% 的美国联邦法定税率。</p>
+<p>原因有两个：一是可再生能源和核电的税收抵免（很多还能转让变现）；二是 2017 年税改把公司税率从 35% 降到 21% 之后，杜克账上积累的"多提的递延所得税"要按监管要求逐年退还给用户，这个退还过程在会计上表现为<strong>所得税费用的减项</strong>。</p>
+<p>如果按 21% 的正常税率算，杜克要多交约 <strong>4.8 亿</strong>的税，净利润会从 51.89 亿掉到约 47.1 亿。<strong>这不是造假，是真实的现金好处</strong>，而且还能持续多年；但你得知道，<strong>当前的每股收益里有大约 9% 是税率红利撑起来的</strong>，而这个红利会随着递延税项退完而逐步消失。</p>
+<h3>回购与稀释：没有回购，只有分红</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td style="text-align: right;"><strong>0</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td style="text-align: right;">−33.83 亿</td>
+</tr>
+<tr>
+<td>股本变化</td>
+<td style="text-align: right;"><strong>+0.39%（略有稀释）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>杜克从不回购股票，因为它根本没有钱回购。</strong>它是净增发方，靠不断发债和偶尔发股来喂养资本开支。这跟麦克森（一年注销 3.4% 股份）是两个物种。</p>
+<p>对股东来说，回报只有一条路：<strong>分红</strong>。每股 4.34 美元，股息率 <strong>3.52%</strong>，分红占净利润的 <strong>65%</strong>。</p>
+<h3>利润 vs 现金流：这是全篇最关键的一张表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td style="text-align: right;">5,189</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td style="text-align: right;">7,747</td>
+</tr>
+<tr>
+<td>＋/− 其他非现金调整</td>
+<td style="text-align: right;">−27</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td style="text-align: right;">−448</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td style="text-align: right;">−240</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td style="text-align: right;">−217</td>
+</tr>
+<tr>
+<td>＋ 应交税金增加</td>
+<td style="text-align: right;">187</td>
+</tr>
+<tr>
+<td>− 其他经营性变动</td>
+<td style="text-align: right;">−685</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td style="text-align: right;"><strong>11,562</strong></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td style="text-align: right;"><strong>−15,836</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td style="text-align: right;"><strong>−4,274</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看清楚最后一行：自由现金流是负 42.74 亿。</strong></p>
+<p>而与此同时，公司还派了 <strong>33.83 亿</strong>的现金分红。</p>
+<p><strong>所以钱从哪来？</strong>看融资活动：净新增长期债务 <strong>48.39 亿</strong>，加上卖资产回款 25.01 亿。</p>
+<p>一句话说穿：<strong>杜克能源发给你的那 3.52% 股息，是借来的钱。</strong></p>
+<p>这不是今年才这样，是<strong>结构性的、年年如此</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th style="text-align: right;">自由现金流</th>
+<th style="text-align: right;">当年分红</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM</td>
+<td style="text-align: right;">−42.74 亿</td>
+<td style="text-align: right;">33.83 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td style="text-align: right;">−16.94 亿</td>
+<td style="text-align: right;">33.00 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td style="text-align: right;">+0.48 亿</td>
+<td style="text-align: right;">32.13 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td style="text-align: right;">−27.26 亿</td>
+<td style="text-align: right;">32.44 亿</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td style="text-align: right;">−54.40 亿</td>
+<td style="text-align: right;">31.79 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>过去五年一年都没有靠自己赚出分红。</strong></p>
+<p>现在，这件事到底算不算问题？<strong>看你怎么理解这门生意。</strong></p>
+<p>支持的说法是：这是受监管公用事业的<strong>正常形态</strong>。资本开支不是亏损，是在建资产，它会进入费率基数，未来 40 年带着 10% 的回报慢慢收回来。用债务给费率基数融资，本来就是这个模式设计好的一环——监管委员会批准回报率的时候，就是按"一半债一半股本"的资本结构算的。</p>
+<p>反对的说法是：<strong>这个模式对利率极度敏感，而且不能停。</strong>922 亿的债务、5.43 倍的 Debt/EBITDA、<strong>只有 2.45 倍的利息保障倍数</strong>（意思是经营利润只够付 2.45 倍的利息，很薄），意味着：利率每上一个台阶，新发的债成本就上一个台阶，而电价的调整要等监管委员会开会批准，中间有一到两年的滞后期。这个滞后期就是股东的亏损期。</p>
+<p>两个说法都对。<strong>你只需要记住一件事：这是一门用 10% 的批准回报率去套利债务成本的生意，债务成本是几个点，价差就是股东的钱。</strong> 债务成本升到接近 10%，这门生意的股权价值就归零。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th style="text-align: right;">倍数</th>
+<th style="text-align: right;">投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>960.4 亿 ÷ 51.89 亿</td>
+<td style="text-align: right;"><strong>18.5 倍</strong></td>
+<td style="text-align: right;"><strong>$5.40</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>数据源未提供调整后 TTM 净利润</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>960.4 亿 ÷（51.89 − 6.3）＝ 45.6 亿（扣掉 AFUDC 纸面利润）</td>
+<td style="text-align: right;"><strong>21.1 倍</strong></td>
+<td style="text-align: right;"><strong>$4.74</strong></td>
+</tr>
+<tr>
+<td><strong>再把税率正常化到 21%</strong></td>
+<td>960.4 亿 ÷（45.6 − 4.8）＝ 40.8 亿</td>
+<td style="text-align: right;"><strong>23.5 倍</strong></td>
+<td style="text-align: right;"><strong>$4.25</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>负 42.74 亿</strong></td>
+<td style="text-align: right;"><strong>无法计算</strong></td>
+<td style="text-align: right;"><strong>负数</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,875.7 亿 ÷ 92.27 亿</td>
+<td style="text-align: right;"><strong>20.3 倍</strong></td>
+<td style="text-align: right;"><strong>$4.92</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>960.4 亿 ÷ 48.34 亿（TTM+FY25+FY24 平均）</td>
+<td style="text-align: right;"><strong>19.9 倍</strong></td>
+<td style="text-align: right;"><strong>$5.03</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>几点说明：</strong></p>
+<ul>
+<li><strong>"自由现金流口径无法计算"这一行本身就是最重要的信息。</strong> 对绝大多数公司，自由现金流是比净利润更硬的口径；对杜克，它是负的，而且五年里四年为负。这不必然是坏事（见上文），但它意味着<strong>你不能用现金流来验证这家公司的盈利</strong>——你只能相信监管会计。</li>
+<li><strong>企业价值口径 20.3 倍 vs 市盈率 18.5 倍。</strong> 对负债这么重的公司，EV/EBIT 才是更诚实的口径：它把 915 亿净负债算进买价。<strong>你花 960 亿买到的，是一家总价 1,876 亿的资产包里的股权部分。</strong></li>
+<li><strong>三年平均 19.9 倍 vs 当期 18.5 倍，差别只有 8%。</strong> 这说明<strong>当前利润不是高点</strong>，杜克的盈利是一条平稳上行的直线（44.02 → 49.12 → 51.89 亿）。这是受监管公用事业最大的优点：<strong>你几乎能提前算出它明年赚多少</strong>。这一点跟星座能源（当期 28.8 倍 / 三年平均 31.4 倍，且历史上出现过亏损年）形成鲜明对比。</li>
+</ul>
+<h3>说人话</h3>
+<blockquote>
+<p><strong>你现在投 100 块进杜克能源，按最保守的真实口径（剔掉建设期纸面利润、并把税率正常化），公司一年替你赚 4.25 块。</strong></p>
+</blockquote>
+<p>这 4.25 块里，有多少真的回到你口袋？</p>
+<ul>
+<li><strong>分红 3.52 块</strong>（股息率 3.52%）——<strong>这几乎是全部</strong>。这是这三家公司里唯一一家把绝大部分回报以现金形式直接发给你的。</li>
+<li><strong>回购 0 块。</strong></li>
+<li>剩下的留在公司里再投资——不但留下了，还额外借了 48 亿去投。</li>
+</ul>
+<p><strong>但要说清楚一件事</strong>：这 3.52 块的现金分红，如前所述，是靠借债和卖资产支撑的，不是自由现金流赚出来的。它的可持续性建立在"监管委员会会持续批准 10% 的回报率"和"债务市场会持续以合理成本借钱给它"这两个前提上。<strong>这两个前提过去一百年都成立，但它们是前提，不是保证。</strong></p>
+<p>这个 4.25 块未来会变大还是变小？<strong>大概率缓慢变大，年增速在 5%–7%</strong>——因为费率基数每年以 158 亿的资本开支在膨胀，而卡罗来纳的数据中心浪潮会让监管委员会更容易批准新的建设项目。加上 3.5% 的股息，长期总回报大致在 <strong>8%–10%</strong> 区间。<strong>这是一个非常容易预测的数字，也是一个非常没有惊喜的数字。</strong></p>
+<p><strong>最大的风险不是经营，是利率。</strong>股价过去 52 周只跌了 1.86%、贝塔值 0.37（波动只有大盘的三分之一），说明市场把它当债券替代品在交易。<strong>债券替代品的最大敌人是真债券的收益率。</strong>十年期国债如果站上 5%，一只 3.5% 股息、还带着 915 亿负债的股票就没有吸引力了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一家股票，这是一张带一点通胀保护的、由六个州的监管委员会背书的永续债——票息 3.5%，本金每年增值 5%，代价是 915 亿的杠杆和对利率的完全暴露。</strong> 18.5 倍的表面市盈率看着比星座能源便宜得多，但剔掉建设期纸面利润和税率红利后是 23.5 倍，加上负债后的企业价值口径是 20.3 倍，<strong>其实一点都不便宜</strong>。它值得买的唯一理由是确定性——你几乎能算出它十年后赚多少钱；它不值得买的理由也是同一个——你也能算出它十年后<strong>赚不了更多</strong>。</p>
+</div></body></html>

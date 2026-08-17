@@ -1,0 +1,415 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NFLX · 奈飞（Netflix）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NFLX</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剥完是30倍，利润年增30%+，合理价格不是便宜货</div><h1>NFLX · 奈飞（Netflix）</h1>
+<p>市值 $3258 亿 · 股价约 $78.3（2025 年 11 月已 1 拆 10）· 行业：科技服务（流媒体）· TTM 截止 2026 年 6 月 30 日 · 企业价值 $3333 亿</p>
+<blockquote>
+<p><strong>开篇先摆一个反差</strong>：过去 52 周，奈飞股价跌了 <strong>36.15%</strong>；同期它的营收涨 16%、净利润涨 35%。业绩没崩，是市场愿意给的倍数<strong>几乎腰斩</strong>了（从约 45 倍降到 24.7 倍）。这是一次纯粹的估值收缩。全文的任务就是搞清楚：24.7 倍到底该不该给。</p>
+<p><strong>口径说明</strong>：全面摊薄股数 42.92 亿股（在外流通 41.6 亿股 + 期权），本文倍数统一按<strong>全面摊薄市值 3361 亿</strong>计算，比网站按基本股数算的略高，是更保守的算法。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报把奈飞拆成四块：UCAN（美加）、EMEA（欧洲中东非洲）、LATAM（拉美）、APAC（亚太）。<strong>这是按地理位置拆的，不是按生意拆的。</strong> 而且奈飞连地区利润都不披露，理由很实在也很关键：<strong>一部《鱿鱼游戏》是全球 190 个国家共用的，你没法说这部剧的成本里有多少该算韩国、多少该算美国。</strong> 内容成本天然是全球共享的，硬分是假的。</p>
+<p>所以按生意实质重新拆，奈飞在做的其实是<strong>一件半</strong>生意。</p>
+<h3>生意 A：全球订阅制流媒体（占营收 95% 以上）</h3>
+<p><strong>它到底怎么运转</strong>：奈飞每年花大约 <strong>215 亿美元现金</strong>去买片、拍片——这是全世界最大的单一内容预算，超过任何一家好莱坞制片厂。这笔钱买来的东西放在服务器上，然后向全球大约 3 亿多个家庭每月收 8–25 美元。</p>
+<p>关键在于一个简单到近乎粗暴的事实：<strong>一部剧拍完之后，第 100 万个人看它和第 1 亿个人看它，成本几乎一样。</strong> 多一个用户看《怪奇物语》，奈飞多付的只有带宽费，几分钱。这意味着奈飞的成本结构里，几乎全部是<strong>固定成本</strong>，而收入是<strong>线性增长</strong>的。用户每多一个，多出来的钱几乎全部变成利润。</p>
+<p>这个特性决定了流媒体是一门<strong>赢家通吃</strong>的生意，逻辑链是这样的：</p>
+<blockquote>
+<p>我的用户比你多 5 倍 → 同样一部剧的成本我摊到 5 倍的人头上 → 我每个用户身上分摊的内容成本只有你的 1/5 → 我可以用同样的月费拍出比你贵 5 倍的片子 → 用户跑到我这里 → 我的用户更多了。</p>
+</blockquote>
+<p>这就是为什么迪士尼、华纳、派拉蒙这些手握百年片库的巨头，砸了几百亿进流媒体，大多数至今还在亏钱，而奈飞的经营利润率已经做到 <strong>29.7%</strong>。它们不是内容做得不好，是<strong>分母不够大</strong>。</p>
+<p><strong>具体怎么收钱</strong>（以美国为例，价格会调整）：</p>
+<ul>
+<li><strong>广告档 约 $7.99/月</strong>：能看几乎全部内容，但每小时插约 4–5 分钟广告。这是奈飞增长最快的档位，因为它同时收两份钱——用户的订阅费 + 广告主的广告费。</li>
+<li><strong>标准档 约 $17.99/月</strong>：无广告，1080p，两台设备同时看。</li>
+<li><strong>高级档 约 $24.99/月</strong>：4K HDR，四台设备同时看，能下载。</li>
+</ul>
+<p><strong>一个家庭的账算给你看</strong>：一个美国四口之家付 $17.99/月 = $216/年。奈飞在这个家庭身上花的内容成本大约 $95，带宽和技术成本大约 $15，营销大约 $20，剩下约 $86 是税前利润的贡献（这是按整体结构倒推的估算）。而这个家庭里四个人一年在奈飞上看掉几百小时——<strong>每小时的娱乐成本不到 0.5 美元</strong>，比电影票便宜一个数量级。这就是奈飞定价权的来源：它太便宜了，涨 2 美元没人会退订。</p>
+<p><strong>三个真实的增长动作</strong>：</p>
+<ol>
+<li><strong>打击密码共享（2023 年起）</strong>。以前你把账号给隔壁邻居用，奈飞收一份钱三个家庭在看。它花了两年时间把这件事堵上，逼这些"蹭看"的家庭要么加钱开子账户、要么自己开户。这一下多出来几千万付费家庭，<strong>这些人本来就在看，转化成本几乎为零</strong>，是奈飞近几年利润率跳升的主要原因之一。</li>
+<li><strong>广告档（2022 年底推出）</strong>。它解决的是"想看但嫌贵"的那部分人。用户付 8 块，奈飞再从广告主那儿收一笔。这块目前规模还小（估计年化 30–40 亿美元量级，<strong>公司不单独披露，此为估算</strong>），但增速极快，而且<strong>广告收入的边际利润率比订阅还高</strong>。</li>
+<li><strong>直播赛事</strong>。NFL 圣诞大战、拳击比赛、每周的 WWE 摔跤。这些东西不是为了内容库，是为了<strong>"必须现在打开"的理由</strong>——点播内容你可以下周看，直播不行。这是把奈飞从"片库"往"频道"推。</li>
+</ol>
+<p><strong>用一个数字概括这门生意有多高效</strong>：奈飞全球只有 <strong>1.6 万名员工</strong>，人均创收 <strong>302 万美元</strong>、人均创利 <strong>85 万美元</strong>。作为对比，宝洁 10.4 万人、人均创收 84 万；家得宝 47 万人、人均创收 35 万。奈飞用一个中型企业的人数，做了一门比它们更赚钱的生意。</p>
+<h3>生意 B（半门）：游戏、线下体验、周边（占比 &lt;2%）</h3>
+<p>手机游戏（订阅用户免费玩）、2025 年开业的 Netflix House 实体娱乐场馆（费城、达拉斯）、IP 周边商品。</p>
+<p><strong>这些目前在财务上完全不重要</strong>，加起来不到营收的 2%。之所以还要提，是因为它们代表管理层的一个判断：<strong>光靠"每月收 18 块看片"这条路，天花板是能算得出来的</strong>，所以要试探性地往迪士尼那个方向走一点（一个 IP 卖多次：看剧 → 玩游戏 → 买玩偶 → 去线下）。目前只能说"在试"，还没有证据说它成了。</p>
+<h3>四个地区的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>同比增速*</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UCAN 美加</td>
+<td>210.9 亿</td>
+<td>199.6 亿</td>
+<td>173.6 亿</td>
+<td>+15.0%</td>
+<td>43.6%</td>
+</tr>
+<tr>
+<td>EMEA 欧洲中东非</td>
+<td>156.0 亿</td>
+<td>145.2 亿</td>
+<td>123.9 亿</td>
+<td>+17.2%</td>
+<td>32.3%</td>
+</tr>
+<tr>
+<td>LATAM 拉美</td>
+<td>58.7 亿</td>
+<td>53.6 亿</td>
+<td>48.4 亿</td>
+<td>+10.7%</td>
+<td>12.1%</td>
+</tr>
+<tr>
+<td>APAC 亚太</td>
+<td>58.1 亿</td>
+<td>53.5 亿</td>
+<td>44.2 亿</td>
+<td><strong>+21.3%</strong></td>
+<td>12.0%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>483.7 亿</strong></td>
+<td>451.8 亿</td>
+<td>390.0 亿</td>
+<td><strong>+15.9%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>* 用 FY2025 对 FY2024 计算（TTM 与上一财年重叠 6 个月，直接比会失真）。
+<strong>公司完全不披露地区利润</strong>，原因如上：内容成本是全球共享的，分不了。整体经营利润率 <strong>29.7%</strong>。</p>
+<p>值得注意的一件事：<strong>美加地区还在以 15% 的速度增长</strong>。这块市场按理说早该饱和了（美国家庭渗透率极高），还能涨 15%，说明增长不是靠拉新人，是靠<strong>涨价 + 密码共享转化 + 广告档变现</strong>——也就是从已有的人身上多收钱。这比拉新更值钱，因为没有获客成本。</p>
+<p>另外，奈飞从 <strong>2025 年起不再按季度披露会员数</strong>（最后一次披露是 2024 年底的 3.02 亿付费家庭）。这是一个需要警惕的动作——公司停止披露某个指标，通常意味着它不再是好消息，或者管理层不想被它绑架。目前只能从营收倒推：按估计 3.2–3.4 亿家庭算，<strong>每户每月平均贡献约 12 美元</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>奈飞这一部分<strong>信息量最大</strong>，因为它的报表里有一个别的公司都没有的东西：内容资产。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 4.87 亿美元，占净利润仅 <strong>3.6%</strong>，占营收 1.0%。对一家科技公司来说这个数字低得反常（同体量的科技公司通常在 15–40%）。原因是奈飞多年前就转向"高现金薪酬、少发股票"的模式——它直接给工程师开市场最高的现金工资，而不是画期权的饼。这笔钱已在 GAAP 里扣除，不加回。<strong>这一项奈飞是全市场最干净的之一。</strong></p>
+<p><strong>一次性项目 —— 这里有一个大东西必须点名。</strong></p>
+<p>看这两个数字：<strong>经营利润 143.55 亿，税前利润 164.90 亿。</strong> 税前利润比经营利润<strong>多了 21.35 亿美元</strong>。</p>
+<p>正常公司这两者之间应该是"减去利息支出"，数字只会变小。奈飞这里不但没变小，还多出 21 亿——这意味着有一笔约 30 亿美元的<strong>非经营性收益</strong>（扣掉约 8.5 亿利息支出后净剩 21 亿）。</p>
+<p>这笔钱最可能的来源是：账上 91 亿现金的利息收入，加上<strong>欧元计价债务的汇兑收益</strong>（奈飞发过大量欧元债，美元走弱时，用美元记账的欧元负债会产生账面收益）。</p>
+<p>必须说清楚三件事：
+1. <strong>单期口径无法拆出具体构成</strong>，我只能确认它不是卖会员赚的钱。
+2. <strong>汇兑收益是纸面数字，不是现金</strong>，汇率反向摆动时它会变成同等规模的损失。
+3. 这 21.35 亿税前（按 17.24% 的有效税率，税后约 <strong>17.7 亿</strong>）占了净利润的 <strong>13%</strong>。<strong>在下面的估值表里我会把它剔掉。</strong></p>
+<p>顺便：有效税率只有 <strong>17.24%</strong>，低于美国法定 21%，靠的是海外结构和研发抵免。这是可持续的，但没有进一步下降的空间了。</p>
+<p><strong>资本化的支出 —— 这是奈飞报表的核心机关，必须讲透。</strong></p>
+<p>奈飞不像普通公司那样"花钱拍片，当期计入成本"。它的做法是：花在内容上的钱先变成资产（Content Assets）挂在资产负债表上，然后在未来几年按预计的观看曲线摊销。</p>
+<p>看 TTM 的两个数字：</p>
+<ul>
+<li><strong>今年花在内容上的现金：215.42 亿</strong>（现金流量表里 "Changes in Other Operating Activities −21,542"）</li>
+<li><strong>今年记进成本的内容摊销：179.46 亿</strong>（"Other Adjustments +17,946"）</li>
+</ul>
+<p><strong>差额 35.96 亿美元躺在资产负债表上，没有进利润表。</strong></p>
+<p>这不是造假，会计准则就是这么规定的（跟盖厂房一个道理）。但对你这个买股票的人来说，含义非常直接：<strong>奈飞今年为了做内容真金白银花出去 215 亿，但利润表上只认了 179 亿的成本。GAAP 净利润因此比"现金现实"高出约 36 亿。</strong></p>
+<p>这个缺口会不会消失？只要奈飞的内容支出还在逐年增长，摊销就永远追不上支出，缺口就一直在。只有当内容预算停止增长时，两者才会收敛。<strong>所以对奈飞来说，自由现金流口径的市盈率比 GAAP 市盈率更诚实——这一点下面的估值表会体现出来。</strong></p>
+<p><strong>回购与稀释 —— 这一项奈飞做得极其漂亮。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>99.21 亿</strong></td>
+<td>91.27 亿</td>
+<td>62.64 亿</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td>4.87 亿</td>
+<td>3.68 亿</td>
+<td>2.73 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>20.4 倍</strong></td>
+<td>24.8 倍</td>
+<td>23.0 倍</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−1.48%</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是股权激励的 <strong>20 倍</strong>（"大于 3 倍才算真回购"，奈飞是 20 倍）。而且它<strong>不分红，全部现金回报都通过回购完成</strong>。TTM 回购 99.21 亿，几乎等于全部自由现金流 111.52 亿的 89%。股本实实在在减少 1.48%。</p>
+<p><strong>这是一家把赚到的钱几乎全部还给股东的公司</strong>，而且是用回购而非分红——对不需要现金流的投资者来说这更省税。</p>
+<p><strong>利润和现金流的差</strong>：逐项对账（单位：百万美元，TTM）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>13,650</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销（设备/办公）</td>
+<td>+372</td>
+<td>服务器、办公楼，不花现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+487</td>
+<td>发股票不花现金（估值时不加回）</td>
+</tr>
+<tr>
+<td>＋ <strong>内容摊销</strong></td>
+<td><strong>+17,946</strong></td>
+<td>把利润表里扣的内容成本加回来（这不是今年花的钱）</td>
+</tr>
+<tr>
+<td>＝ 小计</td>
+<td>32,455</td>
+<td></td>
+</tr>
+<tr>
+<td>± 应付账款变化</td>
+<td>+100</td>
+<td></td>
+</tr>
+<tr>
+<td>± 应计费用变化</td>
+<td>+888</td>
+<td>应付未付的账，暂时留在手里</td>
+</tr>
+<tr>
+<td>± 预收款变化</td>
+<td>+69</td>
+<td>用户预付的月费</td>
+</tr>
+<tr>
+<td>− <strong>内容现金支出</strong></td>
+<td><strong>−21,542</strong></td>
+<td><strong>今年真金白银花在拍片买片上的钱</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>11,971</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−819</td>
+<td>服务器、办公室，很少</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>11,152</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的结论只有一句话：净利润 136.5 亿，自由现金流 111.5 亿，差了 25 亿，差额几乎全部来自"今年买片花的现金比记进成本的多 36 亿"。</strong>（另外 11 亿被应计费用等营运资金变动抵回来一部分。）</p>
+<p>好消息是：资本开支只有 8.19 亿，微不足道。奈飞不需要建厂、不需要开店、不需要买设备——它的"厂房"就是内容，而内容已经在上面那行算过了。<strong>这门生意在传统意义上几乎不需要资本。</strong> ROIC 32.43% 就是这么来的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>（分子统一用全面摊薄市值 <strong>3361 亿</strong>，全面摊薄企业价值 <strong>3436 亿</strong>）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3361 ÷ 136.5</td>
+<td><strong>24.6 倍</strong></td>
+<td><strong>$4.06</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>奈飞不用 Non-GAAP，只报 GAAP</strong></td>
+<td>24.6 倍</td>
+<td>$4.06</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>3361 ÷ 118.8（剔除 17.7 亿税后非经营收益，SBC 不加回）</td>
+<td><strong>28.3 倍</strong></td>
+<td><strong>$3.53</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径</strong></td>
+<td>3361 ÷ 111.5</td>
+<td><strong>30.1 倍</strong></td>
+<td><strong>$3.32</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3436 ÷ 143.6</td>
+<td>23.9 倍</td>
+<td>$4.18</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>3361 ÷ 83.7（FY23–25 均值）</td>
+<td><strong>40.2 倍</strong></td>
+<td><strong>$2.49</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>值得单独表扬一句：奈飞是这三家里唯一一家不做 Non-GAAP 的公司。</strong> 它的季报只报 GAAP EPS 和 GAAP 经营利润率，不发明"调整后""核心""经营性"这些词。在美股大公司里这非常罕见，也说明它不需要靠调整口径来让数字好看。</p>
+<p><strong>现在看那两行最关键的：</strong></p>
+<p><strong>第一，三年平均口径 40.2 倍 vs 当期 24.6 倍，差了 63%。</strong> 按常规解读，这是一个刺眼的警告——当前利润远高于三年均值，说明你买在利润高点。</p>
+<p>但奈飞这里必须<strong>区别对待，不能机械照搬</strong>。差距的来源是这样的：净利润 FY2023 是 54.1 亿 → FY2024 是 87.1 亿 → FY2025 是 109.8 亿 → TTM 136.5 亿，<strong>每一年都比前一年高，从来没有回落过</strong>。经营利润率从 20.6% 一路爬到 29.7%，也是单调上升。</p>
+<p>这不是周期波动（像家得宝那种今年低明年高），这是<strong>单向的利润率爬坡</strong>——密码共享堵住了、广告档变现了、内容预算增速低于营收增速，三件事同时在推高利润率。所以三年平均在这里表达的不是"警告你在高点"，而是"过去三年利润翻了 2.5 倍，涨得非常猛"。</p>
+<p><strong>但这个数字仍然有它的价值</strong>：它提醒你，<strong>你付的 24.6 倍，是建立在"利润率能守住 29.7% 并继续往上"这个假设上的。</strong> 如果哪天利润率不再爬升甚至回落，你回头看会发现自己其实付了 40 倍的价格买了三年平均的盈利能力。这是这笔投资最大的单一风险点。</p>
+<p><strong>第二，剔除障眼法后是 28.3 倍，现金流口径是 30.1 倍——都明显高于表面的 24.6 倍。</strong></p>
+<p>这是本篇最实用的结论：<strong>奈飞的"24.6 倍"是有水分的。</strong> 水分来自两处——13% 的净利润来自汇兑和利息这类非经营收益，以及 36 亿的内容支出被挂在了资产负债表上没进利润表。按最诚实的现金口径，你付的是 <strong>30 倍</strong>。</p>
+<p><strong>说人话：你现在投 100 块进奈飞，按最保守的真实口径（自由现金流），公司一年替你赚 3.32 块。</strong></p>
+<p>这 3.32 块怎么分配：</p>
+<ul>
+<li><strong>0 块分红</strong>——奈飞从不分红，一分钱也没有。</li>
+<li><strong>约 2.95 块通过回购变成你的持股比例上升</strong>（TTM 回购 99.21 亿 = 自由现金流的 89%）。你拿不到现金，但你手里每股代表的公司份额每年自动多 1.48%。</li>
+<li><strong>剩下约 0.37 块留在公司</strong>，主要用于还债（净负债已从 2021 年的 94 亿降到现在的 52 亿）。</li>
+<li>注意：<strong>内容投资已经在算自由现金流时全额扣掉了</strong>，所以这 3.32 块是"内容都拍完之后剩下的"，不需要再为增长预留资金。</li>
+</ul>
+<p><strong>这个 3.32 块未来会变大还是变小？大概率变大，而且这是这三家公司里增长确定性最高的一家。</strong> 三条路径：</p>
+<ol>
+<li><strong>涨价</strong>。奈飞每 12–18 个月在主要市场提一次价，每次 1–2 美元。因为每小时娱乐成本不到 0.5 美元，用户对涨价的反应极其温和。这条路至少还能走五年。</li>
+<li><strong>广告档变现</strong>。目前广告收入估计只占营收不到 10%，但美国流媒体广告市场每年几百亿美元，而广告档的边际利润率比订阅还高。这是未来三年最大的利润增量来源。</li>
+<li><strong>利润率继续爬</strong>。营收涨 16%，而内容预算涨得比这慢，中间的差额直接落进利润。管理层公开的中期目标是把经营利润率往 30% 以上推。</li>
+</ol>
+<p><strong>风险要说三条：</strong></p>
+<p>一是<strong>内容支出的刹车一旦松开，利润率立刻回落</strong>。奈飞的利润率有相当一部分来自"内容预算增速 &lt; 营收增速"这个纪律。如果竞争加剧（比如某家对手砸钱抢体育版权），奈飞被迫跟进，29.7% 的利润率会很快掉下来。这是可逆的，也是最真实的风险。</p>
+<p>二是<strong>停止披露会员数</strong>。管理层说是为了让市场关注营收和利润而非会员数，但这个动作本身降低了透明度。你现在没法知道"营收增长里有多少是涨价、多少是新增用户"，而这两件事的可持续性完全不同（新增用户可以一直加，涨价迟早到顶）。</p>
+<p>三是<strong>内容的命中率是不可控的</strong>。奈飞的护城河不是某一部剧，是"每周都有新东西"的持续供给能力。这个能力目前很强，但它依赖于一套人和一套判断力，不像宝洁的品牌那样刻在消费者脑子里。<strong>这是一门必须每年重新证明自己的生意。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>表面 24.6 倍，剥掉汇兑收益和内容资本化之后是 30 倍——奈飞不便宜，但它是这三家公司里唯一一家利润还在以每年 30%+ 的速度往上走、且几乎不需要资本投入就能实现的公司，30 倍买这个东西，是合理的价格，不是便宜货，也不是泡沫。</strong></p>
+<p>把三家放在一起看，逻辑就清楚了：家得宝是"周期低点的稳定资产，赌利率下行"；宝洁是"永不出错但也永不惊喜的债券替代品"；<strong>奈飞是唯一一个你在为增长付钱的</strong>——你付的 30 倍里，有大约 5 倍是它的当下，25 倍是它未来还能涨多少。</p>
+<p>股价过去 52 周跌 36%、倍数腰斩，这件事本身既是机会也是警告。机会在于：业绩没有任何恶化，跌的纯粹是市场情绪和倍数，你现在能用一年前一半的估值买同一家公司。警告在于：市场愿意给 45 倍的时候，它相信奈飞能永远保持这个增速；现在只给 24.6 倍，说明<strong>有一批人已经不信了</strong>。谁对谁错，看的就是"广告档能不能撑起下一段增长"和"内容预算的纪律能不能守住"这两件事。</p>
+<p>最后强调一个不该被忽略的优点：<strong>这家公司不用 Non-GAAP、股权激励只占利润 3.6%、回购是股权激励的 20 倍、资本开支只占营收 1.7%。</strong> 在会计诚信这个维度上，奈飞在美股大公司里属于顶尖的那一档。它的估值可以争论，但它的数字可以相信。</p>
+</div></body></html>

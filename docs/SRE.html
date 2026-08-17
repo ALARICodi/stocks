@@ -1,0 +1,463 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SRE · 森普拉能源（Sempra）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SRE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">每年净借77亿才付得起3%股息，不划算</div><h1>SRE · 森普拉能源（Sempra）</h1>
+<p>市值 $565.04 亿 · 股价约 $86.4（按市值 ÷ 6.539 亿股推算；50 日均线 90.79、200 日均线 91.60）· 行业：公用事业（受管制的电力与天然气）· 交易所 NYSE
+<strong>TTM 口径截止日：2026-06-30</strong>（最近四个季度滚动）· 全榜名次 #161 · 分析日 2026-08-15</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Sempra 是一家控股公司，本身不发电也不卖气，它下面挂着三块彼此几乎不相干的资产。<strong>这三块里有一块的营收根本不出现在利润表上</strong>——这是理解这家公司最关键的一件事，后面细说。</p>
+<h3>生意一：Sempra California——加州南部的水电煤（约占营收 75%–80%，估算）</h3>
+<p>这块是两家受政府管制的垄断公司：</p>
+<ul>
+<li><strong>SDG&amp;E（圣地亚哥燃气电力公司）</strong>：给圣地亚哥及周边约 370 万人送电和送气。</li>
+<li><strong>SoCalGas（南加州天然气公司）</strong>：全美国最大的天然气配送商，管道通到约 2180 万人家里的燃气灶和热水器。</li>
+</ul>
+<p><strong>这门生意的赚钱方式和普通公司完全不同，必须讲清楚。</strong></p>
+<p>普通公司是"低买高卖赚差价"。受管制的公用事业不是——<strong>电和气本身是按成本原价转嫁给你的，公司一分钱不赚</strong>。利润表上"燃料与外购电力 14.41 亿"这一行就是证据：这笔钱收多少、付多少，几乎原封不动过手。</p>
+<p>它真正赚钱的方式是：<strong>"我替你垫资本，你付我资本回报。"</strong></p>
+<p>举个具体例子。加州因为山火风险，要求 SDG&amp;E 把架空电线埋到地下。SDG&amp;E 花 10 亿美元干这件事，然后向加州公用事业委员会（CPUC）申请，把这 10 亿计入"费率基数"（rate base）。委员会批准之后，SDG&amp;E 每年就可以从 370 万户的电费账单里收回三笔钱：</p>
+<ol>
+<li>这 10 亿的<strong>折旧</strong>（比如 30 年摊完，每年 3300 万）；</li>
+<li>为这 10 亿借的债的<strong>利息</strong>；</li>
+<li>在这 10 亿的股本部分上赚一个<strong>准许收益率</strong>（加州通常在 10% 上下）。</li>
+</ol>
+<p><strong>所以对它来说，花钱就是赚钱。</strong> 只要监管机构批准，多花 10 亿资本开支就等于多一份永久的利润流。这解释了本篇最反直觉的一个数字：<strong>Sempra TTM 经营现金流 54.16 亿，资本开支却高达 106.59 亿——它在故意烧钱</strong>，因为费率基数就是它的利润来源。</p>
+<p>代价是：这个模式<strong>天然产生负的自由现金流</strong>，差额必须靠借债和发新股填。这是后面第二部分的核心。</p>
+<h3>生意二：Sempra Texas（Oncor）——<strong>营收为零、利润占一半的那块</strong></h3>
+<p>Sempra 持有 Oncor Electric Delivery 约 80% 的股权。Oncor 是德克萨斯州最大的输配电公司，全州约三分之一的用电要经过它的电线。</p>
+<p>它的生意是"过路费"：德州的电力市场是拆开的——发电厂发电，零售商（TXU、Reliant 之类）卖给你，但<strong>电从发电厂到你家插座，必须走 Oncor 的线</strong>。零售商每送一度电给终端用户，就要付 Oncor 一笔由德州公用事业委员会（PUCT）核定的输配电费。Oncor 不发电、不卖电、不承担电价波动，只按"通过多少度电 × 核定费率"收钱。</p>
+<p>德州这几年数据中心和人工智能算力爆发式增长，用电量猛涨，Oncor 得不停建新线路和变电站——同样是"花钱=赚钱"的逻辑，而且德州的批准流程比加州快得多。</p>
+<p><strong>这里是全篇最重要的会计细节</strong>：因为德州监管机构为了保护 Oncor 不被母公司拖累，设了一堆"防火墙"条款（Sempra 不能直接控制 Oncor 的董事会多数），所以会计上 <strong>Sempra 不能把 Oncor 合并报表，只能用"权益法"</strong>。后果是：</p>
+<ul>
+<li><strong>Oncor 那六七十亿美元的营收，一分钱都不出现在 Sempra 的 135.52 亿营收里。</strong></li>
+<li>它只以一行 <strong>"权益法投资收益 +18.00 亿"</strong> 出现在利润表中部。</li>
+<li>而 Sempra TTM 的税前利润总共才 33.74 亿——<strong>也就是说，53% 的税前利润来自一块贡献 0% 营收的资产。</strong></li>
+</ul>
+<p>任何按"市销率""营收增速""毛利率"来看 Sempra 的分析，都是错的。</p>
+<h3>生意三：Sempra Infrastructure——LNG 出口与墨西哥能源（约占营收 20%–25%，估算）</h3>
+<p>这块是唯一不受美国公用事业委员会管制的部分，也是唯一有商业风险的部分。包括：</p>
+<ul>
+<li><strong>LNG 液化出口</strong>：路易斯安那州的 Cameron LNG（已运营），德州的 Port Arthur LNG（在建），以及墨西哥下加州的 ECA LNG。</li>
+<li><strong>墨西哥的管道和配电资产</strong>（原 IEnova）。</li>
+<li>一些可再生能源项目。</li>
+</ul>
+<p>LNG 这门生意的收费模式叫 <strong>tolling（代加工）</strong>：壳牌、三菱、道达尔这些客户<strong>自己</strong>买美国的天然气，运到 Cameron 工厂，付给 Sempra 一笔<strong>固定的液化费</strong>（业内通常是每百万英热单位 2–3 美元），Sempra 负责把气冷到零下 162 度变成液体、装上船。<strong>合同期通常 20 年，不管当年天然气多少钱、LNG 卖多少钱，这笔费用照付。</strong></p>
+<p>好处：现金流像债券一样稳，不承担商品价格风险。坏处：2022 年欧洲天然气价格暴涨十倍的时候，Sempra 也一分超额利润都赚不到——那些钱全归买家。</p>
+<p>这块 Sempra 只持有约 70%，KKR、阿布扎比投资局等基金持有其余部分。利润表上"少数股东损益 −4.45 亿"主要就是分给他们的。</p>
+<h3>钱的分布（TTM，截止 2026-06-30，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>增速</th>
+<th>对税前利润的贡献</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sempra California（SDG&amp;E + SoCalGas）</td>
+<td>约 10,500（<strong>估算</strong>）</td>
+<td>~77%</td>
+<td>低个位数</td>
+<td>大部分经营利润</td>
+<td>受管制，回报由 CPUC 核定</td>
+</tr>
+<tr>
+<td>Sempra Texas（Oncor 80%）</td>
+<td><strong>0</strong></td>
+<td>0%</td>
+<td>—</td>
+<td><strong>+1,800（权益法，占税前利润 53%）</strong></td>
+<td>不并表，仅一行投资收益</td>
+</tr>
+<tr>
+<td>Sempra Infrastructure（LNG + 墨西哥）</td>
+<td>约 3,000（<strong>估算</strong>）</td>
+<td>~23%</td>
+<td>中个位数</td>
+<td>其中约 445 归少数股东</td>
+<td>唯一非管制部分</td>
+</tr>
+<tr>
+<td><strong>合计（实际报表数）</strong></td>
+<td><strong>13,552</strong></td>
+<td>100%</td>
+<td><strong>+1.62%</strong></td>
+<td><strong>税前 3,374</strong></td>
+<td>经营利润率 24.88%</td>
+</tr>
+</tbody>
+</table></div>
+<p>营收拆分是<strong>估算</strong>（数据源未提供分部数据）；Oncor 的 0 营收和 +18.00 亿权益法收益、以及 −4.45 亿少数股东损益，都是<strong>利润表上的实际数字</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>0.97 亿美元</strong>，占归属普通股股东净利润 22.62 亿的 <strong>4.3%</strong>。对一家 28451 名员工的公用事业公司来说非常小，按 GAAP 已经扣掉了，不需要额外调整。<strong>这一项没有障眼法。</strong></p>
+<h3>一次性项目</h3>
+<p><strong>TTM 没有。</strong> 利润表上"资产处置损益"和"法律和解"两行 TTM 都是零。历史上 FY2021 有 −15.93 亿的法律和解（Aliso Canyon 天然气大泄漏）、FY2022 有 −2.59 亿，现在已经清完了。</p>
+<p>但有一条<strong>看起来像一次性、实际上不是</strong>的：<strong>"其他非经营性损益 −6.51 亿"</strong>。TTM 是 −6.51 亿，FY2025 是 −6.20 亿——<strong>连续两期都是这个量级，说明它是经常性的，不能当一次性剔掉</strong>。（数据源没有拆开这一行的构成，从公用事业的常见科目推断，多半是养老金非服务成本和未并表项目的减值，此为推断。）</p>
+<h3>资本化的支出——<strong>这里有一个公用事业独有的经典障眼法</strong></h3>
+<p>利润表上有一行叫 <strong>"建设期股本资金准许收益（AFUDC）+1.67 亿"</strong>。</p>
+<p>这是什么意思：Sempra 在建一座变电站、一段管道的施工期间（可能三五年），会把自己投入的<strong>股本</strong>资金"应该赚到的回报"<strong>当成一笔收入记进利润表</strong>。但这笔钱<strong>一分现金都没收到</strong>——它被资本化进了在建工程，等资产投产之后，再通过未来 30 年的电费账单慢慢收回来。</p>
+<p>TTM 这一项 1.67 亿，占净利润的 <strong>7.4%</strong>。<strong>这是纯纸面利润，含金量为零。</strong> 全行业都这么做、监管也允许，但你算真实回报时应该扣掉。</p>
+<p>除此之外，公用事业的资本开支本身就是"把钱变成受管制资产"，全部资本化，这是行业规则不是操纵。</p>
+<h3>回购与稀释——<strong>这家公司在稀释你，不是回馈你</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>0.21 亿</strong></td>
+</tr>
+<tr>
+<td>SBC</td>
+<td><strong>0.97 亿</strong></td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.22 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>0.22 倍。远小于 1，等于完全没有回购。</strong> 公司回购的钱连员工发股的零头都不够抵消。</p>
+<p>再看股本实际变化：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本股数（百万）</td>
+<td>630</td>
+<td>634</td>
+<td>653</td>
+<td>653.9</td>
+</tr>
+<tr>
+<td>同比变化</td>
+<td>−0.00%</td>
+<td>+0.82%</td>
+<td><strong>+2.49%</strong></td>
+<td><strong>+1.32%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>而且 FY2024 现金流量表上有一笔 <strong>+12.19 亿的"发行普通股"</strong>——公司发新股筹钱去建电网。<strong>你每年被稀释 1.3%–2.5%，这直接从你的每股收益里扣掉。</strong></p>
+<h3>利润和现金流的差——逐项对账（TTM，百万美元）</h3>
+<p>这张表是本篇最有价值的部分，因为 Sempra 的净利润和现金的关系被权益法搅得很乱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东）</td>
+<td><strong>2,280</strong></td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+2,503</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td><strong>− 权益法投资收益</strong></td>
+<td><strong>−1,800</strong></td>
+<td><strong>关键：Oncor 的账面利润不是现金，必须扣掉</strong></td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+97</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 应收 / 存货 / 应付 / 所得税科目变化</td>
+<td>−324</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产变化</td>
+<td>+1,658</td>
+<td>主要是加州能源成本回收账户的时间差</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td><strong>+926</strong></td>
+<td><strong>推断：这里主要是 Oncor 实际派回来的现金股息</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,416</strong></td>
+<td>（逐项加总 5,340，与报表值差 76，为数据源未单列的零星科目）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−10,659</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−5,243</strong></td>
+<td><strong>负的</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说明了一件很重要的事：Sempra 从 Oncor 账上确认了 18.00 亿利润，但实际收到手的现金大约只有 9.26 亿——不到一半。</strong> 剩下的一半留在 Oncor 里面继续建德州的电网。这不是坏事（钱在增值），但意味着你在利润表上看到的 EPS 里，有相当一部分<strong>你永远拿不到分红</strong>。</p>
+<p><strong>更重要的：自由现金流是 −52.43 亿，而公司同期发了 16.60 亿的分红。这笔分红 100% 是借来的。</strong></p>
+<p>钱从哪来的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>融资活动（TTM）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净新增债务</td>
+<td><strong>+77.28 亿</strong></td>
+</tr>
+<tr>
+<td>发行股票</td>
+<td>+1.49 亿</td>
+</tr>
+<tr>
+<td>回购股票</td>
+<td>−0.21 亿</td>
+</tr>
+<tr>
+<td>支付股息（普通股+优先股）</td>
+<td><strong>−16.60 亿</strong></td>
+</tr>
+<tr>
+<td>其他融资活动</td>
+<td><strong>+49.37 亿</strong>（合资伙伴注资 / 资产权益出售等，数据源未拆分）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>+102.33 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>一年净借了 77.28 亿。总债务 366.60 亿，账上现金只有 <strong>0.48 亿</strong>。债务 / EBITDA <strong>5.79 倍</strong>，利息保障倍数只有 <strong>2.17 倍</strong>——<strong>经营利润的 46% 已经拿去付利息了</strong>（利息支出 15.53 亿 ÷ 经营利润 33.71 亿）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 565.04 亿，企业价值 931.20 亿（净负债 366.20 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>565.04 ÷ 22.62</td>
+<td><strong>25.0 倍</strong></td>
+<td><strong>$4.00</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>本数据源未提供官方调整后净利</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（扣掉 AFUDC 纸面利润 1.67 亿，税后约 1.35 亿）</td>
+<td>565.04 ÷ 21.27</td>
+<td><strong>26.6 倍</strong></td>
+<td><strong>$3.76</strong></td>
+</tr>
+<tr>
+<td><strong>现金化口径</strong>（把 Oncor 的 18.00 亿账面收益换成实收现金约 9.26 亿，<strong>推断值</strong>）</td>
+<td>565.04 ÷ 13.88</td>
+<td><strong>40.7 倍</strong></td>
+<td><strong>$2.46</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 <strong>−52.43 亿</strong></td>
+<td><strong>无意义（负）</strong></td>
+<td><strong>负</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>931.20 ÷ 33.71</td>
+<td><strong>27.6 倍</strong></td>
+<td><strong>$3.62</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>565.04 ÷ [(22.62+17.96+28.17)/3 = 22.92]</td>
+<td><strong>24.7 倍</strong></td>
+<td><strong>$4.05</strong></td>
+</tr>
+<tr>
+<td><strong>真到手现金</strong>（分红＋回购）</td>
+<td>(16.42 + 0.21) ÷ 565.04</td>
+<td>—</td>
+<td><strong>$2.94</strong>（但全是借的）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三年平均那一行说明了什么</h3>
+<p>三年平均 24.7 倍 vs 当期 25.0 倍，<strong>几乎完全一致</strong>。这说明当前利润既不在高点也不在低点，就是正常水平。这也是公用事业该有的样子——它的利润由监管公式决定，本来就不该大起大落。（中间 FY2025 的 17.96 亿是个凹坑，主要因为那年实际税率 25.29%，而 FY2024 只有 5.89%，是税收抵免的时间差造成的，不是经营恶化。）</p>
+<h3>用公用事业该用的尺子再量一遍</h3>
+<p>对受管制的公用事业，比市盈率更直观的算法是 <strong>ROE ÷ 市净率</strong>：</p>
+<ul>
+<li>Sempra 的账面股东权益 <strong>433.10 亿</strong>，每股账面价值 50.00 美元</li>
+<li>你付的价格是 86.4 美元，<strong>市净率 1.73 倍</strong></li>
+<li>公司实际赚到的账面回报 <strong>ROE = 6.68%</strong></li>
+<li><strong>你的回报 = 6.68% ÷ 1.73 = 3.86%</strong></li>
+</ul>
+<p>和市盈率算出来的 4.00% 基本吻合，互相验证。<strong>翻译成人话：这家公司在它自己的账本上一年赚 6.68%，但你要花 1.73 块钱去买它 1 块钱的账本，所以到你手上只剩不到 4%。</strong></p>
+<p>顺便：ROIC <strong>2.68%</strong>，加权平均资本成本 <strong>5.84%</strong>。<strong>投入资本回报率低于资本成本一半以上</strong>——严格按财务教科书，这家公司每投一块钱新资本就在毁灭价值。不过对公用事业要打个折扣看：大量在建工程还没进费率基数、还不产生回报，会把 ROIC 压低。但即使打折，2.68% 也偏低。</p>
+<h3>你投 100 块，一年替你赚多少</h3>
+<p><strong>按最保守的真实口径（剔除 AFUDC 纸面利润）算，一年赚 $3.76。如果再把 Oncor 的账面收益换成实际收到的现金，只剩 $2.46。</strong></p>
+<p>这 3.76 块里：
+- <strong>$3.02 通过分红回到你口袋</strong>（股息率 3.02%，每股 2.607 美元，已连涨多年）
+- 回购几乎为零（$0.04）
+- 剩下的留在公司里——但<strong>留下的部分远远不够</strong>，公司还得每年额外净借 77 亿</p>
+<p><strong>未来这个数字变大还是变小？</strong> 大概率<strong>缓慢变大</strong>，但增速很慢，而且有个明确的杀手。</p>
+<p>变大的理由：费率基数在扩张（TTM 资本开支 106.59 亿，是折旧 25.03 亿的 4.3 倍，说明资产在净增长），德州的数据中心用电需求真实存在，加州的电网改造是法律强制的。这些都会转化成未来的准许利润。</p>
+<p>杀手是<strong>利率</strong>。这个商业模式的本质是"借钱买资产，赚监管准许的回报和借款成本之间的差"。总债务 366.60 亿、利息保障倍数只有 2.17 倍。利率每上升一个百分点，就意味着每年多付约 3.7 亿利息，而准许收益率的调整要走监管程序、慢好几年。TTM 营收只增长 1.62%，完全没有靠增长消化利息的能力。股价过去 52 周只涨了 5.10%，市场已经在定价这个问题。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>你花 1.73 倍账面价，买一个只能在账面上赚 6.68% 的受管制资产，到手回报不到 4%，而且它每年要靠净借 77 亿美元才付得起给你的那 3% 股息——这不叫价值投资，这叫债券替代品，而且是一只久期很长、利率一动就疼的债券。</strong></p>
+<p>展开说四句：</p>
+<ol>
+<li>
+<p><strong>它的生意是真生意。</strong> 加州 2180 万人的燃气管道、德州三分之一的输电网、一座在运的 LNG 出口厂——这些是实打实的垄断基础设施，护城河宽到几乎不用讨论。收入不会消失。</p>
+</li>
+<li>
+<p><strong>但它的会计比看起来复杂得多，而且方向都是"虚增"。</strong> 53% 的税前利润来自一块营收为零、只能通过一行权益法收益体现的资产（Oncor），而这 18 亿账面利润实际只回来一半现金；另外还有 1.67 亿是纯纸面的 AFUDC。剔干净以后真实的年回报只有 $2.46–$3.76，而不是账面的 $4.00。</p>
+</li>
+<li>
+<p><strong>它在稀释你。</strong> 回购 ÷ SBC = 0.22 倍，股本每年增加 1.3%–2.5%，还发过 12 亿新股。你收到的 3% 股息里，有一部分是被稀释还回去的。</p>
+</li>
+<li>
+<p><strong>25 倍市盈率买 1.6% 的营收增速，不便宜。</strong> 三年平均口径也是 24.7 倍，说明这个价格不是一时的低谷估值。真正能让它变便宜的只有一件事：德州的电力需求增长快到让 Oncor 的费率基数暴涨。这件事有可能发生，但它已经被写进了 16.42 倍的远期市盈率里。</p>
+</li>
+</ol>
+<p><strong>我的判断：作为一只 3% 股息率、Beta 0.58 的防守型资产，它合格但不便宜；作为一笔投资，25 倍买 1.6% 的增长外加 5.79 倍的债务杠杆，不划算。</strong></p>
+</div></body></html>

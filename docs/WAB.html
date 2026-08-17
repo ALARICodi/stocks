@@ -1,0 +1,393 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WAB · 西屋制动技术（Westinghouse Air Brake Technologies / Wabtec）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WAB</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">账干净、法规撑收入，但一年涨54%后40倍不便宜</div><h1>WAB · 西屋制动技术（Westinghouse Air Brake Technologies / Wabtec）</h1>
+<p>市值 $505.1 亿 / 股价约 $299 / 行业：生产制造 — 铁路装备 / TTM 截止 <strong>2026 年 6 月 30 日</strong>（最近四个季度滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司的名字里藏着它的全部历史。1869 年，22 岁的乔治·威斯汀豪斯（George Westinghouse）发明了<strong>空气制动</strong>。在那之前，火车刹车靠的是"制动员"——真人站在行驶中的车厢顶上，一节一节地跑过去手摇刹车轮，靠司机拉汽笛发信号。刹不住是常态，摔死人也是常态。威斯汀豪斯的办法是：机车上装一台空压机，一根气管贯通整列车，气压一降，每节车厢的刹车自动同时抱死。这个设计的精妙之处在于<strong>失效即刹车</strong>——气管断了、车厢脱钩了，刹车自动生效。一百五十多年过去，全世界的火车还在用这套原理。</p>
+<p>2019 年，Wabtec 又把通用电气的机车业务（GE Transportation）整个并了进来，从"卖零件的"变成了"造整车的"。今天它是全球铁路装备第一大公司，财报分两大块。</p>
+<h3>【货运板块】占 71.6%，TTM 营收 85.74 亿美元</h3>
+<p>客户是全球的货运铁路公司：美国的联合太平洋、BNSF（巴菲特那家）、CSX、诺福克南方，加拿大的 CN 和 CPKC，还有澳大利亚的铁矿石专线、巴西的淡水河谷、哈萨克斯坦国铁。这块里面有四门生意。</p>
+<p><strong>一、造机车（TTM 28.06 亿，占 23.4%）</strong></p>
+<p>Wabtec 造的是柴油电力机车——柴油机不直接驱动车轮，而是带动发电机发电，电再驱动车轮上的电动机。主力型号 ES44AC / ET44AC，一台 4,400 马力，能拉一列一百多节、总重上万吨的货车翻山越岭。<strong>一台新机车售价大约 300 万到 400 万美元</strong>，一份大单动辄几十上百台。</p>
+<p>美国的铁路公司这几年不太买新机车（货运量没涨、老机车还能用），所以增长主要来自海外：哈萨克斯坦一口气订了几百台、巴西的矿业铁路在扩能、澳大利亚在换代。这也是为什么这条线 TTM 突然从 FY2025 的 23.65 亿跳到 28.06 亿——国际大单在交付。</p>
+<p>还有个新东西叫 <strong>FLXdrive 电池机车</strong>：本质是一节装满锂电池（约 7 兆瓦时）的车厢，混编在两台柴油机车中间，下坡时回收动能充电、上坡时放电助力，实测能省 10% 左右的柴油。目前还是小批量，但这是这个行业未来十年的方向。</p>
+<p><strong>二、修机车、养机车（TTM 28.73 亿，占 24.0%）—— 最赚钱的一块</strong></p>
+<p>一台机车的寿命是 30 到 40 年，比造它的人的职业生涯还长。在这几十年里，它每跑大约 100 万英里就得把柴油机整个吊出来大修一次，电动机、控制系统、走行部也要按周期翻新。这些活儿谁最会干？造它的人。</p>
+<p>Wabtec 卖的不只是维修工时，而是<strong>长期服务合同</strong>：铁路公司按机车跑的每一英里付钱给 Wabtec，Wabtec 反过来承诺"这批机车的可用率不低于 XX%"，修不好算 Wabtec 的。这种合同一签十几年，收入高度可预测。</p>
+<p>还有一门叫<strong>现代化改造（Modernization）</strong>的生意特别聪明：把一台跑了二十年的老机车拖回厂，换上新的柴油机、新的电控和车载软件，出来的东西性能接近新车，<strong>价格只有新车的六成左右</strong>。铁路公司省钱，Wabtec 赚的毛利却比卖新车还高，因为车架和转向架这些最贵的大件是客户自己的。</p>
+<p><strong>三、卖零部件（TTM 15.59 亿，占 13.0%）</strong></p>
+<p>这是威斯汀豪斯的老本行，也是最不起眼但最稳的一块：空气制动阀、闸瓦、车钩、缓冲器、车轮、轴承、减震器。</p>
+<p>北美有一百多万节货车车厢在跑，每一节都要按联邦法规定期检修、更换制动部件——<strong>这不是客户想不想换的问题，是法规规定必须换</strong>。这种需求跟经济好坏、跟铁路公司赚不赚钱几乎无关，只跟"有多少节车厢在轨道上"有关。所以这条线常年个位数稳定增长，毛利高，现金流干净。</p>
+<p><strong>四、数字智能（TTM 13.36 亿，占 11.2%）—— 增长最快的一块</strong></p>
+<p>这块 FY2025 增长 31%，TTM 还在加速，主要靠两件事：</p>
+<p>第一是 <strong>PTC（列车自动防护系统）</strong>。2008 年洛杉矶 Chatsworth 发生了一起相撞事故，司机发短信闯了红灯，25 人死亡。美国国会随后立法强制所有客运和危险品线路安装 PTC——这套系统实时知道每列车的位置和速度，如果司机没有及时减速或要闯红灯，<strong>系统自己把车刹停</strong>。Wabtec 是这套系统的主要供应商，装完之后还有每年的软件维护和升级。</p>
+<p>第二是<strong>列车体检设备</strong>。在轨道边装一排传感器和高速相机，火车以 100 公里时速开过去的几秒钟里，系统扫描每一个车轮有没有裂纹、每一个轴承温度是否异常、闸瓦还剩多厚。一列车经过就出一份完整体检报告。Wabtec 在 2025 年花了几十亿美元收购检测技术公司来补强这块——这也是过去一年现金流量表上"收购支出 35.61 亿美元"的主要去向。</p>
+<p>还有一个叫 <strong>Trip Optimizer</strong> 的东西，相当于火车的自适应巡航：输入线路的坡度、弯道、限速和列车重量，系统自动控制油门和制动，比人工驾驶省 5–10% 的燃油。铁路公司一年的柴油账单是十几亿美元，省 5% 就是好几千万。</p>
+<h3>【运输板块】占 28.4%，TTM 营收 34.06 亿美元</h3>
+<p>这块做的是<strong>载人的轨道交通</strong>：地铁、通勤铁路、轻轨、有轨电车。纽约地铁、伦敦地铁、巴黎地铁、德里地铁、上海地铁的车上都有 Wabtec 的零件。</p>
+<ul>
+<li><strong>配套（OEM，TTM 15.10 亿）</strong>：阿尔斯通、西门子、日立、中车这些整车厂造新地铁列车时，向 Wabtec 采购制动系统、车门系统、空调、受电弓。Wabtec 不造整车，只做那些"出了事会死人"的关键子系统——这类件的认证周期长达几年，一旦进了某个平台的物料清单，基本不会被换掉。</li>
+<li><strong>售后（Aftermarket，TTM 18.96 亿）</strong>：地铁公司的车要用四十年，车门每天开关上千次、刹车每天用几百次，全是消耗品。这块比配套还大、还稳。</li>
+</ul>
+<h3>六条产品线放一起</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>FY2025 vs FY2024 增速</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>货运 · 服务与大修</td>
+<td>28.73 亿</td>
+<td>+1.2%</td>
+<td>24.0%</td>
+<td>~24%</td>
+</tr>
+<tr>
+<td>货运 · 造机车</td>
+<td>28.06 亿</td>
+<td>+12.2%</td>
+<td>23.4%</td>
+<td>~15%</td>
+</tr>
+<tr>
+<td>货运 · 零部件</td>
+<td>15.59 亿</td>
+<td>+2.0%</td>
+<td>13.0%</td>
+<td>~22%</td>
+</tr>
+<tr>
+<td>货运 · 数字智能</td>
+<td>13.36 亿</td>
+<td><strong>+31.0%</strong></td>
+<td>11.2%</td>
+<td>~22%</td>
+</tr>
+<tr>
+<td><strong>货运板块合计</strong></td>
+<td><strong>85.74 亿</strong></td>
+<td></td>
+<td><strong>71.6%</strong></td>
+<td><strong>~21%</strong></td>
+</tr>
+<tr>
+<td>运输 · 配套 OEM</td>
+<td>15.10 亿</td>
+<td>+6.5%</td>
+<td>12.6%</td>
+<td>~11%</td>
+</tr>
+<tr>
+<td>运输 · 售后</td>
+<td>18.96 亿</td>
+<td>+7.9%</td>
+<td>15.8%</td>
+<td>~16%</td>
+</tr>
+<tr>
+<td><strong>运输板块合计</strong></td>
+<td><strong>34.06 亿</strong></td>
+<td></td>
+<td><strong>28.4%</strong></td>
+<td><strong>~14%</strong></td>
+</tr>
+<tr>
+<td><strong>全公司</strong></td>
+<td><strong>119.80 亿</strong></td>
+<td><strong>+13.4%（TTM）</strong></td>
+<td>100%</td>
+<td><strong>17.92%（报表口径）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按产品线披露营收，不披露每条线的利润。上表利润率是按公司公开的板块口径和产品结构估算的，<strong>不是精确数字</strong>。两大板块估算利润合计约 22.8 亿，报表经营利润 21.5 亿，差额约 1.3 亿是总部费用，量级合理。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>先说结论：<strong>这是我在这个价位区间里见过账做得最干净的公司之一。</strong> 逐项过一遍。</p>
+<h3>股权激励（SBC）：小</h3>
+<p>TTM 股权激励 <strong>9,400 万美元</strong>，占 12.66 亿净利润的 <strong>7.4%</strong>，占营收 0.78%。工业公司的正常水平，GAAP 里已经全额费用化了，不用做任何调整。没有障眼法。</p>
+<h3>一次性项目：几乎没有</h3>
+<ul>
+<li>处置资产损失 4,000 万美元——金额小，剔不剔都不影响结论。</li>
+<li>资产减值和重组费用：<strong>TTM 是零</strong>。前两年也只有 200 万。</li>
+<li>有效税率 <strong>25.07%</strong>，交税 4.27 亿。这是一个完全正常的美国跨国公司税率，没有任何一次性税务调整在里面粉饰利润。</li>
+</ul>
+<p>对比一下上一家开利——那家的有效税率只有 3.84%、虚增了约两成净利润。Wabtec 这里干干净净。</p>
+<h3>资本化的支出：没有</h3>
+<p>不资本化软件开发费，不资本化研发。资本开支 2.85 亿，占营收 2.4%，全是真实的厂房和设备。这是一家非常"轻"的重工业公司——因为它的核心资产是几十年积累的产品认证、装车目录和服务合同，不是钢筋水泥。</p>
+<h3>回购与稀释：真回购，但规模不大</h3>
+<ul>
+<li>TTM 回购 <strong>5.87 亿美元</strong></li>
+<li>TTM 股权激励 <strong>0.94 亿美元</strong></li>
+<li><strong>回购 ÷ SBC = 6.2 倍</strong></li>
+</ul>
+<p>标准是接近 1 说明只是在抵消员工发股、大于 3 才是真回馈。6.2 倍算合格，钱确实回到了股东手里，而不只是在填发股的坑。</p>
+<p>但股本只减少了 <strong>0.90%</strong>——比上一家开利的 5.05% 差远了。原因不复杂：<strong>钱不是拿去回购了，是拿去买公司了。</strong></p>
+<h3>钱到底花哪了：这是理解 Wabtec 当前状态的关键</h3>
+<p>TTM 现金流量表上最大的一个数字是 <strong>收购支出 35.61 亿美元</strong>（FY2025 是 25.20 亿）。这远远超过了同期 17.14 亿的自由现金流，缺口靠<strong>净举债 17.98 亿</strong>补上。</p>
+<p>后果直接体现在资产负债表上：总负债从 FY2024 的 39.80 亿涨到现在的 <strong>69.36 亿</strong>，净负债从 32.74 亿涨到 <strong>62.76 亿</strong>——一年多背了 30 亿美元的债。</p>
+<p>这钱主要买的是"数字智能"那条线的检测技术公司。逻辑是对的——把毛利更高、增长更快的软件和传感器业务的比重做上去，把公司从"卖铁"往"卖数据"上推。但<strong>你现在买这只股票，等于是在为一笔刚刚花掉、效果还没验证的 35 亿美元收购买单</strong>。</p>
+<p>不过压力还在可控范围：负债/EBITDA 是 2.43 倍（开利是 3.78 倍），利息保障倍数 7.56 倍（开利只有 3.87 倍）。这个杠杆水平对一家现金流稳定的公司不算危险。</p>
+<h3>利润和现金流的差：小而干净</h3>
+<p>TTM 净利润 12.66 亿，经营现金流 19.99 亿，自由现金流 17.14 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,266</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+504</td>
+<td>含收购无形资产摊销，非现金</td>
+</tr>
+<tr>
+<td>+ 处置资产损失</td>
+<td>+40</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+94</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+29</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 所得税相关变化</td>
+<td>+120</td>
+<td>缴税的时间差，会还回去</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−22</td>
+<td>客户欠款略增</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−37</td>
+<td>为交付备货</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−20</td>
+<td>少欠了供应商一点</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产变化</td>
+<td>+22</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 四舍五入</td>
+<td>+3</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,999</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−285</td>
+<td>厂房设备</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,714</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>净利润到自由现金流多出来的 4.48 亿，绝大部分就是<strong>折旧摊销 5.04 亿</strong>这一项——真实的非现金支出，跟营运资金的占用（合计只有几千万的净流出）基本无关。<strong>营运资金几乎不吃钱，这是一家生意质量很高的表现。</strong></p>
+<p>唯一要打个问号的是"所得税相关变化 +1.20 亿"：这是缴税的时间差，今年少缴的以后要缴回去，不是白赚的。剔掉之后自由现金流约 15.9 亿，更接近真实水平。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 <strong>505.10 亿</strong>，企业价值 <strong>567.80 亿</strong>（多出来的 62.76 亿是净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>505.10 ÷ 12.66</td>
+<td><strong>39.9 倍</strong></td>
+<td><strong>$2.51</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（加回收购摊销税后约 1.4 亿，估算）</td>
+<td>505.10 ÷ 14.06</td>
+<td><strong>35.9 倍</strong></td>
+<td><strong>$2.78</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（加回处置损失税后 0.30 亿）</td>
+<td>505.10 ÷ 12.96</td>
+<td><strong>39.0 倍</strong></td>
+<td><strong>$2.57</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>505.10 ÷ 17.14</td>
+<td><strong>29.5 倍</strong></td>
+<td><strong>$3.39</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>567.80 ÷ 21.47</td>
+<td><strong>26.4 倍</strong></td>
+<td><strong>$3.78</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>505.10 ÷ 10.11</td>
+<td><strong>50.0 倍</strong></td>
+<td><strong>$2.00</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>几点解释：</p>
+<p><strong>为什么"真实市盈率"和 GAAP 几乎一样。</strong> 因为这家公司实在没什么可剔的——没有大额一次性、税率正常、SBC 按 GAAP 已扣。加回处置资产损失后倍数从 39.9 微降到 39.0，就这么点差别。这本身就是一个正面信号：<strong>当一家公司的 GAAP 数字和真实数字几乎重合时，说明管理层没在会计上动手脚。</strong></p>
+<p><strong>三年平均那一行要反过来读。</strong> 50.0 倍看着比当期 39.9 倍贵得多，但这<strong>不代表当前利润是周期高点</strong>。原因是 Wabtec 的净利润三年来一路往上：FY2023 是 8.13 亿、FY2024 是 10.53 亿、FY2025 是 11.67 亿、TTM 是 12.66 亿——<strong>年年增长，没有一年掉头</strong>。对一家稳定增长的公司做三年平均，等于强行把它往回拖两年，自然显得贵。</p>
+<p>这跟很多周期股正好相反。周期股的三年平均会低于当期，说明当期是高点、要小心；Wabtec 的三年平均高于当期，说明<strong>利润在稳步爬坡，当期不是不可持续的顶</strong>。这一行在这里的作用不是警告，而是印证增长的连续性。</p>
+<p><strong>EV/EBIT 的 26.4 倍是全表最有参考价值的一个数</strong>，因为它同时把 62.76 亿的净负债算进了你的买入成本。26 倍买一家营收增长 13%、经营利润率 18% 且还在往上走的公司，这在工业股里不算离谱，但也绝不便宜。</p>
+<h3>说人话：投 100 块进去，一年能挣多少</h3>
+<p><strong>按最保守的真实口径（39.0 倍），你投 100 块进去，Wabtec 一年替你赚 $2.57。</strong></p>
+<p>这 2.57 块里，多少真回到你口袋？</p>
+<p>TTM 分红 1.92 亿 + 回购 5.87 亿 = <strong>7.79 亿美元</strong>，只占市值的 <strong>1.54%</strong>。按投 100 块算，<strong>一年只有 1.54 块以分红和回购的形式回到你手上</strong>，剩下的一块钱留在公司里。</p>
+<p>留下的钱去哪了？<strong>去买公司了，而且远远不止这一块钱。</strong> TTM 光收购就花了 35.61 亿，是同期自由现金流的两倍，缺口靠借债。所以严格说，Wabtec 现在不但把赚的钱全留下了，还额外借了钱一起投出去。</p>
+<p><strong>这个 2.57 未来会变大还是变小？大概率变大，而且这家公司变大的确定性比上一家开利高得多。</strong></p>
+<p>变大的理由：营收里超过一半是服务、零部件和售后这类<strong>跟法规和存量车队挂钩、不看经济脸色</strong>的重复性收入，这部分基本只会随通胀和车队规模缓慢上涨，不会塌；毛利率从 FY2021 的 30.3% 一路提到 TTM 的 35.7%，经营利润率从 11.25% 提到 17.92%，<strong>五年提了六个多百分点还在往上走</strong>，说明整合 GE 机车业务的协同效应还在释放；数字智能那条线增速 31%、毛利更高，占比每提高一个百分点都在拉高整体利润率；国际机车订单（哈萨克斯坦、巴西、澳大利亚）的交付周期长达数年，能见度高。</p>
+<p>变小的理由：那 35 亿美元的收购能不能赚回来还是未知数，工业公司买软件公司的失败案例不少；30 亿的新增负债在高利率下每年多吃掉一亿多的利息；北美货运量长期停滞，机车更新需求有天花板；股价过去 52 周涨了 <strong>53.82%</strong>，很多好消息已经提前反映在价格里了。</p>
+<p>市场给的远期市盈率是 <strong>26.06 倍</strong>——意味着市场已经假定它未来一两年的盈利还要再涨四五成。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Wabtec 是一家真正的好公司被定了一个不便宜的价：账干净得几乎没什么可剔、一半以上的收入靠法规和存量车队撑着不看经济脸色、利润率五年连涨六个百分点、三年利润没有一年下滑——但股价一年涨了 54%，40 倍市盈率下投 100 块一年只赚 2.57 块，而且它刚刚借了 30 亿美元的债去买了一堆还没验证的公司。</strong></p>
+<p>生意本身我挑不出毛病，这是那种可以拿十年的资产。问题只有一个：<strong>现在的价格已经把未来两年的顺利全部计入了</strong>。如果你已经持有，没有理由卖；如果你现在才想进，最好等它回到三十倍出头，或者等那 35 亿美元的收购在报表上兑现出实际的利润率提升再说。这不是一家你需要抢的公司——铁路这门生意慢得很，多等一年不会错过什么。</p>
+</div></body></html>

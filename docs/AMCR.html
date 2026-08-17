@@ -1,0 +1,361 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AMCR · 安姆科（Amcor plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AMCR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">5.65%股息是借钱发的，高杠杆无增长</div><h1>AMCR · 安姆科（Amcor plc）</h1>
+<p>市值 212.6 亿美元 ｜ 股价 46.03 美元 ｜ 行业：加工工业（包装）｜ 交易所 NYSE
+数据口径：<strong>TTM，截至 2026 年 6 月 30 日</strong>（这家公司财年就是 7 月到次年 6 月，所以 TTM 恰好等于刚结束的 FY2026 完整财年）</p>
+<blockquote>
+<p>每股数字按 stockanalysis 口径（4.62 亿股、股价 46.03 美元）。如果你的行情软件显示约 23 亿股、股价约 9.2 美元，那是另一个股本口径，<strong>总市值和本文所有倍数完全一样</strong>，不影响任何结论。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>安姆科是全世界最大的包装公司之一。它不生产任何你会主动去买的东西——它生产<strong>装东西的那层皮</strong>。你买的每一包咖啡、每一袋猫粮、每一板药片、每一瓶果汁，外面那层膜、那个瓶子、那个盖子，大概率是安姆科这类公司做的。</p>
+<p>2025 年 4 月，安姆科用换股方式吞下了美国同行 <strong>Berry Global</strong>（一家年收入约 120 亿美元的硬包装巨头），公司规模一夜之间翻倍。TTM 收入 235 亿，同比 +56.6%——<strong>这 56.6% 全部是并购来的，不是自己长出来的</strong>。这一点必须先说清楚，否则后面所有数字都会读错。</p>
+<p>合并后实质上是两门生意：</p>
+<h3>生意一：软包装（Flexibles）—— 收入 136 亿左右，占约 56%</h3>
+<p>就是"膜"和"袋"。具体到能摸得着的程度：</p>
+<p>一家咖啡品牌要卖 2 亿包挂耳咖啡。咖啡烘焙后会持续放出二氧化碳（不排出去袋子会鼓爆），但又绝对不能进氧气和水汽（进了就哈喇）。所以那个袋子不是一层塑料，是<strong>三到五层材料压在一起</strong>的复合膜：外层 PET 负责印刷和强度，中间铝箔或镀铝层负责阻氧，内层 PE 负责热封，另外还要装一个只出不进的单向排气阀。安姆科的工厂把这些卷材层压、印上品牌的图案、分切成卷，用卡车送到咖啡厂的包装线上，机器自动成型、灌粉、封口。</p>
+<p>怎么收钱：<strong>按千个计价</strong>，一个这样的袋子大概 0.03 到 0.08 美元。2 亿包就是六百万到一千六百万美元一年。合同一般签三到五年，里面有<strong>树脂价格联动条款</strong>——原油和树脂涨了，安姆科隔一个季度可以往上调价。这个滞后期是这门生意毛利率波动的主要来源。</p>
+<p>客户是谁：雀巢、百事、玛氏、宝洁、联合利华、辉瑞这一类。<strong>客户极度集中、极度强势</strong>，砍价能力比安姆科强得多。所以你会看到毛利率只有 19.95%，经营利润率 9.0%——这是一门<strong>替别人打工的生意</strong>。</p>
+<p>那客户为什么不换供应商？因为换一次包装材料要重新做稳定性测试（食品要做保质期验证，药品要做 FDA 变更申报），一款药的泡罩铝箔换供应商可能要走两年流程。<strong>转换成本高，但转换成本换不来定价权，只能换来"不容易丢单"</strong>。这是软包装生意的本质：稳，但不赚钱。</p>
+<p>医疗包装是里面利润最好的一块——手术器械的无菌纸塑袋、药片的泡罩铝箔、注射器的托盘。要洁净车间、要 ISO 13485 认证、要跟着药企做验证，所以竞争者少一档。</p>
+<h3>生意二：硬包装 + 瓶盖（Rigid / Containers &amp; Capsules）—— 收入 107 亿左右，占约 44%</h3>
+<p>这块在 Berry 并进来之前只有 33 亿，现在 107 亿，<strong>是这笔并购真正买到的东西</strong>。</p>
+<p>具体是什么：PET 饮料瓶（可乐、瓶装水）、热灌装果汁瓶（灌进去是 85 度的果汁，瓶子不能瘪）、塑料瓶盖和封口、酸奶杯和外卖餐盒、洗发水瓶、药瓶、还有葡萄酒和烈酒的铝制螺旋盖。</p>
+<p>怎么收钱，举个具体的：一家汽水灌装厂一年灌 10 亿瓶。安姆科不直接卖成品瓶给它——<strong>运空瓶等于运空气，运费能吃掉利润</strong>。所以做法是卖"<strong>预成型坯</strong>"（preform）：一个像试管一样的小胖塑料件，一箱能装几千个，运到灌装厂后在生产线上加热吹成瓶子。一个 preform 大概 2 到 4 美分，10 亿个就是两千万到四千万美元。更进一步的做法叫<strong>驻厂（on-site）</strong>：安姆科直接把吹瓶机架在客户工厂里，按瓶数收费，客户连库存都不用管。这种合同签十年以上，几乎踢不走。</p>
+<p>瓶盖是这里面最好的生意——单价极低（一个盖子一分钱都不到），但用量天文数字，模具一开就是几百套，规模效应极强，而且客户几乎不会为了省 0.1 分钱去换一个可能漏液的供应商。</p>
+<h3>摆在一起看</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万）</th>
+<th>FY2025</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>软包装（膜、袋、层压材料）</td>
+<td>12,553</td>
+<td>9,841</td>
+<td>~52%</td>
+<td>增长全部来自 Berry 并入</td>
+</tr>
+<tr>
+<td>特种软包装 / 折叠纸盒</td>
+<td>1,087</td>
+<td>1,031</td>
+<td>~4.5%</td>
+<td>基本不动</td>
+</tr>
+<tr>
+<td>硬包装 / 容器与瓶盖</td>
+<td>10,677</td>
+<td>4,943</td>
+<td>~44%</td>
+<td>Berry 带来的主体</td>
+</tr>
+<tr>
+<td>分部合计</td>
+<td>24,317</td>
+<td>15,815</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>减：分部间抵销</td>
+<td>−811</td>
+<td>−806</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合并收入</strong></td>
+<td><strong>23,506</strong></td>
+<td><strong>15,009</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只披露到分部收入，<strong>不披露分部利润</strong>。整体经营利润率 9.0%。按行业常识估算：硬包装/瓶盖的利润率略高（10–12%），软包装略低（7–9%），医疗包装最高（15%+）但体量小。<strong>这三个数字是估算，不是财报数字。</strong></p>
+</blockquote>
+<p><strong>剔掉并购看真相</strong>：合并后的两家公司按备考口径全年约 240 亿收入，TTM 实际 235 亿——<strong>内生增长是轻微负数</strong>。分析师给未来三年的收入增速预测是 <strong>1.36%/年</strong>。这是一门<strong>不增长</strong>的生意。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的报表里藏东西不少，一项项拆。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 8,300 万美元，占净利润 7.5%。绝对值和占比都很小——制造业公司本来就不靠发股票招人。已在 GAAP 中扣除，不加回。这一项<strong>没问题</strong>。</p>
+<p><strong>一次性项目——这里要小心</strong>：
+- 资产减值与重组费用 <strong>5,900 万</strong>
+- 处置资产收益 <strong>+1.03 亿</strong>（卖厂赚的，是收益不是损失）
+- 另有 2.72 亿的"业务出售"现金流入（并购反垄断审查要求剥离的资产）</p>
+<p>问题在于：安姆科自己公告过 Berry 整合要花两三年、累计几亿美元的整合成本。<strong>只看 TTM 单期，我无法判断这 5,900 万重组费是"真一次性"还是"未来两年年年都有"</strong>。诚实的说法是：这类费用大概率还会持续到 FY2028，不该当成一次性加回。而那 1.03 亿的处置收益倒是实打实的一次性，<strong>应该扣掉</strong>。</p>
+<p><strong>资本化的支出</strong>：软件/内容资本化没有单独披露，制造业这块金额小，<strong>忽略不计</strong>。</p>
+<p><strong>真正的大障眼法在折旧摊销里</strong>：D&amp;A 从 FY2025 的 7.14 亿跳到 TTM 的 <strong>14.20 亿</strong>，翻了一倍。这里面有两种完全不同的东西混在一起：
+1. <strong>真折旧</strong>：Berry 那几百个工厂的机器设备在磨损，这钱以后要真花出去换设备。
+2. <strong>收购无形资产摊销</strong>：买 Berry 时按会计准则要把付出去的钱分摊到"客户关系""技术""商标"上，然后按 10–15 年摊销。<strong>这笔是非现金的，而且不需要重复支出。</strong></p>
+<p>我估算收购无形资产摊销约为 5 到 6 亿美元/年（<strong>估算</strong>：TTM D&amp;A 14.2 亿减去合并后两家真实设备折旧约 8.5 亿）。这就是为什么<strong>滚动市盈率 19.3 倍，而远期市盈率只有 10.8 倍</strong>——公司自己的调整口径把这笔摊销全加回去了。</p>
+<p><strong>我的立场，直说</strong>：这笔摊销<strong>不该全部加回</strong>。安姆科为了买 Berry 付出了实打实的代价——增发了 45.6% 的股份，还背上了一屁股债。那些"客户关系"是花真钱买的，摊销就是把这笔钱摊到未来。加回它等于假装收购不要钱。但它确实不消耗现金，所以正确的做法是：<strong>不加回，改用自由现金流和 EV/EBIT 去交叉验证</strong>，见第三部分。</p>
+<p><strong>税率</strong>：有效税率仅 <strong>14.06%</strong>，实缴 1.81 亿。安姆科注册在泽西岛、总部在瑞士，这是刻意设计的低税结构。合法，但如果全球最低税率（Pillar Two）执行收紧，净利润会掉。</p>
+<p><strong>回购与稀释——这是全篇最难看的一格</strong>：
+- TTM 回购股票 <strong>7,200 万</strong>，同期 SBC <strong>8,300 万</strong>，<strong>比值 0.87 倍</strong>。
+- 什么意思：<strong>公司回购的钱连给员工发的股票都盖不住</strong>。这不叫回馈股东，这叫堵漏都没堵上。
+- 更狠的是股本变化：<strong>同比增加 45.57%</strong>。为了买 Berry，你手里的股份被稀释掉了将近三分之一。stockanalysis 上的"回购收益率"直接显示 <strong>−45.57%</strong>。</p>
+<p><strong>分红——好看，但看完现金流就笑不出来</strong>：
+- 每股股息 2.60 美元，<strong>股息率 5.65%</strong>，连续 6 年增长，看起来是一只标准的高息股。
+- TTM 实际付出去 <strong>11.95 亿美元</strong> 现金分红。
+- 而 TTM 自由现金流只有 <strong>12.29 亿</strong>。
+- <strong>分红吃掉了 97% 的自由现金流。</strong>按净利润算的派息率是 <strong>109%——分的比赚的还多。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 11.06 亿，经营现金流 21.51 亿，自由现金流 12.29 亿。差额很大，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,106</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+1,420</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+48</td>
+</tr>
+<tr>
+<td>− 处置资产收益（非经营）</td>
+<td>−103</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−5</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>+59</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+83</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−184</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−323</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−329</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+570</td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−191</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>2,151</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−922</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,229</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两个观察：
+1. 经营现金流比净利润高出 10.45 亿，其中 14.68 亿来自折旧摊销——<strong>这门生意的"利润"绝大部分是折旧回填出来的</strong>，本身赚钱能力（9% 经营利润率）很薄。
+2. 应付账款增加 5.70 亿，也就是<strong>多欠了供应商 5.7 亿</strong>，这是本期经营现金流里最大的一笔正贡献。这种"拖供应商账期"的现金流改善<strong>不可持续</strong>——账期只能拉长一次，第二年就没了。剔掉这一笔，真实经营现金流只有 16 亿左右，自由现金流不到 7 亿。<strong>那样的话，连分红都发不出来。</strong></p>
+<p><strong>债务</strong>：总债务 <strong>151.4 亿</strong>，净债务 <strong>140.25 亿</strong>，债务/EBITDA <strong>3.92 倍</strong>。TTM 实际付出去的现金利息 <strong>6.11 亿</strong>。利息保障倍数 3.13——不算安全。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>21,263 ÷ 1,106</td>
+<td>19.2 倍</td>
+<td>5.20 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>21,263 ÷ ~1,820（<strong>估算</strong>，加回收购摊销+整合费用）</td>
+<td><strong>11.7 倍</strong></td>
+<td><strong>8.55 元</strong></td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>21,263 ÷ [1,106 −103×0.86 ＋59×0.86] = ÷1,068</td>
+<td>19.9 倍</td>
+<td>5.02 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>21,263 ÷ 1,229</td>
+<td>17.3 倍</td>
+<td>5.78 元</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td><strong>35,288 ÷ 2,116</strong></td>
+<td><strong>16.7 倍</strong></td>
+<td><strong>6.00 元</strong></td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/FCF</strong></td>
+<td><strong>35,288 ÷ 1,229</strong></td>
+<td><strong>28.7 倍</strong></td>
+<td><strong>3.48 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>21,263 ÷ 781（FY24/25/26 均值 727/510/1,106）</td>
+<td><strong>27.2 倍</strong></td>
+<td><strong>3.68 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表里有两件事必须点破：</p>
+<p><strong>第一，市值和企业价值差了 140 亿。</strong> 市值 212.6 亿，企业价值 <strong>352.9 亿</strong>——多出来的全是债。也就是说，你花 100 块买股票，实际上是在买一份<strong>总价 166 块、其中 66 块是借来的</strong>的资产。所以 P/FCF 看着 17.3 倍还行，<strong>EV/FCF 28.7 倍才是这家公司真实的贵</strong>。凡是负债重的公司，只看市盈率一定会被骗。</p>
+<p><strong>第二，三年平均口径 27.2 倍 &gt;&gt; 当期 19.2 倍。</strong> 这说明当前这个 11 亿的净利润是<strong>三年里最高的一年</strong>（FY2024 是 7.27 亿，FY2025 因为并购费用只有 5.10 亿）。用三年平均看，这家公司实际值 27 倍——<strong>比表面上贵了 40%</strong>。第 300 名这个位置上，19 倍看着挺便宜，实际上是踩在利润的相对高点上。</p>
+<p><strong>远期市盈率 10.8 倍怎么看？</strong> 那是市场相信管理层承诺的 Berry 协同效应（降本、关厂、采购整合）能全部兑现，同时收购摊销被全部加回。这两个假设都成立的话，10.8 倍确实便宜。<strong>但股价过去 52 周跌了 7.4%，市场明显没全信。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的口径（三年平均利润）算，公司一年替你赚 3.68 元；按最诚实的当期口径（EV/FCF）算，3.48 元；按 GAAP 净利润算，5.20 元。取个中间：大约 4 到 5 元。</strong></p>
+<p>这 4 到 5 元里，有多少回到你口袋？
+- <strong>分红：5.65% 的股息率</strong>，看起来比赚的还多——<strong>因为它确实比赚的多</strong>。派息率 109%（按利润）、97%（按自由现金流）。
+- <strong>回购：基本为零</strong>，甚至因为发新股买 Berry，你的持股比例是被大幅稀释的。
+- <strong>留在公司里的：接近于零</strong>。9.22 亿的资本开支已经在自由现金流里扣过了，剩下的 12.29 亿几乎全发掉了。</p>
+<p>也就是说：<strong>这家公司把赚的每一分钱都以股息形式发出去了，没有钱还债，也没有钱增长。</strong> 140 亿的净债务只能靠借新还旧滚下去（TTM 借了 32.17 亿、还了 32.98 亿，就是在滚）。</p>
+<p><strong>这个 4 到 5 元未来会变大还是变小？我的判断是：不确定性极高，中性偏向变大一点点，但风险不对称。</strong>
+- 变大的理由：Berry 协同效应是真的能降本的——关掉重复工厂、合并采购、砍掉一层管理。管理层给的目标是数亿美元级别。如果兑现一半，经营利润率从 9% 提到 11%，净利润能涨 40%。整合费用两三年后消失也会自然抬高 GAAP 利润。
+- 变小的风险：ROIC 只有 <strong>6.91%</strong>，加权平均资本成本 <strong>5.98%</strong>——<strong>赚的钱只比资金成本高 0.93 个百分点</strong>。这是一门几乎不创造价值的生意。一旦利率上行、或者树脂价格波动、或者客户砍价，这 0.93 个点瞬间就没了。而且 151 亿的债在头上，任何风吹草动先要保利息。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一只被 5.65% 股息率包装起来的高杠杆无增长股。股息发的比赚的还多，回购连员工股票都盖不住，股本一年被稀释 45%，净债务 140 亿是市值的三分之二，投入资本回报率只比资本成本高 0.9 个百分点。</strong></p>
+<p>19 倍市盈率看着不贵，但那是因为你只看了市值没看债——按企业价值算的自由现金流倍数是 <strong>28.7 倍</strong>，按三年平均利润算是 <strong>27.2 倍</strong>。这不是一只便宜股。</p>
+<p>它唯一的看点是 Berry 整合的降本空间，那是真的存在的机会。但你要为这个机会付出的代价是：<strong>在一门不增长、定价权被大客户捏死、ROIC 6.9% 的生意上，扛着 3.92 倍 EBITDA 的债，拿一份靠借钱维持的股息。</strong></p>
+<p><strong>我的看法：不值。</strong> 如果你是冲着 5.65% 的股息来的——那份股息不是从利润里发的，是从现金流的最后一滴和债务的循环里挤出来的，它比国债利息脆弱得多。真要赌 Berry 整合成功，等到协同效应在报表上出现了再买也不迟，那时候即使贵 20%，风险小一大截。</p>
+</div></body></html>

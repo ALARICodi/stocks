@@ -1,0 +1,479 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>INCY · 因赛特（Incyte Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">INCY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">15倍不是便宜，是专利悬崖的倒计时</div><h1>INCY · 因赛特（Incyte Corporation）</h1>
+<p>市值 243.6 亿美元 / 股价 120.16 美元 / 行业：医疗科技（生物制药）/ TTM 截止日期：2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报把营收拆成 12 行，但这 12 行只是<strong>一件事的十二种收钱方式</strong>：Incyte 本质上是<strong>一家靠一个分子活着的公司</strong>，那个分子叫 <strong>ruxolitinib（芦可替尼）</strong>。</p>
+<p>先看这张分解表（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入行</th>
+<th>TTM 金额</th>
+<th>是不是芦可替尼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JAKAFI 口服药</td>
+<td>3,194</td>
+<td>✅ 是</td>
+</tr>
+<tr>
+<td>OPZELURA 外用乳膏</td>
+<td>988</td>
+<td>✅ 是（同一分子，做成膏）</td>
+</tr>
+<tr>
+<td>JAKAVI 特许权使用费</td>
+<td>486</td>
+<td>✅ 是（诺华在美国以外卖的同一个药）</td>
+</tr>
+<tr>
+<td><strong>芦可替尼小计</strong></td>
+<td><strong>4,668</strong></td>
+<td><strong>占总营收 80.2%</strong></td>
+</tr>
+<tr>
+<td>NIKTIMVO</td>
+<td>217</td>
+<td>否</td>
+</tr>
+<tr>
+<td>MINJUVI / MONJUVI</td>
+<td>187</td>
+<td>否</td>
+</tr>
+<tr>
+<td>OLUMIANT 特许权使用费</td>
+<td>155</td>
+<td>否</td>
+</tr>
+<tr>
+<td>ZYNYZ</td>
+<td>146</td>
+<td>否</td>
+</tr>
+<tr>
+<td>ICLUSIG</td>
+<td>142</td>
+<td>否</td>
+</tr>
+<tr>
+<td>PEMAZYRE</td>
+<td>92</td>
+<td>否</td>
+</tr>
+<tr>
+<td>TABRECTA + 其他特许权</td>
+<td>40</td>
+<td>否</td>
+</tr>
+<tr>
+<td>里程碑与合同收入</td>
+<td>173</td>
+<td>否（一次性）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,820</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表就是整篇分析的全部。</strong> 下面把这几件事讲清楚。</p>
+<h3>生意 A：JAKAFI —— 一颗吃的药，一年 31.9 亿美元（占 54.9%）</h3>
+<p><strong>这药治什么。</strong> 骨髓纤维化（myelofibrosis），一种骨髓被纤维组织慢慢替换掉的血液癌症。患者的脾脏会肿到把整个腹腔撑满——正常脾脏 150 克，这类患者能长到 2–4 公斤，压得人吃不下饭、日渐消瘦、夜里盗汗发烧。原本的办法只有切脾或者骨髓移植。JAKAFI 是一天两次的口服片，吃下去几周内脾脏就开始缩小，症状明显缓解。同一个药后来又拿下了真性红细胞增多症（血液太稠）和移植物抗宿主病（骨髓移植后免疫细胞攻击受体器官）两个适应症。</p>
+<p><strong>怎么收钱。</strong> 这是典型的美国孤儿药定价：<strong>一名患者一年的药费大约 20 万美元</strong>，主要由医保（Medicare Part D）和商业保险付。全美吃这药的患者规模在两万多人这个量级。药通过专科药房（specialty pharmacy）分发——不是去 CVS 柜台拿，是有专门的药房打电话跟患者对接、送药上门、跟保险公司做事前审批。</p>
+<p><strong>为什么能卖这个价、为什么没人抢。</strong> 因为它是这个病的<strong>唯一一线标准治疗</strong>十几年了，写进了美国 NCCN 指南。病人一旦开始吃，除非无效或者不耐受，会一直吃到去世或者做骨髓移植。这是一门"存量患者自动续费"的生意：每年新诊断的患者加进来，老患者继续吃，收入自然滚动向上。过去五年 JAKAFI 从 21.35 亿涨到 31.94 亿，年复合约 10.6%，涨幅里价格贡献了一半以上（每年提价 4–6%）。</p>
+<h3>生意 B：OPZELURA —— 同一个分子做成的膏，一年 9.88 亿（占 17.0%），全公司增长最快的一块</h3>
+<p><strong>这件事的商业逻辑非常聪明</strong>：把已经证明有效、专利已经在手的分子，做成外用剂型，去打一个大得多的市场。</p>
+<p><strong>治什么。</strong> 两个适应症：一是特应性皮炎（湿疹）——涂在患处，止痒非常快；二是<strong>白癜风</strong>，就是皮肤一块块变白失去色素的那个病。白癜风此前在美国<strong>没有任何被批准的复色药物</strong>，患者只能做光疗或者遮盖。OPZELURA 是第一个能让色素长回来的处方药——不是治好，但脸上手上的白斑能显著复色。对一个高中生或者一个要见客户的销售来说，这件事的价值远超药理意义。</p>
+<p><strong>怎么收钱。</strong> 一管 60 克大约 2,000 美元，全身用的患者一个月可能要用两管。一年的花费在 1.5 万到 4 万美元之间，仍然由保险覆盖。<strong>注意这个数量级：比 JAKAFI 便宜十倍，但潜在患者多几十倍。</strong></p>
+<p><strong>增长情况</strong>：4.67（FY2021）→ 128.74 → 337.86 → 508.29 → 678.46（FY2025）→ <strong>988（TTM）</strong>。TTM 比 FY2025 全年还高 45.6%，还在加速。这是 Incyte 目前唯一一条真正强劲的增长曲线。</p>
+<p><strong>但要看清楚一件事：OPZELURA 分散不了 Incyte 的风险。</strong> 它跟 JAKAFI 是同一个化学分子。外用剂型有它自己的一套配方专利，通常比原始化合物专利晚几年到期，但<strong>做一个仿制的外用膏剂，技术门槛远低于做一个仿制的口服片</strong>——原研药的分子专利一到期，膏剂这边挡住仿制的只剩配方和辅料的专利，那是打得动的。</p>
+<h3>生意 C：JAKAVI 特许权 —— 4.86 亿的白拿钱（占 8.3%）</h3>
+<p><strong>这是全公司利润率最高的一行，接近 100% 的净利润率。</strong></p>
+<p>当年 Incyte 把芦可替尼在美国以外的全球权利授权给了诺华（Novartis），诺华在欧洲、日本、中国用 <strong>JAKAVI</strong> 这个商品名卖同一个药，卖多少给 Incyte 分成多少。Incyte 这边<strong>不需要养销售队伍、不需要建工厂、不需要跑当地的监管</strong>，诺华卖出去一盒，钱自动打过来。这一行五年从 3.38 亿涨到 4.86 亿，稳定得像债券票息。</p>
+<p><strong>但它和 JAKAFI 共享同一个到期时钟</strong>——诺华卖的是同一个分子，海外仿制药一进来，这笔钱同样蒸发。</p>
+<h3>生意 D：那一堆小药 —— 加起来 7.84 亿（占 13.5%），Incyte 未来的全部希望</h3>
+<p>这堆药是公司拿 JAKAFI 赚的钱砸出来的接班人候选：</p>
+<ul>
+<li><strong>NIKTIMVO（axatilimab）2.17 亿</strong>：治慢性移植物抗宿主病的注射剂，2024 年才上市，TTM 已经比 FY2025 全年高 43%，是增速最快的新药。</li>
+<li><strong>MONJUVI / MINJUVI（tafasitamab）1.87 亿</strong>：治弥漫大 B 细胞淋巴瘤的抗体药，跟来那度胺联用。</li>
+<li><strong>ZYNYZ（retifanlimab）1.46 亿</strong>：一个 PD-1 免疫检查点抑制剂——就是"抗癌免疫疗法"那一类，跟 K 药（Keytruda）同机制。K 药一年卖 300 亿美元，Incyte 这个卖 1.46 亿，说明它挤进了几个很窄的适应症（默克尔细胞癌、肛管癌），是在巨头的缝里捡饭吃。TTM 比 FY2025 全年高 120%，基数太小。</li>
+<li><strong>ICLUSIG（ponatinib）1.42 亿</strong>：治耐药的慢性髓性白血病，是当年收购 Ariad 拿到的老药，基本不长了。</li>
+<li><strong>PEMAZYRE 0.92 亿</strong>：治带 FGFR2 融合突变的胆管癌，极窄的适应症，五年没动。</li>
+</ul>
+<p><strong>这堆药总共 7.84 亿，全年增速大约 30–40%。</strong> 要在几年内接住 46.68 亿的芦可替尼缺口，需要它们再翻六倍。<strong>这是这家公司唯一的问题，也是唯一值得研究的问题。</strong></p>
+<h3>各生意的钱（TTM，截至 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>vs FY2025 全年</th>
+<th>毛利率</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JAKAFI</td>
+<td>3,194</td>
+<td>54.9%</td>
+<td>+3.3%</td>
+<td>~93%（估算）</td>
+<td>成熟，个位数增长</td>
+</tr>
+<tr>
+<td>OPZELURA</td>
+<td>988</td>
+<td>17.0%</td>
+<td>+45.6%</td>
+<td>~85%（估算）</td>
+<td>唯一强劲增长</td>
+</tr>
+<tr>
+<td>JAKAVI 特许权</td>
+<td>486</td>
+<td>8.3%</td>
+<td>+6.1%</td>
+<td>~100%</td>
+<td>纯利，不用花钱</td>
+</tr>
+<tr>
+<td>其他产品（5 个）</td>
+<td>785</td>
+<td>13.5%</td>
+<td>+30~40%</td>
+<td>~75%（估算）</td>
+<td>未来的希望</td>
+</tr>
+<tr>
+<td>其他特许权</td>
+<td>195</td>
+<td>3.4%</td>
+<td>+7%</td>
+<td>~100%</td>
+<td></td>
+</tr>
+<tr>
+<td>里程碑与合同</td>
+<td>173</td>
+<td>3.0%</td>
+<td>一次性</td>
+<td>100%</td>
+<td><strong>不可持续</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,820</strong></td>
+<td>100%</td>
+<td><strong>同比 +26.93%</strong></td>
+<td><strong>55.7%（实际）</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须标注：</strong> Incyte 不按分部披露利润，上表毛利率一列是按各类药的性质（自研自销 vs 特许权 vs 抗体药生产成本）估算的，不是财报数字。整体 55.7% 的毛利率是实际数字，它低于典型创新药公司的 80%，原因是财报把研发费和无形资产摊销塞进了成本口径。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分是全篇最有价值的地方，因为 Incyte 现在这个 15 倍市盈率里有大量水分。</strong></p>
+<p><strong>股权激励（SBC）：TTM 2.551 亿美元，占净利润的 15.8%，占营收的 4.4%。</strong></p>
+<p>这个数字很大，而且<strong>它在 Incyte 身上比在别的公司更该被当真</strong>。为什么？因为 Incyte 的股份数<strong>在增加</strong>——一年 <strong>+3.09%</strong>。也就是说员工拿走的股票不但没被回购抵消，还实实在在稀释了你。<strong>按 GAAP 已经扣了，一分不加回。</strong></p>
+<p><strong>一次性项目：资产减值与重组 7,628 万，投资处置收益 4,320 万（是收益），里程碑与合同收入 1.732 亿（是收入）。</strong></p>
+<p>前两项是小钱，但<strong>第三项必须拎出来说</strong>：1.732 亿的"里程碑与合同收入"是合作方达成某个开发节点时一次性付的钱，FY2024 只有 4,300 万、FY2023 只有 700 万。<strong>这 1.73 亿基本上是 100% 的净利润率，直接进利润表，占 TTM 净利润的 10.7%，明年大概率没有。</strong> 算真实盈利能力时必须扣掉。</p>
+<p>至于那 7,628 万的减值和重组是不是"年年都有的一次性"——FY2025 全年 7,628 万、FY2024 是 0、FY2023 是 563 万，<strong>单看 TTM 一期无法判断这类支出未来是否常态化</strong>，从三年的分布看它不像是每年都发生的项目。</p>
+<p><strong>资本化的支出：3,000 万的无形资产购入。</strong> 小钱，不构成问题。</p>
+<p><strong>回购与稀释：TTM 回购 7,734 万，SBC 2.551 亿，比值只有 0.30 倍——这是全篇最难看的一个数字。</strong></p>
+<p><strong>0.30 倍意味着什么：公司发给员工的股票值 2.55 亿，公司只花了 0.77 亿去买回来，缺口 1.78 亿全部由现有股东承担稀释。</strong> 效果直接体现在股份数上：流通股一年 <strong>+3.09%</strong>，从约 1.966 亿股增加到 2.027 亿股。</p>
+<p>对比一下这家公司自己：FY2024 它花了 <strong>20.45 亿</strong> 做回购（那一年股份数减少 6.82%），FY2025 花了 0.96 亿。<strong>现在这个 0.77 亿基本等于不回购。</strong> 一家账上躺着 45.36 亿美元净现金、TTM 自由现金流 19.2 亿的公司，选择不回购自己 15 倍市盈率的股票，只有两种解释：要么管理层认为股价不便宜，要么这笔钱另有去处（大概率是准备用来买管线）。<strong>无论哪种，对现有股东都不是好消息。</strong></p>
+<p>还有一个更刺眼的细节：TTM 员工行权买股票交给公司 <strong>3.767 亿现金</strong>，公司回购只花了 0.773 亿。<strong>净流入 3 亿——公司在这一年里是从员工手上"卖股票"净收钱的。</strong> 分红是零。<strong>Incyte 这一年一分钱没还给股东，还多发了 3% 的股份。</strong></p>
+<p><strong>利润和现金流的差：净利润 16.12 亿，经营现金流 19.80 亿，自由现金流 19.20 亿。</strong></p>
+<p>逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,612</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>98</td>
+<td>小，轻资产</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>76</td>
+<td>账面冲销</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>255</td>
+<td>发的是股票（但股份被稀释了）</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−43</td>
+<td>有收益没现金</td>
+</tr>
+<tr>
+<td><strong>+ 其他经营活动</strong></td>
+<td><strong>+311</strong></td>
+<td><strong>⚠️ 这一项见下面</strong></td>
+</tr>
+<tr>
+<td><strong>= 现金利润（未动营运资金）</strong></td>
+<td><strong>2,309</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−282</td>
+<td><strong>卖出去的药还没收到钱</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−35</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+35</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−48</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>营运资金合计占用</strong></td>
+<td><strong>−330</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,980</strong></td>
+<td>对得上</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−59</td>
+<td>极轻</td>
+</tr>
+<tr>
+<td>− 无形资产购入</td>
+<td>—</td>
+<td>计在投资项</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,920</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>那笔 3.11 亿的"其他经营活动"是什么？答案在税表里。</strong></p>
+<ul>
+<li>利润表上的<strong>所得税费用</strong>：3.5498 亿（有效税率 18.04%）</li>
+<li>实际付出去的<strong>现金税</strong>：<strong>只有 4,070 万</strong></li>
+</ul>
+<p><strong>差了 3.14 亿——跟"其他经营活动"那 3.11 亿几乎完全对得上。</strong> 也就是说，Incyte 这一年账上计提了 3.55 亿的税，实际只掏了 0.41 亿现金。</p>
+<p>原因很清楚：FY2024 那年净利润只有 3,262 万（几乎归零），公司积累了大量可抵扣的税务资产，现在正在用它冲抵当期税款。<strong>这是真金白银的好事，但它是一次性的库存——用完了现金税就要回到 18% 的正常水平，每年多掏 3 亿现金。</strong></p>
+<p><strong>这一条的结论：TTM 的 19.2 亿自由现金流里，有大约 3.1 亿是"暂时不用交的税"。</strong> 税务资产用完之后，同样的业务只能产生约 16 亿的自由现金流。<strong>任何拿 12.7 倍 P/FCF 说 Incyte 便宜的说法，都忽略了这 3 亿。</strong></p>
+<p>另外，<strong>应收账款一年增加了 2.82 亿</strong>，占营收增长（12.35 亿）的 23%。收入涨了 27%，应收账款涨得更快，说明<strong>卖出去的药收款在变慢</strong>——可能是专科药房和分销商的账期拉长，也可能是新产品渠道压货。这不算警报，但值得记一笔。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 243.56 亿，企业价值 198.59 亿（账上 45.36 亿现金、几乎零负债，净现金 44.97 亿，占市值的 18.5%）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>243.56 亿 ÷ 16.12 亿</td>
+<td><strong>15.1 倍</strong></td>
+<td><strong>6.62 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页不提供；按加回重组、扣除投资收益估算净利润 16.39 亿</td>
+<td>~14.9 倍</td>
+<td>6.73 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>243.56 亿 ÷（16.12 + 重组 0.763×0.82 − 投资收益 0.432×0.82 − <strong>一次性里程碑收入 1.732×0.82</strong>）= ÷14.97 亿</td>
+<td><strong>16.3 倍</strong></td>
+<td><strong>6.14 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>243.56 亿 ÷ 19.20 亿</td>
+<td><strong>12.7 倍</strong></td>
+<td>7.88 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（补回正常现金税）</strong></td>
+<td>243.56 亿 ÷（19.20 − 3.14）= ÷16.06 亿</td>
+<td><strong>15.2 倍</strong></td>
+<td><strong>6.58 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>198.59 亿 ÷ 18.44 亿</td>
+<td><strong>10.8 倍</strong></td>
+<td>9.29 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>243.56 亿 ÷（FY23 5.976 + FY24 0.326 + FY25 12.87）/3 = ÷6.391 亿</td>
+<td><strong>38.1 倍</strong></td>
+<td><strong>2.62 元</strong></td>
+</tr>
+<tr>
+<td><strong>市场自己给的前瞻口径</strong></td>
+<td>财报页 Forward PE</td>
+<td><strong>50.2 倍</strong></td>
+<td><strong>1.99 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里藏着这篇分析最重要的一句话，在最后两行。</strong></p>
+<p><strong>当期 15.1 倍，三年平均 38.1 倍，市场前瞻 50.2 倍。</strong> 三个数字差了三倍多，这不是口径差异，<strong>这是时间差异</strong>：</p>
+<ul>
+<li><strong>15.1 倍</strong> = 现在这一年，芦可替尼卖到历史最好、里程碑收入到账、现金税几乎不用交，三重利好叠在一起的一年；</li>
+<li><strong>38.1 倍</strong> = 过去三年的平均水平（其中 FY2024 净利润只有 3,262 万，几乎归零）；</li>
+<li><strong>50.2 倍</strong> = <strong>市场对下一年的预期</strong>。</li>
+</ul>
+<p><strong>注意最后这一行的分量。</strong> 财报页显示的前瞻市盈率是 <strong>50.18 倍</strong>，而一年前（FY2025 那一栏）这个数字是 <strong>12.69 倍</strong>。也就是说，<strong>卖方分析师们在过去这一年里，把 Incyte 的未来盈利预测砍掉了大约四分之三。</strong> 这不是我的判断，是市场自己写在报价里的：<strong>它预期 Incyte 的利润即将崩塌。</strong></p>
+<p>为什么会崩塌，从上面第一部分的数据里能推出来：<strong>80.2% 的营收来自同一个分子</strong>。一家单分子药企的利润会在某一天断崖式下跌，机制只有一个——<strong>独占期结束、仿制药进场</strong>。芦可替尼在美国的核心专利保护即将走到尽头（市场普遍预期在 2028 年前后；具体日期建议自行核实 FDA 橙皮书），届时 JAKAFI 那 31.94 亿的营收会在 12–18 个月内跌掉 80–90%，JAKAVI 那 4.86 亿的特许权同步消失。<strong>这不是风险，这是日程表。</strong></p>
+<p><strong>所以说人话：</strong></p>
+<p><strong>你现在投 100 块进 Incyte，按今年的账算，公司一年替你赚 6 元 6 角；按过去三年的平均水平算，只有 2 元 6 角；按市场对明年的预期算，只有 1 元 9 角。</strong></p>
+<p>而这 6 元 6 角里，<strong>有多少回到你口袋？零。</strong> Incyte 不分红，TTM 回购 7,734 万（占市值 0.32%），同时股份增发 3.09%。<strong>净效果是负的——你手上的股份占比这一年是变小的。</strong> 赚的钱去哪了？留在公司账上（现金从 35.81 亿涨到 45.36 亿）和砸进研发。管理层显然是在攒钱，为芦可替尼到期后的日子买管线或者买公司。</p>
+<p><strong>这个 6 元 6 角未来是变大还是变小？必然变小，而且是断崖式的。</strong> 唯一的悬念是能不能被接住——OPZELURA 那 9.88 亿（+45.6%）加上 NIKTIMVO / ZYNYZ / MONJUVI 那 5.5 亿（+30~40%），今天合计 15.4 亿。要接住 46.68 亿的芦可替尼缺口，这堆药需要在两三年内做到 45 亿以上。<strong>按目前的增速算不出来，得靠管理层用那 45 亿现金买回来。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>15 倍市盈率不是便宜，是倒计时。</strong></p>
+<p>Incyte 是一家做出过一个真正伟大的药的公司——芦可替尼救了很多骨髓纤维化患者的命，还顺手给白癜风患者提供了历史上第一个能让皮肤复色的处方药，这是了不起的成就。它的账上有 45 亿净现金、几乎零负债、ROIC 86.5%、人均创收 205 万美元，2,844 个人做出 58 亿美元的营收，运营效率在整个制药业里排得上号。</p>
+<p>但<strong>这些优点全都建立在一个即将失效的专利上</strong>。80.2% 的营收来自同一个分子，这个分子的独占期正在结束，市场已经把这件事写进了报价——<strong>前瞻市盈率 50.2 倍就是市场在说"这一年的 16 亿利润，明年后年没了"</strong>。而三年平均口径给出的 38.1 倍，说明今年这个 16 亿本来就是异常值，不是常态。</p>
+<p>再看当下这一年的 16 亿利润本身，它至少有三层水分：<strong>1.73 亿的一次性里程碑收入</strong>（明年没有）、<strong>3.14 亿少交的现金税</strong>（用完就没有）、以及<strong>发给员工 2.55 亿股票却只回购 0.77 亿</strong>造成的 3.09% 稀释（这部分是从你身上直接扣的）。把这三层剥掉，真实的、可持续的盈利能力大概在 12 亿到 13 亿，对应 19–20 倍市盈率——<strong>而这 19 倍买的还是一个正在到期的分子。</strong></p>
+<p><strong>这不是一只价值股，是一个赌局：赌管理层能用那 45 亿现金，在专利悬崖砸下来之前买到下一个 JAKAFI。</strong> 这种赌局历史上赢的少、输的多。你要么有能力判断它的管线和并购能力，要么就别碰这个 15 倍。<strong>不分红、不回购、还在稀释你——它连一个持有期间的安慰奖都不给。</strong></p>
+</div></body></html>

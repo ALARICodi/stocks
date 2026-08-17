@@ -1,0 +1,388 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MDT · 美敦力（Medtronic plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MDT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">价格公道，80%利润还给你，代价是几乎不增长</div><h1>MDT · 美敦力（Medtronic plc）</h1>
+<p><strong>市值</strong> $1,159.5 亿 ｜ <strong>股价</strong> 约 $90.6 ｜ <strong>行业</strong> 医疗科技（医疗器械） ｜ <strong>TTM 截止</strong> 2026 年 4 月 24 日（财年制，TTM 即 FY2026 全年） ｜ <strong>交易所</strong> NYSE ｜ <strong>筛选榜名次</strong> 第 74 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>美敦力是全世界最大的医疗器械公司。它财报里拆了 10 个小类，但公司实际按 <strong>4 个业务群</strong>管理，我按这 4 个来讲——因为 10 个太碎，看不出结构。</p>
+<p>有一件事必须先说清楚，它决定了这四门生意的共同底层逻辑：<strong>美敦力的客户不是病人，是医生和医院采购部</strong>。一个心内科医生用惯了美敦力的起搏器，他手上的植入器械、程控仪、随访软件全是美敦力这套；换成别家意味着重新学一遍手法、重新配一套设备、还要承担手术失败的职业风险。<strong>这个"换不动"就是美敦力毛利率能长期稳在 65% 的全部原因。</strong></p>
+<h3>生意一：心血管（Cardiovascular）— 占 38%，最大也是增长最快的一块</h3>
+<p><strong>卖的是塞进你心脏里、并且要在里面待十年以上的东西。</strong></p>
+<p>具体举例：一位 72 岁老人心跳过慢，晕厥过两次。医生给他植入一个美敦力 Micra 无导线起搏器——一个胶囊大小的东西，从大腿静脉推进去，直接固定在右心室内壁。<strong>这一个器械售价大约 1.2 万美元。</strong> 手术做完，老人回家，之后每年做几次远程随访：起搏器把心律数据发到美敦力的云端，医生在电脑上看，这套随访服务另外按年收费。电池用 10–12 年，到期还要再做一次手术换新的——<strong>又是一笔 1.2 万美元，客户锁死十年。</strong></p>
+<p>这一块里还有：
+- <strong>心脏消融</strong>（治房颤）：把导管伸进心脏，把乱放电的那块心肌烧掉或冻掉。美敦力这两年推的是"脉冲电场消融"（PFA，用电脉冲而不是加热，不伤周围食道神经）。<strong>一根消融导管一次性使用，约 4,000–6,000 美元，一台手术要用掉好几根。</strong> 这是 TTM 心律业务同比 +17.4% 的主要来源——PFA 是整个器械行业过去两年最热的赛道。
+- <strong>心脏瓣膜</strong>（TAVR）：不开胸，从大腿血管把一个折叠的人工主动脉瓣送到心脏里撑开。<strong>一个瓣膜约 3.2 万美元。</strong> 这块美敦力是老二，老大是爱德华兹（Edwards）。
+- <strong>冠脉支架和外周血管</strong>：支架、球囊、导丝，一根几百到两千美元，走量。这是最内卷、价格被压得最狠的一块（中国带量采购把支架从 1.3 万元人民币砍到 700 元，就是砍的这个品类）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>较上年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>心血管</td>
+<td>$139.75 亿</td>
+<td><strong>+12.0%</strong></td>
+<td>38.4%</td>
+<td>约 30%</td>
+<td>约 $42 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：神经科学（Neuroscience）— 占 28%，最赚钱的一块</h3>
+<p><strong>卖的是钻进颅骨和脊柱里的东西。</strong></p>
+<p>具体举例一（脊柱）：一位腰椎间盘退变的病人要做腰椎融合手术。医生要在两节椎骨之间放进一个融合器，再用螺钉和棒固定。美敦力卖的是<strong>整套</strong>：螺钉、棒、融合器、生物骨材料，还有一台叫 <strong>Mazor X 的手术机器人</strong>——机器人事先根据 CT 规划好螺钉打进去的角度和深度，手术时机械臂把导向套筒摆到那个角度，医生顺着套筒打钉，避免打偏戳到神经。<strong>一台 Mazor 机器人卖给医院约 100 万美元，然后每台手术还要买一套一次性耗材（导向器、定位器），几千美元一套。</strong> 这是典型的"剃须刀 + 刀片"——机器人卖出去是为了锁住后面十年的耗材。</p>
+<p>具体举例二（脑起搏器 DBS）：帕金森病人手抖到端不住杯子。医生在他颅骨上钻两个洞，把两根电极送到大脑深部的丘脑底核，再在锁骨下埋一个脉冲发生器（跟起搏器长得像），电线从皮下走到头顶。开机之后手抖当场停下。<strong>一整套约 3.5 万美元</strong>，发生器电池 3–5 年换一次，或者买充电款用 15 年（更贵）。</p>
+<p>具体举例三（专科治疗）：耳鼻喉的鼻窦手术动力系统、脑脊液分流管（治脑积水的，把脑室里多余的水引到腹腔）、鼻窦支架。这块单价低但极其分散、极其稳定。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>较上年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>神经科学</td>
+<td>$102.88 亿</td>
+<td>+4.5%</td>
+<td>28.3%</td>
+<td>约 30%</td>
+<td>约 $31 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：外科与急救（Medical Surgical）— 占 24%，最像"卖耗材"的一块</h3>
+<p><strong>卖的是外科医生手里的工具和缝合线。</strong></p>
+<p>具体举例：一台腹腔镜结肠切除手术。医生开三个小孔，伸进器械。切断肠子用的是<strong>吻合器</strong>——一个像订书机的东西，一夹下去同时切断并用两排钛钉封住两端，一把一次性吻合器约 800 美元，一台手术用 3–5 把，还要另买钉仓（每个 200 美元左右）。止血用的是<strong>超声刀 / 电外科能量平台</strong>（Valleylab），主机卖给医院几万美元，手柄一次性、几百美元一支。手术做完缝合用美敦力的缝线和补片。</p>
+<p><strong>一台普通的腹腔镜手术，美敦力能从中收走 2,000–4,000 美元的一次性耗材钱。</strong> 全球每年上亿台手术，这就是这块 88 亿营收的来源。它的问题是：这是跟强生（Ethicon）刺刀见红的红海，两家产品差异极小，医院采购拿两边报价互相压。所以增速只有 4.9%。</p>
+<p>急救与监护（Acute Care &amp; Monitoring）是这块的附属：手术室里的病人监护仪、脉搏血氧仪（Nellcor，就是夹手指那个）、呼吸机。这块 2020 年因为疫情暴涨过，现在早已回落。</p>
+<p>美敦力还有一台<strong>Hugo 手术机器人</strong>在这块里，对标达芬奇（Intuitive Surgical）。2025 年才拿到美国 FDA 批准，目前营收贡献极小，但这是美敦力最重要的一个长期赌注——如果能从直觉外科手里抢下 10% 的份额，就是几十亿美元的耗材年金。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>较上年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>外科与急救</td>
+<td>$88.16 亿</td>
+<td>+4.9%</td>
+<td>24.2%</td>
+<td>约 22%</td>
+<td>约 $19 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意四：糖尿病（Diabetes）— 占 8.6%，最不赚钱、而且要被拆走的一块</h3>
+<p><strong>卖的是 1 型糖尿病人身上贴着的胰岛素泵。</strong></p>
+<p>具体举例：一个 1 型糖尿病的青少年，胰腺完全不分泌胰岛素。他腹部贴一个连续血糖监测传感器（CGM，一根极细的探针插在皮下测组织液葡萄糖，每 5 分钟传一个数），腰上别一个 MiniMed 780G 胰岛素泵，泵通过一根细管把胰岛素持续输进皮下。<strong>关键在于这两个东西是联动的</strong>——血糖开始往上走，泵自动加大剂量；往下掉，自动减少甚至暂停。晚上睡觉不用起来测血糖，这是这个产品对一个家庭的全部意义。</p>
+<p>钱怎么收：<strong>泵本体约 6,000–8,000 美元（保险报销大部分），然后耗材是永续的</strong>——输注管路每 3 天换一次、CGM 传感器每 7 天换一次，一个病人一年的耗材约 3,000–4,000 美元。装上就是一辈子的客户。</p>
+<p>这门生意增长很好（TTM +12.9%），但<strong>利润率是四块里最低的</strong>，因为要跟德康（Dexcom）和雅培（Abbott）在传感器上血拼，而这两家的传感器精度长期比美敦力好。<strong>公司已宣布计划把糖尿病业务（MiniMed）分拆成独立公司</strong>——翻译成大白话：美敦力自己也认为这块跟其他三块没有协同，管理层的注意力被它占用了，不如切出去。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>较上年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>糖尿病</td>
+<td>$31.11 亿</td>
+<td><strong>+12.9%</strong></td>
+<td>8.6%</td>
+<td>约 10%</td>
+<td>约 $3 亿</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>注</strong>：美敦力在 stockanalysis 的四张财务页上<strong>只披露到分部营收，不披露分部利润</strong>。上面四行的"经营利润率"和"贡献利润"是我按整体经营利润 64.67 亿倒推的估算——四块估算合计约 95 亿，减去总部费用、无形资产摊销和重组费用约 31 亿，回到 64.67 亿。<strong>这四个利润数字是估算，不是财报原文。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 4.57 亿美元，占净利润 48.01 亿的 <strong>9.5%</strong>，占营收 1.26%。对一家医疗器械公司来说这是很克制的水平（对比后面 ABNB 的 63%）。GAAP 已扣，不加回。</p>
+<p><strong>一次性项目</strong>：现金流量表里 TTM"其他调整"5.01 亿，规模不大。美敦力每年都有重组费用（关工厂、裁员、整合收购来的公司）和诉讼准备金（骨科植入物、疝气补片一直有集体诉讼），但都在几亿美元量级，没有出现足以扭曲当期利润的巨额减值。<strong>单看这一期无法判断这 5.01 亿里哪些是真一次性——但从美敦力五年的记录看，"重组"在这家公司是每年都有的常设科目，不该当一次性加回。</strong></p>
+<p><strong>资本化的支出</strong>：资本开支 19.04 亿，占营收 5.2%——这是真金白银的工厂、无菌产线和设备。折旧摊销 29.58 亿高于资本开支，差额约 10 亿是收购来的无形资产摊销（美敦力这些年买了几十家公司）。<strong>这笔摊销是真实的经济成本</strong>——它对应的是当年花出去的收购现金，公司做 Non-GAAP 时会把它加回，我不加。</p>
+<p><strong>回购与稀释</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 回购</td>
+<td>$10.35 亿</td>
+</tr>
+<tr>
+<td>TTM 股权激励</td>
+<td>$4.57 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.26 倍</strong></td>
+</tr>
+<tr>
+<td>员工行权发新股</td>
+<td>$5.16 亿</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−0.14%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购 2.26 倍于 SBC，比 CVS 好得多，但<strong>没到"真回购"的 3 倍线</strong>。而且注意"员工行权发新股 5.16 亿"这一行——回购的 10.35 亿里有一半是被这笔新发抵消的，所以股本一年只减少了 0.14%，基本等于没减。<strong>美敦力回馈股东的方式是股息，不是回购。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 48.01 亿，经营现金流 73.30 亿，自由现金流 54.26 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4,801</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>2,958</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>457</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>501</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−200</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−404</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>46</td>
+</tr>
+<tr>
+<td>− 其他经营性变动</td>
+<td>−865</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>7,294</strong>（财报列示 7,330，差 36 为四舍五入）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,904</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>5,426</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表几乎没有猫腻。</strong> 净利润到现金流的差额 25 亿，绝大部分就是折旧摊销 29.6 亿这一项——而这项里有约 10 亿是收购无形资产摊销（不需要再花钱），约 19 亿是设备折旧（需要花钱，对应资本开支 19 亿，两者几乎相等）。<strong>这说明美敦力的自由现金流是干净的、可持续的</strong>：它每年赚的现金，减去维持工厂运转必需的再投入之后，剩下 54 亿是真的可以拿去分红的。</p>
+<p>对比 CVS 那张表里凭空多出来的 49 亿浮存金，美敦力的现金流质量高一个档次。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $1,159.5 亿，企业价值 $1,357.5 亿（净负债 187.4 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,159.5 ÷ 48.01</td>
+<td><strong>24.2 倍</strong></td>
+<td><strong>$4.14</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回无形资产摊销约 17 亿（税后约 13.8 亿）+ 重组约 3 亿，调整后净利润约 64 亿（<strong>我的估算</strong>，四页未直接提供）</td>
+<td><em>18.1 倍</em></td>
+<td><em>$5.52</em></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无大额一次性项目，税率 21.2% 正常，无形资产摊销是真成本不加回 → 等于 GAAP</td>
+<td><strong>24.2 倍</strong></td>
+<td><strong>$4.14</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,159.5 ÷ 54.26</td>
+<td><strong>21.4 倍</strong></td>
+<td><strong>$4.68</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,357.5 ÷ 64.67</td>
+<td><strong>21.0 倍</strong></td>
+<td><strong>$4.77</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1,159.5 ÷ [(48.01+46.62+36.76)/3 = 43.80]</td>
+<td><strong>26.5 倍</strong></td>
+<td><strong>$3.78</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最值得看的是六个口径挤在 21–26.5 倍这个极窄的区间里。</strong> 对比 CVS（10.3 倍到 32.3 倍，跨度三倍），美敦力的账<strong>没有任何一个口径能把它算便宜，也没有任何一个口径把它算得离谱贵</strong>。这本身就是信息量：<strong>这是一家账做得很实、没有腾挪空间的公司。</strong></p>
+<p><strong>三年平均 26.5 倍 vs 当期 24.2 倍</strong>，差距只有 9%。说明当前利润不是高点也不是低点，就是正常水平——FY2024 那年净利润 36.76 亿偏低（有重组和一次性诉讼），FY2025、FY2026 恢复到 46–48 亿的常态。<strong>这家公司的利润非常可预测，这是它区别于绝大多数公司的特征。</strong></p>
+<h3>你投 100 块进去，一年能拿回多少</h3>
+<p><strong>按最保守的真实口径（24.2 倍），公司一年替你赚 $4.14。</strong></p>
+<p>这 $4.14 里，回到你口袋的：</p>
+<ul>
+<li><strong>股息 $3.18</strong>（股息率 3.18%，每股 $2.88，<strong>已经连续 50 年每年上调</strong>）</li>
+<li><strong>回购净贡献约 $0.14</strong>（股本一年只减 0.14%，因为回购被员工行权发新股抵消了大半）</li>
+<li><strong>净到手约 $3.32</strong></li>
+</ul>
+<p><strong>也就是说，公司赚的 $4.14 里，有 $3.32（80%）直接还给了你。</strong> 派息率 75.8%，加上回购，股东回报总额 46.74 亿 ≈ 自由现金流 54.26 亿的 <strong>86%</strong>。</p>
+<p>剩下的钱去哪了？投资活动流出 29.34 亿，其中资本开支 19.04 亿（工厂产线）、净买入投资 6.2 亿、收购 4.06 亿。<strong>美敦力已经基本不做大收购了</strong>——FY2026 只花了 4 亿买公司，对比 FY2023 的 18.67 亿。同时净还债 11.83 亿。</p>
+<p><strong>这个 $4.14 未来是变大还是变小？</strong></p>
+<ul>
+<li><strong>变大的理由</strong>：TTM 营收增长 8.43%，是美敦力近五年最快的一年，主要靠心律（+17.4%，PFA 消融）和糖尿病（+12.9%）拉动；Hugo 手术机器人刚获批，如果能撬动达芬奇的份额，是一个几十亿量级的新耗材池；糖尿病分拆之后，剩下的三块经营利润率会自动变高（拆掉了最差的一块）；美元走弱对海外营收占一半的美敦力是顺风。</li>
+<li><strong>变小的理由</strong>：核心的外科（+4.9%）和神经科学（+4.5%）两块合计占 52% 却只有 4–5% 增长，这才是它的基本盘；ROIC 只有 8.25%，仅比资本成本 WACC 6.27% 高 2 个点——<strong>说明它过去这些年花在收购上的钱，回报只比借钱的成本略好一点</strong>；PEG 2.88 说明市场为它的增速付了偏高的价；美国 Medicare 器械报销价和中国带量采购是长期压制。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家账干净、生意锁死、利润高度可预测的公司，代价是几乎不增长——24.2 倍市盈率买一个每年 4%–8% 增长、把 80% 利润还给你的现金牛，价格公道，不便宜也不贵。</strong></p>
+<p>它的吸引力不在"未来会涨多少"，而在"50 年没断过的涨息记录 + 3.18% 的股息率 + 现金流几乎不可能突然消失"。真正的隐忧只有一个：<strong>ROIC 8.25% 对 WACC 6.27%——这家公司过去十几年拿股东的钱去做的那几百亿收购，创造的价值薄得可怜。</strong> 如果糖尿病分拆和 Hugo 机器人这两件事都办砸了，它就是一个越来越贵的债券。</p>
+</div></body></html>

@@ -1,0 +1,377 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BWXT · BWX 科技</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BWXT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">唯一能造海军核反应堆，但45倍买利润率被锁死</div><h1>BWXT · BWX 科技</h1>
+<p><strong>市值 $158.7 亿 / 股价约 $173 / 行业：电子与工业技术（核工程）/ TTM 截止 2026 年 6 月 30 日</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>BWXT 的全名是 Babcock &amp; Wilcox Technologies，前身是那家造锅炉起家的百年老厂。今天它干的事只有一句话能概括：<strong>美国海军所有核动力潜艇和航空母舰上的核反应堆，全世界只有它一家能造。</strong></p>
+<p>这不是市场竞争出来的地位，是政府指定的。造舰用核反应堆需要在美国国土上的、通过 NNSA（国家核安全局）认证的、有资格处理高浓缩铀的工厂，全美就 BWXT 位于俄亥俄 Barberton 和印第安纳 Mount Vernon 的两个厂具备资质。要新建一个同样资质的厂，需要十几年和几十亿美元，还得先说服国会。所以它的生意逻辑不是"我比对手强"，而是"没有对手"。</p>
+<p>财报把营收拆成五条产品线，我把它归成<strong>四门生意</strong>。</p>
+<h3>生意一：海军核反应堆的部件与核燃料 —— 占一半以上，命根子</h3>
+<p>2025 全年 17.96 亿美元，占总营收 56%，较上年 +6.1%。这是最稳、利润率最高、也最没有故事的一块。</p>
+<p>具体怎么做的：美国海军要造一艘弗吉尼亚级攻击潜艇，或者哥伦比亚级战略核潜艇，或者福特级航母，第一件事就是订反应堆。BWXT 收到的订单不是"卖一台设备"，而是一份<strong>跨越 5 到 8 年的固定长约</strong>：先造压力容器（一个几百吨重、壁厚二十多厘米的锻钢罐子，容不得一丝焊接缺陷，因为它要在水下承压几十年且不能维修），再造蒸汽发生器、堆内构件，同时供应<strong>核燃料组件</strong>——用高浓缩铀做的燃料棒，一次装料能用二三十年不换。</p>
+<p>一艘哥伦比亚级潜艇的反应堆系统，BWXT 拿到的合同价值大约<strong>十亿美元级别</strong>。海军目前的造舰计划是每年 2 艘弗吉尼亚级 + 每年 1 艘哥伦比亚级，这个节奏排到 2040 年代。公司披露的在手订单（backlog）常年在 45 亿到 50 亿美元之间，相当于一年半的营收提前锁定。</p>
+<p><strong>为什么客户非买不可</strong>：因为没有第二家。而且这不是"贵一点买别家"的问题——海军的替代方案是没有潜艇。</p>
+<p>这块的定价机制很特殊：大量合同是<strong>成本加成（cost-plus）</strong>——你花多少钱我认多少钱，再给你一个百分之十几的利润。听起来舒服，实际上意味着<strong>利润率天花板被政府锁死了</strong>。你不可能靠效率提升赚超额利润，因为省下来的钱要还给纳税人。这是理解 BWXT 估值的第一把钥匙：它的收入极其安全，但它的利润率永远上不去。</p>
+<h3>生意二：铀的降浓与核材料服务（Downblending）—— 帮政府处理核弹头</h3>
+<p>2025 全年 4.07 亿美元，占 13%，较上年 <strong>+41.7%</strong>，是增速最快的一块之一。</p>
+<p>这件事很有意思：冷战结束后美国拆了大量核弹头，弹头里的高浓缩铀（浓度 90% 以上，武器级）不能直接扔也不能直接用。BWXT 位于田纳西州 Erwin 的工厂做的就是把这些武器级铀"稀释"到 5% 左右的反应堆级，变成民用核电站或者研究堆能烧的燃料。政府按处理量付钱。</p>
+<p>同时这块还包括<strong>医用同位素</strong>：BWXT 生产锝-99m 发生器——这是全世界核医学检查用得最多的放射性示踪剂，你做心肌灌注扫描、骨扫描、肾功能显像，打进血管里的就是它。它的半衰期只有 6 小时，所以不能库存、必须现产现送，全球有资质的生产商屈指可数。BWXT 在加拿大安大略的反应堆里辐照靶件生产它，一台发生器几千美元，医院每周订购。</p>
+<h3>生意三：核制造与先进反应堆（Nuclear Manufacturing + Advanced Reactor）—— 商业核电与小型堆</h3>
+<p>2025 全年分别是 4.29 亿（+48.6%）和 1.47 亿（−27.8%），合计 5.76 亿，占 18%。</p>
+<p><strong>核制造</strong>主要是加拿大的 CANDU 重水堆业务。安大略省正在做一件事叫"Darlington 核电站翻新"——把四台运行了 30 多年的机组全部大修，换掉里面几万根压力管和蒸汽发生器管束。这活儿是 BWXT 加拿大子公司干的，单项合同几亿加元，工期到 2030 年代。安大略还批了 Pickering 核电站的翻新，又是一笔。</p>
+<p><strong>先进反应堆设计与工程</strong>是最有想象力也最不赚钱的一块。两件事：
+- 给 GE Hitachi 的 BWRX-300 小型模块化反应堆造压力容器。加拿大 Darlington 已经开工建第一台，这是西方国家第一个真正动土的商业 SMR。
+- <strong>Project Pele</strong>：给美国陆军造一台能装进集装箱、用卡车拉走的微型核反应堆，功率 1–5 兆瓦，用来给前线基地供电（陆军现在靠柴油发电，油罐车队是最大的伤亡来源）。2025 年已经完成组装，正在爱达荷国家实验室测试。</p>
+<p>这块 2025 年营收还<strong>跌了 27.8%</strong>——因为几个政府研发合同做完了、新的还没接上。它是故事，不是现金。</p>
+<h3>生意四：核服务与工程 —— 帮能源部管场地，外加 2025 年买来的 Kinectrics</h3>
+<p>2025 全年 4.24 亿美元，占 13%，较上年 <strong>+80.2%</strong>，是增速冠军。</p>
+<p>暴涨的原因很直接：<strong>2025 年 BWXT 花了 5.35 亿美元现金收购了加拿大公司 Kinectrics</strong>——一家专门给核电站做检测、测试、寿命评估和退役咨询的技术服务公司。买进来直接并表，所以这块凭空多出一大截。</p>
+<p>原有的部分是"给美国能源部管场地"：Pantex（组装拆解核弹头的地方）、Nuclear Fuel Services、Y-12 等等，BWXT 以合资公司的形式参与运营管理，按管理费和绩效奖金收钱。<strong>注意：这些合资公司大多不并表</strong>，它们的利润是以"权益法投资收益"的形式跳过营业利润、直接进税前利润的——这一点在第二部分很重要。</p>
+<h3>各门生意的钱（2025 财年，单位：百万美元）</h3>
+<p><strong>⚠️ TTM 的分部数据公司尚未披露</strong>（财报只到 2025 年报为止给了完整拆分），所以下表用 2025 全年数字，同比对 2024 年。TTM 总营收 35.14 亿、同比 +22.7%，各块大致按 2025 的结构等比放大。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>2025 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>海军核部件与核燃料</td>
+<td>1,796</td>
+<td>+6.1%</td>
+<td>56.2%</td>
+<td>约 14%（估算）</td>
+<td>约 251</td>
+</tr>
+<tr>
+<td>降浓与核材料服务</td>
+<td>407</td>
+<td>+41.7%</td>
+<td>12.7%</td>
+<td>约 12%（估算）</td>
+<td>约 49</td>
+</tr>
+<tr>
+<td>核制造（CANDU 等）</td>
+<td>429</td>
+<td>+48.6%</td>
+<td>13.4%</td>
+<td>约 8%（估算）</td>
+<td>约 34</td>
+</tr>
+<tr>
+<td>先进反应堆设计工程</td>
+<td>147</td>
+<td>−27.8%</td>
+<td>4.6%</td>
+<td>约 3%（估算）</td>
+<td>约 4</td>
+</tr>
+<tr>
+<td>核服务与工程（含 Kinectrics）</td>
+<td>424</td>
+<td>+80.2%</td>
+<td>13.3%</td>
+<td>约 3%（估算）</td>
+<td>约 13</td>
+</tr>
+<tr>
+<td>抵消</td>
+<td>−5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,198</strong></td>
+<td><strong>+18.3%</strong></td>
+<td>100%</td>
+<td><strong>10.6%（实际）</strong></td>
+<td><strong>340</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露这五条产品线各自的利润</strong>（公司对外的利润口径只分"政府业务/商业业务"两大段）。上表利润率是按整体 10.6% 经营利润率、结合"海军业务定价成本加成、商业和服务业务毛利更薄"的常识估算的，<strong>不是财报数字</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>先说结论：<strong>这家公司的账，是我做过的这批公司里最干净的之一。</strong> 逐项看：</p>
+<h3>股权激励（SBC）：3245 万美元，占净利润 9.1%</h3>
+<p>TTM 股权激励 3245 万美元，占 GAAP 净利润 3.55 亿的 <strong>9.1%</strong>，占营收不到 1%。对比动辄占净利润 30%–100% 的科技公司，这是工业企业该有的样子。本文一律按 GAAP 已扣除处理，不加回。</p>
+<h3>一次性项目：几乎没有</h3>
+<p>TTM 唯一能算得上非经常的是"股权投资损失 591 万美元"——合资公司公允价值波动，规模小到可以忽略。没有大额减值、没有重组费用、没有诉讼和解。有效税率 17.07%，正常水平，没有税务一次性调整。</p>
+<p>这一项<strong>没有需要剥的东西</strong>，本身就是个很有价值的信息：BWXT 的利润表基本没有粉饰空间。</p>
+<h3>一个真正需要注意的地方：<strong>税前利润比营业利润高 7000 万</strong></h3>
+<ul>
+<li>营业利润：<strong>3.596 亿美元</strong></li>
+<li>税前利润：<strong>4.295 亿美元</strong></li>
+</ul>
+<p>正常公司这两个数之间只会因为利息支出而<strong>变小</strong>。BWXT 反而大了 6986 万。它背着 20.2 亿美元的债，按利息保障倍数 10.43 倒算，利息支出约 3450 万。所以营业利润之外，还有大约 <strong>1.04 亿美元的非经营性收益</strong>，占税前利润的 <strong>24%</strong>。</p>
+<p>这笔钱主要来自两处：<strong>不并表的政府场地管理合资公司的权益法收益</strong>，以及<strong>养老金计划的非服务成本贷记</strong>（老工业企业的退休金池子投资回报好于精算假设时，会计上产生一笔账面收益）。</p>
+<p>这不算造假——合资公司的利润是真的、每年都有。但它意味着：<strong>你看到的每 4 块钱税前利润里，有 1 块不是从那 35 亿营收里挣出来的</strong>，而且养老金那部分会随利率和股市波动。用"营业利润率 10.6%"去理解这家公司的赚钱能力，会低估；用净利润率 10.1% 去理解，又会高估经营本身。</p>
+<h3>资本化的支出：资本开支 2.02 亿，远超折旧 1.18 亿</h3>
+<p>TTM 资本开支 2.024 亿美元，折旧摊销只有 1.184 亿——<strong>资本开支是折旧的 1.7 倍</strong>。这不是障眼法，这是实打实的扩产：为了接下哥伦比亚级潜艇的产能爬坡，公司这几年一直在 Barberton 和 Mount Vernon 扩建厂房、加装万吨级压机。</p>
+<p>但这直接解释了为什么它的自由现金流那么难看：经营现金流 5.19 亿，扣掉 2.02 亿资本开支，只剩 <strong>3.17 亿</strong>自由现金流——比净利润 3.55 亿还低。<strong>这是一家重资产公司，赚的钱有近四成要再埋回地里。</strong></p>
+<h3>回购与稀释：回购形同虚设，但有分红</h3>
+<ul>
+<li>TTM 回购金额：<strong>2027 万美元</strong></li>
+<li>TTM 股权激励：<strong>3245 万美元</strong></li>
+<li><strong>回购 ÷ SBC = 0.62</strong></li>
+</ul>
+<p>低于 1，意味着回购连员工发股都对冲不掉。不过股本实际只增加了 <strong>0.11%</strong>——基本没稀释，说明 SBC 的规模本来就小到无关紧要。</p>
+<p>真正的股东回报在分红：<strong>TTM 派息 9611 万美元</strong>，按 158.7 亿市值算股息率约 <strong>0.61%</strong>。分红只用掉了自由现金流的 30%，很安全，而且十年来年年小幅上调。</p>
+<p>但要看清全貌：TTM 分红 0.96 亿 + 回购 0.20 亿 = 1.16 亿回到股东手里，同期<strong>净增债务 3.82 亿</strong>。公司在借钱扩产，不是在还钱给股东。总债务从 2024 年底的 10.55 亿涨到现在的 20.2 亿，翻了一倍——一半是买 Kinectrics，一半是建厂。债务/EBITDA 已经到 <strong>4.16 倍</strong>，对一家工业企业偏高了。</p>
+<h3>利润和现金流的差：小而清晰</h3>
+<p>净利润 3.55 亿 → 经营现金流 5.19 亿，差 1.64 亿，主要就是折旧和 SBC，没有猫腻。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>355.18</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+118.39</td>
+<td>厂房设备折旧，不花现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+32.45</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>+ 股权投资损失</td>
+<td>+5.91</td>
+<td>账面波动</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−0.43</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+45.19</td>
+<td>主要是递延所得税和养老金相关调整</td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>+16.98</td>
+<td>收回了一些货款</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+40.99</td>
+<td>欠供应商的钱多了</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−51.51</td>
+<td>实际交的税多于计提</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−44.00</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>519.16</strong></td>
+<td>分毫不差</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−202.40</td>
+<td><strong>扩产，真金白银</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>316.76</strong></td>
+<td>只有净利润的 89%</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 158.7 亿美元，企业价值 172.8 亿美元（多出来的 14.1 亿是净负债：20.2 亿债 − 6.08 亿现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>158.7 ÷ 3.552</td>
+<td><strong>44.9 倍</strong></td>
+<td><strong>2.23 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>158.7 ÷ 约 3.71（加回股权投资损失、并购费用）</td>
+<td>约 42.8 倍</td>
+<td>约 2.34 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>3.552 + 股权投资损失 0.049 = 3.601（SBC 已按 GAAP 扣除）</td>
+<td><strong>44.1 倍</strong></td>
+<td><strong>2.27 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>158.7 ÷ 3.168</td>
+<td><strong>50.1 倍</strong></td>
+<td><strong>2.00 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>172.8 ÷ 3.596</td>
+<td><strong>48.1 倍</strong></td>
+<td><strong>2.08 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>158.7 ÷ [(3.552 + 3.290 + 2.819) ÷ 3 = 3.220]</td>
+<td><strong>49.3 倍</strong></td>
+<td><strong>2.03 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：十亿美元）</p>
+<h3>说人话</h3>
+<p><strong>六个口径全部落在 44 到 50 倍之间，投 100 块的年回报全部落在 2.00 到 2.34 元之间。</strong></p>
+<p>这个高度一致性本身就是结论：<strong>BWXT 的账没有水分可挤。</strong> 前面那家 Jazz，六个口径从 10 倍跳到 42 倍，差四倍；BWXT 从 44 跳到 50，差 12%。没有巨额摊销、没有税务魔术、没有一次性减值、SBC 微不足道、三年利润线性增长（2.82 → 3.29 → 3.55）——<strong>你看到什么就是什么。</strong></p>
+<p>坏消息是：你看到的是 <strong>2 块钱</strong>。</p>
+<p><strong>你现在投 100 块进去，按最保守的口径（自由现金流），公司一年替你赚 2.00 元；按最宽松的口径（公司调整后利润），2.34 元。</strong></p>
+<p><strong>这 2 块钱有多少回到你口袋？大约 0.73 元。</strong> 分红 0.61%（0.61 元），回购 0.13%（0.13 元），加起来 0.74 元。剩下的 1.3 元留在公司里：埋进厂房（资本开支 2.02 亿，占自由现金流的 64%）和还收购 Kinectrics 借的债。</p>
+<p><strong>这个 2 块钱未来会变大还是变小？</strong></p>
+<p>会变大，但变得很慢，而且慢是写死在商业模式里的。</p>
+<p>变大的确定性极高：在手订单 45–50 亿美元、海军造舰计划排到 2040 年代、TTM 营收增速 22.7%、EPS 从 2022 年的 2.60 涨到现在 3.86（四年 +48%）。这不是猜的，是国会预算表上的数字。</p>
+<p>但变大的<strong>幅度</strong>被两件事锁死：
+1. <strong>成本加成定价</strong>。占 56% 营收的海军业务，利润率由政府核定，你效率再高也只能拿那十几个点。这就是为什么营收涨了 22.7%，营业利润只涨了 5.8%（3.398 亿 → 3.596 亿）——<strong>增长几乎没有带来利润杠杆</strong>。
+2. <strong>重资产</strong>。每多做一块钱营收，就要多埋一笔钱进厂房。资本开支是折旧的 1.7 倍，这个状态还要持续好几年。</p>
+<p>前瞻市盈率 34.4 倍，说明市场预期明年利润跳升 30%。PEG 2.78——即便按市场自己的乐观预期，这个价格相对增速也是贵的。股价过去 52 周跌了 2%，200 日均线（195.84）比 50 日均线（182.99）高一截，说明市场这半年一直在往下修正预期。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>BWXT 是一门几乎不可能被抢走的生意——全美唯一能造海军核反应堆的厂，订单排到 2040 年代，账目干净到六个估值口径只差 12%；但它同时也是一门几乎不可能变得暴利的生意，一半以上的收入按政府核定的成本加成定价，营收涨 22.7% 而营业利润只涨 5.8%，赚来的现金六成要埋回厂房；45 倍市盈率买一个每年只能替你赚 2 块钱、且利润率被法律锁死的国防承包商，你买的不是成长，是"绝对不会消失"这四个字的安全感——而这四个字，现在标价 45 倍。</strong></p>
+</div></body></html>

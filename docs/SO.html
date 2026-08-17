@@ -1,0 +1,344 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SO · Southern Company（美国南方电力公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">23倍对5–7%增长的公用事业已站在历史高位</div><h1>SO · Southern Company（美国南方电力公司）</h1>
+<p><strong>市值</strong> $1070 亿 · <strong>股价</strong> 约 $93 · <strong>行业</strong> 公用事业 / 受管制电力与燃气 · <strong>TTM 截止</strong> 2026 年 6 月 30 日 · <strong>分析日期</strong> 2026-08-14 · <strong>全榜名次</strong> 第 79 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Southern Company 是一家控股公司，本身不发电也不卖电，底下装着几家电力公司和燃气公司。TTM 营收 301.78 亿美元，财报按五个口径拆。但<strong>按生意的实质来分，它其实只有两门半生意</strong>。</p>
+<h3>生意一：受管制的零售卖电（营收 193.57 亿，占 64%，绝对主体）</h3>
+<p>这是理解整家公司的钥匙。</p>
+<p>Southern 旗下有三家电力公司：<strong>Alabama Power（阿拉巴马电力）</strong>、<strong>Georgia Power（佐治亚电力）</strong>、<strong>Mississippi Power（密西西比电力）</strong>。在这三个州的绝大部分地区，居民和企业<strong>只能</strong>从它们这里买电——没有第二家可选。这是法律授予的垄断。</p>
+<p>作为交换，它不能自己定价。运作方式是这样的：</p>
+<ol>
+<li>公司花钱建电厂、拉电网、埋电缆，这些钱形成的资产叫<strong>「费率基数（rate base）」</strong>；</li>
+<li>公司拿着账本去找州公用事业委员会，说「我这些资产值 500 亿，请批准我在上面赚 11.5% 的回报」；</li>
+<li>委员会审完，批准一个允许的净资产收益率（佐治亚电力大约在 11.9% 上下的区间里）；</li>
+<li>委员会据此倒推出电价，让公司刚好赚到这个数，多一分要退给用户，少一分可以再申请涨价。</li>
+</ol>
+<p><strong>这套机制彻底改写了「看财报」的方式：对 Southern 来说，花钱不是成本，花钱是增长。</strong> 每多建一座变电站、每多埋一条电缆，费率基数就变大，允许赚的绝对金额就变大。这就是为什么它 TTM 花了 <strong>141.39 亿美元资本开支</strong>（相当于营收的 47%），却没人觉得这是坏事——普通公司这么烧钱早就崩了，它烧的每一块钱都会在未来变成受法律保护的利润。</p>
+<p>具体到收钱：阿拉巴马一户普通人家一个月用 1200 度电，电费单大约 170 美元。乘以三州合计约 900 万个电表，就是这 193 亿。</p>
+<p><strong>当下最大的变量是数据中心。</strong> 佐治亚州这几年成了 AI 数据中心的聚集地，一座大型数据中心的用电量相当于一座 20 万人口的城市。对一家「电卖得越多、资产建得越多、利润越高」的受管制电力公司来说，这是几十年一遇的顺风——十几年来美国用电量基本零增长，突然来了这么一波，这也是市场给它 22 倍市盈率（比历史高）的核心原因。</p>
+<p><strong>还有一件必须提的事：核电站 Vogtle 3、4 号机组。</strong> 这是美国三十多年来唯一新建成的核电机组，位于佐治亚州，2023 和 2024 年先后投运。原本预算约 140 亿、工期到 2016，最终花了约 350 亿、拖了七年多。这个坑现在填完了，机组已经进入费率基数开始产生回报——<strong>过去十年压着股价的东西，现在变成了利润来源</strong>。</p>
+<h3>生意二：受管制的卖天然气（营收 53.83 亿，占 18%）</h3>
+<p>Southern Company Gas，旗下有伊利诺伊州的 Nicor Gas、佐治亚州的 Atlanta Gas Light、弗吉尼亚天然气、田纳西的 Chattanooga Gas，合计约 430 万户燃气用户。</p>
+<p>生意逻辑和卖电<strong>完全一样</strong>：埋管道 → 管道计入费率基数 → 委员会批准回报率 → 从用户燃气费里收回。区别只在于季节性极强（冬天取暖用量是夏天的好几倍）以及天然气本身的采购成本是<strong>原样转嫁</strong>给用户的——气价涨了公司不多赚，气价跌了也不少赚，公司赚的只是「运输和配送」这一段的固定回报。</p>
+<h3>半门生意：批发卖电（营收 31.80 亿，占 10.5%）</h3>
+<p><strong>Southern Power</strong>。这一块<strong>不受管制</strong>，是自由市场生意：建风电场、太阳能电站、燃气电厂，然后和大客户（比如某个科技公司的数据中心、某个州的另一家电力公司）签 15–20 年的长期购电协议（PPA），按合同价卖电。</p>
+<p>叫它「半门」是因为它虽然不受管制，但靠长期合同锁死了价格，风险特征更接近债券而不是真正的市场化发电。这块 FY2025 增速 21%，是四块里最快的——同样是数据中心带来的。</p>
+<h3>剩下的零头</h3>
+<p>「其他电力」9.98 亿（输电服务、给别的公司代运营等）和「其他经营」12.59 亿（Southern Telecom 光纤租赁、PowerSecure 分布式能源等），加起来 7.5%，不重要。</p>
+<h3>一张钱的表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>增速*</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>零售电力（受管制）</td>
+<td>$193.57 亿</td>
+<td>+8.7%</td>
+<td>64.1%</td>
+<td>约 26%（估算）</td>
+<td>约 50 亿（估算）</td>
+</tr>
+<tr>
+<td>天然气配送（受管制）</td>
+<td>$53.83 亿</td>
+<td>+13.2%</td>
+<td>17.8%</td>
+<td>约 20%（估算）</td>
+<td>约 11 亿（估算）</td>
+</tr>
+<tr>
+<td>批发电力（Southern Power）</td>
+<td>$31.80 亿</td>
+<td>+21.0%</td>
+<td>10.5%</td>
+<td>约 25%（估算）</td>
+<td>约 8 亿（估算）</td>
+</tr>
+<tr>
+<td>其他电力</td>
+<td>$9.98 亿</td>
+<td>+6.4%</td>
+<td>3.3%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>其他经营</td>
+<td>$12.59 亿</td>
+<td>+11.6%</td>
+<td>4.2%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$301.78 亿</strong></td>
+<td><strong>+6.4%</strong></td>
+<td>100%</td>
+<td><strong>24.21%</strong></td>
+<td><strong>$73.05 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>* 财报只按年度披露分部数据，增速一列为 FY2025 对 FY2024；合计行的 +6.4% 是 TTM 口径。
+<strong>财报不按分部披露经营利润，上表分部利润率为按整体 24.21% 和各业务典型监管回报水平估算，仅供判断结构，不要当精确数字用。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.46 亿美元，占净利润 3.1%。可以忽略，本文按 GAAP 已扣除处理。这是重资产老公司的常态。</p>
+<p><strong>一次性项目</strong>：TTM 没有看到大额的诉讼、重组或减值。过去十年频繁出现的 Vogtle 建设超支减值，随着机组投运基本结束了。</p>
+<p><strong>这里有一项必须单独拎出来说：非现金利润占比很高。</strong> 现金流量表 TTM 有一行「其他调整 −15.70 亿」，也就是净利润里有 15.7 亿是<strong>记了账但没收到现金</strong>的东西，得在算现金流时倒扣掉。<strong>这相当于 46.57 亿净利润的 34%。</strong></p>
+<p>对受管制电力公司来说，这一行主要装三样东西，其中前两样是这个行业特有的「合法的纸面利润」：</p>
+<ul>
+<li><strong>AFUDC 权益部分（建设期资金成本）</strong>：电厂建了七年才发电，这七年里公司投进去的自有资金按理该有回报。会计准则允许它<strong>现在就把这份「应得的回报」记成当期收入</strong>，同时计入在建工程，将来通过折旧慢慢从电费里收回来。也就是说，账上今天多出的这笔利润，现金要等未来几十年才真正到手。</li>
+<li><strong>递延所得税</strong>：TTM 实际交税只有 6.73 亿，<strong>有效税率 12.82%</strong>（法定 21%）。低的部分来自核电投资抵免、可再生能源抵免和多余递延所得税的摊回。这不是造假，但意味着账面净利润被税收优惠垫高了一截。</li>
+<li>未合并子公司的权益法收益。</li>
+</ul>
+<p>这不是造假，是受管制行业的标准做法。但你必须知道：<strong>Southern 每 100 块净利润里，大约有 34 块当期并没有变成现金。</strong></p>
+<p><strong>资本化的支出</strong>：不适用软件/内容资本化那一套，但它有更大的版本——141 亿资本开支全部计入资产、按 30–60 年折旧，TTM 折旧摊销只有 63.46 亿。<strong>新投入是折旧回收的 2.2 倍</strong>，说明资产还在快速扩张期，账面资产未来若干年会持续膨胀。</p>
+<p><strong>回购与稀释</strong>：<strong>这一项是全篇最需要警惕的地方，方向和一般公司完全相反。</strong></p>
+<p>Southern <strong>一股都没回购</strong>。不但没回购，TTM 还<strong>发行了 41.57 亿美元的新股</strong>。同期分红付出去 31.00 亿。</p>
+<p><strong>它发新股收进来的钱，比发给股东的分红还多 10 亿。</strong> 股本一年增加 <strong>1.58%</strong>。</p>
+<p>这不是丑闻，是受管制电力公司的商业模式决定的：资本开支 141 亿远超经营现金流 107 亿，缺口 35 亿必须从外面拿——TTM 净新增长期债务 46.46 亿、新发股票 41.57 亿。委员会批准的回报率是按「资产」算的，你想多赚就必须多投，想多投就必须不断融资。</p>
+<p><strong>对你这个股东的实际含义是：你拿到的 2.9% 股息率，有相当一部分是公司左手向新股东要钱、右手发给你的。</strong> 你的持股比例每年被稀释 1.58%，等于股息里净剩下的实际回报要打个折。这是买公用事业股票时最容易被忽略的一件事。</p>
+<p><strong>利润和现金流的差</strong>：净利润 46.57 亿，经营现金流 106.51 亿，<strong>自由现金流 −34.88 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4,657</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+6,346</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+146</td>
+</tr>
+<tr>
+<td><strong>− 其他非现金调整（AFUDC、递延税等）</strong></td>
+<td><strong>−1,570</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+122</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−40</td>
+</tr>
+<tr>
+<td>＋ 应付账款</td>
+<td>+2</td>
+</tr>
+<tr>
+<td>− 应计费用减少</td>
+<td>−164</td>
+</tr>
+<tr>
+<td>− 应交税金减少</td>
+<td>−12</td>
+</tr>
+<tr>
+<td>＋ 其他经营性变动</td>
+<td>+683</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>10,651</strong></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−14,139</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−3,488</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要看的是最后两行。</strong> 经营现金流 106.51 亿看着很漂亮，是净利润的 2.3 倍——但那是因为折旧 63 亿这个巨大的非现金项目加了回来。而折旧对应的资产是真的会老化、真的需要更换的。141 亿资本开支砸下去之后，<strong>这家公司一年下来实际上还倒欠 35 亿现金</strong>，而且已经连续四年（2022–TTM）自由现金流为负。</p>
+<p>所以对 Southern，<strong>「自由现金流」这个指标是没有意义的</strong>，用它算估值只会得到一个负数。这不代表公司有问题，只代表它是一家「用债和股权融资去买未来受法律保护的利润」的机器。真正要盯的是三件事：允许回报率会不会被下调、融资成本（利息保障倍数只有 <strong>2.27 倍</strong>，相当薄）、以及 <strong>770.87 亿美元的总负债</strong>（净负债 741 亿，是市值的 69%）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1069.7 ÷ 46.57</td>
+<td><strong>23.0 倍</strong></td>
+<td><strong>4.35 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>与 GAAP 差异已很小（Vogtle 调整项基本结束），视同一致</td>
+<td>约 23.0 倍</td>
+<td>约 4.35 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1069.7 ÷ 46.57（SBC 按 GAAP 扣除，TTM 无重大真一次性项目可剔）</td>
+<td><strong>23.0 倍</strong></td>
+<td><strong>4.35 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>−34.88 亿</strong>，负数</td>
+<td><strong>不适用</strong></td>
+<td><strong>不适用</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1810.8 ÷ 73.05</td>
+<td><strong>24.8 倍</strong></td>
+<td>4.03 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1069.7 ÷ 44.66（FY24 44.01、FY25 43.41、TTM 46.57 的平均）</td>
+<td><strong>24.0 倍</strong></td>
+<td><strong>4.17 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：亿美元）</p>
+<p><strong>注意「企业价值口径」那一行比市盈率还高，这在成长股里很少见，但对高负债公用事业是常态。</strong> 原因是市值 1070 亿，但企业价值 1811 亿——中间那 741 亿全是净负债。换个说法：<strong>你花 1070 亿买下这家公司，同时接手了 741 亿的债，实际上要为这门生意付出 1811 亿。</strong> 债权人排在你前面。</p>
+<p><strong>另一个值得高兴的对比：当期 23.0 倍 vs 三年平均 24.0 倍，只差 4%。</strong> 这和 AppLovin 那种当期 24.5 倍、三年平均 34.7 倍的情况完全不同——Southern 的利润三年来稳如老狗（44.01 → 43.41 → 46.57），你现在看到的利润就是它的正常水平，不是踩在高点上。<strong>这是受管制垄断生意最大的好处：可预测。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Southern，按最保守的真实口径算，公司一年替你赚 4.35 块。</strong></p>
+<p>这 4.35 块里的去向很清楚：</p>
+<ul>
+<li><strong>约 2.90 块</strong>以现金分红的形式打到你账上（股息率 2.90%，TTM 共派 31.00 亿）。这个分红连续涨了 20 多年，是它最核心的卖点。</li>
+<li><strong>0 块</strong>来自回购——它不回购。</li>
+<li><strong>剩下 1.45 块</strong>留在公司里继续建电网。</li>
+<li><strong>但要扣掉稀释</strong>：股本一年增加 1.58%，等于你的份额被摊薄。把这一项算进去，实际到手的年回报大约是 <strong>2.9% 股息 −1.6% 稀释 + 留存收益带来的增长</strong>。</li>
+</ul>
+<p><strong>这个 4.35 块未来大概率缓慢变大，但幅度有限。</strong> 变大的理由是数据中心带来的用电量增长、Vogtle 核电投产进入费率基数、以及每年 140 亿资本开支持续做大费率基数——行业惯例是这类公司每年 5%–7% 的每股收益增长。变小的风险有三个：一是利率如果继续高企，它 770 亿的债换起来会很贵（利息保障倍数只有 2.27 倍，非常薄）；二是委员会可能因为电价涨太快、居民抗议而压低允许回报率；三是持续发新股稀释。</p>
+<p>用一句更直白的话讲：<strong>买 Southern 本质上是买一张「受政府担保、每年派息 2.9%、票息随通胀缓慢上调」的类债券，而不是买一家公司。</strong> 它的 Beta 只有 0.33，股价 52 周只动了 −2.15%，走势和股市基本无关。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家用 741 亿负债和不断发新股撑起来的受管制垄断机器，利润稳定得像债券票息、三年平均口径和当期几乎没有差别，AI 数据中心的用电潮和 Vogtle 核电投产给了它十几年来第一次真正的增长故事；但 23 倍市盈率对一家每年只能涨 5%–7% 的公用事业来说已经站在历史高位，你付的是「确定性」的溢价，2.9% 的股息还要被 1.58% 的股本稀释吃掉一半——想要安稳可以拿，想要回报别指望它。</strong></p>
+</div></body></html>

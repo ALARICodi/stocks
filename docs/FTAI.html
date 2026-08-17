@@ -1,0 +1,331 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FTAI · FTAI Aviation（航空发动机模块与租赁）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FTAI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">生意故事我信，账面利润质量非常差</div><h1>FTAI · FTAI Aviation（航空发动机模块与租赁）</h1>
+<p>市值 223.0 亿美元 ｜ 股价 $217.13 ｜ 行业：航空发动机售后（数据源归类为电子科技，实为航空零部件+租赁）｜ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>FTAI 名义上有五条营收线，但实质上只有<strong>两门生意</strong>，而且这两门生意正在此消彼长——一门在爆炸性膨胀，另一门在被公司主动拆掉。</p>
+<h3>生意一：Aerospace Products（发动机模块与旧件）—— TTM 营收 27.00 亿，占 86.7%</h3>
+<p>这是现在的 FTAI，也是股价从 2022 年 16 美元涨到今天 217 美元的全部理由。</p>
+<p><strong>先说它盯上的是什么东西。</strong> 全世界飞得最多的两款窄体客机是波音 737NG 和空客 A320ceo，它们绝大多数装的是同一款发动机：CFM56（GE 和赛峰的合资公司 CFM 造的）。这款发动机造了两万四千多台，是人类历史上装机量最大的喷气发动机。这批飞机本来该在 2020 年代逐步退役，换成新一代的 LEAP 和普惠 GTF——<strong>但新发动机集体出了问题</strong>：GTF 的粉末冶金盘件有缺陷，全球几百架 A320neo 趴窝拆发动机；LEAP 的高压涡轮叶片寿命也不及预期。结果是老的 737NG/A320ceo 不但没退役，还被航空公司留着继续飞，<strong>CFM56 的维修需求和二手价格双双暴涨</strong>。FTAI 就站在这个口子上。</p>
+<p><strong>再说它具体怎么做这门生意。</strong> 一台 CFM56 大修（业内叫"进厂"，shop visit）的传统流程是：发动机从机翼上拆下来，运到 GE 或者某家授权维修厂，整机拆解、检查、换件、组装、试车，<strong>花 450 万到 600 万美元，等 90 到 120 天</strong>。对一家低成本航空来说，一架飞机停飞四个月是灾难。</p>
+<p>FTAI 的做法是把发动机拆成三块看：风扇/低压压气机模块、核心机模块（高压压气机+燃烧室+高压涡轮，最贵最容易坏的那块）、低压涡轮模块。<strong>实际情况往往是只有一块坏了，另外两块还能再飞几千小时。</strong> 于是 FTAI 在市场上大量收购二手 CFM56 整机（一台看剩余寿命，300 万到 800 万美元不等），拆散，修好，在自己的仓库里囤一大堆"随时可装"的合格模块。</p>
+<p>具体到一笔交易：某家飞 40 架 737-800 的低成本航司，一台发动机核心机出现排气温度裕度不足。传统路线是 550 万美元、100 天。FTAI 说：<strong>我卖你一块现成的合格核心机模块，250 万美元，三周装上去接着飞</strong>，你那块坏的给我。FTAI 拿回坏模块，自己修好，扔回模块池，等下一个客户。FTAI 在这块模块上的成本可能只有 120 万——因为它是从一台整机拆出来的三块之一，成本被摊薄了，而且拆机时还顺手拆下几百个可用旧件。</p>
+<p><strong>第二条腿是旧件（USM，used serviceable material）。</strong> 拆一台整机，除了三大模块，还有上千个能重新认证使用的零件：涡轮叶片、导向叶片、盘、轴承、机匣。一套高压涡轮工作叶片二手能卖几十万美元，一片新的原厂叶片要一万多美元一片。航空公司修发动机时用旧件替代新原厂件，能省三到五成成本，而且 FAA 允许。</p>
+<p><strong>第三条腿是 PMA 件。</strong> FTAI 和 Chromalloy 合资做 PMA（Parts Manufacturer Approval），就是拿到 FAA 批准、由第三方制造、能替代原厂件的新零件，价格比 GE 原厂便宜三到四成。这块毛利最高，但也最招仇恨——<strong>GE 一直用各种方式抵制 PMA 件进入 CFM56 的维修体系</strong>，包括在维修手册和保修条款上设障碍。这是这门生意最大的商业风险，不是技术风险。</p>
+<p>这门生意的营收从 FY2021 的 0.23 亿，一路涨到 FY2023 的 4.55 亿、FY2024 的 10.80 亿、FY2025 的 19.36 亿，TTM 已经 27.00 亿，<strong>四年翻了一百多倍</strong>。这个曲线本身就是这只股票的故事。</p>
+<h3>生意二：租赁与维护储备（Leasing + Maintenance）—— TTM 营收 17.20 亿 + 1.52 亿，合计占 10.4%</h3>
+<p>这是 FTAI 的老本行，正在被主动缩小。</p>
+<p>它买下 CFM56 发动机和 737/A320 整机，租给航空公司。租一台 CFM56 大约每月 10 万到 20 万美元。除了月租，航空公司还要按每飞行小时往一个"维护储备金"账户里打钱（比如每飞行小时 250 美元），将来发动机大修时从这个账户里出——<strong>如果飞机还回来时发动机状态比合同约定的好，这笔钱归 FTAI</strong>。这就是 Maintenance 那 1.52 亿的来源。</p>
+<p>关键变化是：FTAI 把这块资产往一个叫 <strong>Strategic Capital Initiative（SCI）</strong> 的合资平台里搬——引入外部投资人的钱来买飞机，FTAI 只出一小部分资本，然后收管理费和超额收益分成，飞机不再记在自己的资产负债表上。所以你看到 <strong>Lease Income 从 FY2024 的 2.55 亿降到 FY2025 的 2.35 亿，再降到 TTM 的 1.72 亿</strong>，Maintenance 从 2.19 亿降到 1.52 亿。这不是生意变差，是刻意把重资产挪出表外，把腾出的钱投进模块工厂。</p>
+<p><strong>但这个转型有个必须看清的副作用</strong>，下一节会讲：把飞机卖给 SCI、把租赁发动机转进模块业务，<strong>这些"搬家"动作本身在利润表上产生了巨额的资产处置收益</strong>。</p>
+<h3>各条线的钱（TTM 截止 2026-06-30，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>营收线</th>
+<th>TTM 营收</th>
+<th>同比（对 FY2025）</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aerospace Products 模块与旧件</td>
+<td>2,700</td>
+<td>+39.5%</td>
+<td>86.7%</td>
+</tr>
+<tr>
+<td>Total Lease Income 租金</td>
+<td>172.0</td>
+<td>−26.9%</td>
+<td>5.5%</td>
+</tr>
+<tr>
+<td>Maintenance 维护储备</td>
+<td>152.2</td>
+<td>−30.4%</td>
+<td>4.9%</td>
+</tr>
+<tr>
+<td>Asset Sales 资产买卖</td>
+<td>67.2</td>
+<td>−37.2%</td>
+<td>2.2%</td>
+</tr>
+<tr>
+<td>Other 其他</td>
+<td>21.8</td>
+<td>+107%</td>
+<td>0.7%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,113</strong></td>
+<td><strong>+45.3%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报页面不披露分部利润</strong>，只到营收。整体经营利润率 25.18%，但<strong>这个数已经比 FY2025 的 30.70% 掉了 5.5 个百分点，毛利率从 40.09% 掉到 32.21%</strong>——模块业务占比越高，整体毛利率越低（模块和旧件是"进货—加工—卖出"的实物生意，毛利天然低于收租），这是结构性的，不是暂时的。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节是这份分析的核心。FTAI 的利润表和现金流量表讲的是两个完全不同的故事。</strong></p>
+<p><strong>净利润和现金流的差 —— 先看最扎眼的数字</strong>：TTM 净利润 <strong>+4.78 亿</strong>，经营现金流 <strong>−4.40 亿</strong>，自由现金流 <strong>−9.62 亿</strong>。<strong>一家账面赚 4.78 亿的公司，一年从经营活动里净流出了 4.40 亿现金。</strong>这不是某一年的意外：经营现金流已经连续四年为负（FY2022 −0.21 亿、FY2024 −1.88 亿、FY2025 −3.11 亿、TTM −4.40 亿），而且亏损幅度<strong>逐年扩大</strong>。</p>
+<p>逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>+477.6</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+211.9</td>
+<td>发动机和飞机的折旧</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+45.4</td>
+<td>融资费用等</td>
+</tr>
+<tr>
+<td><strong>－ 资产处置收益</strong></td>
+<td><strong>−347.9</strong></td>
+<td><strong>关键行：这笔收益进了利润表，但现金进的是投资活动</strong></td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+25.0</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 权益投资损益等</td>
+<td>−13.4</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 坏账等杂项</td>
+<td>+6.2</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+12.2</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>－ 存货增加</strong></td>
+<td><strong>−829.8</strong></td>
+<td><strong>第二个关键行：囤发动机和模块，一年多压了 8.3 亿现金</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+149.9</td>
+<td>占供应商的钱</td>
+</tr>
+<tr>
+<td>－ 其他营运资金</td>
+<td>−195.6</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>−439.8</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>−522.4</td>
+<td>继续买发动机</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−962.2</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要说两件事：</strong></p>
+<p><strong>第一件：4.78 亿净利润里，有 3.48 亿（73%）来自卖资产的账面收益。</strong> 这不是一次性的——FY2025 是 4.24 亿、FY2024 是 3.78 亿、FY2023 是 1.61 亿，年年都有，而且是净利润的主体。这些收益怎么来的？FTAI 把租赁机队里已经计提过多年折旧的发动机和飞机卖掉（TTM 处置资产收回现金 15.19 亿，账面净值约 11.71 亿），账面值远低于市价，一卖就是 30% 的收益。<strong>卖给谁？相当一部分卖给了它自己发起、自己管理的 SCI 平台。</strong></p>
+<p>我要说清楚的是：<strong>这个收益本身在会计上是合规的</strong>——CFM56 的二手价格确实因为新发动机故障而暴涨，老资产按老规则折旧，市价高于账面是真实的。但对投资人来说必须问一句：<strong>你买的这 47 倍市盈率里，73% 的利润来自把自己的存货以高于账面的价格卖掉，这件事能重复多少年？</strong> 机队是有限的，卖一台少一台。</p>
+<p><strong>第二件：存货一年增加 8.3 亿。</strong> 这是模块工厂的燃料——要有随叫随到的模块池，就必须先囤大量整机和模块。存货周转率只有 1.84 次/年，也就是说货压在仓库里平均超过半年。<strong>只要业务还在扩张，这笔现金流出就停不下来。</strong>说得直白点：FTAI 现在的商业模式是"卖掉老机队 → 拿钱去囤发动机 → 拆成模块卖"，利润表记的是第一步的收益，现金流量表记的是第二步的消耗。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 2,500 万，占净利润 5.2%，绝对额不大。但要和下一条一起看。</p>
+<p><strong>回购与稀释</strong>：<strong>TTM 回购金额为零。</strong>SBC 2,500 万、员工行权，股本一年<strong>增加 1.44%</strong>。回购/SBC 比值 = 0。也就是说，股东在被持续稀释，公司一分钱回购都没做。分红方面 TTM 付了普通股股息 1.54 亿、优先股股息 0.15 亿，股息率约 0.9%。</p>
+<p><strong>一次性项目</strong>：TTM 没有减值或重组。但 <strong>FY2024 是个大坑</strong>：经营利润有 5.52 亿，净利润却是 <strong>−0.32 亿</strong>——中间蒸发了 5.8 亿。一部分是利息（当年现金利息 2.22 亿），另一部分是 FTAI 在 2024 年把外部管理人 Fortress 内部化时付出的一笔大额一次性对价。这笔是真一次性，但它把三年平均利润砸出了一个大坑（见下节）。</p>
+<p><strong>税</strong>：账面所得税费用 1.02 亿（有效税率 17.04%），但<strong>实际付出去的现金税只有 1,566 万</strong>，相当于税前利润的 2.6%。差额进了递延所得税负债——加速折旧的发动机在税法上抵扣得比会计上快。这不是造假，但意味着<strong>未来某个时点这笔税是要还的</strong>，尤其是当机队卖光、折旧抵扣用尽的时候。</p>
+<p><strong>资产负债表的脆弱</strong>：总债务 34.96 亿，现金 3.37 亿，净负债 31.59 亿。股东权益只有约 4.04 亿——<strong>债务/权益 8.65 倍，市净率 55 倍，有形资产市净率 75 倍</strong>。利息覆盖倍数只有 3.17 倍（现金利息 2.35 亿）。ROE 174% 这个数字完全没有意义，它只是"很小的分母除出来的"。这是一家用高杠杆撑起来的公司，在经营现金流为负的情况下，<strong>扩张完全靠卖资产和借钱</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 223.01 亿，企业价值 254.60 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>22,301 ÷ 470.4（EPS 4.58 口径）</td>
+<td><strong>47.4 倍</strong></td>
+<td><strong>2.11 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>公司主推 Adjusted EBITDA，不公布调整后每股收益；最接近的可比数是 EV/EBITDA</td>
+<td>25.6 倍 EV/EBITDA</td>
+<td>不可直接换算</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>22,301 ÷ 188.9（净利润扣掉 3.479 亿资产处置收益，按 17% 税）</td>
+<td><strong>118 倍</strong></td>
+<td><strong>0.85 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流 <strong>−9.62 亿</strong></td>
+<td><strong>不适用（为负）</strong></td>
+<td><strong>−4.31 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>25,460 ÷ 783.9</td>
+<td><strong>32.5 倍</strong></td>
+<td>3.08 元（税前、全资本口径）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>22,301 ÷ 219.1（FY23/24/25 平均）</td>
+<td><strong>101.8 倍</strong></td>
+<td><strong>0.98 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>几点说明：</p>
+<p><strong>"剔除障眼法"这一行为什么这么算。</strong> 我把资产处置收益全部扣掉，是想回答一个问题："<strong>如果只靠卖模块、卖旧件、收租金，不靠卖飞机，这家公司值多少倍？</strong>"答案是 118 倍。有人会反驳说资产买卖本来就是 FTAI 商业模式的一部分——这话有道理，所以我把 GAAP 的 47.4 倍也列着，真实答案在两者之间。但<strong>这个区间本身（47 倍到 118 倍）就说明了一件事：这家公司的估值高度依赖于你怎么看待"卖资产赚的钱算不算真利润"。</strong></p>
+<p><strong>三年平均那一行是全表最重要的。</strong> FY2025 净利润 4.77 亿、FY2024 <strong>−0.32 亿</strong>、FY2023 2.12 亿，三年平均 2.19 亿，对应 <strong>101.8 倍</strong>。当期 47.4 倍 vs 三年平均 101.8 倍，<strong>差了一倍多，说明当前利润处在历史高点，而不是常态</strong>。</p>
+<p><strong>还有一个更狠的算法</strong>：这三年的资产处置收益分别是 4.24 亿、3.78 亿、1.61 亿，三年平均 3.21 亿。<strong>三年平均净利润 2.19 亿 &lt; 三年平均资产处置收益 3.21 亿（税后 2.66 亿）。也就是说，过去三年平均下来，如果不卖资产，FTAI 是亏钱的（约 −0.47 亿）。</strong>这一句话是整篇分析里最值钱的一句。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按 GAAP 口径公司一年替你赚 2.11 块；按剔除卖资产收益的口径，只赚 0.85 块；按自由现金流口径，公司这一年不但没给你赚钱，还净烧掉 4.31 块。</strong></p>
+<p>这里面回到你口袋的：分红约 0.9 元，回购 0 元。<strong>而且这 0.9 元的分红不是从经营现金流里出的——经营现金流是负的——是从卖飞机的钱和借来的钱里出的。</strong></p>
+<p><strong>这个数字未来会变大还是变小？市场认为会大幅变大</strong>：前瞻市盈率只有 23.85 倍，PEG 0.65，意味着分析师预期未来一年利润接近翻倍。逻辑也说得通——模块工厂的产能在爬坡，CFM56 的维修需求高峰还在前面（GTF 和 LEAP 的问题至少要修到 2028 年），PMA 件的渗透率还很低，每提高一个百分点都是纯利润。如果模块业务的规模效应真的兑现、存货周转起来、经营现金流转正，那今天 47 倍买的其实是明年 24 倍。</p>
+<p><strong>但要变大必须同时成立三件事</strong>：一是存货能真的卖掉变现（不是越囤越多）；二是不再需要靠卖机队来撑利润（机队总有卖完的一天）；三是 GE 不能在 PMA 和维修手册上把它掐死。<strong>任何一件不成立，这只股票的估值基础就塌了。</strong>目前 6.77% 的流通股被做空，说明有一批人在赌这三件事至少有一件会出问题。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家真实业务确实很好、但账面利润的质量非常差的公司——生意的故事（趁新发动机不争气，把全球最大机队的 CFM56 维修市场从 GE 手里抢过来）我信，价格我不信。</strong></p>
+<p>真正的问题不是 47 倍贵不贵，而是：<strong>这 47 倍分母里的四分之三，是把自己以前买的飞机以高于账面的价格卖出去实现的账面收益；同时公司经营活动一年净流出 4.4 亿现金、自由现金流 −9.6 亿、负债 35 亿、股东权益只剩 4 亿、还在稀释股本且不回购。</strong>一家账面高增长、现金流持续失血、靠变卖资产维持利润和分红、杠杆 8.65 倍的公司，在过去 52 周股价还涨了 48.7%——<strong>这不是一笔便宜生意，这是一张押注"模块工厂能在机队卖光之前跑通"的高杠杆彩票。</strong></p>
+<p>如果转型成功，今天的价格事后看会很便宜；如果存货卖不动或者 GE 出手，4 亿的股东权益扛不住 35 亿的债务。<strong>这家公司值得放进观察名单，但要买它，你得先想清楚：你是在买一家发动机维修公司，还是在买一个资产腾挪的会计游戏。目前的财报，两者的证据都有。</strong></p>
+</div></body></html>

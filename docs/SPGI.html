@@ -1,0 +1,408 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SPGI · 标普全球（S&P Global Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SPGI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">两台印钞机捆着一块被AI拷问的数据业务，可拿不用急</div><h1>SPGI · 标普全球（S&amp;P Global Inc.）</h1>
+<p><strong>市值</strong> $1,245.9 亿 · <strong>股价</strong> $422.7 · <strong>行业</strong> 商业服务 / 金融信息（NYSE）
+<strong>数据口径</strong> TTM = 最近四个季度滚动，截止 <strong>2026年6月30日</strong>（2026年7月28日发布）
+<strong>全量筛选榜名次</strong> 第 71 名 · <strong>分析日期</strong> 2026-08-14</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>标普全球是一家<strong>收过路费的公司</strong>。它自己不投资、不放贷、不承销，它只做一件事：<strong>站在金融市场的几个必经关口上，每一笔经过的交易收一点钱。</strong></p>
+<p>它有五门生意，其中两门是印钞机，两门是不错的生意，一门是它花大价钱买回来但现在被质疑的生意。</p>
+<h3>生意一：信用评级（Ratings，TTM 50.68 亿，占 31.4%）—— 最好的一门</h3>
+<p>一家公司要发债券融资，比如苹果要发 50 亿美元的公司债。在债券卖给投资人之前，它<strong>必须</strong>找评级机构给这批债打个分（AAA、AA、BBB…）。为什么"必须"？因为买债的一方——养老金、保险公司、货币基金——他们的投资章程和监管规定白纸黑字写着"只能买投资级以上的债"，没有评级的债他们<strong>在法律上不能买</strong>。</p>
+<p>标普收多少钱？<strong>按发行金额收，大约 3.5–7 个基点</strong>。苹果发 50 亿的债，标普大概拿 200–350 万美元。这笔钱苹果眼都不眨——相对于 50 亿的融资额，这是零头，而且不给这笔钱这债根本发不出去。</p>
+<p>除了发债时的一次性费用，标普还收<strong>年费</strong>：只要这只债券还在市场上活着，标普每年要维护这个评级、发布评论、必要时调降，每年再收一笔。所以一次发行会带来十年的年金。</p>
+<p>这门生意的护城河在于<strong>它是被监管制度钦定的</strong>。全世界的信用评级市场，标普 + 穆迪拿走约 80%，惠誉再拿 15%。这不是靠产品好，是靠<strong>监管认可 + 五十年积累的评级历史数据 + 投资人的路径依赖</strong>——一个新玩家就算方法论更好，养老金也不敢用它的评级。2008 年这三家把次贷 CDO 全打成 AAA，事后被罚了几十亿美元，<strong>但市场结构一点没变，十几年后还是这三家</strong>。这就是护城河的真正含义。</p>
+<p>弱点：它跟<strong>债券发行量</strong>强相关。利率一涨、企业不发债了，这门生意当年就掉 20%（FY2022 就是这样，从 40.97 亿掉到 30.50 亿）。它是好生意，但不是稳定生意。</p>
+<h3>生意二：指数（Indices，TTM 20.13 亿，占 12.5%）—— 最赚钱的一门</h3>
+<p>标普 500 指数就是这家公司的。道琼斯工业平均指数也是。</p>
+<p>它怎么收钱？分三层：</p>
+<ol>
+<li><strong>资产挂钩费（最大的一块）</strong>：全世界追踪标普 500 的 ETF 和指数基金，管理资产大约 10 万亿美元。这些基金（Vanguard 的 VOO、State Street 的 SPY、iShares 的 IVV）每年要<strong>按管理规模的 1–3 个基点</strong>付给标普"指数授权费"。一只 5,000 亿的 ETF，一年付标普大约 5,000 万到 1 亿美元。<strong>基金公司之间打价格战把管理费杀到 0.03%，标普的抽成一分没少</strong>——因为投资人要买的是"标普 500"这四个字，不是别的什么 500 只股票的组合。</li>
+<li><strong>衍生品交易费</strong>：芝加哥商品交易所的标普 500 期货和期权，每成交一手，标普收一份授权费。</li>
+<li><strong>数据订阅费</strong>：卖指数成分和历史数据。</li>
+</ol>
+<p><strong>这门生意的经济性接近完美。</strong>它的成本几乎全是固定的——一个几百人的委员会每季度开会决定哪家公司进标普 500、哪家出去，剩下的就是计算机自动算数。资产从 5 万亿涨到 10 万亿，标普的成本一分不涨，收入翻倍。行业里普遍认为它的经营利润率在 <strong>68–72%</strong> 之间（<em>财报未按分部披露利润，这是按行业惯例的估算</em>）。</p>
+<p>注意一个细节：<strong>这块生意标普只持有 73%</strong>，芝商所（CME）持有另外 27%。所以指数业务的利润里有约四分之一不属于标普股东，下面第二部分会展开。</p>
+<h3>生意三：市场情报（Market Intelligence，TTM 50.86 亿，占 31.5%）—— 最大但最弱的一门</h3>
+<p>这是 2022 年花 <strong>440 亿美元</strong>（换股）收购 IHS Markit 之后组成的业务，也是今天营收最大的一块。它卖的是<strong>金融数据订阅</strong>：</p>
+<ul>
+<li><strong>Capital IQ</strong>：投行分析师和私募基金用的终端，能查全球几十万家上市和非上市公司的财务、股权结构、可比交易。一个席位一年大约 <strong>13,000–30,000 美元</strong>，一家中等投行买 200 个席位就是几百万美元。</li>
+<li><strong>信贷分析工具</strong>：银行用它来给中小企业客户做违约概率打分。</li>
+<li><strong>私募市场数据、ESG 数据、供应链数据</strong>。</li>
+</ul>
+<p>这门生意的钱是<strong>订阅制、按年预付、续约率 95%+</strong>，听起来非常美好。但它有两个问题：</p>
+<p>第一，<strong>它不是垄断</strong>。同样的东西彭博在卖（而且彭博终端更贵更好用）、FactSet 在卖、Moody's Analytics 在卖、路孚特（LSEG）在卖。这是一个四五家打架的市场，标普只是其中之一。所以它的利润率只有约 <strong>32%</strong>（<em>估算</em>），只有指数业务的一半不到。</p>
+<p>第二，也是股价过去一年跌 24% 的核心原因：<strong>大语言模型正在啃这块生意的下限</strong>。Capital IQ 卖的很大一部分价值是"把散落在几万份财报里的数字整理成结构化表格"——这恰好是 AI 最擅长、成本正在崩塌的活。评级和指数是靠监管和品牌锁死的，AI 撬不动；但"给我拉一张可比公司估值表"这件事，一个初级分析师用 AI 半小时就能做，不一定还需要三万美元的席位。</p>
+<h3>生意四：能源与大宗商品（Energy / Commodity Insights，TTM 23.52 亿，占 14.6%）</h3>
+<p>这是 <strong>Platts</strong>。它做的事很特别：<strong>给没有交易所的商品定价</strong>。</p>
+<p>原油、燃料油、液化天然气、铁矿石这些东西，大部分交易不在交易所里，而是两家公司私下谈的。那怎么知道今天的公平价格？Platts 的记者每天打电话、盯着一个叫 eWindow 的交易窗口，把当天实际成交和报价汇总，在每天下午 4:30 发布一个"<strong>Platts Dated Brent</strong>"的价格。</p>
+<p>然后关键来了：<strong>全世界每年几万亿美元的原油实物合同，合同文本里直接写"结算价 = 当日 Platts Dated Brent 加减 X 美元"</strong>。也就是说，中石化跟沙特阿美签的长约，价格是标普的一名编辑在伦敦按下发布键那一刻决定的。使用这个价格要付订阅费和授权费，一家大型石油贸易商一年付几十万到几百万美元。</p>
+<p>这门生意的护城河和指数一样：<strong>它是行业默认的计价标准，换一个基准需要全行业同时同意，所以永远换不掉。</strong>利润率约 <strong>48%</strong>（<em>估算</em>）。</p>
+<h3>生意五：出行数据（Mobility，TTM 18.11 亿，占 11.2%）</h3>
+<p>这是 IHS Markit 带过来的<strong>汽车行业数据库</strong>——CARFAX 车辆历史报告（美国人买二手车时查的那个"这车出过几次事故"的报告，一份 40 美元左右）、给车厂做的销量预测、给保险公司做的车辆识别数据。</p>
+<p>CARFAX 本身是个好生意（美国二手车交易的事实标准），但整体上这块跟金融毫无关系，跟标普其他四块没有任何协同。公司已经在推动把它<strong>分拆出去</strong>。</p>
+<h3>各生意的钱（单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th style="text-align: right;">TTM 营收</th>
+<th style="text-align: right;">占比</th>
+<th style="text-align: right;">FY2025 营收</th>
+<th style="text-align: right;">FY2025 同比</th>
+<th style="text-align: right;">经营利润率（<strong>估算</strong>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Market Intelligence 市场情报</td>
+<td style="text-align: right;">5,086</td>
+<td style="text-align: right;">31.5%</td>
+<td style="text-align: right;">4,916</td>
+<td style="text-align: right;">+5.8%</td>
+<td style="text-align: right;">~32%</td>
+</tr>
+<tr>
+<td>Ratings 信用评级</td>
+<td style="text-align: right;">5,068</td>
+<td style="text-align: right;">31.4%</td>
+<td style="text-align: right;">4,724</td>
+<td style="text-align: right;">+8.1%</td>
+<td style="text-align: right;">~60%</td>
+</tr>
+<tr>
+<td>Energy 能源大宗（Platts）</td>
+<td style="text-align: right;">2,352</td>
+<td style="text-align: right;">14.6%</td>
+<td style="text-align: right;">2,299</td>
+<td style="text-align: right;">+7.3%</td>
+<td style="text-align: right;">~48%</td>
+</tr>
+<tr>
+<td>Indices 指数</td>
+<td style="text-align: right;">2,013</td>
+<td style="text-align: right;">12.5%</td>
+<td style="text-align: right;">1,850</td>
+<td style="text-align: right;">+13.6%</td>
+<td style="text-align: right;">~70%</td>
+</tr>
+<tr>
+<td>Mobility 出行数据</td>
+<td style="text-align: right;">1,811</td>
+<td style="text-align: right;">11.2%</td>
+<td style="text-align: right;">1,747</td>
+<td style="text-align: right;">+8.6%</td>
+<td style="text-align: right;">~40%</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td style="text-align: right;">−209</td>
+<td style="text-align: right;">−1.3%</td>
+<td style="text-align: right;">−200</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>16,121</strong></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+<td style="text-align: right;"><strong>15,336</strong></td>
+<td style="text-align: right;"><strong>+7.9%</strong></td>
+<td style="text-align: right;">整体 <strong>44.4%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>TTM 列是截止 2026-06-30 的滚动四季度；同比增速用 FY2025 vs FY2024，因为财报未披露分部的 TTM 同比。分部利润率财报不披露，上表为按行业惯例的估算，不是财报数字。</em></p>
+<p>一句话看懂这张表：<strong>营收上市场情报最大，但利润上评级 + 指数两家加起来贡献了公司一多半的经营利润</strong>（5,068×60% + 2,013×70% ≈ 44.5 亿，占整体 71.6 亿经营利润的 62%），而它们只占 44% 的营收。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：239 百万，占归母净利润 4.9%。</strong> 很低，很干净。金融信息公司里这个水平非常克制。按 GAAP 已扣，不加回。</p>
+<p><strong>一个必须先说清楚的口径问题：财报上有两个"净利润"。</strong></p>
+<ul>
+<li>利润表上的净利润：<strong>49.22 亿</strong>（归属于标普全球股东）</li>
+<li>现金流量表顶上的净利润：<strong>53.17 亿</strong>（含少数股东）</li>
+</ul>
+<p>差额 <strong>3.95 亿</strong>是<strong>少数股东权益</strong>——主要是芝商所在标普道琼斯指数里的 27%，以及印度评级公司 CRISIL 的外部股东。<strong>这 3.95 亿不是你的钱。</strong>算市盈率必须用 49.22 亿，任何用 53.17 亿算出来的"更便宜"的市盈率都是错的。而且讽刺的是，被分走的这部分恰好来自公司利润率最高的指数业务。</p>
+<p><strong>一次性项目：有，而且是往上抬利润的。</strong>
+现金流量表里"其他非现金调整"是 <strong>−5.94 亿</strong>（负号 = 从净利润里减掉）。这个符号说明：<strong>利润表里有约 5.94 亿的非现金收益被计入了净利润，但它没有带来现金</strong>。对照投资活动，TTM"业务处置所得"<strong>18.95 亿</strong>——公司卖掉了资产（主要是 OSTTRA，与芝商所合资的场外交易后台处理平台），确认了一笔处置收益。</p>
+<p>按 22.6% 的税率还原，这笔收益税后约 <strong>4.6 亿，相当于每股 1.56 美元、占归母净利润的 9.3%</strong>。这是真真正正的一次性收益，<strong>下一年不会再有</strong>。</p>
+<p><em>注意：单期口径看不出这是否"年年都有"。标普确实经常买卖资产（FY2022 处置 35.09 亿、FY2023 处置 10.14 亿、FY2025 处置 15.49 亿），所以"卖东西赚钱"在这家公司几乎是常态。但每一笔的对象都不一样，把它当经常性利润来估值是危险的。</em></p>
+<p><strong>资本化的支出：几乎没有。</strong> 资本开支 TTM 只有 <strong>1.56 亿</strong>，占营收 0.97%——这是全批三家里最惊人的一个数字。史赛克要花 8.23 亿建厂，劳氏要花 22.16 亿开店，标普全球一年花 1.56 亿就能运转 161 亿的收入。<strong>这是一家不需要资产的公司</strong>，它的"工厂"是标普 500 这个名字和五十年的评级数据库。</p>
+<p><strong>回购与稀释：这是本批三家里唯一真正的回购。</strong></p>
+<ul>
+<li>TTM 回购 <strong>52.00 亿</strong>，SBC 2.39 亿 → <strong>比值 21.8 倍</strong>。</li>
+<li>流通股 2.9477 亿股，同比 <strong>−2.79%</strong>。</li>
+<li>回购收益率 +2.79%，加上 0.92% 的股息，<strong>股东总回报率 3.71%</strong>。</li>
+</ul>
+<p>这跟史赛克（比值 0.72、股本不减反增）是天壤之别。<strong>标普全球是在实实在在地把公司买回来送给你。</strong></p>
+<p>但要看清楚这钱从哪来：TTM 自由现金流 55.73 亿，而回购 52.00 + 分红 11.56 = <strong>63.56 亿，超出自由现金流 7.83 亿</strong>。缺口靠两处补：卖 OSTTRA 收回的 18.95 亿，以及净增的 18.15 亿债务。同期还花了 20.24 亿去收购（With Intelligence 等）。</p>
+<p>翻译成人话：<strong>标普全球现在的股东回报里，有一部分是靠卖资产和借钱撑起来的</strong>。总债务从 FY2024 的 119.33 亿升到 156.22 亿。这个速度不可持续，但也远谈不上危险——利息保障倍数 23 倍，债务/EBITDA 只有 1.88 倍。</p>
+<p><strong>利润和现金流的差：逐项对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（<strong>含</strong>少数股东）</td>
+<td style="text-align: right;">5,317</td>
+<td>现金流量表起点</td>
+</tr>
+<tr>
+<td><em>其中不属于你的少数股东部分</em></td>
+<td style="text-align: right;"><em>−395</em></td>
+<td><em>指数业务芝商所的 27% + CRISIL</em></td>
+</tr>
+<tr>
+<td><em>归属标普股东的净利润</em></td>
+<td style="text-align: right;"><em>4,922</em></td>
+<td><em>算市盈率用这个</em></td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td style="text-align: right;">+1,206</td>
+<td>大头是 IHS Markit 那 440 亿收购留下的无形资产摊销，每年约 8–9 亿。<strong>这是为增长付过的真金白银</strong>，只是当年没走现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td style="text-align: right;">+239</td>
+<td>不流出现金但稀释你</td>
+</tr>
+<tr>
+<td><strong>− 其他非现金调整</strong></td>
+<td style="text-align: right;"><strong>−594</strong></td>
+<td><strong>关键项：剔除处置 OSTTRA 的非现金收益。利润表上记了这笔赚，但现金不是从这来的</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td style="text-align: right;">−591</td>
+<td>客户欠钱变多，收入涨了但钱还没到账</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td style="text-align: right;">+66</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应交税金增加</td>
+<td style="text-align: right;">+106</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td style="text-align: right;">+71</td>
+<td><strong>订阅模式的证据</strong>：客户预付了明年的钱</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td style="text-align: right;">−211</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 未单列项目（倒挤）</td>
+<td style="text-align: right;">+120</td>
+<td>财报页未列明</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td style="text-align: right;"><strong>5,729</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td style="text-align: right;">−156</td>
+<td>少得不像话</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td style="text-align: right;"><strong>5,573</strong></td>
+<td>占营收 <strong>34.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表最值得看的是两处：<strong>−594 那一行</strong>（利润里有 5.94 亿是卖东西赚的，不是经营赚的），和 <strong>−156 的资本开支</strong>（每 100 块收入只要花 1 块钱维持）。前者说明当期利润被美化了，后者说明这门生意的底子确实极好。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 1,245.90 亿，企业价值 1,362.10 亿（净负债 116.1 亿），股本 2.9477 亿股。<strong>分母一律用归母净利润 49.22 亿。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th style="text-align: right;">倍数</th>
+<th style="text-align: right;">投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>1,245.90 ÷ 49.22</td>
+<td style="text-align: right;"><strong>25.3 倍</strong></td>
+<td style="text-align: right;"><strong>$3.95</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>1,245.90 ÷ ~50.7（<strong>估算</strong>：加回并购无形资产摊销约 +$2.37/股，剔除处置收益 −$1.56/股，调整后每股约 $17.2）</td>
+<td style="text-align: right;">~24.6 倍</td>
+<td style="text-align: right;">$4.07</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,245.90 ÷ 44.62（GAAP 49.22 <strong>减去</strong>处置 OSTTRA 的税后一次性收益约 4.6 亿；SBC 已按 GAAP 扣除不加回）</td>
+<td style="text-align: right;"><strong>27.9 倍</strong></td>
+<td style="text-align: right;"><strong>$3.58</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,245.90 ÷ 55.73</td>
+<td style="text-align: right;">22.4 倍</td>
+<td style="text-align: right;">$4.47</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,362.10 ÷ 71.56</td>
+<td style="text-align: right;">19.0 倍</td>
+<td style="text-align: right;">$5.25</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,245.90 ÷ [(49.22+44.71+38.52)/3 = 44.15]</td>
+<td style="text-align: right;"><strong>28.2 倍</strong></td>
+<td style="text-align: right;"><strong>$3.54</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意这里出现了一个跟史赛克相反的现象：公司自己的 Non-GAAP（24.6 倍）比 GAAP（25.3 倍）还便宜不了多少，而"真实口径"（27.9 倍）反而比 GAAP 更贵。</strong></p>
+<p>原因是标普全球的调整方向是双向的：它加回并购摊销（利好），但同时也要剔掉处置收益（利空），两边基本抵消。这跟绝大多数公司只单向加回坏东西的做法不同，<strong>说明这家公司的 Non-GAAP 相对诚实</strong>。</p>
+<p><strong>三年平均那一行说明了什么：</strong> 28.2 倍 vs 当期 25.3 倍，当期便宜 10%。差距不大，但方向是"当期利润略高于三年常态"——主要因为里面掺了处置收益。剔掉之后的 27.9 倍几乎正好等于三年平均的 28.2 倍。<strong>两个独立算法互相验证：标普全球的真实估值就是 28 倍左右，而不是屏幕上显示的 25.7 倍。</strong></p>
+<p>（补充一句：FY2023 净利润只有 26.26 亿，是因为那年计提了商誉减值，所以我用 TTM / FY2025 / FY2024 三年做平均，不用更早的年份。）</p>
+<h3>说人话：你现在投 100 块进去，公司一年替你赚多少？</h3>
+<p><strong>按最保守的真实口径（27.9 倍），一年赚 $3.58。</strong> 三年平均口径 $3.54，两者一致。</p>
+<p>这 $3.58 里，多少真正回到你口袋？</p>
+<ul>
+<li><strong>分红</strong>：TTM 派息 11.56 亿 → 投 100 块拿 <strong>$0.92</strong>。</li>
+<li><strong>回购</strong>：TTM 净回购 52.00 亿，股本实实在在少了 2.79% → 相当于 <strong>$2.79</strong> 的价值转移给你（你没拿到现金，但你手里的每一股代表的公司份额多了 2.79%）。</li>
+<li><strong>合计股东回报率 $3.71</strong>，居然<strong>超过了真实盈利 $3.58</strong> ——这就是前面说的"超发"：靠卖 OSTTRA 的钱和新增的债在补贴。</li>
+<li><strong>留在公司里再投资的</strong>：接近 0，甚至为负。TTM 收购花了 20.24 亿，但卖资产收回 18.95 亿，净投入只有 1.3 亿；资本开支 1.56 亿。<strong>这家公司几乎不需要再投资就能维持增长。</strong></li>
+</ul>
+<p><strong>这个 $3.58 未来会变大还是变小？</strong></p>
+<p>我的判断是<strong>变大，但比过去慢</strong>。分四块看：</p>
+<ul>
+<li><strong>指数（+）</strong>：跟全球股市市值和被动投资渗透率挂钩。这两个趋势都还在往上，而且标普不需要做任何事就能受益。这是最确定的一块。</li>
+<li><strong>评级（+，但波动）</strong>：跟债券发行量挂钩，跟利率反向。未来几年如果利率下行、企业再融资潮起来，这块会很好；利率再涨就会很难看。FY2022 就掉过 26%。</li>
+<li><strong>Platts（+，稳）</strong>：能源转型反而利好——LNG、碳信用、锂、氢这些新市场都需要一个定价基准，Platts 正在往这些新品类扩张。</li>
+<li><strong>市场情报（?）</strong>：这是唯一真正的风险，也是 31.5% 的营收所在。如果 AI 把"数据整理"这件事的价格打到零，这块的续约率和提价能力会被侵蚀。它未必会消失（数据的<strong>准确性、覆盖度和法律责任</strong>是 AI 短期给不了的），但"每年提价 5% 客户还得接受"的日子可能到头了。</li>
+</ul>
+<p>我认为未来五年每股收益能保持 <strong>8–11%</strong> 的年增长（其中约 3 个点来自回购），慢于过去五年。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是本批三家里唯一一家我认为值得认真考虑的公司：它把两台真正的印钞机（标普 500 指数和信用评级）跟一块正在被 AI 拷问的数据业务捆在了一起卖，而市场因为后者砍掉了 24% 的股价——问题只是 28 倍够不够便宜。</strong></p>
+<p>先说它到底好在哪，别被"金融信息公司"这个模糊的标签骗了：一年花 1.56 亿的资本开支就能产出 161 亿的收入和 55.7 亿的自由现金流；标普 500 这个名字每年从 10 万亿美元的被动资金上抽头，而抽头率不受基金公司价格战的影响；发债这件事在制度上绕不开它。<strong>这三样东西在可预见的未来不会变。</strong></p>
+<p>再说市场在担心什么。股价一年跌 24%，同期每股收益涨了 26%——市场不是在担心今年的利润，而是在给市场情报业务打折。这个担心是合理的，那毕竟是 31.5% 的营收和公司最大的一块资产（440 亿买回来的）。但这里有个结构性事实值得算清楚：<strong>赚钱最多的评级和指数，恰好是 AI 最动不了的两块</strong>，因为它们的护城河是监管和标准，不是信息不对称。AI 能替你整理财报，但不能让养老金买一只没有标普评级的债，也不能让 VOO 改名叫"某某 500"。</p>
+<p>不看好的地方也说清楚：真实估值是 28 倍不是 25.7 倍（当期利润掺了卖资产的收益，两个独立算法都指向 28）；股东回报超过了自由现金流，是靠卖资产和借债撑的，不可持续；指数业务最肥的那一块有 27% 属于芝商所不属于你。</p>
+<p><strong>结论：28 倍买这个组合，不便宜也不算贵，属于"合理价格买好公司"，年化回报大概率在 8–10%（$3.58 的盈利收益率 + 缓慢增长），跟标普 500 长期回报差不多。</strong>如果市场情报的坏消息继续发酵、股价跌到 22 倍以下（约 $360），那时候两台印钞机基本上是白送的，那就是明显的好买卖。现在这个价，可以拿，不用急。</p>
+</div></body></html>

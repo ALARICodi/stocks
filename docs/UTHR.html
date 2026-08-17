@@ -1,0 +1,340 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UTHR · 联合治疗（United Therapeutics）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">UTHR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">公道偏便宜但绝不是捡钱，便宜的原因还没走完</div><h1>UTHR · 联合治疗（United Therapeutics）</h1>
+<p>市值 214.3 亿美元 ｜ 股价 499.73 美元 ｜ 行业：医疗技术（罕见病药）｜ 交易所 NASDAQ
+数据口径：<strong>TTM，截至 2026 年 6 月 30 日</strong>（最近四个季度滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>联合治疗只做一件病：<strong>肺动脉高压（PAH）</strong>。这是一种肺里的小血管慢慢变窄变硬的病，心脏为了把血泵过去越来越吃力，最后右心衰竭。得病的人不多——全美大概五六万人——但没药就活不了几年，所以病人愿意（其实是保险公司愿意）付很高的价钱。</p>
+<p>联合治疗手里握的是同一个分子的五种不同吃法：<strong>曲前列尼尔（treprostinil）</strong>。这个分子能让肺里的血管松开，但它半衰期短、还刺激，所以怎么把它送进身体成了一门生意。公司过去二十年干的事，本质上就是把同一个分子换着花样送进人体，每换一种送法就是一个新产品、一段新专利、一笔新收入。</p>
+<h3>生意一：Tyvaso（吸入型）—— 唯一真正的顶梁柱</h3>
+<p>TTM 收入 18.52 亿美元，占公司的 58.7%。</p>
+<p>具体是这样：病人拿一个小吸入器，一天吸四次。老版本是雾化器（要插电、要清洗、每次十几分钟），2022 年上市的 <strong>Tyvaso DPI</strong> 是干粉吸入器——长得像哮喘吸入器，一颗胶囊装粉，掰开一吸就完事，几秒钟。这个升级让依从性大幅提高，也是过去三年 Tyvaso 从 6 亿涨到 18 亿的主因。</p>
+<p>钱怎么收：美国一个 Tyvaso 病人一年的药费大约 20 万到 25 万美元，几乎全部由商业保险或 Medicare Part B/D 支付，病人自付部分公司还有慈善基金帮着兜。也就是说，全美大概八九千个病人，撑起了 18 亿美元的收入——<strong>一个病人一年值 20 多万</strong>。这就是罕见病生意的形状：客户极少，单价极高，销售队伍只要覆盖全美两百多家肺高压专科中心就够了，1400 名员工能做 31.5 亿收入（人均产值 225 万美元）。</p>
+<p>Tyvaso 还有一个更大的适应症叫 <strong>PH-ILD</strong>（间质性肺病引起的肺高压），2021 年获批，把可治疗人群扩大了一倍多，是过去几年增长的另一半来源。</p>
+<p><strong>但 TTM 数字里出现了转折</strong>：Tyvaso 的滚动一年收入 18.52 亿，比 2025 全年的 18.78 亿还低。也就是说 2026 上半年 Tyvaso 是在<strong>萎缩</strong>的。原因是竞争对手 Liquidia 的干粉吸入型曲前列尼尔 <strong>Yutrepia</strong> 上市开始抢份额——同样的分子、同样的吸法、更便宜。联合治疗最赚钱、增长最快的那门生意，第一次遇到了正面对手。这是全篇最重要的一件事。</p>
+<h3>生意二：Remodulin（注射泵型）—— 慢慢流失的老本</h3>
+<p>TTM 收入 5.07 亿，占 16.1%。</p>
+<p>这是最老的送法：一根细管埋在皮下（或者中心静脉），接一个随身泵，<strong>24 小时不停地打</strong>，病人洗澡睡觉都带着。病重的人才用这个，因为效果最强。仿制药（Sandoz、Teva）早就进来了，所以这块每年缓慢下滑——2021 年 5.14 亿，现在 5.07 亿，五年基本平的但结构在恶化。</p>
+<h3>生意三：Orenitram（口服片）—— 稳稳往上爬</h3>
+<p>TTM 收入 5.14 亿，占 16.3%，是唯一还在稳定增长的老产品。</p>
+<p>就是普通的缓释片，一天两三次吞下去。效果不如吸入和注射，但方便，适合病情较轻或者刚确诊的病人。剂量要一点点往上加（加太快恶心呕吐），所以病人一旦稳定在某个剂量就会长期吃下去，粘性很好。</p>
+<h3>生意四：Unituxin（儿童神经母细胞瘤）—— 与主业无关的小生意</h3>
+<p>TTM 收入 2.29 亿，占 7.3%。这是一个单克隆抗体（dinutuximab），治高危儿童神经母细胞瘤，在医院静脉输注。跟肺高压完全没关系，是历史遗留。市场很小、很稳，也没什么想象空间。</p>
+<h3>生意五：Adcirca —— 基本可以当没有</h3>
+<p>TTM 收入 2,710 万，占 0.9%。就是他达拉非（跟万艾可同类的药）贴上 PAH 标签卖，仿制药早就吃干净了。</p>
+<h3>摆在一起看</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万）</th>
+<th>2025 全年</th>
+<th>变化</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tyvaso（吸入）</td>
+<td>1,852</td>
+<td>1,878</td>
+<td>−1.4%</td>
+<td>58.7%</td>
+</tr>
+<tr>
+<td>Orenitram（口服）</td>
+<td>513.6</td>
+<td>496.9</td>
+<td>+3.4%</td>
+<td>16.3%</td>
+</tr>
+<tr>
+<td>Remodulin（注射）</td>
+<td>506.8</td>
+<td>526.8</td>
+<td>−3.8%</td>
+<td>16.1%</td>
+</tr>
+<tr>
+<td>Unituxin（儿童肿瘤）</td>
+<td>229.0</td>
+<td>226.8</td>
+<td>+1.0%</td>
+<td>7.3%</td>
+</tr>
+<tr>
+<td>Adcirca</td>
+<td>27.1</td>
+<td>30.0</td>
+<td>−9.7%</td>
+<td>0.9%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>26.5</td>
+<td>24.5</td>
+<td>—</td>
+<td>0.8%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,155</strong></td>
+<td><strong>3,183</strong></td>
+<td><strong>同比 +2.5%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>说明：中间那列是 2025 自然年，跟 TTM（2025年7月—2026年6月）有半年重叠，所以「变化」不是严格同比，只用来看方向。公司口径的 TTM 同比是 +2.49%。
+财报不按产品披露利润，只披露到收入。整体经营利润率 44.53%，五个产品都是同一个分子、同一支销售队伍，边际成本极低，所以各产品的利润率差异主要来自分销方式（吸入器要付 MannKind 的设备分成），<strong>按整体率估算即可，不做逐品估算</strong>。</p>
+</blockquote>
+<p><strong>一句话：这家公司 58.7% 的钱来自一个正在被抢的产品，剩下的都是慢慢下沉的老本。收入增速已经从 2023 年的 23.6% 掉到 TTM 的 2.5%。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.554 亿美元，占净利润 11.9%。这笔已经在 GAAP 里扣掉了，本文不加回——它稀释你的股份，就是真成本。占比不算低但也不夸张，属于正常制药公司水平。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 3,890 万的<strong>投资出售损失</strong>（卖债券亏的），还有资产减值/重组为 0。上一年（2025）有 2,170 万的重组减值。只看单期分不清这类投资损益是不是年年都有，但金额相对 13 亿净利润很小，<strong>不影响任何结论</strong>。</p>
+<p><strong>资本化的支出</strong>：软件、内容资本化——<strong>没有</strong>。这家公司不玩这个。</p>
+<p><strong>税率是个真问题</strong>：有效税率只有 <strong>16.66%</strong>，低于 21% 的法定联邦税率，靠的是孤儿药税收抵免和研发抵免。TTM 实缴所得税 2.62 亿。如果孤儿药抵免政策收紧，净利润会直接掉 5–8%。这不是障眼法，但是一个不该被忽略的脆弱点。</p>
+<p><strong>回购与稀释——这里有个漂亮的数字</strong>：TTM 回购 <strong>25.60 亿美元</strong>，同期 SBC 只有 1.554 亿，<strong>比值 16.5 倍</strong>。这是<strong>真回购</strong>，不是给员工发股票擦屁股。25.6 亿相当于市值的 12%，一年之内买掉。</p>
+<p>但要看清两件事：
+1. 在外股本同比只减少 <strong>3.20%</strong>，远不到 12%。原因是回购集中在最近两个季度（环比 −2.97%），效果还没完全体现在滚动一年里；同时期权行权带来 3.437 亿的新股发行在往回抵。
+2. <strong>稀释股本 4,690 万股 vs 在外股本 4,289 万股，差了 9%</strong>——这 400 万股是员工手里价内的期权。所以下面所有用「市值 ÷ 利润」算出来的倍数，你心里都要<strong>再加 9%</strong> 才是稀释后的真实数。
+3. 钱从哪来：净现金从 2025 年底的 46.59 亿降到 6 月底的 38.03 亿，半年少了 8.56 亿，同时还在赚钱——<strong>回购是在真金白银地花掉账上的现金储备</strong>，不是借钱。公司零负债。</p>
+<p><strong>利润和现金流的差</strong>：净利润 13.11 亿，经营现金流 16.85 亿，自由现金流 10.93 亿。差额不小，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,311.0</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+91.5</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+155.4</td>
+</tr>
+<tr>
+<td>＋ 投资出售损失（非现金调整）</td>
+<td>+38.9</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目（含递延税）</td>
+<td>+181.7</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+69.0</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−91.8</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+37.7</td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−108.1</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,685.3</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−592.2</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,093.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最刺眼的是资本开支 5.92 亿，而折旧摊销只有 0.92 亿——资本开支是折旧的 6.4 倍</strong>，而且从 2022 年的 1.39 亿一路涨上来，四年翻了四倍多。</p>
+<p>钱花在哪了？盖<strong>器官工厂</strong>。联合治疗在做异种移植——用基因编辑过的猪，长出能移植给人的肾脏和肺（UKidney 项目）。他们在弗吉尼亚州建了无特定病原体的猪舍，在北卡建了器官制造设施。这是一个真正的登月项目：成了就是几百亿的新市场（美国每年三万多人在等肾），不成就是把几十亿美元烧进猪圈。</p>
+<p><strong>所以 10.93 亿的自由现金流是被这笔投入压低的</strong>。如果不盖器官厂，稳态资本开支撑死一两亿，自由现金流应该在 15 亿以上。你买这只股票，等于同时买了「一门年赚 15 亿的成熟罕见病生意」和「一张猪器官的彩票」。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>21,434 ÷ 1,311</td>
+<td><strong>16.4 倍</strong></td>
+<td><strong>6.10 元</strong></td>
+</tr>
+<tr>
+<td>同上，稀释股本口径</td>
+<td>499.73 ÷ 27.95（稀释 EPS）</td>
+<td>17.9 倍</td>
+<td>5.59 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>没有</strong>——这家公司只报 GAAP</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>21,434 ÷（1,311 ＋ 38.9×0.833）</td>
+<td>16.0 倍</td>
+<td>6.27 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>21,434 ÷ 1,093</td>
+<td>19.6 倍</td>
+<td>5.10 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>17,630 ÷ 1,405</td>
+<td><strong>12.6 倍</strong></td>
+<td><strong>7.97 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>21,434 ÷ 1,171.6（2023–2025 均值）</td>
+<td>18.3 倍</td>
+<td>5.47 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>几件值得注意的事：</p>
+<p><strong>这家公司不发调整后净利润。</strong> 在美股制药圈里这很少见——绝大多数同行都会端出一个把 SBC、无形资产摊销、重组全加回去的"调整后 EPS"，通常比 GAAP 高 30–50%。联合治疗不玩这套，报表上写多少就是多少。这是加分项，也意味着上面那个 16.4 倍<strong>不含水分</strong>。</p>
+<p><strong>EV/EBIT 只有 12.6 倍，是全表最便宜的一格</strong>，因为公司账上有 38 亿净现金、零负债。企业价值 176 亿比市值 214 亿低了 38 亿。换句话说，你花 214 元买这家公司，其中 38 元买的是它口袋里的现金，真正为生意付的只有 176 元。</p>
+<p><strong>三年平均口径 18.3 倍 &gt; 当期 16.4 倍</strong>，说明当前利润高于三年均值——但差距只有 12%，属于正常的成长爬坡，<strong>不是</strong>利润高点。（对照 NVDA 那次：当期 34 倍、三年平均 73.5 倍，那才叫踩在利润顶上。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的口径（稀释股本 + 自由现金流被资本开支压着）算，公司一年替你赚 5.1 元；按最宽松的口径（EV/EBIT）算，7.97 元。取个中间的诚实数：约 5.5 到 6 元。</strong></p>
+<p>这 5.5 元里，有多少回到你口袋？
+- <strong>分红：0</strong>。公司不分红。
+- <strong>回购：TTM 回购 25.6 亿，占市值 12%</strong>，但股本只减了 3.2%。按股本实际减少算，回到你口袋的是每年约 3.2 元/100 元。
+- <strong>剩下的 2 到 3 元留在公司里</strong>，大部分变成了那 5.92 亿的资本开支——也就是猪。</p>
+<p><strong>这个 5.5 元未来会变大还是变小？我的判断是：短期变小，长期看猪。</strong>
+- 变小的理由是明确的：Tyvaso 已经在负增长，Yutrepia 的份额抢夺才刚开始，而 Tyvaso 占公司近六成收入。收入增速从 23.6% → 10.6% → 2.5%，趋势清晰。经营利润率也从 2023 年的 51.1% 掉到 44.5%，掉了 6.6 个百分点——竞争一来，价格和销售费用两头挤。
+- 变大的可能只有两条：口服前列环素新药 ralinepag 上市，或者异种移植真的做成。后者是十年期的事，成了就不是 214 亿的公司。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>16 倍市盈率、零负债、38 亿净现金、44% 的经营利润率、老板拿真金白银回购 12% 的市值——单看这些，便宜得不像话；但收入增速已经砍到 2.5%，最赚钱的产品在负增长，市场给的这个价钱就是在说"这门生意见顶了"。</strong></p>
+<p>这不是一个「便宜的好公司」，而是一个<strong>「已经跌到位、但下面还有没有台阶取决于 Tyvaso 掉多快」</strong>的公司。买它等于打一个赌：Yutrepia 抢不动多少份额，公司用净现金持续回购把每股收益托住，同时那个猪器官项目还留着一张免费彩票。</p>
+<p>如果你不相信罕见病的定价权能扛住同分子仿制竞争，16 倍也不便宜；如果你相信，这个价格给了你一门年赚 6% 的生意外加一个免费期权。<strong>我的看法：这个价格是公道偏便宜，但绝不是"捡钱"——它便宜是有原因的，而那个原因还没走完。</strong></p>
+</div></body></html>

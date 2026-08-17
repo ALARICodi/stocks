@@ -1,0 +1,418 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TGT · 塔吉特（Target Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TGT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">好公司在打一场还没赢的仗，股价已按赢了定价</div><h1>TGT · 塔吉特（Target Corporation）</h1>
+<p>市值 $703.9 亿 / 股价 $154.98 / 行业：综合零售（NYSE）/ TTM 截止 2026-05-02</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>塔吉特名义上是"一家开店的公司"——1,980 家门店、41.5 万名员工、一年 1,064 亿美元营收。但从赚钱的角度看，它其实在同时做<strong>三门经济性质完全不同的生意</strong>，而且这三门生意的此消彼长，就是过去五年发生在它身上的全部故事。</p>
+<h3>生意一：卖必需品，用来把人拉进店（TTM 424.3 亿，占 40.2%）</h3>
+<p>包括食品饮料（244.97 亿）和家居必需品（182.29 亿）——牛奶、鸡蛋、冷冻披萨、洗衣液、卫生纸、尿不湿、洗发水。</p>
+<p>具体场景：一位妈妈周三下班顺路进塔吉特，本来只想买洗衣液和一箱尿不湿，一共 47 块钱。</p>
+<p><strong>这 47 块钱塔吉特几乎不赚钱。</strong> 食品杂货的毛利率行业普遍在 20%–24%，扣掉店租、店员工资、冷链电费、损耗，净利基本是零甚至倒贴。它卖这些东西的唯一目的是——<strong>让这位妈妈每周都必须来一趟</strong>。</p>
+<p>自有品牌是这块的关键武器。Good &amp; Gather（食品）、Up&amp;Up（日用）这些牌子由塔吉特自己开发、找代工厂生产，价格比全国品牌便宜 15%–20%，而毛利率反而高 5–10 个百分点。因为中间没有宝洁、没有卡夫，品牌溢价直接进了自己口袋。</p>
+<h3>生意二：卖非必需品，这才是利润的来源（TTM 315.0 亿，占 29.6%）</h3>
+<p>服装配饰（158.70 亿）和家居装饰家具（156.28 亿）。</p>
+<p>接着上面的场景：这位妈妈拿着洗衣液往收银台走，路过服装区看到一条 28 块的连衣裙，试了一下带走；又路过家居区，看到一套 34 块的抱枕，觉得配家里沙发正好，也拿了。</p>
+<p><strong>这 62 块钱，才是塔吉特真正赚钱的地方。</strong> 服装和家居的毛利率通常在 33%–40%，是食品的一倍半到两倍。而且这些是塔吉特自己设计的自有品牌——Cat &amp; Jack（童装）、Threshold（家居）、All in Motion（运动服）、Universal Thread（女装）。从设计到定价它全说了算，没有中间商。</p>
+<p><strong>整个塔吉特模式就一句话：用不赚钱的必需品把你拉进来，靠你顺手买的非必需品赚钱。</strong> 这是它跟沃尔玛、Costco 最本质的区别——沃尔玛靠极致的供应链效率在必需品上赚薄利多销，塔吉特赌的是"逛"。它把店做得比同行漂亮，动线做得让你多走两圈，这就是所谓的"cheap chic（便宜的时髦）"。</p>
+<h3>生意三：广告和金融——藏在报表角落里的印钞机（TTM 21.7 亿，占 2.0%）</h3>
+<p>三个小项目：<strong>广告（Roundel）9.99 亿</strong>、<strong>信用卡分润 5.10 亿</strong>、<strong>其他非商品收入 6.63 亿</strong>。</p>
+<p><strong>广告是怎么回事</strong>：一家零食公司想让自己的新品在塔吉特卖爆，它花钱买三样东西——塔吉特 App 里搜"薯片"时排第一的位置、官网首页的推荐位、以及塔吉特按购物数据帮它精准投给"过去 90 天买过同类零食的人"的定向广告。这家零食公司一年可能付几百万美元。</p>
+<p><strong>这门生意的毛利率接近 90%</strong>，因为流量和数据本来就有、成本几乎为零，每多卖一块钱广告位就多赚九毛。TTM 9.99 亿，同比增长约 <strong>27.8%</strong>，是全公司增长最快的东西。</p>
+<p><strong>信用卡分润</strong>：塔吉特把自己的信用卡业务卖给了银行，现在按持卡人的消费和利息收入抽成。<strong>这 5.10 亿几乎是纯利润</strong>——它不承担坏账风险、不占用资本，只是收支票。但它在<strong>下滑（约 −7.1%）</strong>。</p>
+<p><strong>把这两块加起来算一笔账</strong>：广告 9.99 亿（按 80% 利润率算约 8.0 亿）＋ 信用卡分润 5.10 亿（近乎全是利润）＝ <strong>约 13 亿的经营利润</strong>。而全公司 TTM 的经营利润总共只有 <strong>47.8 亿</strong>。</p>
+<p><strong>也就是说：占营收 1.4% 的两个小项目，贡献了约 27% 的经营利润。</strong> 剩下 98.6% 的营收——那 1,050 亿的实体零售——只贡献了 73%。</p>
+<h3>各生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品类</th>
+<th>TTM 营收</th>
+<th>上年同期(估算)</th>
+<th>增速</th>
+<th>占比</th>
+<th>毛利率(估算)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>食品饮料</td>
+<td>244.97 亿</td>
+<td>239.82 亿</td>
+<td>+2.1%</td>
+<td>23.0%</td>
+<td>约 22%</td>
+</tr>
+<tr>
+<td>家居必需品</td>
+<td>182.29 亿</td>
+<td>183.16 亿</td>
+<td>−0.5%</td>
+<td>17.1%</td>
+<td>约 24%</td>
+</tr>
+<tr>
+<td>五金家电（Hardlines）</td>
+<td>162.50 亿</td>
+<td>157.92 亿</td>
+<td>+2.9%</td>
+<td>15.3%</td>
+<td>约 26%</td>
+</tr>
+<tr>
+<td>服装配饰</td>
+<td>158.70 亿</td>
+<td>161.21 亿</td>
+<td><strong>−1.6%</strong></td>
+<td>14.9%</td>
+<td>约 38%</td>
+</tr>
+<tr>
+<td>家居装饰家具</td>
+<td>156.28 亿</td>
+<td>161.54 亿</td>
+<td><strong>−3.3%</strong></td>
+<td>14.7%</td>
+<td>约 35%</td>
+</tr>
+<tr>
+<td>美妆</td>
+<td>135.10 亿</td>
+<td>131.94 亿</td>
+<td>+2.4%</td>
+<td>12.7%</td>
+<td>约 32%</td>
+</tr>
+<tr>
+<td>其他商品</td>
+<td>2.21 亿</td>
+<td>2.11 亿</td>
+<td>+4.7%</td>
+<td>0.2%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>广告（Roundel）</strong></td>
+<td><strong>9.99 亿</strong></td>
+<td>7.82 亿</td>
+<td><strong>+27.8%</strong></td>
+<td>0.9%</td>
+<td><strong>约 80%</strong></td>
+</tr>
+<tr>
+<td>信用卡分润</td>
+<td>5.10 亿</td>
+<td>5.49 亿</td>
+<td>−7.1%</td>
+<td>0.5%</td>
+<td>约 100%</td>
+</tr>
+<tr>
+<td>其他非商品</td>
+<td>6.63 亿</td>
+<td>5.74 亿</td>
+<td>+15.6%</td>
+<td>0.6%</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,063.77 亿</strong></td>
+<td>1,056.73 亿</td>
+<td><strong>+0.7%</strong></td>
+<td>100%</td>
+<td><strong>28.14%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：塔吉特<strong>只有一个经营分部</strong>，财报按商品品类披露营收但<strong>完全不披露品类利润</strong>。上表毛利率是按零售行业常识估算的，不是财报数字。"上年同期"用 FY2024 与 FY2025 的中值近似（估算总增速 +0.7% vs 财报实际 +0.47%）。</p>
+</blockquote>
+<p><strong>读懂这张表，就读懂了塔吉特的病。</strong> 增长的全是低毛利的（食品 +2.1%）和小到不重要的（广告 +27.8% 但只有 10 亿）；下滑的恰恰是高毛利的两块（服装 −1.6%、家居 −3.3%）。<strong>销售结构正在从赚钱的地方，滑向不赚钱的地方。</strong></p>
+<p>拉长看更清楚。跟 FY2022（截至 2023 年 2 月）比：</p>
+<ul>
+<li>家居装饰：194.63 亿 → 156.28 亿，<strong>四年掉了 20%</strong></li>
+<li>服装配饰：176.46 亿 → 158.70 亿，<strong>掉了 10%</strong></li>
+<li>食品饮料：229.18 亿 → 244.97 亿，涨了 7%</li>
+</ul>
+<p>高毛利的两块合计从占营收 34.0% 降到 <strong>29.6%</strong>，四个多百分点的结构位移，金额上相当于 47 亿的销售额从 35%+ 毛利的货架，挪到了 22% 毛利的货架。<strong>光是这个结构变化，一年就吃掉约 6 亿美元的毛利（估算）。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>好消息：塔吉特的账是这批公司里最干净的。</strong> 几乎没什么可剥的。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 2.66 亿，占净利润 7.7%。零售业本来就不靠发股票留人，41.5 万员工里绝大多数是时薪店员。<strong>按 GAAP 已扣，不加回。</strong></p>
+<p><strong>一次性项目</strong>：<strong>没有。</strong> TTM 现金流量表"其他调整"只有 −0.56 亿，实际税率 21.91% 完全正常，没有诉讼和解、没有重组费用、没有大额减值、没有并购。当期利润就是老老实实经营出来的。</p>
+<p><strong>资本化的支出</strong>：零售业不存在软件或内容资本化的猫腻。资本开支 39.72 亿全是实打实的——盖店、翻新老店、建配送中心。<strong>注意这个数字高于折旧摊销 31.60 亿</strong>，说明它还在净投入，不是在收缩。</p>
+<p><strong>回购与稀释 —— 这一项要重点看。</strong></p>
+<p>TTM 回购股票 <strong>2.54 亿</strong>，同期股权激励 <strong>2.66 亿</strong>。<strong>比值 0.95。</strong></p>
+<p>这个数字意味着什么：塔吉特花在回购上的每一分钱，<strong>刚好抵消给员工发股票造成的稀释，一分不多</strong>。这不是回馈股东，这是打扫卫生。股本一年只减少 0.98%。</p>
+<p>对比它自己的历史更刺眼：FY2021 回购 <strong>73.56 亿</strong>、FY2022 回购 28.26 亿、FY2024 回购 11.06 亿、FY2025 回购 4.75 亿、TTM 只剩 <strong>2.54 亿</strong>。<strong>五年时间，回购规模萎缩到原来的 3.5%。</strong></p>
+<p>原因藏在分红里。TTM 分红 20.59 亿，自由现金流 30.31 亿。分红＋回购＝23.13 亿，勉强覆盖。<strong>问题在于塔吉特有"连续 55 年提高分红"这块招牌</strong>，这是华尔街的信仰级指标，断了会引发抛售。于是它必须优先保分红——而 TTM 分红只涨了 <strong>1.78%</strong>，是明显的"象征性提价，保住连涨纪录"。<strong>钱不够了，先保面子工程，回购就成了被牺牲的那个。</strong></p>
+<p><strong>利润和现金流的对账</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,450</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>＋3,160</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>＋266</td>
+</tr>
+<tr>
+<td>− 其他调整</td>
+<td>−56</td>
+</tr>
+<tr>
+<td>＋ 存货减少（释放现金）</td>
+<td>＋731</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>＋286</td>
+</tr>
+<tr>
+<td>− 预提费用减少</td>
+<td>−109</td>
+</tr>
+<tr>
+<td>− 其他经营性项目</td>
+<td>−725</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>7,003</strong> ✓ 完全对上</td>
+</tr>
+<tr>
+<td>− 资本开支（盖店、翻新、配送中心）</td>
+<td>−3,972</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>3,031</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表分毫不差地对上了，没有任何需要解释的缺口——<strong>这在美股里其实不多见，值得给塔吉特记一分</strong>。营运资金净贡献 +1.83 亿，微不足道，说明现金流不是靠挤压存货或拖欠供应商做出来的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>703.9 亿 ÷ 34.50 亿</td>
+<td><strong>20.4 倍</strong></td>
+<td><strong>$4.90</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>703.9 亿 ÷ 约 35.6 亿</td>
+<td>19.8 倍</td>
+<td>$5.06</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td><strong>无需调整——没有一次性项目，SBC 已按 GAAP 扣除</strong></td>
+<td><strong>20.4 倍</strong></td>
+<td><strong>$4.90</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>703.9 亿 ÷ 30.31 亿</td>
+<td>23.2 倍</td>
+<td>$4.31</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>861.3 亿 ÷ 47.80 亿</td>
+<td>18.0 倍</td>
+<td>$5.55</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>703.9 亿 ÷ 37.49 亿（FY24/FY25/TTM 平均）</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.32</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话版本：你现在投 100 块进去，按真实口径算，公司一年替你赚 4.90 块。</strong></p>
+<p>这 4.90 块里，分红给你 <strong>3.00 块</strong>、回购 0.98 块，合计 <strong>3.98 块</strong>真正回到你口袋，剩下约 0.9 块留在公司里。留下的钱去了哪？TTM 投资活动净流出 38.95 亿，全在盖店和翻新——它还在往实体店里投钱。</p>
+<p><strong>注意一个反常的信号：三年平均口径 18.8 倍，比当期 20.4 倍还低。</strong></p>
+<p>绝大多数公司这两个数字反过来——当期倍数低、三年平均倍数高，说明当期利润在高点。塔吉特是<strong>倒过来的</strong>：说明<strong>当期利润低于三年平均，它现在处在利润的谷底而不是顶部</strong>。</p>
+<p>净利润的轨迹：FY2023 41.38 亿 → FY2024 40.91 亿 → FY2025 37.05 亿 → TTM <strong>34.50 亿</strong>。<strong>连续三年下滑，还在滑。</strong></p>
+<p><strong>所以真正的问题是：这是"谷底"还是"半山腰"？</strong></p>
+<p>看一组对比就明白了。FY2021（截至 2022 年 1 月）营收 1,060.05 亿，TTM 营收 1,063.77 亿——<strong>五年过去，营收一模一样</strong>。但同期美国物价累计涨了约 20%，<strong>换句话说，按实际购买力算，塔吉特的生意缩水了五分之一。</strong></p>
+<p>同一段时间：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>TTM</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>1,060.05 亿</td>
+<td>1,063.77 亿</td>
+<td>持平</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>310.42 亿</td>
+<td>299.33 亿</td>
+<td><strong>−11 亿</strong></td>
+</tr>
+<tr>
+<td>经营费用（毛利−经营利润）</td>
+<td>220.96 亿</td>
+<td>251.53 亿</td>
+<td><strong>＋31 亿</strong></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>89.46 亿</td>
+<td>47.80 亿</td>
+<td><strong>−47%</strong></td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>8.44%</td>
+<td>4.49%</td>
+<td><strong>腰斩</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一句话：卖同样多的货，毛利少了 11 亿，费用多了 31 亿，利润蒸发掉一半。</strong></p>
+<p>费用为什么涨了 31 亿？店员时薪上涨、线上订单靠门店拣货发货（一单的履约成本远高于顾客自己来拿）、盗损、以及配送网络的固定投入。<strong>这些成本一旦上去，几乎不可能再降回来</strong>——你不能给店员降薪，也不能取消线上下单。</p>
+<p><strong>这个 4.90 块未来变大还是变小？</strong></p>
+<p>变大的可能来自三处：广告业务保持 25%+ 增长（但基数只有 10 亿，即使翻倍也只加 8 亿利润）、经营杠杆恢复（营收只要真的开始涨 3%，利润率就能修复）、以及五年前那种 8% 的利润率如果能回去一半，利润就是 60 亿而不是 34 亿。分析师显然信这个——预测市盈率 17.97 低于当前 20.55，意味着市场预期明年利润回升约 14%。</p>
+<p>变小的风险在于：<strong>它的核心利润引擎（服装 + 家居）已经连跌四年，没有任何触底的迹象</strong>。这不是宏观问题——同期食品品类是涨的，说明客人还在来，只是不买高毛利的东西了。可能是被 Amazon、Shein、TJX 分走了，也可能是它自己的设计和选品失去了吸引力。<strong>这四页财报回答不了这个问题，但这是唯一重要的问题。</strong></p>
+<p><strong>还有一个必须提的信号：股价过去 52 周涨了 46.76%，市盈率从 12.97 倍涨到 20.55 倍，而同期利润是往下走的。</strong> 也就是说这一年的涨幅<strong>百分之百来自估值提升，甚至更多——是在利润下滑的情况下涨的估值</strong>。RSI 71.46 已进入超买区。市场在提前给一个还没发生的转机定价。</p>
+<p>好的一面：<strong>ROIC 12.83% 明显高于资金成本 WACC 7.93%</strong>，说明它每投一块钱到门店和配送网络里，仍然在创造真实价值（这一点比很多重资产公司强）。净负债 / EBITDA 只有 1.93 倍，资产负债表健康，不存在生存问题。<strong>塔吉特没有病危，它只是变平庸了。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家好公司在打一场还没赢的仗，而股价已经按赢了在定价。</strong></p>
+<p>塔吉特的账干净得让人放心——没有一次性收益、没有会计花招、现金流和利润分毫不差、负债健康、ROIC 仍高于资金成本。这不是一家在骗人的公司。</p>
+<p>但它的核心问题赤裸裸摆在那儿：<strong>五年营收零增长（实际购买力下降 20%），利润腰斩，而利润的来源正在从高毛利的服装家居滑向低毛利的食品，滑了四年还没停。</strong> 唯一亮眼的广告业务太小，撑不起 704 亿的市值。</p>
+<p>以 20.4 倍买一家利润连续三年下滑的零售商，你买的是"转机会发生"这个假设。<strong>如果转机来了，18.8 倍的正常化利润口径说明它不算贵；如果结构性下滑还要再走两年，20 倍就是个陷阱。</strong> 而过去一年 46.76% 的涨幅已经把"转机会发生"提前付过钱了——<strong>便宜的时候（一年前 12.97 倍）该买的人已经买完了，现在进场的人赚的不是折价，是赌注。</strong></p>
+</div></body></html>

@@ -1,0 +1,359 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WMT · 沃尔玛（Walmart Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WMT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">按「广告生意已经长成」的价格提前收了钱</div><h1>WMT · 沃尔玛（Walmart Inc.）</h1>
+<p>市值约 9,209 亿美元 / 股价约 115.6 美元 / 行业：零售（Retail Trade）/ TTM 截止日期：2026 年 4 月 30 日
+数据来源：stockanalysis.com 财报页（利润表、分部营收、现金流量表、估值统计），全部为 GAAP 口径。沃尔玛财年在 1 月底结束，本文的 TTM 指 2025 年 5 月至 2026 年 4 月这四个季度。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>沃尔玛一年卖 7,253 亿美元的东西——这个数字大到什么程度：它比全球第 20 名左右国家的 GDP 还高，全公司 210 万员工，是地球上雇人最多的私营企业。但把它的账拆开会发现一件反直觉的事：<strong>这家公司卖 100 块钱的东西，最后只剩 3.19 块是自己的利润。</strong> 而市场现在给它 40 倍市盈率——这个估值不是给「卖东西」这门生意的，是给藏在里面的第四门生意的。先按财报的分部一门门看。</p>
+<h3>生意一：沃尔玛美国 —— 4,600 家实体店，全美最大的杂货铺</h3>
+<p><strong>东西是什么。</strong> 美国本土约 4,600 家沃尔玛门店，绝大多数是几万平米的超级购物中心（Supercenter），一进门左边是生鲜蔬果，中间是杂货和日用品，右边是服装、玩具、电子产品、药房、还常常带一个视力中心和一个换轮胎的汽车服务区。关键的一个数字：<strong>美国 90% 的人口住在离一家沃尔玛 10 英里以内的地方。</strong> 这不是营销话术，是这门生意的物理基础。</p>
+<p><strong>钱从哪来、赚多少。</strong> 这门生意大约 <strong>六成的销售额是食品杂货</strong>——牛奶、鸡蛋、面包、肉、罐头。举个具体的：俄亥俄州一个四口之家周六推着车买了 180 美元的东西，里面 110 美元是吃的、40 美元是洗衣液纸巾之类的日用品、30 美元是给孩子买的衣服。沃尔玛在这 180 块上的毛利大约 45 块（全公司毛利率 24.98%，杂货比这个低、服装比这个高），然后要从这 45 块里付店员工资、门店电费租金、卡车运费、总部开销——<strong>最后剩下大约 8 到 9 块的经营利润</strong>。这就是零售业的全部真相：靠单笔赚不到钱，靠一年重复几十亿次赚钱。</p>
+<p><strong>线上这块要单独说。</strong> 沃尔玛美国现在有相当比例的销售来自 walmart.com 和 App，而且它的线上打法跟亚马逊完全不同：<strong>它不建全国性的巨型仓库，它把 4,600 家门店当仓库用。</strong> 你在 App 上下单买今晚要吃的菜，系统派给离你 3 公里的那家店，一个店员推着车在货架间捡货，一小时后一辆外包的车送到你家门口。亚马逊做不了这个——它的仓库在几十公里外的工业区，送生鲜要建全新的冷链网络。这是沃尔玛手里唯一一张亚马逊抄不走的牌。</p>
+<p>配套的是 <strong>Walmart+ 会员</strong>，一年 98 美元，买送货免费、加油折扣、店内 Scan&amp;Go 免排队结账。这个会员费不进商品销售，进第四门生意。</p>
+<p><strong>规模：TTM 4,879.81 亿美元，占总营收 67.3%</strong>，比 FY2026 全年的 4,829.75 亿继续在长，同比增速大约 5% 左右。<strong>估算经营利润率约 5%，贡献利润约 244 亿。</strong></p>
+<h3>生意二：沃尔玛国际 —— 一堆各不相干的国家生意打包</h3>
+<p>这一块是把海外全部塞进一个筐，实际上里面装的东西差别极大：</p>
+<ul>
+<li><strong>墨西哥（Walmex）</strong>：2,800 多家店，是整个墨西哥最大的零售商，占领着一个人均收入低、现代零售渗透率还在提升的市场。这是国际板块里最赚钱、最稳的部分。</li>
+<li><strong>加拿大</strong>：几百家店，成熟市场，利润薄。</li>
+<li><strong>中国</strong>：沃尔玛大卖场在收缩，但<strong>山姆会员商店（Sam's Club China）在爆发</strong>——中国中产家庭愿意付 260 元年费换「不用挑、闭眼买」的商品筛选服务，单店销售额是全球最高的之一。</li>
+<li><strong>印度</strong>：持有电商 <strong>Flipkart</strong> 约八成股权，以及支付公司 <strong>PhonePe</strong>。这两个都在<strong>亏钱</strong>，但市场给的估值极高（PhonePe 一直在排队 IPO）。这一块是「现在吃利润、将来兑现资本利得」的性质。</li>
+</ul>
+<p><strong>规模：TTM 1,357.79 亿美元，占 18.7%</strong>，增速在 8–10% 之间，是三个实体板块里长得最快的（因为汇率和新兴市场基数低）。<strong>估算经营利润率约 3.5%，贡献利润约 47 亿。</strong></p>
+<h3>生意三：山姆会员店（美国）—— 一门本质上是收会员费的生意</h3>
+<p>美国本土 600 家左右的仓储会员店。<strong>它跟沃尔玛超市是完全不同的两门生意，虽然都是零售。</strong></p>
+<p><strong>逻辑是这样的</strong>：你先交年费（普通 Club 会员约 50 美元，Plus 会员约 110 美元），才有资格进门。进门以后你看到的不是几万个 SKU，而是几千个——一种番茄酱只有一个牌子一个规格，但那一桶有 3 公斤，价格比超市里同重量便宜三成。沃尔玛在这里几乎<strong>不靠商品赚钱</strong>：它把商品毛利压到极低（行业里仓储会员店的商品毛利通常只有 11–14%，是普通超市的一半），用「你在别处买不到这个价」把你留住，<strong>真正的利润基本上就是那笔年费</strong>——年费是纯利，没有成本。</p>
+<p>这就是为什么山姆店的经营利润率看起来只有三点几，但生意质量其实比表面上好：那点利润里的绝大部分是<strong>每年自动续费、不需要重新推销的年金</strong>。附带的还有加油站（会员专属油价，用来把人骗进停车场）和 Scan&amp;Go（App 扫码自助结账，顺便把你的全部购物数据收走）。</p>
+<p><strong>规模：TTM 943.56 亿美元，占 13.0%</strong>，增速约 5%。<strong>估算经营利润率约 3.5%，贡献利润约 33 亿。</strong></p>
+<h3>生意四：会员费与其他收入 —— 全公司唯一真正高毛利的东西</h3>
+<p>财报把这一行单列出来：<strong>TTM 71.89 亿美元</strong>，只占总营收 <strong>1.0%</strong>。看起来微不足道。但你要这样看它：</p>
+<p><strong>全公司 TTM 经营利润一共只有 301.83 亿。这 71.89 亿里，绝大部分是接近 100% 毛利的纯利润。</strong> 也就是说，这条只占营收 1% 的线，可能贡献了全公司经营利润的两成上下。</p>
+<p>它装的是三样东西：
+1. <strong>会员费</strong>：Walmart+ 和山姆会员的年费。收进来就是利润。
+2. <strong>广告（Walmart Connect）</strong>：这是最重要的一块，也是整个投资故事的核心。宝洁、可口可乐、联合利华这些品牌商，付钱给沃尔玛，换取「消费者在 App 里搜『洗衣液』时，我的产品排在第一位」，或者换取门店里那个货架端头的位置。这门生意的成本几乎为零——流量本来就有，位置本来就在那——<strong>收进来的钱基本全是利润</strong>，而且增速远高于零售本身（行业普遍在 20–30% 的年增速）。
+3. <strong>卖给第三方卖家的服务费</strong>：别的商家在 walmart.com 上开店卖货，沃尔玛抽 8–15% 的佣金，还可以加钱买「沃尔玛帮你存货帮你发货」（WFS）。</p>
+<p><strong>这就是 40 倍市盈率的全部理由。</strong> 市场买的不是那个净利率 3.19% 的超市，是那个正在长出来的、毛利接近 100% 的广告和会员生意。<strong>注意：沃尔玛在这个数据源里没有单独披露广告收入的金额，上面对广告规模和增速的描述是行业常识，不是财报数字。</strong></p>
+<h3>分部财务表（TTM 截至 2026-04-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>FY2026 全年</th>
+<th>占总营收</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>沃尔玛美国</td>
+<td>487,981</td>
+<td>482,975</td>
+<td>67.3%</td>
+<td>~5.0%</td>
+<td>~24,400</td>
+</tr>
+<tr>
+<td>沃尔玛国际</td>
+<td>135,779</td>
+<td>130,423</td>
+<td>18.7%</td>
+<td>~3.5%</td>
+<td>~4,700</td>
+</tr>
+<tr>
+<td>山姆会员店（美国）</td>
+<td>94,356</td>
+<td>93,015</td>
+<td>13.0%</td>
+<td>~3.5%</td>
+<td>~3,300</td>
+</tr>
+<tr>
+<td>会员费与其他收入</td>
+<td>7,189</td>
+<td>6,750</td>
+<td>1.0%</td>
+<td>接近 100%</td>
+<td>~7,000</td>
+</tr>
+<tr>
+<td>未分摊的总部成本</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−9,200</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>725,305</strong></td>
+<td><strong>713,163</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>4.16%（实际）</strong></td>
+<td><strong>30,183（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说明：沃尔玛在这个数据源里只按分部披露营收，不披露分部利润。</strong> 上表的利润率是我按行业常识和整体 4.16% 的经营利润率倒推的<strong>估算值</strong>。可靠的只有最后一行的实际数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：数据源没有单列。</strong>
+沃尔玛的现金流量表在这个数据源里不单独列 SBC，它被合并进了「其他调整 41.55 亿」。参照公司规模和历史，沃尔玛的年度股权激励大致在 15 亿美元量级——占净利润 227.36 亿的不到 7%，而且 GAAP 里已经扣掉了。这跟科技公司动辄吃掉一半利润的情况完全不是一回事。<strong>这一项：不构成问题，但要承认这里有一个我看不见的黑箱。</strong></p>
+<p><strong>一次性项目：没有明显的。</strong>
+「其他调整」这一行 TTM 41.55 亿，往前看 FY2026 是 43.40 亿、FY2025 是 31.32 亿、FY2024 是 56.60 亿、FY2023 是 40.51 亿——<strong>它年年都在四五十亿这个区间</strong>，说明它不是一次性的，主要是递延所得税和股权投资的公允价值变动（沃尔玛持有京东等股票，股价波动直接进利润表，然后在现金流里被冲回）。这个波动会让某一年的 GAAP 净利润好看或难看，但它不是现金，长期会相互抵消。<strong>不加回，不扣除。</strong></p>
+<p><strong>资本化的支出：没有软件资本化之类的问题。</strong> 沃尔玛的资本开支全是看得见摸得着的房子、货架、卡车、自动化设备。</p>
+<p><strong>回购与稀释：TTM 回购 56.13 亿，同期分红 75.99 亿，合计 132.12 亿。</strong>
+因为 SBC 没有单列，算不出严格的「回购/SBC」比值，但按估算的 15 亿 SBC 算，比值大约 3.7 倍，属于「真回购」的范畴。股本一年实际减少 <strong>0.79%</strong>——56.13 亿的回购放在 9,209 亿的市值上只能买回 0.61%，跟礼来一样，<strong>估值太高导致回购几乎不产生效果</strong>。</p>
+<p>值得注意的是：FY2023 沃尔玛回购了 99.20 亿、FY2022 回购了 97.87 亿，那时候股价便宜；现在股价涨了以后，回购金额反而降到 56 亿。这一点上管理层是清醒的。</p>
+<p><strong>利润和现金流的差：这是沃尔玛这份财报里最需要看懂的地方。</strong>
+TTM 净利润 227.36 亿，经营现金流 408.92 亿——<strong>经营现金流几乎是净利润的两倍</strong>。但自由现金流只有 125.52 亿，<strong>比净利润还低 45%</strong>。钱去哪了？</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>22,736</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+14,655</td>
+<td>巨额非现金费用，4,600 家店的房子货架每年折旧</td>
+</tr>
+<tr>
+<td>＋ 其他调整（含 SBC、递延税、股权公允价值变动）</td>
+<td>+4,155</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>−1,009</td>
+<td>对企业客户的赊账</td>
+</tr>
+<tr>
+<td>－ 存货增加</td>
+<td>−4,469</td>
+<td><strong>货压在仓库和货架上的钱</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+3,098</td>
+<td>欠供应商的钱变多 = 白用供应商的钱</td>
+</tr>
+<tr>
+<td>＋ 应计费用增加</td>
+<td>+1,883</td>
+<td>欠员工的工资、欠的水电</td>
+</tr>
+<tr>
+<td>－ 应交税金减少</td>
+<td>−542</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他零星差额</td>
+<td>+385</td>
+<td>四舍五入及未细分项</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>40,892</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td><strong>−28,340</strong></td>
+<td><strong>这一行是关键</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>12,552</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看懂两件事：</strong></p>
+<p>第一，<strong>折旧 146.55 亿是这家公司利润表里最大的一笔非现金成本</strong>，正是它让经营现金流翻倍。零售是重资产生意——先花钱盖店、买货架、买卡车，然后二十年慢慢摊。这个结构本身没问题。</p>
+<p>第二，也是真正的问题：<strong>资本开支 283.40 亿，是折旧 146.55 亿的 1.93 倍。</strong> 也就是说沃尔玛现在花的钱，几乎是「维持现状所需」的两倍。这个数字在 FY2022 还只有 131 亿，四年翻了一倍多。钱花在三处：把老配送中心改成机器人自动化仓（要摊掉大量人工）、把 4,600 家门店翻新成能同时做「购物场所」和「线上订单前置仓」的形态、以及数据中心和 AI。</p>
+<p><strong>这就是为什么一家赚了 227 亿利润的公司，自由现金流只有 125 亿。</strong> 而它同期要付出去分红 75.99 亿 + 回购 56.13 亿 = <strong>132.12 亿，已经超过了自由现金流 125.52 亿</strong>。缺口靠借钱补：TTM 净新增短期债务 51.32 亿，总债务从一年前的 601 亿涨到 742 亿，净负债 634.50 亿。</p>
+<p>沃尔玛的资产负债表还很安全（债务/EBITDA 只有 1.68，利息保障倍数 10.55），但<strong>「股东回报靠借钱维持」这个事实必须说清楚</strong>。另外提醒一句：流动比率只有 0.77、速动比率只有 0.19——这在别的行业是危险信号，但在零售业是<strong>优势</strong>：它说明沃尔玛卖货收现金的速度比它付供应商钱的速度快得多，等于长期无息占用着供应商几百亿的资金。这是规模霸权的直接体现。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 9,209.1 亿美元、企业价值按 9,857.2 亿美元计算。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>9,209 ÷ 227.36 亿</td>
+<td><strong>40.5 倍</strong></td>
+<td><strong>2.47 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>剔除股权投资公允价值变动和重组，粗估净利约 235 亿</td>
+<td>~39.2 倍</td>
+<td>~2.55 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已按 GAAP 扣除不加回；「其他调整」年年发生不算一次性，不加回</td>
+<td><strong>40.5 倍</strong></td>
+<td><strong>2.47 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>9,209 ÷ 125.52 亿</td>
+<td><strong>73.4 倍</strong></td>
+<td><strong>1.36 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>9,857 ÷ 301.83 亿</td>
+<td><strong>32.7 倍</strong></td>
+<td><strong>3.06 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>9,209 ÷（TTM 227.36 + FY2026 218.93 + FY2025 194.36）÷3 = 213.55 亿</td>
+<td><strong>43.1 倍</strong></td>
+<td><strong>2.32 元</strong></td>
+</tr>
+<tr>
+<td>参考：市场预期的未来市盈率</td>
+<td>券商一致预期</td>
+<td>38.9 倍</td>
+<td>2.57 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>「公司自己吹的 Non-GAAP」是<strong>估算</strong>，数据源只提供 GAAP，误差可能有十几亿。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进沃尔玛，按会计利润算，公司一年替你赚 2.47 元；按真正剩下的现金算，只有 1.36 元。</strong></p>
+<p>三年平均口径 43.1 倍 vs 当期 40.5 倍，差距只有 6%——<strong>这说明沃尔玛的利润非常平稳、没有周期性泡沫</strong>。这一点和礼来、英伟达那种当期数字远好于历史均值的公司完全不同，是沃尔玛的优点：<strong>你看到的利润就是它真实的、可重复的赚钱能力，没有虚高。</strong></p>
+<p>这 2.47 元里，回到你口袋的是：分红 75.99 亿 + 回购 56.13 亿 = 132.12 亿，相当于市值的 <strong>1.43%</strong>。也就是投 100 块，一年拿回 1.43 元现金（约 0.83 元分红、0.61 元回购）。<strong>注意这个 1.43 元超过了它真实赚到的自由现金流 1.36 元</strong>——差额是借来的。</p>
+<p>剩下的钱去哪了？283.40 亿全部砸进了资本开支——自动化仓库、门店改造、技术投入。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong> 我的判断是<strong>缓慢变大，但速度撑不起这个价格</strong>。</p>
+<p>变大的理由是真的：广告和会员这块高毛利收入还在两位数增长，它每多一块钱几乎全变成利润，会持续拉高整体的经营利润率；同时那笔翻倍的资本开支不会永远持续，自动化仓建完以后，资本开支会回落到接近折旧的水平，自由现金流会从现在被压制的 125 亿显著反弹。</p>
+<p><strong>但速度是硬伤，而且是量化的：PEG 4.13。</strong> 这个数字的意思是——市场给的市盈率，是这家公司利润增速的 4 倍多。券商预期的未来市盈率 38.9 倍，只比当前的 40.5 倍低了 4%，<strong>说明连最乐观的分析师也只认为沃尔玛未来一年的利润能涨 4%</strong>。</p>
+<p><strong>一句更直白的对比：你花 40.5 倍市盈率买沃尔玛，跟花 40.4 倍买礼来，价格完全一样。但礼来的收入在以 49.6% 的速度增长，沃尔玛是 5.9%。</strong></p>
+<p>沃尔玛真正的护城河也是真的，而且极硬：210 万员工构成的物理网络、90% 美国人 10 英里内可达、几百亿的无息供应商占款、以及在通胀年代「所有人都跑来沃尔玛省钱、经济好的时候大家也不走」的反脆弱性——所以它的贝塔只有 0.61，是天生的防守股。<strong>问题从来不是这家公司好不好，是 40 倍这个价格给一门年增 5.9%、净利率 3.19% 的生意，本身就是一笔关于「广告业务能不能长到足以改变整个公司利润结构」的赌注。</strong> 而广告业务现在还只占营收 1% 出头。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>沃尔玛是一家几乎不可能被击垮的公司，正在长出一门真正赚钱的广告生意——但市场已经按「广告生意长成了」的价格提前收了钱，你付的 40 倍市盈率，换来的是每年 1.43% 的现金回报和 5.9% 的增长，其中那 1.43% 还有一部分是借钱发的。</strong></p>
+</div></body></html>

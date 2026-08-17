@@ -1,0 +1,417 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ROK · 罗克韦尔自动化</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ROK</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">品牌和代码双锁定，但41.6倍买五年EPS负增长，太贵</div><h1>ROK · 罗克韦尔自动化</h1>
+<p>市值 $499.0 亿 / 股价 $449.37（2026-08-14 收盘）/ 行业：生产制造 — 工业自动化
+财报口径：TTM（最近四个季度滚动），截止 <strong>2026 年 6 月 30 日</strong>。财年为 10 月–9 月，所以这个 TTM 已经包含了 FY2026 的前三个季度。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>罗克韦尔就干一件大事——<strong>让工厂自己动起来</strong>。但它把这件事拆成三门生意卖，分别对应"手脚"、"大脑"和"请人来装"。</p>
+<p>它最核心的资产其实不是技术，是 <strong>Allen-Bradley（艾伦-布拉德利）这个牌子</strong>。美国的工厂电工从技校起就是照着艾伦-布拉德利的设备学的，一个干了 20 年的维修主管，闭着眼能摸到哪个端子是哪个端子。你让他换成西门子，他得重学，而且半夜三点产线停了他修不了。所以美国工厂换供应商的阻力不来自采购部，来自车间。这是罗克韦尔在北美（约占它 2/3 营收）能长期收高价的根本原因。</p>
+<h3>生意一：智能设备（Intelligent Devices）—— 工厂的手脚</h3>
+<p>这是能摸得着的硬件。具体是些什么东西：</p>
+<ul>
+<li><strong>变频器（PowerFlex 系列）</strong>：一台传送带的电机接上市电只有一个速度——全速。要让它慢下来、平滑启动、按产量调速，就得在墙电和电机之间串一个变频器。一台中等功率的 PowerFlex 卖 2000–8000 美元。一个中型饮料灌装厂，从进瓶、洗瓶、灌装、封盖到码垛，有几百台电机，就要几百台变频器。</li>
+<li><strong>接触器、软启动器、电机保护开关</strong>：一台 50 美元到几百美元的小铁疙瘩，负责把电通给电机、过载时切断。工厂里成千上万个。</li>
+<li><strong>安全设备</strong>：光幕（人手一伸进冲压机的危险区，红外光被挡住，机器 0.02 秒内急停）、安全继电器、急停按钮、安全门锁。这类东西不是客户想买，是 OSHA（美国职业安全局）和保险公司逼着买的——出一次断手事故，赔偿加停产远超设备钱。</li>
+<li><strong>独立小车输送系统（iTRAK / MagneMotion）</strong>：用磁悬浮把产品托盘在轨道上单独驱动，每个托盘能独立加速、停在不同工位。做化妆品混线包装、药品分装这种"同一条线上跑十几种规格"的场景。一套几十万到几百万美元。</li>
+</ul>
+<p><strong>怎么收钱</strong>：一次性卖硬件，没有订阅。但工厂设备寿命 15–25 年，坏了要换、扩产要加、老产线改造要升级——所以它是"一次性销售"叠出来的一条相当稳的现金流。客户不会因为省钱就用杂牌，因为一台变频器坏了导致产线停 4 小时，损失是变频器的一百倍。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>智能设备</td>
+<td>$41.27 亿</td>
+<td>约 $37.0 亿</td>
+<td>46.0%</td>
+<td>约 20%（估算）</td>
+<td>约 $8.3 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>同比增速约 <strong>+11%</strong>，是三门里最主要的复苏来源。</p>
+<h3>生意二：软件与控制（Software &amp; Control）—— 工厂的大脑</h3>
+<p>这是罗克韦尔最赚钱、也最难被替代的一块。</p>
+<ul>
+<li><strong>PLC 可编程逻辑控制器（ControlLogix / CompactLogix）</strong>：一个加固过的工业电脑，专门做"如果 A 传感器亮了就让 B 气缸伸出"这种毫秒级判断。一台汽车厂的焊装线上，几十台机器人的动作先后顺序全由它编排。一台 ControlLogix 机架配齐 I/O 模块，两三万美元起。</li>
+<li><strong>Studio 5000 编程软件</strong>：工程师用它写"梯形图"（一种模拟继电器电路的编程语言，电气工程师看得懂、程序员看不懂）。一个授权席位一年几千美元。<strong>这是最狠的护城河</strong>——一座运行了 15 年的工厂，全部控制逻辑是用罗克韦尔的方言写的，几万行梯形图，写的人早离职了，没人敢重写。换供应商等于把工厂的记忆全删了重来。</li>
+<li><strong>FactoryTalk 软件套件</strong>：把车间数据往上传，做可视化（大屏上看每条线的实时产量、良率）、报警管理、批次记录（制药厂必须留可追溯的电子批记录，FDA 要查）。</li>
+<li><strong>Plex（云 MES）和 Fiix（设备维护软件）</strong>：近几年买来的 SaaS。Plex 是给中小制造商用的云端生产管理系统，按用户数订阅，一家 500 人的工厂一年十几万美元。Fiix 管"这台泵该换轴承了"的预防性维护排程。</li>
+</ul>
+<p><strong>具体一单长什么样</strong>：一家做金属冲压件的二级汽车供应商要上一条新线，采购清单里 ControlLogix 控制器 4 万美元、I/O 模块 6 万、Studio 5000 席位 2 万/年、FactoryTalk View 可视化 3 万。硬件只占一半，剩下是软件和年费。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>软件与控制</td>
+<td>$27.21 亿</td>
+<td>约 $23.6 亿</td>
+<td>30.3%</td>
+<td>约 28%（估算）</td>
+<td>约 $7.6 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>同比增速约 <strong>+15%</strong>，三门里最快，而且利润率最高。这块占营收 30%，却贡献了大约 41% 的利润。</p>
+<h3>生意三：全生命周期服务（Lifecycle Services）—— 派人来给你装、给你修</h3>
+<p>这门是卖人力和时间的。</p>
+<ul>
+<li><strong>系统集成</strong>：一家药厂要建一条无菌灌装线，罗克韦尔的工程师团队进场做整体控制方案设计、写代码、按 FDA 的 GAMP5 规范做验证文档、调试到能跑。一个这样的项目 500 万到 5000 万美元不等，做 1–3 年。</li>
+<li><strong>现场服务和备件</strong>：签年度合同，承诺 4 小时到场；关键备件寄存在客户现场。半夜产线停了打电话有人来。</li>
+<li><strong>培训和咨询</strong>：教客户的电工怎么用自家设备（顺便加固前面说的"车间不肯换供应商"）。</li>
+<li><strong>Sensia</strong>：和油服公司斯伦贝谢（SLB）合资，专做油气田的自动化——井口计量、管道 SCADA 远程监控。</li>
+</ul>
+<p><strong>为什么这门利润率低</strong>：它本质是工程服务公司，成本是工程师的工资，人力涨价就压利润，而且项目验收周期长、垫资多。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全生命周期服务</td>
+<td>$21.25 亿</td>
+<td>约 $22.0 亿</td>
+<td>23.7%</td>
+<td>约 12%（估算）</td>
+<td>约 $2.6 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>唯一下滑的一块，同比约 -3.5%。</strong></p>
+<blockquote>
+<p>⚠️ 财报（stockanalysis 披露口径）<strong>只披露到分部营收，不披露分部利润</strong>。上面三张表的"经营利润率"和"贡献利润"是我按公司整体经营利润率（19.85%）和历史上三个分部的相对盈利结构<strong>估算</strong>的，不是财报原文数字。三块估算利润合计 $18.5 亿，略高于实际经营利润 $17.81 亿，差额是没分摊的总部开销。营收数字是真实披露值。</p>
+</blockquote>
+<p><strong>三门加起来 TTM 营收 $89.73 亿，同比 +11.3%</strong>——这是从 FY2024 那个惨年（-8.8%）里爬出来的。要记住这个"爬出来"，第三部分算三年平均市盈率时它是核心。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：$0.89 亿，占净利润 7.4% —— 干净得罕见</h3>
+<p>TTM 股权激励 8900 万美元，净利润 11.99 亿。<strong>7.4% 是我做过的公司里最低的一档</strong>。对比一下科技公司动辄 30%–100%。原因很简单：罗克韦尔 2.6 万员工里绝大多数是工厂工人、现场工程师、销售，不是硅谷程序员，发的是工资不是股票。</p>
+<p>这一项一律按真实成本扣掉（GAAP 已经扣了），不加回。这里没什么可剥的。</p>
+<h3>一次性项目：资产减值和重组 $2.24 亿 —— <strong>但很可能不是"一次性"</strong></h3>
+<p>TTM 里有 2.24 亿美元的"资产减值与重组费用"。税后大约影响 1.86 亿净利润，相当于净利润的 15.5%——不小。</p>
+<p>但看历史：FY2023 有 1.58 亿，FY2025 有 2.24 亿，TTM 又是 2.24 亿。<strong>只看当期一年的口径，分不清这是真一次性还是年年都要发生的"常态化一次性"</strong>，但从出现频率看，把它当成常规经营成本更保守。所以下面算真实利润时我<strong>不加回</strong>，同时也给出加回后的数字供参考。</p>
+<h3>资本化的支出：没有明显问题</h3>
+<p>罗克韦尔是硬件公司，没有大额软件开发费或内容制作费资本化的迹象。资本开支 2.28 亿，只占营收 2.5%——这是个极轻资产的生意，它不建大工厂，主要是组装和配电柜。</p>
+<h3>回购与稀释：<strong>9.2 倍，是真回购</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>$8.23 亿</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>$0.89 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>9.2 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>$6.11 亿</td>
+</tr>
+<tr>
+<td>员工行权流入</td>
+<td>+$1.16 亿</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>-0.84%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这个 9.2 倍是很高的分。</strong> 大于 3 才算真回购，9.2 意味着回购里只有约 11% 是在抵消员工发股，剩下 89% 是实打实地减少股数。回购加分红一共还给股东 $14.34 亿，占自由现金流（$15.04 亿）的 <strong>95%</strong>。</p>
+<p>它几乎把赚的现金全还给股东了。这是一家不再需要靠再投资增长的成熟公司的做法。</p>
+<h3>利润和现金流的差：<strong>现金流远好于账面利润</strong></h3>
+<p>净利润 11.99 亿，经营现金流 17.32 亿，自由现金流 15.04 亿。<strong>现金流是利润的 1.44 倍</strong>，差 5.33 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,199</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+311</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+11</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+89</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组（非现金部分）</td>
+<td>+224</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>+4</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−17</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−187</td>
+</tr>
+<tr>
+<td><strong>小计（非现金调整后）</strong></td>
+<td><strong>1,634</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加（卖了货还没收钱）</td>
+<td>−110</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−38</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加（欠供应商的钱变多）</td>
+<td>+99</td>
+</tr>
+<tr>
+<td>＋ 预收款增加</td>
+<td>+15</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−16</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产净变动</td>
+<td>+146</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,732</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−228</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,504</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说明的事</strong>：5.33 亿的差额里，3.11 亿是折旧摊销（钱早年就花了，现在只是账上摊），2.24 亿是这次的减值（根本没出钱，只是把账上的资产值调低了），0.89 亿是发股票（没出现金）。营运资金整体只占用了 0.96 亿，非常干净——说明它没有靠压供应商账期或者塞货给经销商来粉饰现金流。</p>
+<p><strong>质量判断：现金流真实，没有明显粉饰。</strong></p>
+<h3>一个我没能对平的地方（如实说明）</h3>
+<p>经营利润 $17.81 亿，但税前利润只有 $13.15 亿——中间少了 <strong>$4.66 亿</strong>。按利息保障倍数 12.91 倍推算，利息支出约 $1.38 亿，剩下约 $3.3 亿是营业外的损失（可能是养老金结算损失、汇兑、投资减值）。这些页面没有细分披露，我不去翻 10-K 硬查。</p>
+<p>同时，税前 13.15 亿、所得税 2.24 亿（有效税率 17.03%），照理净利润应该是 10.91 亿，但报出来是 11.99 亿，<strong>多出约 1.08 亿</strong>——可能来自联营企业投资收益或终止经营损益。这一项我从这些页面无法确认来源，<strong>明确标注为未对平</strong>，占净利润 9%，不影响下面的大方向结论。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $499.0 亿，企业价值 $530.4 亿（净负债 $31.34 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>499.0 ÷ 11.99</td>
+<td><strong>41.6 倍</strong></td>
+<td><strong>$2.40</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（估算）</td>
+<td>499.0 ÷ 约 14.2（加回重组+并购无形摊销，税后）</td>
+<td>约 35.1 倍</td>
+<td>约 $2.85</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>499.0 ÷ 11.99（SBC 不加回；重组按常态化处理也不加回）</td>
+<td><strong>41.6 倍</strong></td>
+<td><strong>$2.40</strong></td>
+</tr>
+<tr>
+<td>（参考）若把重组算真一次性</td>
+<td>499.0 ÷ 13.85</td>
+<td>36.0 倍</td>
+<td>$2.78</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>499.0 ÷ 15.04</td>
+<td><strong>33.2 倍</strong></td>
+<td><strong>$3.01</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>530.4 ÷ 17.81</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>$3.36</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>499.0 ÷ 10.05（TTM 11.99、FY25 8.67、FY24 9.48 平均）</td>
+<td><strong>49.7 倍</strong></td>
+<td><strong>$2.01</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Non-GAAP 那一行是<strong>我的估算</strong>，不是公司公布的数字——这几个页面不提供公司自己的调整后净利润。做法是把 2.24 亿重组按 17% 税率加回（+1.86 亿）再加约 0.6 亿并购无形资产摊销的税后影响。真实数字可能有出入，仅供参考。</p>
+</blockquote>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进罗克韦尔，按最保守的真实口径（41.6 倍），公司一年替你赚 2 块 4 毛。</strong></p>
+<p>这 2 块 4 毛里，实际回到你口袋的：分红约 <strong>1 块 2 毛 2</strong>（股息率 1.22%），回购约 <strong>1 块 6 毛 5</strong>（回购金额占市值 1.65%）——合计 2 块 8 毛 7，<strong>比它赚的还多</strong>。多出来的部分是它在轻微加杠杆（净负债 31 亿）给你发钱。留在公司里再投资的部分接近于零：资本开支只有 2.28 亿，而且 TTM 一笔并购都没做。</p>
+<p><strong>这是一家"不再增长、把钱全发掉"的公司的资产负债表配置。</strong> 但市场给它 41.6 倍，定价的是"会重新增长"。</p>
+<h3>全篇最重要的一句话：三年平均口径是 49.7 倍</h3>
+<p>TTM 的 11.99 亿净利润，是从 FY2024 的 9.48 亿、FY2025 的 8.67 亿爬上来的。<strong>FY2025 是过去五年里最差的一年</strong>（EPS 7.67，比 FY2023 的 11.95 低了 36%）。工业自动化是强周期生意——客户扩产就买、不扩产就一台不买，2023–2025 那两年北美工厂集体推迟资本开支。</p>
+<p>现在 TTM 利润创了新高，市盈率看着 41.6 倍。但按三年平均利润算是 <strong>49.7 倍</strong>。差了 8 倍，<strong>说明现在这个利润数字处在周期的上行段，不是中枢</strong>。经营利润率 19.85% 也是六年来最高（历史区间 15.8%–19.9%）。</p>
+<p>要让 41.6 倍变得合理，需要利润再涨一大截且不回落。市场在赌的是数据中心、电网设备、美国制造业回流这三件事继续给它送订单。<strong>如果周期在 2027 转头向下，你买的不是 41.6 倍，是 50 倍以上。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意质量是一流的——Allen-Bradley 的品牌锁定、Studio 5000 的代码锁定、7.4% 的极低股权激励、9.2 倍的真回购、ROE 30.6%、资本开支只占营收 2.5%——但价格不是。41.6 倍买一家强周期、五年 EPS 复合增速不到 -2%（11.58 → 10.67）、当前利润正处在周期高点的工业公司，投 100 块一年赚 2 块 4，太贵了。</strong></p>
+<p>它不是一家烂公司，它是一家好公司卖了个不该有的价。要买，等下一轮工厂资本开支放缓、EPS 掉回 8 块出头、股价跌到 300 以下的时候买——那时候三年平均口径大概是 30 倍出头，才对得起这门生意。</p>
+</div></body></html>

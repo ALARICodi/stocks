@@ -1,0 +1,360 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PLD · 普洛斯（Prologis, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PLD</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">资产全世界最好，但回报率已跌到资金成本的四成</div><h1>PLD · 普洛斯（Prologis, Inc.）</h1>
+<p>市值 $1369 亿 / 股价 $141.21 / 行业：REITs（物流地产）/ TTM 截止 2026 年 6 月 30 日 / 全榜第 67 名</p>
+<blockquote>
+<p><strong>这是一家 REITs（房地产信托），下面第三部分用 FFO、AFFO、分红覆盖率这套口径，而不是市盈率。原因是：REITs 的净利润里有两块东西让市盈率失真——一是每年几十亿美元的房屋折旧，但仓库这种资产实际上不会在 30 年里变得一文不值，折旧是"假费用"；二是卖楼的一次性收益直接计入净利润，让利润忽高忽低。所以地产行业统一用 FFO（把折旧加回、把卖楼收益减掉）来衡量"收租这门生意本身赚多少"。</strong></p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>普洛斯本质上是<strong>全世界最大的仓库房东</strong>。它自己不运货、不分拣、不装卸，它只做一件事：在货物必须经过的地方，把地买下来、把仓库盖起来、租给需要的人，然后每个月收租。</p>
+<p>TTM 营收 91.9 亿美元，分三块：</p>
+<h3>生意一：收租（Rental）—— 84.5 亿，占 92%</h3>
+<p><strong>具体是怎么回事。</strong> 假设你是一家做家居用品电商的公司，你的客户在洛杉矶下单，你承诺次日达。要做到这一点，你必须在洛杉矶周边 50 公里内有一个 30 万平方英尺的配送中心——比这远，卡车当天跑不完；比这小，装不下 SKU。但洛杉矶港口周边的工业用地几乎买不到了，能盖仓库的地块二十年前就被划完了。</p>
+<p>这块地在普洛斯手里。它会给你盖一栋 32 尺净高、带 60 个卸货门、地坪平整度达到自动化立库要求的仓库，跟你签一份 7 年租约。你按平方英尺付租金——沿海高门槛市场大约每平方英尺每年 12–18 美元，内陆便宜些，5–8 美元。30 万平方英尺、每平方英尺 14 美元，就是一年 420 万美元租金。合同里还写死每年自动涨 3.5%，第七年你要付的是 530 万。房产税、保险、外部维护通常也转嫁给你（行业里叫 triple net，"三净租约"）。</p>
+<p><strong>为什么租户跑不掉。</strong> 你搬进去之后，会花两三千万美元装货架、传送带、分拣机器人、消防喷淋改造。这些东西是钉死在这栋楼里的，搬家等于全部重来。更要命的是搬家期间你的次日达做不了了，客户会流失。所以到期续租几乎是必然选择——普洛斯的续租率长年在 75–80%。</p>
+<p><strong>真正的赚钱机器叫"租金差"（lease mark-to-market）。</strong> 普洛斯手里有大量五到七年前签的老租约，那时候的市场租金远低于今天。这些老约每年有一批到期，重签时租金直接跳到当前市场价——涨幅经常是 30–50%。这意味着即使一平方英尺新仓库都不盖、一个新租户都不签，光是老约换新约，租金收入也会自动往上走好几年。这是普洛斯每次财报最爱讲的东西，也是它整个投资故事的核心。</p>
+<p><strong>这门生意的成本结构。</strong> 整体经营利润率 38.4%，但那是扣完 27.4 亿折旧之后的。把折旧（一笔不花现金的账面费用）加回来，收租的现金利润率大约 68%。普洛斯全公司只有 2,802 名员工，却管着遍布全球的物流园区——人均创收 345 万美元。房东这门生意的本质就是：资产极重、人极少、边际成本极低。</p>
+<h3>生意二：帮别人管钱（Strategic Capital）—— 7.06 亿，占 7.7%</h3>
+<p><strong>具体是怎么回事。</strong> 全世界的养老金、主权财富基金、保险资金都想配置物流地产，但它们没有能力自己去洛杉矶买地盖仓库。普洛斯就做了一堆基金：它把一部分仓库装进一只基金里，把 70–85% 的份额卖给这些机构当 LP，自己留 15–30%，同时担任基金管理人。</p>
+<p>收两笔钱：
+- <strong>管理费</strong>：按管理的资产规模收，大约每年 0.5% 左右。管 1000 亿资产，一年 5 亿管理费，基本没有对应成本。
+- <strong>业绩提成（promote）</strong>：基金收益超过约定门槛后，普洛斯分走超额部分的一大块。</p>
+<p>这块营收只占 7.7%，但因为几乎没有成本，利润贡献远高于这个比例；更重要的是它<strong>不占用普洛斯自己的资本</strong>——用别人的钱买楼，自己收管理费，还能顺带把自己开发的楼卖给基金变现。</p>
+<p><strong>但这块钱很不稳定。</strong> FY2023 这个分部收入是 12.0 亿，现在只剩 7.06 亿，两年掉了 41%。原因很直白：地产估值不涨了，基金收益够不到提成门槛，promote 收不上来。管理费是稳的，提成是随行就市的。</p>
+<h3>生意三：开发（Development Management &amp; Other）—— 0.35 亿，占 0.4%</h3>
+<p>营收占比可以忽略不计，<strong>但这是普洛斯最大的资本去向，也是理解它财报的钥匙</strong>。</p>
+<p>普洛斯 TTM 花了 57 亿美元资本开支，绝大部分是买地和盖新仓库。盖好之后有两条路：留着自己收租（进生意一），或者卖掉。TTM 卖楼回款 33.8 亿美元。<strong>卖楼产生的收益直接计入净利润，但不计入经营利润</strong>——这就是为什么普洛斯的净利润率（48.7%）高于经营利润率（38.4%）这么离谱的原因。一家公司"净利润比经营利润还高 6.7 亿"，正常制造业绝对不可能，地产公司很常见。</p>
+<p><strong>数据中心这个期权。</strong> 普洛斯手里有大量工业园区的土地和已经锁定的电网接入容量——而这两样东西恰好是现在建数据中心最稀缺的资源。公司正在把一部分园区改作数据中心开发。这块目前还没形成独立的分部收入，主要体现在开发管线里，属于未来的可能性，不是当期利润。买普洛斯不能靠这个理由，但它确实是免费送的一张彩票。</p>
+<h3>三门生意汇总</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上一财年（FY2025）</th>
+<th>变化</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收租 Rental</td>
+<td>84.48 亿</td>
+<td>81.59 亿</td>
+<td>+3.5%</td>
+<td>91.9%</td>
+<td>现金利润率约 68%（折旧加回后）</td>
+</tr>
+<tr>
+<td>管别人的钱 Strategic Capital</td>
+<td>7.06 亿</td>
+<td>5.92 亿</td>
+<td>+19.3%</td>
+<td>7.7%</td>
+<td>提成波动极大，FY2023 曾达 12.0 亿</td>
+</tr>
+<tr>
+<td>开发管理及其他</td>
+<td>0.35 亿</td>
+<td>0.39 亿</td>
+<td>−10.5%</td>
+<td>0.4%</td>
+<td>营收微小，但资本开支的主战场</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>91.90 亿</strong></td>
+<td><strong>87.90 亿</strong></td>
+<td><strong>+4.6%</strong></td>
+<td>100%</td>
+<td>整体经营利润率 38.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>注：财报不按分部披露利润，只披露到营收。上表的利润率是全公司口径。TTM 与 FY2025 的对比不是严格同比（TTM 截至 6 月，FY2025 截至上年 12 月），只用于看方向。</em></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 2.04 亿美元，占净利润 4.9%。金额在这个体量的公司里算小的，GAAP 里已经扣掉，不加回。不是问题。</p>
+<p><strong>一次性项目</strong>：现金流量表里有一行"其他调整 −19.56 亿美元"——这是把净利润里<strong>不产生现金的收益</strong>减掉。主要成分是地产处置收益和权益法投资的公允价值变动。也就是说，42.02 亿净利润里，约有 19.56 亿是"账面上的钱"，不是当年真收到的经营现金。</p>
+<p>按分析规范，只看单期无法判断一次性项目是不是年年发生——但这里可以看历史：FY2025 是 −11.72 亿、FY2024 是 −17.01 亿、FY2023 是 −7.85 亿。<strong>所以它年年都有，只是金额在 8 亿到 20 亿之间剧烈波动</strong>。结论：这不是"一次性"，是常态化的、但金额完全不可预测的一块利润。用净利润给普洛斯估值，等于在给一个随机数定价。</p>
+<p><strong>资本化的支出</strong>：普洛斯把开发期间的建设利息、人工、前期费用全部资本化进楼的成本里，然后按 30–40 年折旧。这是地产行业的标准做法，不算造假，但意味着当期的费用被推迟到未来几十年慢慢确认。</p>
+<p><strong>回购与稀释</strong>：<strong>TTM 回购金额为零。</strong> 现金流量表"回购普通股"一栏是空的。同期股权激励 2.04 亿，也就是说回购/SBC 的比值是 <strong>0</strong>。与此同时，股本不但没减少，还<strong>增加了 0.33%</strong>——因为普洛斯经常用增发股票来支付收购对价。稀释收益率 −0.33%。</p>
+<p>这是一个明确的负分。股东拿到的现金回报只有分红一条路，公司没有花一分钱在二级市场买回自己的股票。</p>
+<p><strong>利润和现金流的差 —— 逐项对账</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>4,202</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销（不花现金的账面费用）</td>
+<td>+2,738</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+204</td>
+</tr>
+<tr>
+<td>− 其他调整（卖楼收益等非现金收益，剔出）</td>
+<td>−1,956</td>
+</tr>
+<tr>
+<td>− 营运资金及其他经营项变化</td>
+<td>−217</td>
+</tr>
+<tr>
+<td>＝ 小计</td>
+<td>4,971</td>
+</tr>
+<tr>
+<td>＋ 少数股东权益、递延税等零星轧差</td>
+<td>+270</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,241</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>再往下走一步，看这 52.41 亿现金怎么花的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>现金去向</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>+5,241</td>
+</tr>
+<tr>
+<td>资本开支（买地、盖仓库）</td>
+<td>−5,701</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−460</strong></td>
+</tr>
+<tr>
+<td>卖楼回款</td>
+<td>+3,378</td>
+</tr>
+<tr>
+<td>净增长期债务</td>
+<td>+2,379</td>
+</tr>
+<tr>
+<td>分红派出去</td>
+<td>−3,885</td>
+</tr>
+<tr>
+<td>回购</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表是全篇最重要的东西。</strong> 普洛斯 TTM 的自由现金流是<strong>负 4.6 亿美元</strong>——收的租金还不够它盖新楼。而它同期派了 38.85 亿分红。这笔分红的钱从哪来？从卖楼（33.78 亿）和借新债（净增 23.79 亿）来。</p>
+<p>不是说这一定不健康——地产公司靠"卖旧楼、借新债、盖新楼"循环运转是常态。但你要清楚：<strong>你收到的每一块钱分红，本质上不是仓库租金付的，是公司卖资产和加杠杆付的。</strong> 而且这个循环已经持续了五年：FY2021 到现在，自由现金流每一年都是负的（−24.6 亿、−20.4 亿、−29.1 亿、−15.1 亿、−4.6 亿）。</p>
+<hr />
+<h2>第三部分：REITs 口径的估值</h2>
+<p><strong>用市盈率会算错，先说清为什么。</strong> 42.02 亿净利润里有 19.56 亿是卖楼和重估的账面收益，同时又扣掉了 27.38 亿并不真实消耗现金的折旧。两个方向的失真都很大。所以下面用地产行业通用的口径。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（仅作参照）</td>
+<td>市值 ÷ TTM 净利润 42.02 亿</td>
+<td>32.6 倍</td>
+<td>$3.07</td>
+</tr>
+<tr>
+<td><strong>P/FFO（行业标准口径）</strong></td>
+<td>市值 ÷ FFO 约 65.3 亿</td>
+<td><strong>21.0 倍</strong></td>
+<td><strong>$4.77</strong></td>
+</tr>
+<tr>
+<td>P/AFFO（扣掉维持性资本开支后，<strong>估算</strong>）</td>
+<td>市值 ÷ 约 45.6 亿</td>
+<td>30.0 倍</td>
+<td>$3.33</td>
+</tr>
+<tr>
+<td>剔除卖楼收益后的"纯收租利润"口径</td>
+<td>市值 ÷（42.02 − 19.56）= 22.46 亿</td>
+<td><strong>61.0 倍</strong></td>
+<td><strong>$1.64</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径 P/OCF</td>
+<td>市值 ÷ 52.41 亿</td>
+<td>26.1 倍</td>
+<td>$3.83</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（市值＋净负债 353 亿）÷ 经营利润 35.32 亿</td>
+<td>48.8 倍</td>
+<td>$2.05</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>市值 ÷ 三年平均净利润 37.50 亿</td>
+<td><strong>36.5 倍</strong></td>
+<td><strong>$2.74</strong></td>
+</tr>
+<tr>
+<td>三年平均经营现金流口径</td>
+<td>市值 ÷ 三年平均 OCF 50.54 亿</td>
+<td>27.1 倍</td>
+<td>$3.69</td>
+</tr>
+<tr>
+<td><strong>实际到手的分红</strong></td>
+<td>每股 4.28 美元 ÷ 股价 141.21</td>
+<td>—</td>
+<td><strong>$3.03</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>AFFO 说明：普洛斯不公开披露 AFFO，stockanalysis 上这一栏是 n/a。上表按「经营现金流 52.41 亿 − 维持性资本开支约 6.8 亿（按租金收入的 8% 估）」估算，标注为估算值。真实数字可能在 42–48 亿之间。</em></p>
+<p><em>三年平均净利润 = (TTM 42.02 + FY2025 33.22 + FY2024 37.26) ÷ 3 = 37.50 亿。</em></p>
+<p><strong>说人话：你现在投 100 块进去，一年能拿回多少？</strong></p>
+<p>按行业最通用的 FFO 口径，公司一年替你赚 <strong>4.77 块</strong>。但 FFO 有个众所周知的毛病：它把所有折旧都加回去了，假装仓库永远不需要花钱维护。实际上屋顶要翻新、地坪要重铺、消防系统要更新。扣掉这些，AFFO 口径大约 <strong>3.33 块</strong>。</p>
+<p>如果你更狠一点，只算"收租这门生意本身赚的钱"——把卖楼和重估的账面收益全部剔掉——那么 <strong>只剩 1.64 块</strong>，对应 61 倍。这个数字很刺眼，但它回答了一个真问题：如果普洛斯从明天起一栋楼都不卖，只当纯房东，它的利润是多少。</p>
+<p>而<strong>真正打进你银行账户的</strong>，是每年 3.03 块分红。</p>
+<p><strong>这 3.03 块之外的钱去哪了？</strong> 没留在公司里变成利润，而是被投进新仓库了。TTM 资本开支 57 亿，超过了全部经营现金流。问题在于这些新投的钱回报如何——看下一段。</p>
+<p><strong>这个回报未来会变大还是变小？</strong></p>
+<p>有两个数字必须放在一起看：</p>
+<ul>
+<li><strong>投入资本回报率 ROIC：3.98%</strong></li>
+<li><strong>加权平均资金成本 WACC：9.64%</strong></li>
+</ul>
+<p>普洛斯每往新仓库里投一块钱，赚回来的回报是 3.98%，而它筹这一块钱的成本是 9.64%。<strong>每投一块，毁灭大约六分钱的价值。</strong> 这不是我推的，是账面直接算出来的。ROIC 已经连续多年在 2.85%–3.59% 之间，从没超过 4%。</p>
+<p>同时看债务：总债务 371 亿，净债务 353 亿，Debt/EBITDA 5.92 倍，利息保障倍数只有 3.37 倍（EBIT 只够付 3.37 倍的利息）。而债务规模从 FY2021 的 177 亿涨到现在的 371 亿，五年翻了一倍多。杠杆是这套模式的燃料，也是它的天花板。</p>
+<p>再看派息率：按净利润算 95.3%，按 FFO 算约 59.5%。FFO 口径还有余地，净利润口径已经派无可派。这也解释了为什么分红增速在放缓——FY2022 涨 25.4%，FY2023 涨 10.1%，FY2024 涨 10.4%，FY2025 涨 5.2%，最新一年涨 5.6%。</p>
+<p>所以答案是：<strong>大概率变小，除非利率显著下行或者租金再来一轮暴涨。</strong> 租金差还有几年可以吃，这是真实的、可预期的正面因素；但资本回报率跌破资金成本、杠杆见顶、提成收入腰斩，这三件事同时发生。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>资产是全世界最好的，价格是给"资产会继续升值"付的，而账上写着这些资产的回报率已经跌到资金成本的四成。</strong></p>
+<p>普洛斯的仓库确实是稀缺的、租户确实搬不走、租金差确实还能吃几年、数据中心确实是一张免费彩票——这些都是真的，我不打算为了显得客观就淡化它们。</p>
+<p>但你付 21 倍 FFO 买的，是一家：自由现金流连续五年为负、分红靠卖楼和借债支撑、五年一分钱回购都没有、股本还在稀释、ROIC 3.98% 对 WACC 9.64% 的公司。你真正到手的现金是 3% 出头的分红，比十年期美债好不了多少，还要多承担一层 5.9 倍的杠杆和地产周期。</p>
+<p>它不烂，它只是<strong>在这个价格上，你买的不是租金，是"楼会继续涨价"这个假设</strong>。而这个假设的证据，账上一条都没有。</p>
+</div></body></html>

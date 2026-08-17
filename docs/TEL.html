@@ -1,0 +1,472 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TEL · 泰科电子（TE Connectivity plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TEL</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">一半汽车一半AI，市场只按「汽车股」给它定价</div><h1>TEL · 泰科电子（TE Connectivity plc）</h1>
+<p>市值 $622.7 亿 | 股价 $215.09 | 行业：电子科技（连接器与传感器）| TTM 截止 2026-06-26（财年结束于 9 月下旬）| 交易所 NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司做的东西你天天在用，但一辈子不会看见一眼：<strong>插头。</strong></p>
+<p>准确地说，是"连接器"——两根电线要接在一起、一块电路板要插到另一块上、一个传感器要把信号送回控制器，中间那个塑料壳加金属片的小东西。泰科电子一年卖出去几百亿个这种小东西，收入 $193.2 亿美元，养了 93,000 名员工。<strong>人均创收只有 20.8 万美元</strong>（对比同批分析的贝克休斯 49.5 万），说明这是一门极度依赖工厂和人手的活——在墨西哥、中国、东欧的几百个车间里冲压金属端子、注塑外壳、组装、测试。</p>
+<p>它自己只分两个分部（2025 年把原来的"通信解决方案"并进了工业），但里面装的是完全不同的两个世界。</p>
+<h3>生意一：交通运输方案（Transportation Solutions）—— 一辆车里的几千个插头</h3>
+<p>营收 $98.8 亿，占 51.1%，较 2025 全年 +5.3%。</p>
+<p>具体讲：一辆现代燃油车里有 <strong>1,500–4,000 个电气连接点</strong>。发动机上的每个传感器、每个喷油嘴、车门里的每个电机、每个安全气囊引爆器、每个摄像头——都要通过一个插头接到线束上，线束再接到 ECU（电子控制单元）。泰科做的就是这些插头：塑料外壳（注塑，要耐 −40℃ 到 +150℃、耐机油、耐盐雾）加里面的金属端子（冲压+电镀，要保证插拔上千次接触电阻不变）。</p>
+<p>单价：一个普通插头 <strong>$0.10–$1</strong>，一个高规格的（比如安全气囊回路的、发动机舱里的）$2–$5。<strong>整车算下来，一辆燃油车里的泰科零件价值大约 $60–$90。</strong></p>
+<p><strong>电动车把这个数字翻了一倍多，到 $130–$180。</strong> 为什么：电动车多了一套 400 伏或 800 伏的高压系统，从电池包到电机、到充电口、到 DC-DC 转换器，每一段都要高压连接器。这东西的技术难度和低压插头完全不是一个量级——它要在插拔瞬间不打火（有专门的机械互锁：先断信号再断电）、要在 400 安培的电流下十几年不发热变形、要通过整车碰撞后的绝缘测试。一个高压连接器卖 <strong>$15–$40</strong>，是普通插头的几十倍。</p>
+<p><strong>客户为什么非买不可（这是这门生意的护城河所在）：</strong></p>
+<p>汽车厂在设计一个新平台时，会把某个具体的泰科零件号写进图纸，然后做整车级的验证——振动台、高低温循环、盐雾、EMC 测试，跑一两年。一旦定型，这个零件号会跟着这个平台生产 <strong>7–10 年</strong>。中途换供应商意味着重新验证整个线束，成本几百万美元、周期一年多，而收益只是每个插头省几分钱。<strong>所以没人换。</strong></p>
+<p>代价是：这种"设计导入"型的生意，价格权在客户手里。合同里通常带着<strong>年降条款</strong>（每年自动降价 2–3%），泰科只能靠自动化和低成本地区产能把成本降得更快来维持利润率。这就是为什么它有 93,000 名员工——大部分在墨西哥和中国的工厂里。</p>
+<p>这块还包含<strong>传感器</strong>（压力、温度、位置、电流传感器，直接卖给车厂）和<strong>商用车</strong>（卡车、农机、工程机械）。TTM 只增长 5.3%，因为全球汽车产量基本持平，电动车渗透率提升的红利被欧洲和北美电动车降速抵消了一部分。<strong>这是拖后腿的一半。</strong></p>
+<h3>生意二：工业方案（Industrial Solutions）—— 里面藏着 AI 数据中心</h3>
+<p>营收 $94.4 亿，占 48.9%，较 2025 全年 <strong>+19.9%</strong>。这是现在真正在跑的一半。</p>
+<p>这个分部是个大杂烩，2025 年把原来的通信业务并了进来，现在包含五六块，但<strong>驱动增长的只有一块：数据中心的高速连接。</strong></p>
+<p><strong>（1）数据中心与 AI 服务器——增长引擎</strong></p>
+<p>一台 AI 服务器里有 8 张 GPU，它们之间要用 800 Gbps 甚至更高的速率互相通话。在这个速率下，<strong>一根铜线不再是"导线"，而是一根天线</strong>——信号会辐射出去、会串扰到隔壁线、会在接口处反射回来。要让信号跨过一个连接器还保持完整，涉及的是实打实的射频工程：阻抗必须严格控制在 85 或 100 欧姆、接地屏蔽的设计、插针的谐振点要避开工作频段。这不是"塑料壳加铜片"，是一个<strong>真正有技术壁垒的东西</strong>，全世界能做到最高速率的只有泰科、安费诺、莫仕三家。</p>
+<p>产品形态：
+- <strong>背板/中板高速连接器</strong>（把 GPU 板插到交换板上）；
+- <strong>有源与无源铜缆组件</strong>（DAC/AEC，机柜内一米以内的短距互联，比光纤便宜且不耗电）；
+- <strong>卡缘连接器</strong>（OSFP/QSFP-DD 光模块的插槽）；
+- <strong>高电流母排和电源连接器</strong>（一个 GPU 机柜现在要吃 100–130 千瓦的电，配电结构和以前的服务器完全不同）。</p>
+<p><strong>一个满配的 AI 服务器机柜，泰科的零件价值大约 $2,000–$10,000。</strong> 对比一整辆车才 $130，这是<strong>单价高一到两个数量级</strong>的生意，而且没有汽车行业那种强制年降条款——超大规模厂商现在赶工期，先要货再谈价。这就是这个分部 +20% 增长的全部来源。</p>
+<p><strong>（2）航空航天与国防</strong>：军规连接器（MIL-DTL-38999 这类）、飞机发动机线束、卫星连接器。认证周期极长（一个型号进入 F-35 或波音的物料清单要五年），一旦进去就锁定二三十年，<strong>毛利率是全公司最高的</strong>。</p>
+<p><strong>（3）工业设备</strong>：工厂自动化、机器人关节里的连接器、伺服驱动器、PLC 的接线端子。</p>
+<p><strong>（4）能源与电网</strong>：变压器接线、电缆附件、太阳能接线盒。2025 年泰科花了约 $23 亿收购 Richards Manufacturing（美国配电网设备），就是在加码这一块——电网改造是未来十年确定性最高的资本开支方向之一。</p>
+<p><strong>（5）医疗</strong>：导管里的微型接头、影像设备连接器。量小、单价高、认证严。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>较 2025 全年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工业方案</td>
+<td>$94.4 亿</td>
+<td><strong>+19.9%</strong></td>
+<td>48.9%</td>
+<td>~21%</td>
+<td>~$19.8 亿</td>
+</tr>
+<tr>
+<td>交通运输方案</td>
+<td>$98.8 亿</td>
+<td>+5.3%</td>
+<td>51.1%</td>
+<td>~19%</td>
+<td>~$18.8 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$193.2 亿</strong></td>
+<td><strong>+11.9%</strong></td>
+<td>100%</td>
+<td>19.7%（实际）</td>
+<td><strong>$38.1 亿</strong>（实际）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠️ <strong>分部利润率是估算。</strong> 财报页只披露分部营收，不给分部利润。上表按整体经营利润 $38.1 亿倒推，工业略高是因为数据中心和航空国防的定价环境明显好于汽车。方向可信，具体百分点别当精确数用。</p>
+</blockquote>
+<p><strong>一句话看懂这家公司现在的状态：一半的身体（汽车）在原地慢走，另一半（数据中心+电网+国防）在小跑，合起来营收 +11.9%、经营利润率创了历史新高 19.7%。</strong></p>
+<p>利润率的长期轨迹很能说明问题：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年度</th>
+<th>毛利率</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>32.2%</td>
+<td>16.9%</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>31.5%</td>
+<td>14.4%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>34.4%</td>
+<td>17.7%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>35.2%</td>
+<td>18.6%</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>36.1%</strong></td>
+<td><strong>19.7%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这是一条真实的、缓慢的、持续四年的爬坡</strong>——不是某一年突然跳起来的。原因是产品组合在换：低价的汽车低压插头占比下降，高价的高速数据连接和高压电动车连接占比上升。这种改善的可信度，比一年之内利润率翻三倍的公司高得多。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：$1.74 亿，很低</h3>
+<p>占 TTM 净利润 $30.16 亿的 <strong>5.8%</strong>，占营收的 0.9%。制造业标准水平，没什么可说的。<strong>GAAP 已扣，不加回。</strong></p>
+<h3>一次性项目：TTM 这一期干净，但<strong>过去两年的 GAAP 净利润完全不能看</strong></h3>
+<p>这是这家公司报表上最需要提醒的一点。看这两行：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年度</th>
+<th>经营利润</th>
+<th>GAAP 净利润</th>
+<th>净利润 ÷ 经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>$23.04 亿</td>
+<td>$19.10 亿</td>
+<td>0.83</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$27.96 亿</td>
+<td><strong>$31.93 亿</strong></td>
+<td><strong>1.14</strong> ← 净利润 &gt; 经营利润</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$32.11 亿</td>
+<td><strong>$18.42 亿</strong></td>
+<td><strong>0.57</strong> ← 净利润只有经营利润一半多</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$38.14 亿</strong></td>
+<td><strong>$30.16 亿</strong></td>
+<td><strong>0.79（正常）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FY2024 的净利润比经营利润还高</strong>——这只可能来自一笔巨额的一次性税收利得（递延所得税资产的估值备抵转回，或者某个税务管辖区的重估）。<strong>FY2025 的净利润只有经营利润的 57%</strong>——反过来，是一笔巨额的一次性税务或减值损失。</p>
+<p>背景：泰科在 2025 年把注册地从瑞士迁到了爱尔兰（公司名从 TE Connectivity Ltd 变成了 <strong>TE Connectivity plc</strong>）。这种跨境重组必然带来递延税资产/负债的大规模重新计量，一进一出就能把 GAAP 净利润打得面目全非。</p>
+<p><strong>结论：这家公司的 GAAP 净利润这条线，过去三年是被税务项目搅烂的，不能用来判断趋势。经营利润那条线（23.0 → 28.0 → 32.1 → 38.1 亿）才是真实的、单调向上的。</strong></p>
+<p><strong>好消息是：TTM 这一期是干净的。</strong> 实际税率 $7.53 亿 ÷ $37.71 亿 = <strong>19.97%</strong>，是一个完全正常的爱尔兰跨国公司税率。净利润 $30.16 亿没有被撑大也没有被压低。所以下面第三部分的当期市盈率是可信的。</p>
+<p>现金流量表里的 <strong>"其他调整 +$6.12 亿"</strong>（FY2025 是 +$12.22 亿）是把非现金性质的费用加回来，进一步印证了 FY2025 那笔大额非现金损失的存在。</p>
+<h3>资本化的支出：没有</h3>
+<p>不做软件资本化。资本开支 TTM <strong>$11.03 亿</strong>，占营收 5.7%，比 2025 全年的 $9.36 亿增加了 18%——在扩高速连接器和高压连接器的产能。折旧摊销 $10.02 亿，<strong>资本开支略高于折旧</strong>，说明是温和扩张而不是靠吃老本。这个比例很健康。</p>
+<h3>回购与稀释：<strong>这是三家里唯一真正在回馈股东的</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股票回购（TTM）</td>
+<td><strong>$17.85 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励（TTM）</td>
+<td>$1.74 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>10.3 倍</strong></td>
+</tr>
+<tr>
+<td>一年股本变化</td>
+<td><strong>−2.07%</strong></td>
+</tr>
+<tr>
+<td>分红（TTM）</td>
+<td>$8.52 亿</td>
+</tr>
+<tr>
+<td><strong>股东总回报率</strong></td>
+<td><strong>3.53%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>10.3 倍，这是真回购。</strong> 不是给员工发股擦屁股，是实打实地把流通股买回来注销。股本一年少了 2.07%——意思是你什么都不做，手里这股代表的公司所有权每年自动变大 2%。连续 15 年提高分红。</p>
+<p>$17.85 亿回购 + $8.52 亿分红 = <strong>$26.37 亿</strong>，对着 $33.15 亿的自由现金流，<strong>派出去了 80%</strong>。这个比例在这三家公司里是最高的（贝克休斯 43%、Comfort Systems 只有 10%）。</p>
+<h3>利润和现金流的差：对得上，而且质量很好</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>$30.16 亿</td>
+</tr>
+<tr>
+<td>经营现金流</td>
+<td>$44.18 亿</td>
+</tr>
+<tr>
+<td>自由现金流</td>
+<td><strong>$33.15 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>自由现金流 $33.15 亿 &gt; 净利润 $30.16 亿，比值 <strong>1.10</strong>。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,016</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+1,002</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+174</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>+612</td>
+</tr>
+<tr>
+<td>＋ 应收账款变化</td>
+<td>−305</td>
+</tr>
+<tr>
+<td>＋ 存货变化</td>
+<td>−226</td>
+</tr>
+<tr>
+<td>＋ 应付账款变化</td>
+<td>+425</td>
+</tr>
+<tr>
+<td>＋ 预提费用变化</td>
+<td>−199</td>
+</tr>
+<tr>
+<td>＋ 应交税金变化</td>
+<td>−119</td>
+</tr>
+<tr>
+<td>＋ 其他营运资金</td>
+<td>+38</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>4,418</strong> ✓</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表每一分钱都对得上，而且没有任何一行是"异常大"的。</strong> 营运资金合计只占用了 $3.86 亿——对一家营收增长 12%、要多备货多铺货的制造业公司来说，这是<strong>教科书级的营运资金管理</strong>。</p>
+<p>对比同批的 Comfort Systems：那家公司靠客户预付了 $15.95 亿撑起了 63% 的经营现金流。泰科这里<strong>没有任何这种成分</strong>——它的现金流就是老老实实卖插头卖出来的。<strong>这是全篇最能说明质量差距的一组对比。</strong></p>
+<p>唯一要注意的是应收 −$3.05 亿和存货 −$2.26 亿：随着数据中心业务放量，这两项会继续占用资金，未来现金流转化率可能略微下降，但幅度可控。</p>
+<h3>资产负债表：有债，但不多</h3>
+<p>现金 $12.4 亿、总债务 $56.3 亿，<strong>净负债 $43.9 亿</strong>。看着不小，但对着 $48.2 亿的 EBITDA，净负债/EBITDA 只有 <strong>0.91 倍</strong>，利息覆盖倍数 31 倍。<strong>这个杠杆水平完全安全</strong>，而且给了它继续做收购的空间（FY2025 花了 $26.3 亿收购，TTM 又花了 $2.0 亿）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $622.71 亿，企业价值 $668.50 亿（净负债 $43.9 亿使 EV 高于市值）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>622.71 ÷ 30.16</td>
+<td><strong>20.6 倍</strong></td>
+<td><strong>$4.85</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>四个财报页未披露调整后净利润</td>
+<td>无法计算</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，税率正常，等于 GAAP</td>
+<td><strong>20.6 倍</strong></td>
+<td><strong>$4.85</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>622.71 ÷ 33.15</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.32</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>668.50 ÷ 38.14</td>
+<td><strong>17.5 倍</strong></td>
+<td><strong>$5.71</strong>（含债权人那份）</td>
+</tr>
+<tr>
+<td>前瞻市盈率（市场预期）</td>
+<td>市场给的一致预期</td>
+<td><strong>17.2 倍</strong></td>
+<td>$5.82</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>622.71 ÷ 23.15（2023/24/25 三年 GAAP 净利均值）</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.72</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有一个陷阱要拆掉。</strong></p>
+<p>三年平均那一行算出 26.9 倍、年回报 $3.72，看起来说明"当期是高点、真实估值贵 30%"。<strong>但这里的三年平均是被上面说过的税务噪音污染的</strong>——FY2024 被一次性税收利得撑大到 $31.93 亿，FY2025 被一次性损失压到 $18.42 亿，两者一平均，反而把真实水平往下拉了。</p>
+<p>用<strong>经营利润</strong>做同样的三年平均，才是干净的口径：
+- 三年经营利润：$23.04 / $27.96 / $32.11 亿，均值 <strong>$27.70 亿</strong>；
+- 按 20% 税率、扣掉少量净利息，折算成可比净利润约 <strong>$22.0 亿</strong>；
+- 62.27 ÷ 22.0 = <strong>28.3 倍</strong>，年回报 $3.53。</p>
+<p>两条路殊途同归：<strong>把三年拉平，真实估值在 27–28 倍，年回报 $3.5–3.7；用当期算是 20.6 倍、$4.85。</strong></p>
+<p>差距的原因不是"会计造假"，而是<strong>这家公司的经营利润在过去三年真实增长了 65%</strong>（23.0 → 38.1 亿）。三年平均之所以低，是因为它包含了两个明显更差的年份。<strong>这种情况下，当期口径比三年平均口径更有参考价值</strong>——前提是你相信这条上升趋势还能延续。这和 Comfort Systems 那种"当期 43 倍、三年平均 99.5 倍"的断崖是完全不同性质的裂口：泰科是一条稳步爬升的斜坡，Comfort Systems 是一根拔地而起的旗杆。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进泰科电子，按干净的当期口径，公司一年替你赚 $4.85 块；按自由现金流算 $5.32 块；把三年周期拉平最保守地算，$3.5–3.7 块。取个稳妥的中间值：每年 $4.3–4.8 块，年化 4.3%–4.8%。</strong></p>
+<p>这笔钱里回到你口袋的部分是三家里最高的：
+- <strong>分红 $1.45</strong>（股息率 1.45%，连续 15 年增长）
+- <strong>回购 $2.07</strong>（股本一年真实减少 2.07%）
+- <strong>合计 $3.53，占总回报的 73%</strong></p>
+<p>剩下的 $1.3 块留在公司：$11 亿资本开支（扩高速连接器产能）+ 补强型收购（Richards 电网设备）。<strong>没有任何一笔豪赌</strong>——这和贝克休斯把 100 亿现金押在一笔 136 亿美元的收购上，是完全不同的资本配置风格。</p>
+<p><strong>这个 $4.8 未来大概率变大还是变小？我判断变大，理由三条：</strong>
+1. <strong>产品组合还在往高价值端走。</strong> 一辆电动车的连接器价值是燃油车的两倍多，一个 AI 机柜是一辆车的几十倍。只要这两条曲线继续，混合毛利率就会继续爬——过去四年已经从 32% 爬到 36%，没有转向的迹象。
+2. <strong>每年 2% 的股本注销是免费的复利。</strong> 利润哪怕零增长，每股利润也自动涨 2%。
+3. <strong>汽车那一半现在是低基数。</strong> 全球汽车产量已经趴了三年，这块只增长 5.3% 是因为行业没起来，不是它丢了份额。任何一点汽车周期的回暖都是纯增量。</p>
+<p><strong>风险也要说清楚两条：</strong>
+- <strong>汽车业务的年降条款是永久性的逆风</strong>——每年自动降价 2–3%，必须靠成本下降跑赢。93,000 名员工的工资在墨西哥和东欧年年涨。
+- <strong>数据中心那块正在被最激烈地争夺</strong>。安费诺（Amphenol）在高速互联上的份额和技术不比泰科差，而且它的股价过去两年涨得比泰科好得多——<strong>市场认为安费诺是这波 AI 互联的赢家，泰科是被汽车拖住的那个</strong>。泰科过去 52 周股价只涨了 <strong>4.1%</strong>，这就是市场的投票结果。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是三家里最朴实、最干净、也最被冷落的一家：现金流没有一分钱水分、回购是真回购、经营利润四年连续爬坡、20.6 倍市盈率买一个 36% 毛利率、23% ROE 的全球连接器双寡头之一——它唯一的问题是一半身子还绑在不涨的汽车行业上，所以市场懒得看它。</strong></p>
+<p>值这个价吗：<strong>值，而且是这三家里唯一我会说"这个价格是合理偏便宜"的。</strong></p>
+<p>理由很简单：
+- 20.6 倍 PE、18.8 倍 P/FCF、17.5 倍 EV/EBIT，对一家经营利润三年增长 65%、且增长来源（AI 互联、电网、高压电动车）都还在早期的公司来说，不高；
+- 3.53% 的股东实际回报率（分红+回购）在这三家里最高，而且是可持续的、不依赖任何一笔并购成败；
+- <strong>会计极其干净</strong>——唯一的噪音是迁册爱尔兰造成的税务扰动，且已经过去，TTM 这一期完全正常。</p>
+<p>最大的不确定性不是它会不会变坏，而是<strong>它会不会一直这么无聊</strong>：股价一年只涨 4%，市场的注意力全在别处。如果你要的是一年翻倍的故事，这不是；如果你要的是每年稳稳拿回 4.8 块、其中 3.5 块是现金和回购、公司还在慢慢变好，<strong>这是本批三家里唯一合格的答案</strong>。</p>
+<p>如果只能记一句话：<strong>一半汽车、一半 AI，市场只给它按"汽车股"定价，但那一半 AI 已经在以 20% 的速度长大了。</strong></p>
+</div></body></html>

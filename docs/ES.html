@@ -1,0 +1,493 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ES · Eversource Energy（艾弗索斯能源）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ES</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">不划算，股息有六成是新股东刚交进来的钱</div><h1>ES · Eversource Energy（艾弗索斯能源）</h1>
+<p><strong>市值</strong> $272.6 亿 | <strong>股价</strong> 约 $72.4 | <strong>企业价值</strong> $552.5 亿 | <strong>行业</strong> 公用事业 / 受监管电网（NYSE）
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日
+<strong>全榜名次</strong> 第 251 名 | <strong>数据源</strong> stockanalysis.com（S&amp;P Global 数据）</p>
+<blockquote>
+<p><strong>先说一句最要紧的：这家公司的企业价值 552 亿里，有 280 亿是债。你买它的股票，买的是一个杠杆两倍的东西的股权部分。</strong> 它虽然不是银行，但它的商业模式和银行有一点很像——<strong>赚的是"资本金 × 允许回报率"，不是"卖东西赚差价"</strong>。所以下面除了正常的市盈率，我会额外强调自由现金流、分红覆盖率和股本稀释，因为对电网公司来说这三个比市盈率诚实得多。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<h3>先讲清楚电网公司到底怎么赚钱——不懂这个，下面的数字全看不懂</h3>
+<p>普通人的直觉是：电力公司买电、卖电、赚差价。<strong>这个直觉在 Eversource 身上是完全错的。</strong></p>
+<p>Eversource <strong>不发电</strong>。它在 2018 年前后就把发电厂全卖光了。它现在只干一件事：<strong>拥有并维护从变电站到你家墙上插座之间的那些电线杆、变压器和地下电缆</strong>，以及从州界到变电站之间的高压输电塔。</p>
+<p>它的收入模型是这样的：假设你在康涅狄格州，每月电费账单 200 美元。这 200 块拆成两半：</p>
+<ul>
+<li><strong>约 100 块是"供电费"（supply）</strong>——这是电本身的钱。Eversource 从发电商那里买电，<strong>按原价一分不加地转嫁给你</strong>。这一块它赚 0 元。它只是个代收代付的通道。</li>
+<li><strong>另外约 100 块是"输配电费"（delivery）</strong>——这是"用我的电线把电送到你家"的服务费。<strong>这才是 Eversource 的收入。</strong></li>
+</ul>
+<p>那这 100 块怎么定？不是市场定价，是<strong>监管机构定价</strong>。逻辑是：</p>
+<blockquote>
+<p>监管机构（康州 PURA、麻州 DPU、联邦 FERC）先清点 Eversource 一共往电网里投了多少钱建资产——电线杆、变电站、智能电表，这个总额叫<strong>费率基数（rate base）</strong>。然后批准一个"允许股东回报率"（allowed ROE），通常在 9.0%–10.5% 之间。最后按"费率基数 × 允许回报率 + 运营成本 + 折旧 + 税"倒推出电价，摊到每个用户头上。</p>
+</blockquote>
+<p><strong>所以这门生意的本质是：它花的钱越多，它赚的钱越多。</strong></p>
+<p>这一句话必须记住，因为它解释了这家公司所有反常的财务特征：为什么自由现金流永远是负的、为什么分红发的钱比赚的现金多、为什么它每年都在增发股票稀释你。</p>
+<p>Eversource 在康州、麻州、新罕布什尔州服务约 320 万电力客户、90 多万天然气客户，是新英格兰地区最大的电网运营商。这三个州基本没有第二家可选——<strong>这是法律授予的、真正的垄断</strong>。</p>
+<h3>分部拆解</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>同比</th>
+<th>占分部合计</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Electric Distribution 配电</td>
+<td><strong>10,220</strong></td>
+<td>+1.8%</td>
+<td>58.3%</td>
+<td>最大的一块，也是最难的一块</td>
+</tr>
+<tr>
+<td>Natural Gas Distribution 燃气配送</td>
+<td><strong>2,935</strong></td>
+<td>+11.4%</td>
+<td>16.7%</td>
+<td>增长最快</td>
+</tr>
+<tr>
+<td>Electric Transmission 输电</td>
+<td><strong>2,332</strong></td>
+<td>+2.1%</td>
+<td>13.3%</td>
+<td><strong>最赚钱的一块</strong></td>
+</tr>
+<tr>
+<td>Water Distribution 供水</td>
+<td><strong>241.5</strong></td>
+<td>+1.9%</td>
+<td>1.4%</td>
+<td>正在剥离</td>
+</tr>
+<tr>
+<td>Other 其他/母公司</td>
+<td><strong>1,812</strong></td>
+<td>+4.6%</td>
+<td>10.3%</td>
+<td>服务公司、母公司</td>
+</tr>
+<tr>
+<td>分部合计</td>
+<td>17,540</td>
+<td></td>
+<td>100%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>抵消内部交易</strong></td>
+<td><strong>−3,543</strong></td>
+<td></td>
+<td></td>
+<td>← 必须注意这一行</td>
+</tr>
+<tr>
+<td><strong>合并总营收</strong></td>
+<td><strong>13,998</strong></td>
+<td><strong>+7.75%</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意上面那个 −35.43 亿的抵消项。</strong> 分部营收加起来是 175.4 亿，但合并报表只有 140.0 亿——差额是集团内部互相开票（比如服务公司向各运营子公司收管理费）在合并时被抵消掉了。所以"占比"那一列是占分部合计的比例，不是占合并营收的比例，别搞混。</p>
+<p><strong>（1）配电（102.2 亿）——低电线杆的生意，也是最容易挨骂的生意。</strong>
+就是从变电站到你家的最后几公里。这块最麻烦的地方在于：<strong>它是政治的</strong>。新英格兰的电费在全美排前几贵，居民骂声很大，州议会天天施压。康州 2024–2025 年就发生过监管机构主动砍回报率、拒绝费率上调请求的事，把整个板块的股价打下去过。所以这块的允许回报率是被政治天花板压着的。</p>
+<p><strong>（2）燃气配送（29.35 亿，+11.4%）——增长最快的一块。</strong>
+Yankee Gas、NSTAR Gas、EGMA 三家燃气公司，给约 90 万户送天然气。增长快有两个原因：一是新英格兰在推"油改气"（把烧取暖油的老房子改成烧天然气，Eversource 每接一户就往费率基数里加一笔资产）；二是天然气本身的价格波动会传导到营收（但这部分是转嫁的，不影响利润）。</p>
+<p><strong>（3）输电（23.32 亿）——这是全公司质量最高的资产。</strong>
+高压输电塔和线路，把电从发电厂或州外送到本地变电站。为什么最好？因为它归<strong>联邦能源监管委员会（FERC）</strong>管，不归各州管：
+- FERC 批的允许回报率更高（通常 10%+，各州配电业务只有 9.0–9.5%）
+- FERC 用的是"公式费率"（formula rates）——费率<strong>自动</strong>随投入更新，不用每次都开听证会打官司。而州级配电业务每次涨价都要走漫长的费率案，中间存在"监管滞后"（钱花出去了但还没批准进电价，白白垫资一两年）
+- 政治压力小得多，因为老百姓的账单上看不到"输电费"这一项在涨</p>
+<p>所以在电网行业里，<strong>输电资产的估值倍数系统性高于配电资产</strong>。Eversource 输电只占 13% 的营收，但贡献的利润比例明显更高（具体分部利润未披露，<strong>下面所有分部利润相关的判断都是按行业结构估算的</strong>）。</p>
+<p><strong>（4）供水（2.415 亿）——正在剥离。</strong>
+Aquarion 水务。TTM 的投资活动现金流里有一笔 <strong>23.34 亿的资产出售收入（Divestitures）</strong>，方向上对应的就是这块水务资产的剥离。这笔钱是本期财务能勉强撑住的关键，后面会讲。</p>
+<p><strong>分部利润：财报只披露到营收，没有公开的分部经营利润明细。</strong> 全公司 TTM 经营利润 32.89 亿（利润率 23.47%）。按行业结构，输电板块的经营利润率通常在 40%+、配电在 15–20%、燃气在 20% 左右。<strong>下面第三部分的所有估值全部用合并数字，不依赖分部利润估算，所以这一层的不确定性不影响结论。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：报表里没单列 —— 可以忽略</h3>
+<p>stockanalysis 的现金流量表没有为 Eversource 单列 Stock-Based Compensation 科目，说明这个数字对它来说不重要（公用事业的高管股权激励通常只有几千万美元，相对 14.5 亿净利润是零头）。<strong>按规矩本来要当现金成本扣，但这里扣不扣结论不变。</strong> 真正稀释你的不是股权激励，是下面那件事。</p>
+<h3>一次性项目：连续四年的"一次性" —— 这是本篇最重要的发现</h3>
+<p>现金流量表里有一行 <strong>Loss (Gain) on Sale of Investments（投资/资产处置损失）</strong>，TTM 是 <strong>4.78 亿</strong>。公司会告诉你这是"非经常性项目"，应该从"经营性利润"里剔除。</p>
+<p><strong>但看历史：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>资产处置损失（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td><strong>2,167</strong> ← 海上风电项目退出，把一年利润全亏没了（那年净利润 −4.42 亿）</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td><strong>464</strong></td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td><strong>284</strong></td>
+</tr>
+<tr>
+<td>TTM（截至 2026-06）</td>
+<td><strong>478</strong></td>
+</tr>
+<tr>
+<td><strong>四年合计</strong></td>
+<td><strong>3,393</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连续四年，每年都有"一次性损失"，四年加起来 33.93 亿——超过公司现在两年的净利润总和。</strong></p>
+<p>这就是那种典型的"年年都有的一次性"。历史上主要是两件事：一是 2023 年退出海上风电合资项目（Eversource 曾经和丹麦 Ørsted 合作在东北海岸建海上风电，后来因为成本失控和利率飙升被迫割肉退出，一次性亏了 21.67 亿）；二是这几年陆续剥离非核心资产（包括水务）时的账面损失。</p>
+<p><strong>按单期数据无法判断这个损失以后还会不会有。</strong> 我的判断是：海上风电那一章确实结束了，但"剥离资产 → 计提损失"这个模式还在进行中。稳妥的做法是——<strong>不要把这 4.78 亿加回去</strong>，或者最多加回一半。</p>
+<h3>实际税率只有 9.2% —— 这个必须单独说</h3>
+<p>TTM 税前利润 16.04 亿，交税 1.476 亿，<strong>实际税率 9.20%</strong>（正常美国公司 21–25%）。</p>
+<p>为什么这么低？两个原因，都是公用事业特有的：
+1. <strong>超额递延所得税的摊回。</strong> 2017 年美国把公司税率从 35% 降到 21%，公用事业公司账上按 35% 计提的递延税负债一下子多出来一大块。监管规定这笔钱必须<strong>退还给用户</strong>，做法是分很多年摊销，会计上表现为所得税费用的抵减。
+2. <strong>各类税收抵免</strong>（清洁能源投资抵免等）。</p>
+<p><strong>关键在于：这个低税率是真的，但它同时也压低了收入端</strong>（因为退给用户的部分本来就是从电价里让出来的）。所以不要天真地以为"税率低所以利润质量高"。如果按正常 21% 的税率算，TTM 净利润应该是 12.67 亿，而不是 14.49 亿——<strong>GAAP 利润被低税率美化了约 1.8 亿，占净利润的 12.5%。</strong></p>
+<h3>回购与稀释：这一项是负分</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><strong>发行新股</strong></td>
+<td><strong>+2.73 亿</strong></td>
+</tr>
+<tr>
+<td><strong>股本变化（同比）</strong></td>
+<td><strong>+2.65%（稀释）</strong></td>
+</tr>
+<tr>
+<td>分红支出</td>
+<td>11.32 亿</td>
+</tr>
+<tr>
+<td>回购 ÷ SBC</td>
+<td><strong>0 —— 根本没有回购</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Eversource 不但不回购，它还在持续增发股票。</strong> 股本一年增加 2.65%，意味着你什么都不做，手里每股对应的公司份额一年少了 2.65%。</p>
+<p>对比一下股息率 4.35%：<strong>你拿到 4.35% 的分红，同时被稀释掉 2.65%，净的股东回报只有 1.71%。</strong> stockanalysis 自己算出来的"Shareholder Yield"就是 1.71%，一分不差。</p>
+<p>这是这家公司最容易被忽略的真相：<strong>表面上 4.35% 的高股息，实际到手只有 1.7%。</strong> 那 4.35% 里有六成是拿新股东的钱发给老股东的。</p>
+<h3>利润和现金流的差：这一项决定了这家公司的性质</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>科目</th>
+<th>TTM（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td><strong>1,449</strong></td>
+</tr>
+<tr>
+<td>经营现金流</td>
+<td><strong>4,430</strong></td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td><strong>−4,133</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流</strong></td>
+<td><strong>297.7</strong></td>
+</tr>
+<tr>
+<td>分红支出</td>
+<td><strong>−1,132</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流 − 分红</strong></td>
+<td><strong>−834</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营现金流 44.3 亿，资本开支 41.3 亿——赚来的现金 93% 又埋回地里了。</strong> 剩下 2.98 亿，而分红要发 11.32 亿。<strong>缺口 8.34 亿。</strong></p>
+<p>那这 8.34 亿从哪来的？看资金来源：
+- <strong>资产出售 23.34 亿</strong>（水务剥离）← 这是 TTM 唯一的救命钱
+- 净增发债务 +0.48 亿
+- 发行新股 +2.73 亿</p>
+<p><strong>结论很清楚：本期 Eversource 能把分红发出来、还能把现金余额从 1.35 亿堆到 18.19 亿，靠的是卖掉了一块资产。这不是经营产生的钱。</strong></p>
+<p>再看历史自由现金流，就知道这不是偶然：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>自由现金流（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>−1,212</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>−1,041</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>−2,691</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>−2,321</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>−45</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>+298（靠资产出售腾出的空间）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年零一个 TTM，自由现金流从来没有真正为正过。</strong> 累计烧掉约 70 亿。而同期分红发了约 50 亿。这 120 亿全部来自：发债 + 增发股票。</p>
+<p><strong>这不是财务舞弊，这就是受监管电网公司的商业模式本身。</strong> 它的逻辑是：借钱建资产 → 资产进入费率基数 → 监管允许你在这笔资产上永远收 9.5% 的回报 → 用这个回报付利息和分红 → 再借钱建更多资产。只要监管环境稳定、利率不失控，这个循环可以永远转下去。</p>
+<p>但对你这个股东来说，实际含义是：<strong>你收到的分红，本质上是你和其他新股东刚交的钱，绕了一圈发回给你，同时你的持股比例被摊薄了。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>市值 272.56 亿，企业价值 552.45 亿（净负债 279.88 亿）。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>272.56 ÷ 14.49</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.32</strong></td>
+</tr>
+<tr>
+<td>公司口径（剔除资产处置损失）</td>
+<td>272.56 ÷ 18.27</td>
+<td><strong>14.9 倍</strong></td>
+<td><strong>$6.71</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>272.56 ÷ 14.49（处置损失连续四年发生，不予加回；SBC 已按 GAAP 扣除）</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.32</strong></td>
+</tr>
+<tr>
+<td>若再按正常 21% 税率还原</td>
+<td>272.56 ÷ 12.67</td>
+<td><strong>21.5 倍</strong></td>
+<td><strong>$4.65</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>272.56 ÷ 2.98</td>
+<td><strong>91.6 倍</strong></td>
+<td><strong>$1.09</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>552.45 ÷ 32.89</td>
+<td><strong>16.8 倍</strong></td>
+<td><strong>$5.95</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>272.56 ÷ 13.18</td>
+<td><strong>20.7 倍</strong></td>
+<td><strong>$4.83</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均：TTM 14.49 亿、FY2025 16.92 亿、FY2024 8.12 亿，平均 <strong>13.18 亿</strong>。
+（如果把 FY2023 的 −4.42 亿也算进去，四年平均只有 8.78 亿，市盈率 31 倍。这个窗口正好覆盖海上风电那笔血亏，用三年更公道，但你应该知道四年是什么样。）</p>
+<p><strong>自由现金流那一行的 91.6 倍不是笔误。</strong> 对电网公司来说这个指标本来就没意义——它的资本开支里有一大半是"增长性"的（建新东西以扩大费率基数），不是维持性的。但 91.6 倍这个数字仍然在说一件真事：<strong>这家公司当下不产生可以分给你的自由现金。</strong></p>
+<h3>补充口径：对电网公司真正有用的三个数</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>ES 数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td><strong>1.67 倍</strong></td>
+<td>你花 167 块买它账上 100 块的净资产</td>
+</tr>
+<tr>
+<td>ROE（净资产回报率）</td>
+<td><strong>9.02%</strong></td>
+<td>略低于监管批准的 9.5% 左右——说明存在监管滞后，钱花出去了还没完全进电价</td>
+</tr>
+<tr>
+<td>ROIC vs WACC</td>
+<td><strong>4.47% vs 6.05%</strong></td>
+<td>投入资本回报率<strong>低于</strong>资本成本</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>ROIC 4.47% 低于 WACC 6.05% 这一条，字面意思是"每投一块钱进去，价值被毁掉了"。</strong> 但对电网公司要打个折扣看：一是大量资本开支还在建设中、尚未进入费率基数产生回报（在建工程拖累分母）；二是 ROIC 的算法对高杠杆重资产公司天然不友好。不过即使打了折扣，<strong>9.02% 的 ROE 配 1.67 倍的市净率，意味着你实际拿到的净资产回报只有 9.02% ÷ 1.67 = 5.4%</strong>，这个数字和上面 5.32% 的市盈率倒数几乎完全吻合，互相印证。</p>
+<h3>大白话：投 100 块，一年赚多少</h3>
+<p><strong>你现在投 100 块进 Eversource，按最保守的三年平均口径算，公司一年替你赚 4.83 块。</strong>（按 GAAP 当期数字是 5.32 块。）</p>
+<p>这 4.83 块里：</p>
+<ul>
+<li><strong>4.35 块以现金分红的形式发给你</strong>（股息率 4.35%，已经连续 26 年增长）。</li>
+<li><strong>但同时公司增发新股稀释了你 2.65%。</strong> 所以净到手的真实回报是 <strong>4.35 − 2.65 = 1.71 块</strong>。</li>
+<li><strong>0 块回购。</strong></li>
+<li>剩下的部分留在公司里，去向非常明确：<strong>41.33 亿的资本开支，占经营现金流的 93%</strong>。这些钱变成了新的变电站、地下电缆、智能电表，进入费率基数，未来会以更高的电价形式赚回来。</li>
+</ul>
+<p>所以真正的图景是：<strong>你投 100 块，账面赚 4.83 块，实际净拿到手 1.71 块，剩下的钱变成了电线杆。</strong></p>
+<p>这不是坏事——费率基数增长本身就是股价上涨的来源，市场给电网公司的估值大体跟着费率基数走。管理层通常给出的费率基数年增长指引在 7–9%，理论上对应类似幅度的每股收益增长。但<strong>前提是监管机构配合</strong>，而新英格兰的监管环境是全美最难的之一。</p>
+<h3>这个 4.83 块未来会变大还是变小？</h3>
+<p><strong>大概率缓慢变大，但增速会被两件事持续吃掉。</strong></p>
+<p>变大的理由：
+1. <strong>费率基数在扩张。</strong> 新英格兰的电网又老又脆，暴风雪一来就大面积停电，必须持续大额改造；同时数据中心用电、电动车充电、热泵取暖都在推高负荷，需要新增容量。这些全是往费率基数里加钱的机会。
+2. <strong>输电业务占比在上升</strong>，而输电是回报率最高、监管最友好的一块。
+3. 海上风电这个大坑已经填完了，最坏的时候过去了。
+4. 卖掉水务后资产结构更纯粹，负债率会改善（净负债/EBITDA 从 6.41 降到 5.67）。</p>
+<p>变小的风险：
+1. <strong>利率。</strong> 这家公司背着 298 亿的债，TTM 光利息就付了 11.82 亿——<strong>利息支出（11.82 亿）已经接近净利润（14.49 亿）的 82%。</strong> 利息保障倍数只有 2.40 倍。每一次再融资都按当时的利率重定价。利率高企一年，就吃掉一大块利润。
+2. <strong>股本稀释是持续的、结构性的。</strong> 只要资本开支超过经营现金流，就必须靠增发补。2.65% 的年稀释率如果继续，十年下来你的持股比例少三成。
+3. <strong>监管风险是真实的，不是理论上的。</strong> 康州 2024–2025 年砍回报率的事已经发生过一次。老百姓电费太贵，政治上一定会有反弹。
+4. 分红连涨 26 年是把双刃剑——公司被这个纪录绑架了，即使现金不够也不能减，只能靠发新股去撑，进一步加剧稀释。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一张年息 1.7% 的、带 2 倍杠杆的、由监管机构而不是市场决定利率的债券，价格是 18.8 倍市盈率——不划算。</strong></p>
+<p>Eversource 的生意本身没问题：新英格兰三州的法定垄断电网，客户不能跑，需求不会消失，收入由监管公式保底。这是极少数你可以确信"二十年后还在"的生意。</p>
+<p>但它现在这个价格买不下手，理由是三条硬数字：</p>
+<ol>
+<li><strong>表面 4.35% 的股息，扣掉 2.65% 的股本稀释后只剩 1.71%。</strong> 这个数字低于美国国债，而你承担的风险高得多。</li>
+<li><strong>298 亿的债务、2.40 倍的利息保障倍数、ROIC(4.47%) 低于 WACC(6.05%)。</strong> 这套结构在低利率时代是印钞机，在高利率时代是绞索。</li>
+<li><strong>连续四年的"一次性损失"共 33.93 亿</strong>，比公司两年的净利润还多。这说明管理层过去十年的资本配置是有问题的——海上风电那 21.67 亿是实打实的股东财富毁灭。</li>
+</ol>
+<p>18.8 倍市盈率（三年平均口径 20.7 倍）对一家净利润增长靠监管批准、现金流永远为负、还要靠增发续命的公司来说，<strong>是在为"确定性"付溢价，而这个确定性正在被利率和政治侵蚀。</strong></p>
+<p>什么价位合理？如果股息率能到 6%（对应股价约 $52，市盈率 13 倍左右），那么即使扣掉 2.65% 的稀释，净回报也有 3.3%，加上费率基数增长带来的年化 5–7% 的账面价值增长，总回报才勉强够看。<strong>现在的 $72 不到那个价。</strong></p>
+<p>不建议买。如果你已经持有并且是为了收股息，那至少要清楚——<strong>你收的那笔股息，有六成是新股东刚交进来的钱。</strong></p>
+</div></body></html>

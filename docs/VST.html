@@ -1,0 +1,477 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VST · 维斯特拉能源</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VST</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">GAAP贵现金便宜，现金那边更接近真相，但200亿债得看懂</div><h1>VST · 维斯特拉能源</h1>
+<p>市值 $497.2 亿 / 股价约 $148.1 / 行业：公用事业 — 独立发电与售电
+财报口径：TTM（最近四个季度滚动），截止 <strong>2026 年 6 月 30 日</strong>。</p>
+<blockquote>
+<p>先说一句：<strong>维斯特拉不是那种"受监管的公用事业"</strong>。它是自由竞争市场里的发电+售电公司，没人保证它的回报率。所以它的估值逻辑跟隔壁 Xcel（XEL）完全不是一回事，别拿"公用事业"这四个字套它。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>维斯特拉的模式一句话说清：<strong>左手发电，右手卖电，中间那一段差价就是它的利润。</strong></p>
+<p>美国大部分州的电力是垄断的——你家电费由一家公司收，价格由政府定。但德州（ERCOT）不是。德州 2002 年把电力市场彻底放开了：发电厂在批发市场上竞价卖电，零售商在市场上买电再卖给你，居民可以自由挑供应商，就像挑手机套餐一样。维斯特拉是德州这个游戏里最大的玩家，它既有发电厂又有零售品牌，两头都占。</p>
+<p>财报按 5 个分部披露，但<strong>必须先解释一件事，否则数字看着是错的</strong>：</p>
+<p>财报把 5 个分部的营收加起来是 $296 亿，而总营收只有 $192 亿。差的 $104 亿是"Corporate and Other"里的负数（-$103.74 亿），那是<strong>内部抵消</strong>。当德州的发电厂把电"卖"给自家的零售部门时，发电部门记一笔收入、零售部门记一笔成本，合并报表时要把这一进一出都抹掉。所以那个 -104 亿不是亏损，是记账的纠错项。</p>
+<p>下面按抵消前的口径讲每门生意。</p>
+<h3>生意一：零售售电（Retail）—— 直接向你收电费的那个</h3>
+<p>TTM 营收 <strong>$149.39 亿</strong>（抵消前，占抵消前总额的一半以上），这是公司的门面。</p>
+<p>具体是什么：维斯特拉手里握着一堆零售电力品牌——<strong>TXU Energy</strong>（德州最老最大的电力品牌，很多德州人从小家里的电费单上就是这三个字母）、<strong>Ambit Energy</strong>、<strong>Value Based Brands（4Change、Express Energy）</strong>、<strong>Dynegy</strong>、<strong>Homefield Energy</strong>（伊利诺伊）、<strong>Public Power</strong>（东北部）。加起来约 <strong>500 万个用电户</strong>。</p>
+<p><strong>一单具体长什么样</strong>：达拉斯的一家四口在 TXU 官网签一个 12 个月固定价套餐，14.5 美分/度。德州七八月开着空调，一个月用 1,800 度，账单 $261；十一月只用 700 度，账单 $102。全年下来这家人付给 TXU 大约 <strong>$1,900</strong>。而 TXU 在批发市场买这些电（或者从自家电厂调）的成本大概 5–7 美分/度，全年成本约 $850。剩下的差额扣掉输配电费（这部分要付给电网公司 Oncor，是纯过路费，不赚钱）、销售成本、坏账，最后落到维斯特拉口袋里的净利大概 <strong>$120–180</strong>。</p>
+<p><strong>为什么客户不换</strong>：换电力公司在德州只要五分钟、网上就能办，价格透明得像机票。但真正去比价的人是少数——大部分家庭签完就续约，续约价往往比新客价高。这个"惰性"就是零售业务的主要利润来源，很像宽带和保险。TXU 的品牌溢价让它可以比杂牌零售商贵一两美分还留得住人。</p>
+<p><strong>这门生意最关键的一点</strong>：零售是<strong>天然的对冲</strong>。你自己的电厂在批发市场卖电，你自己的零售部门在批发市场买电——批发电价涨的时候发电赚、零售亏；跌的时候反过来。两边合起来，公司的利润比纯发电厂稳得多。这是维斯特拉能承受 $205 亿债务的底气。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期</th>
+<th>占比（抵消前）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>零售</td>
+<td>$149.39 亿</td>
+<td>约 $143.4 亿</td>
+<td>50.5%</td>
+<td>同比约 +4%，稳步增长</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：德州发电（Texas）—— 在最疯的电力市场里开电厂</h3>
+<p>TTM 营收 <strong>$77.60 亿</strong>（抵消前），同比暴涨约 <strong>+45%</strong>。</p>
+<p>资产是什么：
+- <strong>Comanche Peak 核电站</strong>（2.4 GW，两台机组）——德州唯一由维斯特拉全资拥有的核电，24 小时不停机的基荷。
+- <strong>大型燃煤/褐煤电厂</strong>（Martin Lake、Oak Grove 等）——老资产，环保压力大，逐步在退役但退得比原计划慢，因为德州缺电。
+- <strong>燃气联合循环和调峰机组</strong>——这是赚钱的关键。
+- <strong>太阳能和电池储能</strong>——近几年在装，规模还小。</p>
+<p><strong>具体怎么赚到那种"暴利"</strong>：德州的批发电价是全美最疯的。平时 $25–40/兆瓦时，但在八月一个 40 度的下午，全德州空调同时开，ERCOT 的备用容量掉到警戒线，电价能从 $40 直接飙到 <strong>$5,000/兆瓦时</strong>（上限）。维斯特拉那些平时闲着的燃气调峰机组，就是为这几十个小时存在的——它们一年可能只运行 200 小时，但那 200 小时赚的钱够养一整年。2021 年二月的德州大停电（Uri 暴雪）就是这个机制的极端版本，当时几天之内电力市场结算了几百亿美元。</p>
+<p>反过来，<strong>这也是维斯特拉最大的风险</strong>：凉爽的夏天、多风的春天（风电一多批发电价直接砸到负数），发电部门的利润就蒸发。这就是为什么它的 GAAP 净利润会在 -13.77 亿和 +24.67 亿之间来回甩。</p>
+<p>德州这块 TTM +45% 的暴涨，主要来自电价环境改善和新装机投运。</p>
+<h3>生意三：东部发电（East）—— 核电站 + 数据中心的故事</h3>
+<p>TTM 营收 <strong>$65.28 亿</strong>（抵消前），同比约 <strong>+6%</strong>。</p>
+<p>这块是 2024 年花大约 $30 亿收购 <strong>Energy Harbor</strong> 之后才有今天的规模。买来的是宾州、俄亥俄的核电资产：<strong>Perry、Davis-Besse、Beaver Valley</strong>，加起来约 4 GW 的核电，卖在 PJM 市场里。</p>
+<p><strong>为什么这笔收购现在被看成关键</strong>：AI 数据中心要 24 小时不断电、还要"零碳"，风光做不到（晚上没太阳、没风时停），核电正好卡住这个位置。所以过去两年，超大规模云厂商（微软、亚马逊、Meta 这一类）开始直接找核电厂签十年、二十年的长期购电协议，价格远高于批发市场价。同时 PJM 的容量拍卖价格——那是电网付钱给发电厂"你必须随时待命"的费用——在 2024–2025 年翻了好几倍。维斯特拉手里正好有一批已经建好、折旧快提完的核电站。</p>
+<p><strong>一单长什么样</strong>：一家云厂商在俄亥俄建一个 300 兆瓦的数据中心，跟维斯特拉签 15 年协议，按 $70–90/兆瓦时锁定电价（批发市场均价可能只有 $40）。这个数据中心一年用电约 26 亿度，合同金额约 <strong>$2 亿/年，15 年共 30 亿美元</strong>，而且是照付不议（用不用都得付）。这种合同把一个周期性资产变成了债券一样的东西——这正是市场愿意给独立发电商重新估值的原因。</p>
+<h3>生意四：西部（West）—— 加州电池，小但出过事</h3>
+<p>TTM 营收 <strong>$3.03 亿</strong>（抵消前），同比大跌（上年 $3.25 亿，前年 $8.77 亿）。</p>
+<p>主要是加州 <strong>Moss Landing</strong> 的大型电池储能设施——白天电价低时充电，傍晚太阳落山、电价飙升时放电，赚价差。2025 年 1 月这个设施发生过一次严重火灾，之后一直在恢复。规模小，占比 1%，对整体影响有限。</p>
+<h3>生意五：资产关闭（Asset Closure）与总部</h3>
+<p>TTM 营收基本为 0。这是专门放<strong>正在关停的老煤电厂</strong>的会计口袋——把退役、场地清理、灰渣处置的成本单独装进来，免得污染主营业务的数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>维斯特拉是全篇最需要这一节的公司。它的 GAAP 净利润基本上没法直接用。</strong></p>
+<h3>头号问题：套期保值的"浮盈浮亏"把利润表搅成了噪音</h3>
+<p>看这组数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>营收</th>
+<th>GAAP 净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>$120.77 亿</td>
+<td><strong>-$12.95 亿</strong></td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>$137.28 亿</td>
+<td><strong>-$13.77 亿</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$147.79 亿</td>
+<td>+$13.43 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$172.24 亿</td>
+<td><strong>+$24.67 亿</strong></td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$177.38 亿</td>
+<td><strong>+$7.52 亿</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>$192.12 亿</td>
+<td><strong>+$20.27 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>营收从 121 亿平稳爬到 192 亿，中间没有任何断崖。但净利润在 <strong>-13.8 亿到 +24.7 亿之间来回甩了 38 亿</strong>。生意本身根本没这么剧烈的变化。</p>
+<p><strong>原因</strong>：维斯特拉要提前两三年把未来的发电量在期货市场上卖掉锁价（否则一个凉夏就能让公司破产）。这些期货合约在会计上是衍生品，<strong>每个季度都要按市价重估，浮盈浮亏直接进利润表</strong>，哪怕这批电还没发、合约还没到期、一分钱现金都没动。</p>
+<p>批发电价一涨，它锁的卖出价就"亏"了（因为如果不锁能卖更贵），账面立刻记一笔巨额亏损——但同时它手里的电厂更值钱了，那部分收益会计上不确认。电价一跌，反过来。<strong>所以维斯特拉的 GAAP 利润跟它实际赚了多少现金基本无关，甚至常常是反的。</strong></p>
+<p>结论：<strong>对维斯特拉，市盈率这个数字本身就是被污染的</strong>。下面第三部分我会同时给 GAAP 口径和一个现金口径，后者才是该看的。</p>
+<h3>优先股股息：一笔被 EPS 忽略掉的真钱</h3>
+<p>TTM 支付优先股股息 <strong>$1.92 亿</strong>。这笔钱是普通股股东拿不到的——公司先付优先股，剩下的才是你的。</p>
+<p>但数据源给出的 EPS $5.87 反推回去大约等于全部净利润 $20.27 亿，<strong>没有扣优先股股息</strong>。扣掉之后，归属普通股的真实利润是 <strong>$18.35 亿</strong>，市盈率应该是 27.1 倍而不是 24.5 倍。这不是障眼法，是数据口径的坑，但对你算回报是实打实的差别。</p>
+<h3>股权激励（SBC）：$1.34 亿，占净利润 6.6% —— 很干净</h3>
+<p>6,390 名员工，大部分是电厂运维和客服，不是发股票的行业。1.34 亿相对 202.7 亿的市值和 20.27 亿的净利润都很小。<strong>按真实成本扣掉，不加回。</strong> 这不是维斯特拉的问题所在。</p>
+<h3>资产减值：$1.60 亿</h3>
+<p>TTM 有 1.60 亿资产减值（FY2025 是 2.28 亿）。看起来跟老煤电厂退役和 Moss Landing 火灾相关。<strong>只看单期口径无法判断这是否年年发生</strong>——但维斯特拉手上还有一批要退役的煤电资产，未来几年大概率还会继续有这类计提，不宜当成纯一次性加回。</p>
+<h3>折旧摊销 $28.44 亿：数字虚高，这是对你有利的一面</h3>
+<p>TTM 折旧摊销 28.44 亿，比资本开支 28.66 亿只低一点点，看着像是"折旧多少就得投多少"。但实际不是：</p>
+<p>维斯特拉是靠一连串收购拼起来的（Dynegy 2018、Energy Harbor 2024）。每次收购，会计上要把买来的电厂按"收购当天的公允价值"重新记账（叫购买法会计的资产重估），这个价值往往远高于卖方账上的原值，然后按剩余寿命摊销。<strong>结果是账上每年记着巨额折旧，但这些电厂并不需要每年花同样多的钱去维修</strong>。</p>
+<p>真正的维护性资本开支（把现有电厂保持运转所需）大约 <strong>$12–14 亿/年（估算）</strong>，剩下的十几亿是增长性投入——新建太阳能、电池、核电扩容、以及 TTM 花掉的 $11.40 亿收购。</p>
+<p><strong>这意味着 GAAP 净利润系统性地低估了维斯特拉的真实现金创造能力。</strong> 这跟大多数公司相反（大多数公司是 GAAP 高估现金）。</p>
+<h3>回购与稀释：回购很猛，但股本居然还涨了</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>$11.67 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>$1.34 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>8.7 倍</strong></td>
+</tr>
+<tr>
+<td>普通股分红</td>
+<td>$3.08 亿</td>
+</tr>
+<tr>
+<td>优先股股息</td>
+<td>$1.92 亿</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+0.45%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>股本变化（环比上季）</td>
+<td>-0.77%</td>
+</tr>
+</tbody>
+</table></div>
+<p>8.7 倍的回购/SBC 比值很漂亮。回购 11.67 亿相当于市值的 2.35%，理论上股数该少 2% 以上。</p>
+<p><strong>但同比股本反而增加了 0.45%。</strong> 这是个需要指出来的矛盾。环比上季是 -0.77%（在减），说明近期回购确实在起作用；同比转正意味着<strong>过去一年里某个时点有一笔较大的股份发行</strong>，把回购的效果吃掉了。从这几张财报页上我看不出这笔发行的来源（可能与收购对价、可转换工具或激励计划有关），<strong>如实标注为未能确认</strong>。</p>
+<p>不管原因是什么，对你这个股东来说，结果是清楚的：<strong>公司花了 11.67 亿真金白银回购，你手上股份占公司的比例一年下来没有变大，反而略微变小了。</strong> 这笔回购到目前为止没有转化成你的收益。</p>
+<h3>利润和现金流的差：$31 亿，全篇最需要对账的地方</h3>
+<p>净利润 20.27 亿，经营现金流 <strong>51.21 亿</strong>——差 30.94 亿，现金流是利润的 2.5 倍。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,027</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+2,844</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+66</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+134</td>
+</tr>
+<tr>
+<td>＋ 资产减值（非现金）</td>
+<td>+160</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−14</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（主要是衍生品浮亏回冲等非现金项）</td>
+<td>+313</td>
+</tr>
+<tr>
+<td><strong>小计（非现金调整后）</strong></td>
+<td><strong>5,530</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加（卖了电还没收到钱）</td>
+<td>−528</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−3</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+16</td>
+</tr>
+<tr>
+<td>＋ 所得税相关变动</td>
+<td>+27</td>
+</tr>
+<tr>
+<td>− 其他经营性资产净变动</td>
+<td>−313</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,121</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2,866</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流（数据源口径）</strong></td>
+<td><strong>2,255</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最重要的两行</strong>：
+1. <strong>折旧摊销 +28.44 亿</strong>——占了全部差额的 92%。上面说过，这个数字被收购重估撑高了，是"账上的成本，不是今年花的钱"。
+2. <strong>其他经营活动 +3.13 亿</strong>——这里面装的主要就是衍生品浮亏的回冲。也就是说，账上记的那些套保亏损，在现金流量表里被加回来了，因为根本没付钱。这从反面证实了前面的判断：<strong>GAAP 利润被衍生品噪音污染，现金流才是真的。</strong></p>
+<p>再往下还有几笔现金流量表上的钱要注意（这些没有算进"自由现金流"）：
+- <strong>购买无形资产 -$6.20 亿</strong>（排放配额、软件等）
+- <strong>收购 -$11.40 亿</strong>
+- <strong>核电退役信托基金净额</strong>：缴进去 -$51.79 亿、其他投资活动 +$56.32 亿，基本对冲，是信托内部的买卖调仓，不是真的现金流出流入。
+- <strong>现金支付利息 $9.86 亿</strong>——这是实实在在的钱，$205 亿债务的代价。</p>
+<p>所以数据源口径的 22.55 亿自由现金流，<strong>扣掉无形资产和收购之后其实是负的</strong>。但那两项主要是增长投入，不是维持经营必须的。要判断这家公司值多少钱，得自己搭一个现金口径，见下节。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $497.2 亿，企业价值 <strong>$697.9 亿</strong>（净负债 $200.7 亿——这是关键，债务几乎等于市值的 40%）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（数据源口径）</td>
+<td>497.2 ÷ 20.27</td>
+<td>24.5 倍</td>
+<td>$4.08</td>
+</tr>
+<tr>
+<td><strong>GAAP，扣掉优先股股息后</strong></td>
+<td>497.2 ÷ 18.35</td>
+<td><strong>27.1 倍</strong></td>
+<td><strong>$3.69</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>维斯特拉自己不报调整后净利，只报<strong>调整后 EBITDA</strong>；对应 EV/EBITDA = 697.9 ÷ 66.5 = <strong>10.5 倍</strong></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率（现金口径，我构建）</strong></td>
+<td>见下方算式</td>
+<td><strong>约 15.3 倍</strong></td>
+<td><strong>约 $6.55</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>497.2 ÷ 22.55</td>
+<td>22.0 倍</td>
+<td>$4.55</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>697.9 ÷ 38.00</td>
+<td>18.4 倍</td>
+<td>$5.44</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>497.2 ÷ 17.49（TTM 20.27、FY25 7.52、FY24 24.67 平均）</td>
+<td><strong>28.4 倍</strong></td>
+<td><strong>$3.52</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>现金口径的算式</strong>（这是本文自己搭的，不是财报数字，逐步列出来供你判断）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EBITDA</td>
+<td>66.5</td>
+</tr>
+<tr>
+<td>− 现金支付利息</td>
+<td>−9.9</td>
+</tr>
+<tr>
+<td>− 维护性资本开支（<strong>估算</strong>，非财报披露）</td>
+<td>−13.0</td>
+</tr>
+<tr>
+<td>＝ 税前现金利润</td>
+<td>43.6</td>
+</tr>
+<tr>
+<td>− 税（按 21% 估算）</td>
+<td>−9.2</td>
+</tr>
+<tr>
+<td>− 优先股股息</td>
+<td>−1.9</td>
+</tr>
+<tr>
+<td><strong>＝ 归属普通股的现金利润</strong></td>
+<td><strong>32.5</strong></td>
+</tr>
+<tr>
+<td>市值 ÷ 该数</td>
+<td><strong>15.3 倍 → 投 100 块年回报 $6.55</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠️ 这一行的可信度取决于"维护性资本开支 13 亿"这个估算。财报只披露资本开支总额 28.66 亿，不区分维护与增长。如果实际维护性开支是 18 亿而不是 13 亿，这个口径会变成 18.4 倍（年回报 $5.43）；如果是 10 亿，会变成 14.0 倍（$7.14）。<strong>这是全文最不确定的一个数字，我明确标注为估算。</strong></p>
+</blockquote>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进维斯特拉：</strong>
+- 按 GAAP 账面（扣优先股后 27.1 倍），一年替你赚 <strong>3 块 7</strong>；
+- 按我构建的现金口径（15.3 倍），一年替你赚 <strong>6 块 5 毛 5</strong>。</p>
+<p><strong>这两个数字差了将近一倍，这就是维斯特拉这只股票的全部争论所在。</strong> 相信 GAAP 的人认为它贵，相信现金的人认为它便宜。我倾向于后者更接近真实——因为前面那张对账表已经证明了 28.44 亿的折旧里有相当大一部分是收购重估的产物，不是每年要掏的钱。</p>
+<p><strong>这些钱有多少真回到你口袋</strong>：分红 $3.08 亿（股息率仅 <strong>0.62%</strong>，年回报里只有 6 毛 2 分是现金到手）+ 回购 $11.67 亿（市值的 2.35%）= 合计约 3 块。<strong>但前面说了，回购没有转化成股本减少</strong>，所以那 2 块 3 目前只是"花出去了"，你没拿到。</p>
+<p>剩下的钱去哪了：资本开支 28.66 亿、买无形资产 6.20 亿、收购 11.40 亿——<strong>它在大规模再投资</strong>，方向是新增发电容量去接数据中心的需求。同时净新增债务 13.47 亿，说明这些投资它自己的现金还不够，得借。</p>
+<h3>全篇最重要的一句话：三年平均口径 28.4 倍，比当期更高</h3>
+<p>TTM 净利 20.27 亿，三年平均只有 17.49 亿。<strong>但这个差距的意义跟罗克韦尔完全不同</strong>——罗克韦尔是真的处在周期高点，而维斯特拉三年平均低，是因为 FY2025 那 7.52 亿被衍生品浮亏砸下去了，不是生意变差了（那年营收还创了新高）。</p>
+<p>所以对维斯特拉，<strong>三年平均口径反而不是最好的指标</strong>，它只是再一次证明了：这家公司的 GAAP 利润不能当真。真正该盯的三年序列是 EBITDA 和经营现金流——经营现金流 FY2023 到 TTM 分别是 54.5 亿、45.6 亿、40.7 亿、51.2 亿，<strong>波动只有 ±15%，而净利润波动是 ±100%。</strong> 现金层面这门生意稳得多。</p>
+<h3>最大的真实风险不是估值，是那 $200.7 亿债务</h3>
+<ul>
+<li>债务/EBITDA = <strong>3.09 倍</strong>，利息保障倍数 <strong>3.81 倍</strong>——不算安全边际很厚。</li>
+<li>一年现金付息 <strong>$9.86 亿</strong>，占 EBITDA 的 15%。</li>
+<li>股东权益只有 $54.9 亿，债务/股东权益 <strong>3.73 倍</strong>。</li>
+<li>股价过去 52 周跌了 <strong>-27.84%</strong>——市场已经在重新定价了。</li>
+</ul>
+<p>如果德州连续两年凉夏、PJM 容量价格回落、数据中心签约慢于预期，EBITDA 从 66.5 亿掉到 50 亿，利息保障倍数会掉到 2.5 倍附近，那时候杠杆会从"合理"变成"危险"。<strong>独立发电商在 2001–2003 和 2012 都发生过成片破产，原因每次都一样：加杠杆买电厂，然后电价跌了。</strong> 维斯特拉的零售业务对冲让它比当年那批公司安全得多，但杠杆的逻辑没变。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>按 GAAP 看它 27 倍不便宜，按现金看它 15 倍很便宜，而现金那一边更接近真相——维斯特拉的会计利润被套期保值的浮盈浮亏和收购重估的假折旧彻底搅浑了，你必须自己重算才能看到这门生意。</strong></p>
+<p>它是一门比表面上稳的生意（零售和发电天然对冲，经营现金流五年波动只有 ±15%），踩在一个真实的顺风上（AI 数据中心需要 24 小时无碳电力，而它手里有 6 GW 已经建好、折旧快提完的核电），估值又已经被市场砍了 28%。</p>
+<p>但它同时背着 <strong>$200.7 亿的债、3.81 倍的利息保障、0.62% 的股息率、以及一笔花了 11.67 亿却没让股本变少的回购</strong>。这不是一家可以放着不看的公司——它是一笔需要盯着电价和债务的、赔率不错但下行很陡的赌注。</p>
+<p>我的判断：<strong>在这个价位它比罗克韦尔便宜得多、也更值得买，但前提是你看得懂并且接受那 200 亿债务在电价下行时会怎么反噬。看不懂债务的人不该碰它。</strong></p>
+</div></body></html>

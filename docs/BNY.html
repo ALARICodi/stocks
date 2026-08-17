@@ -1,0 +1,385 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BNY · 纽约梅隆银行（The Bank of New York Mellon Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BNY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">价格把「极好」和「利率永远高」一起算进去了</div><h1>BNY · 纽约梅隆银行（The Bank of New York Mellon Corporation）</h1>
+<p><strong>市值</strong> $1,100.9 亿 | <strong>股价</strong> $162.25（2026-08-13 收盘）| <strong>行业</strong> 金融 / 托管银行 | <strong>TTM 截止</strong> 2026-06-30 | <strong>交易所</strong> NYSE</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分不用市盈率当主口径，改用市净率（PB）、有形账面市净率（P/TBV）、净资产收益率（ROE / ROTCE）。</strong>
+原因很简单：制造业公司的利润来自"卖东西赚差价"，银行的利润来自"用自有资本撬动几十倍的别人的钱"。BNY 自有股东权益 453 亿美元，撑起来的总资产是四千多亿。看市盈率只能告诉你现在赚多少，看不到这个利润是靠多少倍杠杆堆出来的、经济一旦转向会缩水多少。所以银行必须先看"一块钱净资产你付了几块钱"，再看"这一块钱净资产一年生多少钱"。</p>
+<p>另外提前说明一个坑：<strong>BNY 严格说不是传统银行，它几乎不放贷。</strong> 它是"托管银行"——替别人保管资产、清算交易、收管理费。它的收入里手续费占大头，坏账风险远低于摩根大通、美国银行这类靠放贷吃息差的机构。这一点会贯穿全文。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>BNY 财报把自己拆成三块。这三块本质上是<strong>三种"金融基础设施收费站"</strong>，而不是三种放贷生意。</p>
+<h3>生意一：证券服务（Securities Services）—— 全世界的保险柜和记账员</h3>
+<p>TTM 营收 <strong>104.37 亿美元，占总收入 49%</strong>，是最大的一块。</p>
+<p>先说这件事到底是什么。假设有一家美国的州立教师退休基金，管着 5,000 亿美元，投的东西遍布全球：日本的股票、德国的国债、巴西的公司债、印度的基础设施基金。问题来了——这些证券在物理上、法律上"放"在哪儿？基金自己不可能在东京、法兰克福、圣保罗各开一套账户，也不可能派人去处理每一次分红、拆股、要约收购、代扣税。</p>
+<p>这活儿就外包给 BNY。BNY 在全球一百多个市场都有当地的账户和牌照，它以这家退休基金的名义持有全部证券，每天做这些事：</p>
+<ul>
+<li><strong>保管与登记</strong>：确保这 5,000 亿资产在法律上是基金的，不是 BNY 的（这点极重要——托管资产不进 BNY 的资产负债表，BNY 破产也不影响客户资产）</li>
+<li><strong>收钱</strong>：日本公司发股息了，BNY 替客户收下来、按日美税收协定申请退税、换成美元入账</li>
+<li><strong>公司行动</strong>：巴西那家公司要合并换股，BNY 通知客户、代为申报、换好新股</li>
+<li><strong>估值与净值</strong>：每天收盘后把 5,000 亿的东西按市价算一遍，出一个净值数字</li>
+<li><strong>报送</strong>：向美国 SEC、向各国监管、向基金的审计师出具报告</li>
+</ul>
+<p>收费方式是<strong>按托管资产规模抽成，一年大约 1–3 个基点</strong>（万分之一到万分之三，复杂市场更贵）。所以一个 5,000 亿美元的客户，一年付给 BNY 大约 5,000 万到 1.5 亿美元。听起来抽成极低，但 BNY 手上托管的资产总量是 <strong>50 万亿美元量级</strong>——这是全世界最大的一坨托管资产，比很多国家的全部金融资产还多。万分之二乘以 50 万亿，就是一百亿。</p>
+<p>这块里还有两门很赚钱的小生意：</p>
+<p><strong>公司信托</strong>：一家公司发了 10 亿美元债券，债券条款里必须有个"受托人"，负责替全体债券持有人盯着发行人有没有按时付息、有没有违反契约、违约了要不要起诉。BNY 是全球做这个最多的机构之一，按每笔债券每年收固定费用。</p>
+<p><strong>存托凭证（ADR）</strong>：一家台湾或印度的公司想让美国人买它的股票，但美国人不想开台湾券商账户。做法是把该公司的本地股票存进 BNY 在当地的账户，BNY 在美国发行对应的"存托凭证"，美国投资人买卖 ADR 就等于间接持有那家公司。BNY 是全球最大的 ADR 发行商，按 ADR 规模和每次分红派息收费。</p>
+<p><strong>为什么客户跑不掉</strong>：换一家托管行，等于把几万个证券账户、上百个国家的登记关系、所有税务身份、所有对接系统全部重做一遍，行业里通常要 12 到 18 个月，中间任何一步出错就是几亿美元的错账。所以客户流失率低到几乎可以忽略，这门生意的收入曲线极其平滑。</p>
+<p>TTM 增速 <strong>+7.8%</strong>（104.37 亿 vs 上年 96.81 亿）。这个增速里，一半来自全球股债市场上涨自动抬高了托管资产的市值（不用做任何事，收入就涨了），一半来自新客户。</p>
+<h3>生意二：市场与财富服务（Market &amp; Wealth Services）—— 美国金融管道的收费闸门</h3>
+<p>TTM 营收 <strong>74.59 亿美元，占 35%</strong>。这块里有三样东西，其中一样是 BNY 全公司最硬的护城河。</p>
+<p><strong>Pershing（清算与托管外包）</strong>：美国有几万家独立理财顾问公司（RIA）和中小券商。举个具体的：一家管着 20 亿美元、只有 15 个员工的理财公司，它的客户想买苹果股票。这家公司自己根本没有能力做交易清算、开户合规、寄对账单、保管股票、算税表。它把这一整套外包给 Pershing——客户表面上在这家理财公司开户，实际账户和股票都在 Pershing。Pershing 按托管的账户数、交易笔数收钱，<strong>同时还赚客户账上闲置现金的利差</strong>（客户账上躺着没投出去的现金，Pershing 拿去投短债，付给客户很低的利息，中间差价归自己）。BNY 有大约 9,000 家这样的机构客户。</p>
+<p><strong>清算与抵押品管理（Clearance &amp; Collateral Management）—— 这是全文最该看懂的一段</strong>：美国国债市场每天有数万亿美元的"回购"交易。一家对冲基金拿 1 亿美元国债做抵押，向一家货币市场基金借一晚上的钱。问题是：谁来确认这批国债真实存在、当天值多少钱、第二天跌了要不要追加抵押、对冲基金爆仓了谁来处置抵押品？</p>
+<p>这个角色叫"三方回购清算行"。<strong>美国历史上只有两家银行做这件事，另一家（摩根大通）已经退出这块业务，实际上 BNY 现在近乎独家垄断美国国债三方回购的清算。</strong> 也就是说，美国国债市场——全球最大、最重要的金融市场——的日常运转，有一段管道是 BNY 一家在拧阀门。这不是普通的护城河，这是准公用事业地位。收费按清算量和抵押品余额计，量大费率极低，但量是天文数字。</p>
+<p><strong>财资服务（Treasury Services）</strong>：企业的收付款管道。一家跨国公司要给 40 个国家的供应商付款、给员工发薪、处理外汇，走的就是这类管道，按笔收费。</p>
+<p><strong>这块生意还藏着 BNY 这三年利润翻倍的真正原因</strong>：以上业务都会在 BNY 账上沉淀大量客户存款——Pershing 客户的闲置现金、企业的待付款项、回购交易的保证金。这些钱客户是不要利息或只要很低利息的，BNY 拿去买国债和短期资产。<strong>利率从 0 涨到 5% 的时候，这块存款的利差收入几乎是白捡的。</strong> 这就是为什么 BNY 净利润从 2022 年的 23 亿一路涨到 TTM 的 60 亿。反过来说也成立：利率如果掉回去，这部分利润会跟着蒸发。这一点在第三部分会再算一次。</p>
+<p>TTM 增速 <strong>+5.8%</strong>（74.59 亿 vs 70.49 亿）。</p>
+<h3>生意三：投资与财富管理（Investment &amp; Wealth Management）—— 唯一在萎缩的一块</h3>
+<p>TTM 营收 <strong>33.66 亿美元，占 16%</strong>。</p>
+<p><strong>资产管理</strong>：BNY 旗下有几个基金品牌，管理规模约 2 万亿美元。其中 Insight 是欧洲最大的"负债驱动投资"（LDI）管理人之一——专门替英国的企业养老金做利率对冲；Newton 做主动股票；Dreyfus 做货币基金。收费方式是按管理规模抽年费，从货币基金的 0.1% 到主动股票的 0.6% 不等。</p>
+<p><strong>财富管理（BNY Wealth）</strong>：给净资产 500 万美元以上的美国富裕家庭做私人银行、家族信托、遗产规划。按资产规模收费，年费率通常 0.5%–1%。</p>
+<p><strong>这块生意在明显退坡</strong>：2021 年营收 40.42 亿，TTM 33.66 亿，<strong>四年掉了 17%</strong>。三个原因叠加：主动管理基金被指数基金持续蚕食、货币基金在零利率年代大规模减免管理费、以及 Insight 在 2022 年英国 LDI 危机（英国国债闪崩导致养老金爆仓）之后规模缩水、声誉受损。TTM 同比 +3.3%，算是止住了跌势，但这块已经不是增长引擎。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率（<strong>估算</strong>）</th>
+<th>贡献利润（<strong>估算</strong>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证券服务</td>
+<td>10,437</td>
+<td>+7.8%</td>
+<td>48.8%</td>
+<td>~33%</td>
+<td>~3,440</td>
+</tr>
+<tr>
+<td>市场与财富服务</td>
+<td>7,459</td>
+<td>+5.8%</td>
+<td>34.9%</td>
+<td>~48%</td>
+<td>~3,580</td>
+</tr>
+<tr>
+<td>投资与财富管理</td>
+<td>3,366</td>
+<td>+3.3%</td>
+<td>15.8%</td>
+<td>~26%</td>
+<td>~880</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>56</td>
+<td>—</td>
+<td>0.3%</td>
+<td>—</td>
+<td>~80</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>21,367</strong></td>
+<td><strong>+10.6%</strong></td>
+<td>100%</td>
+<td><strong>37.35%（实际）</strong></td>
+<td><strong>7,980（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润率一栏必须打上"估算"两个字</strong>：BNY 财报只按分部披露营收，不披露分部经营利润，上面的分拆是我按整体 37.35% 的经营利润率、结合各块业务的成本结构倒推的（市场与财富服务含大量近乎零成本的存款利差收入，利润率最高；投资管理人力成本重、且规模在缩，利润率最低）。<strong>贡献利润的合计等于真实数字，但每一行的分配是我估的，不是财报数字。</strong> 谁要拿这三个利润率去做精确计算，会算错。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：数据源没单列，只能用股本变化倒着看</h3>
+<p>这四张财报页对 BNY <strong>没有单独列出股权激励费用</strong>（银行的现金流量表格式和制造业不同，这个数据源把它并进了"其他调整"）。我不去翻 10-K，所以这里如实说明：<strong>SBC 的绝对金额取不到。</strong></p>
+<p>但有个更实在的替代指标——<strong>股本实际变了多少</strong>。BNY 流通股一年减少 <strong>3.97%</strong>（当前 6.785 亿股）。这是<strong>净数</strong>，也就是"回购掉的股份减去发给员工的股份"之后的结果。既然净减了 3.97%，说明回购的规模明显盖过了员工发股的稀释。对股东来说，"净股本变化"本来就比"SBC 名义金额"更有用——你关心的是自己那一份被稀释了没有，答案是没有，反而变厚了 4%。</p>
+<h3>一次性项目：TTM 单期看不出来</h3>
+<p>TTM 期内没有从这四页数据上能识别出的大额一次性损益。但要老实讲：<strong>只看最近四个季度这一个口径，天然分不清"真一次性"和"年年都有的一次性"。</strong> 值得注意的是历史上 2022 年净利润只有 23.45 亿、明显塌陷（前一年 35.52 亿），那一年发生过什么、是不是一次性减值，<strong>单期口径判断不了，我不下结论</strong>。</p>
+<h3>资本化的支出：不适用</h3>
+<p>BNY 没有软件资本化或内容制作费这类科目值得单独拿出来说。资本开支 TTM 19.78 亿美元，主要是科技系统和数据中心——<strong>这个数字同比涨了 27%（上年 15.53 亿）</strong>，是文中少数几个真正的负面信号之一：托管银行的科技投入是刚性的、逃不掉的，跑不动就丢客户。</p>
+<h3>回购与稀释：这一项 BNY 是全文最漂亮的地方</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通股回购</td>
+<td><strong>39.80 亿美元</strong></td>
+</tr>
+<tr>
+<td>普通股分红</td>
+<td>8.87 亿美元（注：该数据源 TTM 分红口径明显偏低，FY2025 全年为 14.47 亿，实际年化应在 14 亿以上）</td>
+</tr>
+<tr>
+<td>回购 ÷ 市值</td>
+<td><strong>3.6%</strong></td>
+</tr>
+<tr>
+<td>分红收益率</td>
+<td>1.31%（每股 $2.12）</td>
+</tr>
+<tr>
+<td>股本净变化</td>
+<td><strong>−3.97%</strong></td>
+</tr>
+<tr>
+<td>股东总回报率（分红+回购）</td>
+<td><strong>5.27%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>规范里说"回购 ÷ SBC 接近 1 说明回购只是抵消员工发股，大于 3 才是真回购"。BNY 的 SBC 取不到，但用<strong>净股本变化</strong>这个更硬的指标看：<strong>回购掉的股份实实在在让每股权益变厚了 4%</strong>，这不是走过场。分红派息率只有 26%，意味着 BNY 把大部分利润用在了回购上，而不是分红——在 PB 还在 1 倍以下的 2022–2023 年，这是极正确的资本配置；在现在 PB 2.76 倍的价位上继续大手笔回购，性价比就差多了，这一点后面再说。</p>
+<h3>利润和现金流的差：银行看这个基本没意义，但差得离谱要说清楚</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（利润表）</td>
+<td>60.24 亿</td>
+</tr>
+<tr>
+<td>经营现金流</td>
+<td>35.70 亿</td>
+</tr>
+<tr>
+<td>自由现金流</td>
+<td>15.92 亿</td>
+</tr>
+<tr>
+<td>P/FCF</td>
+<td><strong>69 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按规范这里该做一张逐项对账表。<strong>但我做不出来，原因要如实说</strong>：这个数据源给 BNY 的现金流量表里，起点那行"净利润"写的是 <strong>126.47 亿</strong>，和利润表的 60.24 亿对不上（差一倍多），而且中间明细各行加起来也凑不出 35.70 亿的经营现金流合计。<strong>这是数据源在处理银行合并报表时的口径问题，不是 BNY 在藏东西。</strong> 我不去翻 10-K 补这一块，所以这张对账表这里空着，只报总量。</p>
+<p>不过更重要的一句是：<strong>对托管银行来说，"自由现金流"这个概念本身就是废的。</strong> 经营现金流里最大的一项波动是"交易性资产变动 −51.76 亿"——这是 BNY 替客户和自营持有的证券头寸在期末的规模变化，是资产负债表科目的搬家，不是钱花掉了。同一个数字 FY2024 是 −56.39 亿、FY2022 是 +70.15 亿，上下摆几十亿是常态。所以 <strong>P/FCF 的 69 倍是个假数字，谁拿它说 BNY 贵到 69 倍就是不懂银行</strong>。银行的现金创造能力要看净利润和资本充足率，不看 FCF。</p>
+<h3>这四页取不到的监管指标（缺口如实列出）</h3>
+<p>CET1 核心一级资本充足率、拨备覆盖率、净息差（NIM）、托管资产总额（AUC/A）的精确数字，<strong>这个数据源不提供</strong>，我按规范没有去翻 10-K。对一家几乎不放贷的托管银行来说，拨备和坏账本来就不是主要矛盾；但 CET1 是它能回购多少股票的硬约束，看不到这个数是本文的一个真实缺口。</p>
+<hr />
+<h2>第三部分：银行口径 —— 一块钱净资产你付了几块钱</h2>
+<h3>核心估值表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>市值 ÷ 股东权益（453.5 亿）</td>
+<td><strong>2.76 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>市值 ÷ 剔除商誉无形资产后的普通股权益</td>
+<td><strong>4.53 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE（净资产收益率）</strong></td>
+<td>净利润 ÷ 股东权益</td>
+<td><strong>14.12%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形普通股回报率，估算）</strong></td>
+<td>净利润 ÷ 有形普通股权益（约 243 亿）</td>
+<td><strong>约 25–26%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（银行版"投100块年回报"）</strong></td>
+<td>14.12% ÷ 2.76</td>
+<td>—</td>
+<td><strong>$5.12</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（交叉验证）</td>
+<td>市值 ÷ TTM 净利润 60.24 亿</td>
+<td>18.94 倍</td>
+<td><strong>$5.28</strong></td>
+</tr>
+<tr>
+<td>远期市盈率（分析师预测）</td>
+<td>市值 ÷ 明年预测利润</td>
+<td>16.88 倍</td>
+<td>$5.93</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>市值 ÷ 2023–2025 三年平均净利润（42.36 亿）</td>
+<td><strong>26.0 倍</strong></td>
+<td><strong>$3.85</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ FCF 15.92 亿</td>
+<td>69 倍（<strong>无意义，见上文</strong>）</td>
+<td>$1.45</td>
+</tr>
+<tr>
+<td>每股账面价值</td>
+<td>—</td>
+<td>$58.82（股价 $162.25）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>两个口径互相印证得很好：<strong>ROE ÷ PB 算出 $5.12，市盈率倒数算出 $5.28</strong>，本来就是同一件事的两种说法，差异只来自优先股。</p>
+<h3>最关键的一行：三年平均口径</h3>
+<p><strong>当期 18.94 倍，三年平均 26.0 倍，差 37%。</strong></p>
+<p>这个差距在说一件事：<strong>BNY 现在的利润处在一个明显偏高的位置，不是常态。</strong> 净利润这几年的轨迹是：2022 年 23.45 亿 → 2023 年 30.67 亿 → 2024 年 43.36 亿 → 2025 年 53.06 亿 → TTM 60.24 亿。<strong>四年翻了 2.6 倍</strong>，而同期营收只从 165 亿涨到 214 亿（涨 29%）。</p>
+<p>利润涨的速度是收入的九倍，钱从哪来的？两个来源：</p>
+<ol>
+<li><strong>利率</strong>。前面说过，BNY 账上沉淀着海量近乎免费的客户存款。利率从 0 涨到 5%，这部分利差是白捡的。经营利润率从 2022 年的 21.05% 一路抬到 TTM 的 37.35%，一大半是这个原因。</li>
+<li><strong>成本控制</strong>。这几年 BNY 换了 CEO（Robin Vince），推行平台化改造和裁员，费用增速被压住了。这部分是真本事，可持续。</li>
+</ol>
+<p><strong>问题在于第一个来源是周期性的。</strong> 如果利率回落到 3%，BNY 的净利息收入会明显缩水，而这部分几乎是纯利润（没有对应成本）。三年平均口径的 26 倍，可以粗略理解为"如果利润回到中周期水平，你现在这个价格对应的市盈率"。</p>
+<h3>你投 100 块，一年拿回多少</h3>
+<p><strong>按最保守的口径（三年平均利润），公司一年替你赚 $3.85。按当期 TTM 口径，一年赚 $5.28。真实的答案大概率在两者之间，靠近 $4.5–5。</strong></p>
+<p>这 $5.28 里，钱的去向是这样：</p>
+<ul>
+<li><strong>$1.31 以现金分红回到你口袋</strong>（股息率 1.31%，派息率 26%）</li>
+<li><strong>$3.60 以回购的形式回到你口袋</strong>——注意这不是现金，是你手上的股份占比自动变大了 3.97%</li>
+<li><strong>合计 $5.27 通过分红+回购返还</strong>，几乎等于全部利润</li>
+</ul>
+<p>也就是说，<strong>BNY 几乎把赚的钱全还给股东了，基本没有留存再投资</strong>。这符合它的生意性质：托管银行不需要靠砸钱扩产能来增长，它的增长来自全球金融资产的自然膨胀。资本开支 19.78 亿只是维持性的科技投入，已经在利润里扣过了。</p>
+<p>但这里有个必须点破的问题：<strong>在 PB 2.76 倍的时候还把利润的七成用来回购，是在用高价买回自己的股票。</strong> 2022 年 BNY 的 PB 只有 0.90 倍——花 90 分买 1 块钱净资产，回购一股就赚一毛；现在花 2.76 块买 1 块钱净资产，同样的钱只能买回三分之一的股份。管理层在 PB 0.9 的时候回购了 1.24 亿美元（几乎没买），在 PB 2.76 的时候回购 39.8 亿。<strong>这是标准的高买低不买，资本配置上的一个实实在在的减分项。</strong></p>
+<h3>这个 $5 未来会变大还是变小</h3>
+<p><strong>大概率变小，至少不会明显变大。</strong> 三个理由：</p>
+<ol>
+<li><strong>利率红利已经吃完了</strong>，再往下走是逆风。这是最主要的风险。</li>
+<li><strong>托管费率是长期下行的</strong>。托管这门生意的规模效应太强，大客户每次续约都要压价，行业费率过去二十年一直在缓慢下滑。BNY 靠资产规模膨胀抵消费率下滑，但抵消得越来越吃力。</li>
+<li><strong>投资管理那块（16% 的收入）还在被指数基金侵蚀</strong>，四年掉了 17%，看不到反转理由。</li>
+</ol>
+<p>对冲这些的有利因素也是真的：托管资产随全球股债市场长期上涨自然增长、成本改造还有空间、以及美国国债市场规模每年膨胀直接抬高清算业务的量（这一条含金量最高——美国国债余额只要还在膨胀，BNY 那个近乎独家的三方回购清算闸门就在被动增值）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家极好的公司，但现在的价格已经把"极好"和"利率永远这么高"两件事一起算进去了。</strong></p>
+<p>BNY 的生意质量在全美国的银行里排在最前面：几乎不放贷所以没有坏账风险、客户换不掉所以收入极稳、还在美国国债清算上握着一段近乎独家的公用事业管道。这些都是真的，而且这几年管理层确实把成本压下来了。</p>
+<p>问题全在价格上。<strong>这只股票一年涨了 56.6%，PB 从 2022 年的 0.90 倍涨到今天的 2.76 倍，四年翻了三倍——市场对它的估值方式已经从"打折的破银行"整个换成了"优质金融科技平台"。</strong> 用 ROE 14% 除以 PB 2.76，你现在买入的年回报是 5.1%；而如果利润回到三年平均水平，只有 3.85%。这个回报率，和无风险的美国长期国债比，几乎没有溢价——<strong>你承担了一家银行的全部杠杆风险和利率周期风险，却只拿到接近国债的收益率。</strong></p>
+<p>三年前 PB 0.9 倍的时候，这是一笔明显便宜的买卖。现在 PB 2.76 倍，<strong>买的人赚的是"利率不下降 + 估值不回归"两个都得对，这两件事同时成立的概率不高。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com（Fiscal.ai 数据），TTM 截止 2026-06-30，股价 2026-08-13 收盘。分部利润率为估算，已在文中标注。</em></p>
+</div></body></html>

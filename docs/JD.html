@@ -1,0 +1,495 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JD · 京东（JD.com, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">JD</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">既不便宜也不贵，是对外卖补贴战何时结束的赌注</div><h1>JD · 京东（JD.com, Inc.）</h1>
+<p><strong>市值</strong> $390.6 亿（约 ¥2,653 亿） · <strong>股价</strong> 约 $29.2/ADS · <strong>行业</strong> 零售 · <strong>数据口径</strong> TTM，截至 2026 年 6 月 30 日 · <strong>分析日期</strong> 2026-08-16</p>
+<blockquote>
+<p><strong>两个必须先讲清的口径问题：</strong>
+1. 京东用<strong>人民币</strong>报表，股价用<strong>美元</strong>。本文财务数字一律人民币（¥），估值倍数用「¥2,653 亿市值」除「人民币利润」，汇率按 6.79。
+2. 筛选榜给的市值是 $338 亿，财报页给的是 $390.6 亿。差在 ADS 与总股本的统计口径，本文用 <strong>$390.6 亿</strong>（和其他财务数字同源，保持一致）。用小的那个数只会让下面所有倍数更低，不影响结论方向。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>京东表面上是"中国的亚马逊"，但拆开看是<strong>四门差别极大的生意</strong>，而且这四门生意的赚钱能力天差地别。</p>
+<h3>生意一：自营 3C 家电 —— TTM ¥5,719 亿，占 43.5%</h3>
+<p><strong>这是京东的老本行，也是它的立身之本。</strong></p>
+<p>具体怎么做：京东<strong>自己花钱</strong>从格力、美的、海尔、苹果、华为这些厂商手里批量进货，货存进自己的仓库，用户在京东下单，京东自己的快递员从仓库送到家。<strong>赚的是进销差价</strong>——比如一台美的空调从厂家进货 ¥2,600，卖给你 ¥2,999，毛利 ¥399，扣掉仓储和配送的成本 ¥200 左右，落袋一百多。</p>
+<p><strong>这就是这门生意最要命的地方：它是重资产、低毛利的批发零售，本质上和线下的国美苏宁是同一种生意，只是把店面换成了网站和仓库。</strong> 京东整体毛利率只有 <strong>9.42%</strong>，而阿里的天猫（收佣金不进货）毛利率是 40%+。京东要多卖十倍的货，才能赚阿里一样的毛利。</p>
+<p>它凭什么打赢国美苏宁和淘宝的假货？靠两件事：<strong>正品保证</strong>和<strong>次日达</strong>。中国消费者买两千块以上的电器，最怕买到翻新机、水货。京东自营是从厂家直接进货、开发票、全国联保，这个信任壁垒十几年没被打破。加上自建的 1,600 多个仓库、几十万自有快递员，在北上广深能做到「上午下单下午到」。买冰箱洗衣机这种大件，别人送三天、京东送当天还负责安装，用户就认它。</p>
+<p><strong>但这一块 TTM 在萎缩</strong>：¥5,719 亿，比 2025 全年的 ¥6,051 亿掉了 5.5%。原因很直接——2024–2025 年国家搞「以旧换新」补贴，政府掏钱补消费者换家电，京东是最大受益者（FY2024 这一块营收暴涨、利润创历史新高 ¥396 亿）。<strong>补贴退坡后，需求被提前透支了，现在正在还债。</strong></p>
+<h3>生意二：自营日百商超 —— TTM ¥4,391 亿，占 33.4%</h3>
+<p>同样是自营进货模式，但卖的是米面粮油、纸巾洗发水、服饰、生鲜。京东超市、京东七鲜。</p>
+<p><strong>这门生意京东做得不好，这是行业共识。</strong> 卖一箱纸巾赚三块钱，但送货成本比纸巾本身还贵。京东的物流优势在大件贵重品上是护城河，在低客单价的日百上就是成本负担——拼多多用「拼团 + 通达系快递」把同样一箱纸巾送到你手上，成本只有京东的一半。所以京东在这块只能靠「凑单免运费」和会员体系把用户留住，很难赚钱。</p>
+<p>TTM ¥4,391 亿比 FY2025 的 ¥4,187 亿涨了约 4.9%，是四块里增长还算稳的。管理层这几年一直把它当战略重点（因为高频、能带动 App 打开率），代价是不赚钱。</p>
+<h3>生意三：平台佣金和广告 —— TTM ¥1,137 亿，占 8.7%</h3>
+<p><strong>这是京东唯一真正的高利润生意。</strong></p>
+<p>京东除了自营，也开放平台让第三方商家开店（叫 POP 商家）。一个卖运动鞋的品牌在京东开旗舰店，京东两头收钱：</p>
+<ul>
+<li><strong>佣金</strong>：每卖出一双鞋抽 2%–8%，服装类目大约 5%。一年卖一个亿，交五百万佣金。</li>
+<li><strong>广告</strong>：商家花钱买搜索排名。用户搜「跑鞋」，谁出价高谁排前面，按点击收费，一次点击几毛到几块。<strong>这笔钱的毛利率接近 100%</strong>，因为流量本来就在那，京东只是把它拍卖了。</li>
+</ul>
+<p><strong>具体感受一下这门生意有多好</strong>：这 ¥1,137 亿收入，京东几乎不需要额外成本——仓库不用建、快递员不用雇、货也不用垫钱进。<strong>它占营收只有 8.7%，但如果按互联网广告 60%–70% 的经营利润率估算，它一家就能贡献七百亿左右的经营利润</strong>——而全公司 TTM 的经营利润总共只有 ¥21.9 亿。</p>
+<p><strong>换句话说：京东整个公司的利润，全靠这一块撑着，其他三块合起来是亏的。</strong> 这一点必须记住，是理解京东估值的钥匙。</p>
+<p>TTM ¥1,137 亿 vs FY2025 ¥1,071 亿，增长约 6.1%。</p>
+<h3>生意四：物流对外 + 新业务（外卖） —— TTM ¥1,887 亿，占 14.4%</h3>
+<p>这一块是个杂烩，里面装了两个完全不同的东西：</p>
+<p><strong>（a）京东物流对外接单</strong>。京东自己建的仓储配送网络，闲置产能卖给外部客户。比如一个新消费品牌（元气森林那种）不想自建仓库，就把货放进京东的仓，京东负责全国仓配，按件收费。这块已经独立在港股上市（京东物流 2618.HK），是微利生意，净利率 2%–3%。</p>
+<p><strong>（b）京东外卖——这是过去一年半吃掉京东全部利润的黑洞。</strong></p>
+<p>2025 年 2 月京东杀进外卖，打法是<strong>烧钱</strong>：给骑手交五险一金（美团的骑手大多是众包没社保，京东公开宣布给全职骑手上社保，这是每年上百亿的成本）、给用户发大额补贴（"0 元奶茶""满25减20"）、给商家免佣金。阿里的淘宝闪购随即跟进，美团被迫应战，三家在 2025 年打了一场中国互联网史上最贵的补贴战。</p>
+<p><strong>代价看数字最清楚</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>经营利润</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2024（补贴战前）</td>
+<td><strong>¥395.7 亿</strong></td>
+<td>3.42%</td>
+</tr>
+<tr>
+<td>FY2025（开打）</td>
+<td>¥36.9 亿</td>
+<td>0.28%</td>
+</tr>
+<tr>
+<td><strong>TTM（截至 2026年6月）</strong></td>
+<td><strong>¥21.9 亿</strong></td>
+<td><strong>0.17%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一年半时间，经营利润蒸发了 94.5%。</strong> 营收还在涨（FY2024→FY2025 涨了 13%），但每卖 100 块钱只剩 1 毛 7 的经营利润——<strong>这已经和"不赚钱"没有实质区别了</strong>。</p>
+<h3>四门生意汇总</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>vs FY2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自营 3C 家电</td>
+<td>¥5,719 亿</td>
+<td><strong>−5.5%</strong></td>
+<td>43.5%</td>
+<td>约 2%（估算）</td>
+<td>约 ¥114 亿</td>
+</tr>
+<tr>
+<td>自营日百商超</td>
+<td>¥4,391 亿</td>
+<td>+4.9%</td>
+<td>33.4%</td>
+<td>约 −2%（估算）</td>
+<td>约 −¥88 亿</td>
+</tr>
+<tr>
+<td><strong>平台佣金与广告</strong></td>
+<td>¥1,137 亿</td>
+<td>+6.1%</td>
+<td>8.7%</td>
+<td><strong>约 62%（估算）</strong></td>
+<td><strong>约 ¥705 亿</strong></td>
+</tr>
+<tr>
+<td>物流对外 + 外卖</td>
+<td>¥1,887 亿</td>
+<td>+5.9%</td>
+<td>14.4%</td>
+<td>约 −38%（估算）</td>
+<td>约 −¥710 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>¥13,134 亿</strong></td>
+<td><strong>+3.8%（同比）</strong></td>
+<td>100%</td>
+<td><strong>0.17%（实际）</strong></td>
+<td><strong>¥21.9 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须强调：京东财报只按业务线披露营收，完全不披露分部利润。</strong> 上表四行利润率全部是<strong>估算</strong>——方法是：用已知的全公司经营利润 ¥21.9 亿倒推，结合广告业务接近纯利、外卖处于补贴期巨亏、自营家电微利、日百微亏这些行业常识做分配。<strong>方向可信，具体数字不可当真。</strong> 只有最后一行的 ¥21.9 亿和 0.17% 是财报真数。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM ¥47.3 亿，占归属股东净利润的 35.8%。</strong>
+按 GAAP 已经扣掉了，本文全程按扣掉处理。有意思的是京东的 SBC 一直在<strong>降</strong>：FY2021 ¥91.3 亿 → FY2022 ¥75.5 亿 → FY2024 ¥30.0 亿 → TTM ¥47.3 亿。相比美国科技公司这是很克制的水平（占营收仅 0.36%）。中概股在这一项上普遍比美股同行干净。</p>
+<p><strong>一次性项目：有一大笔，而且它是本次分析的核心。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权投资公允价值收益</td>
+<td><strong>+¥80.3 亿</strong></td>
+<td><strong>账面浮盈，没卖，没收到一分现金</strong></td>
+</tr>
+<tr>
+<td>处置资产收益</td>
+<td>+¥4.6 亿</td>
+<td>卖楼卖设备</td>
+</tr>
+<tr>
+<td>处置投资损失</td>
+<td>−¥4.3 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>资产减值与重组</td>
+<td>−¥13.0 亿</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>净一次性收益</strong></td>
+<td><strong>+¥67.5 亿</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这 ¥80.3 亿的股权投资浮盈是全篇最重要的数字。</strong> 京东手里持有一堆外部公司的股权（达达、永辉超市、德邦物流、以及各种早期投资），会计准则要求每季度按市价重估，涨了就计入利润表。<strong>这不是卖货赚的钱，也不是现金，只是股票涨了。</strong></p>
+<p>对比一下就明白问题有多严重：<strong>京东 TTM 的经营利润只有 ¥21.9 亿，而这笔纸面浮盈是 ¥80.3 亿——浮盈是主业利润的 3.7 倍。</strong></p>
+<p>另外注意：FY2024 和 FY2023 也都有这类收益（¥23.3 亿、¥10.1 亿），说明它<strong>年年都有，只是金额跳来跳去</strong>。<strong>单看 TTM 一期无法判断这是"真一次性"还是"经常性的非经营收益"</strong>——本文的处理是在算真实利润时按税后剔除，因为它不可预测、不产生现金，也不代表主业能力。</p>
+<p><strong>资本化的支出：没有明显问题。</strong> 京东不资本化研发。资本开支 ¥226 亿主要是建仓库和买地，是实打实的重资产投入。</p>
+<p><strong>回购与稀释：这是京东最亮的一项，也是它对股东最有诚意的地方。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>¥214.3 亿</strong></td>
+</tr>
+<tr>
+<td>现金分红</td>
+<td><strong>¥103.8 亿</strong></td>
+</tr>
+<tr>
+<td>合计返还股东</td>
+<td><strong>¥318.1 亿</strong></td>
+</tr>
+<tr>
+<td>同期 SBC</td>
+<td>¥47.3 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>4.5 倍</strong></td>
+</tr>
+<tr>
+<td>股本实际变化（一年）</td>
+<td><strong>−4.09%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>4.5 倍远高于「大于 3 才算真回购」的标准，而且股本<strong>真的减少了 4.09%</strong>。加上分红，<strong>股东总回报率 = ¥318.1 亿 ÷ ¥2,653 亿市值 = 12.0%</strong>。这在美股是极其罕见的高数字。</p>
+<p><strong>但要泼一盆冷水</strong>：TTM 自由现金流只有 ¥285 亿，而返还股东 ¥318 亿，<strong>超出部分是靠净借债 ¥103 亿补上的</strong>。这个节奏撑不了太久，除非利润回来。</p>
+<p><strong>利润和现金流的差：这里有个必须警告的数据质量问题。</strong></p>
+<p>净利润（全部）¥147.9 亿，经营现金流 ¥511.2 亿，自由现金流 ¥285.0 亿。表面上现金流是利润的 3.5 倍，非常漂亮。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（¥ 百万）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润（含少数股东）</td>
+<td>14,794</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+9,608</td>
+<td>仓库、车队、设备的账面损耗</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+4,726</td>
+<td>发股票不掏现金</td>
+</tr>
+<tr>
+<td><strong>− 股权投资浮盈</strong></td>
+<td><strong>−8,025</strong></td>
+<td><strong>纸面的，剔掉</strong></td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+1,303</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 处置投资损失</td>
+<td>+430</td>
+<td></td>
+</tr>
+<tr>
+<td>− 处置资产收益</td>
+<td>−458</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+340</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>+ 其他经营活动</strong></td>
+<td><strong>+35,442</strong></td>
+<td><strong>⚠️ 见下方警告</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−2,526</td>
+<td>赊出去的钱变多</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−3,959</td>
+<td>压货</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−4,909</td>
+<td>给供应商的钱付得更快了</td>
+</tr>
+<tr>
+<td>+ 预收款增加</td>
+<td>+3,780</td>
+<td></td>
+</tr>
+<tr>
+<td>− 所得税相关</td>
+<td>−2,275</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>+2,846</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>51,117</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−22,622</td>
+<td>建仓库</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>28,495</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>⚠️ 警告：那笔 ¥354.4 亿的「其他经营活动」是整张表的问题所在。</strong></p>
+<p>对比一下：FY2025 全年这一行是 <strong>−¥16.6 亿</strong>，TTM 变成 <strong>+¥354.4 亿</strong>，一个半年翻转了三百七十亿。而且再看投资活动里的「其他投资活动」，FY2025 是 −¥18.4 亿，TTM 是 <strong>−¥784.5 亿</strong>——一进一出，方向相反、量级接近。</p>
+<p><strong>把这一行拿掉，经营现金流只有 ¥156.8 亿，自由现金流是 −¥69.5 亿（负的）。</strong></p>
+<p>这两笔巨额反向科目最可能的来源是京东的消费信贷业务（京东白条）的应收款在经营和投资科目之间的重分类，或者是短期理财资金的进出被归到了不同科目。<strong>无论是哪一种，结论都一样：TTM 那个漂亮的 ¥285 亿自由现金流，有相当大一部分不是卖货挣出来的，不能按面值相信。</strong></p>
+<p>补充一个佐证：<strong>FY2025 全年的自由现金流只有 ¥16.0 亿</strong>，比 FY2024 的 ¥405.9 亿暴跌 96%。那才是补贴战最惨烈时期的真实写照。TTM 回到 ¥285 亿看起来是复苏，但复苏的幅度被上面那笔科目挪动放大了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>口径说明：京东旗下的京东物流、京东健康都在港股独立上市，有外部少数股东。<strong>下表统一用「归属母公司股东」的利润</strong>（¥132.1 亿，占全部净利润 ¥147.9 亿的 89%），这才是真正属于你的那部分。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>¥2,653亿 ÷ ¥132.1亿</td>
+<td><strong>20.1 倍</strong></td>
+<td><strong>$4.98</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>¥2,653亿 ÷ 约¥180亿（加回SBC、减值、无形摊销）</td>
+<td>约 14.7 倍</td>
+<td>$6.80</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>¥2,653亿 ÷ ¥74.7亿（剔税后投资浮盈，SBC不加回）</td>
+<td><strong>35.5 倍</strong></td>
+<td><strong>$2.82</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>¥2,653亿 ÷ ¥285.0亿</td>
+<td><strong>9.3 倍</strong></td>
+<td>$10.75（⚠️不可信，见上）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>¥1,106亿 ÷ ¥21.9亿</td>
+<td><strong>50.5 倍</strong></td>
+<td>$1.98</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>¥2,653亿 ÷ ¥199.3亿（三年真实净利润均值）</td>
+<td><strong>13.3 倍</strong></td>
+<td><strong>$7.52</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行的算法：TTM 真实利润 ¥74.7 亿、FY2025 真实利润约 ¥123.2 亿、FY2024 真实利润约 ¥400 亿，三年均值 ¥199.3 亿。</p>
+<h3>这张表在说什么——它和绝大多数公司相反</h3>
+<p>看一眼那三个粗体数字：<strong>当期 GAAP 20.1 倍、剔除水分 35.5 倍、三年平均 13.3 倍。</strong></p>
+<ul>
+<li><strong>35.5 &gt; 20.1</strong>：说明当期报出来的利润里，<strong>有一大块是股票浮盈，不是主业挣的</strong>。剥掉之后京东其实比表面上贵得多。</li>
+<li><strong>13.3 &lt; 20.1</strong>：说明<strong>现在的利润是三年里的低谷，不是高点</strong>。FY2024 京东真实赚了四百亿，现在只赚七十多亿。</li>
+</ul>
+<p>这两条合起来是一个很别扭但很清晰的画面：<strong>京东现在的报表利润，既掺了水（投资浮盈），又处在周期底部（外卖战烧钱）。</strong> 你到底该按 35.5 倍还是 13.3 倍看它，完全取决于一个问题：<strong>外卖这场仗什么时候结束、结束后利润能回到什么水平。</strong></p>
+<p>EV/EBIT 那个 50.5 倍看起来吓人，但它有一半是假象——京东账上净现金 ¥1,547 亿（约合 $228 亿），占市值的 58%。<strong>你花 $390 亿买这家公司，其中 $228 亿是它口袋里的现金，实际为业务付的只有 $163 亿。</strong> 这个净现金垫子是京东最实在的安全边际。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进京东，按最保守的真实口径（剔掉股票浮盈、SBC 照扣）算，公司一年替你赚 $2.82。</strong></p>
+<p>但这 100 块的回报结构很特别：</p>
+<ul>
+<li><strong>你先立刻拿到 $3.9 的分红和回购</strong>（¥318 亿 ÷ ¥2,653 亿 = 12.0% 的股东回报率，其中分红 3.9%、回购 8.1%）。<strong>注意：公司返给你的钱，比它今年真实赚的钱还多。</strong> 差额是从账上的现金储备和新借的债里出的。</li>
+<li>剩下的钱去了哪：资本开支 ¥226 亿继续建仓库，以及<strong>继续填外卖的坑</strong>。</li>
+<li>你手里那 100 块对应的公司份额，一年之内会自动变大 4.09%。</li>
+</ul>
+<h3>这个 $2.82 未来会变大还是变小</h3>
+<p><strong>大概率变大，而且可能变大很多——但时点不确定，这是全部风险所在。</strong></p>
+<p><strong>往上的力：外卖补贴战不可能永远打下去。</strong> 2025 年下半年中国监管部门已经多次约谈三家平台，要求停止「内卷式恶性竞争」，禁止低于成本价倾销。历史经验（网约车、共享单车、社区团购）说明这种战争最终都以监管介入 + 三家心照不宣地收手告终，通常 18–24 个月见分晓。<strong>这场仗从 2025 年 2 月开打，到现在已经 18 个月。</strong> 一旦补贴退坡，京东的经营利润有机会从 ¥22 亿回到 FY2024 的 ¥396 亿量级——<strong>那意味着按当前市值只有 6–7 倍市盈率。</strong> 这是那个 0.26 的 PEG 和 7.27 倍前瞻市盈率在暗示的东西。</p>
+<p>同时，广告和佣金那块（毛利接近 100%）还在以 6% 稳定增长，这是京东真正的利润引擎，完全没受外卖战影响。</p>
+<p><strong>往下的力，有三条，都不轻：</strong></p>
+<ol>
+<li><strong>家电以旧换新的透支还没还完。</strong> 最大的那块业务 TTM 在负增长 5.5%，这是需求被政府补贴提前拉走后的必然回落，可能还要持续几个季度。</li>
+<li><strong>外卖这场仗京东未必赢得了。</strong> 美团在这个市场经营十几年，骑手网络、商家关系、算法调度都是京东没有的。京东用「给骑手上社保」这种成本更高的打法去打一个本来就微利的行业，即便打成了，也可能只是拿到一块永远不赚钱的市场份额。<strong>最坏的情况是烧了几百亿，最后份额还是被美团压着，然后不得不撤。</strong></li>
+<li><strong>中概股的估值折价是结构性的。</strong> 京东 0.94 倍的市净率（低于净资产）、0.20 倍的市销率，本质上是市场对中国资产的政治与监管风险的定价，不是京东一家的问题。这个折价过去五年没有消失，未来也未必会。</li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>京东是一家把自己的报表利润打得稀烂、但把口袋里的现金源源不断分给股东的公司——它现在既不便宜也不贵，它是一张对"外卖补贴战何时结束"的赌注。</strong></p>
+<p>三个数字定义了它：<strong>经营利润率 0.17%</strong>（主业已经不赚钱了）、<strong>净现金占市值 58%</strong>（跌不下去的底）、<strong>股东回报率 12%</strong>（等待期间有钱拿）。</p>
+<p>真实市盈率 35.5 倍这个数字，字面上看很贵，但它的分母是一个被人为压到地板上的利润——京东在用今天的利润换外卖的市场份额，这是主动选择，不是能力不行。<strong>如果你相信补贴战会在一两年内收场、京东能守住广告和自营家电的基本盘，那么 6–7 倍的正常化市盈率加上 12% 的股东回报，这是个非常划算的赔率。如果你相信京东会在外卖上一直烧到打不动为止、家电业务继续被拼多多和抖音蚕食，那么 35.5 倍买一个不增长的公司，是个糟糕的交易。</strong></p>
+<p>我的判断偏向前者，理由是那个不受战争影响的广告佣金业务（¥1,137 亿营收、接近纯利）和 58% 的净现金垫子。但必须明说：<strong>这是在赌管理层什么时候止损，不是在赌业务基本面变好。</strong> 这种赌注不该重仓。</p>
+</div></body></html>

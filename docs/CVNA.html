@@ -1,0 +1,426 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CVNA · Carvana（美国二手车电商）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CVNA</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">生意在真好转，价格离谱得多，三年口径120倍</div><h1>CVNA · Carvana（美国二手车电商）</h1>
+<p>市值 827 亿美元 / 股价约 74.5 美元 / 行业：零售（二手车） / TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Carvana 表面上是"网上卖二手车的"。<strong>但它真正赚钱的地方不是卖车，而是放贷。</strong> 这一点是理解这家公司的钥匙，下面会用数字证明。</p>
+<p>TTM 营收 250.58 亿美元，同比涨 53.98%，分三块披露。</p>
+<h3>生意一：零售卖车（Net Retail Vehicle Sales，TTM 184.87 亿美元，占 73.8%）</h3>
+<p>这是给普通人卖二手车。整个流程是这样的：</p>
+<p>你在 carvana.com 上挑车，每辆车都有 360 度全景照片，车漆上有个划痕会用小圆点标出来让你点开看。你选中一辆 2023 年的丰田凯美瑞，标价 24,500 美元。<strong>关键的一步是顺序反了</strong>——传统美国车行是你先看车、砍价、然后才被拉进一间小房间跟金融专员磨两小时贷款；Carvana 是<strong>在你还没选车的时候就先给你一个贷款额度和月供数字</strong>，你按"每月能付 400 块"来筛选看得起哪些车。这个顺序对精打细算的中低收入买家杀伤力极大。</p>
+<p>然后你可以选送车上门——一辆单车位的平板拖车开到你家车道，司机把车推下来，你签个字；或者去"取车塔"，那是一栋玻璃立方体大楼，里面停着几十辆车，你把一枚特制大铜币投进机器，你的车从上面坐电梯降下来。这个塔纯粹是营销道具，但它让 Carvana 在几十个城市获得了免费的电视新闻曝光。</p>
+<p><strong>支撑整件事的是七天无理由退货。</strong> 网上买二手车最大的心理障碍是"看不见摸不着"，七天退货把这个障碍抹掉了——你可以开回家，让你的修车师傅看一眼，不满意原样退。</p>
+<p>车从哪来：一半以上是买家的<strong>旧车折价（trade-in）</strong>，剩下的从批发拍卖场和租赁公司到期回收的车队里买。买来的车全部送进 Carvana 自己的<strong>检修中心（IRC）</strong>，做一百多项检查，换轮胎、修钣金、做内饰清洁，然后拍照上架。这是这门生意里最重、最花钱的部分——每个检修中心是一片几十亩的场地加流水线，一年能处理几万台车。</p>
+<p><strong>这门生意的毛利率只有约 14%。</strong> 卖一台 24,500 美元的车，扣掉收车成本和翻新成本，大约赚 3,400 美元。听起来不少，但从这 3,400 里还要出物流、客服、广告和总部开支。<strong>单纯卖车这件事，赚的是辛苦钱。</strong></p>
+<h3>生意二：批发拍卖（Wholesale，TTM 45.86 亿美元，占 18.3%）</h3>
+<p>买家折价换来的旧车里，有相当一部分太破、里程太高、或者事故记录太差，不够上零售货架的标准。这些车不能扔，就拿去批发市场卖给小车行和修车厂。</p>
+<p>2022 年 Carvana 花 22 亿美元买下了 <strong>ADESA</strong> ——全美 56 个实体拍卖场，每个场子是一大片停车场加拍卖厅加翻新车间。买它有两个目的：一是这些场地本身就是现成的检修产能（省下自建的几年时间），二是从此 Carvana 自己就是拍卖平台，批发车不用再交给对手的场子过一道手。</p>
+<p><strong>这块毛利率极低，大约 7%。</strong> 45.86 亿营收只贡献约 3.5 亿毛利。它的意义不是赚钱，是让"收进来的车必须有出口"这个闭环成立。</p>
+<h3>生意三：「其他收入」（TTM 19.85 亿美元，占 7.9%）——<strong>这才是利润引擎</strong></h3>
+<p>这一块只占营收的 7.9%，却贡献了<strong>将近四成的毛利</strong>。它包含两件事：</p>
+<p><strong>（1）卖贷款。</strong> 你在 Carvana 买车贷的款，<strong>放款方一开始就是 Carvana 自己</strong>。它当场给你批一笔 25,000 美元、年利率 13%、六年期的车贷。然后 Carvana 把成千上万笔这样的贷款打成一个包，卖出去——一部分按长期协议直接卖给 <strong>Ally Financial</strong>（一家承诺每年买入几十亿美元 Carvana 车贷的金融公司），另一部分打包成债券卖给机构投资者（就是证券化）。</p>
+<p><strong>这里是关键</strong>：一笔面值 25,000 美元、利率 13% 的贷款，因为利率远高于市场基准，卖出去能卖到 26,000 美元左右。<strong>多出来的 1,000 美元，Carvana 在放款卖出的当天就全额确认为利润。</strong> 一笔六年期贷款未来六年的全部利差，第一天就一次性算进这个季度的报表。</p>
+<p><strong>（2）卖保险和延保。</strong> 车交付时顺手卖你一份延长保修合同（VSC）和一份 GAP 保险（车被撞报废时补上贷款余额和保险赔付之间的差价）。这些产品是第三方承保的，Carvana 只是中间人抽佣金，<strong>成本几乎为零，佣金全是利润</strong>。</p>
+<h3>三块钱放一起看</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比 FY2025 全年</th>
+<th>占总营收</th>
+<th>毛利率（估算）</th>
+<th>贡献毛利（估算）</th>
+<th><strong>占总毛利</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>零售卖车</td>
+<td>184.87 亿</td>
+<td>+27.2%</td>
+<td>73.8%</td>
+<td>约 14%</td>
+<td>约 26.2 亿</td>
+<td><strong>54%</strong></td>
+</tr>
+<tr>
+<td>批发拍卖</td>
+<td>45.86 亿</td>
+<td>+13.2%</td>
+<td>18.3%</td>
+<td>约 7.6%</td>
+<td>约 3.5 亿</td>
+<td><strong>7%</strong></td>
+</tr>
+<tr>
+<td><strong>贷款 + 延保 + 保险</strong></td>
+<td><strong>19.85 亿</strong></td>
+<td><strong>+14.5%</strong></td>
+<td><strong>7.9%</strong></td>
+<td><strong>约 95%</strong></td>
+<td><strong>约 18.9 亿</strong></td>
+<td><strong>39%</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>250.58 亿</strong></td>
+<td>+23.3%</td>
+<td>100%</td>
+<td><strong>19.37%（实际）</strong></td>
+<td><strong>48.54 亿（实际）</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>分部毛利率是估算。</strong> 财报只按分部披露营收，不披露分部毛利。上表用行业公认的"单台毛利（GPU）"结构倒推——按 TTM 约 77 万台零售销量算，单台总毛利约 6,300 美元，其中卖车约 3,400、金融和保险约 2,580、批发分摊约 450。合计对得上实际毛利 48.54 亿。方向可靠，精确值别当真。</p>
+</blockquote>
+<p><strong>这张表就是整篇分析的核心</strong>：不到 8% 的营收，贡献了 39% 的毛利。<strong>Carvana 本质上是一家给次级信用人群放车贷、然后立刻把贷款转手卖掉赚差价的金融公司，只不过它顺便把车也送到你家。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这家公司的 TTM 利润表是我在这个系列里见过最需要拆的一份。</strong> 请慢慢看下面这段。</p>
+<h3>一次性项目：全部 15.68 亿"净利润"，一分钱都不是经营赚来的</h3>
+<p>把利润表从上往下走一遍：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>25,058</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>4,854</td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>+2,237</strong></td>
+</tr>
+<tr>
+<td>⋯（利息 + 其他非经营项目）</td>
+<td><strong>−2,790</strong></td>
+</tr>
+<tr>
+<td><strong>税前利润</strong></td>
+<td><strong>−553（亏损）</strong></td>
+</tr>
+<tr>
+<td><strong>所得税</strong></td>
+<td><strong>+2,690（是"收益"不是支出）</strong></td>
+</tr>
+<tr>
+<td>净利润（含少数股东）</td>
+<td>+2,132</td>
+</tr>
+<tr>
+<td>其中归属母公司</td>
+<td><strong>+1,568</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>税前是亏的 5.53 亿，靠一笔 26.9 亿的"所得税收益"翻成 15.68 亿的盈利。</strong></p>
+<p>正常公司交税是往外掏钱，Carvana 这一期不但没交，账上还"收"了 26.9 亿。这是<strong>递延所得税资产减值准备的转回</strong>：Carvana 在 2022 年前后巨亏，累计了上百亿美元的税务亏损结转（NOL）。这些 NOL 理论上能抵扣未来的利润，是一项资产；但当年公司濒临破产、看不出以后还有没有利润可抵，会计上就必须全额计提减值、当它不存在。现在公司连续三年盈利了，审计师认可"未来确实赚得回来"，于是把当年计提的减值一次性冲回——<strong>账上凭空冒出 26.9 亿"利润"，一分现金没进公司</strong>。</p>
+<p><strong>这件事一辈子只发生一次，明年不会再有。</strong></p>
+<h3>那笔凭空消失的 27.9 亿去哪了——这是最值得关注的一笔</h3>
+<p>经营利润 22.37 亿，到税前变成 −5.53 亿，<strong>中间蒸发了 27.90 亿</strong>。</p>
+<p>利息支出按利息保障倍数 5.29 倍反推约 4.2 亿。<strong>那还剩约 23.7 亿说不清。</strong></p>
+<p>我的判断（<strong>推断，非财报明文</strong>）是这笔钱和上面那 26.9 亿税收收益是同一件事的两面，机制叫<strong>税收应收协议（Tax Receivable Agreement，TRA）</strong>。Carvana 是所谓"Up-C"架构：上市的 Carvana Co. 只是一个壳，真正的经营实体是 Carvana Group LLC，创始人 Ernest Garcia 三世家族持有大量 LLC 份额。这套架构上市时签了一份协议：<strong>将来公司用掉那些税务亏损省下来的税，85% 要以现金形式付给创始人一方</strong>，公众股东只能留 15%。</p>
+<p>所以当审计师认可 26.9 亿的税务资产可以确认时，公司必须<strong>同时</strong>确认一笔欠创始人的负债。算一下：26.9 亿 × 85% = <strong>22.9 亿</strong>——和那笔说不清的 23.7 亿几乎完全对得上。</p>
+<p><strong>这个数字对得太准了，很难是巧合。</strong> 如果成立，那么结论是：<strong>那 26.9 亿的税收好处，绝大部分不属于你，属于创始人家族。</strong> 你在报表上看到的 15.68 亿净利润，是"我拿到了 269，同时欠了别人 229"这两笔账被拆在利润表两个位置的结果。</p>
+<p>单看一期 TTM 无法百分之百确认，但无论具体名目是什么，<strong>"经营利润 22 亿、税前却是亏损"这个事实本身就足以说明：不能用 GAAP 净利润给这家公司估值。</strong></p>
+<h3>股权激励：反常地低，这是真的</h3>
+<p>TTM 股权激励只有 0.97 亿美元，占营收 0.39%、占经营利润 4.3%。<strong>这个比例低得罕见</strong>——同等市值的公司通常是它的十倍。Carvana 是一家实体重资产公司，员工大多是修车工、司机、客服，不是需要靠股票期权留住的硅谷工程师。这一项照例当真实成本扣掉，但它小到不影响任何结论。<strong>这是本篇里少有的正面发现。</strong></p>
+<h3>但真正的稀释来自别处：股本三年翻了一倍</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在外流通股</td>
+<td>11.1 亿股</td>
+</tr>
+<tr>
+<td><strong>过去一年股本变化</strong></td>
+<td><strong>+61.69%</strong></td>
+</tr>
+<tr>
+<td>TTM 回购股票</td>
+<td>0.61 亿美元</td>
+</tr>
+<tr>
+<td>TTM 发行股票（现金）</td>
+<td>0.30 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td>0.63 倍</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>股本一年增加 61.69%。</strong> 这不是员工发股造成的（SBC 才 0.97 亿），也不是这一年现金增发造成的（TTM 只发了 0.30 亿）。主要来源是<strong>可转换债券转股</strong>：2023 年公司濒死时和债权人做的债务重组里，塞进了大量转股价极低的可转债；随着股价从 3.55 美元涨到 70 多美元，这些债券纷纷转成股票。加上 FY2024 增发的 12.71 亿、FY2025 增发的 5.84 亿现金股票。</p>
+<p>按自由现金流每股数据倒推，股本从 2022 年的约 5.0 亿股增长到现在的约 10.3–11.1 亿股，<strong>三年翻了一倍多</strong>。也就是说，即使公司利润翻倍，你手上每股对应的利润也可能原地踏步。</p>
+<p>回购 0.61 亿对 SBC 0.97 亿，比值 0.63 倍——<strong>连员工发的股都没抵消掉</strong>，更谈不上回馈股东。公司不分红。</p>
+<h3>利润和现金流的差：15.7 亿账面利润，只落下 9.3 亿现金</h3>
+<p>TTM 净利润（含少数股东）21.32 亿，经营现金流只有 11.20 亿，自由现金流 9.29 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东）</td>
+<td>2,132</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+272</td>
+<td>不花钱的账面费用</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+97</td>
+<td>发股票不发现金</td>
+</tr>
+<tr>
+<td><strong>− 其他非现金调整</strong></td>
+<td><strong>−1,708</strong></td>
+<td><strong>主要就是那笔递延所得税"收益"，纯账面，扣掉</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td><strong>−1,163</strong></td>
+<td><strong>为了支撑 54% 的增速，大量买车囤在场地上，占用现金</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−66</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+561</td>
+<td>欠供应商的钱多了</td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>+820</td>
+<td></td>
+</tr>
+<tr>
+<td>未明细的小项</td>
+<td>+175</td>
+<td>数据源该页未列全，残差</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,120</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−191</td>
+<td>检修中心和取车塔</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>929</strong></td>
+<td><strong>真正落袋的钱</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说明两件事：<strong>第一，17 亿的"利润"是纸面上的，现金流量表自己把它减掉了；第二，公司为了跑出 54% 的增速，一年往库存里压了 11.6 亿现金。</strong> 这两条加起来解释了为什么 21 亿的账面利润最后只剩 9.3 亿现金。</p>
+<p>囤库存这件事本身不算坏——高增长零售商都这样。但它有个前提：<strong>这些车得能按现在的价格卖掉。</strong> 万一二手车价格掉头往下（2022 年就发生过一次，直接把公司打到濒临破产），这 11.6 亿库存就会变成账面减值。</p>
+<h3>债务：比 2022 年好太多了，但还是有</h3>
+<p>净负债 25.7 亿美元，负债/EBITDA 2.27 倍，利息保障 5.29 倍。<strong>对比 2022 年底的 83.8 亿净负债，这是脱胎换骨的改善</strong>——三年里公司把债从 88 亿削到 56 亿，同时现金从 4 亿涨到 26 亿。这一块不再是威胁。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>先做一件事：算出一个<strong>正常化的真实利润</strong>。方法是从经营利润出发，扣掉利息，按正常税率上税，把所有一次性会计项目全部剔除：</p>
+<ul>
+<li>经营利润 22.37 亿</li>
+<li>− 利息约 4.2 亿</li>
+<li>= 正常化税前利润 <strong>18.17 亿</strong></li>
+<li>× (1 − 25% 正常税率) = <strong>正常化净利润约 13.6 亿</strong></li>
+</ul>
+<blockquote>
+<p><strong>为什么要按 25% 上税，而不是按公司实际不交税来算？</strong> 因为公司账上那些能抵税的亏损结转，省下来的钱 85% 按协议归创始人一方，公众股东只能分到 15%。<strong>对你这个买股票的人来说，那个税等于照交不误。</strong></p>
+</blockquote>
+<h3>估值表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>827 亿 ÷ 归母净利 20.2 亿（按 EPS 1.81 反推）</td>
+<td>40.9 倍</td>
+<td>2.45 元</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（调整后 EBITDA）</td>
+<td>827 亿 ÷ 25.1 亿 EBITDA</td>
+<td>33.0 倍</td>
+<td>3.03 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>827 亿 ÷ 正常化净利 13.6 亿</td>
+<td><strong>60.8 倍</strong></td>
+<td><strong>1.64 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>827 亿 ÷ 9.29 亿 FCF</td>
+<td><strong>89.0 倍</strong></td>
+<td><strong>1.12 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>852.5 亿 ÷ 22.37 亿经营利润</td>
+<td>38.1 倍</td>
+<td>2.62 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>827 亿 ÷ FY23–25 平均归母净利 6.89 亿</td>
+<td><strong>120 倍</strong></td>
+<td><strong>0.83 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>最后一行说明什么</h3>
+<p>FY2023 归母净利 4.50 亿、FY2024 2.10 亿、FY2025 14.07 亿，三年平均 6.89 亿。<strong>用三年平均口径，这只股票是 120 倍市盈率，是当期 40.9 倍的三倍。</strong></p>
+<p>而且要注意，<strong>这三年的利润本身也是被一次性项目垫高的</strong>：FY2023 那 4.50 亿里包含了债务重组带来的债务减免收益（把欠债权人的钱谈掉一部分，会计上算利润）；FY2025 和 TTM 都吃了递延税的账面好处。<strong>把这些也剔掉，Carvana 作为一门生意，真正靠卖车和放贷赚到的钱，三年平均大约只有三四亿美元。</strong></p>
+<p>这就是这家公司最刺眼的地方：<strong>你在为一个刚刚才转正、且转正过程高度依赖会计处理的利润，付 120 倍的价钱。</strong></p>
+<h3>说人话：投 100 块，一年公司替你赚多少</h3>
+<p><strong>按最保守的真实口径，你投 100 块，Carvana 一年替你赚 1.64 块。按落袋的自由现金流算，只有 1.12 块。</strong></p>
+<p>对比一下：现在把 100 块存进美国国债，一年无风险拿 4 块出头。<strong>你承担着一家次级车贷公司的全部风险，拿到的回报只有国债的三分之一到四分之一。</strong></p>
+<p>这 1.64 块里有多少回到你口袋？<strong>零。</strong> 公司不分红，回购只有 0.61 亿（占市值 0.07%，四舍五入是零），而且股本还在因为可转债转股而扩大。<strong>你拿不到一分钱现金，全部靠股价上涨。</strong></p>
+<p>留在公司里的钱去了哪：TTM 投资活动只花了 2.59 亿（资本开支 1.91 亿建检修中心，收购 1.76 亿）。<strong>真正吃钱的不是投资，是那 11.63 亿的库存增加。</strong> 公司现在的策略是把赚到的每一分现金都变成停在场地里的二手车，赌它们能按现价卖出去。</p>
+<h3>这 1.64 块未来变大还是变小</h3>
+<p><strong>变大的力量</strong>：营收 TTM 涨了 54%，在美国二手车市场的份额还只有个位数百分比，理论上还有很长的跑道；单台成本还在下降，规模效应真实存在；ADESA 的 56 个场地还有大量闲置产能可以不花钱地转成检修产能；债务包袱已经解决。这些都不是虚的——<strong>这门生意本身的经营改善是真的</strong>。</p>
+<p><strong>变小的力量</strong>：那 39% 来自卖贷款的毛利，建立在"次级借款人按时还款 + 二手车残值不跌 + 债券市场愿意用高价接盘"三个条件同时成立之上，<strong>这三条在 2022 年同时失效过一次，公司股价从 370 跌到 3.55</strong>；股本还在被可转债持续稀释；那 26.9 亿的税收好处 85% 归创始人；空头持有流通股的 10.79%，Beta 高达 3.49（大盘跌 1%，它平均跌 3.5%）；<strong>最要命的是估值本身——120 倍三年平均利润，意味着即使利润再翻三倍，估值也才回到 40 倍</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意在真好转，价格离谱得多。</strong> Carvana 确实从 2022 年的鬼门关爬了回来，卖车的单位经济性是真的改善了，债也真的还得差不多了——但账面上那 15.68 亿"净利润"里没有一分钱是这一年经营赚来的，它是一笔一辈子只发生一次的税务会计冲回，而且其中 85% 的实惠按协议归创始人家族；剥干净之后真实市盈率 61 倍、自由现金流口径 89 倍、三年平均口径 120 倍，不分红、不回购、股本还在因可转债转股继续膨胀，而近四成的利润来自"给次贷买家放款再立刻转卖"这门在 2022 年刚刚爆过一次的生意——<strong>这不是一笔投资，是一张押注美国次级消费信贷继续太平的高倍杠杆彩票。</strong></p>
+</div></body></html>

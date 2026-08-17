@@ -1,0 +1,389 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EXC · 爱克斯龙电力（Exelon Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EXC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">17倍不便宜也不贵，每年悄悄增发1.2%削掉五分之一</div><h1>EXC · 爱克斯龙电力（Exelon Corporation）</h1>
+<p>市值 $473.4 亿 · 股价约 $46.0 · 行业：公用事业（受监管的输配电）· 交易所 NASDAQ
+TTM 口径：截至 <strong>2026 年 6 月 30 日</strong> 的最近四个季度（下文所有数字若无特别说明，一律是这个口径）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Exelon 只做<strong>一件事</strong>，但这件事被切成四家地方电网公司在四个地方做。</p>
+<p>先把最重要的一句话说清楚：<strong>Exelon 不发电。</strong> 2022 年初它把发电业务（核电站、风电、售电公司）整个分拆出去成了另一家上市公司 Constellation Energy。分家之后剩下的 Exelon，是一家纯粹的"电线杆和电表公司"。</p>
+<p>这个区别关系到你买的到底是什么生意：</p>
+<ul>
+<li>发电公司赚的是<strong>电价差</strong>——电价涨就暴赚，电价跌就巨亏，看天吃饭（天然气价格、天气、核电站有没有意外停堆）。</li>
+<li>Exelon 赚的是<strong>过路费</strong>。电从哪来它不管，它只管电从高压线送到你家插座这一段。它向监管机构申请一个"我这条电网值多少钱"的资产基数（rate base），监管机构批准一个"你可以在这笔资产上赚多少回报率"（通常是 9%–10% 的股本回报率），然后把这个数字摊到每个用户的电费账单里。<strong>用户用多少电，跟 Exelon 赚多少钱的关系没那么大——它的收入是按批准的资产规模算出来的。</strong></li>
+</ul>
+<p>所以这门生意的本质是：<strong>花钱埋电缆 → 求监管机构承认这笔钱 → 每年从用户账单里按批准的回报率收回来。花得越多，赚得越多——只要监管点头。</strong></p>
+<p>它的客户大约 1050 万户，分布在六个州加华盛顿特区。四家运营公司分别是：</p>
+<p><strong>ComEd（Commonwealth Edison）—— 芝加哥及北伊利诺伊州</strong>
+四家里最大的一家，服务芝加哥全城和北伊利诺伊约 900 万人口。一个普通芝加哥家庭每月电费账单大约 90–110 美元，其中大概三分之一是"配送费"这一栏——那一栏就是 ComEd 的收入，剩下的电费部分是代收给发电厂的，Exelon 不留。芝加哥周边这几年是全美数据中心接电排队最长的地区之一，一个大型 AI 数据中心的接电申请动辄要求 200–500 兆瓦（相当于给一个中型城市供电），这些新增负荷会推着 ComEd 去建新变电站和高压线路，而这些投资又会变成新的资产基数。</p>
+<p><strong>PECO —— 费城地区</strong>
+费城市及周边五个县，电和天然气都做。规模约 170 万电力客户加 55 万燃气客户。燃气这部分意味着它还要维护埋在费城地下上百年历史的老铸铁燃气管，这些管子必须换成塑料管——这是被监管机构明确要求且允许收费回本的强制性投资。</p>
+<p><strong>BGE（Baltimore Gas &amp; Electric）—— 巴尔的摩及马里兰州中部</strong>
+成立于 1816 年，是美国最老的公用事业公司。同样是电+气双业务。</p>
+<p><strong>PHI（Pepco Holdings）—— 华盛顿特区都市圈</strong>
+底下装着三块牌子：Pepco（华盛顿特区和马里兰郊区）、Delmarva Power（特拉华州和马里兰东岸）、Atlantic City Electric（新泽西南部）。给白宫和国会大厦供电的就是 Pepco。</p>
+<h3>钱的部分</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>对比 FY2025</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ComEd（芝加哥）</td>
+<td>7,264</td>
+<td>7,267（持平）</td>
+<td>28.7%</td>
+<td>~20%（估算）</td>
+<td>~1,450</td>
+</tr>
+<tr>
+<td>PHI（华盛顿特区圈）</td>
+<td>7,520</td>
+<td>7,135（+5.4%）</td>
+<td>29.7%</td>
+<td>~19%（估算）</td>
+<td>~1,430</td>
+</tr>
+<tr>
+<td>BGE（巴尔的摩）</td>
+<td>5,687</td>
+<td>5,222（+8.9%）</td>
+<td>22.5%</td>
+<td>~21%（估算）</td>
+<td>~1,190</td>
+</tr>
+<tr>
+<td>PECO（费城）</td>
+<td>4,906</td>
+<td>4,684（+4.7%）</td>
+<td>19.4%</td>
+<td>~22%（估算）</td>
+<td>~1,080</td>
+</tr>
+<tr>
+<td>Other（控股公司及抵消）</td>
+<td>935</td>
+<td>1,900</td>
+<td>3.7%</td>
+<td>负</td>
+<td>~-940</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>25,326</strong></td>
+<td>24,258（+6.6%）</td>
+<td>100%</td>
+<td>20.6%（实际）</td>
+<td><strong>5,210（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>两点必须说明。</strong> 第一，财报只按分部披露营收，<strong>不披露分部经营利润</strong>，上表的分部利润是按整体 20.6% 的经营利润率结合各州费率结构估算的，误差不小，只能看个大概比例，不要当精确数字用。第二，TTM 截至 2026 年 6 月，而 FY2025 截至 2025 年 12 月，两者重叠半年，所以"增速"那一列是近似的方向指示，不是严格同比。</p>
+</blockquote>
+<p>表里有一个数字很扎眼：<strong>ComEd 的营收 FY2024 是 8,219，FY2025 掉到 7,267，掉了 11.6%，然后 TTM 还是 7,267 没恢复。</strong> 四家里唯一一家收入不增长的，偏偏是最大的一家。这不是用电量下降——芝加哥用电只多不少——而是伊利诺伊州的费率裁决对 ComEd 不利，监管机构砍掉了它申报的一部分投资计划和准许回报。这件事直接说明了这门生意的唯一风险来源：<strong>它的收入不是市场定的，是政府定的。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：数据源里没有单列。</strong> 现金流量表的经营活动调整项里根本没有"Stock-Based Compensation"这一行，说明金额小到被并进了"其他经营活动"。公用事业公司普遍如此，高管薪酬以现金和限制性股票为主，量级相对于 27.8 亿的净利润可以忽略。不构成障眼法。</p>
+<p><strong>一次性项目：TTM 期内基本干净。</strong> 资产减值 0，投资处置损益 0，资产处置收益只有 300 万（相对 253 亿营收等于零）。没有诉讼和解、没有重组费用。这是一家账面很朴素的公司。</p>
+<p><strong>资本化的支出：这才是重点，而且它是合法且必需的。</strong> TTM 资本开支 <strong>91.28 亿美元</strong>——注意，这个数字比净利润的三倍还多，比经营现金流还多。埋下去的电缆、新建的变电站全部资本化进资产负债表，然后按 30–40 年折旧。TTM 折旧摊销 31.40 亿 + 其他摊销 6.13 亿 = 37.53 亿，<strong>只有资本开支的 41%</strong>。也就是说这家公司每年新投进去的钱，是它每年折旧掉的钱的 2.4 倍——资产基数在飞快膨胀。对这门生意来说这是好事（资产基数越大，准许赚的钱越多），但代价见下。</p>
+<p><strong>回购与稀释：不但没有回购，而且在反向稀释。</strong></p>
+<ul>
+<li>TTM 回购金额：<strong>0</strong></li>
+<li>TTM 发行新股：<strong>+9.49 亿美元</strong></li>
+<li>股本变化：<strong>同比 +1.19%</strong></li>
+</ul>
+<p>回购/SBC 这个比值在这里不适用（分子分母都近似 0），但结论比"回购只是抵消发股"还要糟一档：<strong>你作为老股东，每年被摊薄 1.2%。</strong> Exelon 每年靠卖新股票筹钱去埋电缆。这不算欺骗——它写在明面上——但你算收益率的时候必须把这 1.2% 扣掉。</p>
+<p><strong>利润和现金流的差：差得非常大，而且差的方向很反直觉。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>对账项目</th>
+<th>金额（百万美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>2,783</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+3,140</td>
+<td>电网设备的账面损耗，不花现金</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+613</td>
+<td>监管资产等的摊销</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−3</td>
+<td>卖旧设备的零头</td>
+</tr>
+<tr>
+<td><strong>+ 其他经营活动</strong></td>
+<td><strong>+1,721</strong></td>
+<td><strong>见下方重点</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−444</td>
+<td>电费还没收上来</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−31</td>
+<td>备品备件</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+88</td>
+<td>欠供应商的钱</td>
+</tr>
+<tr>
+<td>− 所得税相关变化</td>
+<td>−16</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他净经营资产变化</td>
+<td>−639</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>7,212</strong></td>
+<td>完全对上</td>
+</tr>
+</tbody>
+</table></div>
+<p>那笔 <strong>17.21 亿的"其他经营活动"</strong> 是全表最需要解释的一项，而线索藏在别处：</p>
+<blockquote>
+<p>TTM 利润表上记的所得税是 <strong>5.83 亿</strong>（有效税率 17.32%），
+但 TTM 实际支付的现金税只有 <strong>1,200 万美元</strong>。</p>
+</blockquote>
+<p>差了 48 倍。原因是电网投资在税法上可以加速折旧——税务上头几年就把设备折光了，账面上却按 30 年慢慢折。差额变成"递延所得税负债"挂在账上，账面记了税、现金没交。这部分就是那 17.21 亿的主体。</p>
+<p><strong>这不是造假，是真金白银的好处</strong>——政府用税收政策在补贴电网投资，Exelon 每年因此少交五亿多现金税。但它是<strong>递延</strong>不是<strong>免除</strong>：等哪天资本开支停下来（不再有新设备可以加速折旧），这笔税会开始往回吐。只要 Exelon 保持高投资，这一天就不会到来——所以它有强烈的动机永远保持高资本开支。</p>
+<p><strong>然后是最刺眼的一行：自由现金流是负的。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>7,212</td>
+<td>6,254</td>
+<td>5,569</td>
+<td>4,703</td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td>−9,128</td>
+<td>−8,529</td>
+<td>−7,097</td>
+<td>−7,408</td>
+</tr>
+<tr>
+<td><strong>自由现金流</strong></td>
+<td><strong>−1,916</strong></td>
+<td>−2,275</td>
+<td>−1,528</td>
+<td>−2,705</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连续多年为负，而且看不到转正的迹象。</strong> 与此同时它 TTM 还派了 <strong>16.69 亿美元的现金分红</strong>。</p>
+<p>分红的钱从哪来？看融资活动：TTM 净新增债务 <strong>+39.05 亿</strong>，发新股 <strong>+9.49 亿</strong>。答案很清楚：<strong>分红和资本开支的缺口，是靠借新债和卖新股填的。</strong> 总债务已经从 2021 年的 348.55 亿涨到现在的 <strong>526.73 亿</strong>，净负债 508.60 亿——是市值的 1.07 倍。利息保障倍数只有 2.35 倍（经营利润够付 2.35 次利息），TTM 现金利息支出 20.21 亿。</p>
+<p>对受监管的公用事业来说，这套玩法是行业常态、不是暴雷前兆——监管机构在批准回报率的时候就默认了这个资本结构，利息也是可以计入费率向用户收回的成本。但你要清楚自己买的是什么：<strong>这不是一台印钞机，这是一台不停吞钱的机器，你的回报来自于监管机构承诺它吞下去的钱每年会按 9%–10% 吐一点出来。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>473.4 亿 ÷ 27.83 亿</td>
+<td><strong>17.0 倍</strong></td>
+<td><strong>$5.88</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>调整后经营收益（数据源未提供 TTM 值）</td>
+<td>~16 倍（估算）</td>
+<td>~$6.25</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔、SBC 已在 GAAP 内</td>
+<td><strong>17.0 倍</strong></td>
+<td><strong>$5.88</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为负</td>
+<td><strong>不适用</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径（替代）</td>
+<td>473.4 亿 ÷ 72.12 亿</td>
+<td>6.6 倍</td>
+<td>$15.24（未扣资本开支，虚高）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（473.4 + 508.6）亿 ÷ 52.10 亿</td>
+<td><strong>18.9 倍</strong></td>
+<td><strong>$5.31</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>473.4 亿 ÷ 25.19 亿（FY23–25 均值）</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.32</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先看最后一行。</strong> 三年平均利润口径 18.8 倍，<strong>高于</strong>当期的 17.0 倍。这个方向和大多数周期股相反——它说明 Exelon 现在的利润<strong>不是高点，而是三年来的最高点且仍在爬坡</strong>。净利润 FY23 的 23.28 亿 → FY24 的 24.60 亿 → FY25 的 27.68 亿 → TTM 的 27.83 亿，一条平滑向上的斜线。这就是受监管公用事业的招牌特征：<strong>利润不好也不坏，但极其可预测</strong>（Beta 只有 0.40，股价波动只有大盘的四成）。</p>
+<p><strong>Non-GAAP 那一行要打个折看。</strong> 数据源没提供 TTM 调整后利润的具体数字，Exelon 的调整项主要是并购整合费用和非核心项目，历史上与 GAAP 差距在 5% 以内，上表的 16 倍是按这个幅度倒推的<strong>估算值</strong>，不要当准数。这也是它值得称道的地方——很多公司的 Non-GAAP 和 GAAP 能差出 50%，Exelon 几乎不玩这个。</p>
+<p><strong>自由现金流那一行是负的，不能忽略。</strong> 按传统标准，一家自由现金流常年为负、靠借债分红的公司应该被判死刑。但对电网公司这个判据要换算：负 FCF 的原因是资本开支 91 亿，而这 91 亿里绝大部分不是"维持性投资"（修补旧设备），而是<strong>扩张性投资</strong>（新建电网），而扩张性投资在监管框架下会直接变成明年更高的准许收入。区别在于：一家亏钱的餐厅烧掉的现金是没了，Exelon 烧掉的现金变成了一根会按 9% 付息的电线杆。</p>
+<h3>大白话结论</h3>
+<p><strong>你现在投 100 块进 Exelon，按最保守的真实口径（17.0 倍）算，公司一年替你赚 5.88 块。</strong></p>
+<p>这 5.88 块的去向：</p>
+<ul>
+<li><strong>3.53 块以现金分红的形式直接进你口袋</strong>（TTM 分红 16.69 亿 ÷ 473.4 亿市值 = 3.53% 股息率，派息率 62%）。</li>
+<li><strong>剩下 2.35 块留在公司</strong>，但它没有真的"留下"——它连同借来的债和卖新股的钱一起，全部投进了 91 亿的电网建设。</li>
+<li><strong>然后还要倒扣 1.2 块左右</strong>，因为公司每年增发 1.19% 的新股，你手里的份额被稀释了。</li>
+</ul>
+<p>所以更诚实的算法是：<strong>净到手大约 4.7 块</strong>（5.88 − 1.2 的稀释）。其中 3.53 块是现金，剩下的是"资产基数变大带来的明年更高的准许利润"这张纸面上的承诺。</p>
+<p><strong>这个 5.88 块未来大概率会慢慢变大。</strong> 逻辑很直接：资产基数每年以 8%–10% 的速度膨胀（资本开支是折旧的 2.4 倍），准许回报率乘上更大的基数就是更多的利润。管理层给出的长期指引是每年 5%–7% 的盈利增长，从过去四年的实际轨迹看这个指引是兑现了的。</p>
+<p><strong>但有一个明确的杀手：监管机构。</strong> ComEd 的营收从 82.19 亿掉到 72.67 亿就是活生生的演示——伊利诺伊州监管委员会一纸裁决，最大的那块业务收入蒸发了 11.6% 且至今没恢复。这门生意的所有确定性都建立在"政府会继续允许它按 9%–10% 收费"这个前提上。它服务的六个州加特区里，伊利诺伊、马里兰和特拉华的监管环境在业内被认为偏严；居民电费账单在通胀期涨得越猛，政治压力就越大，监管砍价的概率就越高。</p>
+<p><strong>第二个变量是 AI 数据中心。</strong> 这是唯一可能让 Exelon 从"每年 6%"跳到更高档位的东西。数据中心接电需求带来的新增负荷，会强制电网扩容，扩容就是新的资产基数。芝加哥和华盛顿特区圈恰好是全美数据中心最密集的两个区域之一。这个故事是真的，但它的兑现速度取决于监管机构批不批、批多快，不取决于 Exelon 自己。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一张 5.9% 收益率、由政府定价、由债务加杠杆的公用债券，不是一门生意——17 倍市盈率买它不算便宜也不算贵，值不值就看你要不要那 3.5% 的现金分红和 0.40 的 Beta；但别指望它给你惊喜，也别忽略它每年悄悄增发 1.2% 新股这件事，那等于把 5.9% 的回报直接削掉五分之一。</strong></p>
+</div></body></html>

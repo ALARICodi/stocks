@@ -1,0 +1,432 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>D · 道明尼能源（Dominion Energy, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">D</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">顶着公用事业面孔的三倍杠杆AI基建项目</div><h1>D · 道明尼能源（Dominion Energy, Inc.）</h1>
+<p><strong>市值</strong> 约 603 亿美元｜<strong>股价</strong> 约 $68.1｜<strong>行业</strong> 公用事业 / 受管制电力｜<strong>TTM 截止</strong> 2026 年 6 月 30 日｜<strong>数据源</strong> stockanalysis.com（Fiscal.ai），2026-07-31 财报</p>
+<blockquote>
+<p>先说本篇最重要的一个数字，它解释了这家公司的一切：<strong>TTM 经营现金流 53.89 亿，资本开支 122.24 亿，自由现金流 −68.35 亿。</strong> 同时它还派了 23.14 亿现金分红。也就是说，<strong>你收到的每一分钱分红，都不是公司赚来的，是借来的和向新股东要来的。</strong> 下面会说清楚这在公用事业里是不是正常、以及这次有什么不一样。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>三门生意，但只有第一门重要。</p>
+<h3>生意一：给弗吉尼亚州发电送电（TTM 收入 135.20 亿，占毛收入 74.6%）</h3>
+<p><strong>基本形态</strong>：Dominion Energy Virginia 是弗吉尼亚州和北卡东北部约 <strong>270 万户</strong>家庭和企业的独家电力供应商。你在里士满或者阿灵顿住，家里那根电线只能接它的，没有第二个选择。它同时拥有发电厂（核电、天然气、少量煤和风光）、高压输电线路和入户配电网。</p>
+<p><strong>怎么收钱</strong>：按度收。居民电价约每度 12–14 美分，一个普通三口之家一个月用 1000 度、账单 130 美元左右，一年 1500 多美元。270 万户乘以这个数，就是它零售端的基本盘。<strong>但电价不是它自己定的</strong>——弗吉尼亚州公用事业委员会（SCC）审批。规则大致是：你告诉监管机构你投了多少钱建电网（这叫"资产基数"rate base），监管机构批准你在这笔投资上赚一个"合理回报"（美国目前通行的许可 ROE 在 9.5%–10.5%），然后倒推出电价。</p>
+<p><strong>理解这门生意只需要记住一条</strong>：<strong>它的利润 ≈ 资产基数 × 许可回报率。</strong> 卖多少电其实是次要的，重要的是<strong>账上有多少被批准的资产</strong>。这就是为什么下面会看到它疯了一样地投资——<strong>每多埋一根电缆，就多一份可以合法收租的资产。</strong></p>
+<p><strong>而它现在正踩在一件天大的事情上：数据中心。</strong></p>
+<p>弗吉尼亚州北部的劳登县（Loudoun County）被称为"数据中心走廊"，全世界很大一部分互联网流量从这里的机房穿过——亚马逊 AWS、微软、谷歌、Meta 的超大规模机房密集地建在这一片，因为这里光纤最密、地价还行、离华盛顿近。而这些机房的电，<strong>全部只能由 Dominion 供应</strong>。</p>
+<p>一个大型 AI 数据中心的用电负荷是 300–1000 兆瓦，相当于一座中等城市。按一度电 8 美分的工业电价、一年 8000 小时满负荷算，<strong>一座 500 兆瓦的数据中心一年的电费账单就是 3.2 亿美元</strong>。而 Dominion 手里排队等接电的数据中心容量，按公司披露是以"数十吉瓦"计的。</p>
+<p>这就是为什么这门生意的收入在爆炸：FY2024 的 102.35 亿 → FY2025 的 118.40 亿（+15.7%）→ TTM 的 135.20 亿。<strong>一家受管制的公用事业，收入以每年 15% 以上的速度增长，这在这个行业里是罕见现象。</strong> 传统公用事业的增长率是 2–3%（人口增长 + 通胀）。</p>
+<p><strong>但要立刻说清楚代价</strong>：数据中心不是接根线就完事的。你要新建输电走廊、新建变电站、新建发电容量。Dominion 正在建的科斯塔尔弗吉尼亚海上风电项目（CVOW，2.6 吉瓦）总投资超过 100 亿美元。<strong>这就是那 122.24 亿资本开支的去向。</strong></p>
+<h3>生意二：给南卡罗来纳州供电和供气（TTM 收入 36.61 亿，占 20.2%）</h3>
+<p>同样的模式，规模小得多：约 80 万电力客户加 50 万天然气客户，主要在哥伦比亚和查尔斯顿一带。这块是 2019 年花 143 亿美元收购 SCANA 拿来的——SCANA 当时因为一个烂尾的核电项目（V.C. Summer）濒临破产，Dominion 接盘。这块生意增长平稳（FY25 +8.3%），没有数据中心的爆发，也没有海上风电的巨额投入，是一块稳定的现金奶牛。</p>
+<h3>生意三：合约发电（TTM 收入 13.12 亿，占 7.2%）</h3>
+<p>不受管制的部分：主要是密尔斯通核电站（Millstone，康涅狄格州，约 2 吉瓦）和一些太阳能资产。它不按监管定价卖电，而是<strong>签长期购电协议（PPA）</strong>——比如和某家企业签一份"未来 10 年每年供 500 吉瓦时、每度 6 美分"的合同。核电现在是抢手货，因为它是唯一能 7×24 小时不间断供电的零碳电源，AI 公司愿意为此付溢价。这块规模小但利润率不错，增速温和（FY25 +6.3%）。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万美元）</th>
+<th>同比增速</th>
+<th>占总收入</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>弗吉尼亚电力</td>
+<td>13,520</td>
+<td>+15.7%（FY25 vs FY24）</td>
+<td>74.6%</td>
+<td>约 24%（估算）</td>
+<td>约 3,250</td>
+</tr>
+<tr>
+<td>南卡电力与燃气</td>
+<td>3,661</td>
+<td>+8.3%（FY25 vs FY24）</td>
+<td>20.2%</td>
+<td>约 20%（估算）</td>
+<td>约 730</td>
+</tr>
+<tr>
+<td>合约发电（核电等）</td>
+<td>1,312</td>
+<td>+6.3%（FY25 vs FY24）</td>
+<td>7.2%</td>
+<td>约 22%（估算）</td>
+<td>约 290</td>
+</tr>
+<tr>
+<td>公司及其他</td>
+<td>1,072</td>
+<td>—</td>
+<td>5.9%</td>
+<td>—</td>
+<td>约 −450</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>−1,446</td>
+<td>—</td>
+<td>−8.0%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>18,119</strong></td>
+<td><strong>+18.99%（TTM）</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>约 21%</strong></td>
+<td><strong>3,818（EBIT）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只披露到分部收入，不披露分部经营利润。</strong> 上表利润率是按整体 EBIT 38.18 亿、结合受管制业务许可回报率的行业水平估算的，<strong>不是财报数字</strong>。收入和分部增速是财报原文，分部同比用 FY2025 对 FY2024。</p>
+<p><strong>另外要提醒一个数据源问题</strong>：财报页的 TTM 列里，「净利润 50.68 亿」和「毛利率 66.84%」这两个数明显异常（毛利率从 FY2025 的 49.02% 一夜跳到 66.84%，净利润远超每股收益反推的金额）。统计页给的净利润是 <strong>24.9 亿</strong>、每股收益 $2.86，现金流量表给的全口径净利润是 <strong>26.54 亿</strong>，这三者互相自洽。<strong>下文一律用 24.9 亿（归属普通股）和 26.54 亿（全口径），不用财报页那个 50.68 亿。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p><strong>这四页的现金流量表里没有单列 SBC 科目</strong>，说明金额对 Dominion 而言不重要（公用事业的高管薪酬里股票占比远低于科技公司）。按整个行业的经验，这类公司的 SBC 通常在净利润的 2–3% 以内。<strong>基本不是问题，不影响任何结论。</strong></p>
+<h3>一次性项目 —— 有明显疑点</h3>
+<p>FY2025 每股收益 <strong>$3.45</strong>，比 FY2024 的 $2.33 跳了 <strong>+48.07%</strong>；而 TTM 又回落到 $2.86（−0.69%）。一家受管制的公用事业，利润不该这样上蹿下跳——监管定价的全部意义就是让它平稳。</p>
+<p>现金流量表里的「其他调整」印证了这一点：TTM 是 <strong>+16.84 亿</strong>，FY2025 是 +9.83 亿，FY2024 是 −1.49 亿。这一栏在这么大的正数上意味着<strong>净利润里有大量非现金成分被加回来</strong>（递延所得税、监管资产摊销、资产处置的账面损益等）。</p>
+<p><strong>按规矩说清楚：只看 TTM 单期口径，无法判断 FY2025 那 48% 的利润跳增里哪些是"真一次性"、哪些是每年都会有的。</strong> 但可以确定的是，<strong>这家公司报出来的净利润和它实际收到的现金之间隔着一层很厚的会计处理</strong>，不能直接当成"赚到手的钱"看。</p>
+<h3>资本化的支出 —— 公用事业最大的障眼法在这里</h3>
+<p>这个行业有一项特有的会计安排叫 <strong>AFUDC</strong>（建设期资金使用补贴）：一座电厂修三年，这三年里为它借的钱产生的利息、以及占用自有资本的机会成本，<strong>不计入当期费用，而是资本化进资产，并且其中的"权益部分"直接确认为当期非现金收益</strong>。</p>
+<p>翻译成大白话：<strong>公司借钱盖厂付的利息，不但不算成本，反而有一部分被记成了利润</strong>——理由是这些钱以后会通过电价收回来。这是监管机构认可的合法做法，但它意味着：<strong>在一家资本开支高达 122.24 亿的公司里，净利润中有一块是"以后才会变成现金的账面收益"。</strong></p>
+<p><strong>这四页不单独披露 AFUDC 金额</strong>，所以无法给出具体数字。但从 122 亿的在建规模推断，这一块不会小，而且它正是"净利润 26.54 亿 vs 经营现金流 53.89 亿"这个巨大差额的成因之一。</p>
+<h3>回购与稀释 —— 反向的：它在持续增发</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购普通股</td>
+<td>0</td>
+</tr>
+<tr>
+<td>发行普通股</td>
+<td>+1,456</td>
+</tr>
+<tr>
+<td><strong>净额</strong></td>
+<td><strong>+1,456（净增发）</strong></td>
+</tr>
+<tr>
+<td><strong>股本变化（同比）</strong></td>
+<td><strong>+2.69%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>没有回购，只有增发。一年多发了 2.69% 的股份，相当于每个老股东被稀释掉 2.6%。</strong> 上一年（FY2025）也增发了 14.88 亿，再上一年 7.32 亿——<strong>在加速</strong>。</p>
+<p><strong>公平地说，这在公用事业里是标准玩法</strong>，而且不完全是坏事：公司市净率 PB 是 <strong>2.16 倍</strong>，也就是它以 2.16 元的价格卖出账面价值 1 元的股份，拿这笔钱去投资一个能拿到 9.5%–10% 许可回报的资产基数。从纯数学上说，<strong>以 2.16 倍账面价值增发去买 1 倍账面价值的资产，对每股价值是增厚的，不是摊薄的。</strong></p>
+<p>但这套逻辑成立有两个前提：<strong>监管机构继续批准那个回报率</strong>，以及<strong>股价维持在高市净率</strong>。哪一个断了，增发就从增厚变成毁灭。</p>
+<h3>利润和现金流的差 —— 逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（全口径）</td>
+<td>2,654</td>
+<td>归属普通股约 2,489，差额是优先股股息等</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+2,762</td>
+<td><strong>比净利润还大</strong>——重资产行业的常态</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>+1,684</td>
+<td>递延所得税、监管资产摊销等，见上文</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−810</td>
+<td>收入涨了 19%，应收跟着涨，属正常</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−175</td>
+<td>燃料库存</td>
+</tr>
+<tr>
+<td>＋ 应付账款</td>
+<td>+38</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应计费用</td>
+<td>−89</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他营运资金变化</td>
+<td>−949</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他未单列项目</td>
+<td>+274</td>
+<td>页面未逐条展开的余项</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,389</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−12,224</strong></td>
+<td><strong>⚠️ 是经营现金流的 2.27 倍</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−6,835</strong></td>
+<td><strong>负的</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的关键不在上半截，在最后三行。</strong></p>
+<p>上半截很正常：净利润 26.54 亿加回 27.62 亿折旧和 16.84 亿非现金调整，减掉营运资金占用，得到 53.89 亿经营现金流。折旧比净利润还大，这是所有重资产公司的常态，不奇怪。</p>
+<p><strong>问题在下半截</strong>：赚回来的 53.89 亿现金，一转手就投出去了 122.24 亿。缺口 <strong>68.35 亿</strong>。再加上还要付 23.14 亿的分红，<strong>这一年公司总共需要凭空变出 91.49 亿美元。</strong></p>
+<p><strong>这 91.49 亿是从哪来的：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净增发长期债务</td>
+<td>+6,719</td>
+</tr>
+<tr>
+<td>净偿还短期债务</td>
+<td>−1,113</td>
+</tr>
+<tr>
+<td>增发股票</td>
+<td>+1,456</td>
+</tr>
+<tr>
+<td>其他融资活动</td>
+<td>+2,392</td>
+</tr>
+<tr>
+<td><strong>合计净融资流入</strong></td>
+<td><strong>+7,140</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>全部是借来的和卖股票换来的。</strong> 总债务从 FY2024 年底的 417.50 亿，涨到 FY2025 年底的 489.41 亿，再涨到 TTM 的 <strong>534.24 亿</strong>——<strong>十八个月里多背了 116.74 亿美元的债。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>股价 $68.1 ÷ EPS $2.86</td>
+<td><strong>23.8 倍</strong></td>
+<td><strong>$4.20</strong></td>
+</tr>
+<tr>
+<td>市场预期的前瞻市盈率</td>
+<td>股价 ÷ 分析师一致预期 EPS</td>
+<td><strong>18.7 倍</strong></td>
+<td><strong>$5.35</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>单期无法拆出真一次性项目，SBC 已按 GAAP 扣除不加回 → 与 GAAP 相同</td>
+<td><strong>23.8 倍</strong></td>
+<td><strong>$4.20</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ FCF（<strong>FCF 为 −68.35 亿</strong>）</td>
+<td><strong>无意义 / 负</strong></td>
+<td><strong>$0</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径（退而求其次）</td>
+<td>市值 603.4 亿 ÷ OCF 53.89 亿</td>
+<td><strong>11.2 倍</strong></td>
+<td><strong>$8.93</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>EV 1139.7 亿 ÷ EBIT 38.18 亿</td>
+<td><strong>29.9 倍</strong></td>
+<td><strong>$3.35</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>EV 1139.7 亿 ÷ EBITDA 65.8 亿</td>
+<td><strong>17.3 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>股价 $68.1 ÷ 三年平均 EPS $2.68</td>
+<td><strong>25.4 倍</strong></td>
+<td><strong>$3.94</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均每股收益：FY2023 的 $2.25、FY2024 的 $2.33、FY2025 的 $3.45，平均 <strong>$2.68</strong>。</p>
+<blockquote>
+<p><strong>三年平均口径 25.4 倍 vs 当期 23.8 倍，两者很接近</strong>，说明当期利润既不在明显的高点也不在低点——这跟受管制业务的定价机制是自洽的（监管给你一个固定回报率，利润本来就不该大起大落）。FY2025 那个 $3.45 是三年里唯一的异常值，把它当成一次性因素排除后，Dominion 的常态盈利能力大约就在每股 $2.3–2.9 之间。</p>
+<p><strong>注意 EV/EBIT 29.9 倍这一行</strong>：它才是这家公司的真实价格。市值只有 603 亿，但企业价值高达 <strong>1139.7 亿</strong>——因为它背着 <strong>534 亿的净负债</strong>。<strong>你买这家公司的股票，其实是在买一个负债率接近 90% 的资产包里剩下的那一小块。</strong> 只看市盈率会严重低估它的实际估值。</p>
+</blockquote>
+<h3>大白话：投 100 块，一年赚多少</h3>
+<p><strong>按最保守的真实口径，你投 100 块进 Dominion，公司一年替你赚 4.20 块。</strong></p>
+<p><strong>但这 4.20 块里，实际到手的现金是零。</strong> 因为公司的自由现金流是 <strong>−68.35 亿</strong>——它这一年不但没有多余的钱给你，还倒欠 68 亿。</p>
+<p><strong>那派给你的 3.9% 股息（每股约 $2.67，全年 23.14 亿）是哪来的？</strong> 上面那张表已经写清楚了：<strong>长期债务净增 67.19 亿、增发股票 14.56 亿、其他融资 23.92 亿。</strong> 也就是说，<strong>公司借钱和卖新股，一部分钱去建电网，一部分钱转手发给你当分红。</strong> 你收到的那 3.9%，本质是把你自己和新股东的钱，用债务包装了一层，再发回给你。</p>
+<p><strong>这在公用事业里算不算正常？算，但要分清两种情况：</strong></p>
+<ul>
+<li><strong>正常的那种</strong>：公司借钱建电网 → 电网进入资产基数 → 监管批准在这笔资产上收 9.5%–10% 的回报 → 未来电费涨、利润涨 → 借的钱以未来的盈利偿还。这是这个行业运转了一百年的模式，本身没问题。</li>
+<li><strong>不正常的那种</strong>：借得太快、利率太高、监管跟不上批准，导致利息吃掉回报。</li>
+</ul>
+<p><strong>Dominion 现在有两个数字亮着红灯：</strong></p>
+<ol>
+<li><strong>利息覆盖率 1.77 倍。</strong> 意思是它一年赚的经营利润，只够付利息的 1.77 倍。这个行业健康的水平是 3 倍以上。1.77 倍意味着<strong>经营利润只要下滑 44%，公司就付不起利息了</strong>。债务/EBITDA 是 <strong>8.20 倍</strong>，同样远高于行业健康区间（4–5 倍）。</li>
+<li><strong>投入资本回报率 ROIC 只有 4.22%，而加权平均资本成本 WACC 是 5.69%。</strong> 这是全篇最锋利的一个事实：<strong>公司投出去的每一块钱，赚回来的回报比这块钱的成本还低 1.5 个百分点。</strong> 从纯资本效率的角度，<strong>它现在每投资一亿，就在毁灭价值</strong>。这个缺口的解释是"在建工程还没投产、还没进入资产基数收费"——海上风电 100 多亿投下去，电还没发出来，所以分母涨了分子还没涨。<strong>这个解释成立与否，就是这笔投资的全部赌注。</strong></li>
+</ol>
+<p><strong>这 4.20 块未来大概率变大还是变小？</strong></p>
+<ul>
+<li><strong>变大的力量（而且力量很大）</strong>：数据中心的用电需求是真的，弗吉尼亚北部的机房只能找它买电，这是法律给的独家权。收入已经从 FY2024 的 144.59 亿涨到 TTM 的 181.19 亿，两年涨了 25%。等 CVOW 海上风电和新建输电线在 2027–2028 年陆续投产进入资产基数，被批准的收费资产会跳一大台阶。<strong>市场给的 18.7 倍前瞻市盈率（对比当期 23.8 倍）就是在押这个——隐含预期是未来一年利润涨约 27%。</strong></li>
+<li><strong>变小的力量</strong>：534 亿债务的再融资成本；每年 2.69% 的股本稀释；海上风电项目的成本超支和延期风险（这类项目历史上超支是常态，而超支的部分监管未必允许计入资产基数——不允许的部分就是股东的直接损失）；以及电价上涨到一定程度后，弗吉尼亚州的居民和政客会开始反弹，监管机构未必愿意让居民为数据中心的电网扩容买单。</li>
+<li><strong>净判断</strong>：<strong>这是一个"要么显著变大、要么明显变小"的二元结构，中间态不太可能。</strong> 如果在建项目按预算投产并顺利计入资产基数，三年后每股收益到 $3.5–4.0、ROIC 回到 6% 以上是合理的；如果超支或被监管砍掉，534 亿债务加 1.77 倍利息覆盖率会立刻变成一个非常难看的局面。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一只公用事业股，这是一个加了三倍杠杆的 AI 基建工程项目，只是它顶着一张 3.9% 股息率的公用事业面孔。</strong></p>
+<p>买它的人以为自己买的是"稳定收息"，实际买的是：一家自由现金流 −68.35 亿、总债务 534 亿、利息覆盖率 1.77 倍、投入资本回报率（4.22%）低于资本成本（5.69%）、每年稀释股东 2.69%、并且用借来的钱给你发分红的公司。<strong>23.8 倍市盈率对这样一张资产负债表来说，一点都不便宜；换成 EV/EBIT 是 29.9 倍——比大多数科技公司还贵。</strong></p>
+<p>而它唯一、也确实很硬的看多理由是：<strong>弗吉尼亚州北部那片机房只能向它买电，而那片机房的用电量正在以人类历史上没见过的速度增长。</strong> 这个特许经营权是真的，需求是真的，收入的 19% 增速也是真的。</p>
+<p><strong>所以判断很清楚：如果你想要的是稳定收息、睡得着觉，这家公司现在不是这个东西了，请去别处；如果你想赌 AI 数据中心的电力瓶颈，那么直接承认自己是在赌一个高杠杆的基建工程按时按预算完工——并且知道下注的仓位应该按"赌"来定，而不是按"公用事业"来定。</strong> 真正要盯的两个数字是：<strong>利息覆盖率能不能回到 2.5 倍以上，以及 ROIC 能不能追上 5.69% 的资本成本。</strong> 在这两个之前，所有关于"稳健收息股"的说法都是自我安慰。</p>
+</div></body></html>

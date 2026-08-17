@@ -1,0 +1,363 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MS · 摩根士丹利</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MS</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">在利润周期顶点付了只有顶点才说得通的价格</div><h1>MS · 摩根士丹利</h1>
+<p>市值 3429.8 亿美元 | 股价约 218 美元 | 行业：金融（投资银行 + 财富管理） | TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是金融企业，第三部分用市净率 PB、有形账面价值市净率 P/TBV、ROE 和 ROTCE 口径，而不是单看市盈率。</strong></p>
+<p>原因是：银行和券商的"营收"和"成本"跟制造业完全不是一回事——它的原材料是钱本身。摩根士丹利用 1174 亿美元的股东权益，撬动了约 1.45 万亿美元的总资产，<strong>杠杆 12.3 倍</strong>。这意味着它的利润是"资产回报率 × 杠杆"的产物：总资产回报率只有 1.35%，但因为放了 12 倍杠杆，股东回报率就变成了 17.97%。所以看这家公司，必须同时看"每块钱净资产能赚多少"（ROE）和"你为每块钱净资产付了多少"（PB），单看市盈率会漏掉杠杆和资本充足这两个致命变量。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>摩根士丹利有三块业务，但真正的故事是过去十年<strong>它把自己从一家靠交易吃饭的投行，改造成了一家靠收管理费吃饭的财富管理公司</strong>。这个转型是理解它今天估值的全部。</p>
+<h3>生意一：Institutional Securities —— 传统投行 + 交易（TTM 营收 382.2 亿，占 49%）</h3>
+<p>这是华尔街上那个"摩根士丹利"，里面装着三件很不一样的事：</p>
+<p><strong>（a）投资银行——帮公司做大事收顾问费。</strong></p>
+<p>一家公司要收购另一家、要上市、要发债，都需要投行。举具体例子：某科技巨头要花 100 亿美元收购一家软件公司，它雇摩根士丹利当买方顾问——摩根士丹利做估值、设计交易结构、安排融资、跟对方谈判、出具"公允意见书"。这笔活的顾问费大约 <strong>4000 万到 6000 万美元</strong>，交易完成才付。再比如一家公司 IPO 融资 10 亿美元，承销团整体抽取 <strong>5%–7%（5000 万到 7000 万美元）</strong>，摩根士丹利作为主承销商能分到其中最大的一块。</p>
+<p>这门生意的特点是：<strong>利润率极高（几乎没有成本，除了人的工资），但完全看天吃饭。</strong> 2022–2023 年美联储暴力加息，并购和 IPO 几乎冻结，这一块营收腰斩，直接把公司 FY2023 的净利润砸到 85.3 亿——只有今天的 44%。2025–2026 年利率下行、并购重启，这一块又爆发了：TTM 382.2 亿相比上一财年的 330.8 亿涨了 <strong>15.5%</strong>。</p>
+<p><strong>（b）销售与交易——做市赚价差。</strong></p>
+<p>摩根士丹利同时是全球最大的股票和债券做市商之一。它的角色是：任何时候，任何机构想买或想卖股票、债券、外汇、大宗商品、衍生品，摩根士丹利都报一个买价和一个卖价，中间的差价就是它的钱。</p>
+<p>具体例子：一家对冲基金想买 2 亿美元的某公司债券，摩根士丹利报"100.10 买 / 100.15 卖"，它以 100.10 从别处收进来，以 100.15 卖给对冲基金，一笔赚 10 万美元。听着很少，但摩根士丹利一年经手的交易量是<strong>数万亿美元</strong>级别，哪怕平均价差只有万分之二，累起来也是几十上百亿。</p>
+<p><strong>这门生意里藏着最大的风险。</strong> 做市要备货——为了随时能报价，它账上必须常年持有几千亿美元的股票和债券库存。市场剧烈波动时，这些库存会直接亏钱。财报现金流量表上"交易性资产变动"TTM 是 <strong>-314.7 亿</strong>，就是这些库存在一年里的增加额。</p>
+<p><strong>（c）主经纪商业务（Prime Brokerage）——给对冲基金当后勤总管，这块最被低估。</strong></p>
+<p>对冲基金自己不搭建交易和托管系统，它们把这一整套外包给投行。摩根士丹利为对冲基金做四件事：保管它们的资产、清算它们的交易、<strong>借钱给它们加杠杆</strong>、<strong>借股票给它们做空</strong>。</p>
+<p>具体怎么收钱：一家对冲基金有 10 亿自有资金，想买 30 亿的股票，摩根士丹利借它 20 亿，按比基准利率高 1–1.5 个百分点收息，一年利息收入 <strong>2000 万到 3000 万美元</strong>；同时对冲基金要做空某只股票，得先借到股票，摩根士丹利把别的客户账户里的股票借出去，收一笔借券费。<strong>摩根士丹利在这块是全球前二。</strong></p>
+<p>危险也在这：2021 年 Archegos 事件——一家家族办公室用极高杠杆爆仓，几家给它做主经纪的投行来不及平仓，<strong>摩根士丹利一天之内损失了 9.11 亿美元</strong>（瑞信亏了 55 亿，最终成为它倒闭的导火索之一）。这门生意平时利润稳定，出事时是断崖式的。</p>
+<h3>生意二：Wealth Management —— 财富管理（TTM 营收 340.4 亿，占 44%）</h3>
+<p><strong>这是今天摩根士丹利真正的皇冠，也是估值溢价的全部来源。</strong></p>
+<p>规模：超过 <strong>1900 万个客户账户</strong>，托管客户资产约 <strong>7–8 万亿美元</strong>。收钱的方式有三条，一条比一条隐蔽：</p>
+<p><strong>（a）明面上的管理费。</strong> 你有 200 万美元交给一位摩根士丹利的理财顾问打理，你每年付大约 <strong>1%，也就是 2 万美元</strong>。不管市场涨跌，只要钱还在账上，这 2 万年年都收。<strong>这就是它和投行业务最本质的区别：投行是打一枪换一个地方，财富管理是年金。</strong></p>
+<p><strong>（b）藏起来的利息差。</strong> 你账户里放着 20 万美元现金没投出去。摩根士丹利的"银行存款计划"自动把这笔钱扫进它的银行子公司，付给你 <strong>0.5%</strong> 的活期利息，然后它把这笔钱拿去放贷或者买债，赚 <strong>4.5%–5%</strong>。这 4 个百分点的差价，乘以全体客户几千亿美元的闲置现金，是一笔<strong>每年上百亿美元</strong>、而且大部分客户从来没意识到的收入。这也是为什么利率高的时候摩根士丹利财富管理特别赚钱。</p>
+<p><strong>（c）两个巨大的获客漏斗。</strong></p>
+<ul>
+<li><strong>E*TRADE</strong>（2020 年花 130 亿美元买的）：500 多万个散户自助交易账户。这些人今天只是自己炒股，但随着资产变多，摩根士丹利可以把他们转化成付 1% 管理费的顾问客户。</li>
+<li><strong>Shareworks / 员工持股平台</strong>（2019 年收购 Solium）：为约 <strong>3000 家公司</strong>管理员工股权激励计划。这一步棋极其精妙——当一个谷歌或者英伟达的工程师手里的 RSU 归属兑现时，那笔钱<strong>默认就落在摩根士丹利的账户里</strong>。这个人一夜之间从"员工"变成"手里有 200 万美元不知道怎么办的潜在客户"，而摩根士丹利已经站在他账户里了。<strong>这是全华尔街最好的一条高净值客户获客管道，成本近乎为零。</strong></li>
+</ul>
+<p>TTM 营收 340.4 亿，相比上一财年 317.5 亿涨 7.2%——增长比投行慢，但<strong>它是稳的</strong>，这才是重点。</p>
+<h3>生意三：Investment Management —— 资产管理（TTM 营收 65.5 亿，占 8%）</h3>
+<p>自己造基金产品卖。管理规模约 1.7 万亿美元，核心资产是 2021 年花 70 亿美元买的 <strong>Eaton Vance</strong>，里面包含 <strong>Parametric</strong>（直接指数化——不买 ETF，而是直接在你账户里持有指数的几百只成分股，好处是可以逐只做税务亏损收割，帮高净值客户合法避税，这在美国是刚需）和 <strong>Calvert</strong>（ESG 基金）。另外还有私募信贷和另类投资基金，收管理费之外还能收业绩提成。</p>
+<p>TTM 营收 65.5 亿，几乎零增长（上一财年 65.3 亿）。这一块是三者中最平淡的。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>FY2025</th>
+<th>增速</th>
+<th>占比</th>
+<th>税前利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Institutional Securities（投行+交易）</td>
+<td>382.2 亿</td>
+<td>330.8 亿</td>
+<td><strong>+15.5%</strong></td>
+<td>49%</td>
+<td>~34%（<strong>估算</strong>）</td>
+<td>~130 亿</td>
+</tr>
+<tr>
+<td>Wealth Management（财富管理）</td>
+<td>340.4 亿</td>
+<td>317.5 亿</td>
+<td>+7.2%</td>
+<td>44%</td>
+<td>~29%（<strong>估算</strong>）</td>
+<td>~99 亿</td>
+</tr>
+<tr>
+<td>Investment Management（资管）</td>
+<td>65.5 亿</td>
+<td>65.3 亿</td>
+<td>+0.4%</td>
+<td>8%</td>
+<td>~20%（<strong>估算</strong>）</td>
+<td>~13 亿</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>-7.6 亿</td>
+<td>-7.1 亿</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>总部及其他</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~-181 亿*</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>780.4 亿</strong></td>
+<td><strong>706.5 亿</strong></td>
+<td><strong>+18.0%</strong></td>
+<td>100%</td>
+<td><strong>33.5%</strong></td>
+<td><strong>261.5 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>* 分部税前利润率是估算，且分部利润是在扣除各自的薪酬和运营成本后的口径；上表的"总部及其他"是为了让加总对上 261.5 亿的倒扣项，不代表真实的总部费用规模。<strong>这几个百分比当量级看，别当精确数字。</strong></p>
+<p><strong>关键的结构对比：</strong> 投行交易和财富管理今天几乎五五开（49% vs 44%）。而十年前，投行交易占七成以上。<strong>这个从"周期"到"年金"的转变，就是市场愿意给摩根士丹利 3.2 倍市净率、而给花旗 1 倍不到的全部原因。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 20.51 亿美元，占净利润 10.5%。</strong> 华尔街用递延股票发奖金是常态。这一项 GAAP 里已经扣掉了，不用调整，但要知道：投行的"薪酬费用"是一个可以被管理层调节的水龙头——好年份多发、坏年份少发，用来平滑利润。TTM 是好年份，薪酬提得多，反而说明利润没被虚增。</p>
+<p><strong>一次性项目：TTM 没有明显的大额一次性损益。</strong> 现金流量表的"其他调整"是 +12.87 亿，和 FY2025 的 +13.18 亿基本持平，说明是经常性的。这是一个干净的期间。</p>
+<p><strong>资本化的支出：没有实质性的软件或内容资本化。</strong></p>
+<p><strong>回购与稀释：TTM 回购 72.23 亿，SBC 20.51 亿，比值 3.52 —— 这是真回购。</strong> 股本一年减少 <strong>1.34%</strong>，回购收益率 1.34%。加上 2.11% 的股息率，股东总回报率 <strong>3.45%</strong>。派息率只有 37%，说明这个分红有很大的提升空间，也说明监管（美联储压力测试）给了它足够的资本余量。<strong>这一项摩根士丹利是三家里做得最扎实的。</strong></p>
+<p><strong>利润和现金流的差：这里必须停下来讲清楚，否则会得出灾难性的错误结论。</strong></p>
+<p>财报上摩根士丹利 TTM 的<strong>经营现金流是 -155.87 亿，自由现金流是 -185.82 亿</strong>。而且过去五年有四年是负的：FY2023 是 -369.5 亿，FY2025 是 -207.9 亿。</p>
+<p><strong>如果这是一家制造业公司，这个数字意味着它快破产了。但对券商来说，这个指标毫无意义，甚至方向是反的。</strong></p>
+<p>原因看现金流量表的明细就清楚了。TTM 经营现金流里最大的几项是：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（亿美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+195.5</td>
+<td>真赚的钱</td>
+</tr>
+<tr>
+<td>折旧摊销</td>
+<td>+44.0</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>+20.5</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td><strong>交易性资产变动</strong></td>
+<td><strong>-314.7</strong></td>
+<td><strong>做市库存增加</strong>——为了给客户报价，买进了更多股票债券</td>
+</tr>
+<tr>
+<td><strong>融券资产变动</strong></td>
+<td><strong>-414.0</strong></td>
+<td><strong>借出去的钱增加</strong>——主经纪商业务给对冲基金放的融资</td>
+</tr>
+<tr>
+<td><strong>应收款项变动</strong></td>
+<td><strong>-535.9</strong></td>
+<td><strong>客户欠款增加</strong>——客户保证金、待交收款项</td>
+</tr>
+<tr>
+<td><strong>应付款项变动</strong></td>
+<td><strong>+713.2</strong></td>
+<td><strong>欠客户的钱增加</strong>——客户存放的现金和待付交收款</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>+135.9</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>-155.9</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这些几百亿的进出，全都是资产负债表的膨胀，不是经营好坏。</strong> 客户把钱存进来（应付 +713 亿），摩根士丹利拿去放贷和买库存（融券 -414 亿、交易资产 -315 亿）。<strong>这就是券商的生意本身</strong>——它的产品就是资产负债表。会计准则把这些统统归到"经营活动"，所以经营现金流永远是一团噪音。</p>
+<p>同时看融资活动现金流：TTM <strong>+1065.7 亿</strong>，其中净新发长期债 <strong>609.3 亿</strong>。这也不是"缺钱借债"，而是券商正常的资金匹配——用长期债去支撑长期资产。</p>
+<p><strong>所以对摩根士丹利：忘掉自由现金流，忘掉市现率。</strong> 唯一有意义的现金流问题是"它的融资渠道会不会突然断掉"，而这个问题由资本充足率和流动性覆盖率回答，不由现金流量表回答。</p>
+<p><strong>一个必须说明的数据缺口：</strong> 这四个数据页<strong>不提供 CET1 核心一级资本充足率、流动性覆盖率 LCR、和贷款拨备覆盖率</strong>，我不去别处编这几个数。能替代的是杠杆倍数：股东权益 1174.4 亿，总资产约 <strong>1.45 万亿</strong>（由 1.35% 的 ROA 反推），<strong>杠杆 12.3 倍</strong>；债务/权益 5.17 倍。这个杠杆水平在美国大行里属于正常偏中性——2008 年的雷曼是 30 倍以上。另外要注意，摩根士丹利主要不是一家放贷银行，所以净息差 NIM 和拨备覆盖率对它的意义远小于对摩根大通或美国银行。</p>
+<hr />
+<h2>第三部分：市净率与股东回报口径</h2>
+<p>市值 3429.8 亿，股东权益（账面价值）1174.4 亿，每股账面价值 67.80 美元，每股有形账面价值约 53.2 美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>怎么换算成投 100 块年回报</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>3.22 倍</strong></td>
+<td>ROE 17.97% ÷ PB 3.22</td>
+<td><strong>5.58 元</strong></td>
+</tr>
+<tr>
+<td><strong>有形账面价值市净率 P/TBV</strong></td>
+<td><strong>4.10 倍</strong></td>
+<td>ROTCE 约 22.7% ÷ 4.10</td>
+<td><strong>5.54 元</strong></td>
+</tr>
+<tr>
+<td>ROE（净资产收益率）</td>
+<td>17.97%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROTCE（有形净资产收益率）</td>
+<td>约 22.7%（<strong>估算</strong>）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（对照）</td>
+<td>17.65 倍</td>
+<td>100 ÷ 17.65</td>
+<td>5.67 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td><strong>21.2 倍</strong></td>
+<td>3430 亿 ÷ 三年均值 162.0 亿</td>
+<td><strong>4.72 元</strong></td>
+</tr>
+<tr>
+<td><strong><em>（关键）用 2023 年谷底利润</em></strong></td>
+<td><strong><em>40.2 倍</em></strong></td>
+<td><em>3430 亿 ÷ 85.3 亿</em></td>
+<td><strong>2.49 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说明：</strong></p>
+<ul>
+<li><strong>ROTCE 是估算。</strong> 有形普通股权益 = 股东权益 1174 亿 − 优先股约 98 亿 − 商誉和无形资产约 170 亿（E*TRADE 和 Eaton Vance 两笔收购形成的）≈ 906 亿。归属普通股东的净利润 = 195.5 亿 − 优先股股息约 5.3 亿 ≈ 190 亿。190 ÷ 906 = <strong>21%–23%</strong>。这和摩根士丹利自己长期披露的 ROTCE 水平吻合。</li>
+<li><strong>三条主口径（PB、P/TBV、PE）算出来的年回报高度一致，都在 5.5–5.7 元。</strong> 这说明当期的估值没有内部矛盾，市场对这家公司的定价是自洽的。</li>
+<li><strong>杠杆警告：这 5.58 元建立在 12.3 倍杠杆上。</strong> 17.97% 的 ROE 之所以看着高，是因为 1.35% 的资产回报率被放大了 12 倍。<strong>这不是护城河带来的高回报，是杠杆带来的高回报，而杠杆在经济下行时会反着放大。</strong> 只要总资产的价值缩水 4%，1174 亿的股东权益就全部归零——这就是 2008 年发生在贝尔斯登和雷曼身上的算术。摩根士丹利今天的资产质量和监管要求跟 2008 年不可同日而语，但算术没变。</li>
+</ul>
+<p><strong>三年平均：(TTM 195.5 + FY2025 162.5 + FY2024 128.0) ÷ 3 = 162.0 亿，对应 21.2 倍。</strong></p>
+<p>而最后那一行才是全表最重要的数字：<strong>2023 年，也就是仅仅三年前，摩根士丹利只赚了 85.3 亿。</strong> 那一年不是金融危机，也不是衰退，只是并购和 IPO 市场冷了一年。<strong>用那个利润算，今天这个股价是 40 倍市盈率，投 100 块一年只赚 2.49 元。</strong></p>
+<p>这就是周期股的本质：<strong>你在利润的高点看到的是低市盈率，在利润的低点看到的是高市盈率。</strong> TTM 利润 195.5 亿是过去 6 年的最高值，比三年前的谷底高出 129%。买在这个位置，你实际上是在赌"高利润能维持"。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进摩根士丹利，按最保守的口径（三年平均利润）算，公司一年替你赚 4.72 元；按当前这个火热的市场环境算，是 5.58 元；如果并购市场再冷一次回到 2023 年的水平，只有 2.49 元。</strong></p>
+<p>这笔钱怎么回到你口袋：</p>
+<ul>
+<li><strong>约 2.1 元现金分红</strong>（股息率 2.11%，每股 4.60 美元，已连续 12 年提高，派息率仅 37%）。</li>
+<li><strong>约 1.3 元通过回购</strong>（TTM 回购 72.2 亿，股本减少 1.34%，回购/SBC = 3.5，是货真价实的回购）。</li>
+<li><strong>股东总回报率 3.45%，剩下的留在公司里做什么？</strong> 券商留存利润的用途和一般公司完全不同——它不"投资建厂"，而是<strong>用这笔资本去支撑更大的资产负债表</strong>。多留 100 亿资本，按 12 倍杠杆就能多做 1200 亿的业务。所以对摩根士丹利来说，留存利润 = 明年的产能。</li>
+</ul>
+<p>未来这个数会变大还是变小？</p>
+<p><strong>变大：</strong> 财富管理是复利机器——客户资产随市场自然增长，管理费按比例跟着涨，几乎不需要额外投入；Shareworks 那条获客管道还在源源不断地把新贵们导进来；派息率只有 37%，分红有很大的提升空间；如果并购和 IPO 周期继续走高（TTM 投行业务已经涨了 15.5%），利润还能往上冲。</p>
+<p><strong>变小：</strong> 投行和交易那 49% 的营收是纯周期，说冷就冷，2023 年刚演示过一遍；利率如果大幅下行，财富管理里那笔"用客户闲置现金赚息差"的隐形收入会立刻缩水，这一块比大多数人意识到的重要得多；beta 1.21，波动大于大盘；一次 Archegos 级别的对手方爆仓就是几十亿的窟窿；股价过去 52 周涨了 48.3%，很多好消息已经在价格里了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>在利润周期的顶点上，付了一个只有在顶点才说得通的价格。</strong></p>
+<p>3.22 倍市净率是摩根士丹利历史上的高位区间——市场给这个溢价，理由是对的：财富管理已经占到营收的 44%，这部分是年金型的、稳的、几乎不占资本的，它确实值比传统投行更高的倍数。管理层这十年的转型做得非常漂亮，回购扎实、派息率保守、杠杆可控。<strong>这家公司本身没什么可挑剔的。</strong></p>
+<p>问题只在价格。<strong>你为一台一半靠周期吃饭的机器，付了一个假设周期不会掉头的价格。</strong> 当期 17.65 倍看着便宜，三年平均 21.2 倍开始不便宜，而 2023 年那种"只是市场冷了一年"的场景重演一次，就是 40 倍。</p>
+<p><strong>要买这个价位的摩根士丹利，你必须同时相信两件事：并购和 IPO 的热度至少还能维持两三年，以及利率不会快速大幅下行（否则财富管理的息差收入会缩）。</strong> 这两件事同时成立的概率不低，但也远不是确定的——而 3.22 倍的市净率并没有给你留犯错的空间。</p>
+</div></body></html>

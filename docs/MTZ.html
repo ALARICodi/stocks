@@ -1,0 +1,366 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MTZ · 马斯泰克（MasTec）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MTZ</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">3%净利率的包工头，为尚未兑现的预期付满额价</div><h1>MTZ · 马斯泰克（MasTec）</h1>
+<p>市值 $235.9 亿 / 股价 $297.59 / 行业：工业服务（基础设施工程承包）/ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司<strong>不生产任何东西、不拥有任何电网也不拥有任何管道</strong>。它是个<strong>包工头</strong>——一个手底下有 36,000 名工人、5,000 多台挖掘机吊车斗臂车的超级包工头。谁要在美国的土地上埋管子、拉电线、竖天线、装太阳能板，就找它。</p>
+<p>创始人是古巴移民 Mas 兄弟，家族至今持股 20.73%（这个比例在美股大公司里罕见地高）。它分四块生意，<strong>四块的共同点是：干活的方式几乎一样（一帮人开着重型车辆到荒郊野外去挖坑），区别只在挖坑是为了干什么</strong>。</p>
+<h3>生意一：清洁能源与基建（Clean Energy and Infrastructure）—— TTM 营收 56.04 亿，占 34.8%</h3>
+<p><strong>最大的一块，也是增长最快的一块（较 FY2025 全年 +19.2%）。</strong></p>
+<p>具体是什么：德州一家开发商要在西部沙漠里建一座 300 兆瓦的太阳能电站。它自己不会建，就把整个工程包给 MasTec。MasTec 要干的活是：<strong>在 1,500 英亩的荒地上把 50 万根钢桩打进土里</strong>，架上跟踪支架（能随太阳转的那种），把 60 万块光伏板一块块拧上去，拉直流电缆到逆变器，再建一座升压变电站接进电网。一个这样的项目合同额大约 <strong>3 到 4 亿美元，工期 12-18 个月</strong>。</p>
+<p>同类的还有：风电场（吊装 80 米高的塔筒和 100 吨重的机舱）、电池储能电站（一排排集装箱式电池柜）、以及重型民用工程（高速公路、桥梁、工业厂房）。</p>
+<p><strong>这块生意最大的坑是"固定总价合同"（lump-sum）</strong>：签合同的时候说好 3.5 亿干完，中途钢材涨价、工人工资涨、天气耽误工期，超支全是它自己扛。<strong>2022-2023 年它就是在这上面栽的</strong>——那两年通胀爆发，一批固定总价的清洁能源项目直接做亏，把全公司的经营利润率从 5.3% 砸到 1.27%，FY2023 甚至录得净亏损 4,995 万美元。现在这块的利润率修复了，但<strong>这个风险是结构性的，不会消失</strong>。</p>
+<h3>生意二：电力输配（Power Delivery）—— TTM 营收 45.23 亿，占 28.1%</h3>
+<p>给电网公司干活。两种形态：</p>
+<p><strong>日常工程</strong>：某州的电力公司要建 200 英里的 230 千伏高压输电线，把新建的发电厂接进主网。MasTec 派出上百个班组，用直升机和大型吊车立起几千根钢管塔，然后一档一档把导线拉过去。这类活通常是<strong>"总承包协议 + 单价表"（MSA）</strong>：不是一单一签，而是签个三五年的框架协议，"立一根杆多少钱、拉一英里线多少钱"，电力公司随时派活。<strong>这种合同利润率不高但极其稳定</strong>，因为电网的检修和改造年年都得干。</p>
+<p><strong>飓风抢修</strong>：这是这块生意里最赚钱的部分。佛罗里达一场飓风把几十万户的电线杆吹倒，电力公司要在一周内恢复供电，就会<strong>按平时两三倍的紧急费率</strong>从全国调人。MasTec 总部在佛州，是这个市场的老玩家。这块收入完全不可预测——<strong>风大的年份多赚一两亿，风小的年份就没有</strong>。</p>
+<p><strong>这块最近的真正推力是 AI 数据中心。</strong> 一个千兆瓦级的数据中心园区需要新建输电线路和变电站接入，这活儿只有几家有资质的承包商能干，MasTec 是其中之一。</p>
+<h3>生意三：通信（Communications）—— TTM 营收 35.12 亿，占 21.8%</h3>
+<p>给运营商建网。两件事：</p>
+<p><strong>无线</strong>：T-Mobile 要把 3,000 个基站从 4G 升到 5G。MasTec 的塔工爬上 60 米高的铁塔，把旧天线拆下来、把新的射频单元装上去、重新调角度。<strong>一个站点几万美元，量大</strong>。</p>
+<p><strong>光纤</strong>：某郊区要通千兆宽带。MasTec 开着开沟机沿着马路边挖一条 1 米深的沟，埋进 PVC 管道，再用气吹的方式把光缆吹进管子里，最后一家一户接到墙上的光猫。<strong>每英里成本 6 万到 10 万美元</strong>，一个县级项目动辄几百英里。</p>
+<p>这块的问题是：<strong>客户只有那么几家</strong>（AT&amp;T、Verizon、T-Mobile、Comcast、Charter），谁砍资本开支它就立刻掉血。FY2024 这块从 32.6 亿掉到 25.2 亿，一年缩水 22.6%，就是因为运营商集体收缩开支。现在恢复到 35.12 亿了。</p>
+<h3>生意四：油气管道（Pipeline Infrastructure）—— TTM 营收 25.67 亿，占 15.9%</h3>
+<p>铺天然气管道。一条 36 英寸口径、200 英里长的输气干线：先清出 30 米宽的施工带，把 12 米一根的钢管一根根焊起来（每个焊口都要做 X 光探伤），挖一条 2 米深的沟，用侧倾吊车把焊好的管线整体放下去，回填、复垦。<strong>一个这样的项目合同额 5 亿到 10 亿美元。</strong></p>
+<p><strong>这块的特点是极度不均匀</strong>：FY2021 营收 25.41 亿，FY2022 直接掉到 12.20 亿（腰斩），因为大项目干完了、新项目没批下来。现在因为美国天然气出口（LNG）和数据中心配套燃机电厂的需求，又回到 25.67 亿。</p>
+<h3>四块的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>较 FY2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>清洁能源与基建</td>
+<td>5,604</td>
+<td>+19.2%</td>
+<td>34.8%</td>
+<td>约 3.5-4.5%（估算）</td>
+</tr>
+<tr>
+<td>电力输配</td>
+<td>4,523</td>
+<td>+8.3%</td>
+<td>28.1%</td>
+<td>约 7-8%（估算）</td>
+</tr>
+<tr>
+<td>通信</td>
+<td>3,512</td>
+<td>+5.2%</td>
+<td>21.8%</td>
+<td>约 6-7%（估算）</td>
+</tr>
+<tr>
+<td>油气管道</td>
+<td>2,567</td>
+<td>+20.1%</td>
+<td>15.9%</td>
+<td>约 10-12%（估算）</td>
+</tr>
+<tr>
+<td>内部抵销</td>
+<td>−97</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>16,109</strong></td>
+<td><strong>+12.7%</strong></td>
+<td>100%</td>
+<td><strong>5.26%（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部利润是估算的</strong>：财报只披露分部营收，不公开分部经营利润。上表按行业惯例（管道利润率最高、清洁能源最低）分摊整体的 5.26%，<strong>不是精确数字</strong>。营收增速对比 FY2025 全年 <strong>+12.7%</strong>，对比 FY2025 同期口径是 <strong>+23.5%</strong>。</p>
+<p><strong>请记住这个数字：整体经营利润率只有 5.26%。</strong> 收 100 块工程款，扣完材料、工人、设备、管理，只剩 5 块 2 毛。净利润率 3.07%——<strong>收 100 块只赚 3 块。这是包工头生意的本质，跟规模无关。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 3,744 万美元，占净利润 7.6%。<strong>低得可爱</strong>——这是家真正的蓝领公司，钱发给工人不是发给码农。按 GAAP 已扣，不加回。</p>
+<p><strong>一次性项目</strong>：<strong>几乎没有真正的一次性项目，但有两笔"每年都出现的非经营性收益"值得点名</strong>：</p>
+<ul>
+<li><strong>处置资产收益 2,622 万</strong>：卖旧挖掘机、旧卡车赚的差价。过去六年每年都有 1,800 万到 4,000 万，<strong>年年发生，不是一次性</strong>，可以视为设备管理的正常收益。</li>
+<li><strong>权益投资收益 2,918 万</strong>：来自它持有的一家合资公司（应为管道类合资项目）。过去六年稳定在 2,800-3,400 万之间，<strong>同样年年发生</strong>。</li>
+</ul>
+<p>两笔合计 5,540 万税前、约 4,420 万税后，<strong>占净利润的 8.9%</strong>。它们是真钱，但不是主营业务赚的。如果你想看"纯干活赚多少"，得把这块扣掉——净利润会从 4.943 亿降到 4.501 亿，市盈率从 47.7 倍升到 <strong>52.4 倍</strong>。</p>
+<p>真正的减值和重组：<strong>TTM 没有</strong>。但要提醒：FY2023 那次净亏损背后是清洁能源板块的合同亏损，不是减值。</p>
+<p><strong>资产负债表上的定时炸弹</strong>：市净率 6.68，但<strong>有形账面价值市净率高达 126 倍</strong>。意思是账上 36 亿的股东权益里，<strong>大约 34 亿是商誉和无形资产</strong>（历年收购堆出来的），真正摸得着的净资产只有大约 1.9 亿。<strong>商誉是净利润的 7 倍。</strong> 现在生意好，没人会去动它；哪天某个板块连续两年不达预期，就会出现一笔十亿级别的减值。CHD 那种"每两年减一次"的剧本，MTZ 也有资格演。</p>
+<p><strong>资本化的支出</strong>：无异常。资本开支 3.372 亿（占营收 2.1%），是买重型设备，同时卖旧设备回收 5,001 万。</p>
+<p><strong>回购与稀释</strong>：
+- <strong>TTM 回购 = 0</strong>
+- 同期 SBC = 3,744 万
+- <strong>比值 = 0</strong></p>
+<p><strong>这是本批三家里最差的一项。</strong> 它不分红（无股息）、TTM 没有回购。股本只减少 0.68%，那是 FY2025 那笔 7,733 万回购的残余效应。<strong>你买这只股票，一分钱现金都拿不到，全部指望股价涨。</strong></p>
+<p><strong>利润和现金流的差 —— 这是全篇最要命的地方。</strong></p>
+<p>TTM 净利润 4.943 亿，经营现金流 5.820 亿，<strong>看起来现金流还比利润高</strong>。但自由现金流只有 <strong>2.448 亿</strong>，只有净利润的 49.5%。逐项拆开看钱去哪了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>494.3</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+461.1</td>
+<td>重型设备折旧 + 收购无形资产摊销，不出现金</td>
+</tr>
+<tr>
+<td>− 处置资产收益</td>
+<td>−26.2</td>
+<td>卖设备的账面收益，现金已单独计入投资活动</td>
+</tr>
+<tr>
+<td>− 权益投资收益</td>
+<td>−29.2</td>
+<td>合资公司利润，没分红回来</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+37.4</td>
+<td>发股票不出现金</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>+182.9</td>
+<td>主要是<strong>递延所得税</strong>（当期税费记了 1.36 亿，实际交的现金远低于此）</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−912.4</strong></td>
+<td><strong>最关键的一行：客户欠它的钱一年多了 9.12 亿</strong></td>
+</tr>
+<tr>
+<td>+ 存货变动</td>
+<td>+1.5</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>+ 应付账款增加</strong></td>
+<td><strong>+308.5</strong></td>
+<td>它欠分包商和供应商的钱也多了 3.09 亿</td>
+</tr>
+<tr>
+<td>+ 预收工程款增加</td>
+<td>+19.0</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营性资产</td>
+<td>+37.2</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 未单列零星项</td>
+<td>+7.9</td>
+<td>四舍五入及小项</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>582.0</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−337.2</td>
+<td>买重型设备</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>244.8</strong></td>
+<td><strong>只有净利润的 49.5%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读懂这张表只需要抓一个数：营运资金一年吃掉了 5.46 亿现金。</strong> 原因很简单——<strong>工程承包生意，营收涨得越快，被客户占用的钱就越多</strong>。它替业主先垫材料、先发工资，工程做完还要等验收、等结算，一笔款子拖三到六个月是常态。营收从 143 亿冲到 161 亿（+23.5%），应收账款就同步膨胀 9.12 亿。</p>
+<p><strong>结果是：它赚的钱不够用。</strong> TTM 净借款增加 2.68 亿，<strong>净负债从 24.03 亿升到 29.20 亿</strong>。资本开支同比从 2.60 亿涨到 3.37 亿（因为要买设备接更多活）。这就是这门生意的宿命：<strong>增长是要用现金买的，长得越猛，欠得越多。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>235.9 亿 ÷ 4.943 亿</td>
+<td><strong>47.7 倍</strong></td>
+<td><strong>¥2.10</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这四页不提供公司调整后利润；市场给的前瞻市盈率 27.47 倍反推预期 EPS ≈ $10.83（比 TTM 的 $6.28 高 72%）</td>
+<td>约 <strong>27.5 倍</strong>（前瞻）</td>
+<td>¥3.64</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无真一次性项目可剔；若进一步扣掉年年发生的非经营性收益（处置 + 权益投资，税后 0.442 亿），净利润 4.501 亿</td>
+<td><strong>52.4 倍</strong></td>
+<td><strong>¥1.91</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>235.9 亿 ÷ 2.448 亿</td>
+<td><strong>96.4 倍</strong></td>
+<td><strong>¥1.04</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>265.1 亿 ÷ 8.474 亿（含 29.2 亿净负债）</td>
+<td><strong>31.3 倍</strong></td>
+<td><strong>¥3.20</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>235.9 亿 ÷ 3.521 亿（TTM 4.94、FY25 3.99、FY24 1.63 的均值）</td>
+<td><strong>67.0 倍</strong></td>
+<td><strong>¥1.49</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要反过来读。</strong></p>
+<p>对大多数公司，三年平均口径比当期高，说明当期利润在高点、有虚高嫌疑。MTZ 是 <strong>67.0 倍 vs 47.7 倍，差距巨大</strong>——但原因不是当期利润虚高，<strong>恰恰相反，是过去三年的利润太烂</strong>：FY2023 净亏 4,995 万、FY2024 只赚 1.63 亿。那是清洁能源合同做亏的后遗症。</p>
+<p>所以对这家公司，<strong>"三年平均"这个工具在这里失效了</strong>，它测的是一场已经过去的事故，不是现在的常态。真正该看的是：</p>
+<ul>
+<li>现在的经营利润率 <strong>5.26%</strong>，同行业健康水平大约 6.5-8%</li>
+<li>如果利润率修复到 7%，经营利润 = 11.3 亿，扣息税后净利润约 6.6 亿，<strong>市盈率会降到 36 倍</strong></li>
+<li>市场给的前瞻市盈率 <strong>27.5 倍</strong>，等于赌它一年内利润率修到 8% 以上</li>
+</ul>
+<p><strong>PEG 只有 0.69</strong>（每 1% 增长付 0.69 倍市盈率），在全市场都算低——因为利润正在从坑里往上蹦，增速的分母太小。<strong>这个 0.69 是个统计假象，别拿它当便宜的证据。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的口径（三年平均利润）算，公司一年替你赚 ¥1.49；按当期真实口径算是 ¥1.91 到 ¥2.10；按自由现金流口径只有 ¥1.04。</strong></p>
+<p><strong>这 ¥2.10 里，回到你口袋的是 ¥0。</strong></p>
+<p>没有分红，TTM 没有回购。全部留在公司里，而且<strong>留下的还不够</strong>——TTM 自由现金流 2.45 亿，同期收购花掉 3.31 亿，缺口靠借钱补。所以准确的说法是：<strong>你投的 100 块，一年赚 2 块 1，这 2 块 1 全部拿去垫工程款和买设备了，公司还额外借了钱。</strong></p>
+<p><strong>这个数未来变大还是变小？我的判断是短期显著变大，但风险不对称。</strong></p>
+<p>变大的理由是真的：美国电网正在经历三十年来最大的一轮改造——AI 数据中心的用电需求、天然气发电厂重建、太阳能和储能装机、光纤到户补贴（BEAD 计划）。这四件事恰好对应它的四个板块，<strong>它是少数四块都占齐的承包商</strong>。营收 +23.5%、经营利润率从 1.27% 修到 5.26%，这个方向是实打实的。</p>
+<p>风险不对称在哪：
+1. <strong>利润率只有 5%，任何一个大项目做砸就吃掉一个季度的利润。</strong>它 2022-2023 年刚演示过一遍。
+2. <strong>净负债 29.2 亿，是自由现金流的 11.9 倍</strong>，利息一年现金支出 1.79 亿，利息保障倍数只有 4.69 倍。
+3. <strong>34 亿商誉悬在头顶</strong>，只要有一个板块连亏两年就得减值。
+4. <strong>beta 1.84</strong>，过去 52 周涨了 63.88%，市值从 2022 年底的 65.66 亿涨到 235.9 亿，<strong>三年半涨了 3.6 倍</strong>——涨的绝大部分是估值（市销率从 0.67 涨到 1.46）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家真正踩在美国电网重建和 AI 数据中心供电这条正确赛道上的包工头——但你要用 47.7 倍 GAAP 市盈率、96.4 倍自由现金流、31.3 倍 EV/EBIT，去买一个净利润率 3%、负债 29 亿、一分钱不分红也不回购、账上 34 亿商誉的重资产承包商，这是在为一个尚未兑现的预期支付满额价格。</strong></p>
+<p>前瞻市盈率 27.5 倍隐含着"明年 EPS 涨 72%"的假设。<strong>如果它真的做到了，今天这个价不算离谱；如果只做到一半，股价要腰斩才回得到合理位置。</strong>而这家公司在 2023 年刚刚向所有人证明过，它的利润率可以在一年之内从 5.3% 掉到 1.3%。</p>
+<p>我的判断是：<strong>赛道对、公司对、价格错。</strong> 这不是一家能长期持有的复利机器（它没有现金回报、没有定价权、利润率被合同结构锁死在个位数），它是一只<strong>周期性的行业贝塔</strong>。买它的正确时点是行业阴天、市销率回到 1 倍以下的时候，不是它涨了 3.6 倍、所有人都在谈 AI 用电的时候。</p>
+</div></body></html>

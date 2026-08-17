@@ -1,0 +1,349 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ICE · 洲际交易所（Intercontinental Exchange Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ICE</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">顶级生意粘了块平庸资产，还行的价，别指望惊喜</div><h1>ICE · 洲际交易所（Intercontinental Exchange Inc.）</h1>
+<p><strong>市值</strong> $864.7 亿 ｜ <strong>股价</strong> 约 $154 ｜ <strong>行业</strong> 交易所与金融基础设施 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>全榜名次</strong> 第 107 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先解决一个会让人看不懂财报的问题：<strong>ICE 有两个"营收"数字，差了将近 30 亿美元。</strong></p>
+<p>财报上的<strong>总营收是 134.3 亿美元</strong>，但 ICE 自己对外说的、分析师用的是<strong>净营收 105.6 亿美元</strong>。中间差的 28.7 亿叫"transaction-based expenses（交易相关支出）"——这是 ICE 替别人代收又原样转出去的钱：纽交所每笔股票交易要替美国证监会代收一笔 Section 31 监管费，还要按规则把一部分手续费返给提供流动性的做市商。<strong>这笔钱从来没属于过 ICE，进一只手出另一只手。</strong> 所以看 ICE 的利润率必须用净营收：经营利润 55 亿 ÷ 净营收 105.6 亿 = <strong>52.4% 的经营利润率</strong>（如果拿总营收当分母算成 40.7%，那是低估了）。</p>
+<p>下面讲分部时用的是总营收口径（财报披露的分部数就是这个口径），这 28.7 亿几乎全部落在第一块"Exchanges"里。</p>
+<h3>1. Exchanges（交易所）— TTM 营收 87.4 亿，占 65.1%</h3>
+<p><strong>这是全公司的发动机，而且它其实是两门完全不同的生意粘在一起。</strong></p>
+<p><strong>第一门：能源和大宗商品期货 —— ICE 真正的护城河在这里。</strong></p>
+<p>全世界的原油有两个定价基准，一个是美国的 WTI，另一个是<strong>布伦特（Brent）—— 布伦特期货就在 ICE 上交易，而且只在 ICE 上交易。</strong> 具体是什么意思：一家印度炼油厂要在三个月后买 200 万桶中东原油，合同上不会写死价格，而是写"按交割当月布伦特结算价加 1.8 美元"。这个"布伦特结算价"就是 ICE 那块屏幕上跳出来的数字。全球每年几百亿桶原油的实物贸易，定价都挂在这上面。</p>
+<p><strong>这形成了一个几乎不可能被攻破的循环</strong>：所有人都在 ICE 交易布伦特，因为所有人都在这里，所以流动性最好；因为流动性最好，你想对冲 5000 万桶原油只有这里能吃得下；因为对冲都在这里，所有实物合同就都拿这个价格当基准；因为合同都挂这个价格，所有人就更得来这里交易。<strong>竞争对手就算把手续费降到零也挖不动</strong>——纳斯达克真的试过做能源期货，做不起来。</p>
+<p>怎么收钱：<strong>每张合约收一笔固定费用，通常几毛到一块多美元。</strong> 一家对冲基金一天开平 3 万张布伦特合约，就是三四万美元；这个费率二十年没怎么变过，但<strong>合约张数每年都在长</strong>。除了布伦特，ICE 还垄断着欧洲天然气（TTF）、欧洲碳排放权配额（欧盟碳市场的期货几乎全在 ICE）、以及全球糖、咖啡、可可的定价——你早上那杯咖啡的豆子价格，是在 ICE 的 "Coffee C" 合约上定的。</p>
+<p><strong>这块生意还有一个隐藏的好处：波动越大赚得越多。</strong> 打仗、限产、寒潮——每一次能源市场剧烈波动，全世界的炼油厂、航空公司、天然气贸易商都得冲进来对冲，成交量暴涨。这是极少数"世界越乱它越赚钱"的生意。</p>
+<p><strong>第二门：纽约证券交易所（NYSE）。</strong></p>
+<p>ICE 在 2013 年买下了纽交所。这块的收入有三部分：股票和期权的成交手续费（这部分薄，而且要跟纳斯达克、Cboe 以及十几家暗池抢，竞争激烈）；<strong>上市费</strong>（公司在纽交所挂牌每年交几十万美元，IPO 时再交一笔）；以及<strong>行情数据费</strong>（券商、终端商、量化基金要实时看到纽交所的报价，按人头按月付订阅费，一个交易员席位一个月几十到几百美元）。</p>
+<p>行情数据这块是纽交所里最好的生意——<strong>数据的生产成本接近于零，卖一百家和卖一千家的成本一样，几乎全是纯利</strong>，而且因为监管要求券商必须接入全国最优报价，这钱他们不能不付。</p>
+<p>对比 2025 全年 <strong>+7.7%</strong>。</p>
+<h3>2. Fixed Income &amp; Data Services（固收与数据服务）— TTM 营收 25.3 亿，占 18.8%</h3>
+<p><strong>卖债券的价格和指数。</strong></p>
+<p>债券和股票不一样，绝大多数债券一天可能一笔都没成交，那"它现在值多少钱"怎么算？答案是找 ICE 买。ICE 有一套叫 <strong>ICE Data Services</strong> 的东西，每天对全球<strong>几百万只</strong>债券给出一个估值价。买家是谁：全世界的共同基金和 ETF 每天收盘后必须算出自己的净值报给投资人，<strong>而算净值就需要给持有的每一只债券定一个价</strong>——它们自己算不了，只能买 ICE 的数据。一家中型资管公司一年为此付几十万到几百万美元，而且这是合规刚需，<strong>降本增效第一个砍的绝不会是这一项</strong>。</p>
+<p>还有 <strong>ICE BofA 债券指数系列</strong>——这是全球债券基金最主流的业绩基准之一（相当于债券界的标普 500）。任何一只 ETF 要跟踪它，得付授权费；任何一家基金要用它当基准，也得付。按跟踪资产规模抽成，规模越大收得越多。</p>
+<p>再加上一个 CDS 清算所（信用违约互换的中央对手方，2008 年之后监管强制这类交易必须走清算所，ICE 是主要玩家之一）。</p>
+<p>对比 2025 全年 <strong>+4.5%</strong>——增速最慢，但这块是全公司最稳的<strong>订阅制收入</strong>，不管市场涨跌都照收。</p>
+<h3>3. Mortgage Technology（房贷科技）— TTM 营收 21.6 亿，占 16.1%</h3>
+<p><strong>这是最近几年 ICE 花大钱堆出来的一块，也是眼下争议最大的一块。</strong></p>
+<p>它干的事是：美国人买房要办贷款，从填表、查征信、评估房产、审批、出款，到贷款打包卖给房利美，整个流程涉及十几个系统。ICE 先买了 <strong>Ellie Mae</strong>（做贷前申请系统 Encompass 的，2020 年花了 110 亿美元），后来在 <strong>2023 年又花了约 102 亿美元买下 Black Knight</strong>（做贷后服务系统 MSP 的——全美超过一半的存量房贷，每个月还款、算利息、催收都跑在这套系统上）。</p>
+<p><strong>买完之后，从你在网上填第一张贷款申请表，到三十年后你还完最后一期，全程都可能跑在 ICE 的软件上。</strong> 收钱方式是按贷款笔数收：一笔房贷从申请到关闭，ICE 大概收一两百美元；贷后服务按每笔贷款每月收几毛到一块多，几千万笔存量乘以十二个月，就是稳定的订阅流水。</p>
+<p><strong>问题在于两点。</strong> 一是<strong>这块生意的规模直接挂在美国房贷利率上</strong>：利率高，没人买房也没人再融资，新增贷款笔数就少，这块的收入就上不去。这就是它对比 2025 全年只有 <strong>+2.6%</strong> 的原因——三块里最慢。二是<strong>这两笔收购一共花了 210 多亿美元，而这块业务一年才做 21.6 亿营收</strong>。下面第二部分会看到这笔账的后果。</p>
+<h3>各分部一览（TTM，截至 2026-06-30，总营收口径）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（亿美元）</th>
+<th>对比 2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exchanges 交易所</td>
+<td>87.4</td>
+<td>+7.7%</td>
+<td>65.1%</td>
+<td><strong>最高（估算）</strong></td>
+</tr>
+<tr>
+<td>Fixed Income &amp; Data 固收与数据</td>
+<td>25.3</td>
+<td>+4.5%</td>
+<td>18.8%</td>
+<td>中高（估算）</td>
+</tr>
+<tr>
+<td>Mortgage Technology 房贷科技</td>
+<td>21.6</td>
+<td>+2.6%</td>
+<td>16.1%</td>
+<td><strong>最低（估算）</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>134.3</strong></td>
+<td>+7.0%</td>
+<td>100%</td>
+<td>净营收口径 52.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润率一列是估算</strong>——这四个页面只披露分部营收，不披露分部利润。排序依据：交易所生意的边际成本接近于零（多成交一张合约几乎不增加任何成本），而房贷科技刚吞下两笔巨额收购、背着大量收购无形资产摊销。全公司整体经营利润率 52.4% 是硬数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>2.68 亿美元</strong>，占净利润 40.4 亿的 <strong>6.6%</strong>。<strong>这是个非常低的比例</strong>——软件公司普遍在 20%–40%。ICE 说到底是个基础设施运营商不是科技公司，员工总数才 1.28 万人，人均创收 82 万美元。按 GAAP 已经扣掉，不加回，也不用特别在意。</p>
+<p><strong>一次性项目</strong>：TTM 这一期没有能从财报页看出的大额一次性损益。有效税率 23.09%，交税 12.3 亿，正常。往前看两年有明显异常：2022 年净利润只有 14.5 亿（利润率 15.6%），而 2021 年是 40.6 亿（44.4%）——这两年的大幅波动来自收购相关的一次性项目和权益投资的公允价值变动。<strong>单看 TTM 一期无法判断这类项目是不是年年都有</strong>，但可以说的是过去三年（2023–2025）的利润率是 24.6% → 23.8% → 26.7%，比较连贯，异常年份主要集中在 2021–2022。</p>
+<p><strong>资本化的支出 —— 这一项 ICE 有猫腻，值得单独说</strong>：</p>
+<p>网站给出的自由现金流是 <strong>50.78 亿美元</strong>（经营现金流 55.14 亿 − 资本开支 4.36 亿）。<strong>但它漏算了一笔：ICE 同期还花了 4.37 亿美元"购买无形资产"</strong>，这基本上就是自研软件的资本化开发支出。这笔钱年年都有（2025 年 4.18 亿、2024 年 3.46 亿、2023 年 2.99 亿），<strong>规模跟资本开支一样大，性质也一样——都是维持生意运转必须花的钱</strong>，只是会计上进了投资科目而不是费用。</p>
+<p>所以真实的自由现金流应该是：<strong>55.14 − 4.36 − 4.37 = 46.41 亿美元</strong>，比网站显示的少 8.6%。下面估值表里两个口径都会列出来。</p>
+<p><strong>收购无形资产摊销 —— 这是 ICE 财报里最大的一处 GAAP 与现金的错位</strong>：</p>
+<p>TTM 折旧摊销合计 <strong>15.49 亿美元</strong>，而同期真实的资产投入（资本开支 4.36 + 购买无形资产 4.37）只有 <strong>8.73 亿</strong>。<strong>中间那 6.76 亿的差额，绝大部分是在摊销当年买 Black Knight 和 Ellie Mae 时记下的无形资产。</strong> 这笔摊销是纯会计动作，不花现金，所以 ICE 在它的 Non-GAAP 口径里会把它加回去。</p>
+<p><strong>加回去合理吗？一半合理。</strong> 说它合理：这确实不是每年真的要掏出去的现金。说它不合理：<strong>ICE 是真金白银花了 210 多亿美元买回来这些资产的</strong>，那笔钱是实实在在流出去的，只不过发生在过去几年而不是今年。把它当作从没发生过，等于假装那两笔收购是白捡的。下面的估值表两个口径都给。</p>
+<p><strong>回购与稀释 —— 这块很干净</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购普通股</td>
+<td>−20.00 亿美元</td>
+</tr>
+<tr>
+<td>派发股息</td>
+<td>−11.41 亿美元</td>
+</tr>
+<tr>
+<td><strong>合计还给股东</strong></td>
+<td><strong>−31.41 亿美元</strong></td>
+</tr>
+<tr>
+<td>同期 SBC</td>
+<td>2.68 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>7.5 倍</strong></td>
+</tr>
+<tr>
+<td>流通股变化（同比）</td>
+<td><strong>−0.95%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购是 SBC 的 7.5 倍，远超"3 倍才算真回购"的门槛——这是货真价实的股东回报，不是给员工发股票打掩护。</strong> 但注意流通股只减少了 0.95%，因为 20 亿的回购放在 864 亿市值上只有 2.3%，而其中一部分被员工行权抵消了。合计还给股东 31.4 亿，相当于真实自由现金流 46.4 亿的 68%——剩下的 32% 拿去还债了（TTM 净还债 6.33 亿）。</p>
+<p>值得注意的是，<strong>2023 和 2024 两年 ICE 完全没有回购</strong>——因为钱都拿去付 Black Knight 的收购款和还债了。2025 年才恢复（12.94 亿），TTM 加到 20 亿。这说明杠杆终于降下来了（债务/EBITDA 2.93 倍），管理层重新有余力回馈股东。</p>
+<p><strong>利润和现金流的差 —— ICE 这里差得很健康，但要看清楚</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东权益）</td>
+<td>+4,100</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+1,549</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+268</td>
+</tr>
+<tr>
+<td>减：其他调整</td>
+<td>−225</td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−228</td>
+</tr>
+<tr>
+<td>加：递延收入增加</td>
+<td>+54</td>
+</tr>
+<tr>
+<td>减：其他经营性变动</td>
+<td>−4</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+5,514</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−436</td>
+</tr>
+<tr>
+<td>减：购买无形资产（网站没扣，应该扣）</td>
+<td>−437</td>
+</tr>
+<tr>
+<td><strong>= 真实自由现金流</strong></td>
+<td><strong>+4,641</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看下来结论很清楚：净利润 41 亿变成真实自由现金流 46.4 亿，多出来的 5.4 亿几乎全部来自"折旧摊销大于实际投入"这一项。</strong> 这不是造假，是收购摊销的正常表现。营运资金几乎没变化（应收 −2.28 亿、递延收入 +0.54 亿），说明<strong>这门生意不需要垫钱就能增长</strong>，这是订阅制和交易所生意的典型特征，是个非常好的信号。</p>
+<p><strong>还有一个必须点破的数字</strong>：ICE 的 <strong>ROIC 是 8.61%，而它的加权平均资本成本 WACC 是 8.16%</strong>。两者只差 0.45 个百分点。<strong>翻译成人话：ICE 每投一块钱进这门生意，赚回来的钱只比它借这一块钱的成本高出一丁点。</strong> 一家拥有全球原油定价权的公司，投入资本回报率居然只有 8.6%，原因就一个——<strong>它为 Black Knight 和 Ellie Mae 付了 210 多亿美元，这笔巨额资本躺在分母里，而房贷科技一年只做 21.6 亿营收、还只增长 2.6%。</strong> 它的 ROE 有 14.09%，看着还行，但那是靠 0.69 倍的债务权益比撑起来的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>864.7 亿 ÷ 40.38 亿</td>
+<td><strong>21.4 倍</strong></td>
+<td><strong>$4.67</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>864.7 亿 ÷ 约 48 亿（加回收购无形资产摊销税后约 5.2 亿）（估算）</td>
+<td>约 18.0 倍</td>
+<td>$5.56</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>864.7 亿 ÷ 40.38 亿（无重大一次性项目；SBC 按 GAAP 已扣不加回）</td>
+<td><strong>21.4 倍</strong></td>
+<td><strong>$4.67</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（网站版）</td>
+<td>864.7 亿 ÷ 50.78 亿</td>
+<td>17.0 倍</td>
+<td>$5.87</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化软件后）</strong></td>
+<td>864.7 亿 ÷ 46.41 亿</td>
+<td><strong>18.6 倍</strong></td>
+<td><strong>$5.37</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1059.3 亿 ÷ 54.67 亿</td>
+<td><strong>19.4 倍</strong></td>
+<td>$5.16（税前，对全部资本）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>864.7 亿 ÷ 三年平均净利润 28.12 亿</td>
+<td><strong>30.8 倍</strong></td>
+<td><strong>$3.25</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均：2023 年 23.68 亿、2024 年 27.54 亿、2025 年 33.15 亿，平均 28.12 亿。EV/EBIT 那一行是税前口径、面向股东和债权人全体，不能跟其他行直接比，只用来提示 195 亿的净债务把企业价值抬高了 22%。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块钱买 ICE，按最保守的真实口径算（21.4 倍市盈率），公司一年替你赚 4.67 块钱。</strong> 如果按真实自由现金流算，是 5.37 块——现金比账面利润多一点，因为收购摊销不花钱。</p>
+<p><strong>这 4.67 块里，只有约 3.6 块真正回到你口袋</strong>：股息 1.35% 加回购 0.95%，股东实际到手回报（shareholder yield）是 <strong>2.29%</strong>，也就是 100 块里每年拿回 2.29 块现金。<strong>剩下的 2.4 块留在公司里，去向很明确：还债。</strong> TTM 净还了 6.33 亿的长期债务，账上还背着 205 亿。</p>
+<p><strong>这个 4.67 块未来大概率会缓慢变大，但不会有惊喜，理由如下：</strong></p>
+<p>往上的力量是真实的。布伦特原油、欧洲天然气、欧盟碳排放这三个定价权，是那种<strong>不会被技术进步淘汰、不会被新进入者攻破、还能随着全世界能源转型的混乱程度自动增长</strong>的资产。碳市场尤其：只要欧洲继续收紧排放配额，交易量就只会往上走。加上债券数据那块是纯订阅收入、客户几乎不会流失，这两块合起来占了公司 84% 的收入，而且能持续以中个位数增长。经营利润率 52.4% 这个水平，全市场只有极少数生意能达到。</p>
+<p>往下的力量也是真实的。<strong>房贷科技那块 210 亿美元的收购正在拖累整个公司</strong>——它只贡献 16% 的收入、只增长 2.6%，却占用了公司资产负债表上最大的一块资本。这直接导致 ROIC（8.61%）几乎等于资本成本（8.16%），意味着<strong>过去几年 ICE 大规模的资本配置，从投入产出角度看基本没有为股东创造价值</strong>。除非美国房贷利率大幅下行、贷款笔数大幅回升，否则这块的回报要熬很多年才能追上当初的出价。</p>
+<p><strong>最该盯住的还是最后那一行：三年平均利润口径 30.8 倍，只赚 3.25 块。</strong></p>
+<p>TTM 的 21.4 倍和三年平均的 30.8 倍差了 44%。这说明<strong>现在的利润确实处在一个高于过去三年常态的位置上</strong>——2023 年赚 23.7 亿，现在赚 40.4 亿，三年涨了 70%。这个涨幅里有多少能站住？我的判断是<strong>大部分能站住，但要打个折</strong>：Black Knight 是 2023 年 9 月才并表的，2023 年那个 23.7 亿的基数里只包含了三四个月的房贷科技收入，用它当"常态"是不公平的。同时，最近两年能源市场持续动荡，Exchanges 的成交量是在偏高位置。<strong>所以真实的常态市盈率，大概在 21 倍和 31 倍之间，靠近 24–26 倍那一带。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>ICE 是一门顶级的生意，粘了一块平庸的资产，然后按一个不便宜也不算离谱的价格卖给你。</strong></p>
+<p>它的核心资产——布伦特原油定价权、欧洲天然气和碳市场、债券估值数据——是那种全世界找不出第二家、几十年拆不掉、还能躺着涨的东西，52.4% 的经营利润率和几乎不需要营运资金的特性都在证明这一点。<strong>如果 ICE 只有这些，21 倍市盈率我会说很值。</strong></p>
+<p>但它不是。它在 2020 和 2023 年花了 210 多亿美元买进房贷科技，把整个公司的投入资本回报率压到了 8.6%——<strong>只比资本成本高 0.45 个百分点</strong>。你付的 21.4 倍市盈率，是在为一家"好资产 + 一笔昂贵且到现在还没回本的收购"的组合体买单。股价过去 52 周跌了 15.3%，市场已经在为这件事打折。</p>
+<p><strong>一句话：好生意，还行的价，但资本配置纪律有明显问题，别指望它给你惊喜。</strong></p>
+</div></body></html>

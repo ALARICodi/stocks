@@ -1,0 +1,411 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SBAC · SBA 通信（信号塔 REIT）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SBAC</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">钱真的在替你干活：15.9倍AFFO，一年实挣6.29块</div><h1>SBAC · SBA 通信（信号塔 REIT）</h1>
+<p>市值 196.5 亿美元 / 股价约 $185.2 / 行业：房地产信托 REIT（通信基础设施） / TTM 截止日 2026-06-30</p>
+<p>全榜名次 309（2026-08-17 抓取时）。全篇所有数字都是 TTM（最近四个季度滚动），截止 2026 年 6 月 30 日。</p>
+<blockquote>
+<p><strong>这是一家 REIT（房地产信托），下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong>原因很直接：REIT 的最大成本项是"折旧"，而信号塔这种钢结构，实际寿命远远超过账面折旧年限，几十年前立起来的塔今天照样在收租、还越收越多。会计上每年扣掉的那笔折旧，并没有真的花掉一分钱，也不需要真的去重建。所以 REIT 的净利润是一个被人为压低（有时又被资产处置收益人为抬高）的失真数字，行业统一改用 FFO（把折旧加回、把卖资产的收益减掉）和 AFFO（再扣掉真实的维护性支出）来衡量。<strong>注意，本篇里 SBAC 还有一个额外的特殊情况，见第二部分"折旧突降"那一段，那是本篇最关键的发现。</strong></p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>SBA 干的事一句话能说完：<strong>在地上立一根几十米高的钢架子，把它租给手机运营商挂天线</strong>。全球约 4 万座塔（美国约 1.7 万座、国际约 2.3 万座，以巴西为主；塔数是公开披露的大致规模，不来自本次抓取的财报页）。它拆三块业务。</p>
+<h3>生意一：美国的塔租金（占 64%）</h3>
+<p>想象一根 60 米高的三角钢架，立在高速公路边一块 500 平米的地上。地是 SBA 自己买下来的或者长期租下来的，塔是 SBA 出钱建的（一座新塔造价约 25–30 万美元）。塔身从上到下有好几层挂天线的位置。</p>
+<p>Verizon 想让这一带的手机有信号，就来跟 SBA 签一份合同：在这根塔 55 米的位置挂一组天线，塔底放一个装设备的小机柜，<strong>每月付 SBA 大约 2,500–3,000 美元</strong>，合同一签 5–10 年，而且合同里写死<strong>每年自动涨 3%</strong>。</p>
+<p>这门生意的全部魔力在于<strong>同一根塔可以租给好几家</strong>。Verizon 挂在 55 米，AT&amp;T 挂在 45 米，T-Mobile 挂在 35 米。塔还是那根塔，地租、电费、巡检、保险这些成本几乎一分不涨，但租金收入变成三份。所以：</p>
+<ul>
+<li>一根塔只有 1 个租户时，年收入约 3 万美元，扣掉地租和维护，几乎不赚钱；</li>
+<li>有 2 个租户时，第二份 3 万块的租金里，成本只增加两三千，<strong>剩下的全是利润</strong>；</li>
+<li>有 3 个租户时，这根塔一年产生约 9 万美元收入、7 万多美元的现金利润。</li>
+</ul>
+<p>从 TTM 数字倒推：美国站点租赁收入 18.38 亿美元 ÷ 约 1.7 万座塔 ≈ <strong>每座塔每年 10.8 万美元</strong>，对应平均每塔 2.5–3 个租户。这就是为什么 SBA 的经营利润率高达 52.7%——一个开工厂的公司做梦都到不了的数字。</p>
+<p>还有一层收入：运营商升级设备（比如从 4G 天线换成更重的 5G 天线、或者增加天线数量）时，塔的承重和配置要改，这叫"修订"（amendment），运营商要为此多付一笔月租。所以哪怕不增加新租户，光是运营商换代升级，同一根塔的租金也在往上走。</p>
+<p>美国这块 TTM 收入 18.38 亿美元，几乎零增长（FY2025 对 FY2024 仅 +0.3%）。<strong>这是本篇最大的隐忧</strong>：美国就三家半运营商（Verizon、AT&amp;T、T-Mobile，加上体量小的 Dish），5G 主体建设已经铺完，而 T-Mobile 并购 Sprint 后在退租重复站点。客户少、议价强、需求见顶，涨价空间被 3% 的合同自动扶梯锁死。</p>
+<h3>生意二：国际的塔租金（占 28%）</h3>
+<p>同样的生意，主要在巴西，客户是 TIM、Vivo、Claro，另外在中美洲、南非、坦桑尼亚、菲律宾也有。</p>
+<p>为什么增长快得多：这些国家的 4G 覆盖还没铺满、5G 刚起步，运营商在密集加站；而且 SBA 在这些市场往往是少数几个专业塔商之一，议价地位比在美国好。TTM 收入 8.05 亿美元，FY2025 对 FY2024 增长 <strong>+6.0%</strong>，是美国那块的 20 倍速度。</p>
+<p>代价是<strong>汇率</strong>。租金用巴西雷亚尔收，报表用美元记。雷亚尔一年贬 10%，这块收入换算成美元就凭空少 10%——<strong>跟塔的经营好坏一点关系都没有</strong>。这是持有 SBAC 必须接受的一个不受控风险。</p>
+<h3>生意三：站点开发服务（占 8%）</h3>
+<p>帮运营商干活收工钱：选址、办许可、爬塔装天线、调试。TTM 收入 2.28 亿美元，FY2025 对 FY2024 暴涨 <strong>+59.9%</strong>（从 1.53 亿到 2.45 亿）。</p>
+<p>别被这个增速骗了。这是<strong>低利润率的施工承包生意</strong>（行业毛利率通常 10–20%），且完全跟着运营商的资本开支节奏走，运营商今年建站多它就多、明年砍预算它就腰斩（看历史：FY2022 是 2.97 亿、FY2023 掉到 1.95 亿、FY2024 再掉到 1.53 亿、FY2025 反弹到 2.45 亿）。它对利润的贡献远小于对营收的贡献，最大的价值其实是"帮客户干活的时候顺便知道客户下一步要在哪建塔"。</p>
+<h3>三门生意的钱（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(百万美元)</th>
+<th>增速</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献经营利润(百万美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国站点租赁</td>
+<td>1,838</td>
+<td>+0.3%</td>
+<td>64.0%</td>
+<td>约 60%（估算）</td>
+<td>约 1,100</td>
+</tr>
+<tr>
+<td>国际站点租赁</td>
+<td>805</td>
+<td>+6.0%</td>
+<td>28.0%</td>
+<td>约 50%（估算）</td>
+<td>约 400</td>
+</tr>
+<tr>
+<td>站点开发服务</td>
+<td>228</td>
+<td>+59.9%</td>
+<td>7.9%</td>
+<td>约 12%（估算）</td>
+<td>约 27</td>
+</tr>
+<tr>
+<td>未分摊的公司管理费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 -13</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,871</strong></td>
+<td><strong>+5.4%</strong></td>
+<td>100%</td>
+<td><strong>52.7%</strong></td>
+<td><strong>1,514</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>增速一列用的是 FY2025 对 FY2024 的整年比较（分部的上年同期滚动数财报页没给）；合计的 +5.4% 是真正的 TTM 同比。<strong>利润一列是估算</strong>：财报页只披露到分部营收，分部经营利润没有。上表按行业常识（美国塔成熟度更高、单位成本已充分摊薄，所以利润率高于国际；施工服务是低毛利）分配，三块加总回到实际的 15.14 亿，但单块可能各差几千万到一亿。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>折旧突降——本篇最重要的发现</h3>
+<p>把折旧摊销放到时间轴上：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+<th>FY2021</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>折旧摊销（百万美元）</td>
+<td>320</td>
+<td>292</td>
+<td>270</td>
+<td><strong>716</strong></td>
+<td>708</td>
+<td>700</td>
+</tr>
+<tr>
+<td>净利润（百万美元）</td>
+<td>991</td>
+<td>1,054</td>
+<td>750</td>
+<td>502</td>
+<td>461</td>
+<td>238</td>
+</tr>
+<tr>
+<td>营收（百万美元）</td>
+<td>2,871</td>
+<td>2,815</td>
+<td>2,680</td>
+<td>2,712</td>
+<td>2,633</td>
+<td>2,309</td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚发生了什么：<strong>FY2024 那一年，折旧从 7.16 亿一夜之间掉到 2.70 亿，少了 4.46 亿。同一年，净利润从 5.02 亿涨到 7.50 亿，多了 2.48 亿——而营收其实还下降了。</strong></p>
+<p>一家公司营收不涨、折旧凭空少扣 4.46 亿，利润当然就多出来了。这几乎肯定是<strong>延长了塔的会计折旧年限</strong>（比如从 15 年改成 25 年以上）造成的。这在塔类 REIT 里是合理的——塔确实能用 30 年以上，原来的折旧年限本来就偏保守。但对看财报的人来说，后果非常直接：</p>
+<p><strong>FY2024 以后 SBAC 的净利润和 FY2023 以前的净利润完全不可比。它的"每股收益从 4.61 涨到 9.28、三年翻一倍"里，有一大半不是它多赚了钱，而是它改了折旧年限。</strong> 任何拿现在的 19.95 倍市盈率跟历史市盈率比"现在很便宜"的说法，都掉进了这个坑。</p>
+<p>需要诚实说明的是：这个"改折旧年限"的结论是我从数据推出来的最合理解释，我没有去核对原始 10-K 里的会计政策变更说明（本任务的取数规则不翻 10-K 全文）。但"营收持平、折旧少 62%"这个事实本身是数据里明明白白写着的。</p>
+<p><strong>而这一点恰恰说明为什么这家公司必须用 FFO 看</strong>——FFO 把折旧全额加回去，所以不管你把折旧年限定成 15 年还是 30 年，FFO 都不受影响。折旧年限一改，市盈率就假了；FFO 不假。</p>
+<h3>其余项目</h3>
+<p><strong>卖塔的一次性收益</strong>：TTM 资产处置收益 <strong>2.27 亿美元</strong>（现金流表里作为非现金调整从净利润中扣除，说明它确实计入了净利润）。对应的现金流入是"出售房地产资产 2.95 亿"——SBA 在卖掉一部分塔（多半是国际市场的非核心资产）。<strong>这 2.27 亿是纯粹的一次性收益，占 TTM 净利润 9.91 亿的 23%。</strong>净利润里差不多每四块钱就有一块是卖东西卖出来的，不是收租收出来的。</p>
+<p><strong>资产减值</strong>：TTM 1.43 亿美元，FY2025 是 1.74 亿、FY2024 是 0.91 亿、FY2023 是 1.55 亿——<strong>年年都有</strong>，这是塔商的常态（拆掉没租出去的塔、注销退租站点的资产）。所以不加回。</p>
+<p>一次性收益 2.27 亿 和 经常性减值 1.43 亿 部分对冲，净影响是把净利润虚增了约 0.84 亿。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 8,424 万美元，占净利润 8.5%，规模不大。<strong>本篇不加回</strong>——公司自己算 AFFO 时会加回它，我不加，因为它稀释你的股份。</p>
+<p><strong>资本化的支出</strong>：塔类 REIT 会把建塔和买塔的支出资本化，这是正确的——那确实是在造真资产。TTM 购置房地产资产 2.34 亿、企业收购 5.79 亿，这些都是<strong>扩张性</strong>支出（在造新的收入来源），不是维持现有收入所需的开销，所以不该从 AFFO 里扣。真正的维护性支出（换螺栓、加固、刷防锈漆、修围栏）在塔类 REIT 里通常只有每年四五千万美元的量级——<strong>这就是塔生意最厉害的地方：一根钢架子立在那儿，几乎不需要花钱养。</strong></p>
+<p><strong>回购与稀释</strong>：TTM 回购 3.90 亿美元，SBC 0.84 亿，<strong>回购/SBC = 4.63 倍</strong>，远超 3，是货真价实的回购。股本一年减少 1.25%。加上 TTM 派息 5.05 亿（每股约 4.76 美元，股息率约 2.6%），股东回报合计 8.95 亿美元。</p>
+<p><strong>利润和现金流的差</strong>：净利润 9.91 亿，经营现金流 12.84 亿。差 2.93 亿，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>990.7</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>320.0</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>21.9</td>
+</tr>
+<tr>
+<td><strong>− 卖资产的一次性收益（不是经营赚的）</strong></td>
+<td><strong>-227.3</strong></td>
+</tr>
+<tr>
+<td>+ 资产减值（非现金）</td>
+<td>143.4</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC（非现金）</td>
+<td>84.2</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>-35.8</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>-10.7</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>-103.4</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>101.4</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,284</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>注意财报页把"自由现金流"直接等于经营现金流 12.84 亿——那是因为塔的建设支出被归在投资活动里、没有单列成资本开支。<strong>照抄这个"FCF = 12.84 亿"会高估</strong>，虽然高估得不多（真实维护支出只有几千万），下面 AFFO 一栏做了扣除。</p>
+<hr />
+<h2>第三部分：REIT 口径估值（FFO / AFFO）</h2>
+<p>市值 196.5 亿美元，企业价值 345.3 亿。<strong>关键背景：有息负债 152.09 亿，现金 3.27 亿，净负债 148.82 亿——负债差不多等于市值的 76%，占企业价值的 43%。这是一家用极高杠杆买回来的收租生意。</strong>净负债/EBITDA = 6.9 倍，利息保障倍数只有 2.89 倍（经营利润刚够付三倍利息）。</p>
+<p><strong>FFO 怎么算</strong>：净利润 + 折旧摊销 + 其他摊销 − 卖资产收益 + 资产减值
+= 990.7 + 320.0 + 21.9 − 227.3 + 143.4 = <strong>12.49 亿美元</strong>，每股 $11.77</p>
+<p><strong>AFFO 怎么算</strong>：经营现金流 − 维护性资本开支（估约 0.45 亿）
+= 1,284 − 45 = <strong>12.39 亿美元</strong>，每股 $11.68
+（公司自己公布的 AFFO 会更高，因为它还要加回 SBC 0.84 亿等项；本篇不加回，所以我这个数比公司口径低约 7%。）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（参考，失真）</td>
+<td>19,650 ÷ 991</td>
+<td>19.8 倍</td>
+<td>5.05 元</td>
+</tr>
+<tr>
+<td>市值 / FFO</td>
+<td>19,650 ÷ 1,249</td>
+<td>15.7 倍</td>
+<td>6.37 元</td>
+</tr>
+<tr>
+<td><strong>市值 / AFFO（本篇主口径）</strong></td>
+<td>19,650 ÷ 1,239</td>
+<td><strong>15.9 倍</strong></td>
+<td><strong>6.29 元</strong></td>
+</tr>
+<tr>
+<td>市值 / AFFO（剔除卖塔收益后仍不变）</td>
+<td>AFFO 本就不含处置收益</td>
+<td>15.9 倍</td>
+<td>6.29 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>34,530 ÷ 1,834</td>
+<td><strong>18.8 倍</strong></td>
+<td>5.32 元</td>
+</tr>
+<tr>
+<td>三年平均 AFFO 口径</td>
+<td>19,650 ÷ (1,239+1,246+1,290)/3 ≈ 1,258</td>
+<td>15.6 倍</td>
+<td>6.41 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>其余 REIT 关键指标：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>解读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股息率</td>
+<td>2.57%（每股 $4.76）</td>
+<td>对 REIT 来说偏低</td>
+</tr>
+<tr>
+<td>派息率（股息 ÷ AFFO）</td>
+<td><strong>40.8%</strong></td>
+<td>极保守，安全垫厚</td>
+</tr>
+<tr>
+<td>股息+回购 ÷ AFFO</td>
+<td>72.3%</td>
+<td>剩下 27.7% 用于扩张和还债</td>
+</tr>
+<tr>
+<td>净负债 / EBITDA</td>
+<td>6.9 倍</td>
+<td>塔类 REIT 常态偏高端</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td>2.89 倍</td>
+<td>偏紧，利率敏感</td>
+</tr>
+<tr>
+<td>有效税率</td>
+<td>16.6%（TTM 交税 1.98 亿）</td>
+<td>REIT 本身免税，这笔主要来自巴西等海外税和应税子公司</td>
+</tr>
+</tbody>
+</table></div>
+<p>几点说明：</p>
+<ul>
+<li><strong>19.8 倍市盈率是个陷阱</strong>，别用。它同时被两件事污染了：折旧年限延长（人为抬高利润）和卖塔的 2.27 亿一次性收益（同样抬高利润）。<strong>AFFO 的 15.9 倍才是这家公司真实的价钱。</strong></li>
+<li><strong>三年平均口径这次难得地没有意外</strong>。塔生意的现金流极其稳定——AFFO 三年在 12.4 亿到 12.9 亿之间，波动不到 4%。跟前面泰森那种五年内利润在 +32 亿到 -6.5 亿之间摆动的生意相比，这是完全不同的物种。<strong>这也说明当期利润不是周期高点，15.9 倍就是 15.9 倍，不会明天变成 40 倍。</strong></li>
+<li><strong>EV/EBITDA 18.8 倍比 P/AFFO 15.9 倍难看得多，这个差距就是杠杆</strong>。你花 196.5 亿买股权，但实际上是在操作一份 345.3 亿的资产包，中间 148.8 亿是银行的。杠杆放大了你的回报，也放大了利率风险：每 1% 的融资成本上升，一年就多吃掉约 1.5 亿美元——那是 AFFO 的 12%。</li>
+</ul>
+<h3>说人话：投 100 块，一年替你赚多少</h3>
+<p>按最保守的真实口径（P/AFFO 15.9 倍），你现在投 100 块进去，公司一年替你赚 <strong>6.29 元</strong>。这在本批三家公司里是最高的，也远高于美国十年期国债的收益率。</p>
+<p>这 6.29 元里回到你口袋的：股息 2.57 元（占 41%）+ 回购 1.99 元（占 32%），合计 <strong>4.56 元，72%</strong>。剩下的 1.73 元留在公司里：TTM 投资活动净流出 5.70 亿，其中 5.79 亿是收购别人的塔、2.34 亿是买/建塔，同时卖塔回收了 2.95 亿。也就是说留下的钱基本都用在了"买更多塔"上——这是一门可以用留存收益直接复制自己的生意，钱花得不冤。</p>
+<p><strong>这个 6.29 元未来会不会变大？大概率会，但只会慢慢变大。</strong> 往上的力量：现有合同里写死的每年 3% 自动涨租，这是躺着就有的；国际市场 6% 的增长；每年回购 2% 的股本，等于让每股分到的 AFFO 多 2%。三项叠加，AFFO 每股大概能保持每年 5–7% 的增长。往下拽的力量：美国这块已经零增长了，T-Mobile 退租重复站点的影响还没出完；巴西雷亚尔贬值随时可能吃掉国际市场的增长；152 亿债务要不断滚动再融资，利率环境是最大的外生变量；以及一个长期的结构性问题——<strong>卫星直连手机（Starlink Direct-to-Cell 这类）如果真的规模化，地面塔的长期需求会被侵蚀</strong>，这不是三五年内的事，但它解释了为什么塔类 REIT 的估值这两年在整体下移（股价一年跌了 15.6%）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这是本批三家里唯一一家"你的钱真的在替你干活"的公司——一根钢架子租给三家运营商、合同里写死每年涨 3%、几乎不需要花钱维护，投 100 块一年实实在在挣回 6.29 块、其中 4.56 块直接进你口袋；代价是它的账面利润被延长折旧年限和卖塔收益修饰得很难看懂（19.8 倍市盈率是假的、15.9 倍 P/AFFO 才是真的），而且你实际上是在用 1.76 倍的杠杆持有它，利率一涨、雷亚尔一贬，这 6.29 块就要缩水。</p>
+</div></body></html>

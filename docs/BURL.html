@@ -1,0 +1,376 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BURL · 伯灵顿百货（Burlington Stores, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BURL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">34.7倍，再投资回报恰好等于资金成本</div><h1>BURL · 伯灵顿百货（Burlington Stores, Inc.）</h1>
+<p>市值 216.3 亿美元 / 股价 347.67 美元 / 行业：零售业（折扣百货 / off-price）/ TTM 截止 2026 年 5 月 2 日
+全量榜名次：第 293 位 · 交易所 NYSE · 分析日 2026-08-17</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Burlington 在财报里只有<strong>一个经营分部</strong>，stockanalysis 上没有分部营收数据。但把它当成"一门生意"来看会漏掉最重要的东西。它实质上在同时干两件事，而且第二件才是决定你回报的那件。</p>
+<h3>生意一：用"捡漏"的方式进货，然后便宜卖掉（这是全部的 119.11 亿营收）</h3>
+<p><strong>先讲清楚这个模式跟普通零售有什么不同，因为差别是根本性的。</strong></p>
+<p>一家普通的服装连锁（比如 Gap）是这么做生意的：今年三月，采购部门决定明年春天要卖 50 万件某款米色风衣，去越南下单，工厂十个月后交货，明年二月上架，标价 128 美元。这个流程里最要命的一点是——<strong>十个月前就得赌对明年春天流行什么颜色</strong>。赌对了，正价卖光，毛利 60%；赌错了，打三折清仓，毛亏。</p>
+<p>Burlington 完全不这么干。它<strong>不提前十个月下单，它等着别人赌错</strong>。</p>
+<p>具体是这样：Gap 那 50 万件米色风衣，到了明年四月还剩 18 万件卖不动。Gap 的选择是要么打折清仓（伤品牌、占货架）、要么烧掉。这时 Burlington 的买手上门说：这 18 万件我全要，一件给你 22 美元，现金，明天拉走，但你别问我摆在哪儿卖。Gap 一算，22 美元虽然低，但比压在仓库里强，卖了。Burlington 拉回去，挂上标签："建议零售价 128 美元，我们卖 39.99"。</p>
+<p>对消费者，这是一件 128 美元的风衣卖 40 块。对 Burlington，进价 22 卖 40，毛利率 45%，比 Gap 清仓时还赚钱。<strong>双方都赢，输的是当初那个赌错颜色的决策。</strong></p>
+<p>这就是 off-price（折扣零售）模式的核心：<strong>它的商品成本不是"生产成本 + 品牌溢价"，而是"别人的库存错误"</strong>。美国服装业每年制造出几百亿美元的库存错误，Burlington、TJX（TJ Maxx）、Ross 这三家就是靠吃这个错误活着。</p>
+<p>这个模式带来几个必然的特征，都能在财报上验证：</p>
+<p><strong>特征一：不能承诺你店里有什么。</strong> Burlington 的货是机会型采购来的，这周有 400 件某牌牛仔裤，卖完就没了，下周来的可能是完全不同的东西。所以你没法"去 Burlington 买一条 32 腰的某某牌牛仔裤"，你只能"去 Burlington 逛逛看有什么"。这决定了它的电商做不大（网上没法逛"看有什么"），也决定了客人来店频率高、每次停留久——这叫"寻宝式购物"。</p>
+<p><strong>特征二：毛利率反而不低。</strong> TTM 毛利率 <strong>43.95%</strong>，甚至比 ULTA（43.19%）还高一点。很多人以为折扣店毛利低，错了——它的低是<strong>标价低</strong>，不是<strong>加价率低</strong>。22 块进 40 块卖，加价率 82%，比正价百货还狠。</p>
+<p><strong>特征三：费用率是死穴。</strong> 毛利 43.95%，但经营利润率只有 <strong>7.49%</strong>。中间 36.5 个百分点全被门店和人力吃掉了。为什么这么高？因为 off-price 店的商品是杂乱的、每件不一样的、需要人工上架分类的，一家店要 60–70 个员工。83,309 名员工做 119.11 亿营收，<strong>人均创收只有 14.3 万美元，人均创利 7,491 美元</strong>——对比 ULTA 的人均创利 1.78 万，Burlington 的人效只有它的 42%。这是这门生意的天花板所在。</p>
+<p>按品类拆开大概是这样（<strong>占比为近似估算</strong>，Burlington 只在年报里给大致品类结构，金额按 TTM 总营收 119.11 亿折算）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品类</th>
+<th>占比（估算）</th>
+<th>TTM 营收（估算，亿美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>女装成衣</td>
+<td>约 22%</td>
+<td>约 26.2</td>
+<td>最大品类</td>
+</tr>
+<tr>
+<td>配饰与鞋类</td>
+<td>约 22%</td>
+<td>约 26.2</td>
+<td>增长最快的一块</td>
+</tr>
+<tr>
+<td>男装</td>
+<td>约 20%</td>
+<td>约 23.8</td>
+<td></td>
+</tr>
+<tr>
+<td>家居用品</td>
+<td>约 16%</td>
+<td>约 19.1</td>
+<td>近年重点扩张</td>
+</tr>
+<tr>
+<td>童装与婴儿用品</td>
+<td>约 15%</td>
+<td>约 17.9</td>
+<td>含 Baby Depot</td>
+</tr>
+<tr>
+<td>外套</td>
+<td>约 5%</td>
+<td>约 6.0</td>
+<td>公司起家的品类，现在只剩零头</td>
+</tr>
+</tbody>
+</table></div>
+<p>关于最后一行值得多说一句：Burlington 的原名是 <strong>Burlington Coat Factory（伯灵顿大衣工厂）</strong>，1972 年真的就是卖大衣的。现在大衣只剩 5%，但名字里的"Coat"甩了几十年才甩掉——这也是它转型成综合折扣百货的历史痕迹。</p>
+<h3>生意二：把赚来的钱全部拿去开新店（这才是决定你回报的那件事）</h3>
+<p>这一"门生意"在利润表上是看不见的，只在现金流量表上：</p>
+<p><strong>TTM 经营现金流 13.22 亿美元，资本开支 9.39 亿美元。</strong></p>
+<p><strong>它把赚到的现金的 71% 拿去开新店和建物流中心了。</strong></p>
+<p>这个数字有多极端？对比一下 ULTA：经营现金流 15.45 亿，资本开支 4.14 亿，只花掉 27%。Burlington 花掉的比例是 ULTA 的 2.6 倍。</p>
+<p>更直观的指标：<strong>资本开支 9.39 亿 ÷ 折旧摊销 3.90 亿 = 2.41 倍</strong>。折旧代表"维持现有门店不衰败需要花的钱"，Burlington 花了 2.41 倍——多出来的 5.5 亿是纯扩张。它的门店数从几年前的约 800 家扩到现在 1,200 家以上，还在以每年一百多家的速度开。</p>
+<p><strong>所以你买 Burlington 的股票，本质上是在买两个东西：一个正在运转的、利润率 7.5% 的折扣卖场网络；加上一个每年拿走 9.4 亿现金去建新卖场的再投资机器。</strong> 第二件事的回报好不好，直接决定你的钱值不值。这个问题留到第三部分回答，因为它有一个非常明确的数字答案。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：1.212 亿美元，占净利润 19.4%。</strong>
+这个比例不算离谱，但比 ULTA（3.07%）高了六倍。同样是几万人的零售商，差别在于 Burlington 给中高层发的股票更多。按规矩，<strong>SBC 一律当真实的现金成本扣掉</strong>——GAAP 净利润 6.24 亿里已经扣过了，这里不加回。但要记住一件事：这 1.21 亿是每年都在稀释你的股份，而下面回购那一项能不能抵消它，是关键。</p>
+<p><strong>一次性项目：资产减值与重组 2,181 万美元。</strong>
+金额只占净利润 3.5%，不重要。但要点破一个口径问题：一个每年新开一百多家店、同时关掉一些老店的连锁零售商，<strong>"资产减值和重组"是年年都有的</strong>，不是真一次性。所以不加回。另外提醒：只看 TTM 这一期，无法分辨某笔大额一次性项目是真偶发还是年年发生——好在这里金额很小，怎么处理都不影响结论。</p>
+<p><strong>资本化的支出：没有软件/内容资本化的猫腻，但资本开支本身需要重新理解。</strong>
+9.39 亿的资本开支全是实体的东西——新店装修、货架、物流中心、卡车。这一点是诚实的。但它带来一个<strong>估值上的严重扭曲</strong>：会计上，这 9.39 亿全部从自由现金流里扣掉了，导致 Burlington 的自由现金流只有 3.83 亿，市值/自由现金流高达 56.5 倍，看起来贵得离谱。可实际上其中大约 5.5 亿是<strong>扩张性投资</strong>（可以随时停下来），只有约 3.9 亿（≈折旧）是<strong>维持性投资</strong>（停不下来）。这个区分在第三部分会算成一个具体的倍数。</p>
+<p><strong>回购与稀释：这是 Burlington 最难看的一项。</strong></p>
+<p>TTM 回购 <strong>2.851 亿美元</strong>，同期 SBC <strong>1.212 亿美元</strong>，比值 <strong>2.35 倍</strong>。</p>
+<p>按规矩，比值接近 1 说明回购只是在抵消员工发股，大于 3 才算真回购。<strong>Burlington 是 2.35 倍，落在"基本只是在擦屁股"这一档。</strong></p>
+<p>看股本的实际变化就更清楚了：<strong>一年下来股本只减少了 0.58%</strong>，最近一个季度甚至<strong>增加了 0.01%</strong>。2.85 亿的回购占市值 1.32%，但真正落到你手上的股本减少只有 0.58%——<strong>超过一半的回购金额被员工发的股票吃掉了</strong>。</p>
+<p>对比 ULTA：回购 10.88 亿，SBC 3,650 万，比值 29.8 倍，股本一年减 4.46%。两家市值差不多（219.6 亿 vs 216.3 亿），ULTA 还给股东的股本比例是 Burlington 的 <strong>7.7 倍</strong>。</p>
+<p>Burlington 也不分红。所以：<strong>你持有 Burlington，一年之内公司真正还给你的东西，只有 0.58% 的股本注销。剩下的全在公司里。</strong></p>
+<p><strong>利润和现金流的差：经营现金流看着漂亮，但自由现金流很难看，差的全在开店上。</strong></p>
+<p>净利润 6.24 亿 → 经营现金流 13.22 亿 → 自由现金流 3.83 亿。</p>
+<p>经营现金流是净利润的 <strong>2.12 倍</strong>，这个倍数很大，必须逐项对清楚（单位：百万美元，TTM）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>624.1</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+389.9</td>
+<td>门店装修、设备、物流中心的年度损耗</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+31.9</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+21.8</td>
+<td>关店/减值，非现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+121.2</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+141.4</td>
+<td>主要是经营租赁相关的非现金项与递延税</td>
+</tr>
+<tr>
+<td>= 小计</td>
+<td>1,330.3</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−9.2</td>
+<td></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−128.9</td>
+<td>新开店铺货占的钱</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+131.3</td>
+<td>供应商多欠了一点，几乎完全抵消存货占款</td>
+</tr>
+<tr>
+<td>− 其他经营性净资产</td>
+<td>−1.8</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>1,321.7</td>
+<td>✓ 与报表 1,322 一致</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−938.8</td>
+<td><strong>开新店、建物流中心</strong></td>
+</tr>
+<tr>
+<td>+ 处置资产回款</td>
+<td>+22.1</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>382.9</td>
+<td>✓ 与报表一致（口径含处置回款）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最该看的是最后两行。</strong> 经营现金流 13.22 亿是真的，营运资金几乎没有占用（存货增加 1.29 亿被应付账款增加 1.31 亿完全对冲，这说明它有本事让供应商替它垫货款，是个好信号）。问题出在资本开支：<strong>13.22 亿赚回来，9.39 亿投出去，只剩 3.83 亿。</strong></p>
+<p>而且这不是偶然的一年。看历史自由现金流：FY2024 是 3.76 亿，FY2025 是 <strong>−0.17 亿（负的）</strong>，FY2026 是 1.72 亿，TTM 是 3.83 亿。<strong>四年里有一年是负的，最好的一年也只有 3.83 亿。</strong> 一家 216 亿市值的公司，四年平均自由现金流约 2.3 亿——自由现金流对它几乎不是一个有意义的指标，因为钱一进来就被投出去了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 216.25 亿，企业价值 267.50 亿。中间差的 51.25 亿是净负债——<strong>这一项 Burlington 比 ULTA 严重得多</strong>：总债务 58.72 亿，现金 7.47 亿，负债权益比 3.20 倍。其中相当一部分同样是经营租赁负债（1,200 多家店的未来租金折现），但 Burlington 还有实打实的银行借款和定期贷款（TTM 净新增借款 2.49 亿，一年付了 6,811 万现金利息）。</p>
+<p>下表统一用"<strong>当前市值 ÷ 利润</strong>"计算（网站显示的 35.78 倍是"股价 ÷ 每股收益"，因为股本几乎没变，两者差别很小）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>216.25 亿 ÷ 6.24 亿</td>
+<td><strong>34.7 倍</strong></td>
+<td><strong>2.88 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回减值重组等（<strong>估算</strong>，公司未在此披露具体调整额）</td>
+<td><strong>约 33.8 倍</strong></td>
+<td><strong>约 2.96 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已按 GAAP 扣除不加回；减值属年年发生不加回</td>
+<td><strong>34.7 倍</strong></td>
+<td><strong>2.88 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>216.25 亿 ÷ 3.83 亿</td>
+<td><strong>56.5 倍</strong></td>
+<td><strong>1.77 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（剔除扩张性资本开支，<strong>估算</strong>）</td>
+<td>216.25 亿 ÷ 9.32 亿（经营现金流 13.22 − 维持性资本开支约 3.90）</td>
+<td><strong>约 23.2 倍</strong></td>
+<td><strong>约 4.31 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>267.50 亿 ÷ 8.93 亿</td>
+<td><strong>30.0 倍</strong></td>
+<td><strong>3.34 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>216.25 亿 ÷ 4.85 亿（FY2024–FY2026 三年均值）</td>
+<td><strong>44.6 倍</strong></td>
+<td><strong>2.24 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径这一行揭穿了最重要的事。</strong></p>
+<p>过去三个完整财年的净利润是 3.40 亿（FY2024）、5.04 亿（FY2025）、6.10 亿（FY2026），三年平均 4.85 亿；TTM 是 6.24 亿。<strong>当期利润比三年平均高出 29%。</strong></p>
+<p>这意味着：<strong>你现在看到的 34.7 倍，是建立在一个明显高于自身三年平均水平的利润之上的。</strong> 按三年平均的利润算，你付的是 44.6 倍。</p>
+<p>这跟 ULTA 完全相反（ULTA 当期 18.5 倍、三年平均 18.1 倍，几乎一样，说明当期利润不虚）。Burlington 的利润在过去三年是一路往上冲的——经营利润率从 FY2023 的 4.62% 一路提到现在的 7.49%。涨得快是好事，但<strong>你现在是在一个连涨三年之后的高点上，按这个高点定价买入</strong>。</p>
+<p>这里必须诚实：也可以反过来解读——利润率从 4.6% 提到 7.5% 是管理层过去几年真做出来的经营改善（供应链提速、门店模型缩小、SKU 结构调整），如果这是<strong>结构性改善</strong>而不是<strong>周期高点</strong>，那三年平均口径就低估了它。这两种解读只看单期 TTM 是分不清的。但有一个客观事实是不能回避的：<strong>7.49% 的经营利润率仍然低于同行 TJX 的两位数水平，也低于 Burlington 自己 FY2022 的 8.49%。</strong> 也就是说这不是历史最高，只是从一个很低的谷底爬回来。爬回来是真的，但爬到"值 35 倍"的高度，需要它继续往上爬。</p>
+<h3>那台开店机器到底赚不赚钱？——这是全篇最关键的一个数字</h3>
+<p>Burlington 每年把 71% 的经营现金流投进新店。判断这值不值，就看<strong>投出去的资本产生多少回报</strong>：</p>
+<p><strong>投入资本回报率（ROIC）= 9.96%</strong>
+<strong>加权平均资本成本（WACC）= 9.88%</strong></p>
+<p><strong>两个数字几乎一模一样。</strong></p>
+<p>翻译成大白话：<strong>Burlington 每投出去 100 块开新店，一年赚回来 9.96 块；而它筹这 100 块钱（借钱 + 股东的钱）的成本是 9.88 块。净赚 0.08 块。</strong></p>
+<p>一家把 71% 现金流拿去再投资的公司，如果再投资的回报只等于资金成本，那这些再投资<strong>在经济意义上没有创造任何价值</strong>——钱在公司里转了一圈，规模变大了，股东财富没变。</p>
+<p>对比 ULTA：ROIC <strong>26.13%</strong>，WACC 8.10%，中间赚 18 个百分点的价差；而且 ULTA 只把 27% 的现金流拿去再投资，剩下的全部还给股东。</p>
+<p>（一个技术说明：这两家的 ROIC 都被"经营租赁资本化"拉低了——租来的门店按会计准则要计入投入资本。所以 9.96% 这个绝对值可能略低估。但 ULTA 面对的是同样的会计规则，<strong>两家之间 26.1% vs 10.0% 的差距是可比的、真实的</strong>。）</p>
+<h3>说人话：你投 100 块进去，一年发生什么</h3>
+<p><strong>按最保守的真实口径（34.7 倍），公司一年替你赚 2.88 元。</strong> 如果用三年平均利润，只有 2.24 元。</p>
+<p>这 2.88 元怎么分配：</p>
+<ul>
+<li><strong>不分红</strong>，一分现金都不到你手上。</li>
+<li><strong>回购 2.85 亿，占市值 1.32%，但净股本只减少 0.58%</strong>——所以真正以"你占比变大"形式还给你的，按 100 块算大约是 <strong>0.58 元</strong>。</li>
+<li>剩下的 <strong>2.3 元全部留在公司里</strong>，被投进了新门店和物流中心。</li>
+</ul>
+<p>也就是说：<strong>你赚的钱里，只有五分之一能算真正到手，五分之四被管理层拿去开新店了；而开新店的回报率（9.96%）恰好等于资金成本（9.88%）。</strong></p>
+<p><strong>这个 2.88 元未来变大还是变小？</strong></p>
+<ul>
+<li><strong>每股的自然增长几乎为零</strong>——股本一年只减 0.58%，指望不上回购。</li>
+<li><strong>总利润会不会涨？</strong> 会，而且大概率涨得不慢。门店从 1,200 家开到 1,500 家，营收自然增长；同店销售如果也保持正增长，经营杠杆会放大到利润端。分析师给的三年每股收益增速预期是 19%。</li>
+<li><strong>但这个增长你已经付过钱了。</strong> 34.7 倍市盈率对应的隐含要求就是高增长；三年平均口径 44.6 倍说明市场是按"利润继续往上冲"定价的。增长兑现，你只是不亏；增长不及预期，34.7 倍会迅速变成一个很难看的数字。</li>
+</ul>
+<p>还有一个不能忽略的风险：<strong>Burlington 卖的是可选消费品，服装是经济下行时第一个被砍的开支。</strong> 它的 Beta 是 1.47（波动比大盘高 47%），净负债 51.25 亿、净负债/EBITDA 4.0 倍，杠杆不低。如果美国消费走弱，7.49% 的经营利润率会迅速被压回 5% 以下——FY2023 就发生过一次，那年利润率 4.62%、市盈率被打到 63.67 倍。</p>
+<p>（一个公平的反面观点：off-price 模式在经济下行时其实有天然的对冲——消费降级时，从正价店转到折扣店的客流会增加，同时上游品牌的滞销库存变多、进货更便宜。TJX 在 2008–2009 年就跑赢了整个零售业。所以 Burlington 未必是纯粹的周期受害者。但它的杠杆比 TJX 高得多，这层缓冲会被利息吃掉一部分。）</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>34.7 倍（按三年平均利润是 44.6 倍）买一家把 71% 的现金流拿去再投资、而再投资回报率（9.96%）恰好等于资金成本（9.88%）、一年只还给你 0.58% 股本的公司——这个价格贵了。</strong></p>
+<p>模式本身没问题，off-price 是零售业里少数几个真正有护城河的模式，吃的是别人的库存错误，不怕亚马逊。管理层过去三年把经营利润率从 4.6% 提到 7.5%，是真本事。</p>
+<p>但你付的价格已经把这些好事全算进去了，而且<strong>你付了 34.7 倍的价钱，却拿不到现金</strong>——赚的钱五分之四被拿去开新店，开店的回报只跟资金成本打平。同样是 216 亿市值的零售商，隔壁 ULTA 只要 18.5 倍，把 96% 的自由现金流实打实还给你，投入资本回报率是它的 2.6 倍。</p>
+<p>如果你相信 Burlington 的门店模型正在变好、7.5% 的利润率只是中途站、开店回报率会随着规模上去——那这笔投资是成立的。<strong>但那是三件都得对的事，而 34.7 倍的价格没给你留犯错的余地。</strong></p>
+</div></body></html>

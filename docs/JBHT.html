@@ -1,0 +1,333 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JBHT · J.B. 亨特运输服务</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">JBHT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">一家好公司被买成了一个坏价格</div><h1>JBHT · J.B. 亨特运输服务</h1>
+<p>市值 262.7 亿美元 | 股价约 279.7 美元 | 行业：运输（卡车 / 铁路联运）| TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>J.B. Hunt 是美国最大的货运承运商之一，成立于阿肯色州的一个乡下小镇。它表面上是"开卡车的"，实际上是<strong>五门生意拼在一起</strong>，每一门赚钱的方式完全不同，好坏差距极大。</p>
+<h3>生意一：铁路联运（Intermodal，占营收 49.8%）</h3>
+<p>这是这家公司的命根子，一半的钱从这来。</p>
+<p>具体是怎么回事：美国从西海岸港口往中西部、东部运货，如果全程用卡车，一辆车配一个司机，2000 英里要跑四天，油钱和人工都贵得离谱。J.B. Hunt 的办法是——<strong>把货装进一个 53 英尺长的集装箱，中间那 1800 英里让火车拉</strong>。</p>
+<p>举个具体的例子。洛杉矶郊区一家给沃尔玛供货的日用品工厂，要把一整箱货送到芝加哥的配送中心。J.B. Hunt 派一辆自己的短驳卡车（行话叫 dray）开到工厂门口，把公司自有的那个印着白底黄字 "J.B. HUNT" 的集装箱装满，拉 30 英里到 BNSF 铁路公司在洛杉矶的堆场，吊车把箱子吊上双层集装箱火车。火车拉到芝加哥，J.B. Hunt 芝加哥当地的短驳车再把箱子拉到沃尔玛的配送中心，拆完货再把空箱拖走。全程 J.B. Hunt 向货主收大约 2800 美元，其中要付给 BNSF 铁路的干线运费大概 1600–1800 美元，剩下的减掉两头短驳的司机和油钱、箱子的折旧，就是它的利润。</p>
+<p>它凭什么能做这门生意、别人做不了？三样东西：</p>
+<ol>
+<li><strong>箱子</strong>。J.B. Hunt 自己拥有大约 12 万个 53 英尺集装箱和配套底盘，这是全北美最大的一支私有联运箱队。买这么多箱子要花几十亿美元，新玩家进不来。</li>
+<li><strong>和铁路的独家关系</strong>。1989 年它跟当时的圣达菲铁路签了美国历史上第一份"卡车公司 + 铁路公司"的合作协议，这个合同一直延续到今天的 BNSF；东部则跟 Norfolk Southern 合作。铁路公司自己不愿意去伺候几千个零散货主，J.B. Hunt 干的就是"把火车的运力零售出去"这件事。</li>
+<li><strong>两头的卡车</strong>。火车只能到堆场，最后那 30 英里必须有卡车。J.B. Hunt 在全美主要枢纽都有自己的短驳车队，这是它比纯铁路代理强的地方。</li>
+</ol>
+<p>对货主的价值很直白：<strong>比纯卡车便宜 10–20%，柴油消耗只有卡车的三分之一到四分之一</strong>（这对有减碳指标的大零售商是硬需求）。代价是慢一到两天。所以适合运"不那么急"的量大货物——家居用品、纸品、罐头、家电、塑料粒子。</p>
+<h3>生意二：专属车队外包（Dedicated Contract Services，占营收 27.3%）</h3>
+<p>这门生意最稳，也是这几年真正的利润支柱。</p>
+<p>具体是什么：很多大公司自己养一支车队——比如一家区域连锁超市，有 80 辆卡车、90 个司机，天天从自己的配送中心往 200 家门店送货。养车队很烦：买车要几千万，司机流动率一年 70%，还要管保养、保险、合规、DOT 检查。J.B. Hunt 上门说：<strong>这些我全包了，车我买、司机我雇、维修我管，车身刷你的品牌颜色和 LOGO，只给你开账单。</strong></p>
+<p>收钱方式是<strong>每辆车每月固定费 + 每英里变动费</strong>，签 3 到 7 年的长约，合同里带燃油附加费条款和年度涨价条款。也就是说，油价涨了转嫁给客户，通胀了自动调价——<strong>这是一门几乎不承担运价周期风险的生意</strong>。</p>
+<p>目前大约有 1.3 万辆专属卡车在跑。按 3468 百万营收除以 1.3 万辆，<strong>平均每辆车一年给 J.B. Hunt 带来约 26.7 万美元收入</strong>。近两年新签合同的节奏放缓（客户在削减开支），但续约率一直在 90% 以上——因为客户一旦把车队卖掉、司机转过来，再想自己接回去几乎不可能。</p>
+<h3>生意三：货运经纪（Integrated Capacity Solutions，占营收 10.2%）</h3>
+<p>这门生意<strong>不拥有任何一辆卡车</strong>，纯粹是中间人。</p>
+<p>例子：一家家具厂周三下午突然要把一车沙发从北卡运到得州，自己没车、也没跟哪家承运商签约。它上 J.B. Hunt 的平台（叫 J.B. Hunt 360）发个单，平台上有大约 100 万台注册的第三方卡车（大部分是只有一到五辆车的个体户）。系统匹配到一个正好在北卡卸完货、要空车回得州的司机。货主付 J.B. Hunt 2000 美元，J.B. Hunt 付这个司机 1820 美元，<strong>自己留 180 美元，毛利率不到 10%</strong>。</p>
+<p>这就是一门在货运下行周期里被打得稀烂的生意：2022 年它有 23.23 亿营收，到 2025 年只剩 11.09 亿，砍掉一半还多，而且这三年大部分时间是<strong>亏钱</strong>的（付给司机的价格降得比向货主收的价格慢）。TTM 已经回升到 12.92 亿、同比 +16.5%，是运价周期见底回升的信号。</p>
+<h3>生意四：大件到家（Final Mile Services，占营收 6.3%）</h3>
+<p>这是"送沙发进你家客厅"的生意。</p>
+<p>你在网上买了一台跑步机、一张三人沙发、一台冰箱或者一个按摩浴缸，快递公司搞不定这种东西——太大太重，一个人搬不动，而且要拆包装、要安装、要把旧的抬走。J.B. Hunt 在全美有约 100 个大件仓库，两人一组的团队开箱车上门，抬进屋、拆包、装好、把纸箱垃圾带走。<strong>向零售商（不是向你）收费，一单大约 150–250 美元</strong>，客户是家具连锁、家电品牌、健身器材品牌。</p>
+<p>这块 TTM 营收 7.98 亿，同比 -3.1%，是唯一在萎缩的板块——线上大件消费这两年疲软，同时公司主动丢掉了一些不赚钱的合同。</p>
+<h3>生意五：整车运输（Truckload，占营收 6.6%）</h3>
+<p>最传统的那种：自己的车、自己的司机，从 A 点拉到 B 点。J.B. Hunt 在这块的差异化打法叫"甩挂"（drop-trailer）——它在全美布了大约 1.6 万个挂车，<strong>提前把空挂车停在客户的月台上，客户什么时候装满都行，装满了发个信号，J.B. Hunt 派车头来拖走</strong>。这样司机不用在客户门口干等两三个小时。TTM 8.35 亿，同比 +13.8%，是增速第二快的板块。</p>
+<h3>五门生意的账（TTM，截至 2026-06-30，金额单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 营收</th>
+<th>同比*</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>铁路联运 Intermodal</td>
+<td>6,327</td>
+<td>+5.9%</td>
+<td>49.8%</td>
+<td>~7.5%</td>
+<td>~475</td>
+</tr>
+<tr>
+<td>专属车队 Dedicated</td>
+<td>3,468</td>
+<td>+2.7%</td>
+<td>27.3%</td>
+<td>~12%</td>
+<td>~416</td>
+</tr>
+<tr>
+<td>货运经纪 ICS</td>
+<td>1,292</td>
+<td>+16.5%</td>
+<td>10.2%</td>
+<td>~0.4%</td>
+<td>~5</td>
+</tr>
+<tr>
+<td>大件到家 Final Mile</td>
+<td>798</td>
+<td>-3.1%</td>
+<td>6.3%</td>
+<td>~7%</td>
+<td>~56</td>
+</tr>
+<tr>
+<td>整车 Truckload</td>
+<td>835</td>
+<td>+13.8%</td>
+<td>6.6%</td>
+<td>~0.5%</td>
+<td>~4</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>12,701</strong></td>
+<td><strong>+5.9%</strong></td>
+<td>100%</td>
+<td><strong>7.52%</strong></td>
+<td><strong>956</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>* 同比是拿 TTM 跟 2025 完整财年比，两者中点差半年，属于近似口径。</p>
+<p><strong>利润率一栏必须说明白：财报只按板块披露到营收，不披露板块经营利润，上表的利润率是按行业常规和公司整体 7.52% 的经营利润率倒推的估算值，不是财报原文数字。</strong> 但方向是确定的：<strong>Dedicated 是最赚钱的，Intermodal 是最大的，ICS 和 Truckload 基本不赚钱</strong>，加起来 16.8% 的营收只贡献了大约 1% 的利润。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 7173 万美元，占净利润 10.6%。这个比例在美股里算<strong>非常低</strong>——软件公司经常是 50%–100%。原因很简单：这家公司的三万多员工里绝大多数是卡车司机和仓库工人，不发股票，发的是工资。这 7173 万照 GAAP 已经从利润里扣掉了，下面所有口径都不加回来。</p>
+<p><strong>一次性项目</strong>：TTM 有 809 万美元的资产处置损失（卖旧卡车、旧挂车卖亏了），金额很小。要注意的是这一项<strong>年年都有</strong>（2023 年 2781 万、2024 年 1456 万、2025 年 1374 万），根本不是"一次性"，是重资产公司的经常性成本，不该加回。除此之外没有大额重组、减值或诉讼和解。这一项对估值影响不到 1%，可以忽略。</p>
+<p><strong>资本化的支出</strong>：没有软件或内容资本化的猫腻。它的资本开支是实打实的卡车、挂车、集装箱，TTM 花了 4.96 亿——<strong>这是本篇最值得注意的一个数字</strong>，见下文。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 5.75 亿美元，同期 SBC 只有 7173 万，<strong>比值 8.0 倍</strong>。这是真回购，不是拿回购给员工发股票擦屁股。股本一年实际减少了 4.92%，也就是说你什么都不干，手上这股占公司的份额一年就多了 5%。分红另外付了 1.69 亿。<strong>回购 + 分红 = 7.44 亿，占自由现金流的 68%</strong>，这个资本回报纪律是加分项。</p>
+<p><strong>利润和现金流的差</strong>：净利润 6.75 亿，经营现金流 15.95 亿，差了两倍多。这是重资产运输公司的典型形态，逐项对账如下（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>674.5</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>718.4</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>71.7</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>8.1</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（含递延所得税等）</td>
+<td>138.2</td>
+</tr>
+<tr>
+<td>＋/− 营运资金变化合计</td>
+<td>−15.6</td>
+</tr>
+<tr>
+<td>　其中：应收账款增加</td>
+<td>−279.1</td>
+</tr>
+<tr>
+<td>　其中：应付账款增加</td>
+<td>+136.0</td>
+</tr>
+<tr>
+<td>　其中：应交所得税增加</td>
+<td>+142.7</td>
+</tr>
+<tr>
+<td>　其中：其他经营性资产</td>
+<td>−15.1</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,595.3</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−495.6</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,099.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>对账里有两件事值得说：</p>
+<p>第一，<strong>折旧 7.18 亿比净利润还大</strong>。这不是会计游戏，是真实的：集装箱、底盘、卡车、挂车都在磨损，迟早要换。所以对这家公司来说，"折旧不是真成本"这句话是错的。</p>
+<p>第二，<strong>资本开支 4.96 亿远低于折旧 7.18 亿</strong>。差了 2.2 亿。看历史就清楚了：2023 年它资本开支 18.6 亿，2024 年 8.65 亿，2025 年 7.31 亿，TTM 只剩 4.96 亿——<strong>四年砍掉了 73%</strong>。所以 TTM 的自由现金流 11 亿创了历史新高，看着很漂亮，但其中相当一部分是"暂时不买新车"省出来的。这是货运下行周期里的正常操作（没生意就别扩车队），但它意味着<strong>这个 11 亿的自由现金流不是可持续的稳态水平</strong>——等运价回暖、要重新扩产能时，资本开支会回到 8–10 亿，自由现金流会掉回 7–8 亿。同时应交所得税增加 1.43 亿、现金实交税只有 4104 万（而利润表上的税费是 2.15 亿），这也是一次性的时点差异，明年会补上。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 262.7 亿，净负债 14.0 亿（现金只有 416 万美元，几乎没有），企业价值 276.7 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>262.7 亿 ÷ 6.745 亿</td>
+<td><strong>39.7 倍</strong></td>
+<td><strong>2.52 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司基本不报调整后 EPS，与 GAAP 相同</td>
+<td>39.7 倍</td>
+<td>2.52 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已扣，仅加回资产处置损失税后 613 万</td>
+<td><strong>39.3 倍</strong></td>
+<td><strong>2.54 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>262.7 亿 ÷ 11.0 亿</td>
+<td><strong>23.9 倍</strong></td>
+<td><strong>4.19 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>276.7 亿 ÷ 9.56 亿</td>
+<td><strong>28.9 倍</strong></td>
+<td>3.45 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>262.7 亿 ÷ 6.15 亿（TTM/FY25/FY24 平均）</td>
+<td><strong>42.7 倍</strong></td>
+<td><strong>2.34 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>用大白话讲清楚：你现在投 100 块进 J.B. Hunt，按最保守的口径（三年平均利润）算，公司一年替你赚 2.34 块。</strong></p>
+<p>这 2.34 块里，实际回到你口袋的部分：分红 1.69 亿 + 回购 5.75 亿 = 7.44 亿，除以 262.7 亿市值 = <strong>股东回报率 2.83%</strong>（其中现金分红只占 0.64%，其余是回购帮你增加持股比例）。留在公司里的部分是那 4.96 亿资本开支，买的是新集装箱和新卡车。</p>
+<p><strong>注意自由现金流口径的 23.9 倍看着最便宜，但它是这一版数字里最不可信的一个</strong>——上一节说过，这个 11 亿是靠把资本开支砍到折旧的 69% 挤出来的。如果按"资本开支 = 折旧"的可持续水平算，正常化自由现金流约 8.8 亿，对应市盈率 <strong>29.9 倍</strong>，那才是真实的现金回报率（3.35 元）。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong> 大概率变大，但幅度有限。理由：卡车运价从 2022 年顶部跌了三年，2025 年下半年开始触底，TTM 的收入增速已经从 -5.8%（2024）翻正到 +5.9%，货运经纪 +16.5%、整车 +13.8% 都是周期回暖的先行指标。运价回升时这家公司的经营杠杆很大——车和箱子都是现成的，多拉一箱货几乎全是利润。经营利润率从 2024 年的 6.88% 已经回到 7.52%，历史峰值是 2022 年的 8.99%。<strong>如果周期走到上一轮的峰值利润率，净利润大约能到 9.5–10 亿，对应当前市值 26–28 倍市盈率。</strong></p>
+<p>但这里有个致命的限制：<strong>这是一门在最好的年份净利率也只有 6.5% 的生意。</strong>它没有护城河带来的定价权，它的护城河（箱子、铁路合同、专属车队合同）只能保证它不被淘汰，不能保证它赚超额利润。ROIC 14.18% 对 WACC 11%，超额收益只有 3 个百分点。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家好公司，被买成了一个坏价格。</strong></p>
+<p>J.B. Hunt 本身没什么可挑剔的：五门生意里两门（联运 + 专属车队）有真实的进入壁垒，回购是真回购（8 倍于 SBC），SBC 只占利润 10%，资产负债表干净（净负债只有 EBITDA 的 0.61 倍），管理层在周期底部懂得砍资本开支。这些都是加分项。</p>
+<p>问题全在价格上。<strong>这只股票过去 52 周涨了 91.8%，而同期利润只增长了 28%</strong>——剩下的全是估值扩张，市场提前把"周期回暖 + 明年利润再涨 30%"这件事一次性付了钱。39.7 倍市盈率买一家净利率 5.3%、ROIC 14%、要靠柴油和铁路运力吃饭的重资产运输公司，在美股历史上属于极端定价：这家公司过去十年的中位市盈率大约在 22–25 倍。</p>
+<p>按三年平均利润算，你付的是 42.7 倍，一年拿回 2.34 块。<strong>就算周期真的回到 2022 年的峰值利润，也不过是把市盈率从 39.7 倍压到 26–28 倍，那时候你才刚刚达到一家周期股在周期顶点应该有的正常估值。</strong>换句话说，<strong>未来三年最好的情况下你赚的是"业绩追上股价"，而不是"股价还能涨"</strong>；一旦周期回暖比预期慢，或者亚马逊和铁路公司在联运上继续挤压它的份额，40 倍的估值会给你一个非常难看的下跌。</p>
+<p><strong>这个价格不值得买。</strong> 合理的入手位置在 25 倍以下，也就是股价 175–180 美元附近——比现在低 36%。</p>
+</div></body></html>

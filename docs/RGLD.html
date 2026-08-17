@@ -1,0 +1,350 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RGLD · 皇家黄金（Royal Gold, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RGLD</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">39个人86.8%毛利，但价格已把一轮金价大涨算进去</div><h1>RGLD · 皇家黄金（Royal Gold, Inc.）</h1>
+<p>市值 195.5 亿美元 / 股价 230.68 美元 / 行业：有色金属——矿业特许权（不是矿业公司）/ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说一个数字，它比后面所有分析都重要：<strong>皇家黄金全公司只有 39 名员工，一年做 15.4 亿美元营收、7.4 亿美元净利润。人均创收 3938 万美元，人均创利 1892 万美元。</strong></p>
+<p>这不是打字错误。因为这家公司<strong>不挖矿</strong>。它一个矿工都没有，一台挖机都没有，一个尾矿库都不用管。它做的是<strong>给矿山出钱，然后按合同分走产出的一部分</strong>——本质上是一家专门投矿的金融公司，但收的不是利息，是金属。</p>
+<p>它有两种赚钱方式，机制完全不同。</p>
+<h3>生意一：金属流（Stream）—— 占营收 68%</h3>
+<p><strong>"流"是一份预付款换低价买货权的合同。</strong></p>
+<p>举个真实例子把机制讲透。加拿大不列颠哥伦比亚省有个 Mount Milligan 金铜矿，业主是 Centerra Gold。当年这个矿要建厂，缺十几亿美元。银行不肯全借，发股票又会稀释股东。于是它找到皇家黄金，双方签了这么一份合同：</p>
+<ul>
+<li>皇家黄金<strong>一次性预付</strong>一大笔现金（Mount Milligan 这笔是 8 亿美元级别）；</li>
+<li>作为交换，这个矿未来产出的黄金里，<strong>35% 归皇家黄金</strong>，但皇家黄金要按每盎司约 <strong>435 美元</strong>的固定价格"买"过来；铜的部分是 18.75%，按现货价的 15% 买。</li>
+</ul>
+<p>关键在于：黄金现货价现在是四位数。<strong>皇家黄金用 435 美元买进、按市价卖出，这中间的价差就是它的营收。</strong> 而且这个 435 美元是合同里写死的固定数，不会因为通胀而涨。</p>
+<p>这份合同的妙处在于风险分配：
+- 矿山的<strong>成本涨了不关它事</strong>。柴油涨价、矿工罢工加薪、剥采比恶化——业主自己扛，皇家黄金照样按 435 美元拿货。这是它和矿业公司最本质的区别：<strong>矿业公司的利润是"金价 − 成本"，皇家黄金的利润是"金价 − 一个固定数"。</strong>
+- 矿山如果<strong>多找到矿</strong>，合同期自动延长，皇家黄金白赚。Mount Milligan 后来又探明了新储量，把矿山寿命从原计划延长了好几年，皇家黄金没多付一分钱。
+- 但如果矿<strong>建不成或者提前关停</strong>，那笔预付款就打水漂了。这是它真正的风险。</p>
+<p>TTM 黄金流做了 <strong>8.34 亿</strong>，白银流 1.52 亿，铜流 0.62 亿，合计 10.49 亿，占总营收 67.8%。</p>
+<h3>生意二：权利金（Royalty）—— 占营收 32%</h3>
+<p><strong>"权利金"更简单粗暴：按矿山销售额抽成，一分钱不用再付。</strong></p>
+<p>最常见的形式叫 NSR（净冶炼厂返还权益金），比如"这个矿全部产出销售额的 2%"。皇家黄金在墨西哥 Peñasquito 矿（业主 Newmont，全球最大银矿之一）和内华达 Cortez 矿（Barrick 和 Newmont 的合资）上都持有这类权利金。</p>
+<p>具体到钱：假设 Peñasquito 一年卖出 20 亿美元的金银铅锌，2% 的 NSR 就是 <strong>4000 万美元</strong>，直接打到皇家黄金账上。皇家黄金为此付出的成本是：<strong>零</strong>。不用出钱采矿、不用出钱冶炼、不用承担环保责任，甚至不用买那 435 美元一盎司的货——权利金是纯抽成。</p>
+<p>这些权利金的来源有两种：一种是当年花钱从探矿者手里买来的（探矿的人没钱开发，卖掉权利金换现金去勘探下一块地）；一种是矿区的老权利，几十年前就设定好，跟着地契走。</p>
+<p>TTM 黄金权利金 3.33 亿、铜权利金 0.68 亿、白银权利金 0.50 亿、其他 0.42 亿，合计 <strong>4.93 亿</strong>。</p>
+<h3>今年最大的变化：吞下了 Sandstorm</h3>
+<p>2025 年 10 月 20 日，皇家黄金完成了两笔并购：</p>
+<ul>
+<li><strong>Sandstorm Gold</strong>：全股票交易，对价约 <strong>35 亿美元</strong>。Sandstorm 是加拿大的同行，手上有一百多份权利金和流合同。</li>
+<li><strong>Horizon Copper</strong>：全现金，约 <strong>1.96 亿美元</strong>。</li>
+</ul>
+<p>这是理解这份财报的钥匙——TTM 营收从 10.3 亿暴涨到 15.5 亿（+50%），一半是买来的，一半是金属价格涨的（这两页财报没法把两者干净拆开，只能说都有贡献）。<strong>代价是股本一年增加了 20.35%</strong>，你手上的每股权益被稀释了五分之一。</p>
+<h3>各条产品线的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>上年（FY2025 全年）</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>黄金流</td>
+<td>834.2</td>
+<td>547.9</td>
+<td>+52.3%</td>
+<td>53.9%</td>
+</tr>
+<tr>
+<td>黄金权利金</td>
+<td>333.4</td>
+<td>252.0</td>
+<td>+32.3%</td>
+<td>21.6%</td>
+</tr>
+<tr>
+<td>白银流</td>
+<td>152.2</td>
+<td>92.4</td>
+<td>+64.7%</td>
+<td>9.8%</td>
+</tr>
+<tr>
+<td>铜权利金</td>
+<td>67.5</td>
+<td>32.5</td>
+<td>+107.5%</td>
+<td>4.4%</td>
+</tr>
+<tr>
+<td>铜流</td>
+<td>62.2</td>
+<td>44.3</td>
+<td>+40.6%</td>
+<td>4.0%</td>
+</tr>
+<tr>
+<td>白银权利金</td>
+<td>49.6</td>
+<td>28.5</td>
+<td>+74.3%</td>
+<td>3.2%</td>
+</tr>
+<tr>
+<td>其他权利金</td>
+<td>42.0</td>
+<td>31.0</td>
+<td>+35.5%</td>
+<td>2.7%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,547</strong></td>
+<td><strong>1,030</strong></td>
+<td><strong>+50.2%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>按金属看：黄金 75.5%、白银 13.0%、铜 8.4%。<strong>这基本上就是一只黄金价格的杠杆化多头。</strong></p>
+<p>分部利润率财报不披露，但整个公司<strong>毛利率 86.8%、经营利润率 63.4%</strong>——39 个人的公司，能有多少费用。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的账干净得罕见，但有一个坑极深，几乎所有看财报的人都会掉进去。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1278 万美元，占净利润 <strong>1.7%</strong>。这个比例低到可以忽略——39 个员工能发多少股。GAAP 已经扣除，本文不加回。<strong>这是我做到现在见过的最克制的 SBC 之一</strong>，和动辄吃掉净利润三四成的科技公司完全不是一个物种。</p>
+<p><strong>一次性项目</strong>：TTM 有 727 万的投资出售损失，金额太小，不值得调整。除此之外没有明显的重组、减值、诉讼。</p>
+<p><strong>资本化的支出</strong>：没有软件或研发资本化——它根本不做研发。</p>
+<p><strong>回购与稀释</strong>：<strong>回购金额为零。</strong> 而同期为了买 Sandstorm 增发了大量股票，股本一年<strong>增加 20.35%</strong>。分子（回购）÷ 分母（SBC）这个比值在这里没有意义，因为分子是 0。你要看的是另一个数：<strong>你的每股权益被摊薄了五分之一，换来的是 Sandstorm 那一百多份合同。</strong></p>
+<p>判断这笔交易划不划算的关键是：营收增长 50% 是否大于股本增长 20%？从当期数看是的（每股营收从 15.6 美元涨到 18.2 美元）。但这里面有金价上涨的成分，不能全算到并购头上。</p>
+<p><strong>利润和现金流的差 —— 这里有个 300 万倍的陷阱</strong>：</p>
+<p>如果你去查这只股票的"市销率/市现率"，会看到一个荒诞的数字：<strong>P/FCF = 33,410 倍</strong>。自由现金流只有 <strong>59 万美元</strong>。一家净利润 7.4 亿的公司，自由现金流是 59 万？</p>
+<p>看对账表：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>738.0</td>
+</tr>
+<tr>
+<td>+ 折旧摊销（主要是"折耗"）</td>
+<td>+300.0</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+12.8</td>
+</tr>
+<tr>
+<td>+ 投资出售损失</td>
+<td>+7.3</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−37.5</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−45.4</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−16.0</td>
+</tr>
+<tr>
+<td>+ 所得税及其他经营资产变动</td>
+<td>+86.1</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,044</strong></td>
+</tr>
+<tr>
+<td>− "资本开支"</td>
+<td><strong>−1,044</strong></td>
+</tr>
+<tr>
+<td><strong>= 账面自由现金流</strong></td>
+<td><strong>0.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>问题出在那 10.44 亿的"资本开支"上——它根本不是资本开支。</strong></p>
+<p>对一家普通制造企业，资本开支是"为了维持现有产能必须花的钱"，不花机器就坏了。但皇家黄金没有机器。它这 10.44 亿花在<strong>买新的流和权利金合同</strong>上——是纯粹的扩张性投资，是<strong>主动选择</strong>的，不花一分钱，现有的合同照样年年产生现金。</p>
+<p><strong>所以这家公司真实的、可自由支配的现金流是 10.44 亿（经营现金流全额），而不是 59 万。维持性资本开支接近于零。</strong> 这是本文最重要的一个修正，下面的估值表会体现。</p>
+<p>同样，那 3 亿的"折旧摊销"其实是<strong>折耗（depletion）</strong>——按预付款金额除以预计可回收金属量，每卖一盎司摊一点。它是非现金的，但也不完全是假费用：<strong>流合同确实会随着矿山采完而归零</strong>。不过实践中矿山寿命常常被新探明储量一再延长，所以折耗大概率是高估了真实成本。</p>
+<p><strong>负债</strong>：极其干净。总债务 3.96 亿，现金 1.82 亿，净负债只有 8134 万——相对 195 亿市值可以忽略。Debt/EBITDA 只有 0.31 倍。<strong>注意：并购前的 FY2025 年底净负债还有 5.26 亿，一年就靠现金流还掉了大半。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>和 ITT 一样，网上查到的 24.8 倍市盈率偏低了——它用的是加权平均股数算出来的每股收益 9.30 美元，而 Sandstorm 的新股是 2025 年 10 月才发的，只算了大半年。用当前 8473 万股实际算，每股收益是 <strong>8.71 美元</strong>，市盈率 <strong>26.5 倍</strong>。下表一律用市值 ÷ 利润。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>195.5 亿 ÷ 7.38 亿</td>
+<td><strong>26.5 倍</strong></td>
+<td><strong>3.77 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>皇家黄金几乎不调整，调整后利润与 GAAP 基本一致</td>
+<td>≈26.2 倍</td>
+<td>3.82 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>加回 727 万投资损失，SBC 不加回 → 7.45 亿</td>
+<td><strong>26.2 倍</strong></td>
+<td><strong>3.82 元</strong></td>
+</tr>
+<tr>
+<td>账面自由现金流口径</td>
+<td>195.5 亿 ÷ 59 万</td>
+<td>33,410 倍（<strong>无意义，见上文</strong>）</td>
+<td>0.003 元</td>
+</tr>
+<tr>
+<td><strong>修正后现金口径</strong>（维持性资本开支≈0）</td>
+<td>195.5 亿 ÷ 10.44 亿经营现金流</td>
+<td><strong>18.7 倍</strong></td>
+<td><strong>5.34 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>196.3 亿 ÷ 9.74 亿</td>
+<td>20.2 倍</td>
+<td>4.96 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>195.5 亿 ÷（7.38+4.66+3.32）/3 = 5.12 亿</td>
+<td><strong>38.2 倍</strong></td>
+<td><strong>2.62 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行是全表最关键的一句话。</strong> 当期 26.5 倍、三年平均 38.2 倍，中间差了 44%。这意味着：<strong>当前这个 7.38 亿的净利润，明显高于过去三年的常态水平。</strong> 原因不难猜——黄金价格在这一轮涨了很多，而这家公司的利润是"金价 − 一个固定数"，金价每涨 10%，它的利润涨得比 10% 多得多（这就是所谓的杠杆效应，它是往上放大的，同样也会往下放大）。</p>
+<p>一个佐证：这只股票 52 周涨了 33.9%，但<strong>当前股价 230.68 已经低于它的 200 日均线 230.79，而 50 日均线只有 206.18</strong>——说明前几个月它冲得更高，现在正在回落。市场已经在给金价见顶定价了。</p>
+<p><strong>大白话结论</strong>：你现在投 100 块进皇家黄金，按最保守的口径（三年平均 38.2 倍）算，公司一年替你赚 <strong>2.62 元</strong>；按当期利润算是 3.77 元；按"这家公司实际能自由支配多少现金"算（18.7 倍），是 <strong>5.34 元</strong>。</p>
+<p>这三个数差得很大，差在哪：</p>
+<ol>
+<li><strong>现金口径（5.34 元）比利润口径（3.77 元）高</strong>，是因为那 3 亿折耗是非现金的假成本；</li>
+<li><strong>三年平均（2.62 元）比当期（3.77 元）低</strong>，是因为现在的金价处在高位。</li>
+</ol>
+<p>这 3.77 元里，真正回到你口袋的：<strong>分红拿走 0.71 元</strong>（TTM 分红 1.398 亿 ÷ 7.38 亿 ≈ 19%），<strong>回购 0 元</strong>，剩下的 3 元多全部拿去买新的流和权利金合同了（TTM 投出去 10.44 亿）。<strong>这是一家把绝大部分利润再投出去的公司</strong>——好的一面是它一直在扩大未来的收金能力，不好的一面是你现在拿不到钱，全押在管理层买合同的眼光上。</p>
+<p>未来这个数字变大还是变小？<strong>几乎完全取决于金价，其次取决于它买合同的价格。</strong> 生意本身几乎没有内生成本压力（39 个人、固定采购价），所以：金价横盘，利润靠新买的合同慢慢爬；金价跌 20%，它的利润可能跌 30% 以上；金价继续涨，它的利润弹性比矿业公司还大，而且不用担心成本失控。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是全市场里商业模式最优雅的公司之一——39 个人、86.8% 毛利、不承担矿山成本、不承担环保责任、探矿成功白赚——但你现在买的价格已经把一轮金价大涨算进去了。</strong> 26.5 倍当期市盈率看着不贵，可当期利润是金价高位的产物；用三年常态利润算是 38 倍，那就是明显偏贵。</p>
+<p>更准确的说法是：<strong>买 RGLD 不是在赌这家公司经营得好不好（它一定经营得好，这个模式很难做砸），而是在赌金价还能不能再往上。</strong> 如果你本来就想配置黄金，那用它代替金条是聪明的——它有金价的上行弹性、还多拿一份 19% 的分红和长期合同的复利。如果你不看多金价，这 38 倍的三年常态市盈率没有任何理由付。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截止 2026 年 6 月 30 日，财报最后更新 2026 年 8 月 5 日。并购细节来自皇家黄金 2025 年 10 月 20 日公告。矿山合同条款为公开披露的代表性案例。</em></p>
+</div></body></html>

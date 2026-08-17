@@ -1,0 +1,384 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MDLN · 美德乐（Medline Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MDLN</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">45倍是错的真实67倍，74%股份还没解禁</div><h1>MDLN · 美德乐（Medline Inc.）</h1>
+<p>市值 $469.9 亿 · 股价约 $35.9 · 行业：医疗科技（医疗耗材制造与分销）· 交易所 NASDAQ
+TTM 口径：截至 <strong>2026 年 6 月 27 日</strong> 的最近四个季度</p>
+<blockquote>
+<p><strong>先说一件影响全篇的事：这是一家刚上市的公司。</strong> Beta 无数据、52 周涨跌幅无数据、TTM 期内发行新股筹了 <strong>70.49 亿美元</strong>——都指向同一件事：Medline 在最近这一年才 IPO。它此前是全美最大的私营医疗用品公司，2021 年被黑石（Blackstone）、凯雷（Carlyle）、Hellman &amp; Friedman 三家私募基金联手以约 340 亿美元杠杆收购（当时是史上最大规模的 LBO 之一），背了一身债私有化，然后在 2026 年重新上市把债还掉一部分。<strong>这个背景决定了它财报上几乎所有奇怪的地方。</strong></p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Medline 干的事，用一句话说是：<strong>给医院当"沃尔玛 + 自有品牌工厂"。</strong></p>
+<p>想象一家 400 张床的地区医院。它每天要消耗的东西是天文数字级别的杂：一次性手套、手术衣、无菌纱布、注射器、导尿管、成人纸尿裤、床单、消毒湿巾、伤口敷料、手术刀片、检验试管、缝合线……几十万个不同的物料编号（SKU）。传统上医院要跟几十家供应商分别签合同、分别下单、分别对账，仓库堆满纸箱，护士还要花时间找东西。</p>
+<p>Medline 的生意就是把这一整摊子接过来：<strong>你把整个医院的耗材采购交给我，我一家全包。</strong></p>
+<p>它比同行狠的地方在于，<strong>它同时是生产商和搬运工</strong>：</p>
+<ul>
+<li><strong>搬运工那一半</strong>：它在全美有几十个巨型配送中心，签的是三到五年的主供应协议。协议内容不只是"送货到卸货码头"，高端版本是"低耗值物料直送科室"——卡车早上把货送到医院，Medline 的人直接把手套补进手术室的柜子、把纸尿裤补进病房的储物架，护士不用管库存。医院用这个换来的是把 80% 以上的耗材采购集中给它。</li>
+<li><strong>生产商那一半</strong>：它自己在中国、泰国、墨西哥等地有工厂，生产手套、手术衣、纱布、失禁护理用品这类量大、标准化、品牌不重要的东西，贴自己的牌子卖。</li>
+</ul>
+<p>这两半的经济性天差地别：<strong>纯分销（帮别人搬箱子）的毛利率通常在 5%–10%，自有品牌制造的毛利率能到 40% 以上。</strong> Medline 混起来的毛利率是 <strong>26.2%</strong>——这个数字本身就告诉你，它自有品牌的占比相当高，这是它比 Cardinal Health、Owens &amp; Minor 这类纯分销商强的根本原因。</p>
+<p>分销那一半是它的"入场券"和护城河：因为它管着医院的整个供应链，它知道每一个科室每天用掉多少手套；然后它顺理成章地把这些手套换成自己产的手套。医院乐意配合，因为集中采购能压价；Medline 更乐意，因为每换掉一个第三方品牌，毛利率就往上跳一档。</p>
+<p>财报把营收切成四块（<strong>下面对每块具体产品的描述，是结合分部名称和 Medline 公开的业务结构做的解读，个别产品的分部归属可能与实际披露有出入</strong>）：</p>
+<p><strong>1. Supply Chain Solutions（供应链解决方案）—— 158.36 亿，占 52.9%</strong>
+就是上面说的"搬运工"那一半，帮医院配送全品类耗材，含大量第三方品牌产品。这是营收的大头，但也是毛利最薄的一块。它的价值不在赚钱，在于<strong>锁住客户</strong>——一旦医院的库存系统、扫码流程、送货节奏都跟 Medline 绑在一起，换供应商的迁移成本高得吓人。</p>
+<p><strong>2. Front Line Care（一线护理）—— 66.79 亿，占 22.3%</strong>
+名字里的"一线"指的是护士每天上手用的东西：伤口护理敷料、失禁护理用品、病人清洁护理、体位管理。这块基本是自有品牌为主，是毛利率的主要来源。营收从 FY2022 的 57.09 亿爬到 TTM 的 66.79 亿，四年涨 17%——慢，但稳，因为它跟"美国有多少张病床、有多少老人"直接挂钩，跟经济周期几乎无关。</p>
+<p><strong>3. Surgical Solutions（外科解决方案）—— 64.97 亿，占 21.7%</strong>
+手术室里用的东西：手术衣、手术铺单、手术器械包、缝合材料、外科消毒。这一块<strong>增长最快</strong>——从 FY2022 的 44.46 亿涨到 TTM 的 64.97 亿，四年 +46%。里面有相当一部分是买来的：FY2024 财报上有一笔 <strong>11.26 亿美元的现金收购</strong>，时间和金额都指向它在外科耗材领域做了一次不小的并购。手术室是医院里毛利最高的场所，Medline 明显在往那儿使劲。</p>
+<p><strong>4. Laboratory and Diagnostics（实验室与诊断）—— 10.97 亿，占 3.7%</strong>
+检验科的耗材：试管、采血针、样本容器、培养基。最小的一块，增速也一般。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>对比 FY2025</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supply Chain Solutions</td>
+<td>15,836</td>
+<td>14,712（+7.6%）</td>
+<td>52.9%</td>
+<td>低（估算 2%–3%）</td>
+<td>~400</td>
+</tr>
+<tr>
+<td>Front Line Care</td>
+<td>6,679</td>
+<td>6,514（+2.5%）</td>
+<td>22.3%</td>
+<td>高（估算 10%–12%）</td>
+<td>~730</td>
+</tr>
+<tr>
+<td>Surgical Solutions</td>
+<td>6,497</td>
+<td>6,166（+5.4%）</td>
+<td>21.7%</td>
+<td>中高（估算 9%–11%）</td>
+<td>~650</td>
+</tr>
+<tr>
+<td>Laboratory and Diagnostics</td>
+<td>1,097</td>
+<td>1,040（+5.5%）</td>
+<td>3.7%</td>
+<td>中（估算 5%）</td>
+<td>~55</td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~-1,010</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>29,939</strong></td>
+<td>28,432（+12.1% 同比）</td>
+<td>100%</td>
+<td><strong>6.10%（实际）</strong></td>
+<td><strong>1,826（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只披露到分部营收，完全不披露分部利润。</strong> 上表的利润率是按"分销业务薄、自有品牌厚"这个行业常识反推出来的<strong>粗略估算</strong>，只能用来判断哪块赚钱、哪块不赚钱，绝不能当数字用。TTM 截至 6 月、FY2025 截至 12 月，两者重叠半年，"对比 FY2025"那一列只是方向参考；总营收行的 +12.1% 才是数据源给的真实同比增速。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节是这家公司全篇最重要的部分</strong>，因为它的 GAAP 利润被至少三件事严重压低了，而其中只有一件是"假"的。</p>
+<p><strong>股权激励（SBC）：TTM 9,400 万美元，占净利润 13.4%。</strong>
+绝对金额很小（占营收 0.31%），但因为净利润本身被压得很低（7.01 亿），所以占比看着不小。<strong>这笔钱按 GAAP 已经扣掉了，我不会加回来</strong>——它稀释你的股份，是真实成本。不过 9,400 万对一家 300 亿营收的公司来说，属于极其克制的水平，不构成障眼法。对比一下：软件公司的 SBC 经常能占到净利润的 100% 以上。</p>
+<p><strong>一次性项目：有一笔 7.11 亿的大额非现金费用，而且单期口径判断不出它是什么。</strong>
+现金流量表里"其他经营活动"这一行 TTM 是 <strong>+7.11 亿</strong>，而 FY2025 只有 1.68 亿、FY2024 只有 8,600 万。突然多出来 5 亿多的"账上记了成本、现金没出去"的东西。同期经营利润从 FY2025 的 21.79 亿掉到 TTM 的 18.26 亿，净利润从 11.59 亿掉到 7.01 亿——<strong>利润的下滑和这笔非现金费用在数量级上是对得上的。</strong></p>
+<p>最可能的解释是 IPO 相关的一次性费用（上市时集中确认的股权奖励、承销和顾问费用、债务提前偿还的罚金）。但<strong>必须诚实说明：只看 TTM 这一期，我无法确认这笔钱的构成，也无法判断它是真一次性还是会年年再来。</strong> 如果它确实是 IPO 一次性的，那么正常化后的净利润应该在 <strong>12–14 亿</strong>区间；如果它是别的东西（比如存货减值或诉讼计提），那 7.01 亿就是真实水平。这个区别会让市盈率差出一倍，是这只股票最大的不确定项。</p>
+<p><strong>资本化的支出：几乎没有，但摊销巨大——而且摊销的是"过去被收购"这件事本身。</strong>
+TTM 资本开支只有 4.46 亿（占营收 1.5%，很轻），但 <strong>折旧摊销高达 10.24 亿 + 其他摊销 5,300 万</strong>。摊销是资本开支的 2.4 倍，这个比例只有一种解释：<strong>大部分摊销不是厂房设备的折旧，是 2021 年那笔 340 亿 LBO 产生的无形资产（客户关系、品牌、商标）在按年摊销。</strong></p>
+<p>这笔摊销是真实发生过的成本（那 340 亿是真金白银付出去的），但它不是<strong>今年</strong>的现金支出。公司的 Non-GAAP 一定会把它加回来。我的处理：<strong>不加回</strong>——因为把收购成本摊掉才是诚实的会计，加回去等于假装当年那 340 亿是白拿的。</p>
+<p><strong>回购与稀释：这一节的数字看着漂亮，但完全不能按常规解读。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发行新股（IPO 募资）</td>
+<td><strong>+7,049</strong></td>
+</tr>
+<tr>
+<td>回购股份</td>
+<td><strong>−1,993</strong></td>
+</tr>
+<tr>
+<td>派发股息</td>
+<td>−215</td>
+</tr>
+<tr>
+<td>净偿还债务</td>
+<td><strong>−4,111</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购/SBC = 1,993 ÷ 94 = <strong>21.2 倍</strong>。按正常标准这是一个惊人的好数字（大于 3 就算真回购）。<strong>但它是假象</strong>：这 19.93 亿不是公司在二级市场买回自己的股票回馈股东，而是 IPO 结构的一部分——用募来的钱赎回私募基金或老股东手上的一部分股份。股本数据也印证了这一点：<strong>同比 −94.99%、环比 +4.37%</strong>，这种数字只有在股份重组（拆股、并股、股权类别转换）时才会出现，不是经营行为。</p>
+<p>真正该看的两个数字：
+- <strong>流通股（Float）只有 3.39 亿股，而总股本 13.1 亿股——流通比例只有 26%。</strong> 三家私募基金还捏着大部分股份。<strong>未来几年会有持续的解禁抛压</strong>，这是刚 IPO 的 LBO 公司几乎必然的剧本。
+- <strong>净还债 41.11 亿</strong>，总债务从 FY2024 的 168.99 亿降到现在的 <strong>126.40 亿</strong>。这是 IPO 募资最正当的用途，也是这家公司未来利润最确定的改善来源（见下）。</p>
+<p><strong>利润和现金流的差：现金流比利润好得多。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>对账项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>701</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+1,024</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+53</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+94</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+22</td>
+</tr>
+<tr>
+<td><strong>+ 其他经营活动（含疑似 IPO 一次性费用）</strong></td>
+<td><strong>+711</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−354</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−220</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+117</td>
+</tr>
+<tr>
+<td>− 其他净经营资产变化</td>
+<td>−148</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,992</strong>（表内合计 2,000，8 百万差额为四舍五入及未单列科目）</td>
+</tr>
+</tbody>
+</table></div>
+<p>结论很清楚：<strong>净利润 7.01 亿，经营现金流 19.92 亿，差了将近 3 倍。</strong> 差额的全部来源是两块非现金费用——LBO 无形资产摊销（约 10 亿）和那笔说不清的 7.11 亿。<strong>扣掉 4.46 亿的资本开支后，自由现金流 15.46 亿，是净利润的 2.2 倍。</strong> 对这家公司来说，<strong>自由现金流比净利润更接近真相</strong>。</p>
+<p>还有一个细节值得注意：TTM <strong>现金利息支出 7.96 亿</strong>（在 18.26 亿的经营利润里吃掉 44%），而<strong>现金所得税只交了 3,300 万</strong>（账面税 1.97 亿）。利息保障倍数 2.34 倍——<strong>这仍然是一张 LBO 的资产负债表，只是压力比两年前小了。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>先说一件必须先说清楚的事，否则下面的表看不懂：</strong></p>
+<blockquote>
+<p>数据源给出的市盈率是 <strong>44.91 倍</strong>（股价 $35.87 ÷ 每股收益 $0.80）。
+但每股收益 $0.80 是用约 <strong>8.77 亿股</strong>的加权平均股本算出来的（7.01 亿净利润 ÷ 0.80 = 8.76 亿股）——因为 IPO 发生在这一年当中，这一年的大部分时间股本还是 IPO 前的规模。
+而 <strong>469.9 亿的市值，是按现在实际存在的 13.1 亿股算的。</strong></p>
+<p><strong>两个数字用的不是同一个分母。</strong> 如果你要问的是"我花 469.9 亿把整家公司买下来，它一年赚多少"，答案是 469.9 ÷ 7.01 = <strong>67.0 倍</strong>，不是 44.91 倍。</p>
+<p><strong>公布的市盈率系统性地低估了这只股票的贵，低估幅度约三分之一。</strong> 这是刚 IPO 公司普遍存在的口径陷阱，明年这个差异会自动消失（那时加权股本就等于实际股本了）。</p>
+</blockquote>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>公布的 GAAP TTM 市盈率</strong></td>
+<td>股价 ÷ 加权平均 EPS $0.80</td>
+<td>44.9 倍</td>
+<td>$2.23</td>
+</tr>
+<tr>
+<td><strong>市值 ÷ 净利润（真实全股本口径）</strong></td>
+<td>469.9 亿 ÷ 7.01 亿</td>
+<td><strong>67.0 倍</strong></td>
+<td><strong>$1.49</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 LBO 无形摊销 + IPO 一次性费用（估算净利 ~13 亿）</td>
+<td>~36 倍（估算）</td>
+<td>~$2.78</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 不加回、LBO 摊销不加回、疑似 IPO 一次性费用剔除</td>
+<td><strong>~34–39 倍（估算）</strong></td>
+<td><strong>~$2.56–2.94</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>469.9 亿 ÷ 15.46 亿</td>
+<td><strong>30.4 倍</strong></td>
+<td><strong>$3.29</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>569.3 亿 ÷ 18.26 亿</td>
+<td><strong>31.2 倍</strong></td>
+<td><strong>$3.21</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>469.9 亿 ÷ 8.64 亿（FY23–25 均值）</td>
+<td><strong>54.4 倍</strong></td>
+<td><strong>$1.84</strong></td>
+</tr>
+<tr>
+<td>市场预期口径（Forward PE）</td>
+<td>数据源给出</td>
+<td>24.1 倍</td>
+<td>$4.15</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>几个口径之间差得太远了，这本身就是结论的一部分。</strong> 从 24 倍（市场预期）到 67 倍（当期实打实），差了将近三倍。这种离散度说明：<strong>这家公司当前的账面利润严重失真，你买它买的是"利润会正常化"这个假设，而不是现在的利润。</strong></p>
+<p><strong>三年平均利润口径 54.4 倍需要小心解读。</strong> FY2023 净利润只有 2.34 亿、FY2022 甚至是 −0.25 亿——那两年是 LBO 债务利息最重的时候，20 亿的年利息把利润吃光了。用这三年做平均，反映的是"背着 170 亿债务时的 Medline"，而现在债务已经降到 126 亿、还在继续降。<strong>所以这一行 54.4 倍是过度悲观的，它衡量的是一个已经不存在的资本结构。</strong> 但它有一个正面用途：<strong>它证明当前的 7.01 亿净利润不是高点，恰恰是被压低的低点</strong>——这一点和 Exelon 那种平稳爬坡完全不同。</p>
+<p><strong>自由现金流口径 30.4 倍是我认为最靠谱的一档。</strong> 因为它绕开了所有会计争议（摊销加不加回、一次性算不算），直接看每年真金白银进来多少。<strong>30 倍的自由现金流，对一家增长 12%、客户黏性极强、经济周期免疫的公司来说，不便宜，但不荒唐。</strong></p>
+<h3>大白话结论</h3>
+<p><strong>你现在投 100 块进 Medline，按最保守的真实口径（市值除以当期净利润，67 倍）算，公司一年替你赚 1.49 块。</strong></p>
+<p>但这个 1.49 块是被三件事人为压扁的：</p>
+<ol>
+<li><strong>利息 7.96 亿</strong>——正在快速消失。债务两年降了 42 亿，如果继续按这个速度降，每年能省出两三亿的税后利润。</li>
+<li><strong>LBO 无形资产摊销约 10 亿</strong>——不花现金，但会一直摊到当年那 340 亿摊完为止（通常十几年）。</li>
+<li><strong>疑似 IPO 一次性费用 7.11 亿</strong>——如果确实是一次性的，明年就没了。</li>
+</ol>
+<p>把这三件事的影响加回去，正常化后的年利润大概在 <strong>13–15 亿</strong>区间，对应 <strong>31–36 倍</strong>市盈率，投 100 块一年赚 <strong>2.8–3.2 块</strong>。这和自由现金流口径（30.4 倍，3.29 块）几乎完全吻合——<strong>两条完全独立的路径算出同一个答案，说明 30 倍上下就是这家公司真实的估值水平。</strong></p>
+<p><strong>这 3 块钱里，有多少回到你口袋？几乎没有。</strong> TTM 派息只有 2.15 亿（股息率 0.46%），回购是 IPO 结构性动作不算数。公司的现金正在做一件更重要的事：<strong>还债</strong>（TTM 净还 41 亿）。这在现阶段是对股东最有利的用法——每还掉 10 亿债，就省下约 6,000 万的年利息，直接变成税前利润。<strong>所以你的回报暂时全部体现在"公司变得更值钱"上，不体现在你的账户余额上。</strong></p>
+<p><strong>这个 3 块钱未来会变大，理由充分：</strong> 营收年增 12%（其中外科解决方案增长最快、毛利最高）；债务在降；自有品牌替代第三方品牌的空间还很大（毛利率 26.2% 还有往上走的余地）；下游需求（美国老龄化、住院天数、手术台次）是极少数几乎不受经济周期影响的东西。</p>
+<p><strong>但有三件事会让它变小：</strong>
+- <strong>解禁抛压</strong>。流通股只占 26%，三家私募基金要退出，未来两三年会有持续的减持。这不影响公司经营，但直接压股价。
+- <strong>关税与制造成本</strong>。它的手套、手术衣工厂在中国、泰国、墨西哥，医疗耗材是高度价格敏感的品类，任何关税变动会直接吃掉毛利率——医院不会因为它成本涨了就同意加价。
+- <strong>医院砍成本</strong>。它的客户是全美医院，医院自己的利润率也在被保险公司压缩，主供应协议每三到五年重签一次，每次都是一场压价谈判。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它公布的 45 倍市盈率是错的（真实是 67 倍），但它真正该看的市盈率也不是 67 倍而是 30 倍出头——这是一门无聊、抗周期、护城河扎实的好生意，正在从 LBO 的债务坑里往外爬，问题在于 30 倍的自由现金流估值已经把爬出来这件事提前算进去了，加上还有 74% 的股份没解禁，</strong>买它不是买便宜，是买"私募基金退出过程中的一路颠簸"，除非你能拿三年以上，否则性价比不高。**</p>
+</div></body></html>

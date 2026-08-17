@@ -1,0 +1,363 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>COP · 康菲石油</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">COP</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">油气里财报最干净、93%自由现金流还给股东</div><h1>COP · 康菲石油</h1>
+<p><strong>市值</strong> $1,495.9 亿 | <strong>股价</strong> 约 $124.5 | <strong>行业</strong> 能源矿产 / 油气勘探开采 | <strong>TTM 截止</strong> 2026 年 6 月 30 日 | <strong>分析日期</strong> 2026-08-14</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说一件容易搞错的事：<strong>康菲不是"石油公司"，它是"油气开采公司"</strong>。2012 年它把炼油、加油站、化工全部拆分出去成立了 Phillips 66，从此只干一件事——<strong>把石油和天然气从地下弄出来，卖给别人</strong>。没有加油站，没有炼厂，没有润滑油品牌。</p>
+<p>所以严格说它只有一门生意。但这门生意在不同地方的经济学差别巨大，财报按五个地区披露收入，我按这个来拆。</p>
+<h3>生意一：Lower 48 —— 美国本土页岩油，占七成</h3>
+<p>这是绝对主力，TTM 收入 439.92 亿，占总收入 <strong>69.4%</strong>。</p>
+<p>具体在干什么：在德州西部的二叠纪盆地（Permian）、德州南部的鹰滩（Eagle Ford）、北达科他的巴肯（Bakken），康菲租下大片土地的矿权，钻一口井下去两三公里，再横向拐弯钻两三公里，然后用高压水混着沙子把致密岩层压裂，让原本困在石头缝里的油气流出来。</p>
+<p><strong>一口井的账大概是这样</strong>：钻井加压裂花 700 万–900 万美元，头一年产出最猛（页岩井第一年会衰减 60%–70%），之后拖着一个长尾巴慢慢产十几二十年。按现在的油价，一口好井大概 12–18 个月回本，全生命周期能产出投入的两三倍。</p>
+<p><strong>这门生意最要命的特点是：它必须不停地钻。</strong> 因为页岩井衰减太快，如果康菲今年一口新井都不钻，明年产量会自动掉三成。所以它每年花上百亿资本开支，很大一部分只是为了<strong>让产量不下降</strong>——不是为了增长。这一点在第二部分会算给你看。</p>
+<p>怎么收钱：油从井口进集输管道，卖给中游管道公司或者直接卖给炼厂，按 WTI 基准价加减一个地区差价结算。天然气类似，按亨利港（Henry Hub）价格。<strong>康菲对价格没有任何定价权</strong>——它是彻头彻尾的价格接受者，卖的是完全标准化的商品。一桶油卖 70 还是 50，不取决于康菲做得多好，取决于 OPEC 开会说了什么、中国经济怎么样、俄罗斯出口多少。</p>
+<p>它唯一能控制的是<strong>成本</strong>。康菲的核心竞争力就是它的储量成本极低——公司口径的盈亏平衡油价大约在 30–40 美元/桶区间，这意味着即使油价腰斩它也还在赚钱，而很多小页岩公司在 50 美元就要破产。</p>
+<h3>生意二：EMENA（欧洲/中东/北非）—— 挪威和卡塔尔</h3>
+<p>TTM 收入 70.47 亿，占 11.1%。主要是挪威北海的 Ekofisk 等老油田（这是几十年前发现的常规油田，钻井平台已经折旧完了，现在是低成本挤最后的油）、利比亚的份额、以及卡塔尔北方气田扩产项目的股权。</p>
+<p>常规油田和页岩的经济学完全相反：<strong>前期投入巨大、建设周期五到十年，但一旦投产就能稳产几十年，衰减极慢</strong>。挪威的问题是税——挪威对石油利润征收合计约 78% 的边际税率，这是康菲整体税率高达 36.5% 的主要原因之一。</p>
+<h3>生意三：Alaska —— 阿拉斯加，未来的一张大牌</h3>
+<p>TTM 收入 61.09 亿，占 9.6%。康菲是阿拉斯加最大的油气生产商。</p>
+<p>这里最重要的是 <strong>Willow 项目</strong>——北极圈内的一个大型油田开发，投资规模上百亿美元，2023 年拿到联邦批准，正在建设，预计 2029 年前后开始产油，高峰期日产约 18 万桶。这是一个典型的长周期项目：先花七八年砸钱，然后稳产三十年。</p>
+<p>阿拉斯加的收入这几年在下滑（FY2023 是 70.98 亿，TTM 是 61.09 亿），因为老油田在自然衰减，Willow 还没投产。这块是"现在流血、未来收租"的状态。</p>
+<h3>生意四：Canada —— 加拿大油砂</h3>
+<p>TTM 收入 41.13 亿，占 6.5%。主要是 Surmont 油砂项目。</p>
+<p>油砂是最特殊的一种：油被沥青一样黏在沙子里，不能靠压力自喷。做法是打两口平行的水平井，上面那口往地下注高温蒸汽把沥青煮化，下面那口把化开的油收上来。这需要烧大量天然气产蒸汽，所以<strong>成本高、碳排放高</strong>，但好处是——一旦建成，储量可以稳产 <strong>30 到 50 年</strong>，几乎没有衰减，运营成本很低。这是康菲储量里"寿命最长"的一块。</p>
+<h3>生意五：APAC —— 亚太</h3>
+<p>TTM 收入 20.50 亿，占 3.2%，最小的一块。核心是澳大利亚太平洋 LNG（APLNG）的股权——把昆士兰的煤层气液化装船，卖给日本、韩国、中国的长期合约买家。</p>
+<p>LNG 和原油的区别在于：<strong>LNG 大多是十年以上的长期照付不议合同</strong>（不管你要不要，都得付钱），价格往往和油价挂钩但有平滑机制。所以这块收入的波动远小于原油，是康菲财报里最稳的一部分。康菲正在把 LNG 作为战略重点扩张。</p>
+<h3>五个地区的钱（TTM 截止 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>增速（TTM vs FY2025）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lower 48 美国本土页岩</td>
+<td>43,992</td>
+<td>+6.3%</td>
+<td>69.4%</td>
+<td>约 19%（估算）</td>
+<td>约 8,400（估算）</td>
+</tr>
+<tr>
+<td>EMENA 欧洲中东北非</td>
+<td>7,047</td>
+<td>+8.7%</td>
+<td>11.1%</td>
+<td>约 28%（估算）</td>
+<td>约 2,000（估算）</td>
+</tr>
+<tr>
+<td>Alaska 阿拉斯加</td>
+<td>6,109</td>
+<td>+8.4%</td>
+<td>9.6%</td>
+<td>约 22%（估算）</td>
+<td>约 1,350（估算）</td>
+</tr>
+<tr>
+<td>Canada 加拿大油砂</td>
+<td>4,113</td>
+<td>+13.5%</td>
+<td>6.5%</td>
+<td>约 20%（估算）</td>
+<td>约 820（估算）</td>
+</tr>
+<tr>
+<td>APAC 亚太 LNG</td>
+<td>2,050</td>
+<td>+15.8%</td>
+<td>3.2%</td>
+<td>约 30%（估算）</td>
+<td>约 620（估算）</td>
+</tr>
+<tr>
+<td>公司总部及未分配</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −1,750（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>63,345</strong></td>
+<td><strong>+9.6%</strong>（TTM 同比）</td>
+<td>100%</td>
+<td><strong>21.2%</strong>（实际）</td>
+<td><strong>13,437</strong>（实际经营利润）</td>
+</tr>
+</tbody>
+</table></div>
+<p>* "增速"一列比的是 TTM 与 2025 完整财年，不是严格同比——财报没有披露分地区的上年同期 TTM。总营收 +9.6% 是真实 TTM 同比。</p>
+<p><strong>分地区利润是估算的。</strong> 康菲财报按地区披露到营收这一层，不披露地区经营利润。上表是按各地区油气构成、税负和折耗强度倒推的，用"总部及未分配"轧平到实际经营利润 134.37 亿。<strong>别把这几个数字当精确值。</strong></p>
+<p>另外注意：<strong>财报的地区拆分是按"油井在哪里"，不是按"客户在哪里"。</strong> 康菲的产品几乎全部按全球统一的商品价格销售。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>先说结论：康菲是我这批三家里财报最干净的一家。</strong> 该有的障眼法基本都没有。</p>
+<h3>股权激励（SBC）</h3>
+<p><strong>现金流量表上根本没有单列这一项</strong>——说明金额小到被并进了"其他调整"（11.60 亿）里。对一家 TTM 净利润 92.82 亿的公司，即使 SBC 有三四亿也只占 3%–4%，影响可以忽略，而且 GAAP 里已经扣掉了。</p>
+<p>对比一下：优步的 SBC 占净利润 20%，辉瑞占 22%，康菲连单列的必要都没有。这是老派工业公司和科技/医药公司的根本差别——<strong>康菲的价值在地底下的储量里，不在员工的脑子里，所以不需要用股票留人。</strong></p>
+<h3>一次性项目</h3>
+<p>TTM"其他非经营损益" <strong>+8.65 亿</strong>，这里面混着两类东西：一是权益法核算的合营公司（如 APLNG、卡塔尔项目）的利润分成，这部分是<strong>年年都有的</strong>；二是资产处置收益——TTM 出售业务收到现金 20.97 亿，其中会产生一笔账面收益。</p>
+<p>康菲每年都在做资产腾挪（卖掉边际油田、买进核心区块），所以"出售资产收益"对它来说<strong>基本是年年都有的常态项目</strong>，不是真一次性。我在第三部分只按大约 5 亿税后的规模做了保守剔除。</p>
+<p><strong>没有大额减值。</strong> 现金流量表的"其他调整"只有 11.60 亿，对比辉瑞的 53.62 亿，说明康菲这一期没有做资产冲销。这在油气行业不容易——油价一跌，同行常常几十亿地减值。</p>
+<h3>资本化支出 —— 这才是康菲真正要看的地方</h3>
+<p>石油公司没有"研发资本化"这种把戏，但它有一个更本质的问题：<strong>折旧折耗够不够。</strong></p>
+<ul>
+<li>TTM 折旧折耗摊销（DD&amp;A）：<strong>118.05 亿</strong></li>
+<li>TTM 资本开支：<strong>118.61 亿</strong></li>
+</ul>
+<p><strong>这两个数字几乎完全相等，这是全篇最重要的一个发现。</strong></p>
+<p>翻译成人话：康菲每年在账上确认 118 亿的"资产消耗"（每采出一桶油，就冲掉这桶油对应的开发成本），同时每年花 118.6 亿去打新井、开发新储量。<strong>收支相抵，说明它的折耗计提是充分的，账面利润没有被低估的折旧美化。</strong></p>
+<p>但反过来看，这也说明了一件残酷的事：<strong>康菲那 100.64 亿的自由现金流，是在"每年花 118 亿只够维持现状"的前提下剩下来的。</strong> 石油生意的本质是卖存货——你卖掉的每一桶油，地下就少一桶。资本开支不是"扩张投资"，绝大部分是<strong>买回你刚刚卖掉的东西</strong>。这和优步那种资本开支只占营收 0.56% 的生意，是两个物种。</p>
+<h3>回购与稀释</h3>
+<ul>
+<li>TTM 回购 <strong>53.02 亿美元</strong></li>
+<li>TTM 股权激励 <strong>未单列（金额很小）</strong></li>
+<li><strong>回购 ÷ SBC ≫ 10</strong>（分母太小，比值没有意义，但方向极其明确：这是真回购）</li>
+</ul>
+<p>TTM 派息 <strong>40.70 亿</strong>，每股 3.36 美元，股息率 <strong>2.70%</strong>。</p>
+<p>回购 53.02 + 分红 40.70 = <strong>93.72 亿</strong>，占自由现金流 100.64 亿的 <strong>93%</strong>。康菲几乎把赚到的所有自由现金流都还给了股东。</p>
+<p><strong>但股本数字有个坑要说清楚</strong>：TTM 股本同比 <strong>+0.27%</strong>，看起来一年白回购了。原因是 2024 年底康菲用换股方式收购了 Marathon Oil，一次性发了大量新股，这个影响还留在同比基数里。看环比就清楚了——<strong>最近一个季度股本减少 0.86%</strong>，年化约 3.4%，回购正在真实缩股。</p>
+<h3>利润和现金流的差 —— 逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>9,282</td>
+</tr>
+<tr>
+<td>＋ 折旧折耗摊销（DD&amp;A）</td>
+<td>11,805</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整（含递延税、SBC 等）</td>
+<td>1,160</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−1,255</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−51</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>146</td>
+</tr>
+<tr>
+<td>＋ 其他经营性变动</td>
+<td>838</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>21,925</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−11,861</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>10,064</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表逐项对得上，一分钱不差。<strong>净利润 92.82 亿变成经营现金流 219.25 亿，其中 118.05 亿全部来自折旧折耗的加回</strong>——而这 118 亿马上又原封不动地被资本开支花掉了。所以：</p>
+<p><strong>康菲的经营现金流是 219 亿，但其中有 118 亿是"必须马上再投回地下"的钱，不是股东的钱。真正属于股东的是那 100.64 亿。</strong></p>
+<p>这和辉瑞形成了极其鲜明的对比：辉瑞的现金流也是靠加回 65.8 亿摊销撑起来的，但辉瑞的资本开支只有 24 亿——因为辉瑞加回的摊销对应的是"过去已经付过的收购款"，不需要马上再付。<strong>康菲加回的折耗对应的是"下个月就要付出去的钻井费"。</strong> 同样是加回非现金支出，含金量完全不同。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,495.9 亿 ÷ 92.82 亿</td>
+<td><strong>16.1×</strong></td>
+<td><strong>$6.20</strong></td>
+</tr>
+<tr>
+<td>公司口径调整后利润（估算）</td>
+<td>1,495.9 亿 ÷ 约 87.8 亿</td>
+<td>17.0×</td>
+<td>$5.88</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,495.9 亿 ÷（92.82 − 约 5 亿税后资产处置收益）= ÷ 87.8 亿</td>
+<td><strong>17.0×</strong></td>
+<td><strong>$5.88</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,495.9 亿 ÷ 100.64 亿</td>
+<td>14.9×</td>
+<td>$6.73</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,651.9 亿 ÷ 134.37 亿</td>
+<td>12.3×</td>
+<td>$8.14</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,495.9 亿 ÷ 三年平均净利润 93.97 亿</td>
+<td><strong>15.9×</strong></td>
+<td><strong>$6.28</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意"剔除障眼法后"和"公司口径"是同一个数</strong>——因为康菲没什么可剔的。这在我做过的公司里很少见。</p>
+<p><strong>三年平均那一行今天特别值得看</strong>：FY2023/24/25 净利润分别是 109.57 / 92.45 / 79.88 亿，平均 93.97 亿，对应 15.9 倍——<strong>和当期的 16.1 倍几乎一模一样</strong>。这说明康菲现在的利润<strong>不在周期高点</strong>，是个正常年份的水平。</p>
+<p>但这个结论有一个陷阱要提醒你：<strong>这三年恰好避开了 2022 年那个真正的峰值</strong>——FY2022 康菲净利润是 <strong>186.80 亿</strong>，是现在的两倍。同样，2020 年它是亏损的。所以"三年平均 ≈ 当期"只能证明"现在不是刚刚发生过的那种极端高点"，<strong>不能证明这就是长期中枢</strong>。石油公司的真实周期跨度是七到十年，三年窗口太短。</p>
+<p>另外，<strong>EV/EBIT 只有 12.3 倍</strong>，比市盈率的 16.1 倍还低。这是因为康菲的税负极重（36.5%）——它在经营层面赚 134 亿，交完税只剩 93 亿。挪威 78%、阿拉斯加、利比亚的石油特别税吃掉了很大一块。<strong>这个高税率是结构性的，不会改善。</strong></p>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进康菲，按最保守的真实口径，公司一年替你赚 5.88 块。按自由现金流算是 6.73 块。</strong></p>
+<p>这 6.73 块里的去向非常清楚，而且是我见过最干脆的：</p>
+<ul>
+<li><strong>约 2.7 块</strong>以分红回到你口袋（股息率 2.70%）</li>
+<li><strong>约 3.5 块</strong>以回购的形式变成你手里股份的增值</li>
+<li><strong>只剩 0.5 块</strong>留在公司</li>
+</ul>
+<p><strong>93% 的自由现金流直接还给股东。</strong> 这不是意外，是康菲明确的政策——它把自己定位成"以现金返还为纲的油气公司"，管理层公开承诺把经营现金流的 30% 以上还给股东，实际做到的远超这个数。</p>
+<p>那 0.5 块留在公司的钱，加上 118 亿的资本开支，去向也很明确：一半以上砸在 Lower 48 的钻井上（维持产量），剩下的投给 Willow（阿拉斯加，2029 年投产）和 LNG 扩张。这些是<strong>十年期的赌注</strong>。</p>
+<p><strong>这个 5.88 块未来会变大还是变小？</strong></p>
+<p>诚实的回答是：<strong>我不知道，而且没有人知道，因为它 90% 取决于油价。</strong></p>
+<ul>
+<li>油价从现在涨 20%，康菲的净利润会涨 50% 以上（成本基本固定，涨价全是利润）</li>
+<li>油价跌 20%，净利润会腰斩</li>
+<li>油价跌到 40 美元，康菲不会破产（盈亏平衡在 30–40），但自由现金流会归零，回购会立刻停掉</li>
+</ul>
+<p>这就是石油股的本质：<strong>你不是在买一家公司的经营能力，你是在借这家公司买一个油价的看涨期权，同时收 2.7% 的股息当持有成本。</strong></p>
+<p>有两个结构性因素值得单独说：</p>
+<p><strong>利好的一面</strong>：康菲有 LNG 和长寿命资产（加拿大油砂 30–50 年、阿拉斯加 Willow 30 年）这个组合，比纯页岩公司抗周期。而且全球对能源资本开支的长期不足是真实的——过去十年整个行业的勘探投入被 ESG 压制，如果需求不塌，供给端的紧张会在某个时点体现在价格上。</p>
+<p><strong>利空的一面</strong>：康菲的储量寿命比埃克森、雪佛龙短，因为页岩占比高，衰减快。它必须持续用高价买地或买公司来补充储量——2024 年买 Marathon 就是这个逻辑。<strong>每一次这种补充，都在稀释老股东。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>康菲是这三家里财报最干净、股东回报最实在的一家——没有股权激励游戏、没有减值粉饰、折耗计提充分、93% 的自由现金流直接还给股东、当期利润和三年平均几乎一致说明估值不建立在周期高点上。</strong> 16 倍市盈率、12.3 倍 EV/EBIT、6.73 块的现金回报，这个价格对一家一流的油气公司是合理的，不便宜也不贵。</p>
+<p>但你必须清楚自己在买什么：<strong>这不是一家能靠经营变好来赚钱的公司，它是一张油价的杠杆化多头票据。</strong> 康菲的管理层已经把他们能控制的事做到了行业最好——最低的成本、最干净的账、最狠的现金返还——剩下的 90% 交给了 OPEC 和全球需求。如果你对未来五年的油价没有观点，那你对康菲也不该有观点。</p>
+</div></body></html>

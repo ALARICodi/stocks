@@ -1,0 +1,366 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KIM · 金科地产信托（Kimco Realty）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KIM</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">定价合理不便宜也不贵，4.3%现金流加慢速增长</div><h1>KIM · 金科地产信托（Kimco Realty）</h1>
+<p><strong>市值</strong> $164.2 亿 ｜ <strong>股价</strong> 约 $24.41 ｜ <strong>企业价值</strong> $245.7 亿 ｜ <strong>行业</strong> 房地产信托（REIT）/ 露天社区商业中心 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家 REIT（房地产信托），下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong> 原因是：REIT 的账面净利润里被扣掉了一大笔"房产折旧"——会计规定楼要按 39 年折旧到零，但现实中一个位置好的社区商业中心 39 年后大概率比今天更值钱。Kimco TTM 净利润 5.74 亿，其中被折旧吃掉了 5.76 亿，<strong>折旧比净利润本身还大</strong>。拿净利润算市盈率，等于假装它的地产在化成灰，结论会离谱。REIT 世界通用的口径是把折旧加回来，叫 FFO。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只把收入拆成两行：租金收入 21.68 亿、管理费收入 0.19 亿。也就是说——<strong>从会计口径看这就是一门生意：收租。</strong> 但收租底下藏着三门经济逻辑完全不同的生意，值得拆开讲。</p>
+<h3>1. 主业：出租超市带的露天购物广场（占收入 99%）</h3>
+<p>Kimco 拥有 500 多个<strong>露天社区商业中心</strong>（open-air shopping center），总面积约 1 亿平方英尺，主要在纽约三州区、佛罗里达、加州、大西洋中部这些人口稠密的大都市近郊。</p>
+<p><strong>具体长什么样</strong>：你在美国郊区开车，路边一个大停车场，一排 L 形或一字排开的平房店铺，尽头是一家 Kroger 或 Publix 超市，中间夹着 TJ Maxx、Ross、Ulta、PetSmart，边角上是星巴克、Chipotle、指甲店、牙医诊所、连锁健身房——<strong>这整块地和这排房子就是 Kimco 的</strong>。它不经营任何一家店，它是房东。</p>
+<p><strong>怎么收钱</strong>，一个租户的账单其实分三层：</p>
+<ul>
+<li><strong>基础租金</strong>：按平方英尺年租。超市这种"主力店"（anchor）占地大、议价强，一平方英尺一年只交 $12–18；而角落里那家指甲店只有 1200 平尺，一平尺要交 $35–45。所以<strong>面积一半来自主力店，租金一半来自小店</strong>。</li>
+<li><strong>摊回费用（CAM + 税 + 保险）</strong>：停车场铺沥青、除雪、门口路灯电费、地产税、公共责任险——这些 Kimco 先垫付，再按各租户占的面积比例全额收回来。这一项占租金收入的两成多，本质是<strong>零加价的过路费</strong>，但它让 Kimco 的成本结构几乎完全转嫁给租户，这是露天商业中心比写字楼强的地方。</li>
+<li><strong>抽成租金（percentage rent）</strong>：一部分租约写明"年销售额超过 X 之后，超出部分抽 3%–6%"。这块金额不大，但意味着租户生意好的时候房东跟着分一口。</li>
+</ul>
+<p>一份主力店租约通常是<strong>10–20 年，外加四五个各 5 年的续租选择权</strong>，租金每 5 年涨 5%–10%。小店租约短一些，5 年为主，年涨 3%。这个结构决定了 Kimco 的收入极其可预测，但<strong>在通胀高的年份跑输通胀</strong>——租金一签十年，涨幅早就锁死了。</p>
+<p><strong>为什么这门生意在电商时代活下来了</strong>：因为它的锚是<strong>超市</strong>，而生鲜是电商啃了二十年也没啃动的品类；有了超市，一周引流两三次，旁边的理发店、牙医、健身房、快餐这些"必须到场"的服务业就都活得下去。反倒是那些卖百货和服装的<strong>封闭式大商场（mall）</strong>被亚马逊打垮了——Kimco 的露天中心和它们是两种完全不同的资产，别混为一谈。</p>
+<p>TTM 租金收入 21.68 亿，比 FY2025 全年的 21.21 亿多 2.2%，增长来自三块：老租约到期换新租户涨价、外部收购（2024 年初吞下同行 RPT Realty 的 56 个中心，那一年营收因此跳涨 14.2%）、以及在自家停车场空地上盖公寓（"mixed-use"，把一块只收零售租金的地变成同时收公寓租金）。</p>
+<h3>2. 附带的生意：替合资项目当管家（收入 0.19 亿）</h3>
+<p>Kimco 有一批和养老金、主权基金合资的项目（它出 15%–20% 的钱和全部运营，对方出大头），它按资产规模抽 0.5%–1% 的管理费。TTM 只有 1,872 万，<strong>占总收入不到 1%，可以忽略</strong>。真实价值不在这笔费用，而在它用别人的钱放大了自己的地盘。</p>
+<h3>3. 藏在损益表里的第三门生意：炒 Albertsons 的股票</h3>
+<p>这门生意财报不单列，但它是过去五年 Kimco 净利润剧烈跳动的<strong>唯一原因</strong>。Kimco 早年持有超市巨头 Albertsons 的一大笔股权，上市后陆续减持。看这条历史线：</p>
+<ul>
+<li>FY2021 净利润 <strong>8.16 亿</strong>——里面有 5.05 亿是卖 Albertsons 股票的收益。</li>
+<li>FY2022 净利润塌到 <strong>0.99 亿</strong>——因为 Albertsons 股价跌了，账面倒亏 3.16 亿。</li>
+<li>TTM 这一项只剩 247 万，基本清仓了。</li>
+</ul>
+<p><strong>这解释了为什么 Kimco 的"市盈率"这五年从 20 倍到 175 倍乱跳，也再次说明为什么 REIT 不能看市盈率。</strong> 好消息是这门赌博生意已经基本关掉了，往后利润会干净得多。</p>
+<p>此外还有一块小规模的"结构性投资"——给别的开发商放优先股和夹层贷款，年化 8%–10%，规模几亿美元，收益计在利息里。</p>
+<h3>各块生意的钱（TTM，单位百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>FY2025 全年</th>
+<th>变动</th>
+<th>占比</th>
+<th>利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>租金收入（含摊回费用）</td>
+<td>2,168</td>
+<td>2,121</td>
+<td>+2.2%</td>
+<td>99.1%</td>
+<td>约 68% NOI（估算）</td>
+<td>~1,470</td>
+</tr>
+<tr>
+<td>管理及其他费用</td>
+<td>18.72</td>
+<td>18.72</td>
+<td>0%</td>
+<td>0.9%</td>
+<td>约 40%（估算）</td>
+<td>~7</td>
+</tr>
+<tr>
+<td>减：总部管理费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−135</td>
+</tr>
+<tr>
+<td>减：折旧摊销（非现金）</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>−575.6</td>
+</tr>
+<tr>
+<td><strong>合计经营利润</strong></td>
+<td><strong>2,187</strong></td>
+<td><strong>2,140</strong></td>
+<td><strong>+2.2%</strong></td>
+<td>100%</td>
+<td><strong>34.59%</strong></td>
+<td><strong>756.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>NOI（净营业收入）率和总部费用是估算</strong>——财报不按细分披露物业层面利润，我用"经营利润 + 折旧摊销 ≈ EBITDA 13.3 亿，再加回总部费用"倒推出物业层面 NOI 约 14.7 亿，对应 68% 的 NOI 率。这个数字在露天商业中心里属于正常水平（写字楼约 60%，仓储约 75%）。</p>
+<p><strong>一个由此推出的关键数字</strong>：企业价值 245.7 亿 ÷ NOI 14.7 亿 = <strong>隐含资本化率 6.0%</strong>。翻译成人话：<strong>市场现在给 Kimco 这堆房子的定价，相当于买下来后每年租金净回报 6.0%。</strong> 私募市场上同类超市带的社区中心成交价通常在 6%–7% 资本化率，所以 Kimco 的股价大致处在<strong>资产净值附近、略微偏贵一点</strong>的位置，不存在明显的折价机会。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 3,373 万，占 GAAP 净利润 5.74 亿的 <strong>5.9%</strong>，占 FFO 的 2.8%。比例很低——这家公司只有 710 个员工（一个人管 3.08 亿美元的资产），发不出多少股票。<strong>按真实成本扣掉，不加回</strong>，对结论几乎无影响。</p>
+<p><strong>一次性项目</strong>：TTM 有资产处置收益 3,992 万、资产减值 800 万、投资处置小额亏损 247 万。看历史列会发现，<strong>"卖楼赚钱"是 Kimco 年年都干的事</strong>（FY2025 赚 6,266 万、FY2023 赚 7,498 万），所以它不是一次性，而是常规经营的一部分——REIT 的商业模式本来就包含"卖掉老化的、买入更好的"。但它<strong>不该算进可持续利润</strong>，下面算 FFO 时按惯例已经扣除。真正的一次性是那笔 Albertsons 股票，TTM 已经归零。</p>
+<p><strong>资本化的支出</strong>：REIT 会把租户装修补贴（TI）和招租佣金资本化，这是行业惯例但<strong>掩盖了真实成本</strong>——每次换租户都要给新租户几十万美元装修钱，这笔钱不进损益表而是分 10 年摊。这正是 FFO 有水分、必须再往下算 AFFO 的原因（见下）。TTM 房地产收购与开发支出 4.97 亿，其中相当一部分是这类维持性投入。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 1.735 亿，SBC 3,373 万，<strong>比值 5.14</strong>——远大于 3，<strong>这是真回购</strong>。股本一年减少 0.23%。不过要说清楚：Kimco 同期借了 5.58 亿净新债，回购的钱本质上是<strong>借来的</strong>，不是纯粹用经营现金流回馈股东。</p>
+<p><strong>利润和现金流的差</strong>：净利润 5.74 亿，经营现金流 11.79 亿，差了 6.05 亿，逐项对账如下（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>573.75</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+575.59</td>
+<td><strong>最大的一项，全是假费用</strong>：楼在按 39 年折旧到零，但楼还在那儿</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+10.93</td>
+<td>融资费用等</td>
+</tr>
+<tr>
+<td>− 卖楼收益</td>
+<td>−39.92</td>
+<td>这笔已进净利润但不是租金，剔出</td>
+</tr>
+<tr>
+<td>＋ 投资处置亏损</td>
+<td>+2.47</td>
+<td>Albertsons 残余</td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>+8.00</td>
+<td>计提但没花钱</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+33.73</td>
+<td>发股票不花现金（真实稀释你）</td>
+</tr>
+<tr>
+<td>＋ 权益法投资调整</td>
+<td>+2.22</td>
+<td>合资项目账面损失</td>
+</tr>
+<tr>
+<td>− 应收账款变动</td>
+<td>−0.33</td>
+<td>几乎为零</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+21.16</td>
+<td>欠供应商的钱多了</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−13.44</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−28.44</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 未单列项（主要是直线法租金调整）</td>
+<td>+33.28</td>
+<td>财报未逐项披露，倒挤</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,179</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 房地产收购与开发</td>
+<td>−497.23</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 网站口径自由现金流</strong></td>
+<td><strong>681.88</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：6.05 亿差额里，5.76 亿（95%）来自房产折旧，这是 REIT 的本质特征，不是造假。</strong> 剩下的零头是股权激励和杂项。这张表最重要的启示是：<strong>Kimco 的"净利润"这个数字对判断它值多少钱几乎毫无用处</strong>，真正该看的是经营现金流 11.79 亿减去维持性投入之后的部分。</p>
+<hr />
+<h2>第三部分：REIT 专用口径（FFO / AFFO），不用市盈率</h2>
+<p>先把两个词说清楚：</p>
+<ul>
+<li><strong>FFO（营运资金）</strong> = 净利润 ＋ 房产折旧 − 卖楼收益。行业标准口径，等于假装楼不会变旧。</li>
+<li><strong>AFFO（调整后营运资金）</strong> = FFO − 维持房子和租约所必须的开销（租户装修补贴、招租佣金、屋顶和停车场翻新）− 直线法租金的账面水分。<strong>这才是真正能拿去分红的钱。</strong> FFO 是行业宣传口径，AFFO 是真话。</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数 / 数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率（<strong>仅供对照，不该用</strong>）</td>
+<td>164.2 亿 ÷ 5.74 亿</td>
+<td>28.6 倍</td>
+<td>$3.49</td>
+</tr>
+<tr>
+<td><strong>市值 / FFO</strong></td>
+<td>164.2 亿 ÷ 约 12.11 亿</td>
+<td><strong>13.6 倍</strong></td>
+<td><strong>$7.37</strong></td>
+</tr>
+<tr>
+<td><strong>市值 / AFFO（估算）</strong></td>
+<td>164.2 亿 ÷ 约 10.2 亿</td>
+<td><strong>约 16.1 倍</strong></td>
+<td><strong>约 $6.21</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均 FFO 口径</strong></td>
+<td>164.2 亿 ÷ 10.45 亿（TTM 11.09 ＋ FY25 10.81 ＋ FY24 9.44 取平均，均按自下而上算）</td>
+<td><strong>15.7 倍</strong></td>
+<td><strong>$6.37</strong></td>
+</tr>
+<tr>
+<td>隐含资本化率（企业价值口径）</td>
+<td>245.7 亿 ÷ NOI 约 14.7 亿</td>
+<td><strong>6.0%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>实际到手的分红</strong></td>
+<td>每股约 $1.05 ÷ 股价 $24.41</td>
+<td>股息率 <strong>4.30%</strong></td>
+<td><strong>$4.30（真进你口袋）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>几个必须说明的口径细节：
+- FFO 有两个算法差异。网站给的 Price/FFO 13.56 倍反推 FFO 为 <strong>12.11 亿</strong>；我用财报数字自下而上算（5.74 ＋ 5.76 − 0.40）得 <strong>11.09 亿</strong>，对应 14.8 倍。差额来自对证券公允价值变动和合资项目的处理口径。<strong>保守起见，下面的结论按自下而上的 11.09 亿走。</strong>
+- <strong>AFFO 是估算</strong>：财报四页不披露 AFFO，我按露天商业中心 REIT 的通行经验值——AFFO 约为 FFO 的 85%——推算出 10.2 亿。真实值可能在 9.5–10.8 亿之间。
+- <strong>出租率数字不在我使用的四个财报页里</strong>，所以本文不给具体百分比。间接证据是租金收入在没有大额收购的年份仍以 2%+ 增长，说明续租提价在起作用、空置没有恶化。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Kimco，按最保守的 AFFO 口径算，公司一年替你赚约 $6.21；按三年平均 FFO 算 $6.37。</strong></p>
+<p><strong>这里面有 $4.30 是以现金分红的形式真正打进你账户的</strong>——分红占 AFFO 约 69%、占 FFO 约 58%，这个派息率在 REIT 里属于<strong>健康偏保守</strong>（法律要求 REIT 至少分掉 90% 应税收入，但应税收入远低于 FFO，所以 58%–69% 是很多 REIT 的常态）。剩下的 $1.9 左右留在公司里，去处很明确：TTM 花了 4.97 亿买楼和开发（包括在自家停车场上盖公寓）、1.73 亿回购股票。</p>
+<p><strong>这个回报未来会变大还是变小？我判断是缓慢变大，但有一个明确的减速带。</strong></p>
+<p>变大的理由：租约到期换新价时，Kimco 近年拿到的续租涨幅普遍在 10% 以上，因为<strong>美国过去十年几乎没新建过露天商业中心</strong>（利率高、建材贵、审批难），供给冻结而人口在往郊区搬——这是它最硬的基本面。加上停车场改公寓的混合用途开发，同一块地能收两份租。</p>
+<p>减速带在债务上，这是全篇最该警惕的一件事：<strong>总债务 88.6 亿，TTM 实际支付利息 3.17 亿，倒推平均利率只有 3.6%</strong>——这是 2020–2021 年零利率时代锁定的老债。今天同评级 REIT 发新债的成本大约在 5.3%–5.7%。<strong>如果这 88.6 亿全部按 5.5% 重新定价，利息会从 3.17 亿涨到 4.87 亿，一年多掏 1.70 亿，直接吃掉 FFO 的 15%。</strong> 债务不会一夜到期，会分五到八年慢慢换，所以这是一个每年侵蚀 2%–3% FFO 增长的持续逆风，不是悬崖。利息覆盖倍数目前只有 2.25 倍、债务/EBITDA 高达 6.57 倍，<strong>这是一家实打实的高杠杆企业</strong>，没有太多犯错空间。</p>
+<p><strong>REIT 特有的两点提醒</strong>：第一，它的回报里有很大一块是"分红"，而 REIT 分红在美国税上按普通收入征税、不享受合格股息的优惠税率；第二，REIT 股价对长期利率极其敏感——十年期国债每上行 100 个基点，这类资产通常要跌 10%–15%，跟它自己经营得好不好无关。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家资产真实、生意乏味、定价合理的收租机器，不便宜也不贵，买它就是买一份 4.3% 的现金流加上每年 2%–3% 的慢速增长。</strong></p>
+<p>它最大的优点是<strong>资产本身很难被复制</strong>——超市带的近郊商业中心已经十年没有新增供给，而它的租户是牙医、健身房、快餐和生鲜超市，是电商杀不死的那一类。它最大的缺点是<strong>杠杆和利率</strong>：6.57 倍的债务倍数、2.25 倍的利息覆盖，加上一批 3.6% 的低息老债正在排队等着按 5.5% 重新定价，这会在未来五年持续压低利润增速。</p>
+<p>6.0% 的隐含资本化率意味着市场给它的定价基本等于房子的私募市场价，既没有明显折价可捡，也没有泡沫。<strong>它不是一个能让你赚大钱的东西，是一个用来替代债券、领 4.3% 分红并期待房子慢慢涨价的东西。</strong> 如果你要的是这个，它合格；如果你想要成长，走错门了。</p>
+</div></body></html>

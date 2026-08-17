@@ -1,0 +1,505 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KMI · 金德摩根（Kinder Morgan）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KMI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">三家里最便宜账最干净，买的是天然气管道收租权</div><h1>KMI · 金德摩根（Kinder Morgan）</h1>
+<p><strong>市值</strong> $721.1 亿 ｜ <strong>股价</strong> 约 $32.3 ｜ <strong>行业</strong> 工业服务（能源基础设施）｜ <strong>交易所</strong> NYSE
+<strong>TTM 口径</strong>：最近四个季度滚动，截止 <strong>2026 年 6 月 30 日</strong>（最新财报 2026-07-22 发布）
+<strong>全榜名次</strong>：第 132 名（市值排序，PE 15–50 倍筛选池共 1222 家）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>金德摩根不生产天然气，不开采石油，不炼油，不卖汽油给你。</p>
+<p><strong>它是一家收过路费的公司。</strong> 它拥有北美最大的天然气管道网络——<strong>约 7.9 万英里管道（够绕地球三圈）</strong>、约 140 个成品油和化工品码头、以及一批地下储气库。别人的天然气、汽油、乙醇、二氧化碳，要从产地走到用户手上，就得走它的管子、进它的罐子，<strong>按输送量和租用容量交钱</strong>。</p>
+<p>关键在于：<strong>这笔钱大部分和油气价格无关。</strong></p>
+<p>TTM 营收 <strong>179.59 亿美元</strong>（+12.46%），经营利润 <strong>52.17 亿</strong>（利润率 29.05%），净利润 <strong>34.67 亿</strong>。分四块。</p>
+<hr />
+<h3>生意一：天然气管道（TTM 116.64 亿，占 65%）—— 主业</h3>
+<p><strong>这块干的事：</strong> 页岩气从德州二叠纪盆地的井口出来，要送到墨西哥湾沿岸的 LNG 出口终端装船运去欧洲，或者送到亚特兰大的一座燃气电厂发电。中间那两千公里的管子，就是金德摩根的。</p>
+<p><strong>钱是怎么收的——这是理解这家公司的核心：</strong></p>
+<p>金德摩根的合同<strong>绝大多数是"照付不议"（take-or-pay）</strong>。意思是：</p>
+<blockquote>
+<p>某 LNG 出口商跟金德摩根签 20 年合同，包下一条管道每天 10 亿立方英尺的输送能力。<strong>不管他今年实际输不输气、输多少，每年固定付 2 亿美元的容量费。</strong> 输气了另按体积加收一点，不输气那 2 亿照付。</p>
+</blockquote>
+<p>这是<strong>收租</strong>，不是<strong>卖气</strong>。为什么客户愿意签这种看起来吃亏的合同？因为如果不锁定管道容量，等到他的 LNG 船靠港了却没气可装，损失是几十亿。管道容量在美国墨西哥湾沿岸是<strong>稀缺品</strong>——新建一条跨州管道要拿联邦审批（FERC）、要跟沿线几千个地主谈地役权、要过环保诉讼，<strong>平均耗时 6–8 年，而且大概率被否</strong>。</p>
+<p><strong>所以金德摩根真正的护城河不是钢管，是审批。</strong> 它手上这 7.9 万英里管道，今天没有任何人能重建出来，出多少钱都不行。</p>
+<p><strong>看这块的营收波动，就懂它的商业模式了：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>天然气管道营收</th>
+<th>天然气价格环境</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>116.44 亿</td>
+<td>正常</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td><strong>126.59 亿</strong></td>
+<td>俄乌战争，气价暴涨</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>91.52 亿</td>
+<td>气价崩</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td><strong>89.30 亿</strong></td>
+<td>气价低位</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>109.90 亿</td>
+<td>回升</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>116.64 亿</strong></td>
+<td>AI 数据中心用电激增</td>
+</tr>
+</tbody>
+</table></div>
+<p>营收从 126.59 亿掉到 89.30 亿再涨回 116.64 亿，波动幅度 <strong>±30%</strong>。<strong>但同期公司整体经营利润是 40.65 → 43.84 → 52.17 亿，一路向上，一年都没跌过。</strong></p>
+<p>原因：营收里那部分随气价大起大落的，是<strong>代客户买气再卖给客户的转手部分</strong>，进价出价一起变，<strong>利润是零</strong>。真正赚钱的容量费一直稳稳地收着。<strong>所以看金德摩根的营收增长毫无意义，要看经营利润。</strong></p>
+<p><strong>当下最大的变化：AI 数据中心。</strong> 一座 1 吉瓦的 AI 数据中心，用电量相当于 70 万户家庭。美国核电建不动、风光不稳定，<strong>新增电力的主力是燃气电厂</strong>。金德摩根 2025–2026 年宣布的在建项目积压（backlog）大部分是给东南部燃气电厂和 LNG 出口配套的新管线——这解释了为什么它的资本开支从 FY2022 的 16.21 亿飙到 TTM 的 <strong>33.99 亿</strong>。</p>
+<hr />
+<h3>生意二：成品油管道（TTM 29.21 亿，占 16%）</h3>
+<p>输的不是天然气，是<strong>已经炼好的汽油、柴油、航空煤油、乙醇、以及原油</strong>。</p>
+<p>具体场景：加州湾区的一座炼厂产出汽油，要送到内华达州拉斯维加斯的各个加油站。金德摩根的 SFPP 管线负责这一段，<strong>按每加仑收几分钱的运费</strong>，费率受联邦能源监管委员会（FERC）管制，<strong>每年按通胀指数自动上调</strong>。</p>
+<p>这块还包含一批混配和存储设施——比如把乙醇按 10% 掺进汽油，这是法规强制的，赚一笔加工费。</p>
+<p><strong>特点：极其稳定，几乎不增长，但费率跟着通胀走。</strong> 营收从 FY2022 的 34.18 亿降到 TTM 的 29.21 亿，是因为加州汽油消费在下滑（电动车），这是一个<strong>结构性衰退但衰退得很慢</strong>的资产。</p>
+<hr />
+<h3>生意三：码头（TTM 21.65 亿，占 12%）—— 利润率最高的一块</h3>
+<p><strong>卖的是罐子和泊位的租金。</strong></p>
+<p>金德摩根在休斯顿港、纽约港、新奥尔良等地有约 140 个码头，包含：
+- <strong>液体储罐</strong>——一家石油贸易商租下 50 万桶的罐容，<strong>按月付租金</strong>，不管他罐子里装满还是空着。这是纯房东生意。
+- <strong>散货码头</strong>——装卸煤炭、钢材、石油焦。
+- <strong>Jones Act 油轮船队</strong>——16 艘美国籍成品油轮，长期光船租赁给托运人。美国法律规定国内港口之间运货只能用美国造、美国籍、美国船员的船，这个船队因此有牌照壁垒。</p>
+<p><strong>估算经营利润率约 38%–42%，是四块里最高的</strong>（财报只披露到营收，利润按码头资产的行业典型水平估算）。营收从 FY2021 的 17.12 亿稳步涨到 TTM 的 21.65 亿，<strong>六年一次没跌过</strong>——这是全公司最"无聊"也最优质的资产。</p>
+<hr />
+<h3>生意四：二氧化碳与石油生产（TTM 12.09 亿，占 7%）—— 唯一和油价挂钩的部分</h3>
+<p>这块有点绕，但很有意思。</p>
+<p>金德摩根在科罗拉多州有一个天然的二氧化碳气田（McElmo Dome），它把 CO₂ 用管道输到西德州的老油田，<strong>高压打进地下</strong>。这些油田已经开采了几十年，常规方法抽不出油了，但打进 CO₂ 之后，二氧化碳会把黏在岩石孔隙里的原油"洗"出来，<strong>再多采出 10%–20%</strong>。这叫三次采油（EOR）。</p>
+<p>金德摩根一部分收入是<strong>卖 CO₂ 给别的石油公司</strong>，另一部分是<strong>自己持有这些老油田，自己产油自己卖</strong>（日产约 2 万桶）。</p>
+<p><strong>这是全公司唯一直接暴露在油价下的部分</strong>，也是唯一有储量枯竭问题的部分。占比只有 7%，营收从 FY2022 的 13.34 亿慢慢降到 12.09 亿。金德摩根这几年在把它重新包装成"碳捕集与封存（CCS）"业务——毕竟它是全美最有经验的 CO₂ 管道运营商，如果碳封存补贴政策落地，这块能转型。目前更像期权，不是主线。</p>
+<hr />
+<h3>四块生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>对比 FY2025</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献经营利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>天然气管道</td>
+<td><strong>11,664</strong></td>
+<td>10,990（+6.1%）</td>
+<td>64.9%</td>
+<td>约 33%</td>
+<td>约 3,850</td>
+</tr>
+<tr>
+<td>成品油管道</td>
+<td>2,921</td>
+<td>2,686（+8.7%）</td>
+<td>16.3%</td>
+<td>约 32%</td>
+<td>约 935</td>
+</tr>
+<tr>
+<td>码头</td>
+<td>2,165</td>
+<td>2,094（+3.4%）</td>
+<td>12.1%</td>
+<td>约 40%</td>
+<td>约 865</td>
+</tr>
+<tr>
+<td>CO₂ / 石油生产</td>
+<td>1,209</td>
+<td>1,167（+3.6%）</td>
+<td>6.7%</td>
+<td>约 30%</td>
+<td>约 360</td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −793</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>17,959</strong></td>
+<td>16,937（+6.0%）</td>
+<td>100%</td>
+<td><strong>29.05%</strong></td>
+<td><strong>5,217（实际值）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>分部利润率是估算：数据源只按分部披露营收，不披露分部利润。上表用"整体经营利润 52.17 亿必须对得上"作为约束反推。对比列是 FY2025 完整财年，与 TTM 有半年错位，只看方向。官方口径 TTM 整体营收同比 <strong>+12.46%</strong>。</p>
+</blockquote>
+<p><strong>结构总结：一家收管道过路费的公司，65% 的收入来自天然气管网，绝大部分是照付不议的固定容量费，和天然气价格基本无关。</strong> 你买它，买的是"美国天然气必须通过我"这件事。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：<strong>几乎为零，这在美股大盘股里非常罕见</strong></h3>
+<p>现金流量表里<strong>根本没有"股权激励"这一行</strong>。不是漏了——是金额小到数据源不单独列示。</p>
+<p>对比一下：希尔顿 SBC 占净利润 11.7%，高露洁 8.7%，科技股常常 30%–100%。<strong>金德摩根接近 0%。</strong></p>
+<p>这意味着一件很实在的事：<strong>它赚的每一块钱，都不会被员工以股份的形式偷偷拿走一部分。</strong> 它是管道工人和调度员的公司，不是需要用股票抢工程师的公司。<strong>这是全篇最干净的一项。</strong></p>
+<h3>一次性项目：没有大额的</h3>
+<p>TTM 现金流量表的"其他调整"是 <strong>8.48 亿</strong>，比 FY2025 的 5.27 亿高，但这一行主要是<strong>递延所得税</strong>和权益法投资收益调整，不是减值。历史六年这一行在 5.27–18.83 亿之间波动，没有异常。</p>
+<p><strong>只看 TTM 单期无法百分之百排除小额减值，但从量级判断，这一期的利润里没有明显的一次性水分。</strong></p>
+<h3>资本化的支出：<strong>这是必须看清的一项</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目（TTM）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>折旧摊销</td>
+<td>24.80 亿</td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td><strong>33.99 亿</strong></td>
+</tr>
+<tr>
+<td><strong>差额</strong></td>
+<td><strong>−9.19 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>花出去的钱比折旧多了 9.19 亿。</strong> 对管道公司来说，这不是坏事，是好事——说明它在<strong>建新管道</strong>，不是在<strong>修旧管道</strong>。资本开支从 FY2022 的 16.21 亿一路涨到 33.99 亿，翻了一倍多，全部投向 LNG 出口配套和燃气电厂配套的新干线。</p>
+<p><strong>但代价是：这些钱花出去的当年不产生收入，要 3–4 年后新管道通气才开始收租。</strong> 所以现在的自由现金流被压低了，而这是暂时的。这一点后面第三部分要专门处理。</p>
+<h3>回购与稀释：<strong>几乎不回购，全靠分红</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>+700 万（净发行，不是回购）</strong></td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>约 0</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>≈ 0</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td><strong>−26.27 亿</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+0.14%（轻微稀释）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>按任务规格的标准，这是最差的一档：完全不回购，股本还在轻微增加。</strong></p>
+<p>但要看它的替代方案：<strong>它一年发了 26.27 亿的现金分红</strong>，除以市值 = <strong>股息率 3.65%</strong>。这是一家把利润直接打到你银行账户的公司，而不是通过注销股份间接还给你。</p>
+<p>这两种方式在数学上等价，但税务上不等价（分红要交税，回购不用）、也在信号上不等价（分红一旦定下来就砍不得，回购可以随时停）。<strong>金德摩根选择分红，是因为它的股东主体是要现金流的退休金账户和收益型基金，不是要股价涨的成长股投资者。</strong></p>
+<p>股息已经连续 9 年上调，但涨幅很小（TTM 每股 1.19 美元，FY2021 是 1.08 美元，<strong>五年只涨了 10%</strong>）。<strong>别指望股息高速增长。</strong></p>
+<h3>利润和现金流的差：<strong>对得非常整齐</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（TTM，百万美元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,467</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+2,480</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整（递延税等）</td>
+<td>+848</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−102</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−7</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+64</td>
+</tr>
+<tr>
+<td>− 应计费用减少</td>
+<td>−13</td>
+</tr>
+<tr>
+<td>＋ 应交税金</td>
+<td>+5</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−227</td>
+</tr>
+<tr>
+<td><strong>小计</strong></td>
+<td><strong>6,515</strong></td>
+</tr>
+<tr>
+<td>未拆出的零头</td>
+<td>+42</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流（公布值）</strong></td>
+<td><strong>6,557</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−3,399</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>3,158</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表几乎完美对上（差 4200 万，占 0.6%）。</strong> 对比高露洁 TTM 有 9.19 亿对不上、希尔顿有 1.13 亿对不上，<strong>金德摩根的账是这三家里最透明的</strong>。</p>
+<p><strong>唯一要注意的是那个 24.80 亿的折旧摊销</strong>——它占了经营现金流的 38%。管道公司的折旧到底是"假成本"（管子能用 50 年，会计上按 30 年折）还是"真成本"（钢管真的会锈穿）？<strong>答案是介于两者之间，但更偏"假"</strong>：一条维护良好的天然气干线实际寿命远超会计年限，这就是为什么管道公司的现金流永远比账面利润好看得多。</p>
+<h3>负债：<strong>这是最大的风险点</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总负债</td>
+<td><strong>620.53 亿美元</strong></td>
+</tr>
+<tr>
+<td>市值</td>
+<td>721.1 亿</td>
+</tr>
+<tr>
+<td><strong>企业价值</strong></td>
+<td><strong>1044.5 亿</strong></td>
+</tr>
+<tr>
+<td>负债占企业价值</td>
+<td><strong>59.4%</strong></td>
+</tr>
+<tr>
+<td>Debt / EBITDA</td>
+<td>4.21 倍</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td><strong>2.98 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>债权人出的钱比股东还多。</strong> 金德摩根赚的经营利润 52.17 亿里，<strong>有约 17.5 亿直接付给了银行和债券持有人</strong>（利息保障 2.98 倍意味着经营利润是利息的 2.98 倍）。</p>
+<p>TTM 借了 75.20 亿、还了 78.59 亿，<strong>净还款 3.39 亿</strong>——债务规模稳定在 620 亿，没有失控，但也降不下来。<strong>这 620 亿是永久性的，只会不断展期。</strong> 利率如果长期停在高位，每次展期的成本都会上升，直接吃掉股东的那部分利润。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>（市值 721.1 亿美元，TTM 净利润 34.67 亿，TTM 自由现金流 31.58 亿，企业价值 1044.5 亿，经营利润 52.17 亿）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>721.1 ÷ 34.67</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>4.81 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的口径（DCF）</td>
+<td>经营现金流 65.57 亿 − 维护性资本开支约 11.5 亿 ≈ <strong>54.1 亿可分配现金流</strong>；721.1 ÷ 54.1</td>
+<td><strong>13.3 倍</strong></td>
+<td>7.51 元（<strong>估算</strong>，维护性资本开支非披露数字）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性、SBC 近零、不加回任何东西 → 与 GAAP 相同</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>4.81 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>721.1 ÷ 31.58</td>
+<td><strong>22.8 倍</strong></td>
+<td><strong>4.38 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1044.5 ÷ 52.17</td>
+<td><strong>20.0 倍</strong></td>
+<td>5.00 元（<strong>含债权人</strong>）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>721.1 ÷（34.67+30.56+26.13）/3 = 721.1 ÷ 30.45</td>
+<td><strong>23.7 倍</strong></td>
+<td><strong>4.22 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进金德摩根，按最保守的真实口径（三年平均，23.7 倍）算，公司一年替你赚 4.22 元。</strong> 按当期算是 4.81 元。</p>
+<p>三年平均比当期贵一点，说明<strong>现在的利润略高于过去三年的平均水平</strong>——净利润从 26.13 亿（FY2024）涨到 34.67 亿（TTM），涨了 33%。这个涨幅不是周期性泡沫，是新管道陆续投产 + AI 数据中心带来的天然气需求真实增长，<strong>但也说明当期的 20.8 倍是在一个偏好的年份算出来的</strong>。</p>
+<p><strong>一个必须点破的地方：EV/EBIT 是 20.0 倍，PE 是 20.8 倍，两者几乎一样。</strong></p>
+<p>这在一家 60% 靠债务融资的公司身上是<strong>很难看</strong>的信号。正常情况下，加杠杆应该让股东的回报率<strong>高于</strong>整体资产的回报率——你用 6% 的利率借钱，投进 10% 回报的资产，中间 4% 归股东。但金德摩根的 PE 和 EV/EBIT 打平，意味着<strong>这 620 亿债务带来的收益，全部被利息吃光了，股东一分钱好处没拿到，却承担了全部的破产风险</strong>。</p>
+<p>原因很直白：管道资产的回报率（ROIC 6.24%）<strong>只比它的资金成本（WACC 6.33%）高一点点，甚至还略低</strong>。它在做的事，本质上是<strong>用 5% 的钱去买 6% 的资产</strong>，赚那 1 个点的息差，然后靠 620 亿的规模把这 1 个点放大成几十亿利润。<strong>这是银行的商业模式，不是消费品公司的商业模式。</strong></p>
+<p><strong>这 4.81 元里，有多少真回到你口袋？</strong></p>
+<ul>
+<li><strong>分红 26.27 亿，占市值 3.65%——这部分是实打实打进你账户的现金。</strong></li>
+<li>回购 0。</li>
+<li>剩下的钱去了哪？看投资活动：资本开支 33.99 亿 + 收购 5.03 亿 = <strong>约 37 亿全部投回了新管道</strong>。</li>
+</ul>
+<p>所以：<strong>赚 4.81 元，发给你 3.65 元，剩下 1.16 元 + 借来的钱，一起投进了新管子。</strong></p>
+<p><strong>这个 4.81 元未来会变大还是变小？大概率变大，而且这次的理由比希尔顿和高露洁都硬。</strong> 三个来源：
+1. <strong>在建项目投产</strong>——TTM 资本开支 33.99 亿是历史峰值，这些钱在 2027–2029 年会变成新的照付不议合同收入。管道项目的典型回报是投入的 5–7 倍市盈率（即年回报 15%–20%），远高于当前 20.8 倍的估值水平。
+2. <strong>AI 数据中心用电</strong>——燃气发电是未来五年美国新增电力的主力，金德摩根在东南部的管网正好在数据中心集群上。这是真实的、可见的需求增量。
+3. <strong>费率跟着通胀自动上调</strong>——成品油管道受 FERC 监管，费率有通胀联动条款。</p>
+<p><strong>风险也很硬：</strong> 债务 620 亿在高利率环境下每次展期都更贵；管道审批虽然是护城河，但也可能哪天因为环保政策变成枷锁；ROIC 6.24% 只比 WACC 高一点点，<strong>这门生意本身其实赚得不多，是杠杆把它撑成了一个大公司</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这三家里最便宜、账最干净、也最不性感的一家。20.8 倍市盈率、4.81 元年回报、3.65% 现金股息，你买的是"美国的天然气必须走我的管子"这件事的收租权。</strong></p>
+<p>它的好：照付不议合同让利润和油气价格脱钩（营收波动 ±30%，利润连涨五年）；股权激励接近零，没人偷你的股份；现金流对账几乎分毫不差，没有会计花招；审批壁垒让这 7.9 万英里管道无法被复制；AI 数据中心带来的燃气需求是未来五年最确定的增量之一。</p>
+<p>它的坏：620 亿债务比市值的 86% 还多，利息吃掉了全部杠杆收益（PE 和 EV/EBIT 打平就是证据）；ROIC 6.24% 只比资金成本高一丁点，本质是用规模换利润的息差生意；完全不回购，股本还在轻微稀释；股息五年只涨了 10%，别指望它跑赢通胀。</p>
+<p><strong>判断：这个价格是公道的，不便宜也不贵。</strong> 如果你要的是每年 3.65% 的现金进账、加上管道投产带来的每年 4%–6% 利润增长，合计 8%–10% 的长期年化，那它配得上这个价。<strong>如果你想要的是资产翻倍，别看它。</strong> 而且必须清楚一件事：<strong>你实际上是在给一个借了 620 亿的实体当劣后级出资人</strong>，太平年份很稳，利率或监管出意外时，第一个被压缩的就是你。</p>
+</div></body></html>

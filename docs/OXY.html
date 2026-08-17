@@ -1,0 +1,434 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OXY · 西方石油</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OXY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">别被8.9倍骗了，真实17.2倍、三年23.7倍，不便宜</div><h1>OXY · 西方石油</h1>
+<p>市值 $583.4 亿 | 股价约 $58.4 | 行业：能源矿产（石油天然气勘探开采） | 全部数字为 TTM 口径，截止 <strong>2026 年 6 月 30 日</strong></p>
+<hr />
+<h2>先说一句最重要的话</h2>
+<p>这家公司的 TTM 报表<strong>极度失真</strong>，如果你只看"净利润 65.35 亿、市盈率 8.9 倍"就下结论，会得出完全错误的判断。</p>
+<p>原因：<strong>TTM 期内它把化工业务卖掉了</strong>，一次性收益占了净利润的将近一半。剥掉之后的真实市盈率是 <strong>17.2 倍</strong>，不是 8.9 倍。下面第二部分会把这笔账一分一分算清楚。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>卖掉化工之后，西方石油从三门生意变成了两门。财报最新的分部披露（TTM，单位百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>FY2025</th>
+<th>变化</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>石油和天然气（勘探开采）</td>
+<td>22,301</td>
+<td>20,902</td>
+<td>+6.7%</td>
+<td><strong>94%</strong></td>
+</tr>
+<tr>
+<td>中游与营销</td>
+<td>1,532</td>
+<td>1,279</td>
+<td>+19.8%</td>
+<td>6%</td>
+</tr>
+<tr>
+<td>公司及抵消项</td>
+<td>−580</td>
+<td>−588</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>分部合计</td>
+<td>22,212</td>
+<td>22,075</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>（利润表口径营收）</td>
+<td>23,926</td>
+<td>21,593</td>
+<td>+18.5%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>化工分部（OxyChem）已经从分部表里消失了</strong>——它被作为"终止经营"剥离出去。分部合计和利润表营收之间的差额是终止经营和抵消项造成的，这在剥离当年是正常的。</p>
+<h3>生意一：从地下把油捞出来（占 94%）</h3>
+<p>这就是西方石油的全部。它不是一体化石油公司（不像埃克森那样有炼厂和加油站），它是纯粹的<strong>上游勘探开采商</strong>——把油和气从地下弄出来，卖给炼厂和贸易商，赚的钱等于（油价 − 成本）× 产量。</p>
+<p>具体的地盘：</p>
+<ul>
+<li><strong>二叠纪盆地（Permian，德州西部 + 新墨西哥东南）</strong>——核心中的核心。2024 年花了 91.17 亿现金收购 CrownRock，把这块地盘扩到了行业前列（现金流量表 FY2024 那行"现金收购 −9,117"就是这笔）。这里干的是页岩油：钻一口水平井，向下钻 3,000 米，再横向拐弯钻 3,000 米，然后分 50–60 段压裂，把水和砂子高压打进岩层把它压碎，油顺着裂缝流出来。</li>
+<li><strong>二叠纪的 CO2 驱油（EOR）</strong>——这是西方石油独有的东西。往已经开采衰竭的老油田里注入二氧化碳，把岩石缝隙里粘着的残油"洗"出来，能多采出原始储量的 10–20%。它是<strong>全世界最大的 CO2 驱油作业商</strong>，一年注入数千万吨 CO2，建了几千公里的 CO2 输送管道。</li>
+<li><strong>落基山 DJ 盆地</strong>（科罗拉多）和 <strong>墨西哥湾深水</strong>——深水单井投资大（一口井上亿美元），但产量高、递减慢。</li>
+<li><strong>国际</strong>：阿曼、阿联酋、阿尔及利亚的产量分成合同区块。</li>
+</ul>
+<p><strong>这门生意的经济账，用一口二叠纪页岩井说清楚：</strong></p>
+<p>打一口井，钻井加压裂的一次性投入约 <strong>700–900 万美元</strong>。第一年能产 15–20 万桶油，但<strong>页岩井的产量第二年就掉 35–45%，第三年再掉 20–25%</strong>，最后拖着一条长长的小尾巴产十几二十年。全生命周期总共产 40–60 万桶。</p>
+<p>按 65 美元一桶算，全周期毛收入约 3,000 万美元。扣掉：矿权方的权利金（占收入 20–25%，因为地是人家的）、开采运营成本（每桶 10–15 美元）、生产税、管输费，最后落到公司手里的净现值大概 <strong>500–800 万美元</strong>。也就是说投 800 万，几年内拿回 1,300–1,600 万。</p>
+<p><strong>这个模型有一个残酷的推论：因为每口井的产量都在快速衰减，公司必须不停地钻新井，才能让总产量原地不动。</strong></p>
+<p>看数字就明白了：TTM 经营现金流 109.76 亿，资本开支 <strong>64.49 亿</strong>——<strong>59% 的经营现金流，是花在"让产量不下降"上的</strong>。这不是扩张性投资，绝大部分是维持性投资。剩下的 45.27 亿才是真正的自由现金流。</p>
+<p>这也解释了为什么石油公司的市盈率天生就该比制造业低：它的利润里有很大一部分，本质上是在消耗一项会枯竭的资产。</p>
+<h3>生意二：中游与营销（占 6%）</h3>
+<p>三块拼起来的：</p>
+<ul>
+<li><strong>管道和天然气处理厂</strong>——把井口的油气收集、脱水、分离、输送到干线。持有 Western Midstream（WES）的控股权益，那是一家独立上市的管道公司。</li>
+<li><strong>原油营销和贸易</strong>——把自己的油和别人的油打包卖，赚价差和物流费。这块营收波动极大（FY2022 有 41.36 亿，FY2024 只有 8.86 亿），因为贸易量随行就市。</li>
+<li><strong>低碳业务（1PointFive / STRATOS）</strong>——在德州建的直接空气捕集（DAC）工厂，从空气里吸 CO2。逻辑上跟主业接得上（有现成的 CO2 管道和封存地层），商业上目前还是烧钱阶段，靠美国 45Q 税收抵免和企业买碳信用支撑。这是<strong>期权，不是现在的利润来源</strong>。</li>
+</ul>
+<h3>分部利润：财报只披露到营收</h3>
+<p><strong>西方石油的分部经营利润在这个数据源里拿不到。</strong> 整体 TTM 毛利率 73.32%（页岩上游的毛利率天然高，因为成本主要是折耗）、经营利润率 25.79%。按行业常识<strong>估算</strong>：石油天然气分部的经营利润率接近整体水平甚至更高，中游与营销分部利润率低得多且不稳定，低碳业务目前亏损。<strong>这些是估算，不是财报数字。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是全篇最重要的地方。</p>
+<h3>一次性项目：卖掉化工业务，占了净利润的 48%</h3>
+<p>一步步拆 TTM 利润表：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润（持续经营）</td>
+<td>5,700</td>
+</tr>
+<tr>
+<td>所得税（实际税率 26.7%）</td>
+<td>−1,520</td>
+</tr>
+<tr>
+<td><strong>持续经营净利润</strong></td>
+<td><strong>4,180</strong></td>
+</tr>
+<tr>
+<td>减：优先股股息 + 少数股东权益（推算）</td>
+<td>约 −780</td>
+</tr>
+<tr>
+<td><strong>归属普通股东的持续经营利润（推算）</strong></td>
+<td><strong>约 3,400</strong></td>
+</tr>
+<tr>
+<td>加：终止经营损益（化工业务经营利润 + 出售收益）</td>
+<td><strong>约 +3,135</strong></td>
+</tr>
+<tr>
+<td><strong>报表净利润（归属普通股东）</strong></td>
+<td><strong>6,535</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>推算方法说明：财报页给的净利润 65.35 亿、EPS 6.51、股本 10.04 亿股，三者严格对得上，说明这个"净利润"已经是归属普通股东口径。而同一页给的市盈率是 17.17 倍，反推出它用的分母是 <strong>34.0 亿</strong>（58,340 ÷ 17.17）。两者的差额 31.4 亿，就是终止经营的贡献。<strong>上面的 780 万优先股股息和少数股东权益是我反推的，标注为推算。</strong></p>
+<p>（旁证：TTM"支付股息"合计 16.55 亿，其中普通股股息约 9.6 亿（每股 0.96 美元 × 10 亿股），剩下约 7 亿是优先股股息——这跟巴菲特当年为帮它收购阿纳达科而认购的那批 8% 利率优先股规模对得上。数字自洽。）</p>
+<p>现金流量表上的对应痕迹也很清楚：</p>
+<ul>
+<li>投资活动里"其他投资活动 <strong>+88.48 亿</strong>"——这是收到的出售款</li>
+<li>融资活动里"净还债 <strong>−101.69 亿</strong>"——钱拿去还债了</li>
+<li>资产负债表：<strong>总债务从 233.51 亿降到 146.26 亿</strong>，净债务从 213.83 亿降到 104.76 亿</li>
+</ul>
+<p><strong>这笔交易的买家是伯克希尔·哈撒韦</strong>，作价约 97 亿美元。巴菲特本来就持有西方石油约四分之一的普通股和全部那批优先股，现在又把它的化工子公司整个买走了。</p>
+<p><strong>结论：报表上 65.35 亿的净利润里，约 31 亿是卖资产的一次性收益，明年不会再有。用 8.9 倍市盈率去理解这家公司是完全错误的。</strong></p>
+<h3>减值与其他一次性：小额</h3>
+<p>TTM 有 1.26 亿的"资产减值与重组费用"、2.65 亿的资产处置收益、6.19 亿的"股权投资损失"。石油公司的减值年年都有（油价一波动，某片区块的账面价值就要重估），<strong>只看 TTM 单期分不清哪些是真一次性、哪些是年年发生</strong>——从五年数据看，"股权投资损益"这一行在 −83 到 +619 之间来回摆，说明它是经常性项目，不该当一次性剔除。</p>
+<h3>股权激励（SBC）：数据源没有单列</h3>
+<p>这个数据页<strong>没有把西方石油的股权激励单列出来</strong>，它被并进了"其他经营活动"里。所以这里给不出准确金额。参考值：对一家 10,412 名员工、以工程和现场作业为主的石油公司来说，SBC 通常在净利润的 3–8% 之间，远低于科技公司，<strong>不构成对估值的实质影响</strong>。但按规矩说明：<strong>这一项我没有可靠数字，不作为判断依据。</strong></p>
+<h3>资本化的支出：这才是石油公司真正的会计要害</h3>
+<p>石油公司不资本化研发费，但它有一件更根本的事：<strong>64.49 亿的资本开支里，绝大部分被资本化成了油气资产，然后通过"折耗"慢慢摊到利润表里。</strong></p>
+<p>TTM 折旧摊销折耗合计 <strong>75.47 亿</strong>，比资本开支还高 11 亿。这个关系值得注意：</p>
+<ul>
+<li>折耗 &gt; 资本开支，说明<strong>摊销的速度快过投入的速度</strong>，账面油气资产在缩水</li>
+<li>好的一面：这一年赚的现金比账面利润多很多（利润被折耗压低了）</li>
+<li>要警惕的一面：如果这个关系长期持续，意味着<strong>公司在消耗存量储量而不是补充它</strong>。石油公司真正该盯的指标是"储量替代率"（当年新增储量 ÷ 当年产量），这个数字财报页不提供，但折耗持续高于资本开支是一个需要去查证的信号。</li>
+</ul>
+<h3>回购与稀释：<strong>股份不减反增，这一项是负分</strong></h3>
+<ul>
+<li>TTM 回购 <strong>1.17 亿</strong>（几乎为零）</li>
+<li>同期发行股票 <strong>3.30 亿</strong></li>
+<li><strong>股份数同比增加 +1.82%</strong></li>
+</ul>
+<p><strong>这一年股东被稀释了 1.82%。</strong> 也就是说，即使公司利润原地不动，你手里每股对应的利润还少了 1.82%。回购除以 SBC 这个比值在这里已经没意义了——公司根本没在真回购。</p>
+<p>原因可以理解：卖化工拿到的 88 亿全部拿去还债了（净还债 101.7 亿），管理层的优先级是<strong>先修资产负债表</strong>。这个选择本身是对的（债务从 233 亿砍到 146 亿，债务/EBITDA 从 2 倍以上降到 1.0 倍），但对当下的股东来说，这一年<strong>你没有拿到回购，还被稀释了</strong>。</p>
+<p>普通股股息倒是稳定：每股约 0.96 美元，股息率 <strong>1.65%</strong>。</p>
+<h3>利润和现金流的差：差得很大，必须逐项对账</h3>
+<p>净利润 65.35 亿 → 经营现金流 109.76 亿 → 自由现金流 45.27 亿。（单位：百万美元）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>6,535</td>
+<td>起点（含约 31 亿一次性收益）</td>
+</tr>
+<tr>
+<td><strong>＋ 折旧摊销折耗</strong></td>
+<td><strong>+7,547</strong></td>
+<td><strong>最大的一项：不花现金的账面费用</strong></td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>+126</td>
+<td>账面减值</td>
+</tr>
+<tr>
+<td>＋ 股权投资损失</td>
+<td>+619</td>
+<td>账面损失，不花钱</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−265</td>
+<td>卖资产的钱走投资活动，从这里剔出去</td>
+</tr>
+<tr>
+<td><strong>− 其他经营项调整</strong></td>
+<td><strong>−1,926</strong></td>
+<td><strong>主要是把化工出售的一次性收益从经营现金流里冲掉</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−435</td>
+<td>客户欠的钱多了</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−608</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−620</td>
+<td>还了供应商的钱</td>
+</tr>
+<tr>
+<td>− 应交税金变动</td>
+<td>−109</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−260</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 未单列项（含股权激励等）</td>
+<td>+372</td>
+<td>数据源未拆分，配平项</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>10,976</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−6,449</strong></td>
+<td><strong>59% 的经营现金流花在维持产量上</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>4,527</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表把石油公司的本质讲清楚了：<strong>账面利润是被 75 亿折耗压出来的，现金流远好于利润；但现金流又要拿 64 亿去钻新井填坑，最后剩下的自由现金流只有 45 亿。</strong></p>
+<p>自由现金流的五年轨迹值得看：116.73 亿（2022，油价高峰）→ 62.48 亿 → 51.76 亿 → 38.25 亿（2025）→ <strong>45.27 亿（TTM）</strong>。<strong>连跌三年后 TTM 反弹了 18%</strong>，主要是营收 +18.5% 带起来的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 583.4 亿，企业价值 688.1 亿（含 104.8 亿净债务）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（<strong>失真，别用</strong>）</td>
+<td>583.4 ÷ 65.35</td>
+<td>8.9 倍</td>
+<td>$11.20</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>数据源不提供</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>583.4 ÷ 34.0（归普通股东的持续经营利润）</td>
+<td><strong>17.2 倍</strong></td>
+<td><strong>$5.82</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>583.4 ÷ 45.27</td>
+<td>12.9 倍</td>
+<td>$7.76</td>
+</tr>
+<tr>
+<td>自由现金流口径（<strong>扣掉优先股股息后</strong>）</td>
+<td>583.4 ÷（45.27 − 7.0）</td>
+<td>15.2 倍</td>
+<td>$6.57</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>688.1 ÷ 61.71</td>
+<td>11.2 倍</td>
+<td>$8.97</td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>583.4 ÷ [(34.0 + 16.12 + 23.64) ÷ 3 = 24.59]</td>
+<td><strong>23.7 倍</strong></td>
+<td><strong>$4.22</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行有一个口径瑕疵，必须说明</strong>：TTM 的 34.0 亿是<strong>不含化工</strong>的持续经营利润，而 FY2025 的 16.12 亿和 FY2024 的 23.64 亿是<strong>含化工</strong>的。所以这个 23.7 倍略微低估了未来的估值压力（因为过去那两年有化工的利润垫着，未来没有了）。但它想说明的事情依然成立：<strong>按过去三年的平均盈利水平算，这家公司值 23.7 倍，而不是当期看起来的 17.2 倍。当期利润处在周期的相对高位。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进西方石油，按最保守的三年平均口径算，公司一年替你赚 4.22 块；按当期真实口径算，赚 5.82 块。</strong></p>
+<p>这几块钱里，真正回到你口袋的是多少？</p>
+<ul>
+<li><strong>1.65 块以现金分红形式打给你</strong>（每股 0.96 美元）</li>
+<li><strong>回购是 0</strong>——不但没有回购，股份数还多了 1.82%，<strong>这相当于从你的回报里再倒扣掉 1.8 块</strong></li>
+<li><strong>剩下的全部留在公司里</strong>，而且这一年的去向非常明确：<strong>还债</strong>（净还债 101.69 亿）</li>
+</ul>
+<p><strong>所以对 TTM 期内的股东来说，实际到手的现金回报就是 1.65% 的股息，减去 1.82% 的稀释——净值接近于零。</strong> 你这一年得到的东西不是现金，是一张更健康的资产负债表（债务从 233 亿降到 146 亿）和一家更简单的公司（只剩石油了）。</p>
+<p><strong>未来这个数字会变大还是变小？完全取决于油价，其他都是次要的。</strong></p>
+<p>这不是一句敷衍的话，可以量化：西方石油年产量约 4.7–5 亿桶油当量。<strong>油价每变动 10 美元/桶，年税前利润变动约 25–30 亿美元</strong>——这个变动幅度超过它当前全年的持续经营净利润。也就是说，油价从 65 涨到 75，利润接近翻倍；从 65 跌到 55，利润接近归零。看历史就知道：FY2022 油价高峰时净利润 124.21 亿，FY2025 只有 16.12 亿，<strong>四年里差了 7.7 倍</strong>。</p>
+<p>结构性的两条：① 债务从 233 亿降到 146 亿是实打实的好事，利息负担降低，而且下次油价崩盘时活下来的概率大幅提高（2020 年那次它差点被债务压垮）；② 卖掉化工让公司变纯粹了，但也失去了唯一一块<strong>跟油价反相关</strong>的业务（油价低时化工原料便宜，OxyChem 反而赚钱）。<strong>这家公司现在是一个纯粹的、没有任何缓冲的油价杠杆。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>别被 8.9 倍市盈率骗了，真实是 17.2 倍，按三年平均是 23.7 倍——对一个纯上游油气公司来说，这不便宜。</strong></p>
+<p>这一年发生的事情说白了是：<strong>卖掉了唯一一块非周期业务，拿钱把债还了，股东这一年拿到 1.65% 股息、被稀释 1.8%、净现金回报约等于零。</strong> 换来的是一张干净很多的资产负债表和一家只押注油价的纯粹公司。</p>
+<p>对这笔交易本身我给正面评价——2020 年油价崩盘时西方石油因为收购阿纳达科背的 400 亿债务差点破产，被迫向巴菲特发 8% 的优先股续命，那个教训值得用化工业务来换。管理层把生存排在回报前面，是对的。</p>
+<p>但作为投资标的看，问题很清楚：</p>
+<ol>
+<li><strong>17.2 倍买一个纯周期股</strong>，而且是在利润相对高位（三年平均口径 23.7 倍）</li>
+<li><strong>59% 的经营现金流是维持性资本开支</strong>，这钱只是让产量不下降，不产生任何增长</li>
+<li><strong>折耗（75.5 亿）已经高过资本开支（64.5 亿）</strong>，账面油气资产在缩水，储量替代能力需要单独查证</li>
+<li><strong>没有回购、还在稀释</strong>，现金分红只有 1.65%</li>
+<li><strong>失去了化工这块唯一的对冲</strong>，现在是纯油价杠杆</li>
+<li>唯一的成长故事（直接空气捕集）目前是烧钱的期权，不是利润</li>
+</ol>
+<p><strong>结论：这不是一只便宜的股票，是一只把自己的杠杆调到最大的石油股。</strong> 如果你判断油价会往上走，买它比买埃克森的弹性大得多（油价每涨 10 美元利润近乎翻倍）；如果你对油价没有明确看法，17 倍市盈率买一个每年要把六成现金流埋回地下、还在稀释股东的公司，没有任何吸引力。</p>
+<p><strong>它是一个油价的看涨期权，不是一门可以躺着持有的生意。买它之前，先问自己对油价有没有观点——没有观点就不该买。</strong></p>
+</div></body></html>

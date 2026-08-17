@@ -1,0 +1,428 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SYK · 史赛克（Stryker Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SYK</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">好公司，但股价把未来十年的好都提前付掉了</div><h1>SYK · 史赛克（Stryker Corporation）</h1>
+<p><strong>市值</strong> $1,308 亿 · <strong>股价</strong> $341.09 · <strong>行业</strong> 医疗器械（Health Technology / NYSE）
+<strong>数据口径</strong> TTM = 最近四个季度滚动，截止 <strong>2026年6月30日</strong>（2026年7月30日发布）
+<strong>全量筛选榜名次</strong> 第 70 名 · <strong>分析日期</strong> 2026-08-14</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>史赛克是一家「卖给医院的硬件公司」。它不做药，不做保险，不做诊断。它做的事情可以粗暴地概括成一句话：<strong>外科医生做手术时手里拿的、身上戴的、切下来装进病人体内的那些东西，很大一部分是史赛克造的。</strong></p>
+<p>公司自己把生意分成两大块，往下再拆成产品线。TTM 口径下有三条产品线（Instruments、Neuro Cranial、Other Orthopaedics）财报没有单列 TTM 数字，我用总营收倒推 + 上年结构估算，下面会标出来。</p>
+<h3>生意一：MedSurg 和神经技术（约 162 亿营收，占 62%）</h3>
+<p>这是史赛克更大、也更赚钱的一半。里面有四五件其实很不一样的事：</p>
+<p><strong>① 手术器械（Instruments，约 33 亿，估算）</strong>
+最典型的产品是骨科电动工具——本质上就是<strong>手术室里的电钻和电锯</strong>，只不过是无菌的、精度到零点几毫米的、带扭矩控制的。一台 System 8 电钻主机加几个手柄，医院买下来大概 3–6 万美元。但真正赚钱的不是主机，是<strong>每次手术都要换掉的钻头、锯片、导针</strong>——一片锯片几十到几百美元，一家中等规模的骨科医院一年做两千台手术，光耗材就是几十万美元的持续订单。这是典型的「剃须刀-刀片」模式：主机低价甚至白送，靠刀片一辈子收钱。</p>
+<p>这一块里还有 <strong>Sage</strong> 品牌的一次性护理用品（防压疮的翻身垫、口腔护理套装、免冲洗擦浴巾）。听起来毫无技术含量，但它切进的是医院的<strong>「院内感染考核」</strong>——美国医保对院内感染率高的医院直接扣钱，所以护士长会为了合规采购这些东西，价格不敏感。</p>
+<p><strong>② 内窥镜（Endoscopy，39.1 亿，TTM 实数）</strong>
+微创手术用的摄像头系统。医生在膝盖上开一个 1 厘米的口子，把一根带 4K 摄像头的杆伸进去，画面打到手术室的大屏幕上。史赛克卖的是<strong>整套手术室</strong>：摄像头、光源、显示器、图像管理系统、还有把这些接起来的路由系统。一间配齐的手术室大概 30–50 万美元。医院一旦装了史赛克的这套，再想换成豪洛捷或者奥林巴斯，等于要把整间屋子拆了重装，所以<strong>换供应商的成本高得离谱</strong>——这就是它的护城河。</p>
+<p><strong>③ 医疗设备（Medical，42.9 亿，TTM 实数，最大的单一产品线）</strong>
+两件事：一是<strong>医院病床和手术台</strong>——包括急救转运推床、产房床、重症监护床，一张智能病床两三万美元，一家 500 床的医院换一轮就是上千万；二是 <strong>Physio-Control 的除颤仪</strong>，就是电视剧里喊"clear!"然后往胸口一按那个东西，救护车、消防队、机场、健身房挂在墙上的 AED 都是。除颤仪也是耗材模式——电极片有效期两年，到期必须换，全球几百万台在役设备构成一条永续的换货流水线。</p>
+<p><strong>④ 神经血管（Neurovascular，20.8 亿，TTM 实数，增长最快）</strong>
+治急性脑梗。病人脑血管被血栓堵了，医生从大腿根的股动脉插一根导管一路推到脑子里，用一个<strong>像小笼子一样的取栓支架</strong>把血栓套住拖出来。一套取栓器材几千到上万美元，而且是一次性的、急诊用的、不还价的——因为救的是命，晚 30 分钟病人就残废了。这条线 TTM 从 FY2024 的 13.07 亿冲到 20.77 亿，两年涨了 59%，是史赛克跑得最快的地方（其中有 2025 年初收购 Inari Medical 花掉的 49 亿美元的贡献——Inari 做的是取肺栓塞和深静脉血栓的器械，同一套打法）。</p>
+<p><strong>⑤ 神经颅脑（Neuro Cranial，约 26 亿，估算）</strong>
+开颅手术用的：高速磨钻（把颅骨磨开）、导航系统（让医生在屏幕上看到自己的器械尖端在脑子的哪个位置）、脑积水分流管、颅骨固定钛板。这块的客户极度依赖医生个人的手感和习惯，一个神经外科主任用惯了史赛克的导航，基本上一辈子不换。</p>
+<h3>生意二：骨科与脊柱（约 97 亿营收，占 37%）</h3>
+<p>这是史赛克起家的老本行——<strong>把金属零件装进人体</strong>。</p>
+<p><strong>① 膝关节置换（Knees，27.4 亿）+ 髋关节置换（Hips，19.0 亿）</strong>
+一个 70 岁的老太太膝盖磨没了软骨，走路疼得受不了，医生把她的股骨末端和胫骨顶端锯掉一层，装上一个钴铬合金的金属帽和一个聚乙烯垫片。<strong>这套人工膝关节，史赛克卖给医院大概 4,000–6,000 美元</strong>（医院再连同手术打包向保险公司收 3–5 万美元）。</p>
+<p>这块里最有意思的是 <strong>Mako 手术机器人</strong>。它不是科幻片里自己动手的机器人，而是一条<strong>会阻止医生切歪的机械臂</strong>：术前先用 CT 给病人的骨头建一个三维模型，规划好要锯掉哪一块，手术时医生握着机械臂上的锯，一旦锯到规划范围之外，机械臂会<strong>物理上顶住不让你动</strong>。一台 Mako 主机大约 100 万美元。史赛克在全球装了 2,000 多台，而每台 Mako <strong>只能用史赛克自己的膝/髋假体</strong>。所以这 100 万美元的机器实际上是一个「假体订阅锁」——医院买了机器人，未来十年这家医院的膝关节生意就锁死在史赛克身上了。这是全公司最漂亮的一手棋，也是它膝关节市场份额稳步蚕食强生 DePuy 和捷迈邦美的原因。</p>
+<p><strong>② 创伤与四肢（Trauma &amp; Extremities，41.5 亿，骨科里最大的一块）</strong>
+车祸、摔伤、老人骨质疏松性骨折之后用的钢板、髓内钉、螺钉，加上肩关节、踝关节、手腕这些"小关节"的置换。这块的特点是<strong>不受经济周期影响</strong>——人不会因为经济不好就不摔断腿。</p>
+<p><strong>③ 脊柱（Spinal Implants，TTM 只剩 0.19 亿）</strong>
+这条线基本上<strong>已经没了</strong>：FY2023 还有 7.13 亿，FY2024 剩 7.07 亿，FY2025 掉到 1.85 亿，TTM 只剩 1,900 万。史赛克把美国脊柱植入物业务卖掉了。脊柱一直是骨科里价格战最惨烈、医生回扣纠纷最多、利润最薄的赛道，退出是对的，但这也意味着 <strong>TTM 的营收增长里有一块负拖累</strong>——扣掉脊柱的萎缩，其余业务的实际增速比报表上的 8.48% 还高一点。</p>
+<h3>各生意的钱（TTM，截止 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th style="text-align: right;">TTM 营收</th>
+<th style="text-align: right;">占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trauma &amp; Extremities 创伤四肢</td>
+<td style="text-align: right;">4,153</td>
+<td style="text-align: right;">16.1%</td>
+<td>TTM 实数</td>
+</tr>
+<tr>
+<td>Medical 医疗设备</td>
+<td style="text-align: right;">4,293</td>
+<td style="text-align: right;">16.6%</td>
+<td>TTM 实数</td>
+</tr>
+<tr>
+<td>Endoscopy 内窥镜</td>
+<td style="text-align: right;">3,913</td>
+<td style="text-align: right;">15.1%</td>
+<td>TTM 实数</td>
+</tr>
+<tr>
+<td>Instruments 手术器械</td>
+<td style="text-align: right;">~3,300</td>
+<td style="text-align: right;">~12.8%</td>
+<td><strong>估算</strong>（财报未列 TTM）</td>
+</tr>
+<tr>
+<td>Knees 膝关节</td>
+<td style="text-align: right;">2,740</td>
+<td style="text-align: right;">10.6%</td>
+<td>TTM 实数</td>
+</tr>
+<tr>
+<td>Neuro Cranial 神经颅脑</td>
+<td style="text-align: right;">~2,570</td>
+<td style="text-align: right;">~9.9%</td>
+<td><strong>估算</strong></td>
+</tr>
+<tr>
+<td>Neurovascular 神经血管</td>
+<td style="text-align: right;">2,077</td>
+<td style="text-align: right;">8.0%</td>
+<td>TTM 实数，增长最快</td>
+</tr>
+<tr>
+<td>Hips 髋关节</td>
+<td style="text-align: right;">1,895</td>
+<td style="text-align: right;">7.3%</td>
+<td>TTM 实数</td>
+</tr>
+<tr>
+<td>Other Orthopaedics 其他骨科</td>
+<td style="text-align: right;">~850</td>
+<td style="text-align: right;">~3.3%</td>
+<td><strong>估算</strong></td>
+</tr>
+<tr>
+<td>Spinal Implants 脊柱</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">0.1%</td>
+<td>已基本退出</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>25,837</strong></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+<td>同比 <strong>+8.48%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只按产品线披露营收，不披露分部利润</strong>，所以上面没有利润率列。整体经营利润率 21.42%、毛利率 64.98%。按行业常识，内窥镜和神经血管的利润率高于公司均值，医疗设备（病床、除颤仪）低于均值——但这是我的推断，不是财报数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：251 百万，占净利润 6.7%。</strong>
+这是本批三家里最干净的一个数字。对比软件公司动辄 30–50% 的 SBC/净利润，史赛克 6.7% 意味着它是一家<strong>真的靠卖东西赚钱、而不是靠印股票发工资</strong>的公司。这 2.51 亿按 GAAP 已经从利润里扣掉了，我不加回去。</p>
+<p><strong>一次性项目：有一件大事，但它不是一次性的——是税率。</strong>
+这是全篇最重要的发现。把六年的实际税率算出来：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th style="text-align: right;">税前利润</th>
+<th style="text-align: right;">所得税</th>
+<th style="text-align: right;"><strong>实际税率</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td style="text-align: right;">2,281</td>
+<td style="text-align: right;">287</td>
+<td style="text-align: right;">12.6%</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td style="text-align: right;">2,682</td>
+<td style="text-align: right;">324</td>
+<td style="text-align: right;">12.1%</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td style="text-align: right;">3,673</td>
+<td style="text-align: right;">508</td>
+<td style="text-align: right;">13.8%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td style="text-align: right;">3,491</td>
+<td style="text-align: right;">498</td>
+<td style="text-align: right;">14.3%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td style="text-align: right;">4,513</td>
+<td style="text-align: right;">1,267</td>
+<td style="text-align: right;"><strong>28.1%</strong></td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td style="text-align: right;"><strong>5,147</strong></td>
+<td style="text-align: right;"><strong>1,418</strong></td>
+<td style="text-align: right;"><strong>27.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>税率从 13% <strong>翻倍到 28%</strong>，而且已经连续两个完整年度保持在 28%，<strong>这不是一次性调整，是永久性的重置</strong>（大概率是 OECD 全球最低税 15% 落地 + 爱尔兰/波多黎各税务优惠到期）。</p>
+<p>后果很直接：<strong>史赛克的税前利润 TTM 比 FY2024 涨了 47%，但净利润只涨了 25%</strong>——多出来的那一截被税务局拿走了。任何拿 2023 年之前的市盈率跟今天比的说法都是错的，因为那时候的每一块钱税前利润能落下 0.87 块，现在只剩 0.72 块。</p>
+<p><strong>资本化的支出：没有明显异常。</strong> 医疗器械公司的研发按规定费用化，不存在软件公司那种把开发费资本化的空间。</p>
+<p><strong>回购与稀释：这是一个坏消息。</strong>
+TTM 回购 180 百万，SBC 251 百万，<strong>比值 0.72——回购连员工发的股票都没抵消掉</strong>。反映到股本上：流通股 3.8357 亿股，同比 <strong>+0.05%</strong>（不减反增）。回购收益率 -0.05%。</p>
+<p>也就是说，<strong>你作为股东，每年被稀释一点点，公司没有从市场上买回任何一股给你</strong>。钱去哪了？看投资活动：FY2025 现金收购花了 <strong>49.60 亿美元</strong>（Inari Medical），TTM 又花了 6.05 亿。过去五年史赛克累计自由现金流约 157 亿，其中 <strong>99 亿（63%）拿去买公司了</strong>，剩下的付了分红（TTM 13.17 亿）。这是一家<strong>把所有余钱都用来做并购的公司</strong>，不是一家回馈股东的公司。</p>
+<p>这有好有坏：Inari 确实买来了增长（神经血管两年 +59%）。但并购的代价会在下一条里显形。</p>
+<p><strong>利润和现金流的差：逐项对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td style="text-align: right;">3,729</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td style="text-align: right;">+1,221</td>
+<td>大头是<strong>并购来的无形资产摊销</strong>——买 Inari 花的 49 亿里，很大一块变成"客户关系""专利技术"挂在账上，然后每年摊销。这是真实的成本（你为增长付了钱），但不流出现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td style="text-align: right;">+251</td>
+<td>不流出现金，但真实稀释你</td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td style="text-align: right;">+438</td>
+<td>未细分，含脊柱业务处置相关的减值/损失</td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td style="text-align: right;">+137</td>
+<td>收款变快，好事</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td style="text-align: right;">−311</td>
+<td>备货占用现金</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td style="text-align: right;">+236</td>
+<td>晚付供应商</td>
+</tr>
+<tr>
+<td>+ 应计费用增加</td>
+<td style="text-align: right;">+78</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应交税金增加</td>
+<td style="text-align: right;">+207</td>
+<td>税款还没实际缴出去</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td style="text-align: right;">−94</td>
+<td></td>
+</tr>
+<tr>
+<td>− 未单列项目（递延所得税等，倒挤）</td>
+<td style="text-align: right;">−367</td>
+<td>财报页未列明，由总数倒推</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td style="text-align: right;"><strong>5,525</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td style="text-align: right;">−823</td>
+<td>建厂、买设备</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td style="text-align: right;"><strong>4,702</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流比净利润高出 48%，主要来自 D&amp;A 和其他非现金调整。<strong>但注意：这 4,702 的自由现金流不是"你的钱"</strong>，因为其中相当一部分要被拿去做下一次并购，而并购产生的无形资产摊销又会压低下一年的 GAAP 净利润。这是一个循环：<strong>史赛克的"自由现金流"在结构上是"并购预算"，而不是股东回报。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 1,308.33 亿，企业价值 1,428.03 亿（净负债 119.7 亿），股本 3.8357 亿股。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th style="text-align: right;">倍数</th>
+<th style="text-align: right;">投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>1,308.33 ÷ 37.29</td>
+<td style="text-align: right;"><strong>35.1 倍</strong></td>
+<td style="text-align: right;"><strong>$2.85</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>1,308.33 ÷ ~49.9（<strong>估算</strong>：加回并购无形资产摊销、重组、并购费用后每股约 $13.0）</td>
+<td style="text-align: right;">~26.2 倍</td>
+<td style="text-align: right;">$3.82</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>同 GAAP。SBC 已按 GAAP 扣除不加回；税率上升是<strong>永久性</strong>的不属于一次性；脊柱处置损失金额未单独披露，不做调整</td>
+<td style="text-align: right;"><strong>35.1 倍</strong></td>
+<td style="text-align: right;"><strong>$2.85</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,308.33 ÷ 47.02</td>
+<td style="text-align: right;">27.8 倍</td>
+<td style="text-align: right;">$3.59</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,428.03 ÷ 55.34</td>
+<td style="text-align: right;">25.8 倍</td>
+<td style="text-align: right;">$3.88</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,308.33 ÷ [(37.29+32.46+29.93)/3 = 33.23]</td>
+<td style="text-align: right;"><strong>39.4 倍</strong></td>
+<td style="text-align: right;"><strong>$2.54</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行说明了什么：</strong> 39.4 倍 vs 当期 35.1 倍，差距只有 12%。这跟英伟达那种「当期 34 倍、三年平均 73.5 倍」的暴利高点完全不同——<strong>史赛克现在的利润不是周期高点，它就是它的常态水平</strong>。这是好消息，说明估值里没有藏着"利润要塌"的风险。坏消息是，它也没有藏着"利润被低估"的空间。</p>
+<h3>说人话：你现在投 100 块进去，公司一年替你赚多少？</h3>
+<p><strong>按最保守的真实口径（GAAP，35.1 倍），一年赚 $2.85。</strong> 用三年平均更保守，$2.54。</p>
+<p>这 $2.85 里，实际回到你口袋的有多少？</p>
+<ul>
+<li><strong>分红</strong>：TTM 派了 13.17 亿，摊到 1,308 亿市值上，投 100 块拿到 <strong>$1.01</strong>。</li>
+<li><strong>回购</strong>：TTM 净回购只有 1.80 亿，还不够抵消 2.51 亿的员工发股。<strong>回到你口袋的是 $0（甚至略微为负）</strong>。</li>
+<li><strong>留在公司里的</strong>：$1.84。这笔钱去哪了？TTM 现金收购 6.05 亿 + 资本开支 8.23 亿 + 还债 15.02 亿。也就是说，<strong>留存的利润主要在买别的公司和还买公司欠下的债</strong>。</li>
+</ul>
+<p><strong>这个 $2.85 未来会变大还是变小？</strong></p>
+<p>会变大，但速度不快。三条腿：
+1. <strong>量的增长是真的</strong>——全球 65 岁以上人口每年增加，膝盖和髋关节的置换量是人口统计学决定的，不是经济决定的。8.5% 的营收增速在医疗器械里是上游水平。
+2. <strong>利润率还在爬</strong>——经营利润率从 FY2022 的 15.4% 提到 TTM 的 21.4%，六年提了 6 个点，还有空间但没那么多了。
+3. <strong>税这一刀已经砍完了</strong>——13% → 28% 的重置已经发生，不会再砍第二次。所以未来净利润增速会重新贴近税前利润增速，这是个正面因素。</p>
+<p>综合起来，未来几年每股收益大概能维持 <strong>10–13% 的年增长</strong>。所以今天的 $2.85 在五年后可能变成 $4.8 左右（对应今天的 100 块本金）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家好公司，但股价把未来十年的好都提前付掉了——35 倍 GAAP、39 倍三年平均，换来的是每年 $2.85 的账面回报和 $1.01 的现金到手，而且公司明确告诉你余下的钱要拿去买别的公司、不会回购给你。</strong></p>
+<p>它有三个真实的、别人抢不走的东西：Mako 机器人把医院锁进了自己的假体生态、内窥镜整间手术室的替换成本高到没人换、老龄化保证了 20 年的量增长。这些值一个溢价。</p>
+<p>但要为它付 35 倍，需要相信两件事同时成立：营收能长期保持 8%+，<strong>且</strong>税率不再恶化、并购不再稀释。第一件我信，第二件史赛克刚刚已经证明了自己会失手——税率翻倍砍掉了它两年的利润增长，而管理层的应对是继续掏 49 亿去买公司、把回购降到零。</p>
+<p><strong>买它你买的不是"现金牛"，是"用你的钱替你做医疗器械并购的基金"</strong>，而这只基金的管理费是每年 2.85% 的账面收益率减去 1% 的分红。放在今天的利率环境下，这个价格不值。等它跌到 25 倍 GAAP（约 $245）再说。</p>
+</div></body></html>

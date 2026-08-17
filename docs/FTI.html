@@ -1,0 +1,341 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FTI · 泰科诺普 FMC（TechnipFMC plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FTI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账最干净之一，股本真减5%，26.5倍不算离谱</div><h1>FTI · 泰科诺普 FMC（TechnipFMC plc）</h1>
+<p>市值 308.3 亿美元 / 股价 78.61 美元 / 行业：油田工程服务（海底生产系统）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>两门，而且极度偏科——一门占了 88%，另一门可以当添头看。</p>
+<h3>生意一：海底（Subsea）——TTM 92.09 亿，占 88.4%</h3>
+<p><strong>这门生意到底在做什么，得先说清楚海底采油是怎么回事。</strong></p>
+<p>一口油井打在水下 2000 米的海床上。你没法在那儿建一座钻井平台——水太深，桩打不到底。所以现代深水开发的做法是：<strong>把整套采油设备直接放在海床上，无人值守，然后用管子把油气送到水面的一条浮式生产船（FPSO）上处理。</strong> TechnipFMC 卖的就是海床上那一整套钢铁，以及把它装下去的能力。</p>
+<p>具体是这么几样东西：</p>
+<ul>
+<li><strong>海底采油树（subsea tree）</strong>：装在井口正上方的一堆阀门、节流器和电子控制模块，一台小汽车那么大，长得像个钢铁圣诞树，所以业内就叫它"树"。它的活是控制油气从井里出来的流量和压力，出问题时几秒内切断。一棵树大约 300 万到 800 万美元，一个中型深水油田要装二三十棵。</li>
+<li><strong>管汇（manifold）</strong>：把周围好几口井的产出汇到一根总管里的分流器，一台几千万美元。</li>
+<li><strong>脐带缆（umbilical）</strong>：从水面往海床送电力、液压油、防结蜡的化学药剂，同时把海床上的传感器数据传回来的复合缆，一根几十公里长。这东西一断，整个油田变瞎子。</li>
+<li><strong>柔性管和立管（flexible pipe / riser）</strong>：把油气从海床提到水面船上的管子。它不能是硬钢管——船在洋流里会摆动，硬管会断。所以是多层钢丝加聚合物缠出来的柔性管，同时要顶住几百个大气压。<strong>TechnipFMC 在巴西有柔性管工厂，这是全球没几家能做的活，也是它压制对手的护城河。</strong></li>
+<li><strong>铺管船队</strong>：公司自己养着一支工程船（Deep Energy、Deep Explorer 等），开到现场把这些管子和设备沉下去、连起来、测试通气。</li>
+</ul>
+<p><strong>它真正的商业模式创新叫 iEPCI，这才是重点。</strong></p>
+<p>传统上，一家油公司要开发深水油田，得分别招标四次：设备一家、工程设计一家、海上施工一家、安装调试一家。四家公司互相甩锅，一个环节延期整个项目跟着延，油公司要养一支庞大的项目管理队伍去协调。</p>
+<p>TechnipFMC 说：<strong>我全包</strong>——设计、采购、建造、安装，一个合同，一个责任人（integrated Engineering Procurement Construction Installation）。</p>
+<p>对油公司的好处是<strong>时间</strong>。iEPCI 项目通常能让油田提前十几个月出油。一个 10 万桶/日的油田，按 70 美元油价算，提前一年就是二十多亿美元的额外现金流——<strong>为了这个，油公司愿意不走公开招标直接把单给你</strong>。</p>
+<p>对 TechnipFMC 的好处更大：<strong>不用比价</strong>。行业里最痛的事就是四五家投标厂商把设备价格砍到没利润，而 iEPCI 有相当比例是直接授标（direct award），价格谈出来的，不是杀出来的。同时它把设备（高毛利）和施工服务（低毛利）捆在一个合同里，客户看不到单项报价。</p>
+<p><strong>客户和单价</strong>：巴西国家石油 Petrobras（最大客户，盐下超深水油田）、挪威 Equinor、壳牌、道达尔、埃克森美孚（圭亚那 Stabroek 区块，过去十年全球最大的深水发现）。一个大单从 2.5 亿到 10 亿美元以上，交付周期 2 到 4 年。</p>
+<p><strong>所以看这家公司不能看当季营收——今天确认的收入是两三年前签的合同在交货。真正决定未来的是积压订单（backlog）。</strong> TTM 营收同比 +9.87%，是 2021 年以来连续第四年增长，这背后是 2022–2024 年深水投资周期的重启：油价站稳、深水单桶成本降到 30 美元以下（比很多页岩油还便宜）、大公司在页岩上折腾了十年后重新发现深水才是真正能赚钱的地方。</p>
+<h3>生意二：地面技术（Surface Technologies）——TTM 12.11 亿，占 11.6%，<strong>在萎缩</strong></h3>
+<p>陆上和浅水井口用的设备：地面采油树、闸阀、压力控制设备，还有页岩油压裂作业时用的高压管汇、活动弯头和流量计。客户是北美页岩油公司和中东（沙特阿美、阿布扎比国油）。</p>
+<p>这块跟海底完全是两种生意：单价低（一套地面井口几十万美元）、周期短（今天下单几个月交货）、跟活跃钻机数量直接挂钩。<strong>北美钻机一减，它立刻跌。</strong></p>
+<p>TTM 12.11 亿，比 FY2025 全年的 12.67 亿还低，比 FY2023 的 13.89 亿低更多——<strong>北美页岩在收缩，这块业务连续三年下滑。</strong>中东的增长没能补上北美的下滑。</p>
+<h3>钱的部分</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>FY2025 全年</th>
+<th>变化</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Subsea 海底</td>
+<td>92.09 亿</td>
+<td>86.66 亿</td>
+<td><strong>+6.3%</strong></td>
+<td>88.4%</td>
+</tr>
+<tr>
+<td>Surface 地面</td>
+<td>12.11 亿</td>
+<td>12.67 亿</td>
+<td><strong>−4.4%</strong></td>
+<td>11.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>104.20 亿</strong></td>
+<td>99.33 亿</td>
+<td>+4.9%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>（财报只披露到分部营收，不披露分部经营利润。全公司经营利润率 14.96%；按行业常识，Subsea 的 iEPCI 业务利润率明显高于 Surface，估算 Subsea 约 16%、Surface 约 8–10%，此为估算，非财报数字。）</em></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这家公司的账，干净得有点反常。</strong>逐项过一遍：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1.066 亿美元，占 GAAP 净利润 11.76 亿的 <strong>9.1%</strong>。这是本任务做过的公司里最低的一档。注意它在涨——FY2024 是 0.762 亿，TTM 涨到 1.066 亿，涨了 40%。原因是股价一年涨了 124%，绑定业绩的限制性股票单元（PSU）按更高的股价计提费用。<strong>股价越涨，SBC 越贵。</strong></p>
+<p><strong>一次性项目：TTM 完全没有。</strong>资产减值为零，重组费用为零。这在油服行业相当罕见——这个行业过去十年几乎每年都有人在减值。唯一的非经常项是股权投资收益 0.181 亿（一笔收益，本文在真实利润里扣掉它）。<strong>没有一次性损失可以让公司拿来"调整"，也就没有 Non-GAAP 的操作空间。</strong></p>
+<p><strong>资本化的支出</strong>：没有软件或内容资本化。资本开支 2.875 亿，全部是实体的厂房和船队维护，占营收 2.8%，是个轻资产的数字。</p>
+<p><strong>回购与稀释：这是这家公司最漂亮的一项。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>11.81 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励发出</td>
+<td>1.066 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>11.1 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>0.804 亿</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−5.07%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是 SBC 的 11 倍——<strong>这是真回购，不是给员工发股票擦屁股。</strong>股本一年实实在在少了 5.07%，意思是你什么都不做，手上这股代表的公司份额一年自动变大 5%。加上分红，股东总回报率 5.32%。同期还净还了 2.767 亿债务。<strong>赚的钱几乎全还给股东和债主了。</strong></p>
+<p><strong>利润和现金流的差：净利 11.76 亿，经营现金流 18.59 亿，差 6.83 亿。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（TTM，百万美元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,176.0</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+424.9</td>
+</tr>
+<tr>
+<td>－ 股权投资收益（非现金）</td>
+<td>−18.1</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+106.6</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>−29.0</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>−145.0</td>
+</tr>
+<tr>
+<td>－ 存货增加</td>
+<td>−15.7</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+193.6</td>
+</tr>
+<tr>
+<td>＋ <strong>客户预收款增加</strong></td>
+<td><strong>+90.2</strong></td>
+</tr>
+<tr>
+<td>－ 所得税相关变动</td>
+<td>−38.4</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>+114.5</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,859</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里唯一需要警惕的是"客户预收款"和"应付账款"这两行。</strong></p>
+<p>大型 iEPCI 合同是客户先付定金、按里程碑付款的。工程干得越多、新单签得越猛，客户预付的钱在账上堆得越高，看起来像是公司在产生现金——<strong>但那不是赚来的，是借来的，将来要用交货来还。</strong></p>
+<p>看这个数的三年变化：FY2024 +3.627 亿、FY2025 +2.784 亿、TTM <strong>+0.902 亿</strong>。<strong>这个数字正在快速衰减。</strong>三年累计给经营现金流贡献了 7.3 亿的"顺风"，现在只剩零头。等它转负（新签订单少于交付进度那一年），经营现金流会自己缩水七八亿，跟利润没关系。同理，应付账款 TTM +1.936 亿，而 FY2025 是 −2.296 亿——这一项年际波动几个亿，不能当成可持续的现金来源。</p>
+<p><strong>把这两项营运资金的顺风剔掉，"干净的"经营现金流大约是 18.59 − 0.90 − 1.94 ≈ 15.75 亿，自由现金流约 12.9 亿，而不是账面的 15.72 亿。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>308.28 ÷ 11.76</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>3.64 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页未提供 TTM 调整后净利；本期无一次性项目可调整，Non-GAAP 与 GAAP 基本重合</td>
+<td>≈ 27.5 倍</td>
+<td>≈ 3.64 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>（11.76 − 0.14 税后股权投资收益），SBC 已按 GAAP 扣除不加回</td>
+<td><strong>26.5 倍</strong></td>
+<td><strong>3.77 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>308.28 ÷ 15.72</td>
+<td><strong>19.6 倍</strong></td>
+<td><strong>5.10 元</strong></td>
+</tr>
+<tr>
+<td>（剔除营运资金顺风后的 FCF）</td>
+<td>308.28 ÷ 约 12.9</td>
+<td>约 23.9 倍</td>
+<td>约 4.18 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>310.79 ÷ 15.59</td>
+<td><strong>19.9 倍</strong></td>
+<td>5.02 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>308.28 ÷ 三年平均净利 9.94（TTM 11.76、FY25 9.64、FY24 8.43）</td>
+<td><strong>31.0 倍</strong></td>
+<td><strong>3.22 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>你现在投 100 块进去，按最保守的真实口径（三年平均 31.0 倍）算，公司一年替你赚 3.22 元。</strong></p>
+<p>这 3.22 元里，<strong>回到你口袋的比例是本任务见过最高的之一</strong>：TTM 回购 11.81 亿加分红 0.804 亿，合计 12.61 亿，是净利 11.76 亿的 <strong>107%</strong>——公司把当年赚的钱全数还给了股东，还倒贴了一点。同时资本开支只有 2.87 亿，净还债 2.77 亿。<strong>这家公司现在不再往自己身上投钱了。</strong></p>
+<p><strong>但三年平均这个口径在这里还是太仁慈了，必须说破。</strong>把时间拉到五年：FY2021 净利 0.13 亿、FY2022 <strong>亏 1.07 亿</strong>、FY2023 0.56 亿、FY2024 8.43 亿、FY2025 9.64 亿、TTM 11.76 亿。五年平均净利只有 <strong>3.54 亿</strong>——按这个算是 <strong>87 倍市盈率</strong>。</p>
+<p>这不是在玩数字游戏，这是在说一件具体的事：<strong>TechnipFMC 现在的利润是深水资本开支周期的高点，不是常态。</strong>2020–2022 年这家公司几乎不赚钱，市值一度只有 26.68 亿美元——<strong>是今天的十二分之一</strong>。深水项目从批准到交付要三四年，这个行业的历史是：油价一跌，油公司立刻砍掉最长周期的项目，砍的第一个就是深水。</p>
+<p><strong>这个 X 未来是变大还是变小？</strong></p>
+<p>短期（未来 2 年）大概率变大，因为积压订单已经锁定。营收连续四年增长，利润率从 FY2022 的 2.98% 一路提到 14.96%，公司还在往上走。深水的经济性也是真的：巴西盐下和圭亚那的完全成本在每桶 25–35 美元，比大部分页岩油便宜，油价跌到 50 美元这些项目也照做。</p>
+<p>长期变小的风险有三条，而且都不小：</p>
+<ol>
+<li><strong>PB 9.44 倍。</strong>股东权益只有 32.8 亿，市值 308 亿。ROE 35.81% 看着惊人，但那是<strong>分母太小</strong>造出来的——公司在 2020–2022 年亏损烧掉了大量净资产，又用回购把权益进一步买没了。这个 ROE 不代表资产赚钱能力强，它代表账上几乎没有净资产可以承受下一次亏损。</li>
+<li><strong>股价一年涨了 124.47%，五年从 5.80 美元涨到 78.61 美元，13.5 倍。</strong>市场已经把周期上行完整定价了，而且是按"这轮周期不会结束"定的价。</li>
+<li><strong>客户高度集中。</strong>Petrobras 一家的份额足以左右一整年的订单，而 Petrobras 是政治性极强的国有企业。</li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是本任务里账做得最干净的公司之一——没有一次性、SBC 只占利润 9%、回购是 SBC 的 11 倍、股本一年真减 5%、净负债几乎为零。管理层在把钱还给你，不是在忽悠你。</strong></p>
+<p><strong>但它的问题跟账无关，跟位置有关：你是在一个深水投资周期最热的时候，用 27.5 倍买一家四年前还在亏钱、五年平均利润只有现在三分之一的周期股，而且它的净资产薄到只有市值的十一分之一。</strong></p>
+<p><strong>iEPCI 是一个真正的、别人抄不动的商业模式创新，这家公司在自己的行业里确实是最好的。但"最好的周期股"在周期顶点买，仍然是买在顶点。</strong>如果你相信深水资本开支还有五年以上的长坡——这个判断是有依据的，深水的单桶成本确实已经打赢了页岩——那 27.5 倍不算离谱。如果你只是看到 ROE 35% 和一年涨 124% 就进来，那你买的是别人已经赚完的那一段。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com 财报页，TTM 截至 2026-06-30。</em></p>
+</div></body></html>

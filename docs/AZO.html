@@ -1,0 +1,392 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AZO · AutoZone（汽车零件超市）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AZO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">好生意坏买卖，利润两年零增长，跌25%还不够</div><h1>AZO · AutoZone（汽车零件超市）</h1>
+<p>市值 $493.8 亿 / 股价约 $3,024 / 行业：零售业（汽车零配件） / TTM 截止日期：2026 年 5 月 9 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AutoZone 说白了就是<strong>开汽车零件超市的</strong>。全美（外加墨西哥、巴西）有七千多家门店，卖的东西从刹车片、电瓶、机油、雨刮器到车载香水都有。130,000 名员工，一年做 199.9 亿美元生意。</p>
+<p>但"卖汽车零件"这四个字底下，其实是<strong>两种完全不同的客户</strong>在买，还有<strong>三类差别很大的商品</strong>。财报按商品类别披露分部，我先讲客户，再上商品的数字表。</p>
+<h3>两种客户：自己修车的人 vs 修车厂</h3>
+<p><strong>第一种客户：车主本人（行话叫 DIY，Do It Yourself）。</strong></p>
+<p>一个开着 12 年老思域的人，某天早上打不着火。他把车推到 AutoZone 门口，店员拿一个手持仪器出来夹在电瓶上，免费测——测出来电瓶废了。店里货架上摆着 Duralast 牌电瓶（AutoZone 自有品牌），$180 一块。店员帮他把旧电瓶拆下来、新的装上去，<strong>这个安装是免费的</strong>，旧电瓶还能抵 $22 的回收押金。全程 20 分钟，人走了，AutoZone 收了 $158。</p>
+<p>这笔生意的毛利率大约 50%，也就是说这块电瓶进货成本 $90 左右。凭什么能卖 $180？因为<strong>这个人此刻没有选择</strong>。车打不着火，他不可能等亚马逊送两天货，也不会开车（他开不了）去 30 公里外找便宜的。他需要的是"现在、这个街区、有这块电瓶"。AutoZone 卖的其实不是电瓶，是<strong>距离和即时性</strong>。</p>
+<p>同样的逻辑还有：免费借工具（要拆轮毂轴承的扭力扳手，押金全额退，用完还回来）、免费读故障码（车上仪表盘亮了发动机灯，插个 OBD 读码器告诉你是氧传感器坏了，然后顺手卖你一个氧传感器 $85）、免费刹车片安装咨询。这些"免费服务"全是获客钩子，成本很低，转化率极高。</p>
+<p>DIY 客户大约占 AutoZone 收入的三分之二，是利润率最高的部分，单笔金额小（平均一单大概 $30–40），但客流量大。</p>
+<p><strong>第二种客户：修车厂（行话叫 DIFM，Do It For Me，也叫商用业务）。</strong></p>
+<p>街角一家夫妻店修车厂，早上接了个活：一辆福特 F-150 要换水泵。修车厂自己不囤水泵——囤不起，光福特一个牌子的水泵就有几百个型号。老板打电话给 AutoZone 的商用柜台，报一个 VIN 码，<strong>AutoZone 承诺 30 分钟内送到</strong>。一辆印着 AutoZone logo 的小货车从三公里外的门店开出来，把水泵送到修车厂门口。</p>
+<p>修车厂拿到的是<strong>批发价</strong>，比 DIY 客户便宜大约 20–25%，而且是月结账期。所以商用业务毛利率明显低于 DIY——大概 40% 出头对 55%。但<strong>单笔金额大得多</strong>（一次可能是好几百到上千美元的配件），复购频率极高（一家活跃的修车厂一年在 AutoZone 花五万到二十万美元很正常）。</p>
+<p>这块业务是 AutoZone 过去十年增长的主引擎，也是它砸钱的地方——所谓 <strong>Mega Hub（超级仓）</strong>：一个 20 万平方英尺的巨型门店，备货 10 万个 SKU（普通门店只有 2.5 万个），覆盖周边几十家小店和上百家修车厂，保证"任何冷门型号，当天能到"。截至 TTM，AutoZone 建了 130 多个 Mega Hub，还在以每年新增 20–30 个的速度扩张。<strong>资本开支从 FY2021 的 6.2 亿美元涨到 TTM 的 14.4 亿美元，翻了 2.3 倍，钱基本都砸在这上面。</strong> 这一点在第二部分讲现金流时是关键。</p>
+<p><strong>第三块（地理上的第三条腿）：国际。</strong> 墨西哥八百多家店、巴西一百多家店，玩法跟美国一样，但客单价低、增长快。目前占收入不到 10%，是未来十年的增量来源，也是汇率损失的来源（比索、雷亚尔一贬值，换回美元就缩水）。</p>
+<h3>三类商品：财报真正披露的分部</h3>
+<p>财报把营收按<strong>商品性质</strong>切成三块。注意 TTM 期的分部数字公司没有单独披露（"-"），所以下表用最新完整财年 FY2025（截至 2025 年 8 月 30 日）的分部数据，配上上一年做对比：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>商品分部</th>
+<th>FY2025 营收（百万美元）</th>
+<th>同比增速</th>
+<th>占总营收</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Failure（坏了必须换）</strong></td>
+<td>9,292</td>
+<td>+3.5%</td>
+<td>49.1%</td>
+<td>电瓶、启动机、发电机、刹车片、水泵、氧传感器</td>
+</tr>
+<tr>
+<td><strong>Maintenance（保养耗材）</strong></td>
+<td>6,807</td>
+<td>+2.9%</td>
+<td>35.9%</td>
+<td>机油、机滤、空滤、雨刮、防冻液、火花塞</td>
+</tr>
+<tr>
+<td><strong>Accessories and Other（配件杂项）</strong></td>
+<td>2,840</td>
+<td>−1.8%</td>
+<td>15.0%</td>
+<td>脚垫、车蜡、香水、行车记录仪、工具</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td>18,939</td>
+<td>+2.4%</td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 总营收 19,986 百万美元，同比 +5.74%，比 FY2025 全年的 +2.4% 明显加速。</p>
+<p><strong>这张表告诉你 AutoZone 生意的本质：85% 的收入来自"坏了"和"该保养了"这两件不由消费者心情决定的事。</strong> 这也是为什么这家公司的 beta 只有 0.34——经济差的时候大家不换新车，旧车越开越多，反而更需要修。真正随经济波动的是那 15% 的配件杂项，你看它 FY2025 是<strong>唯一下滑</strong>的一块（−1.8%），因为脚垫和车蜡属于"手头紧就先不买"。</p>
+<p><strong>利润率说明：财报只按商品类别披露到营收，不披露分部利润。</strong> 下面这组是按公司整体毛利率 51.8%、经营利润率 18.0% 加上行业常识做的<strong>估算</strong>，不是财报数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>估算毛利率</th>
+<th>依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Failure</td>
+<td>约 52–55%</td>
+<td>定价权最强，客户处于"必须现在买"状态</td>
+</tr>
+<tr>
+<td>Maintenance</td>
+<td>约 45–48%</td>
+<td>机油这类标品沃尔玛也卖，比价容易</td>
+</tr>
+<tr>
+<td>Accessories</td>
+<td>约 55%+</td>
+<td>冲动消费、自有品牌占比高</td>
+</tr>
+</tbody>
+</table></div>
+<p>整体经营利润率 TTM 为 <strong>18.0%</strong>（3,602 / 19,986）。作为对比：沃尔玛约 4.5%，家得宝约 13%。AutoZone 的 18% 在实体零售里是顶尖水平，靠的就是上面说的"距离即定价权"。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 为 1.368 亿美元，占净利润 24.78 亿的 <strong>5.5%</strong>。这个比例在美股大公司里算非常低的（科技股常见 20–50%）。GAAP 已经把它扣掉了，这里不加回。5.5% 意味着股东每年被稀释掉的价值很小，是一家"用现金而不是用股票发工资"的公司。</p>
+<p><strong>一次性项目</strong>：TTM 期没有大额诉讼、重组或减值。有一项"其他经营活动 +2.74 亿美元"值得点名——这个科目里通常混着汇率折算的非现金损益（AutoZone 在墨西哥和巴西有大量资产）和递延税项。<strong>只看 TTM 单期无法判断这 2.74 亿里有多少是年年都会出现的、有多少是今年特有的</strong>，FY2024 同一科目是 −2.94 亿（反向），波动很大。这是本篇唯一一个我认为口径不干净的地方。</p>
+<p><strong>资本化的支出</strong>：AutoZone 不做软件产品也不做内容，没有把研发或内容制作资本化的操作。它资本化的是<strong>门店和 Mega Hub 的实体建设</strong>，这是真实的砖头水泥，不是会计游戏。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>17.65 亿美元</strong>，同期 SBC 1.368 亿美元，<strong>比值 12.9 倍</strong>。这是本文分析过的公司里最干净的回购之一——每花 100 块回购，只有不到 8 块是在填员工发股的坑，其余 92 块是真正在减少股东人数。股本实际减少 <strong>1.63%（一年）</strong>，季度环比 −0.69%。</p>
+<p>AutoZone 是美股回购史上的教科书案例：过去二十年股本减少了约 90%，也正因如此，<strong>账面股东权益是负的 −27.8 亿美元</strong>（回购花的钱超过了历史累计留存利润）。负净资产在这里不是财务危机的信号，而是"公司把所有赚到的钱都还给股东了、还额外借钱还了一部分"的结果。代价是净负债 <strong>126.9 亿美元</strong>（总债务 130.9 亿，现金仅 3.95 亿），债务/EBITDA 2.73 倍，利息保障倍数 7.46 倍。这个杠杆水平对一家 beta 0.34 的必需消费型零售商来说是可控的，但<strong>它意味着这家公司永远不会有"现金堆成山"的安全垫</strong>，一旦经营现金流出问题，压力会很快传导到债务上。</p>
+<p><strong>利润和现金流的差 —— 这是本篇最值得看的一张表</strong></p>
+<p>TTM 净利润 24.78 亿，经营现金流 30.72 亿，自由现金流只有 <strong>16.33 亿</strong>。自由现金流比净利润<strong>低 34%</strong>。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,478</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+661.5</td>
+<td>门店和货架的账面折旧，不用真掏钱</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+12.5</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+136.8</td>
+<td>发的是股票不是现金，先加回（但股东实际被稀释了）</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+274.0</td>
+<td>汇率折算等非现金项，口径不透明（见上文）</td>
+</tr>
+<tr>
+<td><strong>小计（未考虑营运资金）</strong></td>
+<td><strong>3,562.8</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−163.4</td>
+<td>修车厂欠的钱变多了（商用业务扩张的必然结果）</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−908.1</strong></td>
+<td><strong>本表最大的一笔</strong>——Mega Hub 铺货</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+401.3</td>
+<td>供应商同意晚点收钱，帮忙垫了一部分</td>
+</tr>
+<tr>
+<td>+ 所得税相关</td>
+<td>+138.7</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他</td>
+<td>+40.9</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>3,072</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,439</td>
+<td>建 Mega Hub、开新店</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,633</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的故事是：AutoZone 正在花很多钱扩张商用业务，钱主要去了两个地方——货架上的存货（−9.08 亿）和新建的超级仓（−14.39 亿）。</strong></p>
+<p>看一组趋势就明白问题有多大：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,170</td>
+<td>2,430</td>
+<td>2,528</td>
+<td>2,662</td>
+<td>2,498</td>
+<td>2,478</td>
+</tr>
+<tr>
+<td>自由现金流</td>
+<td>2,897</td>
+<td>2,539</td>
+<td>2,144</td>
+<td>1,931</td>
+<td>1,790</td>
+<td><strong>1,633</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润五年基本持平（2,170 → 2,478，+14%），自由现金流却腰斩了 44%（2,897 → 1,633）。</strong> 这是全文最重要的一个事实。原因不是造假，是真金白银投进了扩张：资本开支五年从 6.2 亿涨到 14.4 亿，存货连年大幅增加。</p>
+<p>问题在于——<strong>这些投入还没有换来利润增长</strong>。经营利润 FY2024 是 37.89 亿，TTM 是 36.02 亿，反而降了。也就是说：钱花下去了，回报还没出来。要么是 Mega Hub 需要三五年才爬坡（管理层的说法），要么是商用业务的低毛利在稀释整体（数字支持这个解释：TTM 毛利率 51.8%，FY2021 是 52.8%）。<strong>目前无法证伪，但股东承担着这个赌注。</strong></p>
+<p>顺便说一句：TTM 现金缴税 3.13 亿，账面所得税费用 6.52 亿，两者差了一倍。这种缺口通常来自加速折旧带来的递延所得税——大量新建门店在税法上可以快速折旧，账面上慢慢折旧。这是<strong>合法的时间差，不是造假</strong>，但它意味着未来现金缴税额会往账面数字回归。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>先明确基数：市值 <strong>493.8 亿美元</strong>，企业价值（含净负债 126.9 亿）<strong>620.8 亿美元</strong>，TTM 净利润 <strong>24.78 亿</strong>，自由现金流 <strong>16.33 亿</strong>，经营利润 <strong>36.02 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>493.8 ÷ 24.78</td>
+<td><strong>19.9 倍</strong></td>
+<td><strong>5.02 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>AutoZone 基本不做调整，与 GAAP 一致</td>
+<td>19.9 倍</td>
+<td>5.02 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已按 GAAP 扣除、无重大一次性项目</td>
+<td><strong>19.9 倍</strong></td>
+<td><strong>5.02 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>493.8 ÷ 16.33</td>
+<td><strong>30.2 倍</strong></td>
+<td><strong>3.31 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>620.8 ÷ 36.02</td>
+<td><strong>17.2 倍</strong></td>
+<td>5.81 元（税前、含债权人份额）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>493.8 ÷ 25.46（TTM+FY25+FY24 平均）</td>
+<td><strong>19.4 倍</strong></td>
+<td><strong>5.15 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（注：财经网站显示 PE 20.8，是用"股价 ÷ 每股收益"算的，每股收益用的是全年平均股本；这里用"市值 ÷ 净利润"，因为公司一直在回购，现在的股本比全年平均少，所以数字略低。两个都对，口径不同。）</p>
+<p><strong>说人话：你现在投 100 块进 AutoZone，公司一年替你赚 5.02 块。</strong></p>
+<p>三年平均口径给出 5.15 元，跟当期的 5.02 元几乎一样——<strong>这说明 AutoZone 现在的利润既不是周期高点也不是低点，是常态</strong>。这跟很多周期股（当期看着便宜、三年平均一算翻倍）完全不同，是这家公司作为"必需消费"属性的直接证据。</p>
+<p><strong>但这 5.02 块里，你实际能拿到多少？</strong></p>
+<p>AutoZone <strong>不分红，一分钱都不分</strong>，从来没分过。它把钱全部用于两件事：回购股票和扩张门店。TTM 的资金去向：</p>
+<ul>
+<li>回购股票 <strong>17.65 亿</strong>（相当于市值的 3.6%）</li>
+<li>资本开支 <strong>14.39 亿</strong>（建新店和 Mega Hub）</li>
+<li>净借款 +0.48 亿（基本持平）</li>
+<li>员工行权流入 +1.29 亿</li>
+</ul>
+<p>也就是说：<strong>你的 5.02 块里，大约 3.6 块通过回购变成了"你手里的股份占比变大"，剩下的 1.4 块左右留在公司买货架和砖头。</strong> 注意回购金额（17.65 亿）已经超过了自由现金流（16.33 亿），差额靠借款和自有资金补——这个节奏不能永远持续下去，除非自由现金流回升。</p>
+<p><strong>这个 5.02 块未来会变大还是变小？</strong></p>
+<p>两股力量在拔河：</p>
+<p><strong>往上的</strong>：美国路上跑的车平均车龄已经超过 12.8 年，还在变老。车越老越需要 Failure 类零件，这是 AutoZone 最赚钱的分部。加上商用业务份额还在往上走（这块市场极其分散，大量夫妻店零件商正在被淘汰），Mega Hub 的投入总有一天要产出。TTM 营收增速 5.74% 已经比 FY2025 的 2.4% 明显回暖。</p>
+<p><strong>往下的</strong>：商用业务毛利率低，卖得越多整体毛利率越被稀释；资本开支还在高位，自由现金流已经连跌五年；负债 130.9 亿在高利率环境下利息越滚越贵（TTM 现金付息 4.13 亿，FY2021 只有 1.88 亿，翻了一倍多）；再往长了看，电动车零件少、故障率低、保养简单，AutoZone 的核心 Failure 分部长期面临结构性缩水——虽然美国电动车渗透率还低、且现在路上的旧油车至少还能修十五年，这个威胁不在三五年内兑现。</p>
+<p><strong>股价过去 52 周跌了 25.06%</strong>，市场已经在给这个"利润停滞、现金流下滑、投入不见回报"的组合打折。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>AutoZone 是一门好生意（18% 的经营利润率、26.65% 的 ROIC、beta 0.34 的抗周期性），但眼下不是一笔好买卖：19.9 倍市盈率买一家利润连续两年零增长、自由现金流五年腰斩、且负债 127 亿的公司，你付的是"过去二十年回购神话"的溢价，赌的是 Mega Hub 三年后能兑现——这个赌注目前财报上还看不到任何证据。真实回报按现金口径只有 3.31%，比美国国债还低。</strong></p>
+<p>想买的话，等两个信号：经营利润重新增长，或者自由现金流止跌。现在这个价，跌 25% 还不够便宜。</p>
+</div></body></html>

@@ -1,0 +1,403 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NXPI · 恩智浦半导体</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NXPI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔掉卖资产收益是24倍，大致合理，无明显安全边际</div><h1>NXPI · 恩智浦半导体</h1>
+<p>市值 $591.9 亿 | 股价约 $234.7 | 行业：电子科技（汽车/工业半导体） | 全部数字为 TTM 口径，截止 <strong>2026 年 6 月 28 日</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>恩智浦是荷兰注册、总部在埃因霍温的芯片设计公司（前身是飞利浦半导体部门）。它不做 CPU、不做 GPU、不做 AI 训练卡，做的是<strong>"让机器动起来"的那类芯片</strong>——单片机、模拟芯片、射频、安全芯片。财报按四个板块披露营收，实质上是四门生意。</p>
+<h3>生意一：汽车芯片（TTM 营收 74.33 亿，占 56.4%）</h3>
+<p>这是恩智浦的命根子。</p>
+<p>具体在卖什么：一辆车里的电子系统，除了中控大屏那颗高性能芯片（那是高通和英伟达的地盘），几乎所有"干活"的芯片都可能是恩智浦的。</p>
+<ul>
+<li><strong>车规单片机 S32 系列</strong>——车门锁、雨刷、座椅调节、空调、仪表盘、域控制器，每个功能背后都有一颗小电脑在跑，就是这个。一颗从 $2 到 $30 不等。</li>
+<li><strong>电池管理芯片（BMS）</strong>——电动车电池包里有几百个电芯，得有芯片实时盯着每一节的电压和温度，防止过充起火。一套 BMS 芯片方案在一辆电动车上价值 $50–150。</li>
+<li><strong>77GHz 毫米波雷达芯片</strong>——保险杠里那几个"看不见的眼睛"，负责自适应巡航和自动刹车。一辆有 L2 辅助驾驶的车通常装 3–5 颗雷达，每颗的芯片成本 $10–25。</li>
+<li><strong>NFC 数字车钥匙 + UWB 超宽带定位</strong>——手机贴一下车门就开锁、人走近车自动解锁，这套东西的芯片基本是恩智浦和英飞凌两家在供。</li>
+<li><strong>车载网络收发器</strong>——CAN 总线、LIN 总线、车载以太网 PHY，负责让车里上百个控制器互相说话。单价几毛到几块，但一辆车要装几十上百颗。</li>
+</ul>
+<p><strong>怎么收钱、为什么客户跑不掉</strong>：恩智浦不直接卖给车厂，而是卖给博世、大陆、电装、安波福这些 Tier 1 供应商，Tier 1 装成模块（比如一整个雷达模组）再卖给丰田、大众、比亚迪。一辆普通燃油车里恩智浦的芯片价值大概 $80–150，一辆中高端电动车能到 $300–500。</p>
+<p>关键在于<strong>换供应商的成本高得离谱</strong>。一款车型从选定芯片到量产要 3–5 年，中间要过 AEC-Q100 车规认证、要跑高低温循环、要做功能安全 ISO 26262 认证。车型一旦定型，这颗芯片就跟着这款车卖 7–10 年，中途换料等于重做一遍认证，没人干。所以恩智浦的收入有很强的"已锁定"属性——今天的营收是三五年前设计中标的结果，今天中标的设计三五年后才变成钱。</p>
+<p>代价是：<strong>这门生意反应极慢</strong>。景气来了它涨得慢，下行来了它也跌得慢但跌得久。看数字就明白——FY2023 汽车板块 74.84 亿，FY2024 71.51 亿，FY2025 71.16 亿，TTM 74.33 亿。<strong>三年绕了一圈，回到原点。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>汽车</td>
+<td>74.33 亿</td>
+<td>71.16 亿</td>
+<td>+4.5%</td>
+<td>56.4%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：工业与物联网（TTM 营收 26.02 亿，占 19.7%）</h3>
+<p>卖的是通用单片机和嵌入式处理器，装在所有"不是电脑但需要一点脑子"的东西里。</p>
+<ul>
+<li><strong>i.MX 应用处理器</strong>——能跑 Linux 或安卓的小处理器，装在智能电表、工厂 PLC、扫码枪、POS 机、电梯控制柜、医疗监护仪、高端咖啡机的触摸屏里。单价 $5–25。</li>
+<li><strong>LPC / Kinetis 通用单片机</strong>——更便宜的，$0.5–5，装在电动工具、空气净化器、家电控制板里。</li>
+<li><strong>边缘 AI 加速</strong>——最近在推带 NPU 的 i.MX 9，让摄像头本地识别人脸而不用传云端。</li>
+</ul>
+<p>举个具体的：一家做智能水表的厂商，一年出 300 万台表，每台里一颗恩智浦的低功耗 MCU $3，就是 900 万美元的订单。这类客户极度分散——恩智浦这块生意有上万个客户，靠代理商（安富利、艾睿）铺货，没有单一大客户。</p>
+<p>这块是过去两年最惨的：FY2022 还有 27.13 亿，FY2023 掉到 23.51 亿，FY2024/2025 在 22.7 亿趴着，因为疫情期间渠道囤了太多货，之后两年一直在消化库存。TTM 26.02 亿，<strong>同比 FY2025 涨 14.5%，是四个板块里恢复最快的</strong>，说明去库存基本结束了。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工业与物联网</td>
+<td>26.02 亿</td>
+<td>22.73 亿</td>
+<td>+14.5%</td>
+<td>19.7%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：移动（TTM 营收 16.57 亿，占 12.6%）</h3>
+<p>基本就一件事：<strong>手机里的 NFC 芯片和安全单元</strong>。</p>
+<p>你手机能刷公交、刷门禁、用 Apple Pay/华为 Pay 付款，靠的是一颗 NFC 控制器加一颗安全元件（eSE，一个物理上防拆的小保险箱，指纹和银行卡信息存在里面）。恩智浦是这个市场的绝对老大，苹果从 iPhone 6 开始的 NFC 方案长期由恩智浦供。</p>
+<p>一部手机上这套芯片的价值 $1–3，听着少，但全球一年十几亿部手机。此外还有 UWB——AirTag 的精确定位、手机当车钥匙时判断"人在车内还是车外"，靠的就是这个。</p>
+<p>这门生意的问题是<strong>极度依赖少数几个客户</strong>（苹果、三星、小米一类），而且苹果这些年一直在把外购芯片改成自研。恩智浦不披露客户集中度细节，但这块营收长期在 15–18 亿之间横着，没什么增长故事。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>移动</td>
+<td>16.57 亿</td>
+<td>15.84 亿</td>
+<td>+4.6%</td>
+<td>12.6%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意四：通信基础设施及其他（TTM 营收 14.93 亿，占 11.3%）</h3>
+<p>一个杂货铺，主要两块：</p>
+<ul>
+<li><strong>网络处理器（Layerscape 系列）</strong>——装在企业路由器、5G 基站的回传设备、工业网关里，负责高速转发数据包。单价 $20–200。</li>
+<li><strong>安全智能卡芯片</strong>——银行 IC 卡、电子护照、身份证、SIM 卡里那颗金属触点下的芯片。全球电子护照和银行卡芯片主要就是恩智浦和英飞凌两家在供，一颗从几毛到两三块，量极大且极稳定（每个国家换发一轮护照就是几千万颗）。</li>
+</ul>
+<p>这块从 FY2023 的 21.14 亿一路掉到 FY2025 的 12.96 亿，跌了近四成——5G 基站建设高峰过去了。TTM 反弹到 14.93 亿（+15.2%）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通信基础设施及其他</td>
+<td>14.93 亿</td>
+<td>12.96 亿</td>
+<td>+15.2%</td>
+<td>11.3%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>分部利润：财报不给</h3>
+<p><strong>恩智浦只按分部披露营收，不披露分部利润。</strong> 整体 TTM 毛利率 56.1%、经营利润率 32.9%。按行业常识<strong>估算</strong>（以下数字是估算，不是财报数字）：汽车和通信/安全芯片毛利率高于平均（58–60%），工业物联网接近平均，移动 NFC 因为客户强势、议价能力弱，毛利率明显低于平均（可能 45% 上下）。恩智浦不给，我也不去翻 10-K 硬凑。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：4.32 亿，占净利润 14.5%</h3>
+<p>TTM 股权激励 4.32 亿美元。这笔钱 GAAP 已经在利润表里扣掉了，恩智浦在自己的 Non-GAAP 里会加回去——<strong>那是骗人的</strong>，员工拿到的股票是从你手里稀释出来的，等于公司替你付了 4.32 亿的工资。这里一律不加回。</p>
+<p>规模上还算克制：占营收 3.3%，在半导体公司里属于偏低（很多 AI 芯片公司这个数字是 10–20%）。</p>
+<h3>一次性项目：一笔 6.28 亿的资产处置收益，是本期最大的水分</h3>
+<p>TTM 现金流量表里有一行 <strong>"资产处置收益 6.28 亿"</strong>，对应投资活动里 <strong>8.78 亿的出售所得</strong>——期内完成了一笔业务剥离。这 6.28 亿是税前一次性收益，按 19.6% 的实际税率算，税后约 5.05 亿，<strong>直接进了那 29.75 亿的净利润里</strong>。</p>
+<p>也就是说：<strong>净利润里有 17% 是卖东西卖出来的，不是芯片卖出来的</strong>。明年不会再有。</p>
+<p>另外还有 4,500 万的股权投资减值损失（负面，金额小）。</p>
+<p>按规格要求说明：只看 TTM 单期，<strong>分不清哪些"一次性"是真一次性、哪些是年年都有</strong>。但资产出售这一笔金额和性质都很清楚，可以确认是真一次性——过去五年同一行的数字分别是 2,900 万、300 万、100 万、0、100 万，几乎为零。</p>
+<h3>资本化的支出：基本没有</h3>
+<p>恩智浦不资本化研发费用，研发全部当期费用化（这是正确做法）。投资活动里有 1.57 亿的"无形资产购买"，那是外购 IP 授权，不是把自己的开发费藏起来。<strong>这一项干净。</strong></p>
+<h3>回购与稀释：回购只够抵消发股，不是回馈股东</h3>
+<ul>
+<li>TTM 回购 <strong>5.98 亿</strong></li>
+<li>同期 SBC <strong>4.32 亿</strong></li>
+<li><strong>回购 ÷ SBC = 1.38</strong></li>
+</ul>
+<p>这个比值是判断"回购是真的还是演戏"的核心指标。1.38 意味着：公司花的回购钱里，约七成只是在把发给员工的股票买回来注销，真正让老股东占比上升的部分只有三成。</p>
+<p>对账一下：股份数同比只减少了 <strong>0.61%</strong>（2.5216 亿股）。一年 5.98 亿的回购，按 590 亿市值算本该减少 1% 的股份，实际只减了 0.61%——差额就是被 SBC 稀释掉的。</p>
+<p><strong>分红是这家公司回馈股东的主力</strong>：TTM 派息 10.22 亿，是回购金额的 1.7 倍。分红 + 回购合计 16.2 亿，占自由现金流 28.06 亿的 58%。</p>
+<h3>利润和现金流的差：这次差得不大，但方向值得看</h3>
+<p>净利润 29.75 亿 → 经营现金流 31.29 亿 → 自由现金流 28.06 亿。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,975</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+725</td>
+<td>不花钱的账面费用，加回</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+65</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+432</td>
+<td>不花现金（但真实稀释你）</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−628</td>
+<td><strong>卖东西的钱走投资活动，从经营现金流里剔出去</strong></td>
+</tr>
+<tr>
+<td>＋ 股权投资减值</td>
+<td>+45</td>
+<td>账面减值，不花钱</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>+41</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−9</td>
+<td>客户欠的钱多了一点</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−171</td>
+<td>备货增加，压了钱</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+122</td>
+<td>欠供应商的钱多了，等于占了便宜</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−467</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>3,129</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−323</td>
+<td>买设备建厂</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>2,806</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>两个观察：</p>
+<ol>
+<li><strong>资本开支只有 3.23 亿，占营收 2.4%，是五年最低</strong>（FY2022 曾是 10.68 亿）。恩智浦是"轻晶圆厂"模式，大部分先进制程外包给台积电，自己只留少量后端厂。资本开支砍到这么低说明短期不扩产——这对自由现金流是好事，但也说明管理层对需求恢复的信心还不足。</li>
+<li>剔掉 6.28 亿处置收益后，<strong>经营现金流（31.29 亿）实际比"干净的净利润"（约 24.7 亿）高出 27%</strong>，主要是折旧摊销和 SBC 撑起来的。现金流质量本身没问题。</li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 591.9 亿，企业价值 669.3 亿（含 77.5 亿净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>591.9 ÷ 29.75</td>
+<td><strong>19.9 倍</strong></td>
+<td><strong>$5.02</strong></td>
+</tr>
+<tr>
+<td>公司自报 Non-GAAP（估算）</td>
+<td>加回 SBC 与并购无形摊销、剔除处置收益，约 31 亿</td>
+<td>约 19.1 倍</td>
+<td>约 $5.24</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>591.9 ÷（29.75 − 5.05 税后处置收益）= 591.9 ÷ 24.70</td>
+<td><strong>24.0 倍</strong></td>
+<td><strong>$4.17</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>591.9 ÷ 28.06</td>
+<td>21.1 倍</td>
+<td>$4.74</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>669.3 ÷ 43.43</td>
+<td>15.4 倍</td>
+<td>$6.49</td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>591.9 ÷ [(24.70 + 20.21 + 25.10) ÷ 3 = 23.34]</td>
+<td><strong>25.4 倍</strong></td>
+<td><strong>$3.94</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Non-GAAP 那一行财报页不直接提供，是我按恩智浦一贯的调整口径粗算的，标注<strong>估算</strong>，不作为结论依据。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进恩智浦，按最保守的口径（三年平均真实利润）算，公司一年替你赚 3.94 块；按当期真实利润算，赚 4.17 块。</strong></p>
+<p>这 4 块多钱里：</p>
+<ul>
+<li><strong>约 1.7 块以分红形式打到你账户</strong>（TTM 派息 10.22 亿 ÷ 591.9 亿市值 = 1.73% 股息率）</li>
+<li><strong>约 0.4 块以真回购的形式变成你占比的提升</strong>（股份实际减少 0.61%，而不是回购总额对应的 1%）</li>
+<li><strong>剩下约 2 块留在公司里</strong>——看投资活动现金流的去向：4.96 亿去做了收购（TTM 期内买了几家做汽车软件和边缘 AI 的小公司）、8.81 亿买了金融证券、5.03 亿净还了债、3.23 亿买设备。</li>
+</ul>
+<p>注意 <strong>20 倍的表面 PE 和 24 倍的真实 PE 差了整整 4 倍</strong>，差在那笔卖资产的钱上。而<strong>三年平均口径 25.4 倍比当期 24 倍还高一点</strong>，说明当期利润相对于过去三年的平均水平<strong>没有明显高估，甚至略偏低</strong>——这跟英伟达那种"当期 34 倍、三年平均 73.5 倍"的极端周期高点是完全相反的位置。恩智浦现在是在<strong>周期底部刚爬起来的位置</strong>，不是顶部。</p>
+<p><strong>这个 4 块钱未来大概率变大</strong>，理由有三条，也有三条对冲的理由：</p>
+<p>变大：① 工业物联网去库存已结束，TTM +14.5%，这块的经营杠杆很高，营收每涨 1 亿，利润能涨 4–5 千万；② 汽车电子含量在结构性上升，单车芯片价值量每年增长 5–8%，即使全球汽车销量不增长，恩智浦的汽车营收也能涨；③ 资本开支砍到营收 2.4%，一旦不再扩产，多出来的钱直接变成自由现金流。市场也是这么看的——<strong>远期市盈率只有 14 倍</strong>，隐含未来 12 个月利润要涨 40% 以上。</p>
+<p>变小的风险：① 中国车厂正在大规模国产替代 MCU 和 BMS 芯片，地平线、兆易创新、芯驰这些公司在低端已经切进去了，恩智浦有相当一部分汽车营收在中国；② 移动 NFC 这块苹果自研的压力一直在；③ 77.5 亿净负债，利息覆盖倍数 9.2 虽然安全，但意味着每年有约 4–5 亿的利息支出先扣掉。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>表面 20 倍很便宜，剔掉那笔卖资产的一次性收益后是 24 倍——对一家营收三年零增长、刚从下行周期爬出来的公司来说，这个价格谈不上便宜，也谈不上贵，大致是合理定价。</strong></p>
+<p>值得肯定的是这确实是门好生意：ROIC 18%、ROE 28%、毛利率 56%、车规认证构成七到十年的实打实壁垒，资本开支只占营收 2.4%，赚的钱不怎么需要再投回去。</p>
+<p>不值得为它兴奋的是：这门生意的天花板由全球汽车产量和单车芯片含量决定，是个<strong>每年个位数增长的成熟生意</strong>，不是成长股；回购只够抵消员工发股；而且它最大的市场（汽车、中国）正面临最认真的国产替代冲击。</p>
+<p>买它本质上是在赌一件事：<strong>汽车半导体周期从这里往上走</strong>。市场给的远期 14 倍市盈率已经把这个赌注定价进去了一大半。如果周期如期回升，你能拿到 5–6% 的年回报加上一点增长；如果不回升，24 倍买一个不增长的公司，就是慢慢亏时间价值。</p>
+<p><strong>结论：不贵，但也没有明显的安全边际，属于"周期赌注已被部分定价"的位置。</strong></p>
+</div></body></html>

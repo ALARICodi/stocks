@@ -1,0 +1,406 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PCAR · 帕卡（PACCAR Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PCAR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">周期底部的好公司，付的钱对应一个被压扁的分母</div><h1>PCAR · 帕卡（PACCAR Inc.）</h1>
+<p><strong>市值</strong> 689.0 亿美元 ｜ <strong>股价</strong> 约 $130.9 ｜ <strong>企业价值 EV</strong> 750.5 亿美元 ｜ <strong>行业</strong> 生产制造 / 重型卡车 ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日：2026 年 6 月 30 日</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>帕卡造的是<strong>18 轮大卡车</strong>——就是你在美国高速上看到的那种拖着一整节集装箱、驾驶室镀铬发亮、烟囱在车头两侧的重型牵引车。它旗下有三个牌子：<strong>Kenworth（肯沃斯）</strong>和 <strong>Peterbilt（彼得比尔特）</strong>在北美，<strong>DAF（达富）</strong>在欧洲。Peterbilt 的 389 型号是美国卡车司机心里的"劳斯莱斯"，一辆能卖到 20 万美元以上，很多个体司机买它就像买房一样是一辈子的大事。</p>
+<p>但<strong>帕卡真正的赚钱结构，跟"卖卡车"这四个字给你的印象完全不一样</strong>。它实质上是三门生意，而利润的大头不在卡车上。</p>
+<h3>生意一：卖新卡车（TTM 186.8 亿，占 67%）—— 量大、赚得薄、周期极猛</h3>
+<p>一家干线运输公司（比如 J.B. Hunt、Schneider，或者一个只有 30 辆车的家族车队）要换车了。他们找到 Kenworth 的经销商，配一辆 T680 牵引车：选 Paccar MX-13 发动机（帕卡自己造的，这很关键，后面说）、12 速自动变速箱、带卧铺的驾驶室、按自己跑的线路选油箱容量和后桥速比。落地价大约 <strong>17 万–19 万美元一辆</strong>。车队一次下单 200 辆，就是 3500 万美元的订单。</p>
+<p>这门生意的特点：</p>
+<ul>
+<li><strong>单价高、总量大</strong>：TTM 卖了 186.8 亿美元的卡车，是营收的绝对主体；</li>
+<li><strong>利润薄</strong>：整车业务的税前利润率大约在 <strong>8%–12%</strong> 之间（好年份到 14%，差年份掉到 5% 以下）；</li>
+<li><strong>周期猛到吓人</strong>。这是理解帕卡的核心。看这组数字：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>卡车业务营收（亿美元）</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM（Jun'26）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国和加拿大</td>
+<td>159.0</td>
+<td>153.9</td>
+<td>113.5</td>
+<td><strong>106.9</strong></td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>68.7</td>
+<td>50.0</td>
+<td>49.7</td>
+<td><strong>52.3</strong></td>
+</tr>
+<tr>
+<td>拉美/澳洲/其他</td>
+<td>40.8</td>
+<td>44.5</td>
+<td>30.4</td>
+<td><strong>27.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>北美卡车营收从 FY2023 的 159 亿掉到现在的 106.9 亿，跌了 33%。</strong> 为什么？因为卡车是"被派生的需求"——车队买不买车，取决于运费高不高。2021–2022 年疫情后运价暴涨，车队疯狂扩张、超量订车；到 2023–2024 年运力过剩、现货运价崩了，车队立刻停止买车、把旧车多开两年。这个周期跟宏观经济的关系没有跟<strong>运价指数</strong>的关系大。</p>
+<p>现在这个位置，是周期的<strong>下半段</strong>——不是最深的谷底（欧洲已经回升 +5.1%），但离上一轮的高点还差三分之一。</p>
+<h3>生意二：卖零配件和售后服务（TTM 69.2 亿，占 25%）—— 这才是利润的来源</h3>
+<p>一辆重卡的设计寿命是跑 <strong>100 万英里以上</strong>，服役 10–15 年。在这十几年里，它要换刹车片、滤芯、涡轮增压器、喷油嘴、离合器、后桥总成……一辆车整个生命周期里花在零件上的钱，累计能超过车价本身。</p>
+<p>帕卡通过 <strong>TRP</strong> 这个自有零件品牌和遍布北美/欧洲的经销商网络卖这些件。举个具体的：一个跑长途的司机在爱荷华州半夜爆了个水泵，他不会去比价——他把车拖到最近的 Kenworth 服务点，付掉 1800 美元的零件加工时费，因为<strong>车停一天，他损失 800–1000 美元的运费收入</strong>。同样的逻辑，一家 200 辆车的车队会跟帕卡签"全包保养合同"，每辆车每英里付固定的几美分，帕卡负责所有维护——这变成了一笔按里程收的、可预测的订阅收入。</p>
+<p>关键在于<strong>帕卡自己造发动机（Paccar MX 系列）</strong>。别的卡车厂（比如导航星）过去买康明斯的发动机，发动机零件的售后利润就归了康明斯。帕卡自己造，就把动力总成这块最肥的售后利润留在了自己手里。目前帕卡新车里超过一半装的是自家发动机，这个比例还在往上走——<strong>意味着未来十年的售后件池子会持续变大</strong>。</p>
+<p>数字最能说明问题：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卡车营收（亿）</td>
+<td>268.5</td>
+<td>248.4</td>
+<td>193.6</td>
+<td><strong>186.8</strong></td>
+</tr>
+<tr>
+<td><strong>零件营收（亿）</strong></td>
+<td>64.1</td>
+<td>66.7</td>
+<td>68.7</td>
+<td><strong>69.2</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>卡车业务跌了 30%，零件业务一路涨到新高。</strong> 因为周期下行时车队不买新车，反而要把旧车修得更勤——<strong>零件业务是逆周期的对冲</strong>。而且它的税前利润率在 <strong>28%–32%</strong>，是整车的三倍。</p>
+<p>这就是帕卡的真实结构：<strong>用薄利的整车业务在路上铺装机量，用高利的零件业务把这些装机量收割十五年。</strong> 跟前面那家 TDG 的"新机件换售后件"是同一套逻辑，只是发生在地面上。</p>
+<h3>生意三：帕卡金融（TTM 22.3 亿，占 8%）—— 卖车的银行</h3>
+<p>一个只有 5 辆车的小车队想再买 3 辆 Peterbilt，54 万美元，他们没有这笔现金。<strong>PACCAR Financial Services（PFS）</strong>直接给他们做贷款或租赁：首付 10%，剩下的分 60 期还，年利率 8%。或者做经营性租赁——每月付 3800 美元，四年后把车还回来。</p>
+<p>PFS 干三件事：赚利息差（自己发债成本约 4.5%，放贷 8%，中间 3.5 个点是它的）、赚残值（收回来的二手车拿去再卖，行情好时能赚一笔）、以及<strong>最重要的：让买不起车的人买得起车</strong>。没有 PFS，帕卡的卡车销量会明显低一截。</p>
+<p>这门生意的资产负债表跟前两门完全不同——它是<strong>靠借钱运转的</strong>，这也是帕卡账上 146.96 亿美元债务的主要来源（后面第二部分会讲这个债其实不该算成"公司欠债"）。它的坏账风险跟运价挂钩：运价崩了，小车队还不上贷款、还车，二手车价格同时下跌，两头受损。</p>
+<h3>一张钱的表（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>占比</th>
+<th>较 FY2025 增速</th>
+<th>税前利润率（估算）</th>
+<th>贡献利润（估算，亿）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卡车 · 美加</td>
+<td>106.9</td>
+<td>38.4%</td>
+<td>−5.8%</td>
+<td>约 8%</td>
+<td>约 8.6</td>
+</tr>
+<tr>
+<td>卡车 · 欧洲</td>
+<td>52.3</td>
+<td>18.8%</td>
+<td><strong>+5.1%</strong></td>
+<td>约 7%</td>
+<td>约 3.7</td>
+</tr>
+<tr>
+<td>卡车 · 拉美/澳洲/其他</td>
+<td>27.6</td>
+<td>9.9%</td>
+<td>−9.2%</td>
+<td>约 6%</td>
+<td>约 1.7</td>
+</tr>
+<tr>
+<td><strong>零件与售后</strong></td>
+<td><strong>69.2</strong></td>
+<td><strong>24.9%</strong></td>
+<td>+0.7%</td>
+<td><strong>约 29%</strong></td>
+<td><strong>约 20.1</strong></td>
+</tr>
+<tr>
+<td>帕卡金融</td>
+<td>22.3</td>
+<td>8.0%</td>
+<td>+0.7%</td>
+<td>约 13%</td>
+<td>约 2.9</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>278.2</strong></td>
+<td>100%</td>
+<td><strong>−10.6%</strong>（同比）</td>
+<td>整体经营利润率 <strong>10.0%</strong></td>
+<td>税前利润实际 <strong>32.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部利润率是估算，必须说明方法</strong>：帕卡的这几个页面只披露到分部营收，不披露分部利润。上表的估算方法是——以 TTM 实际税前利润 32.06 亿为总量，按帕卡历年披露的"零件税前利润率约 30%、整车约 8%、金融约 13%"这一公认结构做分配，使各项加总回到 32.06 亿。<strong>这不是财报数字，方向可信，精确值不可信。</strong></p>
+<p>但即使按这个粗估，结论也非常清楚：<strong>占营收 25% 的零件业务，贡献了大约 63% 的利润。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>帕卡这份报表，说实话<strong>干净得有点无聊</strong>——这在美股大公司里很少见。逐项过：</p>
+<h3>股权激励（SBC）：小到财报懒得单列</h3>
+<p>这几个页面的标准化现金流量表里<strong>没有单独的股权激励行</strong>，它被合并进了"其他调整（4.823 亿）"。这本身就是信息：对多数科技公司来说 SBC 是现金流量表上第二大的加回项，必须单列；帕卡的量小到可以塞进"其他"。</p>
+<p>更硬的证据在股数上：<strong>流通股一年只增加了 0.08%</strong>（5.2636 亿股），而同期回购金额只有 <strong>590 万美元</strong>——几乎为零。也就是说，帕卡<strong>既不靠回购装门面，也没有被期权稀释</strong>。年化 0.08% 的稀释可以直接忽略。</p>
+<p>对比一下前面那家 TDG：花掉 2.6% 的市值回购，股数只减 0.22%。帕卡什么都没做，股数增 0.08%。<strong>帕卡的股东结构比 TDG 干净得多。</strong></p>
+<h3>回购 / SBC 比值：这个指标在帕卡身上失效</h3>
+<p>机械算：590 万 ÷（SBC 未单独披露）——算不出来，也没必要算。<strong>这个指标是用来抓"假回购"的，而帕卡压根不玩回购</strong>。它把钱以现金股息的形式发出去（下面讲），路径不同但更诚实：股息是明明白白进你账户的现金，回购则可能只是在替员工的期权擦屁股。</p>
+<p><strong>帕卡这一项：没有可指摘的地方。</strong></p>
+<h3>一次性项目：TTM 内未见大额异常</h3>
+<p>没有大额诉讼和解、没有重组费用、没有商誉减值、没有并购（TTM 现金收购为零）。有效税率 <strong>21.9%</strong>，就是美国的正常法定水平，没有税务一次性调整在里面。</p>
+<p>有一处需要说明但不构成障眼法：<strong>TTM 税前利润 32.06 亿，比经营利润 27.92 亿还高了 4.14 亿。</strong> 这不是造假——帕卡账上趴着 88.34 亿的现金和投资，这笔钱产生的利息收入、以及帕卡金融的部分收益，是记在经营利润之下的。<strong>这是真实的、可持续的收入。</strong></p>
+<h3>资本化支出：正常，但有一个细节要看懂</h3>
+<p>TTM 资本开支 <strong>13.82 亿</strong>，看起来占营收 5%，不算低。但同期还有一行"<strong>出售不动产、厂房及设备 +6.60 亿</strong>"。这两个数字是配套的：帕卡金融做经营性租赁，把新卡车买下来（记成资本开支）租给客户，四年后收回来卖掉（记成资产处置收入）。<strong>所以真正投在工厂和研发设施上的钱，远低于 13.82 亿</strong>，可能只有 7–8 亿。帕卡的实际资本强度比表面数字轻。</p>
+<h3>利润和现金流的差：差得不大，但方向值得看</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,504</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>830</td>
+</tr>
+<tr>
+<td>＋ 其他调整（含 SBC、递延税等）</td>
+<td>482</td>
+</tr>
+<tr>
+<td>＋ <strong>应收账款减少</strong></td>
+<td><strong>+779</strong></td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+70</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−29</td>
+</tr>
+<tr>
+<td>− 应交税金减少</td>
+<td>−296</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>4,345</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,382</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>2,963</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流 43.45 亿，比净利润 25.04 亿高出 <strong>73%</strong>。这里面最值得注意的是 <strong>+7.79 亿的应收账款回收</strong>：<strong>这是周期下行的典型特征——生意在收缩，之前压在客户账上的钱正在收回来，营运资金被释放出来变成现金。</strong></p>
+<p>这是好事也是提醒：<strong>这 7.79 亿是一次性的，不是可持续的现金创造能力。</strong> 等下一轮周期上行、帕卡重新扩产时，应收和存货会反过来吃掉现金（看 FY2023：应收增加 −16.97 亿）。所以别把 29.63 亿的自由现金流当成常态——<strong>周期底部的现金流会虚高，周期顶部的现金流会虚低</strong>，这正是重资产周期股的会计特征。</p>
+<h3>一个必须澄清的"假杠杆"</h3>
+<p>表面数据：总债务 <strong>146.96 亿</strong>，看起来很吓人；EV 因此比市值高出 61.5 亿。</p>
+<p><strong>但这个债绝大部分不是帕卡欠的，是帕卡金融为了放贷而借的。</strong> 银行借钱放贷，你不会说这家银行"负债累累"——负债的另一边是同等规模的贷款资产。同样的道理，帕卡金融的 146.96 亿债务对应的是它手里的卡车贷款和租赁资产。</p>
+<p>证据：<strong>利息保障倍数 393 倍</strong>，流动比率 <strong>5.52</strong>，速动比率 <strong>4.89</strong>，账上现金和投资 <strong>88.34 亿</strong>。一家真正背着 147 亿债的公司不可能有这种指标。<strong>帕卡的制造业务本身几乎是净现金状态。</strong></p>
+<p>这意味着：<strong>下面表里的 EV/EBIT 26.9 倍是被高估的</strong>，因为分子里塞进了金融子公司的债，分母里却没有对应地放大利润。看帕卡不要看 EV 口径。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>689.0 亿 ÷ 25.04 亿</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>$3.63</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>帕卡不发布调整后利润口径</strong>，本次取数的四个页面也没有该数据。这是加分项，不是缺陷</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>没什么可剔的：SBC 微不足道且已按 GAAP 扣除、无一次性项目、税率正常 → 仍是 25.04 亿</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>$3.63</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>689.0 亿 ÷ 29.63 亿</td>
+<td><strong>23.3 倍</strong></td>
+<td><strong>$4.30</strong>（但含约 7.8 亿一次性营运资金释放，实际约 26 倍 / $3.85 更公允）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>750.5 亿 ÷ 27.92 亿</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.72</strong>（<strong>此口径失真</strong>，EV 含金融子公司债务）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>689.0 亿 ÷ [(25.04+23.76+41.62)/3 = 30.14 亿]</td>
+<td><strong>22.9 倍</strong></td>
+<td><strong>$4.37</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行是全表最重要的一行，而且它讲的故事跟大多数公司是反的。</strong></p>
+<p>三年平均口径 <strong>22.9 倍</strong>，比当期的 27.5 倍<strong>更便宜</strong>。这说明什么？<strong>说明帕卡现在的利润处在周期低点，不是高点。</strong> FY2024 净利润 41.62 亿，FY2025 掉到 23.76 亿，TTM 25.04 亿——现在的盈利水平只有上一轮高峰的 <strong>60%</strong>。</p>
+<p>这跟 NVDA 那种情况正好相反（NVDA 当期 34 倍、三年平均 73.5 倍，意味着当期利润是历史峰值、估值被"好年份"掩盖了）。帕卡是：<strong>当期 27.5 倍、三年平均 22.9 倍，意味着市场付的 27.5 倍是建立在一个被压扁的分母上的。</strong></p>
+<p>一个更直观的算法：如果卡车周期回到 FY2024 那种正常偏好的水平，净利润回到 40 亿左右，那么按今天的市值算市盈率是 <strong>17.2 倍</strong>，投 100 块年回报 <strong>$5.80</strong>。市场给的 19.82 倍的前瞻市盈率，说明它已经部分预期到了这一点。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进帕卡，按最保守的真实口径（27.5 倍），公司一年替你赚 $3.63。</strong></p>
+<p>这 $3.63 里，有多少真回到你口袋？</p>
+<ul>
+<li><strong>现金股息</strong>：TTM 派了 <strong>14.41 亿</strong>，占市值 <strong>2.1%</strong>。也就是 $3.63 里有 <strong>$2.09 是直接打进你账户的现金</strong>。而且帕卡的派息方式很特别——除了每季度约 $0.33 的常规股息，它每年一月还会根据上一年的利润派一笔<strong>特别股息</strong>（FY2025 全年派了 22.67 亿，就是因为里面含 2024 年高利润对应的大额特别股息）。<strong>赚得多就多分，赚得少就少分</strong>，不硬撑，这是很诚实的做法。</li>
+<li><strong>回购</strong>：几乎为零（590 万）。所以剩下的 $1.54 全部留在公司里。</li>
+<li><strong>留存部分去哪了</strong>：TTM 资本开支 13.82 亿（其中一大块是金融租赁用车，不是真扩产），购买投资 20.25 亿（就是把现金存起来），净偿还长期债务 10.14 亿。<strong>换句话说，帕卡在周期底部选择了"攒钱和还债"，而不是扩张。</strong></li>
+</ul>
+<p><strong>这个 $3.63 未来会变大还是变小？</strong></p>
+<p><strong>大概率明显变大。</strong> 理由：</p>
+<ol>
+<li><strong>分母被周期压扁了</strong>，不是能力下降。零件业务在整个下行周期里还在创新高，说明装机量基础没有受损；</li>
+<li><strong>欧洲已经转正（+5.1%）</strong>，通常欧美卡车周期不同步，欧洲先动往往是先行信号；</li>
+<li><strong>零件业务的结构性上行</strong>：帕卡自产发动机的装车比例还在提高，每提高一个百分点，未来十年的高毛利售后件池子就大一块；</li>
+<li><strong>北美车队的车龄在变老</strong>。连续三年少买车，车队平均车龄已经被拉高，替换需求是被推迟而不是被消灭的。</li>
+</ol>
+<p>往下压的因素：关税和贸易政策对钢材、零部件成本的冲击；电动重卡的转型（帕卡需要投入研发，但短期看电动重卡在长途干线上还不经济，威胁不迫切）；以及如果运价再下一个台阶，帕卡金融的坏账和二手车残值会同时恶化——<strong>这是帕卡最真实的风险点，因为它是三门生意里唯一有杠杆的那门</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家周期底部的好公司，标价不便宜，但你付的钱对应的是一个被压扁的分母。</strong></p>
+<p>帕卡的报表是这批公司里最干净的一份：没有 Non-GAAP 粉饰、没有假回购、股权稀释接近于零、没有一次性项目、税率正常、利润和现金流对得上、看似吓人的 147 亿债务其实是金融子公司的贷款资产对手方。<strong>它把利润的大头（约 63%）藏在只占营收 25% 的零件业务里，而那门生意是逆周期的、高毛利的、并且随着自产发动机的普及还在结构性变大。</strong></p>
+<p>27.5 倍的当期市盈率买一家重资产周期制造商，单看数字是贵的。但<strong>三年平均 22.9 倍、前瞻 19.8 倍、周期正常化后约 17 倍</strong>这三个数字叠在一起，说的是同一件事：<strong>你买的不是 $3.63，而是一张在周期修复后大概率变成 $5 以上的票。</strong> 代价是你得等，而且要能忍受运价再下一个台阶时帕卡金融那头的短期难看。</p>
+<p><strong>值这个价，但要有耐心；不适合想要马上兑现的人。</strong></p>
+</div></body></html>

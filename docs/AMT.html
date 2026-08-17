@@ -1,0 +1,586 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AMT · 美国电塔（American Tower）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AMT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">15.9倍AFFO不算贵，类债券收租，别指望涨</div><h1>AMT · 美国电塔（American Tower）</h1>
+<p>市值 820 亿美元 / 股价约 176 美元 / 行业：通信基础设施 REIT / TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家 REIT（房地产信托），下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong> 原因很简单：REIT 的会计利润被"折旧"这个假费用压得失真。美国电塔 TTM 计提了 20.71 亿美元折旧摊销，等于说它那几万座铁塔每年"损耗"了 20 亿——但一座 1998 年立起来的铁塔，到今天照样在收租，而且租金比当年翻了几倍。账面上它已经折旧到接近零，实际上它是台印钞机。所以对 REIT 用市盈率，等于故意把利润算少一半。行业通用的替代口径是 FFO（把折旧加回去的现金利润）和 AFFO（再扣掉维持性开支的真实可分配现金）。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>美国电塔干的事，说穿了是<strong>当包租公，只不过它出租的不是商铺，是"高度"</strong>。</p>
+<p>它在全球拥有约 15 万座通信站点（美国约 4 万座），每一座就是一根 30 到 60 米高的钢塔立在一块地上。<strong>这家公司不拥有一个基站、不拥有一段频谱、不服务一个手机用户</strong>——它只拥有钢架和地皮，然后把钢架上不同高度的位置租给电信运营商。</p>
+<h3>一座塔是怎么赚钱的</h3>
+<p>拿一座立在达拉斯郊区的塔举例，这是这门生意的全部逻辑：</p>
+<ol>
+<li><strong>建塔</strong>：美国电塔花约 27.5 万美元买地（或签 30 年地租）、立钢塔、拉电、修一条进场路。</li>
+<li><strong>第一个租客</strong>：Verizon 来了，把自己的天线装在塔身 45 米的位置，从天线拉同轴电缆下来接到塔底一个空调机柜。合同签 10 年，月租约 2,500 美元，<strong>每年自动涨 3%</strong>（美国合同里的固定条款，国际市场则挂钩当地 CPI）。美国电塔在这座塔上的成本是：地租每月约 1,000 美元 + 维护、保险、地税约 300 美元。所以第一个租客带来的月毛利约 1,200 美元，对应 27.5 万投资，年回报约 5%——<strong>平平无奇</strong>。</li>
+<li><strong>第二个租客</strong>：T-Mobile 来了，装在 35 米的位置，月租 2,300 美元。<strong>美国电塔的成本增加了多少？大约每月 50 美元</strong>（多一点电费和结构检查）。钢塔已经立好了、地租已经在付了，多挂一副天线几乎不花钱。<strong>所以第二个租客的边际利润率接近 98%。</strong> 这座塔的年回报一下从 5% 跳到 15%。</li>
+<li><strong>第三个租客</strong>：AT&amp;T 再来，同样的故事，年回报跳到 24% 以上。</li>
+</ol>
+<p><strong>整门生意就浓缩在这一件事上：往已经建好的塔上多挂一家运营商。</strong> 美国电塔的全部经营重心不是"多建塔"，而是"把现有塔的租户数从 1.5 提到 2"。这也是为什么它的毛利率能到 73.8%，而钢结构行业普遍只有个位数。</p>
+<h3>为什么租客不会跑</h3>
+<p>这是这门生意最硬的地方。一个运营商想把基站从 A 塔搬到 B 塔，要做四件事：重新做全网信号覆盖仿真（挪一个站点会在周围形成信号空洞，得连带调整周边十几个站）、向当地政府重新申请选址和分区许可（美国郊区居民极其反对家门口立铁塔，一个新许可拖两年是常事）、雇塔工爬塔拆装设备、在切换期间承受一段时间的信号劣化投诉。</p>
+<p><strong>算下来搬一个站的成本远高于每月多付的那 2,000 美元租金。</strong> 所以合同到期时运营商基本只能续租，而且续租时那个 3% 的年度涨幅照走。这就是为什么美国电塔敢签 10 年长约还内嵌自动涨价——<strong>它卖的不是钢铁，是"你搬不走"</strong>。</p>
+<h3>五块业务的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>业务</th>
+<th>TTM 营收</th>
+<th>对比 FY2025</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>美国与加拿大铁塔</strong></td>
+<td>51.79 亿</td>
+<td><strong>−1.3%</strong></td>
+<td>47.3%</td>
+<td>基本盘，但在<strong>萎缩</strong></td>
+</tr>
+<tr>
+<td><strong>拉美铁塔</strong></td>
+<td>17.76 亿</td>
+<td>+8.1%</td>
+<td>16.2%</td>
+<td>巴西、墨西哥为主，货币风险大</td>
+</tr>
+<tr>
+<td><strong>非洲与亚太铁塔</strong></td>
+<td>15.47 亿</td>
+<td>+8.7%</td>
+<td>14.1%</td>
+<td>尼日利亚、肯尼亚等，靠柴油发电，成本结构最差</td>
+</tr>
+<tr>
+<td><strong>数据中心（CoreSite）</strong></td>
+<td>11.33 亿</td>
+<td>+7.6%</td>
+<td>10.4%</td>
+<td>2021 年花 101 亿美元买来的</td>
+</tr>
+<tr>
+<td><strong>欧洲铁塔</strong></td>
+<td>10.12 亿</td>
+<td>+7.9%</td>
+<td>9.2%</td>
+<td>德国、法国、西班牙</td>
+</tr>
+<tr>
+<td><strong>服务</strong></td>
+<td>2.94 亿</td>
+<td>−13.3%</td>
+<td>2.7%</td>
+<td>帮运营商装天线、跑许可，杂活</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>109.42 亿</strong></td>
+<td><strong>+2.8%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最重要的一行是第一行：美国业务在缩。</strong></p>
+<p>原因是 T-Mobile 和 Sprint 的合并。两家合并前在同一片区域各建了一套网络，很多路口两家的天线挂在相邻的两座塔上。合并后 T-Mobile 只需要一套，于是开始成批解约、拆除重叠的 Sprint 站点。这个过程从 2023 年拖到现在还没走完，每年从美国电塔的美国收入里割掉一块。所以你会看到美国收入四年几乎原地踏步（FY2022 的 50.06 亿到 TTM 的 51.79 亿），而且 TTM 还转负。</p>
+<h3>数据中心那块（CoreSite）是另一门生意</h3>
+<p>2021 年美国电塔花 101 亿美元买下 CoreSite，理由是"边缘计算需要靠近铁塔"。实际业务是在美国十来个大城市运营二十多个数据中心，客户把服务器放进笼子里，按机柜和用电量付月租，另外按"交叉连接"（就是一根跳线，把你的服务器直连到隔壁 AWS 或 Azure 的专线端口）单独收费，一条跳线一个月两三百美元，边际成本近乎零。这块 TTM 收 11.33 亿，涨 7.6%——<strong>生意本身不错，但 101 亿买 11 亿收入，出价并不便宜，而且和铁塔的"边缘计算协同"至今没有兑现，这笔收购的实际价值主要是它自己作为独立数据中心生意的价值。</strong></p>
+<h3>分部利润（估算）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>业务</th>
+<th>TTM 营收</th>
+<th>毛利率（估算）</th>
+<th>贡献毛利（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国与加拿大</td>
+<td>51.79 亿</td>
+<td>约 80%</td>
+<td>约 41 亿</td>
+</tr>
+<tr>
+<td>拉美</td>
+<td>17.76 亿</td>
+<td>约 74%</td>
+<td>约 13 亿</td>
+</tr>
+<tr>
+<td>非洲与亚太</td>
+<td>15.47 亿</td>
+<td>约 64%</td>
+<td>约 10 亿</td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>10.12 亿</td>
+<td>约 68%</td>
+<td>约 7 亿</td>
+</tr>
+<tr>
+<td>数据中心</td>
+<td>11.33 亿</td>
+<td>约 54%</td>
+<td>约 6 亿</td>
+</tr>
+<tr>
+<td>服务</td>
+<td>2.94 亿</td>
+<td>约 45%</td>
+<td>约 1 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>109.42 亿</strong></td>
+<td><strong>73.8%（实际）</strong></td>
+<td><strong>80.72 亿（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>分部利润率全是估算。</strong> 财报只按分部披露营收，不披露分部利润。上表按各地区的地租、电力（非洲多数站点要烧柴油发电，成本高一截）和人工成本结构倒推，估算合计与实际毛利 80.72 亿有几个百分点的误差。看结构就行，别当精确值。</p>
+</blockquote>
+<p>结论很清楚：<strong>美国那 47% 的营收贡献了超过一半的毛利，而它是唯一在负增长的一块。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>折旧：这是全篇最大的"障眼法"，但方向是反的</h3>
+<p>TTM 折旧摊销 20.71 亿美元，占营收 18.9%，比净利润的一半还多。这笔钱<strong>一分现金都没花出去</strong>——铁塔早就建好付过钱了。会计上要求把当年的建设支出分摊到未来 15–20 年，于是每年凭空扣掉 20 亿"费用"。</p>
+<p><strong>所以美国电塔的 GAAP 净利润（34.01 亿）严重低估了它的真实赚钱能力。</strong> 这跟大多数公司的障眼法方向正好相反——大多数公司是把利润吹大，REIT 是被会计规则压小。这也是必须用 FFO 口径的原因。</p>
+<p>但要说清一个反面：<strong>折旧不是完全的假费用。</strong> 铁塔确实会锈、会被雷劈、需要加固；数据中心里的空调、UPS、发电机是真会坏的，十年就得换一批。所以正确做法不是把 20.71 亿全加回来当利润，而是加回来之后，再扣掉<strong>真实的维持性资本开支</strong>——这就是 AFFO 的意义。</p>
+<h3>一次性项目：注意，这里的"一次性"是年年都有的</h3>
+<p>看现金流量表里"其他调整"这一行的四年序列：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>其他非现金调整</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>+0.94 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>+8.87 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>+10.68 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>+7.86 亿</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>+0.39 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这一行是把"计入了利润表但没花现金的损失"加回来。连续三年七到十亿的规模，内容主要是资产减值（拆掉被 T-Mobile 退租的塔、印度业务的账面损失）和拉美货币贬值造成的汇兑损失。</p>
+<p><strong>关键在于 TTM 这一期突然只剩 0.39 亿。</strong> 这就是为什么 TTM 的净利润从 FY2025 的 25.30 亿跳到 34.01 亿、每股收益暴涨 164%——<strong>不是生意突然变好了，是这一期恰好没计提大额减值。</strong></p>
+<p><strong>用单期口径没法判断这是"减值终于结束了"还是"下一期又来一笔"。</strong> 从历史看，这家公司在 15 万座塔和几十个国家的资产上，减值和汇兑损失几乎是每年的常客。所以<strong>直接用 TTM 的 34.01 亿净利润去算估值，会系统性地高估这家公司</strong>。下面第三部分因此保留了三年平均口径。</p>
+<h3>资本化支出：REIT 的常规，但要看清"维持"和"扩张"的比例</h3>
+<p>TTM 资本开支 18.15 亿美元。这笔钱里混着两种性质完全不同的东西：</p>
+<ul>
+<li><strong>维持性开支</strong>：换掉锈蚀的钢构件、更新数据中心的制冷设备、给塔加固以承受更多天线重量。这是<strong>必须花的</strong>，不花明年就收不到租。</li>
+<li><strong>扩张性开支</strong>：在印度尼西亚建新塔、给 CoreSite 盖新机房、买断原本租来的地皮（美国电塔近年花不少钱把铁塔底下的地从地主手里买断，好省掉未来的地租）。这是<strong>可以不花的</strong>，不花只是不增长。</li>
+</ul>
+<p>财报没有把两者分开列到这个报表页上，业内经验值是维持+补强类开支约占总额三分之一，即约 6 亿美元。下面 AFFO 按这个估算处理，并明确标注。</p>
+<h3>回购与稀释：几乎不存在，这不是一个回购故事</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>5.675 亿美元</td>
+</tr>
+<tr>
+<td>员工行权发新股</td>
+<td>+0.326 亿美元</td>
+</tr>
+<tr>
+<td>股权激励计提（SBC）</td>
+<td>1.661 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>3.4 倍</strong></td>
+</tr>
+<tr>
+<td>实际股本变化（一年）</td>
+<td><strong>−0.19%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购 ÷ SBC 是 3.4 倍，形式上算真回购，但<strong>绝对规模太小了</strong>——5.68 亿只占 820 亿市值的 0.69%，一年下来股本只减了 0.19%，四舍五入等于没动。</p>
+<p>SBC 本身只有 1.66 亿，占营收 1.5%、占净利润 4.9%，在大公司里属于极低水平——这是重资产生意的正常样貌，不像软件公司要靠发股票留人。这笔照样当成本扣掉，但它小到不影响判断。</p>
+<p><strong>美国电塔回馈股东靠的是分红，不是回购</strong>：TTM 派息 32.34 亿美元，是回购的 5.7 倍。REIT 在法律上必须把应税收入的 90% 以上分掉才能免税，所以这是它的制度性宿命。</p>
+<h3>利润和现金流的差：这次现金流远高于利润，逐项对账</h3>
+<p>TTM 净利润 34.01 亿，经营现金流 57.75 亿——<strong>现金流比利润高出 23.74 亿</strong>。这个方向和大多数公司相反，值得完整拆开：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,401</td>
+<td>起点</td>
+</tr>
+<tr>
+<td><strong>+ 折旧与摊销</strong></td>
+<td><strong>+2,071</strong></td>
+<td><strong>不花钱的账面费用，加回来——这是差额的主要来源</strong></td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+166.1</td>
+<td>发股票不发现金，加回来（但它是真成本）</td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td>+38.5</td>
+<td>这一期减值极少，见上文</td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>+308.1</td>
+<td>运营商预付的租金</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−316.0</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>5,775</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,815</td>
+<td>建新塔、买地、数据中心扩建、维护</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>3,960</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>一句话概括：<strong>这家公司账面上的 34 亿利润，是被 21 亿的假折旧压出来的；真实产生的现金是 58 亿。</strong></p>
+<h3>一个不能忽略的东西：450 亿美元的债</h3>
+<p>这是全篇最需要盯的风险。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总负债</td>
+<td>449.8 亿美元</td>
+</tr>
+<tr>
+<td>现金</td>
+<td>17.63 亿美元</td>
+</tr>
+<tr>
+<td><strong>净负债</strong></td>
+<td><strong>432.2 亿美元</strong></td>
+</tr>
+<tr>
+<td>市值</td>
+<td>820 亿美元</td>
+</tr>
+<tr>
+<td><strong>企业价值（市值+净负债）</strong></td>
+<td><strong>1,252.5 亿美元</strong></td>
+</tr>
+<tr>
+<td>负债 / EBITDA</td>
+<td>6.45 倍</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td>3.52 倍</td>
+</tr>
+<tr>
+<td>TTM 利息支出（推算）</td>
+<td>约 13.9 亿美元</td>
+</tr>
+<tr>
+<td>债务平均利率（推算）</td>
+<td>约 3.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>你付 820 亿买这家公司，但实际接手的是一个 1,252 亿的资产包，中间 432 亿是债主的。</strong></p>
+<p>更要命的是利率。TTM 里公司发了 83.59 亿新债、还了 84.06 亿旧债——<strong>每年要滚动再融资约 84 亿美元，占整个债务盘子的 19%</strong>。现存债务的平均利率只有 3.1%（都是零利率年代借的），而现在投资级 REIT 发十年期债的成本在 5% 以上。</p>
+<p><strong>这意味着每滚一笔债，成本就上升近 2 个百分点。每年滚 84 亿，就是每年多掏约 1.7 亿美元利息，相当于每年吃掉 3% 以上的可分配现金。</strong> 而且这个过程还要持续好几年才能把低息老债换完。这是一台在慢慢收紧的螺丝，不会突然爆掉，但会持续压缩你的回报。</p>
+<hr />
+<h2>第三部分：REIT 口径的估值</h2>
+<h3>先算 FFO 和 AFFO</h3>
+<p><strong>FFO（营运资金 / Funds From Operations）</strong> = 净利润 + 折旧摊销 + 资产减值 − 出售物业收益。这是行业标准口径，目的就是把假折旧还回去。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 净利润</td>
+<td>3,401</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+2,071</td>
+</tr>
+<tr>
+<td>+ 资产减值等非现金损失</td>
+<td>+38.5</td>
+</tr>
+<tr>
+<td><strong>= FFO</strong></td>
+<td><strong>约 5,510</strong></td>
+</tr>
+<tr>
+<td><strong>每股 FFO</strong>（4.66 亿股）</td>
+<td><strong>约 11.83 美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>AFFO（调整后营运资金）</strong> = FFO − 维持性资本开支 − 直线法租金等非现金收入调整。这是<strong>真正能拿去分红的钱</strong>，比 FFO 更保守也更实用。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>5,775</td>
+</tr>
+<tr>
+<td>− 维持性 + 补强类资本开支（估算，占总资本开支约 1/3）</td>
+<td>−600</td>
+</tr>
+<tr>
+<td><strong>= AFFO（估算）</strong></td>
+<td><strong>约 5,175</strong></td>
+</tr>
+<tr>
+<td><strong>每股 AFFO</strong></td>
+<td><strong>约 11.11 美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>这个每股 11.11 美元和公司近两年公布的每股 AFFO（10.4–10.6 美元区间）在同一水平且略高，方向可信。维持性资本开支的拆分是估算，若按更保守的一半（9 亿）算，每股 AFFO 降到约 10.5 美元。</p>
+</blockquote>
+<h3>估值表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率（<strong>对 REIT 无意义，仅供对照</strong>）</td>
+<td>820 亿 ÷ 34.01 亿净利润</td>
+<td>24.0 倍</td>
+<td>4.17 元</td>
+</tr>
+<tr>
+<td><strong>市值 / FFO</strong></td>
+<td>820 亿 ÷ 55.10 亿 FFO</td>
+<td><strong>14.9 倍</strong></td>
+<td><strong>6.71 元</strong></td>
+</tr>
+<tr>
+<td><strong>市值 / AFFO（最实用口径）</strong></td>
+<td>820 亿 ÷ 51.75 亿 AFFO</td>
+<td><strong>15.9 倍</strong></td>
+<td><strong>6.31 元</strong></td>
+</tr>
+<tr>
+<td>市值 / 自由现金流</td>
+<td>820 亿 ÷ 39.60 亿 FCF</td>
+<td>20.7 倍</td>
+<td>4.83 元</td>
+</tr>
+<tr>
+<td>企业价值 / EBITDA</td>
+<td>1,252 亿 ÷ 70.2 亿</td>
+<td>17.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值 / EBIT</td>
+<td>1,252 亿 ÷ 49.02 亿</td>
+<td>25.5 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均 FFO 口径</strong></td>
+<td>820 亿 ÷ FY23–25 平均 FFO 54.21 亿</td>
+<td><strong>15.1 倍</strong></td>
+<td><strong>6.60 元</strong></td>
+</tr>
+<tr>
+<td><strong>股息率</strong></td>
+<td>每股派息 6.94 美元 ÷ 股价 176 美元</td>
+<td>—</td>
+<td><strong>3.94 元（真现金）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>最后一行的三年平均口径说明什么</h3>
+<p>FY2023 的 FFO 约 54.57 亿、FY2024 约 54.48 亿、FY2025 约 53.58 亿、TTM 约 55.10 亿。</p>
+<p><strong>四个数字几乎完全一样。三年下来 FFO 原地踏步。</strong></p>
+<p>这既是好消息也是坏消息。好消息是<strong>当前的估值不建立在一个虚高的利润顶点上</strong>——15 倍 FFO 就是 15 倍，不存在"周期见顶后倍数翻番"的陷阱。坏消息更重：<strong>这家公司三年没有增长。</strong> 营收从 100 亿涨到 109 亿，但涨的部分被拉美汇率、美国退租、以及那 450 亿债务的利息全部吃掉了。你买的是一个稳定但停滞的现金流。</p>
+<h3>说人话：投 100 块，一年公司替你赚多少</h3>
+<p><strong>按最实用的 AFFO 口径，你投 100 块，公司一年替你赚 6.3 块。</strong> 如果按更保守的维持性资本开支假设，是 5.9 块左右。合理区间 <strong>5.9 到 6.3 块</strong>。</p>
+<p>这 6.3 块里，钱是这么分的：</p>
+<ul>
+<li><strong>分红 3.94 块</strong>——真金白银打进你的账户，一年分四次。这是这只股票的核心卖点。</li>
+<li><strong>回购 0.69 块</strong>——太小，忽略不计。</li>
+<li><strong>剩下约 1.7 块留在公司里</strong>——去向是建新塔、扩数据中心、买断塔底下的地皮，以及<strong>补上分红超出自由现金流的缺口</strong>。</li>
+</ul>
+<p>注意最后这点：TTM 派息 32.34 亿，自由现金流 39.60 亿，派息占了 82%。加上 5.68 亿回购，回馈股东共 38 亿，几乎把自由现金流用光。<strong>这家公司没有任何财务缓冲</strong>——扩张要靠借新债，还债要靠借新债，分红把现金流吃满。这就是 REIT 的标准形态，但也意味着它对利率和资本市场情绪的敏感度极高。</p>
+<h3>这 6.3 块未来变大还是变小</h3>
+<p><strong>变大的力量</strong>：美国合同里那个 3% 的年度自动涨价条款是雷打不动的，光这一条每年就给美国那 52 亿收入加 1.5 亿；国际市场挂钩 CPI；5G 在欧洲和非洲还在铺，多挂天线的空间还有；CoreSite 数据中心业务吃到了 AI 带来的机柜需求。</p>
+<p><strong>变小的力量</strong>：T-Mobile 拆 Sprint 站点的退租还没走完，美国收入还在负增长；每年 84 亿低息债要按 5% 以上的利率重新借，每年吃掉 3% 以上的可分配现金，还要持续几年；拉美和非洲占了 30% 的收入，巴西雷亚尔、墨西哥比索、尼日利亚奈拉贬值一次就直接砍掉一块；这是典型的"债券替代品"，市场利率一升，它的股价就跌——过去 52 周股价跌了 14.2%，就是这个逻辑在起作用。</p>
+<p><strong>净的判断是横盘微增。</strong> 三年 FFO 没动，往前看三年大概率也是每年个位数低段的增长，靠 3% 的自动涨价撑着，被利息成本上升抵掉一半。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一张收益率约 6.3%、但杠杆很重、增长已经停住的类债券资产</strong>——生意本身几乎无法被替代（运营商搬不走），15 倍 AFFO 也不算贵，近 4% 的分红是真现金；但你买它的同时也接手了 432 亿净债务，每年 84 亿低息老债要按翻倍的利率重新借，美国基本盘还在被 T-Mobile 退租削，三年 FFO 原地不动——<strong>适合当作一份比国债多赚两三个点、且能小幅抗通胀的收租资产来持有，不适合指望它涨。</strong></p>
+</div></body></html>

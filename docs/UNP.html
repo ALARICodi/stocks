@@ -1,0 +1,339 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UNP · 联合太平洋铁路</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">UNP</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">24倍买一条不可能被重建的铁路，可放二十年不看</div><h1>UNP · 联合太平洋铁路</h1>
+<p><strong>市值</strong> $1,769.1 亿 · <strong>股价</strong> 约 $297.8 · <strong>行业</strong> 运输（一级货运铁路）· <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>严格说，联合太平洋只做一件事：把重的东西从美国西部拉到东部，按重量和距离收钱。</strong> 它没有第二门生意，没有软件业务，没有金融部门。财报里那十三个分类不是不同的生意，而是<strong>同一条铁路上拉的十三种货</strong>。</p>
+<p>理解这家公司之前，得先理解它拥有的是什么。</p>
+<h3>它到底拥有什么</h3>
+<p>联合太平洋拥有 <strong>32,000 英里（约 51,000 公里）的铁轨</strong>，覆盖美国西部 23 个州——从西海岸的洛杉矶、奥克兰、西雅图，到中部的芝加哥、孟菲斯、新奥尔良，再到墨西哥边境的六个口岸。它拥有这些铁轨下面的土地，很多是 1862 年林肯签署《太平洋铁路法案》时联邦政府直接划拨的。</p>
+<p><strong>这条护城河的本质是：这些铁轨今天不可能被重建。</strong> 你没法在 2026 年的美国从洛杉矶到芝加哥新买一条连续的土地走廊——环评、征地、诉讼会拖三十年，成本上万亿美元。全美国只剩下六家一级铁路公司，西部两家（联合太平洋、BNSF——巴菲特全资拥有），东部两家（诺福克南方、CSX），加拿大两家。<strong>这是一个由地理和历史锁死的双寡头结构。</strong></p>
+<h3>具体怎么收钱</h3>
+<p><strong>举一个具体的例子：</strong> 一家内布拉斯加州的玉米合作社要把 11 万吨玉米运到墨西哥湾的港口出口。它向联合太平洋租一列 110 节车皮的"整列车"（unit train），一节车皮装 100 吨，全程约 1,200 英里。联合太平洋收取大约 <strong>每节车皮 4,000–5,000 美元</strong>，一列车一趟就是 <strong>45–55 万美元</strong>。这列车跑一趟约 4 天，一年可以跑几十趟。</p>
+<p>为什么这家合作社非用铁路不可？因为<strong>卡车运不起</strong>。一节车皮 100 吨等于四辆重卡，110 节车皮等于 440 辆卡车。同样的货，铁路每吨英里烧的油大约是卡车的<strong>四分之一</strong>，运价大约是卡车的<strong>三分之一到一半</strong>。任何重量大、价值密度低、运距超过 500 英里的货物——煤、谷物、化肥、木材、钢铁、砂石、化工原料——铁路是唯一经济的选择。<strong>没有替代品，这是定价权的来源。</strong></p>
+<p>联合太平洋每年提价 3%–4%，客户基本没得选。这就是为什么一家营收只增长 4%、货运量几乎不增长的公司，利润却能年年上涨——<strong>涨价 + 降本，而不是增长。</strong></p>
+<h3>拉的货按三大类分</h3>
+<p><strong>第一类：大宗（Bulk）—— 农产品和煤</strong></p>
+<p>TTM 营收 79.2 亿美元。谷物及谷物制品 41.8 亿（美国出口玉米、大豆、小麦的主要通道，也运送到饲料厂和乙醇厂）、煤及可再生能源 18.4 亿（从怀俄明州粉河盆地的露天煤矿拉到发电厂，这块在长期萎缩，但过去两年因为电价上涨反而回升）、冷藏食品 10.1 亿（整列冷藏车皮运送加州的生菜和华盛顿的苹果到东部超市）、化肥 9.0 亿。</p>
+<p><strong>第二类：工业（Industrial）—— 化工、金属、木材、能源</strong></p>
+<p>TTM 营收 88.9 亿美元，是三类里最大的一块。工业化学品及塑料 26.0 亿（从墨西哥湾沿岸的乙烯厂拉塑料粒子）、能源及特种市场 27.0 亿（页岩油区的压裂砂、原油、液化石油气）、金属及矿产 22.9 亿（钢材、水泥、砂石）、林产品 13.0 亿（西北部的木材运到全国的建材市场）。</p>
+<p>这一类的利润率通常最高，因为货物价值高、运距长，而且许多客户的工厂<strong>直接建在铁路旁边、有专用支线接入</strong>——这些客户实质上被物理绑定，换不了供应商。</p>
+<p><strong>第三类：高端（Premium）—— 集装箱和汽车</strong></p>
+<p>TTM 营收 72.9 亿美元。多式联运（Intermodal）48.4 亿是主体：一个从上海来的集装箱在洛杉矶港卸船，直接吊上火车平板车，拉到芝加哥再转卡车配送。一个 40 英尺集装箱从洛杉矶到芝加哥收约 <strong>2,000–2,800 美元</strong>，一列联运车可以拉 250–300 个箱子，<strong>一趟约 60–80 万美元</strong>。汽车运输 24.5 亿：从福特、丰田在美国和墨西哥的组装厂，用双层封闭车皮把整车运到全国各地的经销商配送中心，一节车皮装 10–15 辆，一辆车收约 400–900 美元。</p>
+<p>这一类和消费周期、进口周期高度相关，是三类里波动最大的。</p>
+<h3>三类货的钱（TTM，截至 2026 年 6 月 30 日）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比 FY2025</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工业（化工/金属/林木/能源）</td>
+<td>$88.9 亿</td>
+<td>+3.3%</td>
+<td>35%</td>
+<td>约 44%（估算）</td>
+<td>约 $39 亿</td>
+</tr>
+<tr>
+<td>大宗（谷物/煤/食品/化肥）</td>
+<td>$79.2 亿</td>
+<td>+4.4%</td>
+<td>31%</td>
+<td>约 41%（估算）</td>
+<td>约 $32 亿</td>
+</tr>
+<tr>
+<td>高端（联运/汽车）</td>
+<td>$72.9 亿</td>
+<td>+3.7%</td>
+<td>29%</td>
+<td>约 34%（估算）</td>
+<td>约 $25 亿</td>
+</tr>
+<tr>
+<td>附加费及子公司</td>
+<td>$13.1 亿</td>
+<td>+1.8%</td>
+<td>5%</td>
+<td>约 43%（估算）</td>
+<td>约 $6 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$254.1 亿</strong></td>
+<td><strong>+4.2%</strong></td>
+<td>100%</td>
+<td><strong>40.0%</strong></td>
+<td><strong>$101.7 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只按货类披露到营收，不披露各类的利润，上表的利润率是按运距、货物密度和车皮利用率的行业规律估算的，不是财报原文数字。</strong> 需要说明的是，"对比 FY2025"是 TTM 和上一个完整财年比，两者有半年重叠，不是严格的同比，只用来看方向。</p>
+</blockquote>
+<p><strong>真正重要的不是这个分类，而是一个数字：经营利润率 40.0%。</strong> 铁路行业习惯用它的倒数——<strong>"经营比率"（Operating Ratio）= 59.2%</strong>，意思是每收 100 块钱，花掉 59.2 块，剩 40.8 块是经营利润。二十年前这个数字是 85%。联合太平洋靠一套叫"精准调度铁路"（PSR）的运营方法把它压到了 60% 以下：更长的列车（现在平均列车长度超过 9,000 英尺）、更少的机车、更少的调车场、更少的人。<strong>员工只有 29,287 人，跑 32,000 英里的铁路，人均创收 86.8 万美元。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>必须先说结论：这是我到目前为止分析过的公司里，报表最干净的一家之一。几乎没有障眼法可剥。</strong> 逐项过一遍：</p>
+<p><strong>股权激励（SBC）：</strong> 这个数据源没有单列联合太平洋的 SBC，说明金额小到不足以单列（并入了 3.13 亿的"其他调整"里）。从结构上判断：一家 29,000 人的铁路公司，绝大多数是火车司机、调度员、养路工，靠工资和工会合同雇人，不靠期权。SBC 大致在净利润的 <strong>1.5%–2%</strong> 量级。<strong>这是本项的最好结果——没有什么可加回、也没有什么被藏起来。</strong></p>
+<p><strong>一次性项目：没有。</strong> TTM 税前利润 95.1 亿，缴税 21.8 亿，有效税率 <strong>22.92%</strong>（美国联邦 21% 加少量州税，完全正常），净利润 73.3 亿。整个链条上没有任何异常项。对比过去五年的利润：65.2 亿 → 70.0 亿 → 63.8 亿 → 67.5 亿 → 71.4 亿 → 73.3 亿（TTM）。<strong>六年间最大波动不到 10%，没有一年被减值、重组或税务调整扭曲过。</strong> 这种平滑度本身就是信息：它说明这家公司的利润是真实经营出来的，不是会计做出来的。</p>
+<p><strong>资本化的支出：</strong> 铁路的资本开支绝大部分是<strong>真实的物理更换</strong>——换枕木、换钢轨、换道砟、买机车。TTM 资本开支 37.6 亿，折旧 25.1 亿，比值 1.50 倍。这个比值健康：说明它在维护性投入之上还有增量投资，但没有 NextEra 那种建设狂潮。铁路资产的实际寿命远长于会计折旧年限（钢轨能用几十年），所以对铁路来说，<strong>折旧其实是被高估的成本</strong>——这一条对股东是有利的偏差。</p>
+<p><strong>回购与稀释：这一项出现了一个必须解释的异常，是本次分析最重要的发现。</strong></p>
+<ul>
+<li>TTM 回购金额：<strong>仅 0.26 亿美元</strong></li>
+<li>上一财年（FY2025）回购金额：<strong>26.79 亿美元</strong></li>
+<li><strong>回购金额同比骤降 99%</strong></li>
+</ul>
+<p>一家过去十年年年回购几十亿美元的公司（FY2021 回购 72.9 亿、FY2022 回购 62.8 亿），突然把回购几乎停了。这不是经营出了问题——经营现金流反而创了新高（102.6 亿）。<strong>原因是它在攒钱收购诺福克南方（Norfolk Southern）。</strong></p>
+<p>联合太平洋在 2025 年宣布了对东部铁路诺福克南方的收购，交易规模约 850 亿美元，若完成将诞生<strong>美国历史上第一条真正横贯东西两岸的铁路</strong>——一列货车可以从洛杉矶不换承运人直达纽约。这笔交易正在美国地面运输委员会（STB）的审查中，结果预计在 2027 年前后揭晓，是这只股票未来两年最大的变量。为了保住资产负债表和交易的确定性，公司暂停了回购。</p>
+<p><strong>对你作为股东意味着什么：</strong> 股本过去一年仍减少了 <strong>1.50%</strong>（那是暂停之前的回购留下的），但<strong>往前看，回购这条回报渠道暂时关闭了</strong>。股息还在——TTM 派息 32.8 亿，股息率 1.91%，已连续 <strong>19 年</strong>增长。所以短期内你只能拿到 1.9% 的现金回报，剩下的钱在账上等着一笔可能成也可能不成的并购。</p>
+<p><strong>利润和现金流的差：差距小，而且能逐分对上。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>7,330</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>2,513</td>
+<td>铁轨、机车、车皮的账面折旧（实际寿命更长，这是保守的成本）</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>313</td>
+<td>含股权激励、递延税等</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>-215</td>
+<td>运出去的货还没收到钱</td>
+</tr>
+<tr>
+<td>－ 存货增加</td>
+<td>-145</td>
+<td>备件、燃料</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+59</td>
+<td>欠供应商的钱多了一点</td>
+</tr>
+<tr>
+<td>＋ 应付税款增加</td>
+<td>+360</td>
+<td>该缴还没缴的税</td>
+</tr>
+<tr>
+<td>＋ 其他经营性变动</td>
+<td>+48</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>10,263</strong></td>
+<td><strong>每一项都对得上，没有残差</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-3,759</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>6,504</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 73.3 亿，自由现金流 65.0 亿，两者比值 0.89。</strong> 这个数字的含义是：<strong>联合太平洋报表上每赚 1 块钱的利润，就有 8 毛 9 是可以自由支配的真现金。</strong> 这是极高的质量。（对比：NextEra 是负的，迪士尼是 0.96 但要靠借钱付股息。）</p>
+<p>再看这 65.0 亿现金去了哪：还债 25.3 亿、派息 32.8 亿、回购 0.3 亿，加起来 58.4 亿，剩 6.5 亿留在账上。<strong>总债务从 325.5 亿降到 309.4 亿，一年主动还了 16 亿。这家公司在收缩资产负债表、为并购蓄力。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $1,769.1 亿，企业价值 $2,059.6 亿（多出来的 290.6 亿是净负债，占市值的 16%——比 NextEra 那种 60% 温和得多）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,769.1 ÷ 73.3</td>
+<td><strong>24.1 倍</strong></td>
+<td><strong>4.15 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>不存在</strong>——公司不报调整后利润，GAAP 就是它的口径</td>
+<td>24.1 倍</td>
+<td>4.15 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔除，SBC 已按 GAAP 扣除</td>
+<td><strong>24.1 倍</strong></td>
+<td><strong>4.15 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,769.1 ÷ 65.0</td>
+<td><strong>27.2 倍</strong></td>
+<td>3.67 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,059.6 ÷ 101.7</td>
+<td><strong>20.3 倍</strong></td>
+<td><strong>4.93 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1,769.1 ÷ 70.7（TTM 73.3、FY2025 71.4、FY2024 67.5 的均值）</td>
+<td><strong>25.0 倍</strong></td>
+<td>4.00 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最值得注意的地方，是六个口径几乎完全一致——全部落在 20.3 到 27.2 倍这个窄区间里。</strong> 这本身就是最有价值的信息。</p>
+<p>对比一下这批分析的另外两家：迪士尼的六个口径从 16.4 到 25.2 倍，NextEra 的从 19.3 到 33.5 倍再到负无穷。<strong>口径之间的分歧越大，说明报表里能藏东西的地方越多。联合太平洋几乎没有分歧，因为它没地方藏。</strong></p>
+<p><strong>三年平均口径 25.0 倍 vs 当期 24.1 倍，差距只有 4%。</strong> 这是我见过最小的差距之一，意味着<strong>这家公司当前的利润完全不在周期高点，它就是它的常态</strong>。这条历史口径在 NVDA 身上曾揭示出当期 34 倍、三年平均 73.5 倍的巨大割裂；在联合太平洋身上它什么也没揭示——<strong>这恰恰是最好的结果。</strong></p>
+<p>还要看一个数字：<strong>投入资本回报率（ROIC）16.05%，加权平均资本成本（WACC）8.60%。</strong> 每投一块钱进去，赚回的回报比资金成本高出 7.45 个百分点。（对比 NextEra 的 3.17% vs 5.82%——那是在毁灭价值。）<strong>净资产收益率 39.7%</strong>，但这个数字有水分：账面股东权益只剩 206.7 亿，是因为过去十年回购把股本买掉了太多，分母被做小了。真正干净的效率指标是 ROIC 的 16.05%。</p>
+<p><strong>大白话说：你现在投 100 块进联合太平洋，按最保守的真实口径算，公司一年替你赚 3.7 到 4.2 块。</strong></p>
+<p>这 4.15 块里：
+- <strong>约 1.9 块以现金股息打进你账户</strong>（股息率 1.91%，连续 19 年增长）
+- <strong>约 1.5 块以回购形式回到你手里</strong>——但<strong>这是过去一年的数字，回购已经停了</strong>，未来两年这一块大概率接近 0
+- <strong>约 1.4 块用来还债</strong>（一年还了 16 亿）
+- <strong>剩下的留在账上，为诺福克南方的收购做准备</strong></p>
+<p><strong>这个 4.15 块未来是变大还是变小？我的判断是：慢慢变大，但幅度不大，而且路径取决于一件事。</strong></p>
+<p><strong>基础情形（并购不成）：</strong> 这家公司的常态是营收年增 3%–4%（几乎全靠提价，货运量基本零增长），利润年增 6%–8%（提价加降本的杠杆），回购恢复后每年再消掉 2%–3% 的股本，合起来每股利润年增 <strong>8%–10%</strong>。这是一台极其可靠但也极其缓慢的复利机器。风险是经营比率已经压到 59.2%，<strong>再往下压的空间不多了</strong>——过去十年利润增长有很大一部分来自这个数字从 85% 降到 59%，这口井快见底了。往后只能靠涨价，而涨价的天花板是卡车运价。</p>
+<p><strong>并购成功的情形：</strong> 第一条横贯大陆的铁路会消灭现在必须在芝加哥换手的中转环节（这个环节是全美货运最大的堵点，一个集装箱在芝加哥平均滞留 24–48 小时）。协同效应公司自己估在每年 27.5 亿美元。如果实现，利润会跳增约三成。<strong>但这是一笔要过监管的巨额并购，历史上美国铁路大合并的审批失败率不低，而且整合期通常伴随两三年的服务混乱。</strong> 这是一张彩票，正面价值可观，但不该按已经中奖来定价。</p>
+<p><strong>下行风险：</strong> 煤炭长期萎缩（占营收 7%，年年掉）；经济衰退会同时打击工业和高端两类货（2020 年营收掉了 10%）；卡车运价长期低迷会侵蚀铁路的定价空间。但这些都是周期性的，不威胁那 32,000 英里铁轨的存在。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>24 倍买一条不可能被重建的铁路，不便宜，但这个价钱买到的东西是真的。</strong></p>
+<p>联合太平洋没有故事可讲，也不需要讲。它的报表干净到无从下手挑刺：没有一次性项目、没有 Non-GAAP、没有可疑的资本化、净利润的 89% 是真现金、六个估值口径挤在一个窄区间里、当期利润和三年平均只差 4%、ROIC 是资本成本的两倍。<strong>在这批分析里，NextEra 的 19 倍市盈率是假象（真实是 33.5 倍 EV/EBIT + 负现金流），联合太平洋的 24 倍是真的 24 倍。</strong></p>
+<p>你花 100 块买到的是：一份 4.15 块的年回报、一条 32,000 英里的物理垄断资产、19 年不断的股息、和一张关于横贯大陆铁路的彩票。代价是接受它<strong>几乎不增长</strong>——这家公司的货运量二十年没怎么变过，所有的利润增长都来自提价和省钱，而省钱的空间正在耗尽。</p>
+<p><strong>值这个价，但不便宜。</strong> 这不是一只会让你赚快钱的股票，是一只你可以在退休金账户里放二十年不看的股票。如果你要的是复利和睡得着觉，它比这批里的另外两家都合适；如果你要的是弹性，迪士尼的赔率更好。</p>
+<p><strong>如果收购诺福克南方获批，需要重新分析。</strong> 那会是一家不同的公司。</p>
+</div></body></html>

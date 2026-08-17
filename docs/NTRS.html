@@ -1,0 +1,291 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NTRS · Northern Trust（北方信托）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NTRS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">生意我认可，价格我不认可，一年涨了52%</div><h1>NTRS · Northern Trust（北方信托）</h1>
+<p>市值 $350.2 亿 · 股价 $191.4 · 1.830 亿股 · 行业：金融（托管银行 / 私人银行）· TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率（PB）、有形账面市净率（P/TBV）和净资产收益率（ROE）而不是市盈率。</strong> 原因：银行的"资产"就是钱本身，它赚钱靠的是"用多少本金撬动多少资产"，所以本金（净资产）值多少倍才是核心问题。而且银行的自由现金流完全没有意义——北方信托 TTM 的经营现金流是 5.29 亿，上一年是 55.34 亿，再上一年是 <strong>负 4.86 亿</strong>。这个数一年翻十倍一年变负数，不是经营好坏，是客户存款进出的记账结果。网站上给的"市现率 78.6 倍"是纯噪音，别看。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家 1889 年成立于芝加哥的公司，名字里有"信托"，但它<strong>不是一家你会去开工资卡的银行</strong>。它一共只做两门生意，而且两门都是同一个套路：<strong>替别人保管钱，按保管的规模抽千分之几</strong>。</p>
+<h3>生意一：资产托管（Asset Servicing）——全球最大的"保险柜 + 记账员"之一</h3>
+<p>TTM 收入 <strong>51.46 亿美元，占 57%</strong>。</p>
+<p><strong>这门生意具体是干什么的？</strong> 举个真实场景：荷兰有一家管着 800 亿欧元的养老基金。这笔钱投在全球 40 个国家的股票、债券、私募基金里。这家养老基金自己只有 60 个员工，它不可能在 40 个国家各开一个证券账户、各请一个会计。</p>
+<p>于是它雇北方信托当<strong>全球托管行</strong>。北方信托要做的事：</p>
+<ul>
+<li>这 800 亿的证券<strong>登记在北方信托名下</strong>，存在各国的中央存管机构里——所以基金经理跑路也偷不走钱，这是托管制度存在的根本原因。</li>
+<li>基金每天下的每一笔交易，北方信托负责<strong>交割结算</strong>（钱付出去、券收进来）。一年可能几十万笔。</li>
+<li>收各国公司发的股息、债券利息；日本股票的股息被扣了 15% 预提税，北方信托负责向日本税务局<strong>申请退税</strong>，一年可能追回几百万欧元。</li>
+<li>每天收盘后算出这只基金<strong>每一份的净值</strong>，误差不能超过 1 个基点。</li>
+<li>把基金里那些长期不动的股票<strong>借给做空的对冲基金</strong>，收取借券费，跟基金五五分账。</li>
+<li>编制业绩报告、合规报告，应付荷兰央行的检查。</li>
+</ul>
+<p>北方信托为这一整套服务收多少钱？大约 <strong>1.5 到 3 个基点</strong>（万分之 1.5 到 3）。800 亿欧元 × 2 基点 = <strong>1600 万欧元一年</strong>。</p>
+<p>单看费率低得可怜，但北方信托托管和管理的资产总规模是 <strong>十几万亿美元</strong>量级。万分之二乘以十几万亿，就是几十亿美元的收入。<strong>这是一门极致的规模生意：多接一个客户的边际成本接近于零，因为系统已经建好了。</strong></p>
+<p>还有一块隐藏收入：这家养老基金总有 5~10 亿欧元的<strong>闲置现金</strong>趴在托管账户里等着投出去。这笔钱就是北方信托的<strong>存款</strong>，北方信托拿去买美国国债或者放隔夜，赚一个利差。<strong>这才是"银行"两个字的由来——托管银行的存款是白送上门的，不用做广告拉储户。</strong></p>
+<h3>生意二：财富管理（Wealth Management）——给美国最有钱的一批家庭当管家和"世代受托人"</h3>
+<p>TTM 收入 <strong>35.07 亿美元，占 39%</strong>，同比 +3.8%。</p>
+<p><strong>具体场景：</strong> 一个美国中西部家庭，把家族的制造企业卖了 3 亿美元。这笔钱要传三代人、14 个继承人，还要避掉 40% 的遗产税。</p>
+<p>他们找北方信托，签一份<strong>不可撤销信托</strong>，把 2.5 亿放进去，<strong>北方信托本人是受托人</strong>（trustee）——法律上这笔钱的所有权归信托，北方信托是那个必须为受益人利益行事、可以被告上法庭的责任方。然后：</p>
+<ul>
+<li><strong>投资管理</strong>：2.5 亿按家族的风险偏好配置，收费大约 <strong>55 个基点</strong>，一年 <strong>137 万美元</strong>。</li>
+<li><strong>信托管理</strong>：按照信托文件的条款，每个季度给 14 个受益人按不同比例打钱；某个孙子想提前支取买房，北方信托要判断这符不符合信托文件里"教育和健康支出"的定义——判断错了要赔。这块单收费。</li>
+<li><strong>税务申报</strong>：信托每年要报联邦和州的税表，还要处理跨州居住的受益人。</li>
+<li><strong>贷款</strong>：儿子想创业，不想卖掉股票，北方信托按他那份信托资产的抵押价值借给他 800 万，利率 SOFR + 1.5%。这笔贷款几乎没有信用风险——抵押品就在北方信托自己手里。</li>
+<li><strong>家族办公室服务</strong>：管家族基金会的捐赠、管私人飞机的账、管三处房产的保险。</li>
+</ul>
+<p><strong>这门生意最值钱的地方在于"换不掉"。</strong> 信托文件上白纸黑字写着受托人是 Northern Trust。要换掉它，需要全体受益人一致同意，或者去法院申请变更。北方信托手里有些家族信托是 1890 年代设立的，<strong>已经服务同一个家族一百多年</strong>。这种客户流失率极低，收入几乎是永续的年金。</p>
+<h3>第三栏"Other"：不是生意，是杂项账户</h3>
+<p>TTM 收入 <strong>+3.994 亿</strong>。别把它当业务看——这是一个装非经常性损益的桶。看它的历史值就明白了：FY2021 <strong>-0.21 亿</strong>、FY2022 <strong>-2.81 亿</strong>、FY2023 <strong>-2.46 亿</strong>、FY2024 <strong>+7.17 亿</strong>、FY2025 <strong>-0.55 亿</strong>、TTM <strong>+3.99 亿</strong>。</p>
+<p><strong>正常年份它是个小负数。TTM 这个 +3.99 亿是异常的大额正数。</strong> 这一点在第二部分和第三部分很关键。</p>
+<h3>汇总</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 收入</th>
+<th>同比</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产托管 Asset Servicing</td>
+<td>51.46 亿</td>
+<td>+8.0%</td>
+<td>56.6%</td>
+<td>规模生意，费率以基点计</td>
+</tr>
+<tr>
+<td>财富管理 Wealth Management</td>
+<td>35.07 亿</td>
+<td>+3.8%</td>
+<td>38.6%</td>
+<td>极高粘性，永续年金</td>
+</tr>
+<tr>
+<td>Other（非经常损益）</td>
+<td>3.99 亿</td>
+<td>—</td>
+<td>4.4%</td>
+<td>不是业务</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>90.86 亿</strong></td>
+<td><strong>+15.7%</strong></td>
+<td></td>
+<td>增速的一大半来自 Other 这一栏</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按分部披露利润，两块业务的利润率我不编。但有一个可靠的判断：<strong>资产托管的利润率明显低于财富管理</strong>——托管是拼系统和人力的低费率苦活，财富管理是 55 个基点的高费率生意。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p><strong>这四个财报页面没有单列这家公司的股权激励金额</strong>，银行版的现金流量表格式里没有这一行。我不编数字。可以确定的是：GAAP 已经把它计入薪酬费用扣掉了，我下面所有的利润数字都是扣过之后的。而且下面的股份数变化能直接看出净效果。</p>
+<h3>回购与稀释：这一项是全篇最亮的</h3>
+<p>TTM 回购 <strong>13.56 亿美元</strong>。同期股份数 <strong>减少了 4.72%</strong>——不是"抵消了员工发股"，是<strong>实打实少了 900 多万股</strong>。</p>
+<p>这比任何比值都更有说服力：你什么都不做，手里这张股票代表的公司所有权，一年里自动涨了 4.72%。</p>
+<p>对比历史：FY2022 只回购了 3540 万，FY2023 回购 3.48 亿，FY2024 回购 9.38 亿，FY2025 回购 12.74 亿，TTM 13.56 亿。<strong>回购力度五年翻了近 40 倍，而且还在加速。</strong></p>
+<p>加上分红：TTM 付出普通股股息 <strong>5.97 亿</strong>（另有 4180 万优先股股息）。回购 13.56 + 普通股息 5.97 = <strong>19.53 亿</strong>，而归属普通股股东的净利润是 21.39 亿（21.81 亿减优先股息）。<strong>91% 的利润全部还给股东了。</strong></p>
+<h3>一次性项目：TTM 这一期明显被垫高了</h3>
+<p>前面说的 Other 分部 <strong>+3.99 亿</strong>是核心问题。这 3.99 亿几乎是纯利润（不像业务收入还要扣成本），占税前利润 30.2 亿的 <strong>13%</strong>。</p>
+<p>按 25.75% 的实际税率算，税后大约 <strong>2.96 亿</strong>，占归母净利润 21.81 亿的 <strong>13.6%</strong>。</p>
+<p><strong>单看一期我无法判断这笔钱具体是什么</strong>（可能是持有的 Visa B 类股重估、可能是出售某项业务、可能是诉讼和解转回）。但从这一栏六年的历史看，<strong>正常状态是个小负数，本期这个大额正数不应该被当成可持续的盈利能力</strong>。下面第三部分我会把它剔掉算一次。</p>
+<p>另外两个小项：TTM <strong>信用损失准备是负的（-3330 万）</strong>——不是计提，是<strong>转回</strong>。这说明贷款质量好到不需要再留拨备了（合理，因为它的贷款几乎都是有证券抵押的富人贷款）。这也小幅垫高了本期利润。TTM 投资出售损益 -120 万，可以忽略。</p>
+<h3>利润和现金流：这里必须警告</h3>
+<p>经营现金流 5.29 亿，看起来只有净利润 21.81 亿的四分之一，好像利润是假的。<strong>不是。</strong> 银行的经营现金流里塞进了客户存款、贷款、证券头寸的变动——TTM 光"其他经营性资产变动"一项就是 <strong>-18.78 亿</strong>，那是资产负债表在动，不是钱被谁赚走了。同期"存款净增加"是 <strong>+93.94 亿</strong>，被记在筹资活动里。</p>
+<p>所以：<strong>对银行不要做利润与现金流的对账，那张表在银行身上没有意义。</strong> 判断银行的利润真不真，要看的是资产质量（信用损失准备，本期为负=极好）和资本充足（下面说）。</p>
+<h3>一个没法从这四页拿到的东西</h3>
+<p>银行常看的<strong>净息差（NIM）、一级核心资本充足率（CET1）、拨备覆盖率</strong>这三个指标，这四个财报页面不提供，我不编。有两个替代数据可以用：<strong>总资产收益率 ROA 1.28%</strong>（对托管银行是很不错的水平，普通商业银行约 1.0%），<strong>净资产收益率 ROE 17.07%</strong>（明显高于美国大行 10~12% 的平均）。TTM 实付利息 <strong>62.00 亿现金</strong>——这是付给存款人的，规模远大于收入，说明这家银行的负债端成本随利率浮动，降息周期里这笔支出会明显下降。</p>
+<hr />
+<h2>第三部分：银行口径估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>股价 $191.4 ÷ 每股净资产 $68.41</td>
+<td><strong>2.80 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形账面市净率 P/TBV</td>
+<td>剔除商誉和无形资产后</td>
+<td><strong>3.67 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>净资产收益率 ROE</td>
+<td>TTM 净利润 ÷ 净资产</td>
+<td><strong>17.07%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>总资产收益率 ROA</td>
+<td>TTM 净利润 ÷ 总资产</td>
+<td>1.28%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>盈利收益率（= ROE ÷ PB）</strong></td>
+<td><strong>17.07% ÷ 2.80</strong></td>
+<td><strong>6.10%</strong></td>
+<td><strong>$6.10</strong></td>
+</tr>
+<tr>
+<td><strong>剔除一次性项目后</strong></td>
+<td>扣掉 Other 分部 3.99 亿（税后约 2.96 亿），每股收益 $11.63 → 约 <strong>$10.05</strong></td>
+<td>约 <strong>19.0 倍</strong>盈利倍数</td>
+<td><strong>$5.26</strong></td>
+</tr>
+<tr>
+<td>市盈率（参考）</td>
+<td>$191.4 ÷ TTM 每股收益 $11.63</td>
+<td>16.5 倍</td>
+<td>$6.08</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>$191.4 ÷ 三年平均每股收益 $7.86（FY23 $5.08 / FY24 $9.77 / FY25 $8.74）</td>
+<td><strong>24.3 倍</strong></td>
+<td><strong>$4.11</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（市现率 78.6 倍、EV/FCF 92.9 倍这类指标在银行身上无意义，已剔除不列。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按当期账面算，公司一年替你赚 6.10 块。</strong></p>
+<p>但这 6.10 块经不起两层盘问：</p>
+<ul>
+<li><strong>第一层：剔掉那笔 3.99 亿的一次性收益，只剩 5.26 块。</strong></li>
+<li><strong>第二层：按过去三年的平均盈利能力算，只剩 4.11 块。</strong> FY2023 每股才赚 5.08 块（那年美国银行业普遍被债券浮亏和 FDIC 特别摊派砸了一下），FY2025 是 8.74 块，TTM 11.63 块——<strong>这条曲线是从坑里爬出来的，不是稳定在高位</strong>。用三年平均去看，这只股票是 24.3 倍。</li>
+</ul>
+<p><strong>这 6.10 块里有多少真到你口袋？</strong></p>
+<ul>
+<li><strong>分红：1.84 块</strong>（每股年息 $3.52，派息率只有 30%）。</li>
+<li><strong>回购：约 3.87 块</strong>（TTM 回购 13.56 亿 ÷ 350.2 亿市值）。这笔钱不打到你账上，但它让你手里这张股票代表的公司份额变多了，同样是真回报。</li>
+<li><strong>留在银行里：只剩约 0.4 块。</strong> 91% 的利润被还给了股东。</li>
+</ul>
+<p><strong>这个 6.10 块未来会变大还是变小？我判断会变小。</strong> 三条理由：</p>
+<ol>
+<li><strong>一次性收益不会年年有。</strong> 把 3.99 亿剔掉，起点就是 5.26 而不是 6.10。</li>
+<li><strong>利率下行会啃掉利差。</strong> 托管银行有大量客户存款（TTM 存款净增 93.94 亿），高利率环境下把这些钱放隔夜就能赚厚利差；降息周期里这块收入会缩水，而且缩得比存款成本下降快。</li>
+<li><strong>股价已经跑得太快。</strong> 过去 52 周涨了 <strong>51.95%</strong>。15 位分析师的平均目标价是 $184.27，<strong>比现价还低 3.73%</strong>，共识评级是"持有"。Piotroski 财务健康评分只有 3 分（满分 9），处于偏弱区间。</li>
+</ol>
+<p>往上的力量也有：回购在加速，每年注销 4~5% 的股份，这本身就是每股收益 4~5% 的自动增长；财富管理那块的客户流失率极低，托管资产规模随全球股市上涨自然增长；分析师预期未来三年每股收益年增 18.06%（这个数我认为偏乐观，它默认了一次性收益变成常态）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意本身是一流的，但现在这个价格已经把一流生意的好日子提前算进去了。</strong></p>
+<p>替富人和养老金保管钱、按资产规模抽基点、客户一签一百年不换——这是全世界最好的商业模式之一：不占用资本、不承担信用风险（TTM 信用损失准备是负的）、客户越有钱它赚得越多。17.07% 的 ROE 在美国银行业里是第一梯队，而且 91% 的利润以分红加回购的形式还给了股东，股份一年少 4.72%，这些都是真金白银。</p>
+<p>问题全在价格上。<strong>2.80 倍市净率、3.67 倍有形账面</strong>，是给一家银行的高估值——同期美国大银行普遍在 1.2~2.0 倍。支撑这个估值的 17% ROE，里面有 13.6% 是一笔说不清来路的一次性收益，剔掉之后 ROE 大约是 14.8%，对应的回报从 6.10 块掉到 5.26 块。再用三年平均一压，只剩 4.11 块——<strong>24 倍的盈利倍数，买一家营收几乎全靠资产规模被动增长的托管银行</strong>。</p>
+<p>股价一年涨了 52%，分析师的目标价却低于现价。这不是一个便宜的位置。生意我认可，价格我不认可。</p>
+</div></body></html>

@@ -1,0 +1,323 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KVUE · 肯维（Kenvue Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KVUE</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">独立看值不了22倍，是并购能否交割的赌注</div><h1>KVUE · 肯维（Kenvue Inc.）</h1>
+<p><strong>市值</strong> 368.8 亿美元 ｜ <strong>股价</strong> 19.20 美元 ｜ <strong>行业</strong> 非耐用消费品（消费者健康）｜ <strong>TTM 截止</strong> 2026 年 6 月 28 日 ｜ <strong>分析日期</strong> 2026-08-15</p>
+<blockquote>
+<p><strong>看这家公司之前必须先知道一件事：它快要不存在了。</strong></p>
+<p>2025 年 11 月 2 日，金佰利（Kimberly-Clark，KMB）宣布收购肯维，企业价值约 487 亿美元。2026 年 1 月 29 日两家公司的股东都以压倒性票数通过，2026 年 2 月 4 日美国反垄断审查的等待期届满，现在只差几个海外监管批文，公司说预计 <strong>2026 年底之前完成交割</strong>。</p>
+<p>交易对价是每股肯维换 <strong>3.50 美元现金 + 0.14625 股金佰利股票</strong>。按金佰利今天的股价 110.39 美元算，一股肯维值 3.50 + 16.14 = <strong>19.64 美元</strong>。而肯维今天的市价是 <strong>19.20 美元</strong>，比对价低 2.2%。</p>
+<p>这意味着：<strong>你现在买肯维，买的不是"一家做泰诺的公司"，而是一张年底兑换金佰利股票的券。</strong> 下面所有关于肯维基本面的分析仍然有意义——因为你换到的金佰利股票里，将来一半以上的利润来自这些生意——但"这个股价贵不贵"这个问题的答案，八成取决于金佰利贵不贵，以及这笔交易会不会黄。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>肯维是 2023 年从强生（Johnson &amp; Johnson）分拆出来的。强生把自己做了一百多年的"药店货架生意"整个切出来单独上市，自己专心做处方药和医疗器械。所以肯维手里全是你在超市和药店能看见、能拿起来、不需要医生开单子就能买的东西。</p>
+<p>财报把它分成三块，三块的规模出奇地接近——最大的一块也只占四成多。</p>
+<h3>生意一：Self Care 自我保健（TTM 营收 64.44 亿，占 41.8%）</h3>
+<p><strong>这是"你不舒服，但还没到要去看医生的程度，于是自己去药店买盒药"的生意。</strong></p>
+<p>最核心的产品是 <strong>泰诺（Tylenol）</strong>。你发烧、头疼、牙疼，去 CVS 或者沃尔玛的药品货架，拿一盒 100 片装的泰诺，付大约 12 美元。这 12 块里，零售商拿掉三四块，肯维拿到大概 8 块，而生产这 100 片药的原料（对乙酰氨基酚是一种极其便宜的化工品）加上压片、包装、运输，成本可能不到 2 块。剩下的 6 块，本质上是你为"泰诺"这三个字付的钱——你相信这个牌子不会吃出问题，相信剂量是准的，相信给小孩吃也没事。药本身早就没有专利了，任何一家仿制药厂都能做出化学成分完全一样的片剂，超市自有品牌的对乙酰氨基酚只卖泰诺一半的价。但泰诺依然卖得最好，这就是这门生意的全部秘密：<strong>卖的是几十年广告和"我妈也给我吃这个"堆出来的条件反射。</strong></p>
+<p>同一个逻辑复制在一堆产品上：<strong>Zyrtec（仙特明）</strong>，春天花粉过敏打喷嚏时吃的抗组胺药，一盒 30 片 25 美元；<strong>Nicorette（尼古雷特）</strong>，戒烟用的尼古丁口香糖，一个想戒烟的人一个疗程要嚼两三个月，花掉三四百美元，而这东西的边际成本就是口香糖；<strong>Benadryl（苯海拉明）</strong>、<strong>Motrin（布洛芬）</strong>、<strong>Sudafed（速达菲）</strong> 感冒通鼻，都是这一类。</p>
+<p>客户为什么非买不可？严格说，不是非买不可——他们完全可以买便宜一半的仿制品。这门生意的护城河不是技术，是<strong>货架位置 + 记忆</strong>。沃尔玛的采购愿意给泰诺最好的位置，因为泰诺周转快；泰诺周转快，因为消费者只认它。这是一个自我强化的循环，也是一个<strong>一旦品牌出事就会瞬间崩掉</strong>的循环——2025 年下半年美国出现了关于对乙酰氨基酚（也就是泰诺的有效成分）与孕期用药风险的公开争议，直接把这家公司的股价打下去一截，52 周股价跌了 11.6%，这不是偶然。</p>
+<h3>生意二：Essential Health 基础健康（TTM 营收 47.14 亿，占 30.6%）</h3>
+<p><strong>这是"不管你舒不舒服，每天都得用"的生意——比自我保健更稳，但也更便宜。</strong></p>
+<p>代表产品：<strong>李施德林（Listerine）漱口水</strong>、<strong>邦迪（Band-Aid）创可贴</strong>、<strong>强生婴儿（Johnson's Baby）</strong>的洗发水和爽身粉、以及 <strong>Stayfree / Carefree / o.b.</strong> 这几个女性卫生用品牌子。</p>
+<p>举个具体的：一瓶 1 升装的李施德林在超市卖 7 美元左右，一个每天早晚漱口的家庭一个半月用完一瓶，一年买 8 瓶，花 56 美元。肯维从中拿到大约 38 美元。这里面同样几乎没有技术含量——漱口水的主要成分是水、酒精和几种精油。但李施德林是 1879 年就有的牌子，牙医推荐了一百年。邦迪更极端：在美国英语里，"Band-Aid" 已经变成了创可贴这个品类的通用词，就像"可乐"之于碳酸饮料。当你的品牌名变成品类名，你就赢了一半。</p>
+<p>这块生意的问题在于：<strong>它的对手是超市自有品牌，而且这些产品的差异化比药还小。</strong> 一盒 100 片的自有品牌创可贴和邦迪贴在伤口上没有任何区别。所以这块的增长常年趋近于零——TTM 47.14 亿，比 2021 财年的 48.70 亿还低。它提供的是现金流的稳定性，不是增长。</p>
+<h3>生意三：Skin Health and Beauty 皮肤健康与美容（TTM 营收 42.50 亿，占 27.6%）</h3>
+<p><strong>这是三块里最难做、也是过去几年拖后腿最厉害的一块。</strong></p>
+<p>主力是 <strong>露得清（Neutrogena）</strong> 和 <strong>Aveeno（艾惟诺）</strong>，加上 <strong>OGX</strong> 洗发水和 <strong>Rogaine（落健）</strong> 生发水。露得清的一瓶洗面奶卖 9 美元，一支防晒霜卖 13 美元，走的是"药妆"路线——不在丝芙兰卖，在药店卖，主打"皮肤科医生推荐"。</p>
+<p>问题是这个赛道在过去五年被彻底重构了。TikTok 上冒出来的新品牌（比如做面部护理的一批 DTC 牌子），靠短视频和网红种草，两三年就能从零做到几亿美元营收，而且毛利更高、包装更好看。露得清那种"医生推荐、包装朴素、货架上不起眼"的定位，恰好是最容易被年轻消费者绕过的。数据很直白：这块生意 TTM 42.50 亿，而 2021 财年是 45.41 亿——<strong>五年不但没长，还缩水了 6.4%</strong>。</p>
+<p>肯维自己也承认这块出了问题，2024 财年为此计提了 5.78 亿美元的资产减值（主要是商誉和品牌无形资产），等于承认"当年从强生那儿分过来时给这些牌子估的价，高了"。</p>
+<h3>三块生意的钱</h3>
+<p>财报只按分部披露营收，<strong>不披露分部利润</strong>，所以下表的经营利润率是按公司整体 19.55% 的经营利润率、结合各块的品类特性估算的，<strong>属于估算，不是财报数字</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>对比 FY2025 全年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Self Care 自我保健</td>
+<td>6,444</td>
+<td>6,378</td>
+<td>41.8%</td>
+<td>~26%</td>
+<td>~1,676</td>
+</tr>
+<tr>
+<td>Essential Health 基础健康</td>
+<td>4,714</td>
+<td>4,632</td>
+<td>30.6%</td>
+<td>~17%</td>
+<td>~801</td>
+</tr>
+<tr>
+<td>Skin Health &amp; Beauty 皮肤美容</td>
+<td>4,250</td>
+<td>4,114</td>
+<td>27.6%</td>
+<td>~13%</td>
+<td>~553</td>
+</tr>
+<tr>
+<td>未分配公司费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~-17</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>15,408</strong></td>
+<td><strong>15,124</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>19.55%（实际）</strong></td>
+<td><strong>3,013（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>公司整体 TTM 营收同比增长 <strong>1.76%</strong>——扣掉通胀，实际卖出去的东西是在缓慢减少的。这是一家<strong>靠涨价维持营收持平</strong>的公司。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>好消息是，肯维这一期的账相当干净。逐项过一遍：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1.16 亿美元，占净利润 7.0%。这个比例在美股里算非常低的（软件公司动辄 30%–50%）。而且它在快速下降：2024 财年 2.54 亿 → 2025 财年 1.36 亿 → TTM 1.16 亿。分拆初期为了留人发了大量限制性股票，现在这波补偿期过了。<strong>按规矩它已经在 GAAP 净利润里扣掉了，我们不加回去</strong>——员工拿走的股份是真的稀释了你。</p>
+<p><strong>一次性项目</strong>：TTM 只有 2,300 万美元的资产减值和重组费用，微不足道。但要注意对比：2024 财年这一项是 <strong>5.78 亿</strong>（就是上面说的皮肤美容业务减值）。<strong>只看 TTM 这一期，无法判断这种减值是"真一次性"还是"每隔两三年就来一次"</strong>——考虑到皮肤美容那块的营收还在缩，未来再来一次减值并不意外。</p>
+<p><strong>资本化的支出</strong>：没有值得一提的软件或内容资本化。这是个卖实物的公司，资本开支 4.11 亿全部是工厂和设备。</p>
+<p><strong>回购与稀释——这一项是全篇最难看的数字</strong>：</p>
+<p>TTM 回购金额 <strong>7,000 万</strong>，同期 SBC <strong>1.16 亿</strong>。比值 <strong>0.60</strong>。</p>
+<p>这个数字的意思是：<strong>公司回购的股票，连抵消发给员工的股票都不够。</strong> 按照"接近 1 是原地踏步、大于 3 才叫真回馈股东"的标准，0.60 是不及格的。实际股本一年只减少了 0.26%，几乎等于没动。</p>
+<p>原因也不难猜：一是公司背着 86 亿美元的债（分拆时强生塞给它的），二是股息发得太狠（下面说），三是并购期间通常也会停掉回购。</p>
+<p><strong>利润和现金流的差</strong>：这块反而很健康，做一张逐项对账表：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,658</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>468</td>
+<td>工厂设备的账面损耗，不花现金</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>99</td>
+<td>分拆时确认的品牌无形资产摊销</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>116</td>
+<td>发的是股票不是现金，现金流表上要加回</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>23</td>
+<td>账面减值，不花现金</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>4</td>
+<td>零头</td>
+</tr>
+<tr>
+<td>− 营运资金占用</td>
+<td>-43</td>
+<td>见下方拆解</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>2,325</strong></td>
+<td>对得上</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-411</td>
+<td>工厂、生产线</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,914</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>营运资金那 -43 的拆解：应收账款增加占用了 169（卖出去的货还没收到钱），存货减少释放 36，应付账款增加释放 52（欠供应商的钱多拖了一会儿），所得税相关占用 13，其他释放 51。<strong>没有任何一项异常</strong>，这是一家营运资金管理得很正常的消费品公司。</p>
+<p>自由现金流 19.14 亿，比净利润 16.58 亿还高 15%——<strong>这是好公司的特征</strong>：账面利润被折旧和摊销压低了，实际收到的现金更多。</p>
+<p><strong>唯一真正值得警惕的地方，是经营利润和税前利润之间的 7.91 亿缺口</strong>：经营利润 30.13 亿，到税前只剩 22.22 亿。其中利息支出约 4.4 亿（86 亿债务的代价），剩下约 3.5 亿是分拆遗留费用、汇兑损失和法律相关支出。<strong>这 7.91 亿等于把经营利润砍掉了 26%</strong>，是这家公司从"看起来不错的生意"变成"平庸的投资标的"的主要原因。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 368.79 亿，企业价值 443.82 亿（多出来的 75 亿是净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>368.79 ÷ 16.58</td>
+<td><strong>22.2 倍</strong></td>
+<td><strong>4.50 元</strong></td>
+</tr>
+<tr>
+<td>市场前瞻调整后口径</td>
+<td>按 Forward PE（市场预期未来 12 个月调整后每股赚 1.21 美元）</td>
+<td><strong>15.8 倍</strong></td>
+<td><strong>6.33 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>368.79 ÷（16.58 + 减值 0.23 × 税后 0.746 = 16.75）</td>
+<td><strong>22.0 倍</strong></td>
+<td><strong>4.54 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>368.79 ÷ 19.14</td>
+<td><strong>19.3 倍</strong></td>
+<td><strong>5.19 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>443.82 ÷ 30.13</td>
+<td><strong>14.7 倍</strong></td>
+<td><strong>6.79 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>368.79 ÷ [(14.70+10.30+16.64)÷3 = 13.88]</td>
+<td><strong>26.6 倍</strong></td>
+<td><strong>3.76 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>几句话说清楚这张表：</strong></p>
+<p>按最保守的口径（三年平均利润），<strong>你投 100 块进去，公司一年替你赚 3.76 块</strong>。按当期真实口径，是 4.54 块。按自由现金流口径，是 5.19 块。</p>
+<p><strong>注意三年平均那一行的方向和大多数公司是反的。</strong> 通常"三年平均比当期贵"意味着现在的利润处在高点、不可持续；但肯维的情况不是——它是因为 2024 财年那笔 5.78 亿减值把当年净利润砸到只剩 10.30 亿，拉低了三年平均。所以 26.6 倍这个数字<strong>不是在警告你"现在是利润高点"，而是在提醒你"这家公司过去三年里有一年出了大问题"</strong>。</p>
+<p><strong>这 4.54 块钱里，有多少真到你口袋？</strong> TTM 分红 15.92 亿，回购 0.70 亿，两项合计 16.62 亿，<strong>正好等于净利润的 100%</strong>。股息率 4.38%，派息率（分红÷净利润）<strong>98.8%</strong>。</p>
+<p>也就是说：<strong>公司赚的每一分钱都发出来了，一分没留。</strong> 好处是现金到手确定；坏处是<strong>公司没有留存利润去投资未来</strong>——资本开支 4.11 亿全靠经营现金流覆盖，皮肤美容那块急需的品牌重建投入没有子弹。一家营收零增长、派息率 99%、还背着 86 亿债的公司，等于告诉你：<strong>别指望这 4.5 块钱以后会变多。</strong></p>
+<p>未来这个数字大概率<strong>持平或略降</strong>：营收年增 1.8% 且主要靠涨价，皮肤美容还在萎缩，泰诺的法律风险悬着，利息支出是刚性的。唯一的向上空间来自成本削减和分拆遗留费用的消失——但那已经被市场用 Forward PE 15.8 倍定价了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>作为一家独立公司，肯维值不了 22 倍：营收零增长、三分之一的生意在萎缩、利润全发光了没有再投资、还背着 86 亿债，这样的资产合理估值应该在 15–18 倍，也就是每股 14–16 美元。</strong></p>
+<p><strong>但这个问题现在已经不重要了。</strong> 今天买肯维，本质上是花 19.20 美元买一张年底能换回 3.50 美元现金 + 0.14625 股金佰利的券，这张券按今天的金佰利股价值 19.64 美元。你赚的是这 2.2% 的价差（年化约 6%），承担的是"交易在海外监管环节黄掉"的风险——一旦黄了，股价大概率回到 14–16 美元，跌 20%–25%。</p>
+<p><strong>这不是一笔关于消费品的投资，是一笔关于并购能不能交割的赌注。用 2.2% 的收益去赌 22% 的下跌风险，赔率不好看。</strong> 真想参与，去直接研究金佰利。</p>
+</div></body></html>

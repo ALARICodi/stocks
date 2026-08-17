@@ -1,0 +1,351 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRMN · 佳明（Garmin Ltd.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GRMN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">零负债账极干净，但32倍买的是完美执行不出错</div><h1>GRMN · 佳明（Garmin Ltd.）</h1>
+<p>市值 $602.8 亿 / 股价约 $312 / 行业：电子科技（消费电子 + 航空电子）/ TTM 截止 2026-06-27（最近四个季度滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>佳明是一家瑞士注册、美国堪萨斯州运营的公司，本质是<strong>一家把 GPS 芯片塞进各种场景里卖硬件的公司</strong>，五个分部对应五种完全不同的客户。它自己不外包大部分制造——台湾有自己的工厂，这在消费电子里很少见。</p>
+<h3>1. 健身（Fitness）——跑步表和骑行台</h3>
+<p><strong>这是什么生意：</strong> 你花 3500 块买一块 Forerunner 570 跑步手表，戴着去跑马拉松，它记录你的配速、心率、乳酸阈值、恢复时间，跑完同步到手机上的 Garmin Connect App。这块表佳明的出厂价大约 1400 块，零售商卖 3500 块，佳明拿走的是出厂价那部分。产品线从 1500 块的 Forerunner 165 一路排到 5000 块的 Venu 智能表，再加上 Index 体脂秤、HRM 心率带、Edge 自行车码表（骑行者装在车把上的导航+功率计显示器），以及 Tacx 智能骑行台——一台一万多块的室内训练器，把公路车后轮拆了架上去，App 里骑虚拟赛道时坡度阻力会跟着变。</p>
+<p><strong>为什么有人非买不可：</strong> Apple Watch 更便宜也更好看，但一块跑步表续航 3 天和续航 18 天是两件事。跑百公里越野赛的人不可能中途充电。佳明卖的是"极端场景下不掉链子"，加上 Garmin Connect 里十几年的训练数据沉淀——换品牌等于扔掉历史记录。</p>
+<p><strong>一单多少钱：</strong> 纯粹的一次性硬件收入，没有订阅。买完就结束了，靠三四年换一次表复购。这是佳明整个模式最大的软肋，下面会说。</p>
+<h3>2. 户外（Outdoor）——登山表、卫星通信、高尔夫</h3>
+<p><strong>这是什么生意：</strong> fenix 8 系列，一块 7000 块的钛合金外壳手表，卖给爬雪山、潜水、飞伞的人。里面还有一条<strong>唯一带订阅收入的产品线：inReach 卫星通信器</strong>——一个巴掌大的装置，卖 3000 块，在完全没有手机信号的荒野里通过铱星（Iridium）卫星发短信、发 SOS 求救。用户买完硬件还必须按月付 100 到 500 块的卫星通信套餐费，不付就用不了。全球山地救援队几乎人手一台。另外还有 Descent 潜水电脑表（潜水员戴着，实时算减压停留时间，用错会死人，所以没人在这上面省钱）、Approach 高尔夫产品（球场测距仪 + 会自动记录每一杆落点的球杆传感器）。</p>
+<p><strong>这门生意 TTM 微降了 1.4%</strong>——fenix 8 已经上市一年多，处在换代周期的下坡段，是全公司唯一负增长的分部。</p>
+<h3>3. 航空（Aviation）——给飞机装仪表盘</h3>
+<p><strong>这是什么生意：</strong> 一架赛斯纳（Cessna）或西锐（Cirrus）小飞机出厂时，驾驶舱里那两三块大屏幕——G1000 NXi 或 G3000 综合航电系统——就是佳明造的，一套装机价 5 万到 20 万美元，直接卖给飞机制造商。同时还有<strong>售后市场</strong>：一架用了二十年的老飞机，机主花 3 万美元把老式机械仪表换成 GTN 750Xi 触摸屏导航，这块利润更高。最有名的产品是 <strong>Autoland 自动降落</strong>：飞行员在空中失能（心脏病发作），乘客按一个红色大按钮，飞机自己找机场、自己联系塔台、自己放起落架降落并刹停。这套系统已经在真实事故中救过人。</p>
+<p><strong>为什么客户跑不掉：</strong> 航电要经过 FAA 适航认证，一套系统认证周期几年、花费上千万美元。飞机制造商一旦选定佳明，整个机型生命周期（二三十年）都换不掉。这是佳明<strong>唯一有真正护城河</strong>的生意，也是利润率最高的。</p>
+<h3>4. 船舶（Marine）——渔探和船用电子</h3>
+<p><strong>这是什么生意：</strong> 你有一条钓鱼艇，装一套佳明系统：驾驶台一块 16 寸 GPSMAP 海图机（4 万块），船底装 Panoptix LiveScope 实时扫描声呐（3 万块）——这东西的卖点是能在屏幕上<strong>实时看到鱼在动</strong>，甚至看到鱼追你的饵，美国路亚钓鱼圈里被认为是作弊级装备；再加自动驾驶仪、Fusion 船用音响、雷达。整船配下来轻松十几万块。佳明还直接和造船厂签 OEM 合同，新船出厂就是佳明全套。</p>
+<p>这门生意周期性强——买船是纯可选消费，利率高的时候没人买船。</p>
+<h3>5. 车载 OEM（Auto OEM）——给车厂做座舱</h3>
+<p><strong>这是什么生意：</strong> 这不是当年那个吸盘吸在挡风玻璃上的车载导航仪（那门生意已经被手机杀死了，现在只剩行车记录仪等零头）。现在的车载 OEM 是<strong>给宝马做座舱域控制器</strong>——你坐进一台新宝马，中控那块曲面屏背后的计算硬件是佳明造的，按台供货给宝马。奔驰、戴姆勒卡车也是客户。</p>
+<p><strong>问题是：</strong> 这是典型的汽车 Tier-1 供应商生意——车厂压价、账期长、利润薄。TTM 收入 6.68 亿几乎零增长（+0.5%），是佳明利润率最低的分部，大概率接近盈亏平衡甚至微亏。</p>
+<h3>钱的分布（TTM，截止 2026-06-27，单位：亿美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>vs FY2025 全年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>健身 Fitness</td>
+<td>26.70</td>
+<td>+13.3%</td>
+<td>34.8%</td>
+<td>~26%</td>
+<td>~6.9</td>
+</tr>
+<tr>
+<td>户外 Outdoor</td>
+<td>20.25</td>
+<td>−1.4%</td>
+<td>26.4%</td>
+<td>~34%</td>
+<td>~6.9</td>
+</tr>
+<tr>
+<td>船舶 Marine</td>
+<td>12.60</td>
+<td>+6.5%</td>
+<td>16.4%</td>
+<td>~23%</td>
+<td>~2.9</td>
+</tr>
+<tr>
+<td>航空 Aviation</td>
+<td>10.47</td>
+<td>+6.1%</td>
+<td>13.7%</td>
+<td>~29%</td>
+<td>~3.0</td>
+</tr>
+<tr>
+<td>车载 OEM</td>
+<td>6.68</td>
+<td>+0.5%</td>
+<td>8.7%</td>
+<td>~3%</td>
+<td>~0.2</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>76.71</strong></td>
+<td><strong>+5.9%</strong></td>
+<td>100%</td>
+<td><strong>27.61%（实际）</strong></td>
+<td><strong>21.18（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>必须说明</strong>：stockanalysis 的财报页<strong>只披露到分部营收，不披露分部利润</strong>。上表的利润率是我按整体 27.61% 经营利润率、结合各条产品线的定价结构和行业惯例<strong>估算</strong>的，加总后校准到实际的 21.18 亿经营利润。方向可信（户外/航空高、车载最低），具体小数点不要当真。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM 1.725 亿美元，占净利润 9.2%。这笔钱 GAAP 已经扣了，<strong>我不加回来</strong>——它实实在在稀释你的股份。占比不到 10%，在科技/电子公司里算克制的（很多软件公司这个数是净利润的 50%以上）。佳明是硬件公司，工程师给股票没有硅谷那么慷慨。</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：<strong>没有</strong>。TTM 利润表里看不到大额诉讼和解、重组、减值或并购费用。TTM 花了 1.77 亿做小规模收购（cash acquisitions），但没有产生一次性冲销。这是一家账目非常干净的公司。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：<strong>没有</strong>明显的软件/研发资本化。佳明的研发（一年十几亿美元）基本全部当期费用化，直接压在那 27.61% 的经营利润率里。这意味着<strong>这个利润率是真的</strong>，没有靠把成本挪到资产负债表美化。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：<strong>这是全篇最需要盯的一项。</strong> TTM 回购 2.40 亿，同期 SBC 1.725 亿，<strong>比值 1.39 倍</strong>。按标准（接近 1 = 只是抵消员工发股；大于 3 = 真回购），佳明的回购<strong>基本就是在填员工股票的坑</strong>，几乎不构成对股东的回馈。证据很直接：<strong>过去一年股本只减少了 0.03%</strong>——等于没减。
+  真正回馈股东的是<strong>分红：TTM 派了 7.22 亿</strong>，每股 4.20 美元，股息率 1.34%，而且过去两年分红连续提了 20% 和 18.2%。所以佳明是"分红型回馈"，不是"回购型回馈"。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：净利润 18.77 亿 → 经营现金流 19.79 亿 → 自由现金流 16.00 亿。逐项对账（单位：亿美元）：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>18.77</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+1.93</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+1.73</td>
+<td>非现金（但真实稀释你）</td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td>+1.20</td>
+<td>主要是递延税和汇兑</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−1.57</td>
+<td>卖出去了但钱还没收回来</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−2.21</strong></td>
+<td><strong>备货，见下</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+0.32</td>
+<td>欠供应商的钱多了</td>
+</tr>
+<tr>
+<td>− 应交税金减少</td>
+<td>−0.49</td>
+<td></td>
+</tr>
+<tr>
+<td>− 递延收入 / 其他</td>
+<td>+0.11</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>19.79</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−3.79</td>
+<td><strong>比去年的 2.70 亿暴涨 40%</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>16.00</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>两个值得注意的地方：<strong>（1）存货增加了 2.21 亿</strong>，比上一财年（−2.18 亿）还大——公司在大幅备货。对硬件公司这是双刃剑：可能是为新品发布和旺季提前囤，也可能是卖不动积压。考虑到营收还在两位数增长，目前更像是前者，但这是下一季度必须复查的项。<strong>（2）资本开支从 2.70 亿跳到 3.79 亿</strong>，佳明在扩自有工厂产能。这直接把自由现金流压住了——净利润涨了 12.8%，自由现金流只从 13.63 涨到 16.00 亿。</p>
+<ul>
+<li><strong>资产负债表</strong>：现金及投资 26.7 亿，总负债只有 2.27 亿，<strong>净现金 41.4 亿美元</strong>（statistics 页口径，含长期投资），每股净现金 21.48 美元。负债权益比 0.03。这是一家<strong>几乎零负债</strong>的公司，市值里有 6.9% 是纯现金。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 602.8 亿，企业价值（EV）561.2 亿（= 市值 − 41.4 亿净现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>602.8 ÷ 18.77</td>
+<td><strong>32.2 倍</strong></td>
+<td><strong>3.11 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>佳明的 pro forma 只剔除汇兑损益，与 GAAP 差距很小</td>
+<td>~31 倍（估算）</td>
+<td>~3.2 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>没有一次性项目可剔，SBC 已按 GAAP 扣除不加回</td>
+<td><strong>32.2 倍</strong></td>
+<td><strong>3.11 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>602.8 ÷ 16.00</td>
+<td><strong>37.7 倍</strong></td>
+<td><strong>2.66 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>561.2 ÷ 21.18</td>
+<td><strong>26.4 倍</strong></td>
+<td><strong>3.78 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>602.8 ÷ [(18.77+16.64+14.11)/3 = 16.51]</td>
+<td><strong>36.5 倍</strong></td>
+<td><strong>2.74 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这几个数字之间的差距说明了什么：</strong></p>
+<p>GAAP 和"真实"口径完全一样（32.2 倍）——这在我做过的公司里很少见，说明佳明的报表<strong>没什么可剥的</strong>，报什么就是什么。</p>
+<p><strong>三年平均口径 36.5 倍 vs 当期 32.2 倍</strong>，只差 13%。对比之下英伟达当期 34 倍、三年平均 73.5 倍（差一倍多）。<strong>这说明佳明现在的利润不是周期高点吹出来的泡沫</strong>，而是一条稳步爬升的曲线（14.11 → 16.64 → 18.77 亿）。这是佳明最大的加分项。</p>
+<p><strong>EV/EBIT 只有 26.4 倍</strong>，比 32.2 倍的市盈率明显低——差额就是那 41.4 亿净现金。你付的 602.8 亿里，有 41.4 亿是买了一堆现金，真正买"生意"只花了 561.2 亿。</p>
+<p><strong>FCF 口径 37.7 倍最贵</strong>，原因就是上面说的资本开支扩张和存货备货。这两项都是"今年多花、以后受益"的支出，属于可接受的贵。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进佳明，按最保守的真实口径（三年平均利润）算，公司一年替你赚 2.74 元；按当期口径算是 3.11 元。</strong></p>
+<p>这 3.11 元里：
+- <strong>1.34 元以分红形式打进你的口袋</strong>（TTM 派息 7.22 亿 ÷ 市值 602.8 亿）；
+- <strong>0.40 元用于回购，但这部分不算数</strong>——上面算过，回购只是在填 SBC 的坑，股本一年只减了 0.03%，你的持股比例没提高；
+- <strong>剩下约 1.4 元留在公司里</strong>，去向是清楚的：3.79 亿扩产能（自有工厂）、1.77 亿买小公司、剩下的堆在现金账户上继续变厚。</p>
+<p><strong>这个 X 未来大概率变大还是变小？</strong> 我的判断是<strong>慢慢变大，但增速会降</strong>。理由是：健身分部 TTM 增长 13.3% 主要靠新品周期（Forerunner 570/970 和 Venu 4），而户外已经掉进负增长——这两条线加起来占 61%，都是<strong>纯一次性硬件收入、没有订阅</strong>的生意，天花板由"多少人换表"决定，而不是由"多少人在用"决定。真正稳的是航空（客户锁死二三十年）和 inReach 卫星订阅，但这两块加起来才占不到两成。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>佳明是一家账目干净得罕见、几乎零负债、手握 41 亿净现金、利润三年稳步爬升的优质硬件公司——但 32 倍市盈率是拿着"软件公司的估值"在买一家"卖完就结束、靠三年换一次表"的硬件公司，这个价买的是完美执行不出错。</strong></p>
+<p>它不贵得离谱（三年平均口径 36.5 倍，说明利润不是虚的），但也谈不上便宜：3.11 元的年回报，其中只有 1.34 元真正回到你手上，回购全在给员工发的股票填坑。要买它，你得相信健身和户外那 61% 的收入能靠新品周期一轮一轮续下去；一旦某一年 fenix 和 Forerunner 同时进入换代低谷（户外分部这个 TTM 已经开始负增长了），32 倍的估值撑不住。</p>
+</div></body></html>

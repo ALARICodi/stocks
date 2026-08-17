@@ -1,0 +1,318 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STRL · 斯特林基建（Sterling Infrastructure, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">STRL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">极其优秀的承包商，被当成一家科技公司在定价</div><h1>STRL · 斯特林基建（Sterling Infrastructure, Inc.）</h1>
+<p>市值 $176.3 亿 / 股价 $576.48 / 行业：工业服务（土建承包）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Sterling 是个承包商——它不生产任何东西，它卖的是"把一块地变成能用的东西"这个过程。财报按三块披露，这三块的生意逻辑完全不同。</p>
+<h3>生意一：E-Infrastructure 场地基建（TTM 营收 24.41 亿，占 71%）</h3>
+<p>这是全公司的命根子，也是过去两年整个故事的全部。</p>
+<p>具体在干什么：一个数据中心开发商（比如给某家超大规模云厂商代建的总包）在得克萨斯买了 400 英亩荒地，上面是坡、是树、是烂泥。Sterling 接的活是——<strong>把这 400 英亩变成一块能立刻浇筑地基的、平整到误差不超过几厘米的硬地</strong>。中间的工序包括：清表除根、挖填方（一个大型数据中心园区常常要挪动 300 万到 800 万立方米的土，这是几百台推土机、挖机、铲运机连轴转 8 到 14 个月）、做地基处理（软土要换填或打桩）、埋雨水管和滞洪池、修园区内部道路、把电力和光纤管道预埋好。</p>
+<p>一单多少钱？一个 100 万平方英尺规模的数据中心园区的场平合同，典型规模在 5000 万到 1.5 亿美元之间，工期 12–18 个月。Sterling 手上同时跑几十个这样的项目。</p>
+<p>客户为什么非得找它？<strong>因为工期就是钱。</strong> 一个数据中心晚三个月投运，业主损失的租金和算力收入是几亿美元级别的。做场平的公司满地都是，但能在 90 天内把 400 台设备、上千名工人调到亚利桑那沙漠里、并且保证雨季来之前把土方干完的公司，全美国不超过十家。Sterling 卖的是<strong>排期确定性</strong>，不是挖土。所以它能在一个理论上应该毛利极薄的行业里做出 20% 以上的经营利润率。</p>
+<p>2025 年下半年 Sterling 花了约 5 亿美元买下 CEC Facilities Group（达拉斯的电气承包商），这是这块业务从 14.67 亿（2025 全年）跳到 24.41 亿（TTM）的主要原因之一——收购后它不光平地，还能进场干里面的电活：桥架、母线槽、开关柜、配电。对客户的意义是少一个界面、少一次扯皮；对 Sterling 的意义是同一个客户身上的钱包份额翻倍。</p>
+<h3>生意二：Transportation Solutions 交通工程（TTM 营收 6.13 亿，占 17.8%）</h3>
+<p>传统老本行，正在被公司<strong>主动缩小</strong>。</p>
+<ul>
+<li><strong>重型公路 4.08 亿</strong>：给州交通厅（主要是德州 TxDOT、落基山几个州）修高速公路、立交桥、路面重铺。活是政府公开招标、价低者得，毛利极薄。注意这块从 2024 年的 5.47 亿一路缩到 TTM 的 4.08 亿——不是接不到活，是管理层<strong>主动不投低价标</strong>，宁可让营收掉也不接 3% 毛利的合同。</li>
+<li><strong>机场 0.79 亿</strong>：修跑道、滑行道、停机坪。夏威夷和西部几个机场是主要客户。</li>
+<li><strong>其他交通 1.25 亿</strong>：轨道、水利等零散工程。</li>
+</ul>
+<p>这一块存在的价值主要是设备和班组的调剂——数据中心项目有周期性空档时，土方队可以去修路，不至于养着不动。</p>
+<h3>生意三：Building Solutions 建筑（TTM 营收 3.85 亿，占 11.2%）</h3>
+<ul>
+<li><strong>住宅混凝土 3.19 亿</strong>：给达拉斯、休斯敦、凤凰城的大型房建商（如 D.R. Horton、Lennar 这类）浇筑独栋住宅的整体地板（美国南部房子不带地下室，直接一块混凝土板坐地上）。作业方式是：房建商把地整平放线，Sterling 的班组当天进场支模、绑钢筋、第二天泵送混凝土，一户从进场到完工两三天。<strong>单户收费大概 6000–9000 美元</strong>，一年做几万户。这是纯粹的量产型施工，靠密度和调度效率赚钱。</li>
+<li><strong>商业混凝土 0.65 亿</strong>：停车楼、小型商业体的混凝土结构。这块从 2023 年的 1.30 亿掉到 0.65 亿，砍了一半。</li>
+</ul>
+<p>这块生意跟房贷利率强相关，是全公司唯一有明显宏观周期性的部分。</p>
+<h3>钱：三块生意的账（TTM 截止 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比 2025 全年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E-Infrastructure 场地基建</td>
+<td>24.41 亿</td>
+<td>14.67 亿</td>
+<td>71.0%</td>
+<td>~24%</td>
+<td>~5.9 亿</td>
+</tr>
+<tr>
+<td>Transportation 交通工程</td>
+<td>6.13 亿</td>
+<td>6.41 亿</td>
+<td>17.8%</td>
+<td>~6%</td>
+<td>~0.37 亿</td>
+</tr>
+<tr>
+<td>Building 建筑混凝土</td>
+<td>3.85 亿</td>
+<td>3.83 亿</td>
+<td>11.2%</td>
+<td>~11.5%</td>
+<td>~0.44 亿</td>
+</tr>
+<tr>
+<td>减：公司总部开销</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~-0.45 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>34.38 亿</strong></td>
+<td><strong>24.90 亿</strong></td>
+<td>100%</td>
+<td><strong>18.1%（实际）</strong></td>
+<td><strong>6.235 亿（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意：财报只按分部披露营收，不披露分部利润，上表的分部利润率是我按整体利润率和行业常识倒推的估算值，不是财报数字。</strong> 唯一确定的事实是：整体经营利润率 18.1%，而低毛利的交通和建筑合计只占 29% 的营收——所以场地基建的利润率必然在 22% 以上，否则凑不出这个总数。</p>
+<p>一句话概括这家公司：<strong>它现在本质上就是一家数据中心场地承包商，剩下的都是配角。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2754 万，占净利润 6.4%。<strong>这笔钱我按真实成本扣掉了</strong>（GAAP 里本来就扣了，我没加回去）。占比很低，在这个规模的公司里算干净的。</li>
+<li><strong>一次性项目</strong>：TTM 里有两笔小额：资产处置收益 274 万（减利润时要剔掉）、股权投资亏损 747 万（加回）。两笔都是千万级，对 4.3 亿的净利润基本没影响。<strong>但要提醒一句：2024 年有一笔 9476 万的资产处置收益，占当年 2.57 亿净利润的三分之一以上</strong>——那一年的利润是被一次性收益撑起来的，做历史对比时必须剔掉（下面三年平均口径已剔）。</li>
+<li><strong>资本化的支出</strong>：没有。土建承包商没有软件或内容资本化的空间。</li>
+<li><strong>回购与稀释</strong>：<strong>这是全篇最需要警惕的一条。</strong> TTM 回购 9240 万，SBC 2754 万，比值 3.36 倍，账面上看是"真回购"。<strong>但股本数量同比不降反升 0.42%。</strong> 也就是说，公司花了 9240 万现金买股票，股东手里的股份占比一分钱没多。9240 万相对 176 亿市值只有 0.52%，本来就杯水车薪，再被员工发股和其他发行抵消掉，净效果是零。公司不分红。<strong>所以你作为股东，TTM 从这家公司拿到手的现金回报：0。</strong></li>
+<li><strong>利润和现金流的差</strong>：净利润 4.31 亿，经营现金流 5.98 亿，自由现金流 4.82 亿。现金流比利润高，是好事，逐项对账如下：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>431.5</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+90.5</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+0.7</td>
+</tr>
+<tr>
+<td>− 资产处置收益（非现金）</td>
+<td>−2.7</td>
+</tr>
+<tr>
+<td>+ 股权投资亏损（非现金）</td>
+<td>+7.5</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+27.5</td>
+</tr>
+<tr>
+<td>+ 其他经营项（主要是递延税）</td>
+<td>+45.9</td>
+</tr>
+<tr>
+<td>− 应收账款增加（钱被客户占着）</td>
+<td>−187.2</td>
+</tr>
+<tr>
+<td>+ 应付账款增加（占着供应商的钱）</td>
+<td>+88.5</td>
+</tr>
+<tr>
+<td>+ 其他营运资金净变化</td>
+<td>+95.6</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>597.7</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−115.7</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>482.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看点：营收一年涨 60%，应收账款就跟着多占了 1.87 亿现金——这是高速增长的承包商的宿命，活越多、垫资越多。好在应付账款和其他项补回来 1.84 亿，基本抵平。<strong>这门生意目前还没有出现"账上有利润、口袋没钱"的病灶。</strong></p>
+<p>另外注意：TTM 资本开支 1.16 亿，但<strong>收购花掉了 5.84 亿</strong>。这家公司自由现金流的绝大部分不是回给股东，而是拿去买别的公司了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>176.34 亿 ÷ 4.315 亿</td>
+<td><strong>40.9 倍</strong></td>
+<td><strong>$2.45</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回并购摊销和股权投资亏损</td>
+<td>~40.3 倍</td>
+<td>$2.48</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔一次性收益、加回一次性损失，SBC 不加回</td>
+<td><strong>40.5 倍</strong></td>
+<td><strong>$2.47</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>176.34 亿 ÷ 4.82 亿</td>
+<td>36.6 倍</td>
+<td>$2.73</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>175.06 亿 ÷ 6.235 亿</td>
+<td>28.1 倍</td>
+<td>$3.56</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>176.34 亿 ÷ 三年平均真实净利润 3.02 亿</td>
+<td><strong>58.4 倍</strong></td>
+<td><strong>$1.71</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均怎么算的：TTM 4.315 亿、2025 年 2.90 亿、2024 年剔掉 9476 万一次性资产处置收益后约 1.85 亿，三年平均 3.02 亿。</p>
+<p><strong>这张表里最重要的一行是最后一行。</strong></p>
+<p>按当期利润，你付的是 41 倍，一年赚回 2.45 块。但这家公司的利润<strong>在两年里翻了 2.3 倍</strong>（2024 年 1.85 亿 → TTM 4.31 亿）。如果按过去三年的平均盈利能力算，你付的是 58 倍，一年只赚回 1.71 块。这两个数字差了 43%，差额就是市场在赌"数据中心的建设潮会一直持续下去"。</p>
+<p><strong>说人话：你现在投 100 块进去，按最保守的口径算，公司一年替你赚 1.71 到 2.47 块。</strong></p>
+<p>这 2.45 块里，<strong>有多少真的回到你口袋？答案是零。</strong> 公司不分红，回购的 9240 万被员工发股抵消，股本还涨了 0.42%。钱去哪了？TTM 拿了 5.84 亿去做收购（CEC 那笔），1.16 亿买设备。也就是说，你赚的钱 100% 留在公司里再投资，你能不能拿回来，完全取决于管理层买公司的眼光。</p>
+<p>这个 2.45 块未来会变大还是变小？<strong>短期大概率继续变大，中期风险很集中。</strong> 变大的理由：手上订单饱满、数据中心资本开支还在爬坡、CEC 让它能在同一个工地上多赚一层电气的钱。变小的风险有三条，而且都是同一个方向：第一，71% 的收入来自一个客户群体（数据中心开发商），一旦超大规模厂商的资本开支节奏变一次，Sterling 的营收会以季度为单位塌方；第二，承包商的利润率在需求过热时会被短暂推到不正常的高位（现在的 24% 就是），需求一松，行业回到 10% 出头是常态；第三，账上有形净资产几乎为零（P/TBV 217 倍），意味着这 176 亿市值买的全是"未来接单能力"，没有任何资产垫底。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家极其优秀的承包商，被当成一家科技公司在定价。</strong></p>
+<p>它真实的经营质量没问题：ROIC 41.7%、净现金 1.28 亿、几乎没有会计花招、现金流扎实。管理层主动砍掉低毛利公路业务、把资源全押到数据中心场平上，这个判断到目前为止做得非常漂亮，股价一年涨 97% 是它应得的。</p>
+<p>但 41 倍当期、58 倍三年平均，是给一家能穿越周期、有定价权的公司的价格，而不是给一家<strong>利润周期性、单一客户群、股价一年翻倍、有形资产为零、且一分钱不分给股东</strong>的土建承包商的价格。买它就是在做一个非常具体的赌注：AI 数据中心的开工量在未来三到五年不会明显下滑。这个赌注可能会赢，但你要清楚你赌的是什么——你赌的不是 Sterling 会不会执行好，而是它的客户会不会继续花钱。</p>
+</div></body></html>

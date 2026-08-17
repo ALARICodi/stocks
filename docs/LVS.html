@@ -1,0 +1,329 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LVS · 拉斯维加斯金沙</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LVS</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">真便宜，但是澳门复苏+中国发牌的杠杆化赌注</div><h1>LVS · 拉斯维加斯金沙</h1>
+<p><strong>市值</strong> $299.4 亿 | <strong>股价</strong> 约 $46.2 | <strong>行业</strong> 消费服务（博彩度假村） | <strong>TTM 截止</strong> 2026 年 6 月 30 日 | <strong>交易所</strong> NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>名字里有"拉斯维加斯"，但这家公司在拉斯维加斯<strong>一家赌场都没有</strong>——2022 年它把威尼斯人拉斯维加斯连地皮一起卖掉了（那笔交易的收益就是 2022 年在营业亏损 7.83 亿的情况下还能报出 18.32 亿净利润的原因）。今天的金沙是一家<strong>只在两个地方做生意的公司：中国澳门，和新加坡</strong>。</p>
+<p><strong>澳门</strong>：五个物业。威尼斯人（路氹金光大道上那个有室内运河和贡多拉船的巨无霸，3000 间套房）、伦敦人（2025 年刚花了十几亿美元大改造完，门口做了个大本钟）、巴黎人（门口一座二分之一比例的埃菲尔铁塔）、四季名店/澳门百利宫（专做高端客）、澳门金沙（2004 年开的老店，在半岛不在路氹）。</p>
+<p><strong>新加坡</strong>：滨海湾金沙，就是那个三栋楼顶上架一艘船的地标。新加坡政府总共只发了两张赌牌，另一张在圣淘沙名胜世界手里——<strong>这是一个政府用法律保证的双寡头</strong>。</p>
+<p>按财报披露的收入口径，这些物业里跑着四门本质不同的生意：</p>
+<h3>生意一：赌场（TTM 收入 103.3 亿，占 75%）</h3>
+<p>客人在赌桌上用现金或筹码下注，长期看数学期望站在庄家这边，赢的部分就是收入。澳门的主力是<strong>百家乐</strong>，不是老虎机。</p>
+<p>具体怎么赚钱：一个从广州开车两小时过来的客人，在威尼斯人换了 5 万港币筹码，玩到半夜输了 1 万 2。这 1 万 2 计入赌场收入，但<strong>金沙拿不到多少</strong>——澳门的博彩税是毛收入的 35% 直接税加上约 4–5% 的各类捐献，实际拿走接近 40%，也就是先划走约 4700 块给政府，剩下 7300 块才轮到扣人工、水电、以及送给这个客人的免费房和免费自助餐。</p>
+<p>这门生意在 2021–2022 年被彻底改造过一次：以前澳门赌收有一半以上来自"叠码仔"（junket）——中介帮内地豪客换钱、放贷、带客，抽佣金。2021 年太阳城集团被查、老板判刑之后，整个中介体系基本消失。今天的澳门是<strong>中产散客市场</strong>（mass market）为主，单客下注小了，但<strong>利润率反而更高</strong>，因为不用给中介分成。这是理解金沙当前财务的关键：收入只恢复到 2019 年的八成左右，利润率却更好。</p>
+<p>新加坡这边逻辑不同。滨海湾金沙的税率低得多（贵宾厅约 8%、中场约 18%），客人来自东南亚全域和中国，加上新加坡本地人进场要交 150 新币入场费——政府故意不让本地人多赌。同样一块钱赌收，在新加坡留在公司手里的比澳门多一倍。</p>
+<h3>生意二：酒店客房（TTM 收入 14.9 亿，占 11%）</h3>
+<p>澳门五个物业加起来约 1.3 万间房，滨海湾金沙约 2600 间。<strong>但这些房有相当比例是不收钱的</strong>——送给赌得多的客人。财报里的客房收入只是实际收现的那部分。所以这门生意的真实功能是"给赌场引流的库存"，不是独立的酒店生意。一个周末从深圳过关的家庭，可能花 1800 港币住一晚伦敦人，然后在楼下商场花 3000、赌场输 5000——金沙三笔都收。</p>
+<h3>生意三：商场收租（TTM 收入 8.3 亿，占 6%）</h3>
+<p><strong>这是藏在赌场公司里的一家高端商业地产公司，也是全篇最容易被忽略的东西。</strong> 金沙是澳门最大的奢侈品商场业主，威尼斯人大运河购物中心、四季名店、伦敦人购物中心、巴黎人购物中心加起来约 200 万平方英尺。</p>
+<p>路易威登在四季名店那个铺位，付的是"固定底租"和"营业额抽成"两者取高。金沙不管货卖不卖得动，底租照收；卖得好还能抽一刀。物业管理费转嫁给租户，铺子是自己盖的没有租金成本。<strong>这门生意几乎没有变动成本</strong>，8.3 亿收入里我估计有 6 亿是经营利润。如果单独拆出来上市，按澳门零售 REIT 的估值给 18 倍，这块就值一百多亿美元——占了公司市值的三分之一以上。</p>
+<h3>生意四：餐饮 + 会展零售杂项（TTM 收入 10.7 亿，占 8%）</h3>
+<p>自助餐、米其林餐厅、演唱会门票、会展场租。威尼斯人有个 1.5 万座的金光综艺馆，办演唱会和拳赛。这块基本是保本引流，利润率个位数。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万美元）</th>
+<th>上一完整财年同比</th>
+<th>占总收入</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>赌场</td>
+<td>10,327</td>
+<td>+17.9%</td>
+<td>75.3%</td>
+<td>约 19%（估算）</td>
+<td>约 2,000</td>
+</tr>
+<tr>
+<td>客房</td>
+<td>1,489</td>
+<td>+11.6%</td>
+<td>10.9%</td>
+<td>约 30%（估算）</td>
+<td>约 450</td>
+</tr>
+<tr>
+<td>商场收租</td>
+<td>830</td>
+<td>+6.1%</td>
+<td>6.0%</td>
+<td>约 72%（估算）</td>
+<td>约 600</td>
+</tr>
+<tr>
+<td>餐饮</td>
+<td>700</td>
+<td>+6.1%</td>
+<td>5.1%</td>
+<td>约 10%（估算）</td>
+<td>约 70</td>
+</tr>
+<tr>
+<td>会展零售其他</td>
+<td>373</td>
+<td>+0.6%</td>
+<td>2.7%</td>
+<td>约 19%（估算）</td>
+<td>约 70</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>13,719</strong></td>
+<td><strong>+18.1%（TTM口径）</strong></td>
+<td>100%</td>
+<td>23.25%（实际）</td>
+<td><strong>3,190（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：金沙财报只按收入类型披露到营收，<strong>不披露分部经营利润</strong>，上表的分部利润率是按行业常识和整体 23.25% 的经营利润率倒推的估算，不是财报数字。分部同比用的是最近一个完整财年（FY2025 vs FY2024），因为财报不提供上年同期的 TTM 分部数据；合计那一行的 +18.1% 才是真正的 TTM 同比。另外，金沙持有澳门业务主体金沙中国约 72%，剩下的归少数股东——本文用的 17.27 亿净利润<strong>已经扣掉少数股东那部分</strong>。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 只有 6600 万美元，占净利润 3.8%。这在美股大公司里属于<strong>干净得罕见</strong>的水平——一家一年赚 17 亿的公司，全年发给员工的股票才 6600 万。赌场是重资产劳动密集行业，不是靠期权招人的科技公司。这一项不需要担心。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>2.35 亿美元的资产处置损失</strong>，绝对值不小（占税前利润的 10%）。看年度序列，FY2025 是 2.36 亿、FY2024 只有 1900 万、FY2023 只有 1100 万——说明这几乎全部发生在 2025 年下半年，大概率跟伦敦人的大改造有关：把还没折旧完的旧客房、旧赌场装修拆掉重做，账面残值一次性冲销。只看单期 TTM 无法断定这是不是年年都会有；但对一个每隔几年就要翻新一个物业的赌场公司来说，<strong>这类冲销更像是"周期性重复发生"而不是"真一次性"</strong>。下面算真实市盈率时我把它加回来了，但你要知道这个加回是偏乐观的。</p>
+<p>另有 <strong>1.29 亿的坏账计提</strong>（FY2024 只有 1900 万）。赌场给高端客放"码钱"（marker），客人跑路就是坏账。这一项翻了六倍，值得盯。</p>
+<p><strong>资本化的支出</strong>：TTM 资本开支 10.29 亿，而折旧摊销是 <strong>15.21 亿</strong>——<strong>资本开支只有折旧的 68%</strong>。这不是好事，是"这一年少花钱所以现金流好看"。伦敦人改造刚做完、下一轮大投入还没开始，正好卡在低谷。而且两个已知的硬约束在前面等着：澳门 2023 年新赌牌要求金沙中国十年内投资约 300 亿澳门元（其中大部分是非博彩项目），新加坡滨海湾金沙的扩建工程（第二座综合度假村）是 80 亿美元量级的项目。<strong>用现在这个折旧一半的资本开支去外推自由现金流，会严重高估。</strong></p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>25.48 亿美元</strong>，除以 SBC 的 6600 万，比值 <strong>38.6 倍</strong>。这是本任务做过的两百多家公司里比值最高的一档。股本一年实实在在减少了 <strong>6.01%</strong>，最近一个季度又减了 2.24%。这不是"回购只为抵消员工发股"的表演，是真金白银在缩股。加上 6.7 亿的分红，一年返还股东 <strong>32.2 亿</strong>，相当于市值的 <strong>10.7%</strong>。</p>
+<p>但要看清钱从哪来：TTM 经营现金流 37.3 亿，返还 32.2 亿，另外还净还了 5.5 亿债——加起来超过了自由现金流 27 亿。差额靠账上现金填（现金从 38.4 亿降到 33.8 亿）。<strong>这个返还速度是靠"资本开支处在低谷 + 消耗现金余额"撑起来的，不可持续。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 17.27 亿，经营现金流 37.32 亿，差了整整 20 亿。这个差额大，做一张逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东前口径）</td>
+<td>1,727</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+1,521</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+61</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失（非现金）</td>
+<td>+235</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+66</td>
+</tr>
+<tr>
+<td>＋ 坏账计提（非现金）</td>
+<td>+129</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>+192</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>−223</td>
+</tr>
+<tr>
+<td>－ 应付账款减少</td>
+<td>−12</td>
+</tr>
+<tr>
+<td>＋ 其他营运资金</td>
+<td>+36</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>3,732</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>−1,029</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>2,703</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>结论很清楚：<strong>20 亿的差额里有 15.2 亿纯粹是折旧</strong>。赌场是极重的资产——威尼斯人、巴黎人这些楼是几十亿美元盖起来的，每年按会计规则摊掉一大块。折旧是不是"假费用"？对一栋刚盖好的楼来说，头十年确实是假的（楼没坏、不用花钱）；但楼总会旧，赌场每七八年就得翻新一次，翻新的钱最终还是要花出去。所以正确的看法是：<strong>自由现金流的 27 亿在资本开支正常化（回到 15 亿以上）之后，会掉到 20 亿出头。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 299.43 亿，企业价值 418.5 亿（净负债 119.1 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>299.43 ÷ 17.27</td>
+<td><strong>17.3 倍</strong></td>
+<td><strong>$5.77</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>金沙不公布调整后净利润，只主推 Adjusted Property EBITDA（对应 EV/EBITDA 9.0 倍）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>299.43 ÷（17.27 ＋ 资产处置损失 2.35 ×(1−16.6%税) ＝ 19.23）</td>
+<td><strong>15.6 倍</strong></td>
+<td><strong>$6.42</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>299.43 ÷ 27.03</td>
+<td><strong>11.1 倍</strong></td>
+<td><strong>$9.03</strong></td>
+</tr>
+<tr>
+<td>自由现金流（资本开支正常化）</td>
+<td>299.43 ÷（37.32 − 15.2 折旧级资本开支 ＝ 22.1）</td>
+<td><strong>13.5 倍</strong></td>
+<td><strong>$7.39</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>418.5 ÷ 31.90</td>
+<td><strong>13.1 倍</strong></td>
+<td><strong>$7.62</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>299.43 ÷ 三年调整后净利润均值 15.05</td>
+<td><strong>19.9 倍</strong></td>
+<td><strong>$5.02</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行要反着读。</strong> FY2023、FY2024、FY2025 剔除一次性后大约是 12.3 亿、14.6 亿、18.2 亿，均值 15.05 亿，低于当期的 19.2 亿——所以三年平均口径（19.9 倍）<strong>贵于</strong>当期口径（15.6 倍）。但这不代表"当前利润是高点"，而是因为这三年是澳门从封关谷底一路往回爬的过程：2023 年刚开关、2024 年恢复、2025 年才接近常态。<strong>这里的三年平均没有"削峰"的意义，它削掉的是复苏本身。</strong> 换句话说，17 倍这个市盈率对应的是一个还在往上走的利润基数，不是一个见顶的基数。这跟英伟达那种"当期 34 倍、三年平均 73.5 倍"的情形正好相反。</p>
+<p><strong>说人话：你现在投 100 块进去。</strong></p>
+<p>按最保守的口径（三年平均），公司一年替你赚 <strong>5 块</strong>；按剔除一次性后的当期口径，一年赚 <strong>6 块 4</strong>；按现金口径，一年赚 <strong>9 块</strong>（但这个 9 块含水，资本开支正常化后是 7 块 4）。</p>
+<p>这里面有多少真回到你口袋？TTM 分红 6.7 亿加回购 25.5 亿，合计 32.2 亿，除以 299.4 亿市值 = <strong>10.7%</strong>。也就是说，<strong>你投的 100 块里，一年有 10 块 7 以现金分红和缩股的形式回到你手上</strong>——这个数字比公司实际赚的钱（6 块 4）还高。多出来的部分是在消耗资产负债表：动用账上现金、并且没有把资本开支花到位。</p>
+<p>未来这个数会变大还是变小？<strong>大概率变小，但公司会变好。</strong> 变小是因为：澳门赌牌的 300 亿澳门元投资承诺和新加坡 80 亿美元的扩建必须花，资本开支要从 10 亿翻回 20 亿以上，返还股东的钱会被挤掉一半。变好是因为：伦敦人改造刚完成、新加坡扩建 2029 年前后投产、澳门中场客流还在爬坡，几年后的利润基数会明显高于今天的 19 亿。</p>
+<p><strong>还有一个必须说的风险：杠杆和政策。</strong> 总负债 152.8 亿，净负债 119.1 亿，股东权益账面只有 8.97 亿（因为多年回购把权益买没了，所以 122% 的 ROE 和 51 倍的市净率都是数字游戏，不要看）。债务/EBITDA 3.22 倍，利息保障倍数 4.23 倍——正常年份没问题，但赌场收入在疫情那种冲击下会归零（2021 年经营亏损 6.62 亿、2022 年亏 7.83 亿），那时候这个杠杆就是致命的。而澳门的赌牌是 2033 年到期的政府特许，续不续、什么条件，不由公司决定。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜，而且是真便宜——但你买的是一张"澳门中场消费继续复苏 + 中国政府继续发牌"的杠杆化赌注。</strong></p>
+<p>15.6 倍的真实市盈率、13.1 倍的 EV/EBIT、10.7% 的股东回报率，配上一门利润率 72% 的奢侈品商场生意和新加坡的法定双寡头，这个组合在今天的美股里属于明显定价偏低。股价过去一年跌了 14.9%，市场给的折扣写在明处：中国消费不振、澳门赌收政策风险、以及即将到来的两笔大额资本开支。</p>
+<p>我的判断是<strong>值这个价，而且偏低</strong>。理由是：这不是一家在衰退的公司（利润基数还在往上），不是一家账做得难看的公司（SBC 只占利润 3.8%、回购是 SBC 的 38 倍、没有 Non-GAAP 化妆），资产是实打实的地皮和楼。风险是真的但已经在价格里，而且是"政策风险"这种不会慢慢腐蚀、只会突然发生的类型。</p>
+<p>唯一别自欺欺人的地方：<strong>11 倍的自由现金流市盈率是假的</strong>，那是资本开支只有折旧 68% 的一年。用 13.5 倍去想，才是它真实的现金能力。</p>
+</div></body></html>

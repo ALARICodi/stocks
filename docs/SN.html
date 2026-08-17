@@ -1,0 +1,319 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SN · SharkNinja（鲨客 / 忍者）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">股东排在员工后面，价格已把三年好事全付了钱</div><h1>SN · SharkNinja（鲨客 / 忍者）</h1>
+<p>市值 260.8 亿美元 | 股价约 185.1 美元 | 行业：耐用消费品（家电）| TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上 SharkNinja 只分两个板块——Shark 和 Ninja，两个品牌。但<strong>这家公司真正在做的其实是一门生意，两个品牌只是这门生意的两个出海口</strong>。先说这门生意是什么，再分开讲两个品牌。</p>
+<h3>这门生意的本质：一台"把贵东西做便宜"的产品机器</h3>
+<p>SharkNinja 的打法可以用一句话说清楚：<strong>盯住一个被某个高价品牌垄断的家用品类，拆开研究，做出一个能干到人家 90% 的活、但只卖人家一半价钱的产品，然后铺满沃尔玛、Target、Costco 和亚马逊的货架。</strong></p>
+<p>举个最典型的例子：<strong>吹风机</strong>。戴森的 Supersonic 卖 429 美元，Airwrap 卷发棒卖 599 美元，这两样东西在北美和中国的中产家庭里几乎是身份符号。SharkNinja 做了一款叫 Shark FlexStyle 的多功能造型器，同样是高速无刷马达、同样能吹能卷、同样宣称不烫伤头发，<strong>卖 299 美元</strong>。再往下推出 SpeedStyle，卖 199 美元。它没打赢戴森，但它从戴森手里切走了"想要这个体验但不想付 599 的那群人"，而这群人比戴森的客户多得多。</p>
+<p>再举一个：<strong>吸尘器</strong>。戴森 V15 无线吸尘器 749 美元，Shark Detect Pro 349 美元。<strong>扫地机器人</strong>：iRobot 的高端款曾经卖 1000 多美元，Shark 的自动集尘扫地机器人卖 399。</p>
+<p>它是怎么做到的？三件事叠在一起：</p>
+<ol>
+<li><strong>人少但全是工程师。</strong> 全公司只有 4143 名员工，其中很大一部分是产品工程师，分布在美国马萨诸塞州 Needham 的总部、英国和中国的研发中心。<strong>人均创收 167 万美元</strong>——这是一个惊人的数字，说明它不养工厂、不养销售队伍，人力全砸在"设计新东西"上。它一年推出大约 25 款新品，节奏是传统家电公司的好几倍。</li>
+<li><strong>一台工厂都不拥有。</strong> 所有产品交给代工厂生产，原本绝大部分在中国，近两三年因为关税在往越南、泰国、印尼、马来西亚转。这意味着它不背固定资产包袱——TTM 资本开支只有 1.69 亿，占营收 2.4%，比 J.B. Hunt 这种重资产公司轻了一个数量级。</li>
+<li><strong>不做广告牌，做短视频。</strong> 它的营销几乎全在 TikTok 和 Instagram 上——一个厨房博主拍一段 30 秒的"我用 Ninja Creami 做了蛋白冰淇淋"，比投一千万电视广告有用。这是它相对老家电品牌（惠而浦、Hamilton Beach）最大的代差。</li>
+</ol>
+<p><strong>收钱方式是最传统的批发</strong>：设计好一款产品，交代工厂做出来，按批发价卖给沃尔玛/Target/Costco/亚马逊，零售商再加价卖给你。粗略拆一台 199 美元的 Ninja Creami 冰淇淋机的账：沃尔玛大约按 130 美元进货，SharkNinja 的制造成本（代工费 + 物料 + 海运 + 关税）大约 66 美元，<strong>毛利约 64 美元（毛利率 49%）</strong>，然后大约 25 美元花在广告和渠道费上、12 美元花在研发和管理上，<strong>最后剩下 25–28 美元的经营利润</strong>。整体上这家公司的毛利率 48.9%、经营利润率 13.9%，就是这么来的。</p>
+<h3>品牌一：Shark——清洁与个人护理（TTM 营收 32.97 亿，占 47.7%）</h3>
+<p>Shark 这条线管的是"打扫房子和打理自己"：</p>
+<ul>
+<li><strong>地面清洁</strong>：无线手持吸尘器、带自动集尘底座的扫地机器人、蒸汽拖把、地毯清洗机。这是 Shark 起家的品类，在美国无线吸尘器市场它和戴森是前两名。</li>
+<li><strong>个人护理</strong>：FlexStyle / SpeedStyle 吹风造型器、直发器。这是过去三年最大的增量来源，直接从戴森嘴里抢肉。</li>
+<li><strong>空气与美容</strong>：空气净化器、以及一款叫 CryoGlow 的 LED 美容面罩（售价 349 美元）——把"医美诊所里的红光疗程"做成家用设备，是它最新的品类扩张方向。</li>
+</ul>
+<h3>品牌二：Ninja——厨房（TTM 营收 36.13 亿，占 52.3%）</h3>
+<p>Ninja 这条线是"厨房里所有会插电的东西"，现在已经超过 Shark 成为更大的那一半，而且是最会制造爆款的一条线：</p>
+<ul>
+<li><strong>Ninja Creami</strong>（199 美元）：一台桌面冰淇淋机。你把香蕉、蛋白粉、酸奶倒进杯子冻一晚上，第二天机器把冻硬的圆柱削成绵密的冰淇淋。它在 TikTok 上彻底火了——健身人群拿它做"高蛋白低糖冰淇淋"，一个视频几百万播放。这一款产品单品年销售额就是几亿美元级别。</li>
+<li><strong>Ninja Slushi</strong>（349 美元）：家用沙冰机，可以把任何饮料（包括含酒精的）做成 7-11 那种冰沙，2025 年的爆款。</li>
+<li><strong>Ninja Woodfire</strong>（369 美元）：户外电烤炉，加木屑能出真烟熏味，对标 Traeger 的几千美元烤炉。</li>
+<li><strong>基本盘</strong>：空气炸锅、Foodi 多功能压力锅、破壁机（对标 Vitamix 的 500 美元机器，Ninja 卖 150）、咖啡机和最近推出的 Luxe Café 意式咖啡机。</li>
+</ul>
+<h3>两个品牌的账（TTM，截至 2026-06-30，金额单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品牌</th>
+<th>TTM 营收</th>
+<th>2025 财年同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ninja（厨房）</td>
+<td>3,613</td>
+<td>+16.3%</td>
+<td>52.3%</td>
+<td>未披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Shark（清洁与个护）</td>
+<td>3,297</td>
+<td>+15.2%</td>
+<td>47.7%</td>
+<td>未披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>6,910</strong></td>
+<td><strong>TTM 同比 +17.5%</strong></td>
+<td>100%</td>
+<td><strong>13.88%</strong></td>
+<td><strong>959.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须说明：财报只按品牌披露到营收，完全不披露分品牌的利润。</strong>上表的"同比"用的是 2025 财年对 2024 财年（因为 TTM 口径的分品牌上年同期数没有公布），而全公司 TTM 营收同比是 +17.5%。两个品牌的毛利结构接近，Ninja 因为新品爆款多、定价权略强，估计利润率比 Shark 高一到两个百分点，但这只是推断，没有财报依据，所以上表不填估算数字。</p>
+<p><strong>一个必须指出的结构性弱点：这门生意没有任何复购锁定。</strong>你买了一台 Creami，五年内不会再买第二台，也不需要买耗材（不像吉列剃须刀片、不像 Nespresso 胶囊）。所以它的增长完全依赖"每年再造一个新爆款"，一旦哪年产品线哑火，收入立刻停滞。<strong>这跟前面 J.B. Hunt 那种"客户签了五年合同跑不掉"的生意，是两种完全不同的确定性。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：<strong>这是本篇最需要警惕的一项。</strong> TTM 是 9892 万美元，占净利润 14.2%。但看历史序列就出问题了——2024 财年 8453 万，2025 财年只有 4387 万，TTM（2025 下半年 + 2026 上半年）又跳回 9892 万。<strong>也就是说 2026 上半年这半年就烧掉了七千多万的股权激励，年化超过 1.4 亿，是 2025 全年的三倍多。</strong>这种跳跃通常来自两种情况：要么 2025 年有大量未达标的业绩股被冲回（把当年费用做低了），要么 2026 年新批了一大笔授予。无论哪种，<strong>结论是一样的：这家公司真实的、可持续的股权激励成本远高于 2025 财报显示的水平</strong>，而且还在往上走。这 9892 万在 GAAP 里已经扣掉了，本篇所有口径都不加回。</p>
+<p>配套证据在股本上：<strong>股本一年不但没减少，反而增加了 0.29%</strong>。也就是说员工拿到的股票比公司回购掉的还多，<strong>你手上这股占公司的比例在被稀释</strong>。</p>
+<p><strong>一次性项目</strong>：TTM 没有大额重组、减值或诉讼和解。现金流量表里有一项"其他经营活动 +6331 万"和一项"其他经营性资产变化 +1.4716 亿"，金额都不小但科目不透明，招股书之外无法拆解。按单期口径<strong>无法判断这些是不是年年都有</strong>，这里如实标出，不下结论。</p>
+<p><strong>资本化的支出</strong>：TTM 另有 1764 万美元的无形资产购置（专利、软件），金额小，不构成利润修饰。真正要注意的是资产负债表：市净率 9.17 倍，但<strong>有形账面价值市净率高达 16.70 倍</strong>——反推出来公司账上大约有 12.8 亿美元的商誉和无形资产，占 28.4 亿净资产的 45%。这是当年从母公司 JS Global 分拆时留下的账面价值，不是真实的经营资产。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 1.70 亿美元，同期 SBC 9892 万，<strong>比值只有 1.72 倍</strong>。按本分析的判断标准，<strong>接近 1 就说明回购只是在抵消员工发股，大于 3 才算真回馈股东——1.72 倍属于"勉强抵消，略有剩余"，而且实际股本还是增加了 0.29%，说明连抵消都没做到。</strong> 公司不分红（2023 年分拆时付过一次 1.5 亿的特殊分红，之后再没有）。<strong>结论：这家公司目前一分钱都没有真正还给股东。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 6.95 亿，经营现金流 9.74 亿，自由现金流 8.05 亿。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>695.2</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>151.1</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>98.9</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>1.9</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（科目不透明）</td>
+<td>63.3</td>
+</tr>
+<tr>
+<td>＋/− 营运资金变化合计</td>
+<td>−36.9</td>
+</tr>
+<tr>
+<td>　其中：应收账款增加（占用现金）</td>
+<td>−267.9</td>
+</tr>
+<tr>
+<td>　其中：存货增加（占用现金）</td>
+<td>−103.9</td>
+</tr>
+<tr>
+<td>　其中：应付账款增加（释放现金）</td>
+<td>+187.9</td>
+</tr>
+<tr>
+<td>　其中：其他经营性资产（释放现金）</td>
+<td>+147.2</td>
+</tr>
+<tr>
+<td>　其中：应交所得税</td>
+<td>−0.1</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>973.6</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−169.1</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>804.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表里有一个很关键的观察：<strong>自由现金流 TTM 同比暴涨 211%</strong>（从 2025 财年的 4.88 亿到 8.05 亿），但净利润几乎没动（7.01 亿 → 6.95 亿）。差额几乎全部来自营运资金——应付账款多欠了 1.88 亿、"其他经营性资产"释放了 1.47 亿。<strong>换句话说，这一年多出来的三亿多现金不是赚来的，是靠多欠供应商的钱和一些科目变动挤出来的，这种钱一次性、不可持续。</strong>同时应收账款增加了 2.68 亿、存货增加了 1.04 亿，这两项在收入增长 17.5% 的背景下属于正常范围，但应收增速（相对营收）略快，需要盯着。</p>
+<p><strong>因此，用自由现金流给这家公司估值会明显高估它的赚钱能力。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 260.8 亿，净负债仅 1.33 亿（现金 7.80 亿、债务 9.13 亿），企业价值 262.1 亿。资产负债表干净，这是加分项。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>260.8 亿 ÷ 6.952 亿</td>
+<td><strong>37.5 倍</strong></td>
+<td><strong>2.67 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司报"调整后净利润"，主要加回 SBC 9892 万及分拆相关费用，约 8.0 亿</td>
+<td><strong>32.6 倍</strong></td>
+<td>3.07 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 按 GAAP 扣除不加回，无可靠的真一次性项目可调</td>
+<td><strong>37.5 倍</strong></td>
+<td><strong>2.67 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>260.8 亿 ÷ 8.045 亿</td>
+<td><strong>32.4 倍</strong></td>
+<td>3.09 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>262.1 亿 ÷ 9.591 亿</td>
+<td><strong>27.3 倍</strong></td>
+<td>3.66 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>260.8 亿 ÷ 6.118 亿（TTM/FY25/FY24 平均）</td>
+<td><strong>42.6 倍</strong></td>
+<td><strong>2.35 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径这一行说明了什么：</strong> 42.6 倍 vs 当期 37.5 倍，差距只有 14%——这跟一些周期股（当期 34 倍、三年平均 73 倍）完全不同。原因是 SharkNinja 的利润是<strong>一路往上爬</strong>的：2023 年 1.67 亿 → 2024 年 4.39 亿 → 2025 年 7.01 亿 → TTM 6.95 亿。<strong>它不是在周期高点，它是在一条上升曲线上</strong>，只不过最近一年这条曲线平了（TTM 6.95 亿略低于 2025 财年的 7.01 亿）。这个"平了"是本篇第二个需要警惕的信号：营收还在涨 17.5%，利润却停了——经营利润率从 2025 财年的 14.53% 掉到 TTM 的 13.88%，说明<strong>成本端（大概率是关税和向东南亚转产的过渡成本）正在吃掉增长</strong>。</p>
+<p><strong>用大白话讲：你现在投 100 块进 SharkNinja，按最保守的三年平均口径算，公司一年替你赚 2.35 块；按最新一年的实际利润算是 2.67 块。</strong></p>
+<p><strong>这 2.35 块有多少真的回到你口袋？答案是：零。</strong>公司不分红，回购只有 1.70 亿（占市值 0.65%）而且被员工发股全额吃掉，股本反而增加了 0.29%。所有的钱都留在公司里——资本开支 1.69 亿、还了 4050 万债、剩下的堆成现金（现金从 3.64 亿涨到 7.80 亿）。对于一家 ROIC 24.74%、WACC 10.42% 的公司，把钱留下再投资本身是对的（每留 1 块钱能创造约 2.4 块的价值），<strong>但前提是它真的把钱投出去了——而它现在主要是在攒现金。</strong></p>
+<p><strong>这个 X 未来会变大还是变小？</strong> 我的判断是<strong>中期会变大，但比市场预期的慢</strong>：</p>
+<ul>
+<li>支持变大的：ROIC 24.7% 且几乎不需要资本投入；国际市场（欧洲、亚太）渗透率还很低，是未来几年最确定的增量；新品类（个护、美容、户外）还在扩张期；预期市盈率 26.02 倍说明卖方一致预期未来 12 个月利润要涨 45%。</li>
+<li>拖后腿的：<strong>关税是这家公司头上最大的一把刀</strong>——它的绝大部分产能在亚洲、最大的市场在美国，一切成本优势的前提是能低成本把货运进美国。转产东南亚要花钱、要时间，而且不解决根本问题。TTM 利润率已经开始掉，这是最早的证据。</li>
+<li>另外一个隐忧：SBC 年化已经到 1.4 亿量级还在涨，稀释在加速。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意很好，管理层很能打，但股东在这门生意里的位置排在员工后面，而且这个价格已经把未来三年的好事全付了钱。</strong></p>
+<p>先说好的：SharkNinja 是过去五年北美消费品里最能打的公司之一，营收从 37 亿做到 69 亿，经营利润率从 8.8% 做到 13.9%，ROIC 24.7%，几乎不占用资本，净负债接近于零。它对戴森、iRobot、Vitamix、Traeger 这些高价品牌的"半价打法"是真实有效的商业模式，不是概念。</p>
+<p>但有三个问题必须摆在桌面上：</p>
+<p>第一，<strong>没有一分钱回到股东手里。</strong> 不分红，回购 1.70 亿还盖不住 9892 万的股权激励加上新增授予，股本一年反而多了 0.29%。你买的是"公司变大"，不是"你拿到钱"。而股权激励年化已经冲到 1.4 亿的量级，还在加速。</p>
+<p>第二，<strong>利润已经不涨了。</strong> TTM 营收 +17.5%，净利润却从 7.01 亿掉到 6.95 亿，经营利润率掉了 0.65 个百分点。这是关税和产能转移的成本开始咬人的第一个信号，而这个问题不会在一两个季度里消失。</p>
+<p>第三，<strong>37.5 倍市盈率（三年平均 42.6 倍）买一家没有复购、没有耗材锁定、每年必须重新造爆款的家电公司，定价过于乐观。</strong> 股价过去 52 周涨了 53%，RSI 71.9 已经进入超买区，卖空比例 5.72% 说明有相当一部分人在跟这个估值对赌。市场给的预期市盈率 26 倍，意味着大家默认明年利润涨 45%——<strong>而最新这一年的利润是零增长。</strong></p>
+<p><strong>结论：好公司，坏价格，而且是那种"利润已经先掉头、股价还没掉头"的组合，风险不对称。</strong> 我不会在 185 美元买它。如果营收增速保住 15%、利润率的问题被证明是一次性的转产成本、同时公司开始像样地回购，那么 25–28 倍（股价 125–140 美元）是一个值得认真考虑的位置。</p>
+</div></body></html>

@@ -1,0 +1,435 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ROP · Roper Technologies（罗普科技）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ROP</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">筛选器上16.6倍是假的，真实25.9倍，机器开始卡壳</div><h1>ROP · Roper Technologies（罗普科技）</h1>
+<p>市值 $395.0 亿 / 股价 约 $399.4（2026-08-14，过去 52 周 <strong>−23.6%</strong>）/ 行业：科技服务（垂直行业软件控股集团）/ 交易所 NASDAQ
+<strong>TTM 口径 = 截至 2026 年 6 月 30 日的最近四个季度</strong>（Roper 财年是自然年）</p>
+<blockquote>
+<p><strong>先说一句要紧的</strong>：筛选器上 Roper 的市盈率显示 16.6 倍，看起来是这一批里最便宜的。<strong>这个数字是假的。</strong>TTM 净利润 25.04 亿里有 <strong>10.56 亿是一次性的投资处置收益</strong>，跟经营完全无关。剥掉之后真实市盈率是 <strong>25.9 倍</strong>。详见第二、三部分。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Roper 不是一家做产品的公司，它是<strong>一台买公司的机器</strong>。</p>
+<p>它的模式是这样的：全世界有大量「小而无聊、但在自己那个小圈子里没人能替代」的软件公司。比如一家专门给美国律师事务所做计时收费系统的公司，一年营收 2 亿美元，客户是全美前 200 家律所，市场就这么大，永远长不成 Salesforce，所以大基金看不上、创始人也没法上市。Roper 就把这种公司买下来，出价通常是收入的 6–10 倍，用自己的现金流和借来的钱付账，买完之后<strong>基本不管</strong>——原班人马、原品牌、原客户，Roper 只做两件事：定期收走它的现金，以及在董事会上盯着它别乱花钱。</p>
+<p>收走的现金再去买下一家。这台机器已经跑了三十年，营收从 2021 年的 48.34 亿滚到 TTM 的 82.80 亿。</p>
+<p><strong>为什么专挑「小而无聊」的？</strong>因为这类生意的客户换不起。一家律所用了 12 年的计时系统，里面有 12 年的工时记录、客户账单、信托账户台账；换系统要重新培训 400 个律师，还要冒着账单出错被客户投诉的风险，省下来的那点软件费根本不值。所以这类公司可以年年提价 3%–5%，续约率能到 95% 以上，而且几乎不需要资本开支——<strong>Roper TTM 全年的资本开支只有 4,670 万美元，占营收 0.56%</strong>。</p>
+<p>代价是负债：总债务 113.19 亿美元，净负债 109.55 亿，债务/EBITDA 3.43 倍，TTM 现金利息支出 3.07 亿。<strong>这台机器是用杠杆驱动的。</strong></p>
+<p>财报把这些公司归成三堆：</p>
+<h3>1. Application Software（应用软件）——最大也是最核心的一堆</h3>
+<p>这堆是「某个行业里做某件具体事的软件」，大多是纯 SaaS 或永续授权+维护费。举几个真实的例子：</p>
+<ul>
+<li><strong>Deltek</strong>：给政府承包商和建筑设计事务所做项目会计。美国国防部的供应商拿到一个合同，必须按 DCAA（国防合同审计局）的规矩记录每个工程师在这个合同上花了几小时、这几小时该怎么分摊间接成本——记错了政府可以拒付甚至追回。Deltek 就是干这个的，一家 500 人的承包商一年付它大概 30–60 万美元。这个行业没有第二个选择。</li>
+<li><strong>Vertafore</strong>：给保险代理机构做管理系统。全美有几万家小保险代理行，每家代理十几个保险公司的产品，要管客户保单、续保提醒、佣金对账。Vertafore 是这个市场的默认标准。</li>
+<li><strong>Aderant</strong>：律所计时与账单系统，就是上面举的那个例子。</li>
+<li><strong>Frontline Education</strong>：给美国 K-12 学区做人事系统——最典型的功能是「代课老师调度」：某个老师早上 6 点请病假，系统自动按资质和距离给合格的代课老师发通知，谁先接单谁去。全美几千个学区在用。</li>
+<li><strong>Data Innovations / Clinisys</strong>：医院检验科的中间件和实验室信息系统，把几十台不同厂家的化验仪器接到医院的病历系统上。</li>
+<li><strong>PowerPlan</strong>：给电力公司做固定资产会计和监管报表——电网公司每根电线杆都要按 FERC 的规则折旧和申报电价。</li>
+</ul>
+<p>这堆 TTM 营收 46.92 亿，占全公司 56.7%，FY2025 同比增长 15.9%（三堆里最快，但<strong>其中很大一部分是新买来的公司贡献的，不是原有业务自己长的</strong>）。</p>
+<h3>2. Network Software（网络软件）——最赚钱的一堆</h3>
+<p>这堆的共同点是「双边网络」：软件本身价值一般，值钱的是聚在上面的两拨人。</p>
+<ul>
+<li><strong>DAT Solutions</strong>：北美卡车运输的现货撮合平台。一个货主要把 20 吨货从芝加哥运到达拉斯，把需求挂到 DAT；几十万个个体卡车司机和小车队在 DAT 上找回程能顺路的货。DAT 每天撮合几十万条线路，同时因为看得见全部成交价，它顺手卖「运价指数」数据给托运人和券商。<strong>这门生意的护城河是纯粹的网络效应</strong>——货主去 DAT 是因为司机在那儿，司机去 DAT 是因为货在那儿，新平台冷启动几乎不可能。</li>
+<li><strong>ConstructConnect</strong>：建筑项目招投标网络，把业主的招标信息和几十万家分包商连起来。</li>
+<li><strong>iPipeline</strong>：寿险的分销网络，连接保险公司和几十万名保险经纪人，管报价、核保、电子签名。</li>
+<li><strong>MHA</strong>：养老院和康复机构的集团采购组织（GPO）——把几千家小养老院的采购量集中起来跟供应商压价，Roper 从省下的钱里抽成。</li>
+<li><strong>Foundry</strong>：影视特效软件 Nuke，好莱坞后期公司的标配。</li>
+</ul>
+<p>TTM 营收 16.98 亿，占 20.5%，FY2025 增长 8.5%。增速最慢，但<strong>利润率最高</strong>——网络平台一旦建成，多加一个用户的边际成本接近零。</p>
+<h3>3. Technology Enabled Products（技术型产品）——唯一造实物的一堆</h3>
+<p>这堆是真的有工厂、有产线的，但都是「高毛利小批量的专用设备」：</p>
+<ul>
+<li><strong>Verathon</strong>：两个产品。<strong>BladderScan</strong> 是一个手持超声，护士往病人小腹上一放三秒钟就知道膀胱里有多少尿——避免不必要的导尿（导尿是医院感染的头号来源之一）。<strong>GlideScope</strong> 是可视喉镜，插管时能在屏幕上看见声门，把气管插管的一次成功率从七成提到九成以上。这两样在美国医院基本是标配，靠的是一次性耗材（探头套、镜片）持续赚钱。</li>
+<li><strong>Neptune Technology</strong>：给自来水公司做水表。不是普通水表，是能自动抄表的智能水表——市政公司换一次表要用二三十年，中标一次就是二三十年的耗材和软件服务。</li>
+<li><strong>Northern Digital</strong>：手术导航用的光学/电磁位置传感器，卖给美敦力、史赛克这些做手术机器人的公司当零件。</li>
+<li><strong>CIVCO</strong>：放疗时固定病人体位的定位装置和一次性耗材。</li>
+</ul>
+<p>TTM 营收 18.90 亿，占 22.8%，FY2025 增长 7.3%。这堆是 Roper 三十年前的老底子（它以前是一家工业泵和阀门公司），管理层这些年一直在往软件转，2022 年把纯工业的部分整体卖掉了。</p>
+<h3>各块的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>FY25 vs FY24 增速</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Application Software</td>
+<td>4,692</td>
+<td>+15.9%</td>
+<td>56.7%</td>
+<td>约 30%</td>
+<td>约 1,408</td>
+</tr>
+<tr>
+<td>Network Software</td>
+<td>1,698</td>
+<td>+8.5%</td>
+<td>20.5%</td>
+<td>约 38%</td>
+<td>约 645</td>
+</tr>
+<tr>
+<td>Technology Enabled Products</td>
+<td>1,890</td>
+<td>+7.3%</td>
+<td>22.8%</td>
+<td>约 30%</td>
+<td>约 567</td>
+</tr>
+<tr>
+<td>分部合计</td>
+<td>8,280</td>
+<td>—</td>
+<td>100%</td>
+<td>—</td>
+<td>约 2,620</td>
+</tr>
+<tr>
+<td>减：总部费用</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 −304</td>
+</tr>
+<tr>
+<td><strong>实际经营利润</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>27.96%</strong></td>
+<td><strong>2,316</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>利润率是估算。</strong> stockanalysis 只提供分部营收，Roper 的分部经营利润要翻 10-K。上表按各堆业务的性质（网络平台边际成本最低、应用软件次之、硬件最低）分配，并使合计等于实际的 23.16 亿经营利润。<strong>「网络软件最赚钱、硬件最不赚钱」这个排序是可靠的，具体数字是估的。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Roper 是本批三家里障眼法最多的一家，逐项拆。</p>
+<h3>一次性项目——<strong>这是全篇最重要的一段</strong></h3>
+<p>TTM 利润表上有一行：<strong>Gain on Sale of Investments +10.56 亿美元</strong>。</p>
+<p>这一笔直接加进了税前利润（税前 29.76 亿 = 剔除异常项的 19.20 亿 + 这 10.56 亿），把净利润从「本该的 15 亿出头」推到了 <strong>25.04 亿</strong>，进而把市盈率从 26 倍压到了 16 倍。</p>
+<p>这笔钱是哪来的？看历史就清楚：2022 年 Roper 把整个工业板块（后来独立成 Indicor）的多数股权卖给了私募基金 CD&amp;R，自己留了一部分少数股权——这就是 FY2022 那笔 35.59 亿的「终止经营收益」和 55.60 亿的投资活动现金流入的来源。<strong>TTM 这 10.56 亿，按金额和时点判断，应是把当年留下的那部分残余股权也处置掉了</strong>（这是从数字推断，不是财报明文，但没有别的解释能对上这个量级）。</p>
+<p><strong>这是不折不扣的一次性收益，而且是不可能再来一次的</strong>——股权卖完就没了。本文的真实口径<strong>必须把它全额剔除</strong>。</p>
+<p>注意一个细节：历年都有小额的「投资出售收益」（FY2025 +0.26 亿、FY2024 +2.35 亿、FY2023 +1.65 亿），说明 Roper 平时也在零星处置些东西。但 10.56 亿的量级比过去三年加起来还多一倍，性质完全不同。</p>
+<p>顺带一个副作用：这笔收益按较低税率征税，把 TTM 有效税率压到了 <strong>15.84%</strong>（正常年份是 20.6%–21.5%）。所以 GAAP 净利润被「低税率」又多推了一把。</p>
+<h3>无形资产摊销——<strong>Roper 的老争议</strong></h3>
+<p>TTM 折旧摊销 9.224 亿美元，占营收 11.1%。其中绝大部分<strong>不是</strong>厂房设备折旧（资本开支才 4,670 万），而是<strong>收购时买来的客户关系、技术、商标在账上按 10–20 年摊销</strong>。</p>
+<p>Roper 的 Non-GAAP 口径会把这一大块全加回去，理由是「这是购买会计的产物，不花现金」。这个说法<strong>一半对一半不对</strong>：</p>
+<ul>
+<li>对的部分：这笔摊销确实不花现金，Deltek 的客户关系不会因为账上摊完了就跑掉。</li>
+<li>不对的部分：<strong>Roper 必须持续花真金白银买新公司才能维持增长</strong>。TTM 收购支出 13.12 亿，FY2025 是 32.90 亿，FY2024 是 36.13 亿——<strong>三年平均每年 27.4 亿。</strong>而它三年的自由现金流平均是 24.8 亿。</li>
+</ul>
+<p><strong>翻译成大白话：Roper 每年赚到的全部自由现金流，加上再借一点，全部拿去买下一批公司了。</strong>对 Sysco 来说「资本开支」是买卡车，对 Roper 来说「资本开支」就是买公司——只是会计上前者进现金流量表的投资项、被算作资本开支，后者也进投资项、却不被算作资本开支。<strong>所以 Roper 的「自由现金流」这个数字系统性地高估了股东能拿到的钱。</strong></p>
+<p>本文的处理：真实口径按 GAAP 走，摊销不加回。同时在下面的现金流部分把「买公司的钱」单独列出来给你看。</p>
+<h3>股权激励（SBC）</h3>
+<p>TTM 1.918 亿美元，占<strong>真实</strong>净利润（15.24 亿）的 12.6%，占营收 2.3%。在软件公司里算克制的（Veeva 是 51%）——因为 Roper 买来的公司大多是传统软件公司，员工拿现金工资。按规矩不加回。这一项还算干净。</p>
+<h3>资本化的支出</h3>
+<p>「Sale (Purchase) of Intangibles」TTM −6,140 万，规模很小。Roper 没有明显的软件开发资本化问题。这一项干净。</p>
+<h3>回购与稀释——<strong>这次是真的，但钱是借的</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>32.35 亿</strong></td>
+<td>5.00 亿</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>1.918 亿</td>
+<td>1.663 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>16.9</strong></td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−2.63%</strong></td>
+<td>+0.18%</td>
+</tr>
+</tbody>
+</table></div>
+<p>按规格的标准，大于 3 才算真回购——<strong>Roper 是 16.9，是本批三家里唯一一家真正在回购的公司</strong>（Sysco 1.7、Veeva 1.06）。单季度股本减少 3.82%，说明这是最近几个月才大规模启动的。</p>
+<p>但必须看钱从哪来：<strong>TTM 净新增债务 24.50 亿</strong>，加上那 10.56 亿的股权处置收益，正好覆盖这 32.35 亿的回购。也就是说，<strong>这不是用经营赚来的钱回购，是「卖掉一块资产 + 借新债」去回购。</strong>总债务从 95.35 亿涨到 113.19 亿。</p>
+<p>这是一个信号：<strong>Roper 找不到足够好的收购标的了。</strong>TTM 收购只花了 13.12 亿，是过去四年最低（FY2024 是 36.13 亿）。买不到东西的钱，只能拿去回购和还债。对一家全部价值都建立在「持续买到好公司」上的机器来说，这不是好消息。</p>
+<h3>利润和现金流的差</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含一次性收益）</td>
+<td>2,504.0</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>922.4</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>12.6</td>
+</tr>
+<tr>
+<td>− <strong>剔除投资处置收益（非现金）</strong></td>
+<td><strong>−1,056.0</strong></td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>191.8</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>96.3</td>
+</tr>
+<tr>
+<td>＝ 小计</td>
+<td>2,671.1</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−68.0</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−14.0</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+13.5</td>
+</tr>
+<tr>
+<td>＋ 递延收入（预收款）增加</td>
+<td>+63.8</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>+2.2</td>
+</tr>
+<tr>
+<td>＝ 营运资金合计</td>
+<td><strong>−2.5</strong></td>
+</tr>
+<tr>
+<td>＝ <strong>经营现金流</strong></td>
+<td><strong>2,668.6</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−46.7</td>
+</tr>
+<tr>
+<td>＝ <strong>账面自由现金流</strong></td>
+<td><strong>2,622</strong></td>
+</tr>
+<tr>
+<td>− <strong>买公司的钱（TTM 收购支出）</strong></td>
+<td><strong>−1,312</strong></td>
+</tr>
+<tr>
+<td>＝ <strong>真正剩下的钱</strong></td>
+<td><strong>1,310</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表有三个要点：</p>
+<ol>
+<li><strong>营运资金几乎不占用现金（−250 万，可以忽略）</strong>。这是软件订阅生意的美妙之处——客户先付钱，公司再交付。对比 Sysco 一年被营运资金吃掉 4.55 亿。</li>
+<li><strong>利润到现金流的差，主要来自 9.22 亿的摊销</strong>，而这笔摊销对应的是过去几年花掉的收购款。会计上是过去的成本在今天摊，现金上是今天的钱在买明天的收入——<strong>两边其实是同一件事的两次记账，只是错开了时间。</strong></li>
+<li><strong>最后两行是本文的核心判断</strong>：账面自由现金流 26.22 亿，但为了维持这台机器运转，TTM 又花了 13.12 亿买公司（这还是收购最少的一年，前两年是 33 亿和 36 亿）。<strong>按三年平均的收购强度（27.4 亿/年）算，Roper 的「真正剩下的钱」接近于零。</strong></li>
+</ol>
+<p>现金去向：TTM 回购 32.35 亿 + 分红 3.692 亿 = 36.04 亿回到股东手里，但其中约 24.5 亿是借来的。股息率只有 0.89%（每股 3.555 美元 ÷ 股价 399.4），几乎可以忽略——不过分红已经连续十年每年提高约 10%。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>基准数字</strong>：市值 39,500（百万美元）；净负债 10,955；企业价值 EV 50,450；GAAP TTM 净利润 2,504；剔除异常项的税前利润 1,920；经营利润 EBIT 2,316；自由现金流 2,622。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>39,500 ÷ 2,504</td>
+<td><strong>15.8 倍</strong></td>
+<td><strong>$6.33</strong>（<strong>虚假</strong>）</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>39,500 ÷ 约 2,160（剔除一次性收益、加回约 8 亿收购无形摊销，按 20.6% 税率）</td>
+<td>18.3 倍</td>
+<td>$5.47</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>39,500 ÷ 1,524（＝剔除异常项税前 1,920 × (1−20.6% 常态税率)；一次性处置收益全额剔除，摊销与 SBC 均不加回）</td>
+<td><strong>25.9 倍</strong></td>
+<td><strong>$3.86</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>39,500 ÷ 2,622</td>
+<td>15.1 倍</td>
+<td>$6.64（<strong>未扣买公司的钱</strong>）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>50,450 ÷ 2,316</td>
+<td><strong>21.8 倍</strong></td>
+<td>$4.59</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>39,500 ÷ 1,468（TTM 1,524 / FY2025 1,516 / FY2024 1,365 的平均，三年均已剔除各自的处置收益）</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.72</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行在这里的作用格外关键。</strong>它给出的 26.9 倍，跟当期真实口径的 25.9 倍几乎一致——这告诉你两件事：一，25.9 倍不是一个被压低的假象，它就是 Roper 常态的估值水平；二，<strong>Roper 的真实盈利能力这三年基本是平的（1,365 → 1,516 → 1,524，两年只涨了 11.6%），而同期营收涨了 17.6%。</strong>营收靠买公司在涨，利润被利息和摊销吃掉了。</p>
+<p>再看那个 15.8 倍的 GAAP 数字和 25.9 倍的真实数字之间的差距——<strong>这是本批三家里最大的一次「筛选器骗人」</strong>。任何按市盈率筛股的工具现在都会把 Roper 显示成「便宜的软件公司」，而它实际上跟 Veeva 的估值不在一个数量级但也绝不便宜。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Roper，按最保守的真实口径算，公司一年替你赚 3 块 8 毛 6。</strong></p>
+<p>这 3.86 块的去向（TTM 是很不寻常的一年，要分开说）：
+- <strong>约 0.94 块</strong>以现金分红打到你账上（TTM 分红 3.692 亿 ÷ 市值 395 亿 = 0.89% 股息率）；
+- <strong>表面上约 8.19 块</strong>通过回购返还（TTM 回购 32.35 亿 = 市值的 8.2%）——<strong>但这个数字不可持续</strong>，它是靠卖掉 Indicor 残股拿到的 10.56 亿和新借的 24.50 亿撑起来的，不是经营赚出来的。正常年份 Roper 的回购是 5 亿左右（FY2025），也就是市值的 1.3%；
+- <strong>剩下的钱</strong>：全部拿去买下一批公司了，TTM 13.12 亿，三年平均 27.4 亿/年。</p>
+<p><strong>这个 3.86 块未来会变大还是变小？大概率缓慢变大，但没有过去二十年那么香了。</strong>
+- 往上的力量：买来的公司本身年年提价 3%–5%，续约率 95% 以上；营运资金零占用；资本开支占营收 0.56%；三堆生意都是「客户换不起」的类型。这些基本面没坏。
+- 往下的力量，有三条，而且都在同一个方向上：
+  1. <strong>利息在吃利润</strong>。利息支出从 FY2021 的 2.34 亿涨到 TTM 的 3.94 亿，翻了 68%，而同期经营利润只涨了 73%——利息的增速快到几乎抵消了经营的成长。债务 113 亿还在涨。
+  2. <strong>买不到东西了</strong>。TTM 收购支出 13.12 亿是四年最低，而这台机器的全部估值溢价都来自「有源源不断的好标的可买」。管理层把钱拿去回购，等于承认了这一点。
+  3. <strong>ROIC 6.66% 低于 WACC 7.11%</strong>。这个数字要小心解读——GAAP 的投入资本里包含了巨额收购商誉，对连续收购型公司天生不利，不能简单说「Roper 在毁灭价值」。但它确实说明：<strong>Roper 现在为收购付的价格，已经贵到很难再产生超额回报了。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>筛选器上的 16.6 倍是假的，真实是 25.9 倍；生意还是好生意，但这台机器已经开始卡壳了，这个价格不值得买。</strong></p>
+<p>Roper 是一门被验证了三十年的模式：专买那些「小到没人抢、闷到没人爱、但客户永远换不掉」的软件公司，然后什么都不改，只收现金。Deltek、Vertafore、DAT、Verathon 这些资产的质量是实打实的——69.5% 的毛利率、28% 的经营利润率、营运资金零占用、资本开支只占营收 0.56%，这套财务特征在实业里是顶级的。</p>
+<p>但今天买 Roper，你面对的是三件同时发生的事：</p>
+<p>第一，<strong>它的 TTM 利润里有 42% 是一次性的</strong>（10.56 亿处置收益 ÷ 25.04 亿净利润）。这不是会计舞弊——报表上白纸黑字写着——但它足以让任何自动化的估值筛选完全失灵。真实市盈率 25.9 倍，三年平均口径 26.9 倍，两者互相印证，这就是 Roper 现在的真实价格。</p>
+<p>第二，<strong>这台机器的燃料在变贵</strong>。买公司要花的钱越来越多（前两年 33 亿、36 亿），能买到的好标的越来越少（TTM 只花了 13 亿），而借来的钱越来越贵（利息四年涨了 68%）。管理层没地方投钱了，只好借 24.5 亿去回购自己的股票——这在短期推高每股收益，长期是把「明天的收购能力」换成「今天的股价」。</p>
+<p>第三，<strong>真实盈利已经两年没怎么增长了</strong>（1,365 → 1,516 → 1,524）。营收还在靠买公司往上走，但那些增量在利息和摊销面前基本被吃光了。</p>
+<p>股价 52 周跌了 23.6%，市场显然已经嗅到了一部分。但 25.9 倍买一个「真实利润两年涨 11.6%、113 亿债务、找不到东西可买」的收购机器，仍然不划算。<strong>要买这台机器，得等它跌到 18–20 倍（对应股价 $280–310 左右、投 100 块年回报 $5.0–5.6），那时候你才是在为它三十年的执行力付一个合理的价，而不是为它过去的名声付溢价。</strong></p>
+<p><strong>同时提醒一件事</strong>：如果你在别处看到「Roper 只有 16 倍市盈率，比同行便宜一半」这类说法，那就是被这 10.56 亿骗了。明年这个时候，同一个筛选器会把 Roper 显示成 26 倍——公司什么都没变，只是那笔一次性收益滚出了 TTM 窗口。</p>
+</div></body></html>

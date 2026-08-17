@@ -1,0 +1,351 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AME · AMETEK（阿美特克）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AME</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">好公司，坏价格：37倍买5%内生增长</div><h1>AME · AMETEK（阿美特克）</h1>
+<p><strong>市值</strong> $589.0 亿 | <strong>股价</strong> ~$257 | <strong>行业</strong> 生产制造（精密仪器与机电） | <strong>TTM 截止</strong> 2026-06-30（最近四个季度滚动）</p>
+<p>全文所有数字都是 TTM 口径，也就是 2025 年 7 月到 2026 年 6 月这完整一年。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Cencora 那家公司是「过手 3327 亿只赚 26 亿」。AMETEK 正好是反过来的极端：<strong>一年只卖 78.6 亿美元的东西，却赚走 15.8 亿净利润，经营利润率 25.9%</strong>——这是制造业里极其罕见的数字。波音、通用电气、卡特彼勒都做不到这个水平。</p>
+<p>它凭什么？答案不在它做的产品里，而在<strong>它选择做什么产品</strong>里。</p>
+<p>AMETEK 的官方分部只有两个，但它实质上是<strong>一个由 100 多个小公司拼起来的集合体</strong>，每一个小公司都在一个极窄的领域里做到全球第一或第二。理解这家公司，得先理解它的商业模式，再看两个分部。</p>
+<h3>先讲它真正的生意：买公司</h3>
+<p>AMETEK 的核心动作不是「造仪器」，而是<strong>「买下那些在细分领域做到第一、但小到没人跟它抢的公司，然后把利润率提上去」</strong>。</p>
+<p>TTM 它花了 <strong>12.54 亿美元</strong>现金收购——注意，这一年它的自由现金流是 18.25 亿，<strong>接近七成的现金流拿去买公司了</strong>。这不是偶发的，看它的历史：FY2023 花 22.38 亿、FY2021 花 19.59 亿、FY2025 花 9.33 亿。<strong>这是一台常年运转的收购机器。</strong></p>
+<p>它买什么样的公司？典型画像是：营收 5000 万到 5 亿美元，做一个绝大多数人听都没听过的产品，但这个产品在它的应用场景里没有替代品，客户买它是因为「用别的会出事」，所以价格敏感度极低。</p>
+<p>它买完做什么？把这家公司塞进 AMETEK 的采购体系（原材料集中采购降本）、低成本地区制造（部分产能搬到马来西亚、墨西哥、捷克）、销售渠道复用，然后<strong>把毛利率从 30% 出头拉到 36% 以上，经营利润率拉到 25% 以上</strong>。</p>
+<p>这套打法业内叫「工业连续收购者」（serial acquirer），Roper、Danaher、Teledyne 都是同一门派。<strong>AMETEK 是这门派里做得最稳的之一。</strong></p>
+<h3>分部一：电子仪器（EIG，营收 52.02 亿，占 66.1%）</h3>
+<p><strong>这件事具体是什么：</strong></p>
+<p>一句话概括，<strong>测量和分析</strong>。凡是「你需要知道某个东西现在到底是什么状态、而且必须知道得非常准」的场景，都是它的市场。举四个真实的例子：</p>
+<p><strong>例子一：天然气管道上的气相色谱仪。</strong>
+一条跨州天然气管道，每天输送价值几百万美元的气。问题是，天然气不是按体积计价的，<strong>是按热值计价的</strong>——里面甲烷、乙烷、丙烷的比例不同，同样一立方米的能量差很多。所以管道上每隔一段就要装一台气相色谱仪，每隔几分钟自动取样、分析成分、算出热值，这个数据直接决定了买卖双方开多少钱的账单。</p>
+<p>一台这样的仪器卖几万到十几万美元。为什么客户不买便宜的？因为如果这台仪器的测量偏差 0.5%，一条年输送额 5 亿美元的管道，一年就有 250 万美元的账算错——两边要打官司。<strong>仪器的钱和账单的钱差了两个数量级，没人会在这里省钱。</strong> AMETEK 在这个领域是标准供应商，装上去之后二三十年不换，还要每年买校准服务和耗材。</p>
+<p><strong>例子二：半导体光刻镜头的表面检测（Zygo）。</strong>
+光刻机的镜片，表面平整度要求是<strong>纳米级</strong>——相当于把一个足球场铺平，误差不超过一根头发丝的千分之一。怎么知道你磨的镜片达标了？用干涉仪。Zygo（AMETEK 旗下）做的就是这个，一台几十万美元。全世界能做到这个精度的厂家一只手数得过来，而客户是台积电、蔡司、ASML 供应链上的人——<strong>他们不会为了省 20 万美元去用一台不确定的仪器</strong>。</p>
+<p><strong>例子三：电子显微镜上的元素分析探头（EDAX）。</strong>
+你在电镜下看到一个电池正极材料的粉末里有个黑点，这个黑点是什么？是铁污染还是正常结构？EDAX 的探头装在电镜上，打上电子束读回来的 X 射线光谱，几秒钟告诉你「这是铁，含量 0.03%」。</p>
+<p>对一家动力电池厂来说，正极粉里混进金属铁颗粒会导致内短路、起火。<strong>一次电池召回是十亿美元级的事</strong>，一台几万美元的探头是它最便宜的保险。</p>
+<p><strong>例子四：高速摄影机（Vision Research Phantom）。</strong>
+每秒拍一百万帧的相机。安全气囊起爆测试、子弹穿透测试、喷油嘴雾化研究、心脏支架疲劳测试，都靠它把毫秒级的过程拍下来看清楚。一台十几万到上百万美元。做这个的全球也就两三家。</p>
+<p><strong>这个分部还包括：</strong>航空航天的座舱仪表和发动机传感器（每架飞机上有几十个）、电力质量分析仪、医疗和眼科检查仪器、超精密加工设备。</p>
+<p><strong>共同点，也是护城河所在：</strong> 单价从几万到几十万美元，但<strong>在客户的整个成本结构里几乎不占分量</strong>，而它一旦出错的代价极大。这样的产品可以年年涨价，客户还是照买。这就是 36% 毛利率、26% 经营利润率的来源。</p>
+<h3>分部二：机电（EMG，营收 26.62 亿，占 33.9%）</h3>
+<p><strong>这件事具体是什么：</strong></p>
+<p>也不是普通电机。三块：</p>
+<p><strong>一是精密电机和运动控制。</strong> 比如 Dunkermotoren 的无刷伺服电机、Haydon Kerk 的直线执行器。用在哪？自动化仓库的分拣机械臂上、半导体设备的晶圆传送机构上、手术机器人的关节上、医院的电动病床上。这类电机的要求不是「力气大」，而是<strong>「转到指定位置误差不超过 0.01 毫米，连续跑十年不出故障」</strong>。一台几百到几千美元，比工业标准电机贵三五倍。</p>
+<p><strong>二是航空航天的执行机构和热管理系统。</strong> 飞机上的襟翼作动器、机载电子设备的散热模块。这块的特点是<strong>认证壁垒</strong>：一个零件通过 FAA 适航认证要几年时间，一旦装上某个机型，这个机型生产多少年它就供多少年，中间还有几十年的备件（售后备件的毛利率通常比新件还高一大截）。</p>
+<p><strong>三是医疗器械代工（Paragon Medical）。</strong> 这个具体讲讲：你做膝关节置换手术，医生要用到一整套器械——钻头、导向模板、试模、螺钉、锉刀，一个手术盘里上百件，全是精密加工的不锈钢和钛合金件。史赛克、捷迈这些骨科巨头自己不做这些，外包给 Paragon。</p>
+<p>为什么外包方不会换供应商？因为<strong>每一件器械都在 FDA 的器械注册文件里</strong>，换个厂家做就要重新做验证和申报，几百万美元、一两年时间，还要承担监管风险。<strong>这种黏性比任何合同条款都硬。</strong></p>
+<h3>两个分部的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>vs 上一完整财年(FY25)</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>电子仪器 EIG</td>
+<td>$52.02 亿</td>
+<td>+5.8%</td>
+<td>66.1%</td>
+<td>~28.5%（估算）</td>
+<td>~$14.8 亿（估算）</td>
+</tr>
+<tr>
+<td>机电 EMG</td>
+<td>$26.62 亿</td>
+<td>+7.3%</td>
+<td>33.9%</td>
+<td>~24.5%（估算）</td>
+<td>~$6.5 亿（估算）</td>
+</tr>
+<tr>
+<td>减：总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−$1.0 亿（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$78.64 亿</strong></td>
+<td><strong>+12.7%</strong></td>
+<td>100%</td>
+<td><strong>25.9%</strong></td>
+<td><strong>$20.37 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠️ <strong>口径说明：</strong> 分部经营利润财报未按此颗粒度披露，上表利润率是我按整体经营利润 20.37 亿倒推 + 行业结构估算，<strong>是估算不是财报数字</strong>；总数 20.37 亿和 25.9% 是真实的。另外「vs 上年」那列是 TTM（截至 26 年 6 月）对比 FY2025（截至 25 年 12 月），<strong>不是严格同比</strong>，只看方向。总营收增速 +12.66% 是真实 TTM 口径。</p>
+</blockquote>
+<p><strong>这里有一个必须点破的事：营收增长 12.66% 看着很漂亮，但这不是它自己长出来的。</strong></p>
+<p>TTM 它花了 12.54 亿现金买公司。一家营收 78 亿的公司买进十几亿的资产，<strong>很容易就贡献了 6–8 个百分点的营收增长</strong>。也就是说，<strong>它真正的内生增长大概只有 4%–6%</strong>。这个区别在第三部分算估值时至关重要。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的账，<strong>是我做到目前为止最干净的之一</strong>。逐项过一遍：</p>
+<p><strong>股权激励（SBC）：TTM 4905 万美元，占净利润 3.1%。</strong>
+低到几乎可以忽略。2.25 万名员工，绝大多数是产线工人和现场工程师，不需要用股票留人。而且这个数字五年基本没动过（FY2021 是 4610 万，FY2026 TTM 是 4905 万）——<strong>没有偷偷膨胀</strong>。按规矩当真实成本扣掉，结论不受影响。</p>
+<p><strong>一次性项目：TTM 是 −6818 万美元的「其他调整」，规模很小，不构成问题。</strong>
+和 Cencora 那种「经营利润 44.9 亿 vs EBIT 30.4 亿差 14.5 亿」的情况完全不同——AMETEK 报表上的经营利润 20.37 亿和 EBIT 20.4 亿几乎一致，<strong>中间没有藏东西</strong>。</p>
+<p><strong>资本化的支出：没有异常。</strong> 资本开支 1.35 亿，只占营收 1.7%。这也说明了一件事——<strong>这是个轻资产的制造业</strong>：它做的是高附加值的小批量精密件，不需要建重资产工厂。这是它高利润率的另一半原因。</p>
+<p><strong>唯一需要盯着的会计项：收购形成的无形资产摊销。</strong>
+TTM 折旧摊销 4.20 亿，而资本开支只有 1.35 亿——<strong>折旧摊销是资本开支的 3.1 倍</strong>。这个缺口就是历年收购形成的商标、客户关系、技术等无形资产在摊销。</p>
+<p>公司在 Non-GAAP 里会把这块加回去，说「这是收购的会计影响，不是真实成本」。<strong>这个说法一半对一半不对</strong>：对的部分是，这确实不花现金；不对的部分是，<strong>AMETEK 每年要花十几亿现金去买新公司才能维持增长，这笔现金是实打实出去的</strong>。你把摊销加回来当利润，又不把每年的收购支出当成本，那是两头占便宜。所以下面算真实市盈率时，我<strong>不给它加回来</strong>。</p>
+<p><strong>回购与稀释：干净，但规模不大。</strong>
+- TTM 回购 <strong>4.44 亿</strong>，同期 SBC 只有 <strong>0.49 亿</strong>，比值 <strong>9.1 倍</strong>——按规矩大于 3 就是真回购，9 倍是非常干净的。
+- 股本一年减少 <strong>0.61%</strong>，从 230.7 百万股降到 229.26 百万股。规模小是因为钱主要拿去买公司了。
+- 加上分红 <strong>2.98 亿</strong>，TTM 回到股东手里的一共 <strong>7.42 亿</strong>，占自由现金流的 41%。</p>
+<p><strong>利润和现金流的差：现金流略高于利润，非常健康。</strong></p>
+<p>TTM 净利润 15.76 亿，经营现金流 <strong>19.60 亿</strong>，自由现金流 <strong>18.25 亿</strong>。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+1,576</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+420</td>
+<td>非现金，其中约七成是收购无形资产摊销</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+49</td>
+<td>非现金，但按规矩算真成本</td>
+</tr>
+<tr>
+<td>减：其他非现金调整</td>
+<td>−68</td>
+<td>主要是递延税</td>
+</tr>
+<tr>
+<td>减：其他经营项目变动</td>
+<td>−95</td>
+<td></td>
+</tr>
+<tr>
+<td>上述各项合计</td>
+<td>1,882</td>
+<td></td>
+</tr>
+<tr>
+<td>实际经营现金流</td>
+<td><strong>1,960</strong></td>
+<td>差额 +78 为营运资金变动（数据源 TTM 未拆分应收/存货/应付）</td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−135</td>
+<td>只占营收 1.7%</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,825</strong></td>
+<td><strong>占营收 23.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FCF 占营收 23.2%，这是全篇最能说明它质量的数字。</strong> 一家制造业公司，每卖 100 块钱的货，能有 23 块变成可自由支配的现金——绝大多数工业公司这个数在 8%–12%。</p>
+<p><strong>资产负债表：非常保守。</strong>
+总债务 23.1 亿，净债务 18.2 亿，债务/EBITDA 只有 <strong>0.94 倍</strong>，利息保障倍数 <strong>23.6 倍</strong>。这意味着什么？<strong>它随时可以再借 50 亿去做一笔大收购而不伤筋动骨</strong>。对一台收购机器来说，这是它最重要的弹药储备。</p>
+<p><strong>两个必须看的效率数字：</strong>
+- <strong>ROIC 13.24%，WACC 9.48%——价差只有 3.8 个百分点。</strong>
+- <strong>ROE 14.56%，但 ROA 只有 8.16%。</strong></p>
+<p>ROE 和 ROA 差这么多，加上账面净资产高达 112.6 亿（营收才 78.6 亿），说明<strong>资产负债表里塞满了收购形成的商誉和无形资产</strong>。这就是连续收购者的宿命：<strong>你付出去的溢价永远躺在资产端，把你的资本回报率往下拽</strong>。13.2% 的 ROIC 对一家 26% 经营利润率的公司来说，其实是偏低的——<strong>说明它买公司买得不便宜</strong>。</p>
+<p><strong>税率异常低：TTM 实际税率只有 17.36%。</strong>
+美国联邦税率 21%，它做到 17.4%，靠的是海外低税地区的利润安排和研发抵免。这不是造假，但<strong>是一个不能指望永远持续的加分项</strong>——各国最低税率协议正在收紧这类安排。如果税率回到 21%，净利润会少约 7000 万，PE 会从 37.4 倍变成 39.2 倍。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 589.0 亿，企业价值 607.2 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>589.0 ÷ 15.76</td>
+<td><strong>37.4 倍</strong></td>
+<td><strong>$2.67</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>589.0 ÷ ~17.8（估算，加回无形摊销）</td>
+<td>~33.1 倍</td>
+<td>~$3.02（估算）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>589.0 ÷ 15.76（一分不加回）</td>
+<td><strong>37.4 倍</strong></td>
+<td><strong>$2.67</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>589.0 ÷ 18.25</td>
+<td><strong>32.3 倍</strong></td>
+<td><strong>$3.10</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>607.2 ÷ 20.37</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>$3.36</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>589.0 ÷ 14.77</td>
+<td><strong>39.9 倍</strong></td>
+<td><strong>$2.51</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均用的是 TTM 15.76 亿、FY2025 14.80 亿、FY2024 13.76 亿，平均 14.77 亿。</p>
+<p><strong>这张表和 Cencora 那张的最大区别是：六个口径的结果高度一致，都在 30–40 倍之间。</strong></p>
+<p>这本身就是一个重要信号——<strong>说明这家公司的利润是真的，没有藏东西、没有周期性失真、没有一次性项目在里面搅局</strong>。当期 37.4 倍，三年平均 39.9 倍，只差 6.7%，说明它现在这个利润水平<strong>不是高点，是正常水平</strong>（对比 Cencora 那家差了 39%）。</p>
+<p><strong>大白话说结论：</strong></p>
+<p><strong>你现在投 100 块进 AMETEK，按最保守的口径（三年平均真实利润）算，公司一年替你赚 2.51 块。</strong> 按当期口径 2.67 块，按自由现金流口径最好看，也只有 3.10 块。</p>
+<p><strong>这个数字很低。</strong> 作为参照，现在买美国十年期国债，什么都不用干，一年也有 4 块多。<strong>你买 AMETEK 拿到的当期回报，只有无风险国债的六成。</strong></p>
+<p><strong>这 2.5–2.7 块里，有多少真回到你口袋？</strong>
+分红 2.98 亿 + 回购 4.44 亿 = 7.42 亿，占市值的 <strong>1.26%</strong>。也就是<strong>每投 100 块，一年直接返你 1.26 块</strong>（分红 0.53 块 + 回购 0.61 块）。剩下的钱几乎全部拿去买公司了——TTM 收购支出 12.54 亿，是股东回报的 1.7 倍。</p>
+<p><strong>所以买 AMETEK 的逻辑本质上是：你把钱交给管理层，让他们替你去买别的公司。</strong></p>
+<p>那关键问题就变成了：<strong>他们买得好不好？</strong></p>
+<p><strong>答案是：买得稳，但不便宜。</strong> 证据就是那个 ROIC 13.24% vs WACC 9.48%——只有 3.8 个百分点的价差。这意味着他们每投 100 块出去，扣掉资金成本后一年只创造 3.8 块的超额价值。作为对比，一家真正优秀的收购整合者（比如全盛期的 Danaher、Roper）这个价差能到 8–10 个百分点。</p>
+<p><strong>这个 2.5 块，未来会变大还是变小？</strong></p>
+<p><strong>大概率缓慢变大，但速度撑不起 37 倍的价格。</strong></p>
+<p>支持变大的：
+1. <strong>内生增长稳定在 4%–6%</strong>，来自涨价能力和下游的长期趋势（自动化、半导体设备、航空后市场、医疗器械）。
+2. <strong>每年 12 亿以上的收购继续叠加</strong>，按历史节奏能再贡献 4–6 个百分点的营收增长。
+3. <strong>资产负债表还有大量空间</strong>（债务/EBITDA 仅 0.94），随时能加杠杆做一笔大的。</p>
+<p>拖后腿的：
+1. <strong>税率 17.4% 是借来的，未来大概率往上走。</strong>
+2. <strong>ROIC 只有 13.2%</strong>，说明收购价格越来越贵——好资产的卖家现在也懂估值了。整个「工业连续收购者」赛道过去十年被资本涌入，标的的开价从 3 倍营收涨到了 5 倍以上。
+3. <strong>股价过去 52 周涨了 37.5%</strong>，而利润只涨了 10.1%。<strong>这一年的股价上涨里，四分之三来自估值扩张，不是来自公司赚更多钱。</strong> PEG 3.16 就是这个意思——花 3 倍的估值买 1 倍的增长。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家几乎挑不出毛病的公司，配了一个明显挑得出毛病的价格。</strong></p>
+<p>生意质量是顶级的：26% 的经营利润率、23% 的自由现金流率、几乎不用资本开支、SBC 只占利润 3%、账目干净到六个估值口径互相印证、债务低到随时能再打一仗。<strong>如果只看「这是不是一门好生意」，答案是毫无疑问的是。</strong></p>
+<p>但你付的价格是：<strong>37 倍买一家内生增长只有 5% 的公司，一年回你 2.5 块，其中只有 1.26 块真正到手，剩下的交给管理层去做一门超额回报只有 3.8 个百分点的收购生意。</strong></p>
+<p><strong>我的判断是贵。</strong> 不是「泡沫式的贵」，是「优质资产被买成了债券替代品」的那种贵——过去一年 37.5% 的涨幅里绝大部分是估值抬升而非业绩兑现。这种价格要求接下来几年<strong>必须持续无差错</strong>：收购不能踩雷、税率不能回归、内生增长不能掉到 4% 以下。三件事里任何一件出问题，估值从 37 倍回到 28 倍就是 25% 的跌幅，而 28 倍对一个 5% 增长的工业公司来说还是不算便宜。</p>
+<p><strong>好公司，坏价格。</strong></p>
+</div></body></html>

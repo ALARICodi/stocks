@@ -1,0 +1,356 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DTE · DTE 能源公司</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DTE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">3.1%收益率的类债券，价格给得偏贵</div><h1>DTE · DTE 能源公司</h1>
+<p><strong>市值</strong> $293.1 亿 | <strong>股价</strong> 约 $140.9 | <strong>行业</strong> 公用事业（电力 + 天然气） | <strong>TTM 截止</strong> 2026 年 6 月 30 日 | <strong>交易所</strong> NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>DTE 是密歇根州的电力和燃气垄断商，总部在底特律。它的核心生意本质上不是"卖电"，而是<strong>"向政府申请一个投资回报率，然后拼命投资"</strong>——这一点必须先讲清楚，否则后面所有数字都会看错。</p>
+<p>美国的受监管公用事业是这么运作的：公司把电网、变电站、燃气管道这些资产的账面净值加总，叫做<strong>"费率基数"（rate base）</strong>。州公用事业委员会（在密歇根是 MPSC）批准公司在这个费率基数上赚一个<strong>允许回报率</strong>（DTE 目前批下来的股权回报率约 9.9%）。然后倒推出电价：电价 = 运营成本 + 折旧 + 税 + 费率基数 × 允许回报率，再除以预计售电量。</p>
+<p>所以对 DTE 来说，<strong>利润 ≈ 费率基数 × 9.9%</strong>。想多赚钱只有一条路：<strong>把费率基数做大，也就是花钱建东西</strong>。这就是为什么它一年经营现金流 33.6 亿、资本开支却花 53.1 亿——<strong>自由现金流常年为负是这门生意的设计特征，不是出了问题</strong>。</p>
+<p>财报把业务分成五块，但实质上是三门完全不同的生意：</p>
+<h3>生意一：受监管电力（TTM 收入 72.2 亿，占 44%）</h3>
+<p>密歇根东南部约 230 万户电力客户，包括整个底特律都会区。公司拥有发电厂（核电站 Fermi 2、几座燃气电厂、还在建的风电和光伏）、输电和配电网。</p>
+<p>具体怎么收钱：底特律郊区一户人家一个月用 700 度电，账单大概 130 美元。这 130 里，只有一小部分是燃料成本，大头是"输配电服务费"——也就是让你为 DTE 埋在你家门口那根电线杆和变压器付租金。<strong>你没得选</strong>，密歇根不允许零售电力自由竞争（只有 10% 的容量开放给竞争者，且长期排队）。</p>
+<p>这门生意目前最大的变量是<strong>数据中心</strong>。密歇根近两年在拉 AI 数据中心落地，一个大型园区的用电负荷相当于几十万户居民。对 DTE 来说这是最理想的客户：用电量大、24 小时稳定、愿意签十年以上的长约、而且为了接他们要新建输电线路——<strong>新建的输电线路又变成费率基数，又能赚 9.9%</strong>。</p>
+<h3>生意二：受监管天然气（TTM 收入 21.1 亿，占 13%）</h3>
+<p>密歇根约 130 万户燃气客户，管道加起来近 2 万英里。逻辑和电力完全一样：管子是费率基数，收管输费。冬天密歇根零下十几度，居民供暖几乎全靠天然气，这是刚需里的刚需。</p>
+<p>这门生意的特点是<strong>季节性极强</strong>——第一季度赚全年的一大半，第三季度可能亏钱。所以看单季数字毫无意义，必须看 TTM。</p>
+<h3>生意三：能源交易（TTM 收入 66.3 亿，占 40% 的收入、但只占很小一块利润）</h3>
+<p><strong>这一块是理解 DTE 财报的最大陷阱。</strong> 它占了公司四成收入，却几乎不赚钱。</p>
+<p>DTE Energy Trading 做的是电力和天然气的批发买卖与对冲：帮工业客户锁定明年的天然气价格、在不同区域电网之间套价差、把自己发电厂的余电卖到 PJM 或 MISO 市场。这门生意的会计特点是<strong>营业额按买卖总额入账</strong>——买进 100 万美元的天然气、加价 1.5 万卖出，收入记 101.5 万，毛利只有 1.5 万。</p>
+<p>所以 DTE 的"市销率 1.78 倍"这个数字是<strong>完全没有意义的</strong>，因为分母里有 66 亿是过路资金。FY2025 这块收入从 38 亿暴涨到 65 亿（+68%），看起来吓人，实际上只是天然气价格波动带来的名义金额变化，对利润的影响微乎其微。</p>
+<h3>生意四：DTE Vantage（TTM 收入 7.7 亿，占 5%）</h3>
+<p>非监管的工业能源项目：给钢厂、汽车厂建现场的蒸汽和电力设施，签长期照付不议合同；还有垃圾填埋气发电和沼气（RNG）项目——把养猪场、垃圾场产生的甲烷收集提纯，卖给加州这类有低碳燃料标准的市场，赚碳信用溢价。</p>
+<p>这是 DTE 唯一"能赚超额利润"的地方，因为不受费率监管。但规模太小（收入占 5%），而且 FY2025 还下滑了 7.6%。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万美元）</th>
+<th>上一完整财年同比</th>
+<th>占分部合计</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>受监管电力</td>
+<td>7,217</td>
+<td>+9.7%</td>
+<td>42.9%</td>
+<td>约 24%（估算）</td>
+<td>约 1,720</td>
+</tr>
+<tr>
+<td>受监管天然气</td>
+<td>2,107</td>
+<td>+14.1%</td>
+<td>12.5%</td>
+<td>约 20%（估算）</td>
+<td>约 430</td>
+</tr>
+<tr>
+<td>能源交易</td>
+<td>6,631</td>
+<td>+68.5%</td>
+<td>39.4%</td>
+<td>约 1.5%（估算）</td>
+<td>约 100</td>
+</tr>
+<tr>
+<td>DTE Vantage</td>
+<td>766</td>
+<td>−7.6%</td>
+<td>4.6%</td>
+<td>约 23%（估算）</td>
+<td>约 180</td>
+</tr>
+<tr>
+<td>非监管电力</td>
+<td>92</td>
+<td>+212%</td>
+<td>0.6%</td>
+<td>—</td>
+<td>约 0</td>
+</tr>
+<tr>
+<td>母公司与抵消</td>
+<td>−348（内部抵消）</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −70</td>
+</tr>
+<tr>
+<td><strong>合计（合并口径）</strong></td>
+<td><strong>16,465</strong></td>
+<td><strong>+15.9%（TTM口径）</strong></td>
+<td>100%</td>
+<td>14.3%（实际）</td>
+<td><strong>2,360（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：分部收入加总为 168.13 亿，比合并收入 164.65 亿多约 3.5 亿，差额是内部交易抵消（交易部门帮受监管部门做的对冲）。DTE <strong>不按分部披露经营利润</strong>，上表的分部利润是按业务性质和整体 23.6 亿经营利润倒推的估算，不是财报数字。分部同比用最近一个完整财年（FY2025 vs FY2024）；合计的 +15.9% 才是 TTM 同比，而且这个增速主要来自能源交易的名义金额膨胀，<strong>不代表公司变好了 15.9%</strong>。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：现金流量表<strong>没有单列这一项</strong>，说明金额小到会计上不值得单独披露。公用事业不靠期权招人，这一项可以忽略。这是本篇少数几个干净的地方之一。</p>
+<p><strong>税：这是全篇最大的一个障眼法，必须重点讲。</strong></p>
+<p>TTM 税前利润 13.20 亿，<strong>所得税只交了 600 万，有效税率 0.45%</strong>。一家赚 13 亿的公司，一年交的税还不够买一架公务机。</p>
+<p>这不是避税，是美国清洁能源税收政策的直接结果。DTE 这几年大规模建风电和光伏，拿到的<strong>生产税抵免（PTC）和投资税抵免（ITC）</strong>可以直接冲抵联邦所得税；同时 2017 年税改后，公用事业账上积累的"超额递延所得税"要按规定退还给客户，会计上表现为税费的负项。两者叠加，把税率打到接近零。</p>
+<p><strong>这意味着什么？</strong> 意味着 DTE 报出来的 6.32 美元每股收益里，<strong>有相当大一块是税收补贴，不是经营创造的</strong>。如果按一个正常公用事业 15% 的有效税率算，同样的 13.2 亿税前利润只能剩 11.22 亿净利润，每股收益变成 5.39 美元——<strong>比报出来的低 15%</strong>。这些抵免是真金白银、有法律依据、而且会持续好几年，所以不能当成造假；但你要清楚，<strong>这是一个有期限的补贴，不是永久的盈利能力</strong>。</p>
+<p><strong>一次性项目</strong>：TTM 有 5400 万的资产处置损失（FY2025 是 4900 万，FY2024 是 2800 万，年年都有，规模在放大），以及 4300 万的股权投资收益。金额都不大，单看 TTM 一期无法判断这些是不是每年都会重复，但从三年序列看<strong>明显是年年发生的"经常性一次性"</strong>，不该加回去。</p>
+<p><strong>资本化的支出</strong>：这一项在公用事业里是核心而不是猫腻。TTM 资本开支 53.06 亿，折旧摊销 12.58 亿加其他摊销 7.14 亿共 19.72 亿——<strong>资本开支是折旧的 2.7 倍</strong>。这不是"过度投资"，这就是这门生意的引擎：花掉的 53 亿变成费率基数，明年开始按 9.9% 给你回报。<strong>但钱不是自己赚来的，是借来的。</strong></p>
+<p>另有一笔容易漏掉的现金流出：<strong>核电退役信托的缴款 8.23 亿</strong>（FY2025 是 7.19 亿，在增加）。Fermi 2 核电站将来退役要花几十亿，法律要求现在就往信托账户里存钱。这笔钱既不在资本开支里、也不在经营现金流里，是投资活动里的一条独立流出——<strong>算自由现金流的时候大部分人都会漏掉它</strong>。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>0</strong>，SBC 也基本为 0，比值无意义。这一年没有增发也没有回购，股本 2.081 亿股保持稳定。但看历史，2022 年增发过 13 亿美元。<strong>公用事业的长期常态是持续小幅增发</strong>——因为资本开支永远大于经营现金流，缺口靠债 + 股两条腿。所以未来几年被稀释是大概率事件。</p>
+<p><strong>利润和现金流的差 —— 以及现金流和"真实自由现金流"的差</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,314</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+1,258</td>
+</tr>
+<tr>
+<td>＋ 其他摊销（主要是监管资产摊销）</td>
+<td>+714</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>+54</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−43</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>+158</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−193</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+21</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+64</td>
+</tr>
+<tr>
+<td>＋ 其他营运资金</td>
+<td>+9</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>3,359</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−5,306</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−1,947</strong></td>
+</tr>
+<tr>
+<td>− 核电退役信托缴款</td>
+<td>−823</td>
+</tr>
+<tr>
+<td>− 分红</td>
+<td>−903</td>
+</tr>
+<tr>
+<td><strong>＝ 真实资金缺口</strong></td>
+<td><strong>−3,673</strong></td>
+</tr>
+<tr>
+<td>＋ 净新增借款</td>
+<td><strong>+3,777</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表是全篇最重要的东西。</strong> DTE 一年经营赚回 33.6 亿现金，但要花 53.1 亿建设、8.2 亿存核电退役金、9.0 亿分红，合计支出 70.6 亿。<strong>缺口 36.7 亿，全部靠借新债填上——这一年净借了 37.8 亿。</strong></p>
+<p>也就是说，<strong>你收到的那笔分红，本质上是公司借钱发给你的</strong>。这在公用事业行业里是标准操作、不是丑闻，因为借来的钱变成了费率基数、明年能带来更多受监管利润；但你必须明白这个循环的前提是<strong>债务能一直借下去而且利率不失控</strong>。</p>
+<p>看债务：总负债 <strong>278.4 亿</strong>，是股东权益 121.5 亿的 <strong>2.29 倍</strong>；债务/EBITDA <strong>7.58 倍</strong>；<strong>利息保障倍数只有 2.06 倍</strong>——经营利润 23.6 亿，光利息就要付掉 11.5 亿左右。这个杠杆水平在公用事业里属于偏高的一档，2.06 倍的利息覆盖是本篇最刺眼的数字。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 293.07 亿，企业价值 571.1 亿（净负债 278.0 亿——<strong>债务占了企业价值的一半</strong>，这一点比市盈率重要得多）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>293.07 ÷ 13.14</td>
+<td><strong>22.3 倍</strong></td>
+<td><strong>$4.48</strong></td>
+</tr>
+<tr>
+<td>市场预期口径（前瞻 PE）</td>
+<td>按卖方一致预期的下一财年 EPS 约 $8.13</td>
+<td><strong>17.3 倍</strong></td>
+<td><strong>$5.77</strong>（预测，非已实现）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税率正常化到 15%：293.07 ÷（税前 13.20 × 0.85 ＝ 11.22）</td>
+<td><strong>26.1 倍</strong></td>
+<td><strong>$3.83</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>−19.47 亿</strong></td>
+<td><strong>无意义</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>571.1 ÷ 23.60</td>
+<td><strong>24.2 倍</strong></td>
+<td><strong>$4.13</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>293.07 ÷ 三年净利润均值 14.18</td>
+<td><strong>20.7 倍</strong></td>
+<td><strong>$4.84</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行反着读。</strong> FY2023 是 13.94 亿、FY2024 是 14.01 亿、FY2025 是 14.59 亿，均值 14.18 亿——<strong>高于当期的 13.14 亿</strong>。也就是说 TTM 这一年的利润是最近三年里最差的，每股收益从 7.03 掉到 6.32、跌了 8.9%。所以三年平均口径（20.7 倍）反而比当期口径（22.3 倍）便宜。当期偏低的原因大概率是天气偏温和（用电供暖需求少）加上利息支出上升。</p>
+<p>但<strong>别把这当成"利润被低估、以后会回来"的理由</strong>。真正要看的是那个前瞻 PE：市场给的 17.3 倍，隐含下一财年每股收益要从 6.32 跳到 <strong>8.13，涨 29%</strong>。一家受监管公用事业的利润增速被法律锁死在费率基数增长（每年 7–8%）左右，<strong>29% 是不可能靠正常经营做到的</strong>。所以要么是卖方预期过于乐观，要么就是市场在赌数据中心带来的费率基数跳升。这是这只票最大的分歧点。</p>
+<p><strong>说人话：你现在投 100 块进去。</strong></p>
+<p>按最保守的口径（税率正常化），公司一年替你赚 <strong>3 块 8</strong>；按 GAAP 当期口径，一年赚 <strong>4 块 5</strong>；三年平均口径 <strong>4 块 8</strong>。自由现金流口径不用算了，是<strong>负的</strong>。</p>
+<p>这里面有多少真回到你口袋？TTM 分红 9.03 亿，除以 293 亿市值 = <strong>3.08%</strong>，也就是 <strong>3 块钱</strong>。没有回购，一分钱都没有。</p>
+<p>剩下那 1 块 5 去哪了？<strong>留在公司里，而且远远不够。</strong> 公司这一年在资本开支上花了 53 亿、核电信托存了 8 亿，加起来是净利润的 4.6 倍——缺口 37 亿全靠借债。所以准确的说法是：<strong>你投的 100 块，一年拿回 3 块现金分红，剩下的部分不但没留住，公司还替你多借了 12 块 9 的债去买资产。</strong></p>
+<p>这个 3 块 8 未来会变大还是变小？<strong>大概率缓慢变大，但速度慢，而且靠稀释你自己。</strong> 变大的来源是费率基数每年扩张 7–8%（数据中心是关键催化剂）。变小的压力有两个：一是税收抵免总有用完的一天，那时候有效税率会从 0.45% 回到十几个百分点，等于一次性把每股收益砍掉 15%；二是 278 亿的债在利率高位不断滚动，利息保障倍数只有 2.06 倍，每上升一个百分点的利率就要吃掉近 3 亿利润。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一只"22 倍市盈率的股票"，这是一张 3.1% 收益率、有 2.29 倍杠杆的类债券，而且价格给得偏贵。</strong></p>
+<p>把税收补贴剥掉之后，真实市盈率是 26 倍——<strong>你为一家利润增速被法律锁在 7% 左右、自由现金流永远为负、利息保障只有 2.06 倍的公司，付了 26 倍的价格</strong>，换回来一年 3.08% 的分红。同期美国十年期国债给你的收益率大概也在 4% 上下，而且没有杠杆风险。</p>
+<p>它不烂。密歇根的监管环境在美国算稳定的，两块受监管业务是真正的垄断，数据中心的负荷增长是真实且可观的机会。如果 AI 数据中心真的在密歇根大规模落地，费率基数会阶跃式上台阶，这个估值就说得通了。</p>
+<p>但<strong>在那件事被证实之前，这个价格没有留任何安全边际</strong>。市场用 17.3 倍的前瞻 PE 已经把"利润跳涨 29%"这件事提前计入了。买它，你赌的不是"稳定的公用事业"，你赌的是"密歇根拿下足够多的数据中心"——<strong>用一个几乎没有折价的价格，去赌一件还没发生的事</strong>。</p>
+<p>一句话：<strong>要买公用事业的稳定，这个价格太贵；要买数据中心的成长，这个杠杆太重。</strong></p>
+</div></body></html>

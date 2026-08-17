@@ -1,0 +1,406 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LIN · 林德集团（Linde plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LIN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意毫无毛病，唯一的问题是贵：31倍买7.9%增长</div><h1>LIN · 林德集团（Linde plc）</h1>
+<p>市值 $2204 亿 | 股价约 $478.2 | 行业：工业气体 | TTM 截止 2026 年 6 月 30 日
+（全榜第 39 名 · 分析日 2026-08-14）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>林德是全球最大的工业气体公司。听起来无聊，但这门生意的经济结构是<strong>全世界最像收租、最难被颠覆的实业之一</strong>——理解它，比理解它的财报数字重要得多。</p>
+<p>先说清楚它卖什么：<strong>氧气、氮气、氩气、氢气、二氧化碳、氦气</strong>，以及一堆半导体用的特种气体。这些东西的原料是<strong>空气</strong>（免费）和<strong>电</strong>。整个生意就是：把空气压缩、冷却到零下 190 度让它液化，然后按沸点不同一层层分开——这叫"空气分离"。成本的一半以上是电费。</p>
+<p>关键在于<strong>怎么把气送到客户手上</strong>。送法不同，生意的经济性天差地别，林德也正是按这个分的三个板块。</p>
+<h3>生意一：On-Site 现场制气（TTM 84.48 亿，占 23.8%）——最像收租，也最像债券</h3>
+<p>这门生意的模式是：<strong>林德把一整座制气工厂建在客户的厂区里，用管道翻过围墙直接送气。</strong></p>
+<p>具体讲一个场景。一座大型钢厂的高炉炼钢时，要往铁水里吹纯氧把碳烧掉，一天要消耗<strong>几千吨氧气</strong>。这个量根本不可能用卡车拉——一辆槽罐车才装 20 吨。所以钢厂会跟林德签一份合同：林德掏 2–5 亿美金，在钢厂旁边的空地上建一座空分装置，管道接进车间。</p>
+<p><strong>合同条款才是这门生意的精髓：</strong>
+- <strong>期限 15–20 年</strong>；
+- <strong>照付不议（take-or-pay）</strong>：不管钢厂今年开不开工、要不要气，每个月必须付一笔<strong>固定的设施费</strong>，这笔钱覆盖林德的建厂成本和回报；用多少气再另外付变动费；
+- <strong>电费全额转嫁</strong>：电价涨了直接加到客户账单上，林德不承担能源成本风险；
+- <strong>通胀条款</strong>：合同价格跟 CPI 挂钩自动上调。</p>
+<p>也就是说，林德花 3 亿建一座厂，换来的是一份<strong>20 年期、抗通胀、不承担能源风险、客户停产也照付</strong>的现金流合同。这在经济上更接近一张公司债，而不是一门制造业。</p>
+<p>同样的模式还用在：<strong>半导体晶圆厂</strong>（需要 24 小时不断的超高纯氮气吹扫腔体，纯度要求 99.9999%，一旦断供整条产线的晶圆全报废）、<strong>炼油厂</strong>（加氢脱硫要大量氢气）、<strong>化工厂</strong>。</p>
+<p><strong>为什么客户不换供应商？</strong> 因为管道已经接进你的车间了，换供应商意味着重建一座工厂、停产半年。签下去那一刻，就是 20 年的锁定。</p>
+<h3>生意二：Merchant 散装液态气（TTM 105.59 亿，占 29.8%）——区域垄断</h3>
+<p>用气量没大到值得建一座专属工厂、但又不小的客户，走这条路：林德在一个地区建一座空分厂，把液氧、液氮、液氩装进<strong>低温槽罐车</strong>，开出去挨家送，倒进客户厂区的一个大罐子里。</p>
+<p>客户长什么样：
+- <strong>医院</strong>：医用氧气。一家三甲规模的医院院子里那个白色大罐子，就是这个。
+- <strong>食品厂</strong>：液氮速冻。鸡块、饺子、冰淇淋要在几分钟内冻到零下 30 度才不会结出破坏口感的大冰晶，做法是让它们经过一条喷液氮的隧道。
+- <strong>金属加工、玻璃厂、水处理厂</strong>。</p>
+<p>合同期通常 3–5 年，也带照付不议条款。</p>
+<p><strong>这门生意的护城河是物流半径。</strong> 液氧在槽罐车里会持续汽化损耗，运输经济半径大约 <strong>200–300 公里</strong>。这就意味着：谁在这个区域有工厂，谁就赢；而一个新进入者要来抢，得先花两三亿建一座厂，然后跟一个成本已经摊销完、可以随时降价的老玩家打价格战——算不过来。<strong>结果是全球工业气体市场被林德、法液空、空气化工三家瓜分，每个地理区域基本是垄断或双寡头。</strong></p>
+<h3>生意三：Packaged Gas 瓶装气（TTM 122.61 亿，占 34.6%）——最大、最赚钱、最零散</h3>
+<p>这是我们最容易见到的形态：<strong>钢瓶</strong>。</p>
+<p>一家做不锈钢护栏的小作坊，焊接时要用氩气+二氧化碳混合气保护焊缝不氧化。它的用量一个月几瓶，不可能装大罐子。它去林德的门店（美国的 Linde / 原 Praxair 分销网络，全球几千个网点）换气瓶：<strong>押金租瓶、空瓶换满瓶。</strong></p>
+<p>这门生意有三层收入：
+1. <strong>气本身</strong>——一瓶氩气几十到一百多美金；
+2. <strong>钢瓶租金</strong>——这一项几乎是纯利润，客户手里握着的每一个瓶子，每天都在给林德计租，而瓶子的成本早在十几年前就摊完了；
+3. <strong>顺带卖的硬件</strong>——焊丝、焊枪、面罩、减压阀、安全用品。这块毛利虽低，但把客户黏在门店里。</p>
+<p>还有一个高价值分支：<strong>特种气体</strong>。半导体厂、实验室、医疗诊断要的那种纯度极高、配比极准的小钢瓶（比如某种电子级掺杂气体），一瓶可以卖到几千美金，毛利率极高。</p>
+<p><strong>这是林德最大的一块（34.6%），也是单位毛利最高的一块</strong>，因为它服务的是几十万个议价能力为零的中小客户——一家焊接作坊不可能为了每月省 200 块气钱去跟林德谈判。</p>
+<h3>生意四：Other Product 工程与其他（TTM 41.81 亿，占 11.8%）</h3>
+<p>主要是 <strong>Linde Engineering</strong>：给第三方设计和建造空分装置、天然气液化装置、氢气工厂。比如中东某国有石油公司想自己拥有一座制氢厂，林德接工程总包，赚设计施工的钱。这块波动大、利润率低于气体业务，但它是<strong>技术领先性的来源</strong>——自己会造世界上最好的空分塔，才能在气体业务上保持成本优势。</p>
+<p>近年还塞进了<strong>清洁能源项目</strong>：给炼厂做"蓝氢"（天然气制氢+碳捕集）、给工业客户做碳捕集。目前收入贡献很小，是长期期权。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收(百万)</th>
+<th>对比 2025 全年</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Packaged Gas 瓶装气</td>
+<td>12,261</td>
+<td>+3.4%</td>
+<td>34.6%</td>
+</tr>
+<tr>
+<td>Merchant 散装液态</td>
+<td>10,559</td>
+<td>+3.9%</td>
+<td>29.8%</td>
+</tr>
+<tr>
+<td>On-Site 现场制气</td>
+<td>8,448</td>
+<td>+4.5%</td>
+<td>23.8%</td>
+</tr>
+<tr>
+<td>Other Product 工程等</td>
+<td>4,181</td>
+<td>+7.5%</td>
+<td>11.8%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>35,449</strong></td>
+<td><strong>+4.3%</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（TTM 同比增速为 +6.63%；上表的对比基准是 2025 日历年全年，两者口径不同，仅用于看结构变化。）</p>
+<p><strong>利润率：林德在这四页里不按板块披露利润。</strong> 整体经营利润率 26.45%。按行业常识，On-Site 的利润率最稳定（合同锁定），Packaged Gas 的绝对毛利最高但要养门店和车队，Merchant 居中，工程业务显著低于平均。<strong>分板块利润无法从财报页取得，此处不编造数字。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>林德的账是本篇三家公司里<strong>最干净的一本</strong>，几乎没有需要剥的东西。逐项过：</p>
+<h3>股权激励（SBC）：TTM 1.36 亿，占净利润 <strong>1.9%</strong></h3>
+<p><strong>几乎可以忽略不计。</strong> 6.5 万名员工，一年发的股票总共 1.36 亿美金，人均 2,000 美金。这是一家给现金工资的重工业公司。对比同市值的科技公司（SBC 常占净利润 30–50%），林德在这一项上干净得像另一个世纪的企业。</p>
+<h3>一次性项目：TTM 期内没有</h3>
+<p>税前利润 95.0 亿、交税 20.9 亿、有效税率 <strong>21.95%</strong>——完全正常，没有 IBM 那种税务魔术，也没有大额减值或重组。</p>
+<p>（历史上有过一次：2022 年林德退出俄罗斯业务计提了约 10 亿美金减值，那一年净利润只有 41.5 亿。这是 2022 年数字看起来很差的原因，跟今天无关，但它解释了下面"三年平均"为什么要用近三期而不是往前数五年。）</p>
+<h3>资本化的支出：没有可疑操作</h3>
+<p>林德不做软件资本化那套。它的资本开支全是<strong>真的在地上盖厂</strong>。</p>
+<h3>回购与稀释：<strong>这是本篇三家公司里唯一做得漂亮的</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>40.57 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>1.36 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>29.8 倍</strong></td>
+</tr>
+<tr>
+<td>股本一年变化</td>
+<td><strong>−2.04%（减少）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这才是真回购。</strong> 判断标准是回购金额是不是 SBC 的 3 倍以上——林德是 <strong>29.8 倍</strong>。它花的每一块钱回购，都不是在给员工发的股票接盘，而是实打实地把股份数减少。</p>
+<p>股本一年少 <strong>2.04%</strong>，意思是：<strong>你什么都不做，一年之后你手里这一份对公司的所有权自动多了 2%。</strong> 加上 1.34% 的股息，股东实际收益率 <strong>3.38%</strong>。</p>
+<p>再加一句：<strong>连续 33 年提高股息</strong>，派息率只有 41.3%，还有很大提升空间。</p>
+<h3>利润和现金流的差：<strong>这是林德唯一真正需要盯的地方</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（GAAP）</td>
+<td>7,244</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+3,825</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+136</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>−602</td>
+</tr>
+<tr>
+<td>＋ 应收账款变化</td>
+<td>−464</td>
+</tr>
+<tr>
+<td>＋ 存货变化</td>
+<td>−6</td>
+</tr>
+<tr>
+<td>＋ 应付账款变化</td>
+<td>+442</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>−282</td>
+</tr>
+<tr>
+<td>＋ 少数股东权益等余项</td>
+<td>+196</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>10,489</strong></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−5,514</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>4,975</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营现金流 104.89 亿，扣掉 55.14 亿的资本开支，只剩 49.75 亿自由现金流——净利润是 72.44 亿，自由现金流比净利润还少 31%。</strong></p>
+<p>这就是为什么 P/FCF 高达 <strong>44.3 倍</strong>，而 PE 只有 30.9 倍。第一眼看这家公司很贵。</p>
+<p><strong>但这里要分清一件事：这 55 亿资本开支，有多少是"维持"，有多少是"扩张"？</strong></p>
+<ul>
+<li><strong>折旧摊销 38.25 亿</strong>，可以近似看作"每年设备磨损掉、必须补上的部分"，也就是维持性资本开支；</li>
+<li><strong>多出来的 16.9 亿是在建新厂</strong>——签下新的 On-Site 长约、进入新地区、建氢能项目。这些钱花出去，是为了<strong>未来多出来的合同现金流</strong>，不是为了维持现状。</li>
+</ul>
+<p><strong>用"股东盈余"口径重算：经营现金流 104.89 − 维持性资本开支 38.25 ≈ 66.64 亿。</strong> 这个数字比 49.75 亿的自由现金流更能代表"这门生意一年真正能自由支配多少钱"。对应 <strong>33.1 倍</strong>。</p>
+<p><strong>但也别把扩张说得太好听。</strong> 看现金去向：TTM 回购 40.57 亿 + 股息 28.78 亿 = <strong>69.35 亿</strong>，而自由现金流只有 <strong>49.75 亿</strong>——缺口 19.6 亿是<strong>借来的</strong>（TTM 净增债务 27.17 亿，净债务从 219.3 亿升到 231.2 亿）。</p>
+<p>也就是说林德在<strong>借债回购</strong>。这是不是问题？程度上比 IBM 轻得多：债务/EBITDA 只有 <strong>2.12 倍</strong>（IBM 是 3.71），利息保障 <strong>14.86 倍</strong>（IBM 是 6.41），而且它借的钱最终变成的是能签 20 年合同的实物资产。但趋势是负债在慢慢往上走，值得记一笔。</p>
+<h3>一个必须单独讲的事实：<strong>过去三年，林德几乎没有增长，利润却涨了</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>2023</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>328.5 亿</td>
+<td>354.5 亿（+7.9%）</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>80.2 亿</td>
+<td>93.8 亿（+16.9%）</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>24.42%</td>
+<td><strong>26.45%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两年半里营收只涨了 7.9%，经营利润涨了 16.9%——<strong>一半的利润增长来自涨价和降本，不是来自卖出更多的气。</strong></p>
+<p>原因是全球工业生产（尤其欧洲的钢铁和化工）疲软，气体的<strong>销量基本没涨</strong>，林德靠三件事把利润推上去：合同里的通胀条款自动提价、主动对中小客户提价、以及关掉不赚钱的产能并持续裁员（人均创收已经做到 54.4 万美金）。</p>
+<p>这套动作管理层执行得极好——<strong>但它有天花板</strong>。你不可能永远靠涨价，尤其当客户的下游本身在萎缩时。<strong>未来的增长必须重新回到销量上</strong>，也就是新的 On-Site 合同（半导体和氢能是主要来源）。这是林德未来五年最大的一个不确定项。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2204 亿 ÷ 72.4 亿</td>
+<td><strong>30.86 倍</strong></td>
+<td><strong>$3.24</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>调整项极少，约比 GAAP 高 3%</td>
+<td>约 30.0 倍</td>
+<td>约 $3.33</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目，SBC 已按 GAAP 扣除</td>
+<td><strong>30.86 倍</strong></td>
+<td><strong>$3.24</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2204 亿 ÷ 49.75 亿</td>
+<td><strong>44.31 倍</strong></td>
+<td><strong>$2.26</strong></td>
+</tr>
+<tr>
+<td><strong>股东盈余口径</strong>（扣维持性资本开支）</td>
+<td>2204 亿 ÷ 66.64 亿</td>
+<td><strong>33.1 倍</strong></td>
+<td><strong>$3.02</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2436 亿 ÷ 93.8 亿</td>
+<td><strong>25.97 倍</strong></td>
+<td>$3.85</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2204 亿 ÷ 69.0 亿（TTM/2025/2024 平均）</td>
+<td><strong>31.9 倍</strong></td>
+<td><strong>$3.13</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（Non-GAAP 一行为估算——林德的调整口径主要剔除汇率和小额并购成本，与 GAAP 差距很小。<strong>该行为估算。</strong>）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进林德，按最保守的真实口径（30.9 倍），公司一年替你赚 3.24 块。</strong></p>
+<p>这 3.24 块的去向，是本篇三家里最健康的：
+- <strong>1.34 块以现金股息发到你手上</strong>（TTM 派息 28.78 亿，连涨 33 年）；
+- <strong>2.04 块以回购的形式回到你手上</strong>——不是发给员工，是真正减少了股份数，等于你的持股比例自动变大；
+- <strong>两项合计股东收益率 3.38%</strong>，比 IBM（1.59%）和安进（1.95%）都高；
+- 剩下的<strong>留在公司</strong>：55 亿资本开支去建新厂（其中约 17 亿是扩张性的），另外还借了 27 亿的新债来补回购的缺口。</p>
+<h3>这个 3.24 块，未来会变大还是变小？</h3>
+<p><strong>大概率会缓慢变大，而且确定性是三家里最高的：</strong></p>
+<ul>
+<li><strong>护城河是物理性的，不是技术性的。</strong> 管道翻过围墙、20 年照付不议合同、200 公里的运输半径——这些东西不会被 AI 颠覆、不会被创业公司抢走、不会被专利到期。安进的专利会到期，IBM 的咨询会被 AI 打，林德的管道不会。</li>
+<li><strong>ROIC 12.37% vs WACC 7.51%</strong>：每投一块钱进去赚 12.4 分，融资成本 7.5 分，<strong>每扩张一块钱就创造 4.9 分的价值</strong>。这是"扩张性资本开支是好事"的量化证据。</li>
+<li><strong>通胀是朋友</strong>：合同自动跟 CPI 涨价，而资产是十几年前建的。</li>
+<li><strong>股本每年少 2%</strong>，光这一项就让每股收益每年自动 +2%。</li>
+<li>半导体和氢能是两条真实的增量：每一座新晶圆厂都要配一份 15 年的超高纯氮气合同。</li>
+</ul>
+<p><strong>往下的力量：</strong>
+- <strong>销量停滞是真的</strong>。欧洲工业（林德的传统腹地）持续弱，靠涨价撑利润总有尽头。
+- <strong>贵。</strong> 30.9 倍买一家营收年增 4–7% 的工业气体公司，是市场给"确定性"支付的高额溢价。股价过去一年只涨了 1.05%，现在 $478 已经跌破 50 日均线（$511），RSI 33.8——<strong>市场正在重新考虑这个溢价该给多少</strong>。
+- 氢能项目投入巨大而回报期极长，如果政策补贴退坡，这部分资本开支的回报会低于 12.4% 的历史 ROIC。</p>
+<p><strong>"三年平均 31.9 倍" vs "当期 30.9 倍"，只差 3%</strong> ——这一行是全表最能说明问题的：<strong>林德的当期利润不是周期高点，它就是常态。</strong> 对比安进（当期 26 倍 / 三年平均 33 倍，差 27%），林德的盈利稳定得可怕。你付 31 倍买的，是一份可预测性极强的现金流，而不是一个碰巧赶上好年份的数字。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>林德是本篇三家里唯一一家生意本身没有任何毛病的公司——护城河是埋在地下的管道和 20 年照付不议合同、账干净得几乎没东西可剥、回购是 SBC 的 30 倍、股本每年真减 2%、每投一块钱赚 12.4 分而借钱只要 7.5 分；它唯一的问题是贵，31 倍买一家两年半营收只涨 7.9%、靠涨价撑起利润的工业公司，投 100 块一年回你 3.2 块，你买的是确定性而不是增长，值不值取决于你愿意为"二十年后它还在那儿"付多少溢价。</strong></p>
+</div></body></html>

@@ -1,0 +1,396 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TRGP · Targa Resources（塔加资源）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TRGP</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">真收费站，但门票不便宜、负债表已拉满</div><h1>TRGP · Targa Resources（塔加资源）</h1>
+<p><strong>市值</strong> $587.2 亿 | <strong>股价</strong> ~$274 | <strong>行业</strong> 能源中游（天然气采集处理与 NGL 物流） | <strong>TTM 截止</strong> 2026-06-30（最近四个季度滚动）</p>
+<p>全文所有数字都是 TTM 口径，也就是 2025 年 7 月到 2026 年 6 月这完整一年。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先给个画面感：这家公司只有 <strong>3570 名员工</strong>，一年做 <strong>167 亿美元</strong>营收，人均创收 469 万美元、人均净利 63 万美元。这个数字比华尔街投行还夸张。</p>
+<p>原因很简单——<strong>它不靠人赚钱，它靠埋在地下的管子和建在地上的塔赚钱</strong>。它是一家「收过路费」的公司，只不过收的不是车，是从二叠纪盆地（Permian Basin）油井里冒出来的天然气。</p>
+<p>它的分部有两个，但要理解它，得先理解一整条产业链是怎么走的。</p>
+<h3>先讲清楚这条链子</h3>
+<p>德州西部二叠纪盆地，一口页岩油井开采出来的东西<strong>不只是石油</strong>。石油从地底上来的时候，会带着大量溶解在里面的天然气——业内叫「伴生气」。这些气不是纯甲烷，是一锅混合物：甲烷、乙烷、丙烷、丁烷、异丁烷、天然汽油。</p>
+<p>对油公司（比如先锋、康菲、埃克森）来说，<strong>这锅气是个麻烦</strong>：
+- 直接烧掉（flaring）？德州铁路委员会限制得越来越死，而且现在所有大机构投资者都盯着 ESG 指标，烧气会被点名。
+- 不处理直接送进天然气管网？不行，管网只收干甲烷，混着丙烷丁烷的湿气会在管道里凝出液体，堵管、腐蚀、爆管。
+- 自己建处理厂？一座处理厂两三亿美元、要三年批文和施工，油公司只想打井，不想干这个。</p>
+<p><strong>所以油公司必须找一个中间商，帮它把这锅气收走、分开、卖掉。这就是 Targa 的全部生意。</strong></p>
+<h3>分部一：采集与处理（G&amp;P，营收 65.66 亿）</h3>
+<p><strong>这件事具体怎么做：</strong></p>
+<p>Targa 在二叠纪盆地铺了几万公里的小口径管道，像毛细血管一样接到一口口井的井口。井口的湿气进管，汇集到 Targa 自建的天然气处理厂（它在二叠纪有几十座，总处理能力约每天 70 亿立方英尺）。</p>
+<p>处理厂里的核心设备叫<strong>低温分离装置</strong>：把气体压缩、然后急速降温到零下 90℃ 以下。不同的成分沸点不同——甲烷这时候还是气体，乙烷及以上的重组分变成液体，就这样分开了。分出来的：
+- <strong>干气（纯甲烷）</strong>：送进州际天然气管网，去发电厂、去 LNG 出口终端。
+- <strong>Y-grade NGL（一锅混合的液态天然气凝液）</strong>：这才是好东西，进入下一个分部。</p>
+<p><strong>它怎么收钱——两种模式，差别巨大：</strong></p>
+<p><strong>第一种是收费（fee-based）</strong>。合同写死：你每送我 100 万英热单位（MMBtu）的湿气，我收你比如 0.70 美元。举个具体的账：一口不错的二叠纪井，日产气 200 万立方英尺（约 2000 MMBtu），Targa 一天收 1400 美元，一年就是 <strong>51 万美元</strong>——从一口井。它接了几千口井。这种模式<strong>不管油价气价怎么波动，只要井还在出气，钱就照收</strong>。</p>
+<p><strong>第二种叫「按比例分成」（POP，percent of proceeds）</strong>。Targa 不收现金费用，而是把处理出来的 NGL 拿走一部分（比如 20%）自己去卖。<strong>这种模式油气价格涨的时候多赚，跌的时候少赚——这是真实的商品价格敞口。</strong></p>
+<p>Targa 这些年一直在把合同往 fee-based 推，但 POP 的尾巴还在。<strong>这就是为什么它的毛利率会从 FY2022 的 14.98% 一路跳到 TTM 的 35.08%</strong>——不是它突然变高效了，是 NGL 的价格环境变好了。这一点后面算估值时非常重要。</p>
+<p><strong>护城河在哪：一份叫「区块专营权」（acreage dedication）的合同。</strong></p>
+<p>油公司在开发一片区块之前，会跟中游公司签一份 10–20 年的协议：这片地上未来打出来的所有气，都归你收。Targa 拿到这份协议后，才敢投几亿美元把管子埋进去。</p>
+<p><strong>一旦管子埋好、接上井口，这口井的气在物理上就没有第二个买家了。</strong> 竞争对手要抢，得重新谈地役权、重新过环评、重新挖沟——为了一口井做这些事在经济上是荒谬的。所以中游生意的本质是：<strong>投资极重、建成后近乎垄断、现金流可预测到未来二十年</strong>。</p>
+<h3>分部二：物流与运输（L&amp;T，营收 138.48 亿）</h3>
+<p>这个分部营收看起来比 G&amp;P 大一倍，但其中有 <strong>36.28 亿是内部抵销</strong>——因为 G&amp;P 分部把 NGL「卖」给 L&amp;T 分部，两边都记了一笔。这一段是三件事：</p>
+<p><strong>第一件：长输管道。</strong>
+Targa 有一条自建的主动脉，叫 <strong>Grand Prix 管道</strong>，从二叠纪盆地一路铺到德州东南部的蒙特贝尔维尤（Mont Belvieu）——那是全球最大的 NGL 集散中心。这条管子把西德州的 Y-grade 液体运八百多公里到墨西哥湾边。运费按每加仑收，签的是长期照付不议合同（take-or-pay：<strong>不管你实际用不用，都得付这笔钱</strong>）。</p>
+<p><strong>第二件：分馏（fractionation）。</strong>
+到了蒙特贝尔维尤，那一锅 Y-grade 混合液要拆成纯品。设备叫分馏塔组——一串蒸馏塔，按沸点依次分离：先把乙烷分出来、再丙烷、再丁烷、再异丁烷、最后剩天然汽油。</p>
+<p>拆出来卖给谁，每一种都有具体去处：
+- <strong>乙烷</strong> → 卖给墨西哥湾沿岸的乙烯裂解装置（陶氏、埃克森这些），裂解成乙烯，做成聚乙烯，最终变成塑料袋和塑料管。
+- <strong>丙烷</strong> → 一半出口到亚洲，日本韩国中国用来做丙烷脱氢制丙烯，印度用来做家用燃气罐；另一半在美国用于取暖和乡村燃气。
+- <strong>丁烷</strong> → 冬天掺进汽油里（提高蒸汽压好点火），也用于化工。
+- <strong>天然汽油</strong> → 卖给炼厂，或者出口到加拿大掺进油砂沥青里帮助输送。</p>
+<p>收费方式：<strong>按每加仑分馏量收固定费用</strong>，大约一毛多美元。一列日处理 12 万桶的分馏塔，一天就是 12 万 × 42 加仑 × 0.12 美元 ≈ <strong>60 万美元</strong>。Targa 在蒙特贝尔维尤有多列这样的塔。</p>
+<p><strong>第三件：出口终端。</strong>
+在休斯顿航道边的加莱纳公园（Galena Park），Targa 有装船码头。一艘 VLGC（超大型液化气船）能装约 4.4 万吨丙烷，开往日本或中国。Targa 按装船量收码头费，同样是长期照付不议合同。</p>
+<p><strong>为什么这块特别值钱：</strong> 美国现在是全球最大的 LPG 出口国，而能在墨西哥湾装 VLGC 的深水码头就那么几个——<strong>新建一个要环评、要疏浚航道、要几年时间和十亿美元级的投入</strong>。这是实打实的稀缺资产。</p>
+<h3>两个分部的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>vs 上一完整财年(FY25)</th>
+<th>占比（抵销前）</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>采集与处理 G&amp;P</td>
+<td>$65.66 亿</td>
+<td>−11.5%</td>
+<td>32.2%</td>
+<td>~35%（估算）</td>
+<td>~$23 亿（估算）</td>
+</tr>
+<tr>
+<td>物流与运输 L&amp;T</td>
+<td>$138.48 亿</td>
+<td>−4.9%</td>
+<td>67.8%</td>
+<td>~14%（估算）</td>
+<td>~$19 亿（估算）</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>−$0.44 亿</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>总部与内部抵销</td>
+<td>−$36.28 亿</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−$4 亿（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$167.42 亿</strong></td>
+<td><strong>−2.0%</strong></td>
+<td>100%</td>
+<td><strong>22.9%</strong></td>
+<td><strong>$38.36 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠️ <strong>口径说明：</strong> 分部经营利润财报未按此颗粒度披露，上表利润率是我按整体经营利润 38.36 亿倒推 + 行业结构估算的，<strong>是估算不是财报数字</strong>；总数 38.36 亿和 22.9% 是真实的。「vs 上年」那列是 TTM（截至 26 年 6 月）比 FY2025（截至 25 年 12 月），<strong>不是严格同比</strong>。总营收 −1.97% 是真实 TTM 口径。</p>
+</blockquote>
+<p><strong>这里有一个必须点破的反差：营收在跌（−2.0%），利润却在暴涨（净利润 +22.4%）。</strong></p>
+<p>原因是营收里有一大块是「代客买卖商品」的流水（它买湿气、卖 NGL，商品价格波动直接放大营收数字），<strong>而利润来自它收的处理费和分馏费</strong>。所以看 Targa 千万别看营收——<strong>营收是噪音，利润和处理量才是信号</strong>。它的处理量这一年还在涨，只是 NGL 的销售价格跌了，把营收拉了下来。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 7600 万美元，占净利润 3.4%。</strong>
+干净。3570 个员工，主要是工程师、操作工和管道维护人员，不需要靠股票留人。五年来这个数字从 5920 万涨到 7600 万，涨幅温和。按规矩当真实成本扣掉，不影响任何结论。</p>
+<p><strong>一次性项目：TTM 报表里没有识别出重大的一次性损益。</strong>
+经营利润 38.36 亿和 EBIT 38.36 亿完全一致，中间没有藏减值或诉讼。现金流表里有一笔 <strong>7.17 亿的「其他非现金调整」</strong>，规模不小（占净利润 31%），主要是递延所得税和权益法投资的非现金损益。这一笔我不加回也不减掉。</p>
+<p><strong>资本化的支出：这是全篇最需要盯的一项，而且它不是障眼法，是这门生意的本质。</strong></p>
+<p>TTM 资本开支 <strong>35.45 亿美元</strong>，占营收 21.2%，是折旧摊销（16.73 亿）的 <strong>2.12 倍</strong>。另外还花了 <strong>13.89 亿现金做收购</strong>。</p>
+<p><strong>资本开支是折旧的两倍，意味着它在大幅扩建，不只是维修。</strong> 这一点必须拆开看，因为它直接决定了自由现金流这个数字有没有意义（见下）。</p>
+<p><strong>回购与稀释：真回购，力度不小。</strong>
+- TTM 回购 <strong>3.82 亿</strong>，同期 SBC 只有 <strong>0.76 亿</strong>，比值 <strong>5.0 倍</strong>。按规矩大于 3 就是真回馈，5 倍是干净的。
+- 股本一年减少 <strong>1.51%</strong>（214.43 百万股）。
+- 分红 <strong>9.21 亿</strong>，每股年度股息 5.00 美元，股息率 1.83%，而且<strong>同比涨了 28.57%</strong>——这是它最近几年最鲜明的动作：疯狂提高分红。
+- 两项合计 <strong>13.03 亿</strong>，占市值的 3.33%。</p>
+<p><strong>但这里有个问题：这 13.03 亿是借钱发的。</strong>
+TTM 经营现金流 42.86 亿，资本开支 35.45 亿 + 收购 13.89 亿 = 投资支出 49.34 亿，<strong>已经超过经营现金流 6.5 亿</strong>。然后还发了 13.03 亿给股东。这 19.5 亿的缺口靠什么补？<strong>净新增借款 25.91 亿。</strong></p>
+<p>结果就是：<strong>总债务从 FY2025 末的 174.33 亿涨到现在的 195.78 亿，一年多借了 21 亿。</strong></p>
+<p><strong>利润和现金流的差：账对得上，但自由现金流这个数字具有严重误导性。</strong></p>
+<p>TTM 净利润 23.05 亿，经营现金流 <strong>42.86 亿</strong>，逐项对账（这次每一分钱都能对上）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东）</td>
+<td>+2,305</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+1,673</td>
+<td>非现金，管道和处理厂的折旧</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+76</td>
+<td>非现金，但按规矩算真成本</td>
+</tr>
+<tr>
+<td>加：其他非现金调整</td>
+<td>+717</td>
+<td>主要为递延税和权益法投资</td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−602</td>
+<td></td>
+</tr>
+<tr>
+<td>加：存货减少</td>
+<td>+122</td>
+<td></td>
+</tr>
+<tr>
+<td>减：应付账款减少</td>
+<td>−36</td>
+<td></td>
+</tr>
+<tr>
+<td>加：应计费用增加</td>
+<td>+30</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>4,286</strong></td>
+<td><strong>完全对上，无残差</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−3,545</td>
+<td><strong>其中绝大部分是扩建，不是维修</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>741</strong></td>
+<td>只占营收 4.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>报表上的自由现金流只有 7.41 亿，对应市值是 79 倍市销……不对，是 79 倍 P/FCF。这个数字看起来吓人，但它是假的。</strong></p>
+<p>为什么假？因为那 35.45 亿资本开支里，<strong>只有一小部分是「维持现有资产不衰败」必须花的钱（维护性资本开支），绝大部分是「为了明年多赚钱而新建管道和处理厂」（增长性资本开支）</strong>。增长性开支是可以随时停的——如果 Targa 明天宣布停止扩建，它的现金流会立刻暴增，而现有资产照样收费二十年。</p>
+<p>所以对中游公司，正确的算法是把维护性开支和增长性开支分开。<strong>Targa 的维护性资本开支历史上大约在 3 亿美元量级（约占总开支的一成）</strong>，那么：</p>
+<ul>
+<li><strong>激进口径「维护性自由现金流」</strong> = 42.86 − 3.5 ≈ <strong>39.4 亿</strong> → 对应 <strong>14.9 倍</strong>（估算）</li>
+<li><strong>保守口径</strong>：按折旧摊销 16.73 亿当作长期需要的重置投入 = 42.86 − 16.73 ≈ <strong>26.1 亿</strong> → 对应 <strong>22.5 倍</strong></li>
+</ul>
+<p><strong>我倾向用保守口径的 26 亿。</strong> 因为管道和处理厂虽然寿命长，但它们会锈、会淤积、要改造、要满足新排放标准，长期看折旧不是纯会计概念。</p>
+<p><strong>资产负债表：这是全篇最需要警惕的地方。</strong></p>
+<ul>
+<li>总债务 <strong>195.78 亿</strong>，现金只有 <strong>1.32 亿</strong>，净债务 <strong>194.46 亿</strong>。</li>
+<li>债务 / EBITDA = <strong>3.55 倍</strong>。中游行业公认的安全线是 3.0–3.5 倍，<strong>它已经踩线了</strong>。</li>
+<li>利息保障倍数 <strong>4.25 倍</strong>。反推年利息支出约 <strong>9 亿美元</strong>，平均利率约 4.6%。</li>
+<li>账面净资产只有 <strong>38.0 亿</strong>，债务/权益 <strong>5.16 倍</strong>，PB <strong>15.65 倍</strong>，ROE <strong>70.84%</strong>。</li>
+</ul>
+<p><strong>ROE 70.84% 这个数完全不要看。</strong> 净资产被多年回购和历史上的合伙企业结构买空了，分母接近零，ROE 就飙起来了。<strong>真正该看的是 ROIC 13.28%，对比 WACC 7.05%——价差 6.2 个百分点。</strong> 这个价差是健康的，说明它投出去的钱确实在创造价值（作为对比，同批分析的 AMETEK 这个价差只有 3.8 个百分点）。</p>
+<p><strong>但债务这条线必须盯住。</strong> 195.78 亿的债务，平均 4.6% 的利率是过去几年低息环境留下的。这些债要不断展期，<strong>如果未来几年以 6% 的利率再融资，利息支出会从 9 亿涨到 11.7 亿，直接吃掉 12% 的净利润。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 587.2 亿，企业价值 781.7 亿（多出来的 194.5 亿全是净债务）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>587.2 ÷ 22.68</td>
+<td><strong>25.9 倍</strong></td>
+<td><strong>$3.86</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的口径（EV/调整后 EBITDA）</td>
+<td>781.7 ÷ 55.1</td>
+<td>14.2 倍</td>
+<td>$7.04（<strong>这个数是骗人的，见下</strong>）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>587.2 ÷ 22.68（无重大一次性可剔）</td>
+<td><strong>25.9 倍</strong></td>
+<td><strong>$3.86</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表原样）</td>
+<td>587.2 ÷ 7.41</td>
+<td><strong>79.3 倍</strong></td>
+<td><strong>$1.26</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（剔除扩建开支，保守估算）</td>
+<td>587.2 ÷ 26.13</td>
+<td>~22.5 倍</td>
+<td>~$4.45（估算）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>781.7 ÷ 38.36</td>
+<td><strong>20.4 倍</strong></td>
+<td><strong>$4.90</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>587.2 ÷ 18.00</td>
+<td><strong>32.6 倍</strong></td>
+<td><strong>$3.07</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均用的是 TTM 22.68 亿、FY2025 18.53 亿、FY2024 12.79 亿，平均 18.00 亿。</p>
+<p><strong>先把最重要的一件事说清楚：中游公司最爱吹的 EV/EBITDA 14.2 倍是个陷阱。</strong></p>
+<p>EBITDA 的意思是「息税折旧摊销前利润」。对 Targa 来说，被加回去的那三样每一样都是真金白银：
+- <strong>折旧摊销 16.73 亿</strong>——管道和处理厂确实在磨损，确实要花钱重置。加回来等于假装资产永远不老。
+- <strong>利息 9 亿</strong>——它背了 195.78 亿的债，这个利息每个季度都要真的汇出去。
+- <strong>税 6.25 亿</strong>——也是真的要交。</p>
+<p>一家净债务是市值三分之一的公司，用一个把利息完全忽略的指标来估值，<strong>是行业习惯，不是合理逻辑</strong>。所以那个 $7.04 我列在表里但不用它。</p>
+<p><strong>第二件重要的事：当期 25.9 倍 vs 三年平均 32.6 倍，差了 26%。</strong></p>
+<p>这告诉你：<strong>今年这 22.68 亿的利润，明显高于它过去三年的正常水平</strong>（FY2024 才 12.79 亿，两年不到翻了 77%）。这个跳升有真实的量的成分（二叠纪产量增长、新管道投产），但也有很大一块来自 <strong>NGL 价格环境好转带来的 POP 合同收益</strong>——那是周期，不是趋势。</p>
+<p><strong>大白话说结论：</strong></p>
+<p><strong>你现在投 100 块进 Targa，按最保守的口径（三年平均真实利润）算，公司一年替你赚 3.07 块。</strong> 按当期利润算 3.86 块，按剔除扩建开支的现金流口径算约 4.45 块。<strong>我认为真实答案在 3–4 块之间。</strong></p>
+<p><strong>这 3–4 块里，有多少真回到你口袋？</strong>
+分红 9.21 亿 + 回购 3.82 亿 = <strong>13.03 亿</strong>，占市值 <strong>3.33%</strong>。也就是<strong>每投 100 块，一年到手 3.33 块</strong>（分红 1.83 块 + 回购 1.51 块）。</p>
+<p>这个「到手比例」是本批三家里最高的——AMETEK 只有 1.26 块，Cencora 是 2.7 块。<strong>中游公司的存在意义就是分钱</strong>，这一点它做到了。</p>
+<p><strong>但要看清楚：这 3.33 块是借钱发的。</strong> 上面算过，TTM 的投资支出已经超过了经营现金流，股东回报的 13 亿完全靠新增的 25.91 亿借款支撑。<strong>这不是「用赚来的钱分红」，是「一边扩建一边加杠杆分红」。</strong> 只要扩建的项目未来真能产生回报，这个做法就成立；一旦二叠纪的产量增长停下来，这个循环会立刻变得难看。</p>
+<p><strong>这个 3 块多，未来会变大还是变小？</strong></p>
+<p><strong>未来两三年大概率变大，再往后是这一整个行业的根本问题。</strong></p>
+<p>变大的理由很实在：
+1. <strong>在建项目会陆续投产</strong>。TTM 花掉的 35 亿资本开支不是打水漂——新的处理厂和分馏塔投产后直接加收入，而且中游项目的回报率通常在投资额的 15%–20%（也就是投 35 亿，满产后每年多赚 5–7 亿 EBITDA）。
+2. <strong>二叠纪的伴生气量还在涨</strong>。就算原油产量增长放缓，页岩井的「气油比」会随着井龄增加而上升——<strong>老井会越产越气</strong>。对 Targa 来说，这是个不需要新井就能自动增长的量。
+3. <strong>美国 LPG 出口需求强劲</strong>，亚洲的丙烷脱氢装置还在建，出口码头的费用有涨价空间。
+4. <strong>分红连涨 4 年，最近一年涨 28.6%</strong>，管理层的态度非常明确。</p>
+<p>变小的风险，有三条而且都不小：
+1. <strong>债务 3.55 倍已到线，而利率在高位。</strong> 195 亿的债要滚动再融资，每贵 1 个百分点就是 2 亿美元的利润没了。
+2. <strong>商品价格敞口还在。</strong> 毛利率从 15% 涨到 35% 里有一部分是价格给的，NGL 价格如果回到 2023 年的水平，这部分会吐回去。
+3. <strong>最根本的一条：这是一门押注美国页岩油还能再开采二三十年的生意。</strong> 它的所有资产都埋在二叠纪，都是二十年折旧的重资产。如果二叠纪的产量在 2030 年代见顶回落，这些管道就会变成搁浅资产。<strong>这不是明天的风险，但它是你买入时必须知道自己在赌什么。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门真正的收费站生意，配了一张已经不便宜的门票和一张已经拉满的负债表。</strong></p>
+<p>生意本身没问题：埋在二叠纪地下的管子有物理垄断性，长期照付不议合同锁定二十年现金流，ROIC 13.3% 对 WACC 7.1% 有 6.2 个百分点的实打实价差，3570 个人管理 167 亿营收，分钱也大方（一年到手 3.33%，还在以每年 28% 的速度提股息）。</p>
+<p>问题全在价格和杠杆上：<strong>过去 52 周股价涨了 64%，而三年平均利润口径下的市盈率已经到 32.6 倍。</strong> 对一家增长靠资本开支堆、盈利带商品价格弹性、债务/EBITDA 已经踩到 3.55 倍上限的中游公司来说，<strong>32 倍是市场在给它「二叠纪永远增长」这个假设付满分</strong>。</p>
+<p><strong>我的判断：这是本批三家里生意最实在、但风险结构最不对称的一家。</strong> 顺风的时候（在建项目投产 + NGL 价格稳住 + 利率下行）它能给你两位数的年化；逆风的时候（页岩产量见顶 + 再融资成本上升 + POP 合同缩水），一个 3.55 倍杠杆的公司跌起来不是打八折的问题。<strong>现在这个价位不是买它的时候——真要买这门生意，应该在 NGL 价格差、市场嫌它周期的年份买，而不是在它股价一年涨 64% 之后。</strong></p>
+</div></body></html>

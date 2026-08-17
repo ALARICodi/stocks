@@ -1,0 +1,378 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ORCL · 甲骨文</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ORCL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">1562亿债豪赌AI算力，买的是OpenAI付不付得出钱</div><h1>ORCL · 甲骨文</h1>
+<p><strong>市值</strong> $4,499.9 亿 ｜ <strong>股价</strong> 约 $156 ｜ <strong>行业</strong> 科技服务（数据库 + 云计算）｜ <strong>TTM 截止</strong> 2026 年 5 月 31 日</p>
+<p>全文所有数字都是 TTM 口径（甲骨文财年 6 月起算，所以 TTM 恰好等于刚结束的 FY2026 整年，2025 年 6 月 — 2026 年 5 月），单位美元。</p>
+<blockquote>
+<p><strong>先说结论前置的一个事实</strong>：甲骨文股价过去 52 周<strong>跌了 38.46%</strong>，同期营收涨了 17.35%、净利润涨了 34.33%。<strong>利润在猛涨、股价在腰斩</strong>，这中间的落差就是这份分析要解释的全部东西。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>甲骨文财报把收入拆成四块：云（Cloud）、软件（Software）、硬件（Hardware）、服务（Services）。但实质上这是<strong>两门完全不同的生意被强行装在一家公司里</strong>——一门是印钞机，一门是烧钱机，而且烧钱那门正在吞掉印钞那门。</p>
+<h3>生意一：老数据库和企业软件（Software，$245.41 亿）—— 印钞机，但不长了</h3>
+<p><strong>这件事具体是什么</strong></p>
+<p>全世界的银行、电信、航空公司、政府，几十年前把自己的核心业务数据放进了 Oracle Database。举个例子：一家银行的账务系统，每一笔存取款、每一次转账，都写进 Oracle 数据库。这套系统是 1998 年上线的，中间改过无数次，现在还有几百个外部系统跟它对接。</p>
+<p><strong>钱怎么收的</strong>：客户按"处理器核数"买永久授权，比如一台 32 核的服务器跑 Oracle 企业版，标价大约 <strong>$47,500 一核</strong>，打完折一台服务器几十万到上百万美元。买完还没结束——<strong>每年要付授权费的 22% 作为"软件更新和技术支持费"</strong>。一家大银行一年光这一项就付几千万美元，年年付，付了二十年。这笔"支持费"就是甲骨文利润的底座：<strong>几乎零成本、续费率超过 90%、每年还自动涨价 3–4%。</strong></p>
+<p><strong>客户为什么不跑</strong>：不是不想跑，是跑不掉。把一家银行的核心系统从 Oracle 迁到别的数据库，是一个几年、几亿美元、还可能把业务搞挂的工程。这叫<strong>迁移成本护城河</strong>——它不靠产品好，靠的是"换掉你会死"。甲骨文的销售在业内以强硬著称，还有一支专门的授权审计团队，会来查你有没有超授权用核数，查出来就是巨额补缴。</p>
+<p><strong>这门生意的问题</strong>：$245.41 亿的收入，同比 <strong>−0.7%，在萎缩</strong>。老客户在慢慢流失，新客户几乎没有——2026 年没有哪家新公司会选择自建 Oracle 数据库。<strong>这是一台还在印钞、但印钞速度归零、且未来只会往下走的机器。</strong></p>
+<h3>生意二：云（Cloud，$339.90 亿，同比 +38.7%）—— 一门生意里其实藏着两门</h3>
+<p>财报只给一个"Cloud"数字，但里面装的是两个完全不同的东西：</p>
+<p><strong>2A. SaaS 应用云（Fusion / NetSuite）</strong></p>
+<p>甲骨文把 ERP（企业资源规划——管财务、采购、供应链的系统）和 HCM（人力资源系统）搬到自己的云上，按用户数按月收租。比如一家五千人的制造企业，用 Oracle Fusion ERP 管全球财务合并，一年付大约几百万美元订阅费。NetSuite 则是面向中小企业的版本，一家两百人的公司一年付十几万。<strong>这门生意稳、毛利 70%+、增速 15% 左右</strong>，是甲骨文云里健康的那一半，对标的是 SAP 和 Workday。</p>
+<p><strong>2B. OCI 基础设施云 —— 现在的一切</strong></p>
+<p>这是甲骨文过去两年整个故事的主角，也是股价先暴涨再腰斩的原因。</p>
+<p><strong>这件事具体是什么</strong>：甲骨文建巨型数据机房，塞满英伟达的 GPU，然后<strong>整机柜整机房地租给 AI 公司训练和运行大模型</strong>。</p>
+<ul>
+<li>客户是谁：OpenAI 是最大的一个（<strong>"星际之门"项目，甲骨文承诺提供约 4,500 亿美元规模的算力，跨越五年</strong>），此外还有 Meta、xAI、字节跳动、英伟达自己。</li>
+<li>怎么收钱：签长期合同，客户承诺未来 N 年买多少算力。这些<strong>还没确认为收入的合同金额叫 RPO（剩余履约义务）</strong>，甲骨文报出来的 RPO 是<strong>几千亿美元量级</strong>——正是这个数字在 2025 年把股价推上天。</li>
+<li>一单多大：跟 OpenAI 那一单，按公开口径是<strong>五年 3,000 亿美元</strong>，平均一年 600 亿——<strong>比甲骨文现在全公司一年 673.6 亿的总营收还接近</strong>。</li>
+<li>为什么客户选甲骨文而不是亚马逊或微软：甲骨文出价便宜、网络架构（RDMA 超高速互联）适合大规模训练，而且<strong>它愿意做别人不愿意做的事——为单一客户押上整个资产负债表去建专属机房</strong>。</li>
+</ul>
+<p><strong>这就是全部问题的根源。</strong> 建这些机房要花的钱，见下一节。</p>
+<h3>生意三、四：硬件（$30.84 亿，+5.0%）和服务（$57.43 亿，+9.7%）</h3>
+<p>硬件是当年收购 Sun 留下的服务器和存储业务，加上 Exadata 数据库一体机（专门为跑 Oracle 数据库优化的机柜，一台几十万到几百万美元）。服务是咨询和实施——帮客户把系统装起来、迁移过去，按人天收费。这两块加起来占 13%，<strong>是配角，不影响判断</strong>。</p>
+<h3>四门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>云（SaaS + OCI）</td>
+<td>$339.90 亿</td>
+<td><strong>+38.7%</strong></td>
+<td>50.5%</td>
+<td>约 25%（估算）</td>
+<td>约 $85 亿</td>
+</tr>
+<tr>
+<td>软件（数据库授权 + 支持）</td>
+<td>$245.41 亿</td>
+<td><strong>−0.7%</strong></td>
+<td>36.4%</td>
+<td>约 60%（估算）</td>
+<td>约 $147 亿</td>
+</tr>
+<tr>
+<td>硬件</td>
+<td>$30.84 亿</td>
+<td>+5.0%</td>
+<td>4.6%</td>
+<td>约 25%（估算）</td>
+<td>约 $8 亿</td>
+</tr>
+<tr>
+<td>服务</td>
+<td>$57.43 亿</td>
+<td>+9.7%</td>
+<td>8.5%</td>
+<td>约 5%（估算）</td>
+<td>约 $3 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$673.57 亿</strong></td>
+<td><strong>+17.4%</strong></td>
+<td>100%</td>
+<td><strong>30.6%</strong>（整体）</td>
+<td><strong>$206.06 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>说明：甲骨文只按上述四条线披露<strong>营收</strong>，<strong>不披露分部利润</strong>。上表的分部利润率是按行业常规结构和整体 30.6% 反推的<strong>估算</strong>，不是财报数字。但结构性结论是可靠的：<strong>那个已经不增长的"软件"分部，贡献了公司大部分利润；那个高速增长的"云"分部，利润率低得多，而且它的资本开支要另算。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一节是这份分析的核心。甲骨文 TTM 的 GAAP 净利润是 $169.84 亿，很漂亮。但下面每一项都在告诉你：<strong>这个数字跟股东实际拿到的东西关系不大。</strong></p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>$48.11 亿</strong>，占净利润 <strong>28.3%</strong>。这是同批三家里最高的（强生 6.7%、万事达 3.8%）。甲骨文用大量股票发工资，而且股本一年增加 <strong>+1.68%</strong>——<strong>你手里的份额在被稀释</strong>。按规矩这已经在 GAAP 里扣了，不加回。但要知道甲骨文自己吹的 Non-GAAP 利润是<strong>把这 48.11 亿加回去</strong>的，那是骗人的：员工拿走的股票是从你的份额里割出来的。</p>
+<p><strong>一次性项目</strong>：TTM 经营利润 $206.06 亿，税前利润 $195.50 亿，差额 $10.56 亿看起来不大——但这掩盖了两件事。第一，<strong>利息保障倍数只有 4.48</strong>，反推年利息支出约 <strong>$46 亿</strong>；这么低的差额说明利息被大量资本化了（建设中的数据中心，其借款利息计入资产而不是费用）。第二，<strong>有效税率只有 12.62%</strong>，异常低。这两项都在"目前"美化利润，而且都<strong>不可持续</strong>——机房建完投产，资本化的利息就要转成折旧和费用。</p>
+<p><strong>资本化的支出 —— 全篇最关键的一项</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资本开支（CapEx）</td>
+<td><strong>$556.63 亿</strong></td>
+</tr>
+<tr>
+<td>折旧摊销（D&amp;A）</td>
+<td><strong>$92.94 亿</strong></td>
+</tr>
+<tr>
+<td>比值</td>
+<td><strong>6.0 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>翻译成人话</strong>：甲骨文今年花了 <strong>556 亿现金</strong>买 GPU、建机房，但在利润表上只扣了 <strong>93 亿</strong>折旧。剩下的 463 亿趴在资产负债表上，<strong>要在未来五六年里慢慢变成费用扣掉。</strong></p>
+<p><strong>这就是"利润 169.84 亿"这个数字的真相</strong>：它建立在"今年花的钱可以摊到未来慢慢扣"的会计规则上。而 AI 服务器的真实寿命是有争议的——甲骨文按大约 5–6 年折旧，但 GPU 的技术迭代周期是 2–3 年，英伟达每年出新一代。<strong>如果服务器实际只能用 4 年，甲骨文现在报的利润就大幅高估了。</strong> 这不是理论风险，是这家公司现在最大的会计风险。</p>
+<p><strong>回购与稀释 —— 彻底消失了</strong>：</p>
+<ul>
+<li>TTM 回购金额 <strong>$2.06 亿</strong>，SBC <strong>$48.11 亿</strong>，比值 <strong>0.04 倍</strong>。</li>
+<li>也就是说：<strong>甲骨文回购的钱，连给员工发股票的零头都不够</strong>（只覆盖了 4%）。</li>
+<li>股本一年<strong>增加 1.68%</strong>，"回购收益率"是 <strong>−1.68%</strong>。</li>
+<li>对比它自己的历史：FY2022 甲骨文回购了 <strong>$173.41 亿</strong>。<strong>现在归零了。</strong></li>
+<li>更值得警惕的是，TTM 甲骨文<strong>发行了 $49.54 亿的优先股</strong>（历史上从没有过）。这是在股价腰斩、债务已经堆到 1,562 亿之后，去找了一种更贵的融资方式。</li>
+</ul>
+<p><strong>利润和现金流的差 —— 这张表是全篇含金量最高的东西</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>169.84</td>
+<td>起点，看着很美</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+92.94</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+48.11</td>
+<td>非现金（但股东被真实稀释了 1.68%）</td>
+</tr>
+<tr>
+<td>− 其他非现金调整</td>
+<td>−33.50</td>
+<td>递延税等</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−21.90</td>
+<td>卖出去的算力，钱还没收</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−2.40</td>
+<td></td>
+</tr>
+<tr>
+<td>− 所得税应付减少</td>
+<td>−2.56</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>+ 预收账款增加</strong></td>
+<td><strong>+46.42</strong></td>
+<td><strong>客户预付的钱（真实的好消息）</strong></td>
+</tr>
+<tr>
+<td>+ 其他营运资金</td>
+<td>+21.79</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>319.77 亿</strong></td>
+<td>到这里都还很漂亮</td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−556.63 亿</strong></td>
+<td><strong>这一行毁掉了一切</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−236.86 亿</strong></td>
+<td><strong>负的两百三十六亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>把这张表读懂，你就读懂了甲骨文</strong>：</p>
+<ol>
+<li>经营现金流 <strong>319.77 亿</strong>，同比暴涨 53.6%，业务本身的收钱能力是真的强，"预收账款 +46.42 亿"说明 AI 客户在真金白银地预付款。</li>
+<li>但资本开支 <strong>556.63 亿</strong>，是经营现金流的 <strong>1.74 倍</strong>。</li>
+<li>结果：<strong>自由现金流 −236.86 亿</strong>。公司一年不但没给股东剩下一分钱，还倒亏了 236 亿。</li>
+<li>这 236 亿的窟窿，加上还要付的 <strong>57.87 亿现金分红</strong>，总共近 <strong>295 亿</strong>，怎么补的？看融资活动：<strong>新发长期债务 $460.93 亿</strong>、新发优先股 $49.54 亿。</li>
+<li>结果：<strong>总债务从 $1,041 亿飙到 $1,562 亿</strong>（含租赁负债是 $1,674 亿），净负债 <strong>$1,355 亿</strong>，债务/EBITDA 达到 <strong>5.6 倍</strong>。</li>
+</ol>
+<p><strong>这不是一家在赚钱的公司，这是一家在举债建厂的公司。</strong> 它现在的形态更接近 2000 年的电信运营商或者一家重资产的地产商，而不是软件公司。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $4,499.9 亿，<strong>企业价值 $5,855.3 亿</strong>（多出来的 1,355 亿全是净负债——注意这个差额，市值只占企业价值的 77%）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>4,500 ÷ 169.8</td>
+<td><strong>26.5 倍</strong></td>
+<td><strong>$3.77</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>4,500 ÷ 约 227（加回 SBC 和无形摊销）</td>
+<td>约 19.8 倍</td>
+<td>约 $5.05</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>4,500 ÷ 169.8（SBC 不加回，无真一次性可剔）</td>
+<td><strong>26.5 倍</strong></td>
+<td><strong>$3.77</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径</strong></td>
+<td>4,500 ÷ <strong>(−236.9)</strong></td>
+<td><strong>无意义（负）</strong></td>
+<td><strong>−$5.26</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>5,855 ÷ 206.1</td>
+<td><strong>28.4 倍</strong></td>
+<td>$3.52</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>4,500 ÷ 133.0（FY26 169.8 / FY25 124.4 / FY24 104.7 的平均）</td>
+<td><strong>33.8 倍</strong></td>
+<td><strong>$2.96</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行的意思</strong>：当期 26.5 倍看着不贵，但三年平均是 33.8 倍——<strong>差 28%</strong>。甲骨文当前的利润是三年里最高的一期，而且这个"最高"很大程度上来自"折旧还没追上资本开支"这个时间差。<strong>你不是在买一家 26 倍的公司，你是在买一家常态 34 倍、且未来折旧要暴增的公司。</strong></p>
+<p><strong>自由现金流那一行才是重点</strong>：市盈率所有口径都是 26–34 倍之间，看起来是正常范围。但<strong>自由现金流是负的 236.9 亿</strong>——按市值算是 <strong>−5.26% 的自由现金流收益率</strong>。这两个数字放在一起才是完整的画面：<strong>账面上有利润，口袋里没有钱，而且缺口是靠借债堵的。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进甲骨文，按 GAAP 账面口径，公司一年替你赚 $3.77；按三年平均口径是 $2.96；但按"实际剩下多少现金"这个口径，公司一年不但没替你赚钱，还倒亏了 $5.26，这个窟窿是借钱填上的。</strong></p>
+<p>这 $3.77 里，<strong>有 $1.28 以现金分红打进你口袋</strong>（股息率 1.28%）；<strong>回购不但没给你多分蛋糕，还倒稀释了 1.68%</strong>，所以真正的股东收益率是 <strong>−$0.40，是个负数</strong>。剩下的全部，加上借来的钱，都投进了那 556 亿的资本开支。</p>
+<p><strong>这个数字未来是变大还是变小？这里有一个非常清晰的分叉：</strong></p>
+<p><strong>往好了说的路径</strong>——如果 OpenAI、Meta、xAI 这些客户老老实实按合同付款五年，这几千亿的 RPO 一年一年转化成收入，机房的利用率跑满，那么资本开支会在 2–3 年内见顶回落，折旧稳定下来，自由现金流转正，甲骨文变成一家营收上千亿、利润三四百亿的公司。<strong>这条路走通了，现在 156 块的股价就是便宜的。</strong></p>
+<p><strong>往坏了说的路径</strong>——这里的风险不是"AI 不行"，而是三个非常具体的东西：</p>
+<ol>
+<li><strong>客户集中度</strong>：单一客户（OpenAI）的合同金额比甲骨文全公司现在的营收还大。而 OpenAI <strong>本身还在巨额亏损、靠融资活着</strong>。如果它付不出钱，甲骨文那 556 亿建起来的专属机房就砸在手里了。<strong>甲骨文用自己的资产负债表，替一家没盈利的公司做了担保。</strong></li>
+<li><strong>折旧年限</strong>：GPU 按 5–6 年折旧，但技术迭代 2–3 年一代。如果被迫缩短折旧年限，现在的利润会立刻大幅下修。</li>
+<li><strong>债务成本</strong>：1,562 亿债务，利息保障倍数只有 4.48，而且还在往上借。利率一动，或者评级一降，融资成本就上台阶。<strong>这门生意的毛利率（云业务估算 25%）能不能覆盖越来越贵的资金成本，是有真实疑问的。</strong></li>
+</ol>
+<p><strong>市场已经在给这个分叉定价了</strong>：股价 52 周跌 38.46%，做空比例升到流通股的 2.93%，beta 从软件公司的 0.8 左右飙到 <strong>1.72</strong>。这已经不是一只软件股的波动特征了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>甲骨文已经不是一家软件公司了，它是一家用一台还在印钱但停止增长的老数据库业务、加上 1,562 亿的债，去豪赌 AI 算力租赁的重资产公司。</strong> 账面 26.5 倍市盈率是会计上的错觉——真实情况是它一年烧掉 236.9 亿的自由现金流、回购归零、股本还在稀释、股东收益率是负的，而这一切押在几个自己都还没盈利的 AI 客户身上按合同付款。<strong>这是一笔赔率很高的赌注，不是一笔投资</strong>；如果你要买，得清楚自己买的是"OpenAI 未来五年付不付得出钱"这个期权，而不是甲骨文的数据库生意。</p>
+</div></body></html>

@@ -1,0 +1,513 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WWD · 伍德沃德（Woodward, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WWD</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">质量最好也最贵，等一个航空周期的坏消息再说</div><h1>WWD · 伍德沃德（Woodward, Inc.）</h1>
+<p>市值 218.8 亿美元 / 股价 370.56 美元 / 行业：生产制造（航空发动机与工业发动机的控制系统）/ TTM 截止 2026 年 6 月 30 日
+全量榜名次：第 294 位 · 交易所 NASDAQ · 分析日 2026-08-17</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Woodward 官方分两个分部：<strong>航空（Aerospace）</strong>和<strong>工业（Industrial）</strong>。财报里进一步按终端市场拆成七条线，这个拆法比两个分部有用得多，先按七条线看总账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>终端市场</th>
+<th>TTM 营收（百万美元）</th>
+<th>占总营收</th>
+<th>FY2025（截至25年9月）</th>
+<th>TTM 相对 FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商用航空售后</td>
+<td>1,031.0</td>
+<td>24.6%</td>
+<td>823.6</td>
+<td>+25.2%</td>
+</tr>
+<tr>
+<td>商用航空整机（OEM）</td>
+<td>834.6</td>
+<td>19.9%</td>
+<td>691.0</td>
+<td>+20.8%</td>
+</tr>
+<tr>
+<td>交通运输</td>
+<td>662.4</td>
+<td>15.8%</td>
+<td>507.4</td>
+<td>+30.6%</td>
+</tr>
+<tr>
+<td>军用整机（OEM）</td>
+<td>590.1</td>
+<td>14.1%</td>
+<td>561.3</td>
+<td>+5.1%</td>
+</tr>
+<tr>
+<td>电力生产</td>
+<td>528.4</td>
+<td>12.6%</td>
+<td>488.9</td>
+<td>+8.1%</td>
+</tr>
+<tr>
+<td>油气</td>
+<td>293.1</td>
+<td>7.0%</td>
+<td>257.9</td>
+<td>+13.6%</td>
+</tr>
+<tr>
+<td>军用售后</td>
+<td>252.9</td>
+<td>6.0%</td>
+<td>237.0</td>
+<td>+6.7%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,192.4</strong></td>
+<td>100%</td>
+<td>3,567.0</td>
+<td>+17.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（说明：右边两列是 TTM 对比上一个完整财年 FY2025，两者有 9 个月重叠，所以增速偏保守。总营收对<strong>上一个 TTM</strong> 的真实同比是 <strong>+22.35%</strong>。）</p>
+<p>按官方分部归并：<strong>航空 = 前四行里的四条航空线，合计 2,708.6 百万，占 64.6%；工业 = 交通运输 + 电力生产 + 油气，合计 1,483.8 百万，占 35.4%。</strong></p>
+<p>下面把它实质上在做的三门生意讲清楚。</p>
+<h3>生意一：喷气发动机上那套控制燃油的零件（约 1,865 百万美元，占 44.5%，含商用整机 + 商用售后）</h3>
+<p><strong>这是全公司最赚钱、也最值钱的一块。先讲它到底是个什么东西。</strong></p>
+<p>一台喷气发动机的核心问题是：<strong>每一秒钟该往燃烧室里喷多少油</strong>。飞机在跑道上加速、在两万英尺爬升、在三万五千英尺巡航、遇到侧风、发动机吸进一只鸟——每一种情况下的最优喷油量都不一样，差一点就是熄火、超温或者烧穿涡轮叶片。这个"每秒喷多少"的决定和执行，就是 Woodward 做的东西。</p>
+<p>具体的硬件是一套：<strong>燃油泵</strong>（把油从油箱加压到几十个大气压）、<strong>燃油计量单元</strong>（一个由伺服阀控制的精密阀门，一秒钟调整几十次开度）、<strong>分配管和喷嘴</strong>（把油雾化成微米级喷进燃烧室）、以及配套的执行机构。这些零件的加工精度是微米级的，工作环境是几百度高温、上千小时不间断振动，且<strong>一旦失效飞机就掉下来</strong>。</p>
+<p>所以这门生意的护城河不在技术本身有多难，而在<strong>认证壁垒</strong>：一个零件要装上民航发动机，得通过 FAA/EASA 的适航认证，这个过程要几年、几千万美元。而且认证是绑定在"这一款发动机 + 这一家供应商"上的——CFM 的 LEAP 发动机（装在波音 737 MAX 和空客 A320neo 上，是全世界卖得最多的窄体机发动机）一旦选定 Woodward 做燃油系统，<strong>这款发动机接下来生产的二三十年、几万台，全都是 Woodward 供货</strong>，中途换供应商要重新认证，没人会干这种事。</p>
+<p><strong>钱是这么走的，而且分成截然不同的两段：</strong></p>
+<p><strong>第一段，卖给发动机厂（商用 OEM，834.6 百万）。</strong> GE、赛峰（CFM 是这两家的合资）、普惠每装一台发动机，从 Woodward 买一套燃油系统。<strong>这一段几乎不赚钱，甚至可能微亏。</strong> 因为发动机厂本身就是亏本卖发动机的（一台新发动机的售价常常低于成本），它们把压力层层传导给供应商，合同一签就是十几年的降价条款。行业里管这叫"占位费"——你亏钱把零件装上去，为的是拿到第二段。</p>
+<p><strong>第二段，卖给航空公司（商用售后，1,031.0 百万）。</strong> 飞机飞了几千小时要进厂大修，燃油系统的泵、阀、喷嘴要换新的。这时候买家不是 GE 了，是达美航空、汉莎的维修部门，而<strong>这个零件只有 Woodward 有认证件</strong>。价格由 Woodward 说了算，毛利率通常是 OEM 的两三倍。</p>
+<p>这就是航空零部件行业著名的"<strong>剃刀-刀片</strong>"模型：亏钱卖剃刀（OEM），靠刀片（售后备件）赚一辈子。</p>
+<p>看数字就明白它现在在哪个阶段：<strong>售后（1,031.0）已经超过整机（834.6）</strong>，而且售后增长（+25.2%）还快过整机（+20.8%）。这说明前些年疫情期间装出去的那批发动机、加上疫情后被推迟的大修，正在集中进入维修周期。<strong>这是 Woodward 当前利润率暴涨最主要的原因</strong>——收入结构里高毛利的售后占比在快速变大。</p>
+<p>这一点也是本篇后面所有估值判断的核心，因为它同时意味着：<strong>这个利润率是被一个特定的行业周期位置推上去的。</strong></p>
+<h3>生意二：军用航空的同一套东西（约 843 百万美元，占 20.1%）</h3>
+<p>技术上和生意一是同一批工程师、同一条产线的延伸——战斗机、直升机、军用运输机上的燃油控制和作动系统（比如让襟翼、尾喷口动起来的液压/机电执行机构）。</p>
+<p>商业模式不同的地方在于：<strong>军品的整机（OEM）本身就赚钱</strong>，因为国防合同通常是成本加成或者按谈定价，不像民机那样被逼着亏本占位。但军品的增长慢——TTM 相对 FY2025，军用整机只增长 5.1%、军用售后 6.7%，远低于商用的 20%+。军费预算的增长是政治决定的，不跟着经济周期走。</p>
+<p><strong>所以军用这块的角色是"压舱石"</strong>：不刺激，但在民航周期下行时不会跟着一起掉。占营收两成，是这家公司抗周期能力的主要来源。</p>
+<h3>生意三：工业发动机和燃气轮机的控制器（1,483.8 百万，占 35.4%）</h3>
+<p>这一块和天上没关系，逻辑却是类似的：<strong>凡是有"往里喷燃料并且要精确控制"的大型机器，就可能用到 Woodward 的东西。</strong> 拆成三条线：</p>
+<p><strong>电力生产（528.4 百万，+8.1%）——目前最有故事的一条。</strong>
+燃气电厂的燃气轮机、以及备用发电用的大型往复式发动机，都需要燃料阀和调速控制。举个具体的：一座燃气电厂要在电网频率掉下来的两秒内把出力提上去，靠的就是燃料阀的响应速度。这条线现在的顺风是<strong>数据中心</strong>——AI 训练需要的电得有人发，而燃气轮机是目前唯一能在三五年内大规模建成、且能 7×24 稳定出力的方案。GE Vernova 这类燃气轮机厂商的订单已经排到几年后，Woodward 作为它们的控制系统供应商跟着受益。8.1% 的增速在这七条线里排倒数第三，但它的订单能见度是最长的。</p>
+<p><strong>交通运输（662.4 百万，+30.6%）——增长最快，也最不稳定。</strong>
+这条线里是船用大型柴油/双燃料发动机的控制系统（一艘集装箱船的主机有一栋楼那么高）、以及重型卡车和工程机械的发动机控制。这里面有一块历史上波动极大的业务：<strong>中国的天然气重卡市场</strong>。中国的天然气重卡销量取决于柴油和 LNG 的差价——差价大的时候车队疯狂换天然气车，差价收窄时销量能一年腰斩。Woodward 在历年财报里反复把这一项单独拎出来解释业绩波动。<strong>所以 +30.6% 这个漂亮数字，含着一块本质上是大宗商品价差决定的、不可预测的收入。</strong></p>
+<p><strong>油气（293.1 百万，+13.6%）。</strong>
+油田上压缩机、发电机组用的燃气发动机控制系统。跟油价周期强相关，是七条线里周期性最强的一块。</p>
+<h3>分部利润率（<strong>以下为估算</strong>）</h3>
+<p>Woodward 的财报会披露两个分部的经营利润，但 stockanalysis 上没有这个数据，<strong>我不去翻 10-K，所以下面的利润率是按整体 16.30% 的经营利润率和行业常规结构估的</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>经营利润率（<strong>估算</strong>）</th>
+<th>贡献利润（<strong>估算</strong>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>航空（含军民、整机与售后）</td>
+<td>2,708.6</td>
+<td>64.6%</td>
+<td>约 19–20%</td>
+<td>约 515–540</td>
+</tr>
+<tr>
+<td>工业（电力/运输/油气）</td>
+<td>1,483.8</td>
+<td>35.4%</td>
+<td>约 11–12%</td>
+<td>约 165–180</td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −10 至 −25</td>
+</tr>
+<tr>
+<td><strong>合计（实际）</strong></td>
+<td><strong>4,192.4</strong></td>
+<td></td>
+<td><strong>16.30%</strong></td>
+<td><strong>683.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>结构性结论是可靠的，即使具体数字是估的：<strong>航空贡献了大约七成半的经营利润</strong>，而且航空里最赚钱的那部分（商用售后）正好是增长最快的。工业那三条线是营收的三分之一，利润的四分之一。</p>
+<p>一个能验证这家公司质量的硬数字：<strong>10,200 名员工做 41.92 亿美元营收，人均创收 41.1 万美元、人均创利 5.41 万美元。</strong> 对比同一批里的 ULTA（人均创利 1.78 万）和 Burlington（7,491 美元），Woodward 的人效是 Burlington 的 <strong>7.2 倍</strong>。这就是"精密制造 + 认证壁垒"和"卖便宜衣服"的差别。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：3,484 万美元，占净利润 6.31%。</strong>
+很低，和 ULTA 一个水平，远好过 Burlington 的 19.4%。一万人的制造企业，大部分是产线工人和工程师，拿现金工资。按规矩 SBC 一律当真实成本扣掉——GAAP 里已经扣了，量也小，不影响结论。</p>
+<p><strong>一次性项目：出售资产收益 1,246 万美元（是收益，不是损失）。</strong>
+这一笔要往<strong>下</strong>调利润，不是往上。TTM 里 Woodward 处置了一些资产赚了 1,246 万，这不是主业赚的。按 20% 税率折算后约 997 万，从净利润里剔掉。金额不大（占净利润 1.8%），但方向要弄对——很多人只知道加回损失，忘了要扣掉收益。</p>
+<p>另外必须点破一个<strong>只看单期 TTM 无法判断的问题</strong>：TTM 有效税率只有 <strong>19.98%</strong>，而美国联邦企业所得税率 21%、加上州税一般在 23–25%。Woodward 交的税明显偏低（TTM 交税 1.378 亿，税前利润 6.899 亿）。低税率的来源可能是研发抵免、境外收入优惠（FDII）、或者股权激励行权带来的税务抵扣——<strong>这些里面有的能年年重复，有的不能，单看一期分不出来。</strong> 如果税率回到 24%，净利润会从 5.52 亿降到 5.24 亿，市盈率从 39.6 倍变成 41.7 倍。这不算致命，但要知道<strong>当前净利润里有约 2,800 万是税率红利，不是经营赚的</strong>。</p>
+<p><strong>资本化的支出：没有软件/内容资本化的猫腻，但资本开支在急剧放大。</strong>
+TTM 资本开支 <strong>2.087 亿美元</strong>，上一个完整财年（FY2025）只有 <strong>1.309 亿</strong>，<strong>一年内涨了 59%</strong>。而折旧摊销只有 1.202 亿，<strong>资本开支/折旧 = 1.74 倍</strong>。这说明 Woodward 正在大规模扩产能——大概率是为了接住商用航空整机的排产爬坡（波音和空客都在往上冲月产量）。</p>
+<p>这件事本身是好事（有订单才扩产），但对当期估值有两层影响：一是自由现金流被压低了（下面会算）；二是<strong>新产能要一两年才转化成收入，而折旧从投产就开始计提</strong>——中间这段时间利润率是被压的。</p>
+<p><strong>回购与稀释：这一项有个明显对不上的地方，必须单独讲。</strong></p>
+<p>TTM 回购 <strong>6.020 亿美元</strong>，同期 SBC <strong>3,484 万美元</strong>，比值 <strong>17.3 倍</strong>。按规矩这是"真回购"的量级（大于 3 就算真回购），6.02 亿占市值 <strong>2.75%</strong>，看起来非常漂亮。</p>
+<p><strong>但是：股本一年下来不但没减少，还增加了 0.05%。</strong></p>
+<p>这两个数字对不上。6 亿美元按均价（TTM 期间股价大致在 250–400 之间）算，应该注销 150–240 万股，相当于 5,905 万总股本的 <strong>2.5–4%</strong>。可实际股本纹丝不动。</p>
+<p>能想到的解释有两个，且只看这些页面无法确定是哪一个：
+1. <strong>回购集中在最近一两个季度</strong>，还没体现到同比数字上——支持这一点的证据是<strong>环比股本已经减少 0.42%</strong>；
+2. <strong>期权行权大量发了新股抵消掉了</strong>——TTM"发行普通股"收到现金 <strong>6,358 万美元</strong>，如果行权价较低，这笔钱对应的股数可能不少。</p>
+<p><strong>处理办法：不要按"回购 2.75% = 你的每股价值提升 2.75%"来算。</strong> 在股本数字真的开始往下走之前，保守起见就按已经确认的 <strong>环比 −0.42%（年化约 −1.7%）</strong> 来估。这是本篇里最需要打问号的一项。</p>
+<p><strong>还有一件必须说的事：这 6 亿回购的钱不是赚来的，是借来的。</strong></p>
+<p>TTM 自由现金流 3.765 亿；同期回购 6.020 亿 + 分红 0.717 亿 = <strong>6.737 亿，是自由现金流的 179%</strong>。差额从哪来？<strong>TTM 净新增借款 4.137 亿。</strong> 净负债从 FY2025 末的 4.278 亿涨到现在的 <strong>9.090 亿，一年翻了一倍多</strong>（同期还花了 1.764 亿做现金收购）。</p>
+<p>净负债/EBITDA 只有 1.13 倍，这个杠杆水平绝对不算危险，Woodward 的资产负债表依然健康。但<strong>性质要看清楚：这是在股价创新高（一年涨 50.11%）、估值处在历史高位（PB 8.87 倍，是 FY2022 的 2.54 倍的三倍半）的时候，借钱回购自己的股票。</strong> 这种操作在顺周期时看着很聪明，一旦周期反转就是双重打击。</p>
+<p><strong>利润和现金流的差：这是本篇最需要警惕的一张表。</strong></p>
+<p>净利润 5.520 亿 → 经营现金流 5.853 亿 → 自由现金流 3.765 亿。</p>
+<p>经营现金流只比净利润高 6%，<strong>这个比例太低了</strong>。一家有 1.2 亿折旧、3,484 万 SBC 的制造企业，正常情况下经营现金流应该比净利润高出至少 25–30%。差额去哪了？逐项对账（单位：百万美元，TTM）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>552.0</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+120.2</td>
+<td>厂房设备的年度损耗</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−12.5</td>
+<td>卖资产赚的，不是主业，扣掉</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+34.8</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+24.7</td>
+<td>递延税等零星非现金项</td>
+</tr>
+<tr>
+<td>= 小计（非现金调整后）</td>
+<td><strong>719.3</strong></td>
+<td>这才是"生意本身产生的现金"</td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−199.2</strong></td>
+<td><strong>客户欠的钱一年多出 2 亿，最大的一个窟窿</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−56.0</td>
+<td>备货扩产</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+93.9</td>
+<td>多欠了供应商一点</td>
+</tr>
+<tr>
+<td>− 递延收入减少</td>
+<td>−12.8</td>
+<td>预收款在消耗</td>
+</tr>
+<tr>
+<td>+ 所得税相关</td>
+<td>+22.5</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性净资产</td>
+<td>−3.1</td>
+<td></td>
+</tr>
+<tr>
+<td>= 营运资金合计</td>
+<td><strong>−154.6</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流（对账）</td>
+<td>564.7</td>
+<td></td>
+</tr>
+<tr>
+<td>报表值</td>
+<td><strong>585.3</strong></td>
+<td>差约 20.5，是抓取页面未单独列示的零星项（递延所得税等）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−208.7</td>
+<td>扩产能</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>376.5</strong></td>
+<td>✓ 与报表一致</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最刺眼的是应收账款那一行：−1.992 亿。</strong></p>
+<p>TTM 营收 41.92 亿，同比增长 22.35%，也就是营收多做了约 7.7 亿；但应收账款一口气增加了 <strong>1.992 亿</strong>——<strong>新增营收里有 26% 还停留在"客户欠着没给钱"的状态。</strong> 应收账款的增速远快过营收增速。</p>
+<p>这本身不等于造假，制造业在放量爬坡时应收账款上升是正常的（航空客户的账期本来就长，有的还是按里程碑付款）。但它有两个必须记住的含义：</p>
+<ol>
+<li><strong>当期的利润"含金量"被稀释了。</strong> 5.52 亿净利润里，有相当一部分对应的是一张欠条而不是现金。这也是为什么经营现金流只比净利润高 6%——非现金调整给的 1.67 亿，被营运资金吃掉了 1.55 亿，几乎全抵消。</li>
+<li><strong>这个窟窿不会年年重复，但也不会自动填上。</strong> 如果营收增速从 22% 降到 10%，应收账款的增量会自然缩小，经营现金流会一次性好转；反过来如果客户账期继续拉长或出现坏账，就是真问题。<strong>只看 TTM 这一期，分不清是哪种。</strong></li>
+</ol>
+<p>最后看自由现金流：3.765 亿，对应 41.92 亿营收，<strong>自由现金流利润率只有 8.98%</strong>——而净利润率是 13.17%。<strong>赚到的会计利润里，只有 68% 变成了可自由支配的现金。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 218.80 亿，企业价值 227.89 亿，差额 9.09 亿是净负债（有息借款为主，不像前两家那样主要是租赁负债——Woodward 是自有厂房的制造企业，租赁很少）。</p>
+<p>下表统一用"<strong>当前市值 ÷ 利润</strong>"计算（网站显示的 41.23 倍是"股价 ÷ 每股收益"）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>218.80 亿 ÷ 5.520 亿</td>
+<td><strong>39.6 倍</strong></td>
+<td><strong>2.52 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回并购与重组等（<strong>估算</strong>，此处未披露具体调整额）</td>
+<td><strong>约 40.4 倍</strong></td>
+<td><strong>约 2.48 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>5.520 − 资产处置收益 0.125×(1−20%) ≈ 5.420 亿</td>
+<td><strong>40.4 倍</strong></td>
+<td><strong>2.48 元</strong></td>
+</tr>
+<tr>
+<td>真实市盈率（再把税率还原到 24%）</td>
+<td>税前 6.899 亿 ×(1−24%) ≈ 5.243 亿</td>
+<td><strong>41.7 倍</strong></td>
+<td><strong>2.40 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>218.80 亿 ÷ 3.765 亿</td>
+<td><strong>58.1 倍</strong></td>
+<td><strong>1.72 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>227.89 亿 ÷ 6.831 亿</td>
+<td><strong>33.4 倍</strong></td>
+<td><strong>2.99 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>218.80 亿 ÷ 3.492 亿（FY2023–FY2025 三年均值）</td>
+<td><strong>62.7 倍</strong></td>
+<td><strong>1.60 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行是全篇最重要的一个数字，请重点看这里。</strong></p>
+<p>过去三个完整财年的净利润是：<strong>2.324 亿（FY2023）、3.730 亿（FY2024）、4.421 亿（FY2025）</strong>，三年平均 <strong>3.492 亿</strong>。而 TTM 是 <strong>5.520 亿</strong>。</p>
+<p><strong>当期利润比自己的三年平均高出 58%。</strong></p>
+<p>按三年平均的利润算，你付的是 <strong>62.7 倍</strong>，而不是看起来的 39.6 倍。<strong>这两个数字之间差了 23 倍市盈率，这是本篇最有价值的一句话。</strong></p>
+<p>（这个对比方式在之前分析 NVDA 时给出过同样性质的信号：NVDA 当期 34 倍、三年平均 73.5 倍。Woodward 是同一类情形，程度略轻。）</p>
+<p>利润率的爬升路径把这件事讲得更清楚：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毛利率</td>
+<td>22.05%</td>
+<td>23.25%</td>
+<td>26.37%</td>
+<td>26.99%</td>
+<td><strong>29.63%</strong></td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>8.67%</td>
+<td>9.44%</td>
+<td>13.28%</td>
+<td>13.89%</td>
+<td><strong>16.30%</strong></td>
+</tr>
+<tr>
+<td>净利率</td>
+<td>7.21%</td>
+<td>7.97%</td>
+<td>11.22%</td>
+<td>12.39%</td>
+<td><strong>13.17%</strong></td>
+</tr>
+<tr>
+<td>净利润（百万）</td>
+<td>171.7</td>
+<td>232.4</td>
+<td>373.0</td>
+<td>442.1</td>
+<td><strong>552.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年时间，经营利润率从 8.67% 涨到 16.30%，翻了将近一倍；净利润从 1.72 亿涨到 5.52 亿，翻了三倍多。</strong> 而同期营收只从 23.83 亿涨到 41.92 亿（涨 76%）。也就是说，<strong>利润的增长里有一半以上不是靠卖得更多，是靠每一块钱营收更赚钱。</strong></p>
+<p>那利润率是怎么涨上来的？前面第一部分已经给出答案：<strong>商用航空售后从 4.21 亿（FY2022）涨到 10.31 亿（TTM），涨了 145%，在总营收里的占比从 17.7% 升到 24.6%。</strong> 这是全公司毛利率最高的一块，它的占比每上升一个百分点，整体利润率就跟着往上走。</p>
+<p><strong>所以核心问题是：这个结构性变化是永久的，还是周期的？</strong></p>
+<p><strong>支持"永久"的一面：</strong> 疫情期间全球机队大量停飞、大修被推迟，2023 年以后集中释放，这一波确实是补课；但更长期的力量是——过去十年装机的 LEAP 等新一代发动机正在进入第一个大修周期，这批发动机的存量还在增长，售后收入有十几二十年的自然爬坡。这不是一次性的。</p>
+<p><strong>支持"周期"的一面：</strong> 补课的那一部分总会做完；商用整机（OEM）的增长完全取决于波音和空客的排产，而这两家过去五年一直在爬产能的坑里，一旦排产爬坡结束或者出问题，20.8% 的增速会迅速归零；交通运输那 6.62 亿里含着中国天然气重卡这种<strong>由燃料价差决定、能一年腰斩</strong>的收入；油气 2.93 亿跟油价走。</p>
+<p>诚实的说法是：<strong>中间偏"周期"。</strong> 售后的长期趋势是真的，但当前 16.30% 的经营利润率同时叠加了"补课高峰 + 整机排产爬坡 + 数据中心电力热潮 + 天然气重卡好年景 + 19.98% 的低税率"这五重顺风。<strong>要求所有五个同时不掉，才能维持住 39.6 倍这个估值。</strong></p>
+<h3>说人话：你投 100 块进去，一年发生什么</h3>
+<p><strong>按最保守的真实口径（40.4 倍），公司一年替你赚 2.48 元。</strong> 如果按三年平均利润算，只有 1.60 元。</p>
+<p>这 2.48 元怎么分配：</p>
+<ul>
+<li><strong>分红</strong>：股息率 <strong>0.35%</strong>，派息率 14.24%。按 100 块算，<strong>一年打到你账上 0.35 元</strong>。聊胜于无。</li>
+<li><strong>回购</strong>：TTM 花了 6.02 亿（占市值 2.75%），但股本同比反而多了 0.05%。按前面说的保守口径（环比年化约 −1.7%），姑且算 <strong>1.7 元</strong>，且这个数字<strong>存疑</strong>。</li>
+<li><strong>剩下的约 0.4 元留在公司里</strong>——但实际上留下的是负数：回购加分红花了 6.74 亿，超过自由现金流 3.77 亿的 179%，缺口靠<strong>新增 4.14 亿借款</strong>补。同时还花了 1.76 亿做收购、2.09 亿扩产能。</li>
+</ul>
+<p><strong>把这笔账捋直：Woodward 今年既没有"留存利润再投资"，也没有"把自由现金流还给你"——它借了 4 亿多美元，同时干了扩产、收购和回购三件事，净负债一年翻倍。</strong></p>
+<p><strong>这个 2.48 元未来变大还是变小？</strong></p>
+<ul>
+<li><strong>变大的理由</strong>：商用售后的长期爬坡是真趋势；2.09 亿的扩产投资一两年后会转化成产能；数据中心带来的燃气轮机需求订单能见度长；ROIC 16.63% 对 WACC 8.68%，<strong>中间有 8 个百分点的价差</strong>——这是三家里唯一一家再投资明确创造价值的公司（Burlington 是 9.96% 对 9.88%，几乎为零）。分析师给的三年每股收益增速预期是 23.04%。</li>
+<li><strong>变小的理由</strong>：三年平均口径 62.7 倍已经告诉你，当期利润是被推到高点的；应收账款一年多出 2 亿，利润含金量在下降；有效税率 19.98% 迟早要回归；股价一年涨 50.11%，PB 从 5.91 涨到 8.87，<strong>估值扩张本身贡献了这轮上涨的大部分</strong>；一旦航空周期或中国天然气重卡任何一个转向，16.30% 的利润率回到 13% 就是利润下滑 20%，在 40 倍市盈率上会被戴维斯双杀。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是三家里生意质量最好的一家，也是估值最贵、最依赖"好日子继续"的一家。</strong></p>
+<p>好在哪儿是清楚的：认证壁垒真实存在，一旦上了发动机就锁定二三十年；售后件的定价权是垄断性的；人均创利 5.41 万美元是 Burlington 的 7.2 倍；ROIC 16.63% 明显高于 8.68% 的资金成本，<strong>它的再投资是真的在创造价值</strong>；军品两成营收提供了抗周期的压舱石。</p>
+<p>但价格已经把这些全部算进去了，而且算得更多：<strong>39.6 倍买当期利润，62.7 倍买三年平均利润——中间 23 倍的差额，就是你在赌"当前这个历史最好的利润率能一直保持"。</strong> 而这个利润率同时踩着补课高峰、整机排产爬坡、数据中心电力热潮、天然气重卡好年景、19.98% 的低税率五重顺风；同时应收账款一年多出 2 亿、自由现金流只有净利润的 68%、公司还在借钱回购创新高的股票。</p>
+<p><strong>同样的 218 亿美元市值，隔壁 ULTA 只要 18.5 倍、当期利润还低于自己三年平均、把 96% 的自由现金流实打实注销股份。</strong> Woodward 是更好的生意，但在这个价位上，它需要未来几年一切顺利才能对得起 370 美元的股价；ULTA 什么都不需要发生就能兑现 5% 出头的起点回报。</p>
+<p><strong>买 Woodward 的正确姿势是等一个航空周期的坏消息，而不是在它一年涨 50%、PB 创历史新高的时候追。</strong></p>
+</div></body></html>

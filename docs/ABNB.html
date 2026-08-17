@@ -1,0 +1,391 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ABNB · 爱彼迎（Airbnb, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ABNB</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意值得敬佩，40倍价格不值得买</div><h1>ABNB · 爱彼迎（Airbnb, Inc.）</h1>
+<p><strong>市值</strong> $1,091.5 亿 ｜ <strong>股价</strong> 约 $185.1 ｜ <strong>行业</strong> 消费服务（在线旅游平台） ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NASDAQ ｜ <strong>筛选榜名次</strong> 第 75 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Airbnb 的财报<strong>不按业务分部披露，只按地区</strong>（北美 / 欧非中东 / 拉美 / 亚太）。这不是偷懒——它确实<strong>只有一门主营生意</strong>。但如果就此认为它只有一个赚钱方式，会漏掉一块占税前利润近四分之一的东西。我按"钱实际从哪来"拆成三件事。</p>
+<h3>生意一：短租撮合抽成 —— 占营收 95% 以上，就是全部</h3>
+<p><strong>它就是一个中介，从每一笔住宿交易里抽走大约 14%–15%。</strong></p>
+<p>具体举例，把一笔真实交易拆开：</p>
+<p>一个上海人去东京玩，在 Airbnb 上订了新宿一间公寓，住 5 晚。房东挂的是<strong>每晚 20,000 日元</strong>，5 晚 = 100,000 日元，房东还加了一笔 15,000 日元的<strong>清洁费</strong>。小计 115,000 日元。</p>
+<p>结账页上，这位客人实际付：
+- 房费 + 清洁费：115,000 日元
+- <strong>服务费（客人端）约 14%：16,100 日元</strong>
+- 税费另计</p>
+<p>客人一共刷卡付 131,100 日元 + 税。</p>
+<p>房东那边收到多少？115,000 日元 <strong>减去 3% 的房东端服务费（3,450 日元）= 111,550 日元</strong>。</p>
+<p><strong>Airbnb 赚了 16,100 + 3,450 = 19,550 日元</strong>，占这笔 115,000 日元交易额的 <strong>17%</strong>（不同市场、不同房东类型抽成不一样，全平台平均"收入 ÷ 总交易额"落在 14%–15%）。</p>
+<p><strong>为什么房东愿意被抽 3%、客人愿意多付 14%？</strong></p>
+<p>房东端：一个东京的房东，房子挂在 Airbnb 上一年能收到几百个来自四十个国家的订单，这些人他自己一辈子也接触不到；平台还替他做了收款（信用卡、支付宝、各国本地支付全部搞定）、汇率结算、身份验证、差评过滤、以及最关键的——<strong>房东保障计划（最高 300 万美元的房屋损坏赔付）</strong>。他自己建个网站是不可能拿到这些订单的。</p>
+<p>客人端：付这 14% 买的是"钱先由 Airbnb 托管、入住确认没问题之后才转给房东"。人生地不熟去一个陌生国家，把 8,000 块打给一个不认识的外国人，这个 14% 本质上是<strong>信任的价格</strong>。这就是为什么这门生意几乎不可能被"某个便宜 5% 的对手"抢走——便宜 5% 但没有托管和赔付，等于没有产品。</p>
+<p><strong>这门生意的经济学有多好，看这三个数字就够了：</strong>
+- 毛利率 <strong>82.9%</strong>（撮合一笔交易的边际成本几乎只有支付通道手续费）
+- 资本开支 <strong>约等于 0</strong>（TTM 资本开支在财报页上是 n/a，经营现金流 = 自由现金流 = 48.60 亿，一分钱资本开支都没有）
+- <strong>8,200 名员工，人均创收 160 万美元</strong>（对比美敦力 9.5 万人、人均 38 万美元）</p>
+<p>Airbnb 不拥有任何一间房子，不雇一个保洁，不承担任何空置风险。它只提供"名单 + 托管 + 保险"。<strong>这是全世界最轻的重资产生意之一。</strong></p>
+<p><strong>地区分布（这是财报唯一披露的拆分口径）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>估算同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>北美</td>
+<td>$54.97 亿</td>
+<td>+7.8%</td>
+<td>41.8%</td>
+</tr>
+<tr>
+<td>欧洲/中东/非洲</td>
+<td>$50.71 亿</td>
+<td>+14.4%</td>
+<td>38.5%</td>
+</tr>
+<tr>
+<td>拉丁美洲</td>
+<td>$13.28 亿</td>
+<td><strong>+24.8%</strong></td>
+<td>10.1%</td>
+</tr>
+<tr>
+<td>亚太</td>
+<td>$12.63 亿</td>
+<td>+17.6%</td>
+<td>9.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$131.59 亿</strong></td>
+<td><strong>+13.6%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>同比用 TTM ÷ [(FY2024 + FY2025) ÷ 2] 推算。合计推算值 +13.6%，与财报直接给出的 TTM 增速 13.64% 吻合，说明这个推算方法在这家公司上是准的。</p>
+</blockquote>
+<p><strong>这张表说了一件重要的事</strong>：北美（占 42%，本土大本营）只增长 7.8%，已经进入成熟期；真正在跑的是拉美 +24.8%、亚太 +17.6%、欧洲 +14.4%。<strong>Airbnb 未来的增长必须从北美之外来，而这些市场的单笔交易金额比北美低得多</strong>（同样一晚，圣保罗的房价是纽约的三分之一），所以营收增长会慢于订单量增长。</p>
+<h3>生意二：体验与服务（Experiences &amp; Services）—— 目前几乎不贡献收入，但是全部的故事</h3>
+<p>2025 年 5 月 Airbnb 重新上线了这块：你订了那间新宿的公寓，App 会顺便推荐你订一场"筑地市场清晨鱼市导览"（60 美元/人）、或者叫一个按摩师、私厨、摄影师直接上门到你订的那间房。逻辑跟主业完全一样——<strong>撮合、抽成、托管</strong>。</p>
+<p>这块目前在营收里小到不单独披露。它的意义在于：<strong>主业已经只有 13% 增长了，Airbnb 需要一个新的抽成池。</strong> 全世界的旅游消费里，住宿只占三分之一，剩下三分之二是吃、玩、交通。如果 Airbnb 能把这块做起来，它的天花板会抬高一倍；如果做不起来（第一次尝试是 2019 年，2022 年被砍掉），那它就是一个 13% 增速的成熟平台。</p>
+<h3>生意三：躺在账上的钱生的钱 —— 这块没人提，但占税前利润 19%</h3>
+<p>这是拆财报才能看出来的一块。</p>
+<p><strong>TTM 经营利润 27.38 亿，但税前利润 33.64 亿——中间凭空多出 6.26 亿。</strong> 这 6.26 亿几乎全部是<strong>利息收入</strong>。</p>
+<p>钱从哪来的？两处：
+1. 自有现金和投资 <strong>120.69 亿美元</strong>（净现金 95.93 亿）
+2. <strong>客人预付的、还没转给房东的钱</strong>——你 3 月订了 8 月的房，这笔钱 3 月就刷了卡，但要到你入住后才付给房东。这中间<strong>五个月的钱躺在 Airbnb 账上</strong>（会计上叫 funds payable to customers）。全球几千万笔预订滚在一起，常年是几十亿美元的规模。</p>
+<p>这就是保险公司那种<strong>浮存金</strong>——不是它的钱，但它可以拿去买国债吃利息。在当前 4%–4.5% 的美元利率下，这两笔加起来一年生出 6.26 亿的利息。</p>
+<p><strong>为什么必须单独指出这块</strong>：它占税前利润的 <strong>18.6%</strong>，但它跟"住宿撮合做得好不好"毫无关系。<strong>如果美元利率回到 2%，这 6.26 亿会腰斩成 3 亿，Airbnb 的净利润凭空少掉 10%，而生意本身一点没变差。</strong> 拿 41.9 倍市盈率买这家公司的人，有五分之一是在买美联储的利率。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）—— 这是这家公司最大的问题，没有之一：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 股权激励</td>
+<td><strong>$17.07 亿</strong></td>
+</tr>
+<tr>
+<td>占净利润（26.91 亿）</td>
+<td><strong>63.4%</strong></td>
+</tr>
+<tr>
+<td>占营收（131.59 亿）</td>
+<td><strong>13.0%</strong></td>
+</tr>
+<tr>
+<td>占自由现金流（48.60 亿）</td>
+<td><strong>35.1%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Airbnb 每收 100 块钱，有 13 块是用股票发给员工的。</strong> 8,200 名员工，人均一年拿到 <strong>20.8 万美元的股票</strong>（这还不含现金工资）。这在硅谷不算异常——但对股东来说这就是每年从你手里切走一块。</p>
+<p>我按规格严格执行：<strong>SBC 一律当真实现金成本，GAAP 已经扣了，绝不加回。</strong> 后面第三部分那个"公司自己吹的 Non-GAAP"口径，展示的就是加回之后有多离谱。</p>
+<p><strong>一次性项目</strong>：TTM 现金流量表"其他调整"8.65 亿，主要是递延所得税和一些非现金项，规模正常。<strong>但有一件历史事实必须点出来</strong>：FY2023 净利润 47.92 亿看起来惊人（利润率 48%），那不是赚来的——那年 Airbnb 释放了约 29 亿美元的<strong>递延所得税资产估值备抵</strong>（会计上"以前亏太多不敢确认的税收抵扣，现在确认盈利能力了所以一次性计入利润"）。<strong>纯记账动作，没有一分钱现金。</strong> 这也是为什么 FY2023 的市盈率显示只有 18.8 倍——那是个假数字。做三年平均时我特意用了 TTM / FY2025 / FY2024 这个窗口，把 FY2023 排除在外。</p>
+<p><strong>资本化的支出</strong>：<strong>没有。</strong> 资本开支在财报页上是 n/a，折旧摊销只有 2,300 万美元。Airbnb 把全部工程师工资直接费用化，没有把软件开发费资本化来虚增利润。<strong>这一点上它比绝大多数科技公司干净。</strong></p>
+<p><strong>回购与稀释</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 回购</td>
+<td><strong>$46.82 亿</strong></td>
+</tr>
+<tr>
+<td>TTM 股权激励</td>
+<td>$17.07 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.74 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−3.86%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2.74 倍，接近"真回购"的 3 倍线，股本一年实实在在少了 3.86%。</strong> 这一项 Airbnb 做得比 CVS（0.26 倍、股本还在涨）和美敦力（2.26 倍但股本只减 0.14%）都好。</p>
+<p>但要看清楚代价：<strong>回购花掉 46.82 亿，占自由现金流 48.60 亿的 96.3%。</strong> 这家公司把几乎全部现金都用来回购了，而其中 17.07 亿（36%）只是在填 SBC 挖的坑。<strong>净回馈给股东的实际是 46.82 − 17.07 = 29.75 亿。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 26.91 亿，经营现金流 = 自由现金流 = 48.60 亿。差了 21.69 亿，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,691</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>~0（全年仅 23）</td>
+</tr>
+<tr>
+<td>＋ <strong>股权激励（非现金）</strong></td>
+<td><strong>1,707</strong></td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整（主要是递延税）</td>
+<td>865</td>
+</tr>
+<tr>
+<td>＋ 应计费用变动</td>
+<td>219</td>
+</tr>
+<tr>
+<td>− 预收收入变动</td>
+<td>−29</td>
+</tr>
+<tr>
+<td>− 其他经营性变动</td>
+<td>−448</td>
+</tr>
+<tr>
+<td><strong>≈ 经营现金流</strong></td>
+<td><strong>约 5,005</strong>（财报列示 4,860，差 145 为网站未单列的小项）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>4,860</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表只说明一件事：Airbnb 那个 36.9% 的自由现金流率，其中 13 个百分点是 SBC 撑出来的。</strong> 净利润 26.91 亿到自由现金流 48.60 亿的 21.69 亿差额里，<strong>17.07 亿（79%）就是股权激励这一项</strong>——它不花现金，但它花的是你的股份。</p>
+<p>所以看到"P/FCF 只有 22.5 倍"就觉得便宜，是这家公司上最大的陷阱。<strong>扣掉 SBC 的真实自由现金流是 48.60 − 17.07 = 31.53 亿，对应 34.6 倍。</strong></p>
+<p>另外注意一个细节：客人预付款（浮存金）的变动<strong>不走经营现金流，走的是融资活动</strong>（"其他融资活动 +13.17 亿"）。<strong>这意味着 Airbnb 的经营现金流没有被浮存金增长虚增</strong>——这一点它比 CVS 干净得多（CVS 的经营现金流里有约 49 亿是保险浮存金）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $1,091.5 亿，企业价值 $995.8 亿（因为有 95.93 亿净现金，EV 反而低于市值）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,091.5 ÷ 26.91</td>
+<td><strong>40.6 倍</strong></td>
+<td><strong>$2.47</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>把 SBC 全额加回：26.91 + 17.07×0.8 ≈ 40.57 亿（公司实际用"调整后 EBITDA"口径，约 44 亿，更夸张）</td>
+<td><em>26.9 倍</em></td>
+<td><em>$3.72</em></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无大额一次性，税率 20.0% 正常，SBC 按 GAAP 已扣不加回 → 等于 GAAP</td>
+<td><strong>40.6 倍</strong></td>
+<td><strong>$2.47</strong></td>
+</tr>
+<tr>
+<td><strong>只算主业（剔除利息收入）</strong></td>
+<td>经营利润 27.38 亿 × (1−20%) = 21.90 亿，用 EV 995.8 亿去除（因为现金已被剔出）</td>
+<td><strong>45.5 倍</strong></td>
+<td><strong>$2.20</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,091.5 ÷ 48.60</td>
+<td><strong>22.5 倍</strong></td>
+<td><strong>$4.45</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流（扣掉 SBC）</strong></td>
+<td>1,091.5 ÷ (48.60 − 17.07 = 31.53)</td>
+<td><strong>34.6 倍</strong></td>
+<td><strong>$2.89</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>995.8 ÷ 27.38</td>
+<td><strong>36.4 倍</strong></td>
+<td><strong>$2.75</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1,091.5 ÷ [(26.91+25.11+26.48)/3 = 26.17]</td>
+<td><strong>41.7 倍</strong></td>
+<td><strong>$2.40</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的是"22.5 倍"和"45.5 倍"这两个数字相差整整一倍。</strong></p>
+<ul>
+<li><strong>22.5 倍</strong>：市值 ÷ 自由现金流，这是多头讲的故事——"零资本开支、40% 现金流率的印钞机"。</li>
+<li><strong>45.5 倍</strong>：企业价值 ÷ 主业税后经营利润，这是把 SBC 当真钱、把利息收入剔掉之后的样子。</li>
+</ul>
+<p>真相在后者那一侧：<strong>SBC 是真成本（每年稀释你 1.5%），利息收入不是主业（利率一变就没）。</strong></p>
+<p><strong>三年平均 41.7 倍 vs 当期 40.6 倍</strong>，几乎没有差别——说明 Airbnb 当前的利润<strong>既不虚高也不虚低，就是它的正常水平</strong>。这一项跟 CVS（当期 24.8 / 三年 32.3，差 30%）形成鲜明对比。这是好消息：<strong>你付的 40 倍，是对着一个真实、稳定、可重复的利润付的，不是对着一个周期高点付的。</strong> 唯一的陷阱是要绕开 FY2023 那个含 29 亿假利润的年份——如果把三年窗口往回滑一年（FY2023/24/25），算出来是 30.5 倍，看起来便宜 27%，那是幻觉。</p>
+<h3>你投 100 块进去，一年能拿回多少</h3>
+<p><strong>按最保守的真实口径（只算主业、剔除利息收入的 45.5 倍），公司一年替你赚 $2.20。</strong> 按 GAAP 口径是 $2.47。</p>
+<p>这 $2.47 里，回到你口袋的是多少？</p>
+<ul>
+<li><strong>股息 $0</strong>（Airbnb 从不分红）</li>
+<li><strong>回购 $4.29</strong>（回购 46.82 亿 ÷ 市值 1,091.5 亿 = 4.29% 的回购收益率）</li>
+<li><strong>减去 SBC 稀释 −$1.56</strong>（SBC 17.07 亿 ÷ 市值）</li>
+<li><strong>净到手约 $2.73</strong></li>
+</ul>
+<p>有意思的是：<strong>净回馈 $2.73 竟然略高于 GAAP 每年赚的 $2.47。</strong> 这不是变魔术——差额来自那笔不花现金的 SBC 和账上囤积的现金，Airbnb 现在是<strong>在动用存量现金回购</strong>（现金从 110 亿增到 121 亿的同时借了 24.78 亿新债、还了 20 亿旧债）。这个节奏可以再维持几年，但不能永远。</p>
+<p>剩下的钱去哪了？投资活动只流出 13.16 亿，<strong>全部是买短期投资（把闲钱换成国债赚利息），不是再投资到业务里</strong>。Airbnb <strong>没有任何需要花钱的扩张项目</strong>——这既是它的优点（不烧钱），也是它的问题（<strong>它已经没有明显的地方可以投钱来换增长了</strong>）。</p>
+<p><strong>这个 $2.47 未来是变大还是变小？</strong></p>
+<ul>
+<li><strong>变大的理由</strong>：营收还在 13.6% 增长，且拉美 +24.8%、亚太 +17.6% 说明国际化远未到头；每年 3.86% 的股本缩减本身就让每股利润多涨近 4 个点；"体验与服务"如果跑通，是一个能把天花板抬高一倍的新抽成池；82.9% 的毛利率意味着增量营收几乎全部落到利润。</li>
+<li><strong>变小的理由</strong>：<strong>北美只剩 7.8% 增长</strong>，而北美是单价最高的市场，混合增速会被结构性拉低；SBC 每年 17 亿且随股价上涨会更贵；<strong>税前利润里 18.6% 来自利息，美元降息就直接消失</strong>；全球各大城市（纽约、巴塞罗那、阿姆斯特丹、京都）持续加码短租禁令和登记制度，这是这门生意唯一的真实存亡风险；分析师目标价 $174.73 比现价还低 5.6%，RSI 76.6 属于短期极度超买。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门几乎完美的生意——不拥有资产、不花资本开支、82.9% 毛利、8,200 人撬动 1,300 亿美元的交易额——但它现在的价格已经把这份完美算进去了，而且算进去了不止一次。</strong></p>
+<p>真实口径 40.6 倍市盈率、剔掉利息收入后 45.5 倍，投 100 块一年赚 $2.20–2.47，买的是一个 13% 增速、北美已经停滞、SBC 每年吃掉 63% 净利润、五分之一利润靠美联储利率撑着的成熟平台。<strong>生意值得敬佩，价格不值得买。</strong></p>
+<p>它和美敦力构成了一个有趣的对照：<strong>美敦力 24 倍买 5% 增长的现金牛，Airbnb 41 倍买 13% 增长的印钞机——按利润增速折算，两者的贵贱其实差不多，但 Airbnb 的下行风险（监管禁令、利率、SBC）明显更集中。</strong></p>
+</div></body></html>

@@ -1,0 +1,367 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MCO · 穆迪公司（Moody's Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MCO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">近乎完美的生意卖出好价钱，等下一次债市冷场</div><h1>MCO · 穆迪公司（Moody's Corporation）</h1>
+<p>市值 $834.2 亿 / 股价约 $481.7 / 行业：商业服务（信用评级与金融数据）/ TTM 截止 2026-06-30 / NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>穆迪财报把自己拆成八个小项，但实质上是<strong>两门完全不同的生意</strong>：一门是卖"许可证"的收费站，一门是卖软件和数据的订阅生意。</p>
+<h3>生意一：信用评级（Moody's Investors Service，占营收 54.6%）</h3>
+<p>这是全世界最好的生意之一，好到有点不讲道理。</p>
+<p>具体是这么回事：假设一家美国的电力公司要借 20 亿美元，它不去银行贷款，而是发债券——直接向养老基金、保险公司、共同基金借钱。问题来了，加州教师退休基金凭什么相信这家电力公司二十年后还得起钱？基金经理自己没能力去查每一家发债公司的账。</p>
+<p>于是就有了评级。这家电力公司在发债之前，必须先花钱请穆迪来给它评一个等级（Aaa 最好，往下是 Aa、A、Baa……到 C）。穆迪的分析师看它的财报、现金流、行业地位、债务结构，最后出一个字母。基金经理看这个字母做决定。</p>
+<p><strong>关键在于：钱是发债的人付的，不是买债的人付的。</strong> 而且这笔钱是按发债规模抽成的——一笔 20 亿美元的债券，穆迪大概收 100 万到 200 万美元，费率通常在发行额的 4–7 个基点（万分之四到万分之七）之间，大额发行有封顶。分析师干的活基本一样，不管你发 5 亿还是 50 亿，所以规模越大越赚。</p>
+<p>更要命的是<strong>这几乎是强制的</strong>。美国和欧洲的监管规则、大量养老金和保险公司的投资章程里，都明确写着"只能买投资级评级的债券"、"必须有两家 NRSRO（美国证监会认可的评级机构）出具的评级"。全世界够格的 NRSRO 就那么几家，能被主流机构认的实际上就穆迪、标普、惠誉三家，其中穆迪和标普合计占了八成以上。你想发债给美国的机构投资者，就绕不开这两家里的至少一家。这不是穆迪谈判能力强，是法规和投资章程把它写进去了。</p>
+<p>评级里面又分四类客户：</p>
+<ul>
+<li><strong>公司债（Corporate Finance，TTM 营收 23.4 亿，全公司最大的一块）</strong>：苹果、可口可乐、能源公司、私募基金收购后发的高收益债（垃圾债）都在这里。这一块最靠"发债窗口"吃饭——利率下行、并购活跃的年份，公司抢着发债，穆迪的收入暴涨；利率一升、市场一冷，发债直接停摆，收入立刻掉。2022 年就是这样，公司债收入从 20.87 亿掉到 12.69 亿，砍掉四成。TTM 已经涨回 23.4 亿，说明现在处在发债很热的时候。</li>
+<li><strong>结构化融资（Structured Finance，5.73 亿）</strong>：住房抵押贷款打包成的证券、车贷 ABS、CLO（把一堆企业贷款打包）。2008 年就是这块出的事——穆迪给一堆次贷 CDO 打了 Aaa。现在规模比公司债小很多。</li>
+<li><strong>金融机构（Financial Institutions，7.93 亿）</strong>：给银行、保险公司评级。</li>
+<li><strong>公共与基建（Public/Project/Infrastructure，7.10 亿）</strong>：给市政债（州政府、市政府、学区、机场、收费公路发的债）评级。美国有几万个发债主体，这块量大单价低，但极其稳定，因为市政债年年都要滚动发行。</li>
+</ul>
+<p>另外还有 0.41 亿的杂项。</p>
+<p>这门生意的经营利润率大约在 <strong>59%</strong> 左右——每收 100 块，接近 60 块是利润。因为成本就是分析师的工资，服务器和办公室，没有工厂、没有原材料、没有库存。</p>
+<h3>生意二：穆迪分析（Moody's Analytics，占营收 45.4%）</h3>
+<p>评级生意太好，但有个致命弱点：<strong>它随债券市场周期剧烈波动</strong>。2022 年那一下直接把公司利润砍了 38%。所以过去十几年穆迪一直在买公司、拼出第二条腿——卖订阅制的数据和软件。这条腿收入不受发债窗口影响，签的是多年合同、年年续费，续费率常年在 93–95%。</p>
+<p>它又分三块：</p>
+<ul>
+<li><strong>决策方案（Decision Solutions，TTM 17.29 亿，这块里最大也最快）</strong>：卖软件给银行和保险公司做决策。举个具体的：一家中型银行要给小企业放贷款，以前是信贷员手工查资料、填表、报批，一单要三五天。穆迪卖给它一套系统，接进企业征信数据库、财报数据、法院诉讼记录、股东穿透关系，输入一个公司名，几分钟出一份风险报告和建议额度。银行按用户数或按查询量付费，一家中型银行一年大概付几十万到几百万美元。这里面还包括反洗钱和合规筛查——银行开户时必须查这个人在不在制裁名单上、是不是"政治敏感人物"、有没有被通缉，穆迪买下的 RDC/Kompany 这些数据库就是干这个的，按每次查询收费。保险精算软件（收购的 RMS，做自然灾害巨灾模型的）也在这块，卖给再保险公司算"佛罗里达明年被飓风扫一次要赔多少钱"。</li>
+<li><strong>研究与洞察（Research &amp; Insights，10.21 亿）</strong>：这块最直接——穆迪的评级报告和研究报告本身打包成订阅产品卖。一家资产管理公司每年付一笔钱（几万到几百万美元不等，按席位和覆盖范围定），就能看全部评级报告、行业展望、违约率数据库。这门生意本质是把评级业务的副产品二次变现，边际成本接近零。</li>
+<li><strong>数据与信息（Data &amp; Information，9.53 亿）</strong>：卖原始数据接口。Orbis 数据库覆盖全球四亿多家公司的工商和财务信息，穆迪按 API 调用量或席位收费，客户是投行、咨询公司、大企业的采购部门（要查供应商背景）、学术机构。</li>
+</ul>
+<p>分析这块的利润率明显低于评级，大约 <strong>27%</strong>——因为要养一大堆软件工程师、销售，还要摊销收购来的无形资产。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>占比</th>
+<th>最近完整年同比（FY25 vs FY24）</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>评级 · 公司债</td>
+<td>2,340</td>
+<td>28.7%</td>
+<td>+9.3%</td>
+<td>~59%</td>
+<td>~1,381</td>
+</tr>
+<tr>
+<td>评级 · 公共与基建</td>
+<td>710</td>
+<td>8.7%</td>
+<td>+12.6%</td>
+<td>~59%</td>
+<td>~419</td>
+</tr>
+<tr>
+<td>评级 · 金融机构</td>
+<td>793</td>
+<td>9.7%</td>
+<td>+4.4%</td>
+<td>~59%</td>
+<td>~468</td>
+</tr>
+<tr>
+<td>评级 · 结构化融资</td>
+<td>573</td>
+<td>7.0%</td>
+<td>+7.7%</td>
+<td>~59%</td>
+<td>~338</td>
+</tr>
+<tr>
+<td>评级 · 其他</td>
+<td>41</td>
+<td>0.5%</td>
+<td>—</td>
+<td>~59%</td>
+<td>~24</td>
+</tr>
+<tr>
+<td><strong>评级小计（MIS）</strong></td>
+<td><strong>4,457</strong></td>
+<td><strong>54.6%</strong></td>
+<td>—</td>
+<td><strong>~59%</strong></td>
+<td><strong>~2,630</strong></td>
+</tr>
+<tr>
+<td>分析 · 决策方案</td>
+<td>1,729</td>
+<td>21.2%</td>
+<td>+11.6%</td>
+<td>~27%</td>
+<td>~467</td>
+</tr>
+<tr>
+<td>分析 · 研究与洞察</td>
+<td>1,021</td>
+<td>12.5%</td>
+<td>+7.5%</td>
+<td>~27%</td>
+<td>~276</td>
+</tr>
+<tr>
+<td>分析 · 数据与信息</td>
+<td>953</td>
+<td>11.7%</td>
+<td>+6.9%</td>
+<td>~27%</td>
+<td>~257</td>
+</tr>
+<tr>
+<td><strong>分析小计（MA）</strong></td>
+<td><strong>3,703</strong></td>
+<td><strong>45.4%</strong></td>
+<td>—</td>
+<td><strong>~27%</strong></td>
+<td><strong>~1,000</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>8,160</strong></td>
+<td>100%</td>
+<td>TTM 整体 <strong>+11.67%</strong></td>
+<td>44.79%</td>
+<td>3,655（含总部费用抵减）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露到营收，<strong>不披露分部经营利润</strong>。上表利润率是按公司整体 44.79% 的经营利润率、结合两块业务的成本结构估算的，属于<strong>估算值</strong>，不是财报数字。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2.32 亿美元，占净利润 8.3%。占比不高，而且这几年基本不涨（FY24 2.20 亿、FY25 2.32 亿、TTM 2.32 亿），说明没有靠发股票压成本。<strong>按 GAAP 已经扣掉了，本文不加回</strong>——它稀释你手里的股份，是实打实的成本。</li>
+<li><strong>一次性项目</strong>：TTM 的"其他调整"只有 −0.68 亿，很小；没有大额重组、减值或诉讼和解。收购支出 TTM 只有 0.27 亿（FY25 是 2.27 亿），说明这一年基本没在买公司。<strong>这一期干净，没有需要剔除的东西。</strong></li>
+<li><strong>资本化支出</strong>：资本开支 3.52 亿，占营收 4.3%，主要是软件平台和数据中心。折旧摊销 4.95 亿高于资本开支，其中约 2.1 亿是历年收购留下的无形资产摊销——这部分是"过去买公司的账"，不是当期真金白银的支出。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 <strong>32.46 亿美元</strong>，SBC 只有 2.32 亿，<strong>比值 14.0 倍</strong>。这是真回购，不是给员工发股票擦屁股。股本 TTM 减少 2.07%，加上 7.0 亿分红，股东总回报率（分红+回购）约 4.9%。这一项在美股大公司里属于很干净的做法。</li>
+<li><strong>利润和现金流的差</strong>：净利润 27.95 亿，经营现金流 33.19 亿，自由现金流 29.67 亿。<strong>现金流高于利润</strong>，这是好信号。逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,798</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+495</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+232</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>−68</td>
+</tr>
+<tr>
+<td>＋ 应收账款变动</td>
+<td>−217</td>
+</tr>
+<tr>
+<td>＋ 应付账款变动</td>
+<td>+93</td>
+</tr>
+<tr>
+<td>＋ 应交税金变动</td>
+<td>−54</td>
+</tr>
+<tr>
+<td>＋ <strong>预收款（未确认收入）变动</strong></td>
+<td><strong>+142</strong></td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>+79</td>
+</tr>
+<tr>
+<td>＋ 财报未单独列示的调整（递延税等）</td>
+<td>−181</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>3,319</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−352</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>2,967</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>那 +1.42 亿的<strong>预收款增加</strong>值得单独说：订阅客户是先付一整年钱的，钱进账了但收入要分十二个月确认。这个数持续为正，说明订阅业务在扩张——这是"现金比利润先到"的生意，比反过来强得多。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $834.2 亿，企业价值 $895.5 亿（净负债 61.2 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>834.2 ÷ 27.95</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>3.35 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回收购无形资产摊销约 1.65 亿（税后）</td>
+<td>约 28.8 倍</td>
+<td>3.47 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>本期无真一次性项目，SBC 不加回</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>3.35 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>834.2 ÷ 29.67</td>
+<td>28.1 倍</td>
+<td>3.56 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>895.5 ÷ 36.55</td>
+<td>24.5 倍</td>
+<td>4.08 元（含债权人那份）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>834.2 ÷ [(27.95+24.59+20.58)/3 = 24.37]</td>
+<td><strong>34.2 倍</strong></td>
+<td><strong>2.92 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最重要的一行是最后一行。</strong> 当期 29.8 倍，三年平均 34.2 倍——差了 15%。意思是：<strong>穆迪现在的利润处在周期偏高的位置</strong>。原因很直白，公司债那块 TTM 收入 23.4 亿，比 2022 年的 12.69 亿高了 84%，现在是发债非常热的时候。如果利率环境变了、企业不发债了，这块能腰斩，而它是全公司利润率最高的一块。2022 年就演过一次：净利润从 22.14 亿掉到 13.74 亿，跌了 38%。</p>
+<p><strong>说人话：你现在投 100 块进穆迪，按最保守的三年平均口径算，公司一年替你赚 2.92 元；按当期口径算是 3.35 元。</strong></p>
+<p>这 3.35 元里怎么分：分红 0.85 元、回购 3.89 元（TTM 回购金额占市值 3.89%），加起来 4.74 元——<strong>回到股东口袋的钱比当期利润还多</strong>，因为公司动用了账上现金（现金从 24.48 亿降到 14.96 亿）和一部分借款在回购。剩下留在公司里的接近零，穆迪已经不怎么做大额收购了（TTM 收购支出仅 0.27 亿）。</p>
+<p>这个 3.35 元未来会变大还是变小？中期大概率变大——分析业务每年 7–12% 增长且不受发债周期影响，占比已经到 45%，会持续摊薄评级业务的周期性；股本每年少 2%，同样的利润分给更少的股份。但<strong>短期风险明确指向下行</strong>：公司债那 23.4 亿如果回到 2022 年的水平，全公司利润要掉三成以上，那时候按现价算的回报会从 3.35 元掉到 2 元出头。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意本身近乎完美——法规筑起的护城河、60% 的利润率、76.93% 的净资产回报率、几乎没有会计花招、回购是真回购；但价格已经把这份完美算进去了，而且是拿着一个明显偏高的周期利润在算 30 倍。</strong> 三年平均口径的 34.2 倍才是它真实的估值水平，投 100 块一年赚不到 3 块，等于你在赌未来十年发债市场只会更热、分析业务能一直双位数增长。这不是便宜货，是"好公司卖出好价钱"的标准案例——想买，等下一次债市冷场。</p>
+</div></body></html>

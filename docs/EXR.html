@@ -1,0 +1,374 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EXR · 额外空间仓储（Extra Space Storage）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EXR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">为不再增长的东西付「还在增长」的价</div><h1>EXR · 额外空间仓储（Extra Space Storage）</h1>
+<p><strong>市值</strong> $326.3 亿 ｜ <strong>股价</strong> $147.90（2026-08-14）｜ <strong>企业价值</strong> $463.5 亿 ｜ <strong>行业</strong> 房地产信托（自助仓储 REIT）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家 REIT（房地产信托），下面用 FFO / AFFO 口径而不是市盈率。</strong>原因：REIT 的净利润被"折旧"严重压低，而这个折旧是假的——一栋仓库按会计规则每年折旧 3%，但实际上它二十年后不但没贬值，租金还涨了一倍。EXR 一年折旧 7.25 亿，净利润才 9.56 亿，折旧占了利润的 76%。用市盈率看 REIT 只会得到"32 倍、好贵"这种毫无意义的结论。行业通用口径是 <strong>FFO（营运现金流 = 净利润 + 房产折旧 − 卖房收益）</strong>和更严格的 <strong>AFFO（FFO 再扣掉维护性资本开支）</strong>。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>EXR 是<strong>全美最大的自助仓储运营商</strong>，管理着约 4,000 处仓储设施、超过 3 亿平方英尺的可租面积，横跨 40 多个州。2023 年它花 127 亿美元吞并了同行 Life Storage，一举超过 Public Storage 成为门店数量第一。全公司只有 8,393 名员工——<strong>平均每家门店 2 个人</strong>，这个数字本身就说明了这门生意的性质。</p>
+<p>财报把它拆成两块，但实际上有三件事在做。</p>
+<h3>生意一：把铁皮隔间租出去（营收占 84%）</h3>
+<p><strong>先说这门生意具体长什么样。</strong></p>
+<p>一处典型的 EXR 仓库，是城郊主干道旁边一栋一两层的金属建筑，占地一两万平方米，里面用铁皮隔断切成 <strong>500 到 800 个大小不等的隔间</strong>。最小的像个衣柜（5×5 英尺，约 2 平米），最大的能停下一辆车（10×30 英尺）。最常见的是 <strong>10×10 英尺</strong>（约 9 平米，能塞下一套两居室的全部家当），美国大部分地区月租 <strong>$130 到 $160</strong>。带恒温恒湿的贵 30%-50%。</p>
+<p><strong>谁会租？</strong>四类人，行业里叫"4D"：<strong>Death（家人去世要处理遗物）、Divorce（离婚，一方搬出来东西没处放）、Dislocation（搬家、装修、调岗）、Downsizing（换小房子住不下）</strong>。再加上小生意主——一个在 eBay 上卖二手球鞋的人，租一个 10×15 的隔间当仓库，比租商业铺面便宜十倍；一个装修队把工具和瓷砖堆在里面；一个牙医把七年的病历纸质档案塞进去。</p>
+<p><strong>怎么收钱，以及这门生意真正的秘密：</strong></p>
+<p>签的是<strong>月租合同，随时可退，没有长约</strong>。听上去对房东很不利——但恰恰相反，这是自助仓储最赚钱的地方。操作手法是这样的：</p>
+<ol>
+<li><strong>拉客</strong>：新客户第一个月常有"$1 入住"或者"前两个月半价"的促销，把人骗进来。</li>
+<li><strong>搬进去</strong>：客户把一整个车库的东西搬进那个 10×10 的隔间，花了一个周末，雇了朋友帮忙搬沙发。</li>
+<li><strong>涨租</strong>：住满 6 到 9 个月之后，EXR 寄一封信来，"因运营成本上升，您的月租从 $135 调整为 $152"。<strong>一次涨 8% 到 15%。</strong>再过 6 到 9 个月，再涨一次。</li>
+<li><strong>客户忍了</strong>：因为要搬走，得重新雇卡车（$300+）、重新找一个周末、重新搬那张沙发；而对面那家仓储也只便宜 $15/月。<strong>忍一年才省 180 块，搬一次要花 400 块加一个周末。</strong></li>
+</ol>
+<p><strong>这就是自助仓储的全部商业逻辑：物理搬迁成本创造出的定价权。</strong>行业里管这叫"存量客户涨价"（Existing Customer Rate Increase），它比出租率更重要——EXR 的出租率常年稳定在 <strong>93%-94%</strong>，几乎不动，真正推动收入增长的是持续的涨租。</p>
+<p><strong>成本端极其轻</strong>：一家门店两个员工（其实很多店已经改成手机 App 自助开门、无人值守），电费、保安摄像头、地面税、偶尔刷个漆。所以这门生意的<strong>门店层面利润率（NOI margin）能到 70% 以上</strong>——一栋房子租出去 100 块，70 块是利润。这在所有类型的房地产里是最高的，比写字楼（约 60%）、公寓（约 62%）、购物中心都高。</p>
+<h3>生意二：卖保险给租客（营收占 10%，但可能占利润 17%）</h3>
+<p><strong>这是 EXR 最隐蔽也最赚钱的一门生意，很多人根本不知道它存在。</strong></p>
+<p>你在前台签租约的时候，员工会告诉你："您存放的物品不在我们的保险范围内，我们要求您自行投保，或者可以购买我们合作的租户保险。"绝大部分人当场就买了——<strong>每月 $12 到 $60</strong>，保额 $2,000 到 $15,000，保的是火灾、水淹、盗窃、虫害造成的物品损失。</p>
+<p>关键在于：<strong>这份保险不是转卖第三方保险公司的产品，而是由 EXR 自己在百慕大注册的再保险子公司承保的。</strong>保费收进来是 EXR 的，理赔支出也是 EXR 的。而仓储物品的实际理赔率极低（存的都是旧沙发和纸箱，很少出事），行业理赔率大约在 <strong>20%-25%</strong>。</p>
+<p>也就是说，<strong>3.62 亿美元的保费收入里，大约 2.7 亿是纯利润，利润率在 75% 上下。</strong>它不占用一分钱资本、不需要盖房子、没有折旧。这门生意的营收只占公司的 10%，但贡献的经营利润估计占到 <strong>17%</strong>。</p>
+<h3>生意三：帮别人管仓库，收 6% 管理费（营收占 5.7%）</h3>
+<p>有很多小老板自己盖了一两处仓储设施，但没有定价系统、没有全国性的品牌和网站流量、不会做收益管理。EXR 就跟他们签托管协议：挂 Extra Space 的招牌，接入 EXR 的定价算法和线上预订系统，<strong>EXR 抽取月租金收入的约 6% 作为管理费</strong>。</p>
+<p>EXR 目前托管着 <strong>1,400 多家第三方门店</strong>，这块业务的好处是：不用出资本金、纯赚服务费，而且这些门店等于是 EXR 未来的收购目标储备池——管着管着，老板想卖了，第一个找的就是 EXR。</p>
+<h3>三门生意的钱（单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>增速（FY25 vs FY24）</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>物业租赁</td>
+<td>2,949</td>
+<td>84.0%</td>
+<td>2,895</td>
+<td>2,803</td>
+<td>+3.3%</td>
+<td>~42%</td>
+<td>~1,240</td>
+</tr>
+<tr>
+<td>租客保险（再保险）</td>
+<td>362</td>
+<td>10.3%</td>
+<td>353</td>
+<td>333</td>
+<td>+6.0%</td>
+<td>~75%</td>
+<td>~271</td>
+</tr>
+<tr>
+<td>第三方托管及其他</td>
+<td>200</td>
+<td>5.7%</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~40%</td>
+<td>~80</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,511</strong></td>
+<td>100%</td>
+<td>3,446</td>
+<td>3,324</td>
+<td><strong>+3.7%</strong></td>
+<td>45.17%</td>
+<td><strong>1,591</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>说明</strong>：财报只按分部披露营收，<strong>不披露分部利润</strong>。上表的利润率是按行业惯例和公司公开的 NOI 口径估算的，总数已与实际经营利润 15.91 亿对齐，<strong>单项是估算，不是财报数字</strong>。另外 TTM（截至 6 月）和财年（截至 12 月）错开半年，所以分部增速用的是 FY2025 对 FY2024 的干净同比。</p>
+</blockquote>
+<p><strong>看这张表要注意的一句话：整体营收增速只有 +3.7%，而且租赁这块只有 +3.3%。</strong>自助仓储在 2021-2022 年经历过一轮暴涨（那两年营收增速 33%、27%），现在已经回到低个位数。原因是美国住房交易量低迷——<strong>没人搬家，就没人租仓库</strong>。搬家是这门生意的水龙头，而这个龙头现在拧得很小。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>3,630 万美元</strong>，只占净利润的 3.8%、营收的 1.0%。REIT 普遍很低，EXR 也不例外。<strong>这一项完全不构成问题。</strong></p>
+<p><strong>一次性项目</strong>：现金流量表里"资产处置损益"一行 TTM 为 <strong>+1.11 亿</strong>（正数意味着在计算现金流时被加回，即当期确认了处置损失或减值）。EXR TTM 卖出了 2.48 亿的房产、买入 8.38 亿。这个规模的资产处置对一家管着 460 亿资产的 REIT 来说是常规操作，<strong>从单期报表看不出这里面有多少是"真一次性"</strong>——REIT 每年都在买卖房产，处置损益本来就是年年发生的。不下硬结论。</p>
+<p><strong>资本化的支出</strong>：这是 REIT 最需要盯的一项，也是这份分析里<strong>唯一一个真正需要质疑数据源的地方</strong>。</p>
+<p>统计页上写着 EXR 的资本开支只有 <strong>2,094 万美元</strong>（相当于营收的 0.6%）。<strong>这个数字不可能是真的。</strong>一家管着 4,000 处金属建筑的公司，一年花在屋顶、门锁、铺路、刷漆、换闸门、更新摄像头上的钱不可能只有两千万——按行业经验，自助仓储的经常性维护开支大约是营收的 <strong>3%-5%</strong>，对 EXR 而言应该在 <strong>1.1 亿到 1.8 亿</strong>之间。</p>
+<p>那些钱去哪了？它们被记进了投资活动里的<strong>"购置房地产资产 −8.38 亿"</strong>这一行，和真正的"买新仓库"混在了一起。<strong>结果就是：数据源上 EXR 的 P/FFO 和 P/AFFO 几乎一模一样（FY2025 都是 16.12），等于把维护性资本开支当成了零。</strong>AFFO 之所以存在，全部意义就是要扣掉这笔钱，扣成零的 AFFO 是没有意义的。下面第三部分我会自己按 1.5 亿估算扣回去，并明确标注。</p>
+<p><strong>回购与稀释：这一项 EXR 做得不好，而且是反向的。</strong></p>
+<ul>
+<li>TTM 回购 <strong>1.42 亿</strong>，同期股权激励 <strong>0.363 亿</strong>，比值 3.9 倍，单看不错。</li>
+<li><strong>但股本不降反升：一年 +2.02%。</strong></li>
+<li>原因很简单：REIT 靠发股票融资买楼。EXR 一边花 1.42 亿回购，一边为了收购发行更多新股，净结果是股东被稀释了 2%。<strong>回购在这里不是回馈股东，只是在一片增发的洪水里舀了一勺水出去。</strong></li>
+</ul>
+<p>这条很重要：后面所有"每股 FFO"的计算里，都要记住分母每年在变大 2%。</p>
+<p><strong>利润和现金流的差</strong>：净利润 9.56 亿，经营现金流 19.01 亿，差了近一倍。对账表：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>956.07</td>
+</tr>
+<tr>
+<td><strong>＋ 房产折旧摊销（假费用，加回）</strong></td>
+<td><strong>724.72</strong></td>
+</tr>
+<tr>
+<td>＋ 其他摊销（债务发行费等）</td>
+<td>66.71</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失／减值</td>
+<td>111.21</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>36.30</td>
+</tr>
+<tr>
+<td>− 权益法投资收益</td>
+<td>−30.94</td>
+</tr>
+<tr>
+<td>＋ 应付账款变化</td>
+<td>+9.66</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变化</td>
+<td>+0.25</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>+25.44</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,901</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：差额的 77% 就是那笔 7.25 亿的房产折旧。</strong>这正是为什么 REIT 不能用市盈率——报表上"每年损耗 7.25 亿"的那些仓库，实际上租金还在涨。把它加回来才看得见真实的赚钱能力。</p>
+<hr />
+<h2>第三部分：REIT 口径估值</h2>
+<p>先算 FFO。三年的数据（用市值 ÷ 数据源披露的 P/FFO 倍数反推）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>市值（百万）</th>
+<th>P/FFO</th>
+<th>推算 FFO（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>当前（2026-08）</td>
+<td>32,634</td>
+<td>18.10</td>
+<td><strong>1,803</strong></td>
+</tr>
+<tr>
+<td>FY2025（12 月）</td>
+<td>27,639</td>
+<td>16.12</td>
+<td>1,715</td>
+</tr>
+<tr>
+<td>FY2024（12 月）</td>
+<td>31,713</td>
+<td>18.47</td>
+<td>1,717</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年的 FFO 是 17.17 亿 → 17.15 亿 → 18.03 亿，基本原地踏步。</strong>同期股本每年增长约 2%。<strong>也就是说，每股 FFO 三年来实际上是在小幅下滑的。</strong>这是这份分析里最重要的一个事实。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>P/FFO</strong></td>
+<td>326.3 亿 ÷ 18.03 亿</td>
+<td><strong>18.1 倍</strong></td>
+<td><strong>$5.52</strong></td>
+</tr>
+<tr>
+<td><strong>P/AFFO（自行估算）</strong></td>
+<td>326.3 亿 ÷（18.03 − 估算维护开支 1.5 亿 = 16.53 亿）</td>
+<td><strong>19.7 倍</strong></td>
+<td><strong>$5.07</strong></td>
+</tr>
+<tr>
+<td>数据源的 P/AFFO</td>
+<td>数据源把维护开支记成了 ~0，所以 ≈ P/FFO</td>
+<td>18.1 倍</td>
+<td>$5.52（<strong>高估</strong>）</td>
+</tr>
+<tr>
+<td><strong>股息（真到手的现金）</strong></td>
+<td>$6.48 ÷ $147.90</td>
+<td>派息率 76%</td>
+<td><strong>$4.38 现金</strong></td>
+</tr>
+<tr>
+<td>GAAP 市盈率（<strong>不适用</strong>）</td>
+<td>326.3 亿 ÷ 9.56 亿</td>
+<td>32.7 倍</td>
+<td>$3.06（被假折旧压低，无意义）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>463.5 亿 ÷ 23.11 亿</td>
+<td>20.1 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>隐含 cap rate（房产收益率）</strong></td>
+<td>EBITDA 23.11 亿 ÷ 企业价值 463.5 亿</td>
+<td>—</td>
+<td><strong>约 5.0%</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均 FFO 口径</strong></td>
+<td>326.3 亿 ÷ [(18.03+17.15+17.17)/3 = 17.45 亿]</td>
+<td><strong>18.7 倍</strong></td>
+<td><strong>$5.35</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：</strong></p>
+<p>你现在投 100 块进 EXR，<strong>按最保守的真实口径（P/AFFO 19.7 倍），公司一年替你赚 5.07 块。</strong></p>
+<p>这 5.07 块里的分配非常清楚，而且是这份分析里最干净的一段：<strong>4.38 块以现金分红的形式直接打进你的账户</strong>（每股每年 $6.48，按季度发），剩下不到 0.7 块留在公司里。<strong>这是四家分析里现金到手比例最高的公司——因为 REIT 依法必须把 90% 以上的应税收入分掉，这是它免缴公司所得税的代价</strong>（EXR TTM 实际税率只有 4.18%）。</p>
+<p>但接下来的话就没那么好听了。这个 5.07 块未来变大还是变小？<strong>大概率变小或原地踏步，理由有四条，每一条都是硬数据：</strong></p>
+<p><strong>第一，股息已经四年没涨。</strong>每股 $6.48 从 FY2023 一直发到今天，FY2022 是 $6.00，FY2021 是 $4.50。也就是说 2021→2022 涨了 33%，然后<strong>戛然而止，冻结四年</strong>。一家 REIT 停止提高股息，通常意味着 FFO 已经没有余量了。事实也是如此：派息 13.71 亿 ÷ FFO 18.03 亿 = <strong>76% 的派息率</strong>，在自助仓储 REIT 里属于偏高。</p>
+<p><strong>第二，杠杆用到了顶，而且几乎不产生收益。</strong>这是最尖锐的一条。
+- 总负债 <strong>144.15 亿</strong>，净负债 <strong>137.18 亿</strong>，净负债/EBITDA <strong>5.94 倍</strong>，利息保障倍数只有 <strong>2.47 倍</strong>（经营利润 15.91 亿，利息支出约 6.4 亿）。
+- 债务的平均成本约 <strong>4.5%</strong>（6.4 亿 ÷ 143 亿）。
+- 而房产的隐含 cap rate 只有 <strong>5.0%</strong>。
+- <strong>借 4.5% 的钱去买 5.0% 收益的房子，中间只剩 0.5 个百分点。</strong>这意味着杠杆几乎没有为股东创造任何价值，却把风险全加上了。利率再涨一点，或者 cap rate 再压一点，这个价差就是负的。</p>
+<p><strong>第三，ROE 6.95%，低于自己的资金成本 8.78%。</strong>这个对比说明：按财务学的标准，EXR 现在每投一块钱进去，创造的回报低于它筹这块钱的代价——<strong>它在毁灭价值，不是创造价值。</strong></p>
+<p><strong>第四，增长引擎熄火。</strong>营收增速 +3.7%，租赁业务 +3.3%。自助仓储的需求来自搬家，而美国住房交易量还在低位。出租率 93%-94% 已经接近饱和，没有提升空间；剩下唯一的抓手是继续给存量客户涨租，而这个手段在租金已经涨了两轮之后，弹性在下降。</p>
+<p><strong>唯一的亮点</strong>是那门保险生意：3.62 亿收入、75% 利润率、不占资本、增速 +6%（快于租赁），而且随着托管门店越来越多还能继续扩。<strong>如果 EXR 的估值只按这块生意算，它值得溢价；但它 84% 的收入还是在租铁皮隔间。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>EXR 是一门优秀的生意，正被一份糟糕的资产负债表和一个停止增长的市场拖住；19.7 倍的 AFFO 换 4.4% 的现金分红，不算贵也不算便宜，但你为一个不再增长的东西付的是"还在增长"的价格。</strong></p>
+<p>生意本身值得尊敬：铁皮隔间 + 搬迁成本创造的定价权 + 70% 的门店利润率 + 一门 75% 利润率的保险副业 + 全美最大的规模和 1,400 家托管门店储备。这套模式在 2010-2022 年是全美股表现最好的房地产品类，不是运气。</p>
+<p>但今天你面对的是：<strong>FFO 三年不增长、股息冻结四年、股本每年被稀释 2%、净负债/EBITDA 接近 6 倍、利息覆盖只有 2.47 倍、借钱成本 4.5% 而房产收益率 5.0%、ROE 6.95% 低于资金成本 8.78%。</strong>这些不是"另一方面"，这就是当前的全貌。</p>
+<p>你花 100 块买它，一年拿回 4.38 块现金分红——这确实比十年期美债好一点，而且分红有房产做底、有涨租的长期通胀保护。<strong>但支撑更高回报的两个引擎（涨租和加杠杆收购）现在都熄火了。</strong>这只股票过去 52 周只涨了 7%，而同期凯西涨了 64%——市场已经在给它定价了，定的就是"不增长"。</p>
+<p><strong>如果你要的是一份带房产抵押的 4.4% 现金流，可以拿。如果你指望它像 2015-2021 那样每年 FFO 涨 15%，那个时代已经结束了，而且没有迹象显示它会回来。</strong></p>
+</div></body></html>

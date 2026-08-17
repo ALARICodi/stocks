@@ -1,0 +1,415 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PG · 宝洁（Procter & Gamble）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">70年涨股息、100%现金还你，极少数「买了不用再看」</div><h1>PG · 宝洁（Procter &amp; Gamble）</h1>
+<p>市值 $3353 亿 · 股价约 $144.5 · 行业：日用消费品 · TTM 截止 2026 年 6 月 30 日（恰好等于 FY2026 完整财年）· 企业价值 $3604 亿</p>
+<blockquote>
+<p><strong>口径说明</strong>：宝洁有一批 ESOP 可转换优先股，全面摊薄后的股数是 24.24 亿股，比在外流通的 23.2 亿股多约 4%。本文所有倍数一律按<strong>全面摊薄市值 3503 亿</strong>计算，比网站上按基本股数算的数字略高一点，这是更保守也更诚实的算法。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>宝洁把自己拆成五个分部。这五个分部<strong>是真的五门生意</strong>——它们的货架位置、竞争对手、购买频率、定价逻辑各不相同，不像有些公司那种为了拆而拆。</p>
+<p>但要先讲清楚一件更本质的事：<strong>这五门生意底层跑的是同一台机器。</strong></p>
+<p>这台机器是这样运转的：宝洁花几十亿美元做广告，把一个词刻进你脑子里（"洗衣服=汰渍"、"尿布=帮宝适"、"剃须刀=吉列"）；因为你会指名要这个牌子，沃尔玛、Costco、亚马逊就不得不进货，否则消费者会去对面超市买；因为进了货，宝洁就拿到了货架上最好的那一层（视线高度）；因为占了最好的货架，销量继续保大；因为销量大，宝洁的单位生产成本和单位广告成本都比对手低；省下来的钱再投回广告。<strong>转一圈，回到起点，越转越紧。</strong></p>
+<p>宝洁一年花在广告和营销上的钱大约 85–90 亿美元，是全世界最大的广告主之一。这不是费用，这是<strong>护城河的年度维护费</strong>。你可以把宝洁理解成"一家花 90 亿美元租下全人类大脑里几十个词的公司"。</p>
+<p>下面逐个讲这五门生意。</p>
+<h3>1. Fabric &amp; Home Care 织物与家居清洁（TTM 303 亿，占 35%，最大的一块）</h3>
+<p>品牌：汰渍 Tide、碧浪 Ariel、当妮 Downy 柔顺剂、Gain、Febreze 空气清新、Swiffer 静电除尘拖把、Mr. Clean、Dawn 洗洁精、Cascade 洗碗机块。</p>
+<p><strong>具体怎么赚钱</strong>：一瓶 92 盎司的 Tide 在沃尔玛货架上标价约 14 美元，宝洁给沃尔玛的出厂价约 8 美元，这瓶东西的原料（表面活性剂、酶、水、塑料瓶）加灌装成本大约 4 美元。也就是说毛利率约 50%，剩下的钱去付广告、货架费、物流和研发。一个四口之家一年买 6–8 瓶，一辈子买几百瓶，而且<strong>几乎从不换牌子</strong>——洗衣液是典型的"低关注度高忠诚度"品类，没人会为了省 2 块钱去研究竞品的成分表。</p>
+<p>Dawn 洗洁精是个更极端的例子：它是美国洗洁精里最贵的，一瓶比杂牌贵一倍，但市占率接近一半。原因是几十年的广告把"Dawn 能洗掉油污"这件事变成了常识，甚至海洋动物救助组织用 Dawn 洗被石油污染的海鸟这件事，本身就是宝洁运作了四十年的营销资产。</p>
+<p>这块生意的特点：<strong>用量刚性、复购稳定、单价低到消费者对涨价不敏感</strong>。过去几年通胀期宝洁提价 8–10%，销量几乎没掉——这就是定价权的定义。</p>
+<h3>2. Baby, Feminine &amp; Family Care 婴儿、女性与家庭护理（TTM 204 亿，占 23%）</h3>
+<p>品牌：帮宝适 Pampers、Luvs、护舒宝 Always、丹碧丝 Tampax、Bounty 厨房纸、Charmin 卫生纸、Puffs 面巾纸。</p>
+<p><strong>具体怎么赚钱</strong>：一个婴儿从出生到如厕训练要用掉大约 4000 片尿布，一片零售价 0.20–0.30 美元，两年下来这个家庭要花 800–1200 美元，其中大部分会落在帮宝适或 Luvs 上。关键在于<strong>这个客户是被"新手父母的风险厌恶"锁定的</strong>——新爸妈不会拿孩子的屁股去试省 3 块钱的杂牌，医院产房里发的免费试用装是宝洁花钱买来的（这是它最重要的获客渠道，一个新生儿的"第一片尿布"值几百美元的终身价值）。</p>
+<p>Bounty 厨房纸和 Charmin 卫生纸则是另一套逻辑：纸是纯大宗商品，宝洁靠"更厚更吸水"的物理差异 + 品牌溢价，把一个理论上应该无差别的东西卖出 30–50% 的溢价。这块生意最容易被自有品牌（超市贴牌）侵蚀，也确实是五个分部里增长最慢的一块（TTM 只涨 0.8%）。</p>
+<h3>3. Beauty 美容（TTM 160 亿，占 18%，增长最快）</h3>
+<p>品牌：玉兰油 Olay、SK-II、海飞丝 Head &amp; Shoulders、潘婷 Pantene、Herbal Essences、Old Spice、Secret 止汗剂、Native。</p>
+<p><strong>具体怎么赚钱</strong>：这里有两种完全不同的价格带并存。一边是海飞丝——一瓶洗发水 8 美元，成本 2 美元，靠"去屑"这个功能性诉求卖了几十年，全球每年卖出十几亿瓶。另一边是 SK-II——一瓶 230 毫升的"神仙水"在中国专柜卖 1500 元人民币以上，成本占售价可能不到 10%，卖的完全是仪式感和身份，主战场在中国和日本的百货专柜及免税店。</p>
+<p>这块 TTM 增长 7.1%，是五个分部里最快的，主要来自止汗除臭品类和 Olay 的复苏。SK-II 过去几年受中国市场疲软和地缘因素拖累，是这块生意里最大的变量。</p>
+<h3>4. Health Care 健康护理（TTM 125 亿，占 14%）</h3>
+<p>品牌：欧乐 B Oral-B 牙刷、佳洁士 Crest 牙膏、Vicks 感冒药、Pepto-Bismol 胃药、Metamucil 膳食纤维、Align 益生菌、ZzzQuil 助眠。</p>
+<p><strong>具体怎么赚钱</strong>：口腔护理是这块的主体。Oral-B 用的是和吉列一模一样的模式——电动牙刷手柄卖 60 美元（微利甚至贴钱），<strong>刷头</strong>四支装卖 30 美元且必须每三个月换一次（暴利）。一个用户买了手柄，未来十年每年给宝洁贡献 100 多美元的刷头收入。牙膏则靠"牙医推荐"这个信任背书，Crest 和高露洁在美国分掉大半市场。</p>
+<p>Vicks 这类 OTC 感冒药有明显季节性，冬天流感季是旺季，销量随流感严重程度波动。</p>
+<h3>5. Grooming 剃须（TTM 69 亿，占 8%，最小的一块）</h3>
+<p>品牌：吉列 Gillette、Venus（女士）、Braun（电动剃须与个护小家电）。</p>
+<p><strong>具体怎么赚钱</strong>：这是全世界最有名的商业模式，商学院讲的"剃须刀-刀片模型"（razor and blades）这个词就是从吉列来的。锋隐 Fusion 刀架卖 10–12 美元，几乎不赚钱；配套的 4 片装刀片卖 18–20 美元，制造成本可能只有 2–3 美元，<strong>毛利率超过 80%</strong>。刀片和刀架的卡口是专利设计，别的牌子插不上去，所以你买了刀架就被锁进这个体系。</p>
+<p>这门生意曾经是宝洁最赚钱的一块（当年花 570 亿美元买下吉列），但过去十年被 Dollar Shave Club、Harry's 这类订阅制直销品牌打掉了一大块份额和定价权——它们绕过超市货架直接寄到家，把"一片刀片 5 美元"这件事的荒谬性暴露给了消费者。吉列被迫降价，营收从巅峰缩水。TTM 增长 3.8%，算是止住了跌势，但<strong>这是五个分部里唯一一门护城河被实质性削弱过的生意</strong>。</p>
+<h3>五门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上一财年 FY2025</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>织物与家居清洁</td>
+<td>303.1 亿</td>
+<td>296.2 亿</td>
+<td>+2.4%</td>
+<td>34.8%</td>
+<td>估算 24%</td>
+</tr>
+<tr>
+<td>婴儿/女性/家庭护理</td>
+<td>204.0 亿</td>
+<td>202.5 亿</td>
+<td>+0.8%</td>
+<td>23.4%</td>
+<td>估算 19%</td>
+</tr>
+<tr>
+<td>美容</td>
+<td>160.2 亿</td>
+<td>149.6 亿</td>
+<td><strong>+7.1%</strong></td>
+<td>18.4%</td>
+<td>估算 28%</td>
+</tr>
+<tr>
+<td>健康护理</td>
+<td>124.6 亿</td>
+<td>120.0 亿</td>
+<td>+3.8%</td>
+<td>14.3%</td>
+<td>估算 26%</td>
+</tr>
+<tr>
+<td>剃须</td>
+<td>69.2 亿</td>
+<td>66.6 亿</td>
+<td>+3.8%</td>
+<td>8.0%</td>
+<td>估算 27%</td>
+</tr>
+<tr>
+<td>公司/其他</td>
+<td>9.2 亿</td>
+<td>7.9 亿</td>
+<td>—</td>
+<td>1.1%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>870.3 亿</strong></td>
+<td>842.8 亿</td>
+<td><strong>+3.3%</strong></td>
+<td>100%</td>
+<td><strong>22.7%（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报此页只披露分部营收，不披露分部利润。上表利润率是按宝洁历史披露的分部结构和整体 22.7% 倒推的估算值，不是公司披露数字。</strong> 结构上可以确定的是：美容和剃须是高毛利品类，纸制品（Baby/Family Care）是低毛利品类。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>宝洁是财务上非常规矩的公司，一百多年的老企业、没有什么可玩的。逐项看：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 5.24 亿美元，占净利润 3.3%。极低。宝洁 10.4 万员工里绝大多数是工厂工人和销售，用现金发薪。这 5.24 亿已经在 GAAP 里扣掉，不加回。<strong>不构成问题。</strong></p>
+<p><strong>一次性项目 —— 这里有一个需要点名的疑点。</strong></p>
+<p>TTM 营收涨了 3.26%，但<strong>经营利润反而跌了 3.4%</strong>（204.5 亿 → 197.5 亿），毛利率从 51.2% 掉到 50.2%。营收涨、利润跌，中间少掉的钱去哪了？从这四页财报上看不出明细，但两个已知的大方向是：<strong>关税推高的原材料和进口成本</strong>，以及<strong>重组费用</strong>（宝洁在 2025 年中启动了一轮为期两年的组织精简，涉及数千个非生产岗位）。</p>
+<p>按规矩必须说清楚：<strong>只看 TTM 这一期，我无法拆出重组费用的具体金额，也无法判断这笔支出是"真一次性"还是"年年都有"。</strong> 而且宝洁有个特点——它几乎<strong>每一年</strong>都在做某种"重组计划"，连续十几年如此。所以在下面的估值表里，我<strong>不把它当一次性剔除</strong>，就按 GAAP 原样算。这是保守处理。</p>
+<p>另一个数据点：经营利润跌了，但净利润还涨了 0.45%，说明差额被<strong>税率下降</strong>（有效税率 20.77%）和营业外收益补上了。这种"经营层面变差、净利润靠税补平"的组合，质量不如经营层面本身的增长。</p>
+<p><strong>资本化的支出</strong>：宝洁没有软件资本化或内容制作费这类争议项目。研发费用全部当期费用化。<strong>没有。</strong></p>
+<p><strong>回购与稀释 —— 这一项宝洁做得非常漂亮。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>50.3 亿</td>
+<td>65.0 亿</td>
+<td>50.1 亿</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td>5.24 亿</td>
+<td>4.76 亿</td>
+<td>5.62 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>9.6 倍</strong></td>
+<td>13.7 倍</td>
+<td>8.9 倍</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−1.30%</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是 SBC 的 9.6 倍，远超"3 倍才算真回购"的门槛。而且股本实实在在减少了 1.30%——<strong>这是真的在把股份买回来注销，不是在给员工发股票擦屁股。</strong> 你什么都不做，一年后你手里每股代表的公司份额自动多了 1.3%。这是宝洁这类公司回报股东的核心方式之一。</p>
+<p><strong>利润和现金流的差</strong>：宝洁这里有一个值得注意的变化，逐项对账（单位：百万美元，TTM）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>16,046</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+3,160</td>
+<td>工厂设备、模具、品牌无形资产，不花现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+524</td>
+<td>发股票不花现金（但稀释股东，估值时不加回）</td>
+</tr>
+<tr>
+<td>＋ 其他调整</td>
+<td>−300</td>
+<td>递延所得税等，本期是<strong>负</strong>的（上一年是 +904）</td>
+</tr>
+<tr>
+<td>＝ 小计</td>
+<td>19,430</td>
+<td></td>
+</tr>
+<tr>
+<td>± 应收账款变化</td>
+<td>+84</td>
+<td>基本不动</td>
+</tr>
+<tr>
+<td>± 存货变化</td>
+<td>−641</td>
+<td>备货占用 6.4 亿现金</td>
+</tr>
+<tr>
+<td>± 应付账款变化</td>
+<td>+919</td>
+<td>拉长了给供应商的账期，<strong>释放出 9.2 亿现金</strong></td>
+</tr>
+<tr>
+<td>± 其他经营性变化</td>
+<td>−333</td>
+<td></td>
+</tr>
+<tr>
+<td>± 未单列的差额</td>
+<td>+97</td>
+<td>递延税等零星科目</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>19,556</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−4,409</strong></td>
+<td><strong>同比大增 17%（上年 3,773）</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>15,147</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>三件事值得说：</p>
+<p>第一，<strong>自由现金流 151.5 亿低于净利润 160.5 亿</strong>，这跟家得宝那种"现金流≈利润"的干净状态不同。原因不是利润有水分，而是<strong>资本开支 44.1 亿远高于折旧 31.6 亿</strong>——宝洁正在<strong>净扩张产能</strong>（自动化产线、北美产能回流以规避关税）。花在建厂上的钱不进利润表但真金白银流出去了。这不是坏事，但意味着你拿到手的现金比账面利润少。</p>
+<p>第二，<strong>经营现金流的增长（+9.8%）有 9.2 亿来自"晚点给供应商付钱"</strong>。这是一次性的，账期不可能无限拉长，明年不会再有这一笔。剔掉它，经营现金流的真实增长更接近 +4%。</p>
+<p>第三，"其他调整"这一行从上年的 +9.04 亿翻转成本期的 −3.00 亿，一来一去差了 12 亿。这类递延税科目的大幅摆动，是<strong>单期口径看不清的东西</strong>，只能标记出来提醒。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>（分子统一用全面摊薄市值 3503 亿，全面摊薄企业价值 3745 亿）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3503 ÷ 160.5</td>
+<td><strong>21.8 倍</strong></td>
+<td><strong>$4.58</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（core EPS，估算）</td>
+<td>剔除重组与汇率影响</td>
+<td>约 20.9 倍</td>
+<td>约 $4.78</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已扣；重组不作一次性剔除（宝洁年年都有）</td>
+<td><strong>21.8 倍</strong></td>
+<td><strong>$4.58</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>3503 ÷ 151.5</td>
+<td>23.1 倍</td>
+<td>$4.32</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3745 ÷ 197.5</td>
+<td>19.0 倍</td>
+<td>$5.27</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>3503 ÷ 156.3（FY24–26 均值）</td>
+<td><strong>22.4 倍</strong></td>
+<td><strong>$4.46</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Non-GAAP 那一行是估算——这四页没给公司口径的 core EPS，按宝洁历年 core 与 GAAP 的差距（通常 3–5%）粗估。<strong>标注为估算，不作结论依据。</strong></p>
+<p><strong>先看那一行关键的三年平均：22.4 倍，比当期 GAAP 的 21.8 倍高，但只高 3%。</strong></p>
+<p>这个"几乎没差别"本身就是最重要的信息：<strong>宝洁的利润是一条直线，没有周期。</strong> 净利润 FY2024 是 148.8 亿、FY2025 是 159.7 亿、FY2026 是 160.5 亿。你不需要担心"现在这个利润是不是高点"——这家公司二十年来利润从来没有出现过高点或低谷，它就是每年往上爬 3–5%。这跟半导体、能源、航空那种利润上下摆动十倍的行业完全是两个物种。</p>
+<p><strong>说人话：你现在投 100 块进宝洁，按最保守的真实口径，公司一年替你赚 4.58 块。</strong></p>
+<p>这 4.58 块怎么分配，宝洁是所有大公司里<strong>最干脆的</strong>：</p>
+<ul>
+<li><strong>2.92 块以现金分红发给你</strong>（TTM 派息 102.3 亿）。宝洁已经连续 70 年提高股息，是全世界仅有的几家做到这个的公司之一。</li>
+<li><strong>1.44 块通过回购变成你的持股比例上升</strong>（TTM 回购 50.3 亿，股本减少 1.30%）。</li>
+<li><strong>两项合计 152.6 亿，等于自由现金流的 101%——它把赚到的现金一分不留全部还给了股东</strong>，甚至还多还了一点（靠账上现金和少量借款补的）。</li>
+<li>剩给公司做再投资的是<strong>零</strong>。宝洁不做大收购（TTM 收购支出只有 0.85 亿，可以忽略），扩张全靠资本开支那 44 亿，而那笔钱已经在算自由现金流时扣过了。</li>
+</ul>
+<p><strong>这个 4.58 块未来会变大还是变小？</strong></p>
+<p>会慢慢变大，但慢得可以预测。拆开看增长来自三处：</p>
+<ol>
+<li><strong>提价约 +2%/年</strong>。这是宝洁最可靠的一台印钞机——它的产品单价太低（一瓶洗衣液 14 美元），涨 3% 消费者根本不会切换品牌。长期看它就是跟着通胀走，通胀是宝洁的朋友不是敌人。</li>
+<li><strong>销量约 +1%/年</strong>。发达市场人口不增长，增量主要来自新兴市场（中国、印度、东南亚、拉美）的消费升级——一个印度家庭从用肥皂块洗衣服换成用洗衣粉、再换成洗衣液，这个过程要走二三十年，宝洁全程收钱。</li>
+<li><strong>股本回购约 +1.3%/年</strong>。分母变小，每股赚的自动变多。</li>
+</ol>
+<p>三项加起来 EPS 每年增长 4–6%，加上 2.9% 的股息，<strong>长期总回报大约 7–9%</strong>。这个数字在过去二十年被反复验证，非常稳定。</p>
+<p>往下的风险有三个，都不致命但要摆出来：</p>
+<p>一是<strong>自有品牌侵蚀</strong>。经济下行时消费者会从 Tide 换成超市贴牌洗衣液，从 Bounty 换成便宜卫生纸。这在纸制品和洗涤剂上真实存在，也是 Baby/Family Care 只增长 0.8% 的部分原因。宝洁的应对是把产品往高端推（浓缩洗衣珠、更厚的纸），但这场仗每一轮衰退都要重打一次。</p>
+<p>二是<strong>GLP-1 减肥药和电商改变货架逻辑</strong>。宝洁的护城河很大一部分是"超市货架"，而线上购物没有货架——在亚马逊搜"洗衣液"，第一屏是算法和竞价决定的，不是宝洁的品牌力决定的。这是一个正在缓慢侵蚀的结构性问题。</p>
+<p>三是<strong>吉列的教训会不会重演</strong>。剃须刀被 DTC 品牌打掉一块，说明"高毛利日用品 + 直销渠道"是一个真实的攻击面。目前还没有第二个品类被这样打穿，但这个可能性一直存在。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>21.8 倍买一台每年稳定吐出 4.6% 真实收益、且把其中 100% 现金还给你、连续 70 年涨股息、利润曲线是一条直线的机器——这不是便宜货，但它是市场上极少数你可以"买了就不用再看"的东西。</strong></p>
+<p>要不要买，取决于你拿它对比什么。跟十年期美债比：宝洁给你 2.9% 的股息 + 每年 4–6% 的增长，且这个现金流几乎没有中断风险，明显更划算。跟成长股比：它一年只涨 4–6%，二十年后你的钱翻三倍，仅此而已，不会有惊喜。</p>
+<p>值得单独指出的一个瑕疵：<strong>本期经营利润在营收增长的情况下反而下滑，毛利率掉了一个百分点，这是宝洁多年来少见的信号。</strong> 关税和重组是已知的解释，但"营收涨、经营利润跌、靠税率补齐净利润"这个组合如果连续出现两三年，就不再是噪音而是趋势了，届时 21.8 倍就该重新算过。目前一期还看不出结论，值得盯下一份财报。</p>
+<p>宝洁不是一笔让你赚大钱的投资，它是一笔让你<strong>不用担心</strong>的投资。这两件事在不同的人生阶段值不同的价钱。</p>
+</div></body></html>

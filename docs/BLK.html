@@ -1,0 +1,434 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BLK · 贝莱德</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BLK</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">极优生意，但在为最好时刻付全价，还稀释6.6%</div><h1>BLK · 贝莱德</h1>
+<p><strong>市值</strong> $1,921.8 亿 · <strong>股价</strong> 约 $1,183 · <strong>行业</strong> 金融(资产管理) · <strong>TTM 截止</strong> 2026年6月30日 · <strong>筛选榜名次</strong> 第 45 名</p>
+<blockquote>
+<p><strong>这是金融股,但下面照样用市盈率,不用市净率——原因必须先说清楚。</strong>
+银行和保险公司要用市净率(PB)、ROE 这套口径,是因为它们<strong>拿自己的资产负债表去冒险</strong>:银行放贷款,坏账了亏的是自己的钱;保险公司赔付,赔的是自己的钱。所以必须先看它有多少净资产、能扛多少损失。
+<strong>贝莱德不是这种公司。</strong> 它管着十几万亿美元,但<strong>那些钱一分都不是它的,风险也一分都不归它扛</strong>。客户的组合跌了,客户自己亏;贝莱德只是按管理规模收一个百分比的费用。它的资产负债表小得可怜(总负债权益比只有 0.23),真正的资产是<strong>客户关系和一套软件</strong>,这些在账面上根本没有对应数字——所以它的市净率 3.18 倍是个没有意义的数。
+<strong>它本质上是一家收"过路费"的服务业公司,和麦当劳收加盟费的结构更像,和摩根大通完全不像。用市盈率是对的。</strong> 但我在最后会补一个银行式的风险视角:它的收入是对全球资产价格的一道税,资产价格塌了,它的利润会跟着塌。</p>
+</blockquote>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>贝莱德的收入分八条线,但真正需要理解的是四种<strong>完全不同的赚钱方式</strong>,费率相差可以到 <strong>50 倍</strong>。</p>
+<h3>生意一:iShares 指数基金(ETF)—— 全世界最便宜、也最赚钱的收费站(TTM 营收 94.1 亿,占 34.5%)</h3>
+<p>你在券商 App 上买了 1 万美元的 IVV(标普500 ETF)。贝莱德收你多少钱?<strong>每年 0.03%,也就是 3 美元。</strong></p>
+<p>三块钱。听起来贝莱德是在做慈善。但这门生意的精妙全在<strong>收钱的方式</strong>上:</p>
+<p><strong>你永远不会付这三块钱。</strong> 它不开账单、不扣你的银行卡、不需要你签字。它每天从基金的净值里<strong>悄悄划走万分之零点八</strong>,你看到的净值已经是扣完的。你持有十年,它收十年;你死了,你儿子继承了这份 ETF,它继续收。<strong>没有续约动作,就没有取消动作。</strong> 这是人类设计出的最不容易流失的收费结构之一。</p>
+<p>规模有多大?按费率倒推,贝莱德的 ETF 那 94 亿营收对应的规模在<strong>几万亿美元</strong>量级——也就是说,全球有几万亿美元的钱,每天在自动给贝莱德交这道过路费。</p>
+<p>里面还有几个高费率的品种撑着平均值,比如 IBIT(比特币现货 ETF)收 0.25%,是标普 ETF 的 8 倍;新兴市场、行业主题、债券 ETF 的费率也都在 0.1%~0.5% 之间。</p>
+<p><strong>这门生意的增长逻辑有两条腿:一是净流入(全世界的钱还在从主动基金往指数基金搬),二是市场上涨(标普涨 20%,同一批份额对应的资产就多 20%,费收自动多 20%,贝莱德一个人都不用多雇)。</strong> FY25 vs FY24 涨了 19.9%,两条腿都在跑。</p>
+<h3>生意二:机构委托 + 私募资产 —— 费率高 50 倍的那一块(TTM 营收 54.5 亿,占 20%)</h3>
+<p>客户是加州的公务员退休金、日本的政府养老投资基金、中东的主权基金、某家大公司的企业年金。他们一次交给贝莱德 200 亿美元,附一张委托书。</p>
+<p><strong>这一块内部的费率差异是全公司最悬殊的:</strong></p>
+<ul>
+<li><strong>指数化委托</strong>:"帮我复制这个债券指数就行。" 费率 <strong>0.01%~0.03%</strong>。200 亿收 200~600 万。几乎白干,但量大、且完全自动化。</li>
+<li><strong>主动管理</strong>:"帮我选债券,跑赢基准。" 费率 <strong>0.3%~0.5%</strong>。</li>
+<li><strong>私募资产(这是最近三年全部的故事)</strong>:费率 <strong>1%~1.5%,外加利润分成 10%~20%</strong>。</li>
+</ul>
+<p><strong>最后这一档是贝莱德过去三年花大钱买回来的。</strong> 它连做三笔并购把自己从"指数基金厂"改造成"另类资产管理公司":
+- <strong>GIP(全球基础设施合伙人)</strong>:买机场、港口、输电网、数据中心的私募基金。你出钱,它替你买下一座希思罗机场那样的资产,收 20~30 年过路费。
+- <strong>HPS</strong>:<strong>私募信贷</strong>。一家年收入 5 亿美元的中型公司要借 3 亿扩产,以前去找银行;现在银行受监管限制不愿意放,它就找 HPS 直接借,利率比银行高 3~4 个百分点。贝莱德把养老金的钱汇集起来放这笔贷款,<strong>收 1.5% 管理费 + 15% 的利息分成</strong>。
+- <strong>Preqin</strong>:私募市场的数据库(下面讲软件时会再提)。</p>
+<p><strong>为什么非要干这个?</strong> 因为同样是管 100 亿美元,做标普 ETF 一年收 300 万,做私募信贷一年收 1.5 亿——<strong>50 倍。</strong> 指数基金的费率被 Vanguard 打了二十年价格战,已经压到地板;私募这块因为不透明、难比价、锁定期长,费率还没被打下来。<strong>贝莱德是在用它世界第一的募资能力,去挖一口更深的井。</strong></p>
+<p>这一段 FY25 vs FY24 增长 <strong>32.1%</strong>,是全公司最快的,几乎全部来自这三笔并购并表。</p>
+<h3>生意三:Aladdin 软件订阅 —— 全公司质量最高的收入(TTM 营收 21.4 亿,占 7.8%)</h3>
+<p>这条线只占营收的 7.8%,但它是我认为<strong>贝莱德最值钱的东西</strong>。</p>
+<p>Aladdin 是一套风险管理系统。一家保险公司把自己全部的持仓——几万个债券、股票、衍生品头寸——导进 Aladdin,系统会告诉它:「<strong>如果明天美联储加息 100 个基点,同时信用利差走阔 50 个基点,你这个组合会亏 24 亿美元,其中 17 亿来自你那批 2035 年到期的地产债。</strong>」</p>
+<p>客户按<strong>年费订阅</strong>,根据管理规模从每年一百多万美元到两千万美元以上不等。</p>
+<p><strong>这门生意有三个杀手级特征:</strong></p>
+<ol>
+<li><strong>规模惊人且包含对手</strong>:超过二十万亿美元的资产跑在 Aladdin 上——<strong>其中很大一部分不是贝莱德的钱,是贝莱德竞争对手的钱</strong>。别的资产管理公司一边和 iShares 抢客户,一边每年给贝莱德交软件费。</li>
+<li><strong>切换成本高到近乎锁死</strong>:一家机构一旦把风控流程、合规报告、交易工作流、给监管交的报表全部建在 Aladdin 上,想换掉要重做两三年,期间还不能出错。<strong>没人愿意冒这个险。</strong></li>
+<li><strong>收入和市场涨跌基本无关</strong>:标普跌 30%,Aladdin 的订阅费一分不少——客户在熊市里反而<strong>更需要</strong>风险系统。<strong>这是贝莱德全公司唯一一条不随资产价格波动的收入。</strong></li>
+</ol>
+<p>买 Preqin 那 32 亿美元就是为了给 Aladdin 补齐私募市场的数据——以前 Aladdin 只能算你的股债组合,现在你那些私募股权、基础设施、私募信贷的头寸也能一起进模型算风险了。</p>
+<p>这条线 FY25 vs FY24 增长 <strong>23.6%</strong>。</p>
+<h3>生意四:剩下四条小线(TTM 合计 46.8 亿,占 17%)</h3>
+<ul>
+<li><strong>零售基金(50.1 亿,18.3%)</strong>:通过理财顾问和 401(k) 卖的共同基金,费率约 0.5%,比 ETF 高十几倍。但这是一门<strong>慢性萎缩</strong>的生意,钱在持续往 ETF 搬(增速只有 5.8%)。</li>
+<li><strong>业绩报酬(18.5 亿,6.8%)</strong>:对冲基金和私募产品赚超过门槛线的部分,贝莱德分 10%~20%。<strong>丰年吃饱,荒年归零</strong>——FY2023 只有 5.5 亿,TTM 是 18.5 亿,波动 3 倍以上。这笔钱<strong>不该按 29 倍市盈率去估值</strong>,下面会处理。</li>
+<li><strong>现金管理(13.3 亿,4.9%)</strong>:货币基金,企业财务部门放闲钱的地方。费率约 0.1%,利率高的时候规模会涨。</li>
+<li><strong>分销费(15.0 亿,5.5%)</strong>:收进来大部分要转付给渠道,<strong>基本是过路的,没什么真实经济利益</strong>。</li>
+</ul>
+<h3>八门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>增速(FY25 vs FY24)</th>
+<th>费率量级</th>
+<th>质量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>iShares ETF</strong></td>
+<td>94.1 亿</td>
+<td>34.5%</td>
+<td>+19.9%</td>
+<td>0.03%~0.5%</td>
+<td>极稳,随市场涨跌</td>
+</tr>
+<tr>
+<td><strong>机构 + 私募</strong></td>
+<td>54.5 亿</td>
+<td>20.0%</td>
+<td><strong>+32.1%</strong></td>
+<td>0.01%~1.5%+分成</td>
+<td>增长引擎,费率最高</td>
+</tr>
+<tr>
+<td>零售基金</td>
+<td>50.1 亿</td>
+<td>18.3%</td>
+<td>+5.8%</td>
+<td>~0.5%</td>
+<td>慢性萎缩</td>
+</tr>
+<tr>
+<td><strong>Aladdin 软件</strong></td>
+<td>21.4 亿</td>
+<td>7.8%</td>
+<td>+23.6%</td>
+<td>订阅制</td>
+<td><strong>质量最高,不随市场波动</strong></td>
+</tr>
+<tr>
+<td>业绩报酬</td>
+<td>18.5 亿</td>
+<td>6.8%</td>
+<td>+18.0%</td>
+<td>利润 10~20%</td>
+<td><strong>波动极大,不可持续估值</strong></td>
+</tr>
+<tr>
+<td>分销费</td>
+<td>15.0 亿</td>
+<td>5.5%</td>
+<td>+6.4%</td>
+<td>过路</td>
+<td>无经济价值</td>
+</tr>
+<tr>
+<td>现金管理</td>
+<td>13.3 亿</td>
+<td>4.9%</td>
+<td>+18.7%</td>
+<td>~0.1%</td>
+<td>随利率波动</td>
+</tr>
+<tr>
+<td>咨询及其他</td>
+<td>3.2 亿</td>
+<td>1.2%</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>273.0 亿</strong></td>
+<td>100%</td>
+<td><strong>+26.5%(TTM 同比)</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>88.9 亿</strong></td>
+<td></td>
+<td></td>
+<td><strong>利润率 32.6%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报按收入类型披露到营收,<strong>不披露各条线的利润</strong>。但可以确定的方向是:Aladdin 和私募资产的利润率显著高于整体,分销费接近零利润。</p>
+</blockquote>
+<p><strong>TTM 营收暴涨 26.5%,不是因为生意突然变好,主要是 GIP / HPS / Preqin 三笔并购满额并表。</strong> 这一点在下一节非常重要。</p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p>贝莱德这一期有<strong>两处严重失真</strong>,一处是它自己没法控制的会计规则,一处是股东实实在在吃了亏。</p>
+<ul>
+<li>
+<p><strong>股权激励(SBC)</strong>:TTM <strong>14.61 亿</strong>,占净利润的 <strong>22.2%</strong>。这个比例很高——资产管理是纯人力生意,基金经理和销售的薪酬里一大块是限制性股票。这笔钱 GAAP 已经扣了,<strong>我们照扣不加回</strong>,它是真实成本,每年稀释你 1% 左右的股份。</p>
+</li>
+<li>
+<p><strong>回购与稀释:这一节是全篇最重要的负面发现。</strong>
+  TTM 回购 <strong>21.69 亿</strong>,同期 SBC <strong>14.61 亿</strong>,比值只有 <strong>1.48 倍</strong>——<strong>远低于 3 倍的及格线</strong>,意味着回购基本只是在抵消员工发股,谈不上回馈股东。
+  但真正难看的是下一个数字:<strong>贝莱德的股本过去一年不但没减少,反而增加了 6.56%。</strong>
+  为什么?因为 <strong>HPS 那笔并购主要是拿股票付的</strong>——贝莱德没掏现金,它印了新股给 HPS 的合伙人。所以:</p>
+<blockquote>
+<p><strong>你作为老股东,一年下来在这家公司里的持股比例被稀释了 6.56%,同时公司还花了 21.69 亿去回购。这两件事同时发生,净效果是:公司花了 21.7 亿现金,你的份额还是变小了。</strong>
+  这不算欺诈,并购换来了真实的业务(私募信贷平台)。但<strong>你必须清楚:TTM 那 26.5% 的营收增长里,有相当大一部分是你用自己的股权份额换来的,不是白来的。</strong> 后面算每股回报时,这一点会咬人。</p>
+</blockquote>
+</li>
+<li>
+<p><strong>利润和现金流的差:报表上的经营现金流是错的(低估),必须解释</strong>
+  净利润 <strong>65.8 亿</strong>,经营现金流只有 <strong>39.4 亿</strong>——<strong>现金流居然比利润还低 40%</strong>。对一家不需要建厂、不需要备货的轻资产公司来说,这在直觉上说不通。</p>
+</li>
+</ul>
+<p><strong>一个三秒钟就能证明报表数字失真的算术:</strong></p>
+<blockquote>
+<p>贝莱德 TTM 派了 <strong>36.07 亿</strong>分红、花了 <strong>21.69 亿</strong>回购,合计 <strong>57.76 亿</strong>,是它"经营现金流 39.38 亿"的 <strong>147%</strong>。同期它的现金<strong>增加了 10.19 亿</strong>,长期债一分没净增。
+<strong>一家公司不可能一边发出去 147% 的经营现金流、一边现金还变多、一边不借钱。除非那个"经营现金流"本身就是假低的。</strong></p>
+</blockquote>
+<p>假在哪?看这两行:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额(亿美元)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>65.8</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+14.8</td>
+<td>大部分是 GIP/HPS/Preqin 的无形资产摊销,不花现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+14.6</td>
+<td>发股票不花现金(但稀释你 —— 见上)</td>
+</tr>
+<tr>
+<td><strong>− 其他调整</strong></td>
+<td><strong>−58.9</strong></td>
+<td><strong>← 问题在这里</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−10.7</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>+7.2</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 报表经营现金流</strong></td>
+<td><strong>39.4</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>参考:融资活动里的"其他"</td>
+<td><strong>+47.1</strong></td>
+<td><strong>← 和上面那 −58.9 是同一回事的另一半</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>那笔 −58.9 亿和融资端的 +47.1 亿,基本是同一件事的两个断面:合并报表里的"被并表投资产品"(CIP)。</strong>
+  贝莱德发一只新基金时,常常要自己先出一笔种子资金,持股比例过高就必须<strong>把整只基金并进自己的报表</strong>。于是这只基金拿客户的钱去买证券,买证券的现金流出被记进了<strong>贝莱德的经营活动</strong>;而客户投进这只基金的钱,被记进了<strong>贝莱德的融资活动</strong>。
+  <strong>这两笔钱从头到尾都不是贝莱德的,它只是代管。</strong> 但会计规则要求它们穿过贝莱德的现金流量表,于是把经营现金流打得面目全非。</p>
+<p><strong>结论:贝莱德报表上的"自由现金流 35.2 亿"和由此算出的"市现率 54.7 倍"是垃圾数字,不能用。</strong> 更接近真相的现金利润是:净利润 65.8 + 折旧摊销 14.8 − 资本开支 4.2 = <strong>约 76.3 亿</strong>。下面的估值表里我用这个,并把报表口径也列出来做对照。</p>
+<ul>
+<li>
+<p><strong>一次性项目</strong>:没有大额诉讼、减值或重组。FY2025 净利润 55.5 亿比 FY2024 的 63.7 亿低,主要是那年 GIP/HPS/Preqin 的交易费用和整合成本集中入账,<strong>TTM 已经恢复到 65.8 亿</strong>。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>:没有异常,资本开支只有 4.23 亿,对 273 亿营收来说可以忽略——<strong>这是一家几乎不需要花钱就能扩张的公司</strong>,这是它最好的品质之一。</p>
+</li>
+</ul>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<p>市值 1,921.8 亿,净负债只有 <strong>44.8 亿</strong>(这是本批三家里资产负债表最干净的),企业价值 1,933.1 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1921.8 ÷ 65.8</td>
+<td><strong>29.2 倍</strong></td>
+<td><strong>$3.42</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回并购无形资产摊销和交易费用</td>
+<td>约 25~26 倍(估算)</td>
+<td>~$3.92</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>把业绩报酬从 18.5 亿还原到三年均值 10.6 亿</td>
+<td><strong>30.5 倍</strong></td>
+<td><strong>$3.28</strong></td>
+</tr>
+<tr>
+<td>自由现金流(报表口径)</td>
+<td>1921.8 ÷ 35.2</td>
+<td>~~54.7 倍~~</td>
+<td>~~$1.83~~ <strong>← 失真,别用</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流(还原 CIP 后)</strong></td>
+<td>1921.8 ÷ 76.3</td>
+<td><strong>25.2 倍</strong></td>
+<td><strong>$3.97</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1933.1 ÷ 88.9</td>
+<td><strong>21.7 倍</strong></td>
+<td>$4.60(税前)</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1921.8 ÷ 58.1(FY23–25 平均)</td>
+<td><strong>33.1 倍</strong></td>
+<td><strong>$3.02</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注 1</strong>:网站上显示的市盈率是 28.28 倍,用的是「股价 ÷ 过去12个月每股收益」。我用的是「市值 ÷ 净利润」= 29.2 倍。差别来自<strong>这一年里股本增加了 6.56%</strong>——每股收益用的是全年平均股本(较少),市值用的是今天的股本(较多)。<strong>29.2 倍是今天买入者面对的真实倍数,28.28 倍是历史平均口径。</strong></p>
+<p><strong>注 2:最后一行 33.1 倍要小心解读,不能照搬结论。</strong>
+对英伟达那种公司,"三年平均市盈率远高于当期"意味着<strong>当期利润在周期高点</strong>,是危险信号。<strong>但贝莱德不是。</strong> 它三年平均看着高,是因为这家公司过去三年通过并购<strong>真实地变大了 53%</strong>(营收从 178.6 亿到 273.0 亿),FY2023 那个 55.0 亿的净利润对应的是一家规模小得多的公司。<strong>拿它来平均,等于用一家小公司的利润去除今天大公司的市值——数学上必然虚高。</strong></p>
+<p><strong>所以对贝莱德来说,"现在的利润是不是高点"这个问题,答案不在利润的历史里,在别的地方。见下。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进贝莱德,按最保守的真实口径(把业绩报酬还原到正常年份水平)算,公司一年替你赚 3.28 块。</strong> 按还原了 CIP 失真的现金口径算,是 3.97 块。</p>
+<p>这 3~4 块里,回到你口袋的:
+- <strong>分红</strong>:TTM 派了 36.07 亿,占市值 <strong>1.88%</strong>。100 块里有 <strong>1.88 块</strong>直接打给你,已经连续二十多年提高。
+- <strong>回购</strong>:表面上花了 21.69 亿(市值的 1.13%),<strong>但股本反而涨了 6.56%</strong>。所以站在老股东角度,<strong>回购这一项对你的净贡献是负的</strong>。</p>
+<p><strong>真正到手的现金,一年 100 块里只有 1.88 块。</strong> 这个数字在本批三家里最低(麦当劳 3.79 块,雅培 2.30 块)。</p>
+<p>剩下的钱去哪了?看投资活动:TTM 净流出 18.75 亿,其中买投资 17.03 亿、并购 4.05 亿。<strong>贝莱德把利润留下来继续买私募资产平台,而不是发给你。</strong> 这个策略过去三年确实换来了 32% 的私募业务增速——<strong>但代价是你被稀释了 6.56%,而且这条路能不能一直走下去,取决于它还能不能买到便宜的标的。</strong></p>
+<h3>这 3.28 块未来是变大还是变小?</h3>
+<p><strong>变大的理由:</strong>
+1. <strong>Aladdin 是一台复利机器。</strong> 23.6% 增速、订阅制、切换成本极高、和市场涨跌无关。它现在只占 7.8% 的营收,如果十年后占到 20%,贝莱德的估值倍数应该整体上一个台阶——<strong>软件公司的市盈率不是 29 倍</strong>。
+2. <strong>私募资产的费率是指数基金的 50 倍。</strong> 只要它能持续把养老金的钱从 ETF 挪到私募信贷,同样一块钱 AUM 的收入会成倍增长。这是一次<strong>费率结构的升级</strong>,不是简单的规模扩张。
+3. <strong>它几乎不需要资本开支。</strong> 4.23 亿的资本开支对应 273 亿营收,意味着增长几乎不消耗现金,赚到的钱理论上可以全部分掉。</p>
+<p><strong>变小的风险(这一条比上面三条加起来都重要):</strong></p>
+<blockquote>
+<p><strong>贝莱德的收入,本质上是一道按全球资产价格征收的税,税率约万分之十六。</strong></p>
+</blockquote>
+<p>它 77.7% 的营收(ETF + 机构 + 零售 + 现金管理 = 211.99 亿)是按<strong>管理规模的百分比</strong>收的。管理规模 = 客户投进来的本金 + 市场涨跌。<strong>只要股债市场跌,这笔收入立刻跟着跌,一分钱都不用等。</strong></p>
+<p><strong>量化一下这个风险(估算):</strong> 如果全球股债市场整体回撤 <strong>25%</strong>,贝莱德的管理规模会跟着缩水类似幅度,那 212 亿的费率收入会蒸发约 <strong>53 亿</strong>。而它的成本里最大一块是员工薪酬,<strong>在市场下跌的第一年基本降不下来</strong>(基金经理不会因为标普跌了就减薪)。假设 40% 的收入下滑直接砸到税前利润上,就是约 <strong>21 亿税前、16 亿净利润</strong>的损失——<strong>净利润从 65.8 亿掉到 50 亿附近。</strong></p>
+<p>再叠加两件事:业绩报酬在熊市会<strong>从 18.5 亿掉到接近零</strong>(FY2023 就只有 5.5 亿),私募资产的估值和分成也会缩水。<strong>综合起来,一次像样的熊市能把贝莱德的净利润打掉三到四成。</strong> 到那时候,如果股价没跌,29.2 倍的市盈率会瞬间变成 45 倍以上。</p>
+<p><strong>所以:"贝莱德现在的利润是不是高点"这个问题,等价于"全球资产价格是不是在高点"。</strong> 我没法回答后者,但你必须知道,你买的这 3.28 块年回报,是<strong>建立在市场维持当前水平之上的</strong>。这是它和麦当劳(汉堡照卖)、雅培(病人照治)最根本的区别——<strong>它没有防御性,它的贝塔是 1.42,是本批三家里唯一一家跌起来会比大盘更狠的。</strong></p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>这是一家生意模型极其优秀、但你正在为它的"最好时刻"付全价的公司,而且过去一年它一边回购一边把你稀释了 6.56%,你到手的现金只有 1.88%。</strong></p>
+<p>拆开看它的好:Aladdin 是软件级别的护城河(竞争对手都在给它交订阅费),iShares 是一台不需要客户做任何动作就永续收费的机器,私募转型是一次真实的费率升级,资本开支几乎为零。这些都是真的,29 倍不算离谱。</p>
+<p>但三个东西压着我不给它更高的评价:
+1. <strong>股本一年涨 6.56%</strong> —— 增长有一大半是你自己的份额换来的;
+2. <strong>到手现金只有 1.88%</strong> —— 三家里最低,公司在把钱留下来继续买东西;
+3. <strong>收入是资产价格的函数</strong> —— 一次 25% 的市场回撤能让净利润掉三四成,而现在的估值里没有为这种可能性留任何折扣。</p>
+<p>我的判断:<strong>好公司,价格公道偏贵,但绝不是防御性资产。</strong> 如果你买它,你要清楚自己买的其实是一份<strong>放大版的全球市场多头头寸</strong>——市场好的时候它比大盘涨得多(收入自动膨胀),市场差的时候它比大盘跌得狠(收入自动萎缩、业绩报酬归零)。<strong>用它来"避险"是买错了东西;用它来做"看多全球资产 + 顺便押注私募和 Aladdin"的载体,这个价格说得过去。</strong></p>
+<p><strong>三家里的相对排序:要现金和确定性选麦当劳,要成长性且能等到 FY2027 看清楚的选雅培,要在牛市里跑得比大盘快的选贝莱德——但别指望它在熊市保护你。</strong></p>
+</div></body></html>

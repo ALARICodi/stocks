@@ -1,0 +1,325 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DHR · 丹纳赫 Danaher</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DHR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意一流价格二流，好公司等它跌到25倍</div><h1>DHR · 丹纳赫 Danaher</h1>
+<p><strong>市值</strong> $1433 亿 · <strong>股价</strong> 约 $204 · <strong>行业</strong> 医疗科技（生命科学工具与诊断）· <strong>TTM 截止</strong> 2026 年 6 月 26 日 · <strong>交易所</strong> NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>丹纳赫自己只报三个分部，但这三门生意的赚钱方式其实是同一套：<strong>先把一台又贵又难换的机器塞进客户的实验室或医院，然后靠卖这台机器每天要吃的耗材赚一辈子的钱。</strong> 剃须刀送你，刀片卖你一辈子。全公司大约四分之三的收入是耗材和服务这类年年重来的钱，只有四分之一是卖机器本身。</p>
+<p>分部虽然是三个，但按"客户是谁、东西怎么卖"来看，实质是三门差别很大的生意。</p>
+<h3>生意一：生物技术（Biotechnology）—— 卖给药厂的"制药生产线零件"</h3>
+<p>这门生意的核心是 Cytiva 和 Pall 两个牌子。它不做药，它做<strong>做药用的东西</strong>。</p>
+<p>举个具体的：某家药厂要生产一款治类风湿的抗体药。传统做法是买一口不锈钢大罐子养细胞，用完要用蒸汽刷洗消毒好几天。Cytiva 卖的是<strong>一次性生物反应袋</strong>——一个 2000 升的塑料袋，装进钢架子里，细胞在袋子里养一轮，养完连袋子一起扔掉，下一批换新袋。一个袋子几千美元，一家中型药厂一年要用掉上千个。</p>
+<p>细胞养出来的液体里，目标抗体只占一点点，剩下全是杂质。要把抗体挑出来，得让液体流过一根填满<strong>层析填料</strong>的柱子——填料表面接着一种叫"蛋白 A"的分子，专门抓抗体，别的东西流走。这种填料 Cytiva 卖 <strong>1 万到 2 万美元一升</strong>，一根工业规模的柱子要装几十升，用几十上百轮之后性能衰减就得换新。这是整个丹纳赫最赚钱的一样东西。</p>
+<p>为什么客户跑不掉？因为药厂向 FDA 申报时，是把"用哪家的填料、哪家的滤膜、什么参数"整套生产工艺一起报批的。药批下来以后想换供应商，等于改工艺，要重新做验证、重新提交补充申请，可能要一两年和上千万美元，还有被 FDA 打回来的风险。所以一款药只要上市了，接下来 10–20 年的填料订单基本就锁死在最初那家供应商手里。这是丹纳赫最硬的护城河——<strong>不是技术领先，是监管把客户焊在了你身上</strong>。</p>
+<p>问题也在这儿：这门生意的增长完全取决于<strong>新药有多少在往生产线上走</strong>。2021 年疫情期间全世界药厂疯狂囤填料囤袋子，Cytiva 的收入冲到 85.7 亿美元；囤多了，2023–2024 年药厂消化库存不下单，这个分部一路掉。到现在 TTM 是 75.5 亿，<strong>比五年前还低</strong>。这不是一个还在长的生意，是一个刚从坑里爬出来的生意。</p>
+<h3>生意二：生命科学（Life Sciences）—— 卖给科研实验室的仪器</h3>
+<p>牌子包括 SCIEX（质谱仪）、Leica Microsystems（显微镜）、Beckman Coulter 的科研线、Molecular Devices、IDT、Phenomenex。客户是大学实验室、药企研发部门、政府和第三方检测机构。</p>
+<p>具体一点：一个做代谢研究的实验室要测血样里某个分子的浓度，得买一台 SCIEX 的三重四极杆质谱仪，<strong>一台 30 万到 40 万美元</strong>。买完还没完——柱子、标准品、气体这些消耗品要一直买，仪器的服务合同一年再收机器价的 10%–15%，也就是三四万美元，不签的话仪器坏了没人修，实验就停摆。所以一台机器卖出去，后面十年每年还能收回来五六万。</p>
+<p>IDT 这块更像互联网生意：你在网页上敲一段 DNA 序列，比如 20 个碱基的一小段引物，点提交，他们当晚合成好，第二天寄到你实验室，<strong>一单十几到一百多美元</strong>。全球每年几百万单这种订单。做基因编辑、做 PCR 检测、做测序建库的实验室，天天都在下单。</p>
+<p>这门生意最近不好过，原因很直白：<strong>美国和欧洲的科研经费在削，中国的实验室采购在缩。</strong> 大学买不起 40 万美元的新仪器，就把旧的再用两年，新机器订单就没了；但耗材和服务还在，所以收入没崩，只是不长——TTM 74.9 亿，跟 2025 全年的 73.3 亿基本原地踏步。</p>
+<h3>生意三：诊断（Diagnostics）—— 卖给医院的检验科设备和试剂</h3>
+<p>这是最大的一块，TTM 100.7 亿，占四成。牌子有 Beckman Coulter Diagnostics、Radiometer、Cepheid、Leica Biosystems，以及 2026 年 6 月刚买进来的 Masimo。</p>
+<p><strong>Beckman</strong>：你去医院抽血查肝功能、血脂、血常规，样本送到检验科，进的多半就是 Beckman 的自动化流水线。一套大型生化免疫流水线卖给医院几百万美元，甚至可以"零元投放"——机器白送，但医院签合同承诺每年买多少试剂。之后医院每做一次检验就消耗一份试剂，一年买几百万美元的试剂盒。机器一装就是十年，中间几乎不可能换，因为换机器意味着检验科停摆、全科室重新培训、历史数据对不上。</p>
+<p><strong>Cepheid</strong>：这是丹纳赫诊断里最漂亮的一块。急诊室放一台 GeneXpert 机器，护士把病人的鼻拭子插进一个<strong>一次性卡盒</strong>，塞进机器，30–60 分钟出结果——是甲流还是新冠、是不是耐甲氧西林金黄色葡萄球菌、是不是肺结核。每个卡盒医院付 <strong>20–60 美元</strong>，用一次扔一次。全球一年出货几亿个卡盒。机器本身不怎么赚钱，卡盒才是命根子。</p>
+<p><strong>Radiometer</strong>：ICU 和急诊里的血气分析仪，测病人血里氧气二氧化碳酸碱度，几分钟出结果，也是机器+试剂包的模式。</p>
+<p><strong>Masimo（2026 年 6 月刚并进来）</strong>：就是你住院时夹在手指上那个红光小夹子——脉搏血氧仪。丹纳赫花了 <strong>99 亿美元现金</strong> 买下它，放进诊断分部当独立品牌运营。逻辑还是那一套：探头是消耗品，医院要一直买；而且 Masimo 的算法在病人乱动、血流差的时候读数更准，医院一旦用惯了、护士培训完了、接进了自己的监护系统，就换不动了。管理层说第一个完整年度能加 0.15–0.20 美元每股收益，第五年加到 0.70 美元。</p>
+<p>因为是 6 月才关账，<strong>这份 TTM 报表里 Masimo 的收入几乎为零</strong>——你现在看到的 251 亿收入是不含它的。但买它花的 98.4 亿现金和为此新借的 81 亿债，已经全部记在这份报表里了。这一点后面算估值时非常关键。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（亿美元）</th>
+<th>对比 FY2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>诊断 Diagnostics</td>
+<td>100.7</td>
+<td>99.4</td>
+<td>40%</td>
+<td>约 23%（估算）</td>
+<td>约 23 亿</td>
+</tr>
+<tr>
+<td>生物技术 Biotechnology</td>
+<td>75.5</td>
+<td>72.9</td>
+<td>30%</td>
+<td>约 25%（估算）</td>
+<td>约 19 亿</td>
+</tr>
+<tr>
+<td>生命科学 Life Sciences</td>
+<td>74.9</td>
+<td>73.3</td>
+<td>30%</td>
+<td>约 13%（估算）</td>
+<td>约 10 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>251.1</strong></td>
+<td><strong>245.7</strong></td>
+<td>100%</td>
+<td>20.4%（实际）</td>
+<td>51.3 亿（实际）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部经营利润。上表利润率是按整体 20.4% 的经营利润率、结合各分部产品结构（生物技术耗材毛利最高、生命科学仪器占比大所以最低）<strong>估算</strong>的，不是财报数字。合计的 51.3 亿是真实数字。</p>
+<p>全公司 TTM 收入同比 +4.56%。三个分部的增速无法从公开页面精确拆到"同比"口径，上表用 FY2025 全年做参照，两者有半年错位，只能看个大概方向：三块都在小幅回升，没有一块在加速。</p>
+</blockquote>
+<p><strong>一句话概括这家公司</strong>：它是全球生物医药产业的"卖水人"，不押注任何一款药成不成，只要有人做药、有人做实验、有人在医院验血，它就收过路费。生意本身极其优质。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM 2.97 亿美元，占净利润 7.4%。<strong>在丹纳赫这里，SBC 小到几乎可以忽略</strong>——这是一家 6 万员工的工业型公司，不是硅谷。GAAP 已经把它扣掉了，本文一律不加回。对比一下：很多软件公司的 SBC 能吃掉净利润的一半以上，丹纳赫这个数字健康得罕见。</p>
+<h3>一次性项目</h3>
+<p><strong>TTM 内最大的一次性事件是 Masimo 收购</strong>：投行费、律师费、过桥融资费、以及收购完成后必须做的存货公允价值加价摊销，这些都会压低 TTM 利润。但这几个页面不单独披露金额，<strong>我无法把它剥出来</strong>。粗略地讲，一笔 99 亿的交易通常伴随 2–4 亿美元的一次性费用。</p>
+<p>同时要说清楚一个单期口径的固有局限：<strong>丹纳赫是"连续收购型"公司，"收购相关的一次性费用"对它来说是年年都有的。</strong> 过去六年它花在收购上的现金是：2021 年 109 亿、2022 年 5.8 亿、2023 年 56.1 亿、2024 年 5.6 亿、2025 年 0、TTM 98.4 亿——<strong>六年合计约 275 亿美元，平均每年 46 亿</strong>。所以把"收购费用"当一次性剔掉，在这家公司身上是自欺欺人。</p>
+<p>另外，2023 年 10 月丹纳赫把水质和产品识别业务分拆成 Veralto 独立上市，所以 2022 年及以前的收入（266 亿）和现在（251 亿）<strong>不可比</strong>，别拿来算增速。</p>
+<h3>资本化的支出</h3>
+<p>没有值得单说的。丹纳赫资本开支 11.7 亿，占收入 4.7%，是正常的工厂和设备投入，没有软件或内容资本化这类粉饰空间。</p>
+<h3>回购与稀释 —— 这项是全篇的亮点</h3>
+<ul>
+<li>TTM 回购：<strong>29.04 亿美元</strong></li>
+<li>TTM SBC：<strong>2.97 亿美元</strong></li>
+<li><strong>回购 ÷ SBC = 9.8 倍</strong></li>
+</ul>
+<p>这个比值极其漂亮。回顾一下判断标准：接近 1 说明公司回购只是在把发给员工的股票买回来填坑，股东一分钱没拿到；大于 3 才算真回馈。丹纳赫是 <strong>9.8 倍</strong>，意味着回购的钱里只有约十分之一是在抵消稀释，剩下九成是实打实地减少股份。</p>
+<p>实际效果也对得上：<strong>流通股一年减少 1.87%</strong>（7.03 亿股）。加上 0.78% 的股息，股东总回报率 2.66%。</p>
+<h3>利润和现金流的差</h3>
+<p>净利润 40.0 亿，经营现金流 66.4 亿，自由现金流 54.7 亿。<strong>现金流比账面利润高出 66%</strong>，差额 26 亿，几乎全部来自折旧摊销。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>4,004</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+2,531</td>
+<td><strong>关键项，见下</strong></td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+297</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他调整</td>
+<td>+348</td>
+<td>汇兑、公允价值变动等</td>
+</tr>
+<tr>
+<td>− 营运资金变化</td>
+<td>−91</td>
+<td>应收 −213、存货 +12、应付 +41、应计 −56、其他 +125</td>
+</tr>
+<tr>
+<td>− 未单独拆分项</td>
+<td>−454</td>
+<td>该页面未细分，多半是递延所得税</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>6,635</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,169</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>5,466</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>折旧摊销那 25.3 亿是理解这家公司的钥匙。</strong> 丹纳赫的固定资产折旧其实只占其中一小部分，绝大头是<strong>"收购来的无形资产摊销"</strong>——每买一家公司，会计上要把付出去的价钱拆成"客户关系""技术""商标"等无形资产，然后在 10–20 年里一点点摊销掉，冲减利润。丹纳赫买了几十年公司，这个摊销池子极大，粗估每年 17–19 亿美元。</p>
+<p>于是丹纳赫每个季度都会告诉投资者："请看我们的调整后 EPS，我们把收购无形资产摊销加回去了，因为那不是现金支出。" 这句话技术上没错，但<strong>逻辑上是骗人的</strong>：这些摊销确实不花现金，可它对应的现金早就在收购当天付掉了，而且丹纳赫<strong>必须持续再付</strong>——过去六年平均每年 46 亿现金买公司，跟一年 54.7 亿的自由现金流几乎一样多。</p>
+<p>换句话说：<strong>丹纳赫的收购不是偶发事件，它是这家公司的资本开支。</strong> 一家公司不会说"请把我的厂房投资加回利润，因为折旧不花现金"，那丹纳赫也不该说"请把我买公司的摊销加回利润"。加回摊销的调整后 EPS，本质是把一项每年都在真实发生的现金支出从损益表里藏起来。</p>
+<p><strong>有一个数字为这个判断盖了章：ROIC 6.44%，WACC 7.37%。</strong> 投入资本回报率低于资金成本，意味着按会计口径，丹纳赫这台连续收购机器<strong>目前是在毁灭价值</strong>——它借钱和用留存利润买来的公司，赚回的回报率还不如资金的成本。ROE 也只有 7.60%，对一家毛利 58.5%、经营利润率 20.4% 的公司来说低得刺眼。低的原因就是：账上 525.9 亿的股东权益里塞满了历年收购堆出来的商誉，分母虚胖。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1433.3 ÷ 40.0</td>
+<td><strong>35.8 倍</strong></td>
+<td><strong>2.79 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>1433.3 ÷ 约 54（加回收购无形摊销后）</td>
+<td>约 26.5 倍</td>
+<td>3.77 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 不加回；收购相关一次性费用无法单独剥离，粗估 2–4 亿税后影响</td>
+<td><strong>约 34–36 倍</strong></td>
+<td><strong>2.8–2.9 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1433.3 ÷ 54.7</td>
+<td><strong>26.2 倍</strong></td>
+<td><strong>3.81 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1668.4 ÷ 51.3</td>
+<td><strong>32.5 倍</strong></td>
+<td>3.07 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1433.3 ÷ 38.4（TTM 40.0、FY25 36.1、FY24 39.0 的均值）</td>
+<td><strong>37.3 倍</strong></td>
+<td><strong>2.68 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：亿美元）</p>
+<p><strong>先看"三年平均"这一行。</strong> 它是全表唯一能回答"现在这个利润是不是高点"的数字。答案是：<strong>不但不是高点，还略低于三年平均水平</strong>——三年平均口径 37.3 倍，比当期 35.8 倍还贵。这说明丹纳赫现在的盈利水平<strong>已经是这三年里偏好的一年了</strong>，指望"利润回归正常后估值就便宜了"是没有依据的，因为过去三年就没有更好的一年。这跟很多周期高点上的公司正相反，也不是好消息——它意味着 36 倍的价格买的是一个<strong>连续三年利润在 36–40 亿之间横着走</strong>的公司。</p>
+<p><strong>再看 Non-GAAP 和 GAAP 的巨大差距</strong>：26.5 倍 vs 35.8 倍。你在券商 App、财经新闻、公司 PPT 上看到的多半是前者。这 9 个点的差距全部来自"加回收购无形资产摊销"。按上一节的论证，<strong>这个加回不该接受</strong>，所以真实口径应该贴近 GAAP 的 35.8 倍，而不是 26.5 倍。</p>
+<p><strong>自由现金流口径 26.2 倍看着最便宜，但有个大坑</strong>：分子（市值 1433 亿）里已经包含了刚花 98.4 亿买来的 Masimo，而分母（54.7 亿自由现金流）<strong>里几乎没有 Masimo 的贡献</strong>（6 月才并表）。也就是说这个 26.2 倍是"用买了 Masimo 之后的价格，除以买它之前的现金流"，天然偏高估。往好处想，明年 Masimo 满年并表后，自由现金流会往上走一截；往坏处想，为了买它借的 81 亿债的利息也要开始全年计入。净债务已经从去年的 138 亿飙到 <strong>222 亿</strong>，Debt/EBITDA 3.64 倍。</p>
+<h3>你投 100 块，一年赚多少</h3>
+<p><strong>按最保守的真实口径（三年平均利润 37.3 倍），你投 100 块进去，丹纳赫一年替你赚 2.68 元。</strong> 按当期 GAAP 是 2.79 元，按自由现金流口径最多 3.81 元。</p>
+<p>这 2.68 元里，有多少真回到你口袋？TTM 分红 9.64 亿 + 回购 29.04 亿 = <strong>38.7 亿，占自由现金流的 71%</strong>，折算成你那 100 块，大约有 <strong>2.7 元</strong>以分红和回购的形式回到股东手里（其中 0.78 元是现金分红，1.9 元是回购推高的每股价值）。这个派发比例很高、很实在，回购质量也过硬。</p>
+<p>剩下的钱去哪了？<strong>没剩，还倒欠。</strong> TTM 投资活动净流出 110.9 亿，其中 98.4 亿是买 Masimo、11.7 亿是资本开支。这笔钱自由现金流根本不够，是靠<strong>新发 81.1 亿长期债</strong>补的。所以真实图景是：丹纳赫把全部自由现金流的七成还给了股东，然后借钱去做收购。</p>
+<h3>这个 2.68 元未来是变大还是变小？</h3>
+<p><strong>中性偏乐观，但幅度有限。</strong> 变大的理由：Masimo 明年满年并表，管理层给的指引是第一年加 0.15–0.20 美元 EPS、第五年加 0.70 美元；生物技术分部从两年的库存去化里爬出来，订单在回升；医院和药厂的耗材需求本身是刚性的。变小的理由：科研经费削减压着生命科学分部；222 亿净债的利息要全年计入；ROIC 6.44% 低于 WACC 说明这台收购机器现在的效率不支持乐观外推。</p>
+<p>我的判断是：未来三年这个数字大概能从 2.68 元爬到 3.2–3.5 元一线，也就是收入年增 4%–6%、利润年增 8%–10%。<strong>这是一个体面的生意，但不是一个能让 36 倍市盈率显得便宜的增速。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意一流，价格二流，账面回报三流——丹纳赫是那种"你完全同意它是好公司，但算完账发现没理由现在买"的股票。</strong></p>
+<p>它的护城河是真的：FDA 把药厂焊在了 Cytiva 的层析填料上，医院检验科换不动 Beckman 的流水线，Cepheid 的卡盒一个接一个地烧钱。回购也是真的，9.8 倍 SBC 的回购在美股里属于最诚实的那一档。</p>
+<p>但你付 36 倍市盈率买到的，是一家<strong>收入年增 4.5%、三年利润原地踏步、投入资本回报率（6.44%）低于资金成本（7.37%）</strong>的公司。它讲的 26.5 倍"调整后市盈率"，是靠把每年 46 亿的收购支出以摊销的形式藏起来换来的——而这笔支出年年都在真实发生。100 块一年 2.68 元的回报，跟买美国国债差不多，却要承担股票的波动、222 亿的债务、以及一次 99 亿美元收购能不能整合好的风险。</p>
+<p>股价过去 52 周跌了 0.89%，今年一度跌两成，市场已经在用脚投票了。除非 Masimo 整合出远超指引的协同、或者生物技术分部真的重回两位数增长，否则这个价格没给你留任何安全边际。<strong>好公司，等它跌到 25 倍再说。</strong></p>
+</div></body></html>

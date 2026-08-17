@@ -1,0 +1,454 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NVDA · 英伟达</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NVDA</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">质量极高，但三年平均73.5倍，价格没留任何余地</div><h1>NVDA · 英伟达</h1>
+<p>市值 5.46 万亿美元 ｜ 股价 $225.30 ｜ 行业 电子科技（半导体） ｜ 财年 1 月底结束</p>
+<blockquote>
+<p><strong>先说财年，不然数字全乱。</strong> 英伟达的财年比自然年早一个月结束：<strong>FY2026 结束于 2026 年 1 月 25 日，对应的其实是 2025 年这一整年</strong>。下文所有 FY 都按这个口径。另外还有一列 TTM，是截至 2026 年 4 月 26 日的过去十二个月，是目前最新的一整年数据。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上，英伟达只把自己分成<strong>两个报告分部</strong>：Compute &amp; Networking（计算与网络）和 Graphics（图形）。这两个分部的体量差距已经大到离谱：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>TTM 占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>计算与网络</td>
+<td>2,284.4 亿</td>
+<td>1,934.8 亿</td>
+<td>1,161.9 亿</td>
+<td>474.1 亿</td>
+<td><strong>90.1%</strong></td>
+</tr>
+<tr>
+<td>图形</td>
+<td>250.5 亿</td>
+<td>224.6 亿</td>
+<td>143.0 亿</td>
+<td>135.2 亿</td>
+<td>9.9%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,534.9 亿</strong></td>
+<td><strong>2,159.4 亿</strong></td>
+<td><strong>1,305.0 亿</strong></td>
+<td><strong>609.2 亿</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年前（FY2024）这两块还是 47:14，今天是 228:25。<strong>这家公司已经不是原来那家公司了。</strong></p>
+<blockquote>
+<p><strong>一个必须说明的缺口</strong>：英伟达在 10-K 里按分部披露了经营利润，但我这次只拿到了分部营收。下面每门生意的利润是<strong>按整体利润率和已知的产品结构估算的</strong>，标了「估算」的地方就是估算，不是财报原文数字。整体口径的利润是准的：TTM 经营利润 1,622.9 亿，经营利润率 64.0%。</p>
+</blockquote>
+<h3>生意一：卖 AI 数据中心（占九成，是全部的故事）</h3>
+<p><strong>这件事到底是什么。</strong> 说白了，英伟达在<strong>卖一整个机房</strong>，不是卖一块显卡。</p>
+<p>举个具体的例子。一家搞大模型的公司（比如 OpenAI、Anthropic，或者微软 Azure、亚马逊 AWS 这种要对外出租算力的云厂商）决定建一个 AI 训练集群。它不会去买散装芯片自己攒，它买的是英伟达设计好的整柜方案——比如一个 GB200 NVL72 机柜，里面塞 72 颗 Blackwell 芯片，配上英伟达自家的 NVLink 交换机把这 72 颗芯片连成"一颗巨大的芯片"，外面再用英伟达（收购 Mellanox 得来的）InfiniBand 网卡和交换机把上千个机柜连成一个集群。<strong>一个这样的机柜，报价在 300 万美元上下。</strong> 一个像样的 AI 数据中心一次就要几千个机柜，一单几十亿美元。</p>
+<p>英伟达的钱分三层收：</p>
+<ol>
+<li><strong>芯片本身</strong> —— GPU，最贵的一层，毛利率极高。</li>
+<li><strong>把芯片连起来的网络</strong> —— NVLink、InfiniBand、以太网交换机。这是收购 Mellanox 换来的能力，也是最容易被忽视的护城河：竞争对手就算做出了单颗性能相当的芯片，也没有办法把几万颗芯片高效地连成一台机器。</li>
+<li><strong>让芯片跑起来的软件（CUDA）</strong> —— 这一层<strong>几乎不单独收钱，但它是全部利润的真正来源</strong>。过去十八年全世界所有 AI 研究员写的代码都是基于 CUDA 的。一家公司想换成 AMD 的芯片，硬件也许便宜三成，但要把自己积累多年的代码全部重写、重新调优、重新踩坑，工程师的时间成本远远超过省下的硬件钱。<strong>所以客户不是买不到替代品，是换不动。</strong> 这就是英伟达能收 74% 毛利率的原因——买家明知道贵，还是得买。</li>
+</ol>
+<p><strong>客户为什么现在非买不可。</strong> 因为算力现在直接等于竞争位次。一家云厂商今年少买 10 万颗 GPU，明年就接不到大模型公司的订单；一家大模型公司今年少训一轮，模型能力就落后一代。这是一场谁都不敢先停的军备竞赛，而英伟达是唯一的军火商。</p>
+<p><strong>这门生意的钱（估算）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>2,284.4 亿</td>
+<td>1,934.8 亿</td>
+<td>1,161.9 亿</td>
+<td>474.1 亿</td>
+</tr>
+<tr>
+<td>同比增速</td>
+<td>—</td>
+<td>+66.5%</td>
+<td>+145.1%</td>
+<td>+215.0%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>90.1%</td>
+<td>89.6%</td>
+<td>89.0%</td>
+<td>77.8%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>~67%</td>
+<td>~63%</td>
+<td>~62%</td>
+<td>~57%</td>
+</tr>
+<tr>
+<td>贡献经营利润（估算）</td>
+<td>~1,530 亿</td>
+<td>~1,220 亿</td>
+<td>~720 亿</td>
+<td>~270 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>增速在明显放缓：+215% → +145% → +66.5%。</strong> 这不是坏事——基数大了必然如此——但它是估值那一段最重要的伏笔。</p>
+<h3>生意二：卖游戏显卡和专业图形卡（占一成，昔日主业）</h3>
+<p><strong>这件事是什么。</strong> 你在京东上花 8,000 块买一张 RTX 5080 装进自己的游戏主机，就是这门生意。英伟达把芯片卖给华硕、微星、技嘉这些板卡厂，它们焊上散热器和风扇做成成品卡再卖给你；英伟达也自己出"公版卡"。一张卡英伟达大概能收到 400–900 美元，出货量以千万计。</p>
+<p>同一门生意里还有两个小分支：<strong>专业图形卡</strong>（RTX Pro 系列，卖给做建筑渲染、影视特效、工业设计的公司，一张两三万人民币，比游戏卡贵好几倍，因为驱动经过 AutoCAD、Maya 这类软件的官方认证，出问题厂商负责）和<strong>汽车芯片</strong>（DRIVE 平台，卖给车厂做自动驾驶的计算单元，单车价值几百到一千多美元，比亚迪、蔚来、奔驰都在用——不过这块营收规模还很小）。</p>
+<p><strong>这门生意的钱（估算）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>250.5 亿</td>
+<td>224.6 亿</td>
+<td>143.0 亿</td>
+<td>135.2 亿</td>
+</tr>
+<tr>
+<td>同比增速</td>
+<td>—</td>
+<td>+57.0%</td>
+<td>+5.8%</td>
+<td>+12.4%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>9.9%</td>
+<td>10.4%</td>
+<td>11.0%</td>
+<td>22.2%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>~35%</td>
+<td>~35%</td>
+<td>~30%</td>
+<td>~30%</td>
+</tr>
+<tr>
+<td>贡献经营利润（估算）</td>
+<td>~88 亿</td>
+<td>~79 亿</td>
+<td>~43 亿</td>
+<td>~41 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>FY2026 图形分部 +57% 是个亮点（RTX 50 系列换代 + 显卡终于不再被挖矿和缺货扰乱）。但<strong>这门生意贡献的利润只有全公司的 5% 左右</strong>。它现在的意义是提醒你：英伟达曾经是一家做游戏显卡的公司，而那门生意做到今天也不过 250 亿美元一年——<strong>你今天花 5.46 万亿买的，99% 是买 AI 数据中心那一件事。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>英伟达的利润表看着干净得不像话，但<strong>净利润和真金白银之间差了 340 亿美元</strong>。逐项拆开：</p>
+<h3>净利润 → 经营现金流，一分钱一分钱对账（TTM，亿美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>什么意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>+1,596.1</td>
+<td>利润表上写的数</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+32.3</td>
+<td>非现金支出，加回来</td>
+</tr>
+<tr>
+<td>加：股权激励 SBC</td>
+<td>+68.4</td>
+<td>非现金支出，加回来</td>
+</tr>
+<tr>
+<td><strong>减：其他非现金调整</strong></td>
+<td><strong>−229.8</strong></td>
+<td><strong>← 关键项，下面细说</strong></td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−185.8</td>
+<td>货发了钱没收到</td>
+</tr>
+<tr>
+<td>减：存货增加</td>
+<td>−144.9</td>
+<td>芯片压在仓库里</td>
+</tr>
+<tr>
+<td>加：应付账款增加</td>
+<td>+43.7</td>
+<td>欠供应商的钱</td>
+</tr>
+<tr>
+<td>加：应计费用增加</td>
+<td>+58.9</td>
+<td></td>
+</tr>
+<tr>
+<td>加：其他经营项</td>
+<td>+17.5</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,256.5</strong></td>
+<td><strong>实际收到的钱</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 1,596 亿，实际到手 1,257 亿，差 340 亿。</strong> 这个缺口来自两处，性质完全不同：</p>
+<h3>障眼法一：229.8 亿的非现金收益（这是最该警惕的一项）</h3>
+<p>那笔 <strong>−229.8 亿的"其他调整"</strong>，主要是<strong>投资的账面增值和递延税</strong>。英伟达这几年拿着钱去投了一大堆 AI 公司——OpenAI、CoreWeave、xAI、各种 AI 初创。这些公司估值涨了，英伟达就按会计准则把<strong>没有卖出、一分钱没到手的浮盈</strong>计进当期净利润。</p>
+<p>这件事有个非常别扭的地方：<strong>英伟达投资的这些公司，很多同时就是它的客户。</strong> 英伟达投给你钱，你拿这钱来买英伟达的芯片，英伟达确认一笔营收；你因为买到了芯片估值上涨，英伟达再确认一笔投资浮盈。<strong>同一笔钱在利润表上被记了两次。</strong> 我不是说这里面有违规——会计上完全合规——但作为出钱的人你必须清楚：这 229.8 亿是纸面数字，AI 估值一旦回调，它会以同样的速度变成负数。</p>
+<p>而且这个数字在暴涨：FY2025 是 60.1 亿，FY2026 是 106.3 亿，TTM 已经 229.8 亿。<strong>它占了 TTM 净利润的 14.4%。</strong></p>
+<h3>不是障眼法，但要盯住：330 亿的营运资金消耗</h3>
+<p>应收账款一年增加 185.8 亿、存货增加 144.9 亿。这是<strong>高速增长的公司的正常现象</strong>——卖得越快，压在客户账上和仓库里的钱就越多。它不是造假。</p>
+<p>但它有两个含义：一，<strong>这部分利润你现在拿不到手</strong>；二，<strong>一旦增速掉下来，存货就是风险</strong>。144.9 亿的存货意味着仓库里堆着一年多前定的芯片，AI 芯片一代一代迭代极快，上一代产品降价的速度非常凶。这是"增长停下来的那一刻会疼"的地方。</p>
+<h3>股权激励：68.4 亿，规模不算问题</h3>
+<p>TTM 发了 68.4 亿的股票给员工，占净利润 4.3%。<strong>我按规矩把它当成真实的现金成本，不加回。</strong> 但对英伟达来说这个比例相当小——很多软件公司这个数字是净利润的 30%–50%。4.2 万名员工分 68.4 亿，人均 16 万美元的股票，很慷慨，但没有稀释到伤害股东的程度。</p>
+<h3>回购：真回购，不是给员工发工资</h3>
+<p>这一项英伟达做得干净，值得说清楚：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>453.0 亿</td>
+<td>400.9 亿</td>
+<td>337.1 亿</td>
+</tr>
+<tr>
+<td>同期股权激励</td>
+<td>68.4 亿</td>
+<td>63.9 亿</td>
+<td>47.4 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ 股权激励</strong></td>
+<td><strong>6.6 倍</strong></td>
+<td><strong>6.3 倍</strong></td>
+<td><strong>7.1 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>很多公司的回购金额和股权激励差不多，那种回购不是回馈股东，是拿股东的钱替员工发工资，股本一股都没少。<strong>英伟达不是这样：回购是股权激励的 6.6 倍，股本一年实实在在减少了 1.11%。</strong> 这是真回购。</p>
+<h3>一次性项目与资本化：没有</h3>
+<p>利润表上没有大额诉讼和解、没有重组费用、没有资产减值。研发费用全部当期费用化，没有资本化软件开发支出这类操作。<strong>这部分是干净的。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 <strong>5.4569 万亿</strong>，企业价值 <strong>5.4165 万亿</strong>（净现金约 404 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th><strong>投 100 块，一年赚</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>54,569 ÷ 1,596.1</td>
+<td><strong>34.2 倍</strong></td>
+<td><strong>2.92 块</strong></td>
+</tr>
+<tr>
+<td>公司会讲的 Non-GAAP</td>
+<td>加回 SBC 后约 1,656 亿</td>
+<td>33.0 倍</td>
+<td>3.03 块</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>54,569 ÷（1,596.1 − 229.8 非现金浮盈）= ÷1,366.3</td>
+<td><strong>39.9 倍</strong></td>
+<td><strong>2.50 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>54,569 ÷ 1,190.8</td>
+<td><strong>45.8 倍</strong></td>
+<td><strong>2.18 块</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>54,165 ÷ 1,622.9</td>
+<td>33.4 倍</td>
+<td>3.00 块</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>54,569 ÷（FY24–26 净利润均值 742.4 亿）</td>
+<td><strong>73.5 倍</strong></td>
+<td><strong>1.36 块</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>六个口径从 33 倍拉到 73.5 倍，这个差距本身就是结论。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守可信的口径（剔除非现金浮盈的真实利润）算，这家公司一年替你赚 2.50 块。</strong> 如果你更保守、只认真正进账的自由现金流，是 <strong>2.18 块</strong>。</p>
+<p>这 2.5 块里，<strong>真正回到你口袋的只有 0.85 块</strong>：</p>
+<ul>
+<li>回购 453 亿 ÷ 市值 54,569 亿 = 0.83%</li>
+<li>分红 9.73 亿 ÷ 市值 = 0.018%（基本可以忽略）</li>
+<li><strong>合计股东回报率 0.85%</strong></li>
+</ul>
+<p>剩下的 1.65 块留在公司里。留下来干什么？看投资活动就知道：TTM 花了 <strong>734 亿</strong>，其中资本开支只有 65.7 亿，<strong>"其他投资活动"花掉了 354 亿，购买投资 421 亿</strong>——<strong>大头是拿去买那些 AI 公司的股权了</strong>，也就是第二部分说的那批既是被投企业又是客户的公司。</p>
+<p><strong>换句话说：你投的 100 块，公司一年赚 2.5 块，其中 0.85 块还给你，剩下 1.65 块公司拿去继续投给它自己的客户。</strong></p>
+<h3>这个 2.5 块，未来三年会变大还是变小</h3>
+<p><strong>分子（利润）大概率还会涨，但涨速在肉眼可见地掉档。</strong> 计算与网络分部增速从 +215% 掉到 +145% 再掉到 +66.5%。远期市盈率 22.6 倍意味着市场预期未来一年利润还要再涨 50% 以上——只要这个增速兑现，静态的 34 倍很快就变成 23 倍，投 100 块的年回报就从 2.9 块变成 4.4 块。<strong>这就是买它的人的全部逻辑。</strong></p>
+<p>但有三个具体的东西会打断它：</p>
+<ol>
+<li><strong>客户就是那五六家。</strong> 微软、亚马逊、谷歌、Meta、OpenAI 加起来占了绝大部分订单。这五家现在每年砸几千亿美元建数据中心，但这些投入什么时候能挣回来，到今天没有一家给出过清晰的答案。<strong>这几家里任何一家决定"今年先缓一缓"，英伟达的增速立刻断层。</strong> 而且它们全都在自研芯片（谷歌 TPU、亚马逊 Trainium、微软 Maia）——它们既是最大的客户，也是最有动机、最有钱替代你的人。</li>
+<li><strong>229.8 亿的浮盈是双向的。</strong> AI 公司估值上涨时它加利润，回调时它同样力度地减利润。这部分利润的波动性远高于卖芯片的利润。</li>
+<li><strong>144.9 亿的存货 + 185.8 亿的应收。</strong> 增长期它们只是数字，一旦某个季度订单不及预期，存货减值和坏账会同时砸下来。</li>
+</ol>
+<p><strong>73.5 倍那个三年平均口径，衡量的正是"如果 AI 资本开支回到 2024 年的水平会怎样"。</strong> 它不是预测，是给你看清楚：你现在付的价，是建立在利润永久停在历史最高点、并且继续往上走的假设之上的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家质量极高的公司，但价格里没有留任何余地。</strong></p>
+<p>生意本身几乎无可挑剔：74% 毛利率、64% 经营利润率、114% 的净资产回报率、几乎零负债、真金白银的回购、CUDA 这条十八年才挖出来的护城河。这不是泡沫公司，它是真的在赚钱。</p>
+<p>但你付的价格是：<strong>剔除纸面浮盈后 39.9 倍，自由现金流 45.8 倍，一年真正回到你口袋 0.85%。</strong> 这个价格要求 AI 资本开支不但不能降温，还得继续加速好几年；同时要求那五六个既是客户又在自研芯片的巨头继续心甘情愿地买单。</p>
+<p><strong>买它等于押注一件事：AI 军备竞赛在未来三到五年不会降速。</strong> 这个判断可能是对的——但要清楚，你买的不是"一家好公司"，你买的是"一个必须持续兑现的假设"。假设成立，远期 22.6 倍很便宜；假设只要放缓一档，73.5 倍那个数字就会开始向你走来。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（利润表、现金流量表、估值比率，截至 2026-08-13）；分部营收来自英伟达 10-K 披露。分部利润率为估算，已在文中标明。分析日期 2026-08-14。</em></p>
+</div></body></html>

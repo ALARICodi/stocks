@@ -1,0 +1,416 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CRBG · 康桥金融（Corebridge Financial Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CRBG</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">便宜得有理由：用变难的生意做激进股本注销</div><h1>CRBG · 康桥金融（Corebridge Financial Inc.）</h1>
+<p>市值 $153.7 亿 / 股价约 $34.5（按市值 ÷ 4.4577 亿股折算）/ 行业：金融（人寿保险与退休金）/ 纽交所
+<strong>TTM 口径：截至 2026 年 6 月 30 日的最近四个季度</strong></p>
+<blockquote>
+<p><strong>这是一家寿险和年金公司，下面第三部分用市净率（PB）、净资产回报率（ROE）和利差口径，而不是单纯的市盈率。</strong>
+原因很直接：寿险公司在新会计准则（LDTI）下，每个季度都要把年金保单里的保证条款按市价重估，重估的浮盈浮亏直接砸进当期净利润。结果是 GAAP 净利润跟"这家公司这一年到底赚了多少"几乎脱钩。看下面这组数就明白了——同一家公司、同一门生意，四年 GAAP 净利润分别是：<strong>+81.59 亿（2022）、+11.04 亿（2023）、+22.30 亿（2024）、−3.66 亿（2025）、+8.89 亿（TTM）</strong>。营收从来没有这么剧烈地波动过，波动的全是账面重估。用这种利润去算市盈率，算出来的是噪音。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>康桥金融是 2022 年 9 月从 AIG 里分拆出来单独上市的美国退休金和寿险业务。它做四门生意，其中两门的本质是"借钱赚利差"，另外两门是"收管理费"和"卖死亡赔付"。</p>
+<h3>生意一：个人退休金（Individual Retirement）—— TTM 营收 66.40 亿，占 33%</h3>
+<p><strong>说白了就是卖年金，本质是一家开在保险牌照下的银行。</strong></p>
+<p>一个 62 岁的人手里有 30 万美元退休金，不敢再放在股市里。他通过银行理财经理或者独立券商买了一份康桥的 <strong>5 年期固定年金（MYGA）</strong>，合同写死：这 5 年每年给他 5.0% 的利息，到期还本。</p>
+<p>康桥拿到这 30 万，转手投进企业债、商业地产抵押贷款、CLO（贷款抵押债券）、私募信贷，组合收益率大概 5.9%。<strong>中间那 90 个基点的利差 × 30 万 = 每年 2,700 美元，就是康桥赚的钱。</strong> 再加上：如果客户 5 年不到就想取钱，要交退保费（第一年 8%、逐年递减）——这一笔也是纯利润。</p>
+<p>这门生意的规模逻辑很粗暴：<strong>你只要把这个动作重复几十万次，账上就趴着上千亿美元的"别人的钱"（保险业叫浮存金），而你只要保证投资收益比承诺给客户的高出 1 个百分点左右。</strong> 康桥的整个投资账户量级在两千多亿美元。</p>
+<p><strong>这几年这门生意特别好做</strong>：利率高企时，5% 的保本产品对退休人群吸引力极大，卖得飞快（营收从 49.94 → 57.87 → 64.22 → 66.40 亿）。<strong>但反过来，利率一旦大幅下行，新钱只能投到 4% 的债券上，而老保单还锁着 5% 的承诺，利差直接被压扁。</strong> 这是这门生意最大的软肋。</p>
+<h3>生意二：机构市场（Institutional Markets）—— TTM 营收 67.82 亿，占 34%，<strong>增长最快</strong></h3>
+<p>这是同一个"赚利差"的逻辑，但客户从个人换成机构，单笔金额从三十万变成几十亿。</p>
+<p><strong>具体两件事：</strong></p>
+<ol>
+<li>
+<p><strong>养老金风险转移（PRT）</strong>。一家老牌制造企业有一个 20 亿美元的养老金计划，要给 15,000 名退休工人按月发退休金发到他们去世为止。企业不想再管这个"永远算不准"的负债，就一次性把 21 亿美元（本金 + 一笔溢价）交给康桥，康桥从此接手每月给这 15,000 人打钱。企业的资产负债表干净了，康桥赚的是：那 21 亿的投资收益，减去实际发出去的退休金。<strong>赌的是这批人活得没有精算表算的那么长</strong>（叫"长寿风险"）。</p>
+</li>
+<li>
+<p><strong>融资协议票据（FABN）和担保投资合约（GIC）</strong>。康桥直接向机构投资者发行一张 3 年期的票据，票面 5.1%，募到 10 亿美元，转手投到收益率 5.9% 的资产上，吃 80 个基点。<strong>这就是纯粹的套利，跟保险一点关系都没有</strong>，只是因为发行主体是保险子公司，所以叫"融资协议"而不是"债券"。</p>
+</li>
+</ol>
+<p>这门生意从 2024 年的 52.26 亿冲到上一年的 70.34 亿，TTM 67.82 亿——<strong>是四门生意里唯一在大幅扩张的</strong>，也是资产负债表膨胀的主要来源（TTM 净买入证券 90.89 亿美元）。</p>
+<h3>生意三：团体退休金（Group Retirement）—— TTM 营收 26.49 亿，占 13%</h3>
+<p>这是 AIG 时代留下的 <strong>VALIC</strong> 业务，专门做<strong>公立部门的退休账户</strong>：中小学教师的 403(b)、市政府和州政府雇员的 457 计划、公立医院和大学职工的退休金。</p>
+<p>具体是这样：德州某学区两万名老师，每月工资单上自动扣一笔钱进 VALIC 账户，投到共同基金或者康桥自己的固定收益账户里。康桥按管理资产规模收年费（大概 0.5%–1%），固定账户那部分还能再吃一道利差。</p>
+<p><strong>好处是极其稳定</strong>——教师不会跳槽，工资扣款自动续，学区合同一签十几年。<strong>坏处是漏水</strong>：老师一退休，账户通常会被子女或者理财顾问建议转到富达、先锋去，费率低一半。所以这门生意的营收多年横在 26–27 亿，<strong>不增长，也不消失</strong>。</p>
+<h3>生意四：人寿保险（Life Insurance）—— TTM 营收 42.19 亿，占 21%</h3>
+<p>传统寿险：一个 40 岁的人买 100 万美元保额的 20 年定期寿险，一年交 600 美元保费。康桥收着这些保费，中间有人去世就赔 100 万，最后统计下来赔付比精算预期少，差额就是利润。还有指数型万能寿险（IUL）这类既有保障又有投资账户的产品。</p>
+<p><strong>这门生意在慢慢萎缩</strong>：46.39 → 43.51 → 42.34 → 42.19 亿。美国定期寿险市场竞争激烈、价格透明（网上一比价就知道谁便宜），是块低增长的存量生意。</p>
+<h3>四门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>上一财年</th>
+<th>占比</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>机构市场</td>
+<td>6,782</td>
+<td>7,034（−3.6%）</td>
+<td>34%</td>
+<td>大额利差 + 长寿风险</td>
+</tr>
+<tr>
+<td>个人退休金</td>
+<td>6,640</td>
+<td>6,422（+3.4%）</td>
+<td>33%</td>
+<td>零售利差</td>
+</tr>
+<tr>
+<td>人寿保险</td>
+<td>4,219</td>
+<td>4,234（−0.4%）</td>
+<td>21%</td>
+<td>死亡率定价</td>
+</tr>
+<tr>
+<td>团体退休金</td>
+<td>2,649</td>
+<td>2,690（−1.5%）</td>
+<td>13%</td>
+<td>管理费 + 利差</td>
+</tr>
+<tr>
+<td>会计调整（市价重估等）</td>
+<td>+477</td>
+<td>−1,982</td>
+<td>—</td>
+<td><strong>纯噪音</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>20,061</strong></td>
+<td><strong>18,481</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>注意最后那行"会计调整"：TTM 是 +4.77 亿，上一财年是 −19.82 亿，一正一负相差 24.6 亿。</strong> 这一行不对应任何真实业务，它就是保单保证条款按市价重估的结果。营收和利润的年度波动，主要来自这里。</p>
+<p>财报页只披露分部营收，不披露分部利润，本文不编造分部利润率。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：<strong>财报页没有单独披露</strong></h3>
+<p>保险公司的现金流量表格式跟工商企业不同，这四页数据里找不到 SBC 单独一行。金额大概率不重要（4,800 名员工的传统金融机构，不是科技公司），但<strong>我不编数字</strong>，这一项如实标注为"数据缺失"。</p>
+<h3>一次性项目：有一笔，而且要看懂它的性质</h3>
+<p>现金流量表里"投资出售的损益"这一行 TTM 是 <strong>+4.51 亿</strong>（在从净利润倒推经营现金流时被加回，说明它是<strong>已实现的投资亏损</strong> 4.51 亿）。</p>
+<p>这是什么意思：康桥在卖掉一批账面浮亏的老债券（2020–2021 年买的低息债，利率上去之后市价跌了），卖出的瞬间把浮亏"坐实"成了利润表上的损失。<strong>但这笔钱其实早就亏掉了</strong>——它一直躺在净资产的"其他综合收益（AOCI）"里，只是没进利润表。卖出只是把亏损从一个口袋挪到另一个口袋。经济上这不是新增的损失，甚至可能是好事（卖掉 3% 的老债换成 6% 的新债，未来的利差更宽）。</p>
+<p><strong>所以这 4.51 亿不该简单地当成"公司今年亏了 4.51 亿"，但也不该无脑加回当作利润。</strong> 这是寿险公司利润表最容易被误读的地方。</p>
+<h3>最大的障眼法：GAAP 净利润本身</h3>
+<p>这不是某一项，而是整张利润表的可信度问题。证据：</p>
+<ul>
+<li><strong>TTM 营收 195.15 亿，经营利润 19.95 亿，税前利润只剩 10.76 亿，净利润 8.89 亿。</strong> 从经营利润到税前掉了 9.19 亿，主要是利息支出。</li>
+<li><strong>同一家公司，2022 年的净利润是 81.59 亿</strong>——净利率 34%。一家赚 1% 利差的公司不可能有 34% 的净利率，那一年是利率暴涨让保单负债的市价大跌，账面上"凭空"多出几十亿利润。</li>
+<li><strong>2025 年净利润 −3.66 亿</strong>，同期经营现金流仍是 +20.21 亿。<strong>公司在"亏损"的那一年照样进账 20 亿现金。</strong></li>
+</ul>
+<p><strong>结论：康桥的 GAAP 净利润基本没有解读价值。</strong> 公司自己披露的口径叫"调整后税后经营利润"（Adjusted After-Tax Operating Income），剔除了这些市价重估。从前瞻市盈率 6.78 倍反推，市场对这个口径的年化利润预期大约是 <strong>22.6 亿美元</strong>，是 GAAP 数字（8.89 亿）的 2.5 倍。</p>
+<h3>回购与稀释：<strong>这是整篇最硬的证据，也是最该看的一栏</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+<th>占市值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购普通股</td>
+<td><strong>−30.36 亿美元</strong></td>
+<td><strong>19.8%</strong></td>
+</tr>
+<tr>
+<td>普通股分红</td>
+<td>−4.73 亿美元</td>
+<td>3.1%</td>
+</tr>
+<tr>
+<td>优先股股息</td>
+<td>−0.18 亿美元</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计还给股东</strong></td>
+<td><strong>−35.09 亿美元</strong></td>
+<td><strong>22.8%</strong></td>
+</tr>
+<tr>
+<td>发行优先股（融资）</td>
+<td>+4.93 亿美元</td>
+<td></td>
+</tr>
+<tr>
+<td>净增减债务</td>
+<td>+0.42 亿美元</td>
+<td>基本持平</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>流通股一年减少了 12.73%。</strong> 这不是"回购抵消员工发股"那种假回购——这是实打实注销了八分之一的股份。如果公司什么都不做，只靠这个动作，你每股对应的资产和利润就自动多了 14.6%。</p>
+<p><strong>但这个速度不可持续，必须说清楚：</strong>
+- 同期经营现金流只有 18.52 亿，回购 + 分红是 35.09 亿，<strong>发出去的钱是经营现金流的 1.9 倍</strong>。
+- 缺口靠什么补的？发了 4.93 亿优先股，剩下的来自保险子公司向母公司分红的法定盈余（这四页数据看不到）。
+- <strong>提醒一个容易看错的地方：TTM 融资活动净流入 59.63 亿美元，别把它理解成"公司借到了很多钱所以能回购"。</strong> 保险公司的年金保费收进和退保付出走的是"融资活动"，那 59.63 亿主要是保户存进来的钱，那是负债，不是可以拿去回购的利润。</p>
+<h3>利润和现金流的差：净利润 8.89 亿 vs 经营现金流 18.52 亿</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>889</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+711</td>
+<td>主要是递延获客成本（DAC）的摊销——卖保单付给销售的佣金先记成资产再逐年摊，不是当期现金</td>
+</tr>
+<tr>
+<td>+ 已实现投资亏损</td>
+<td>+451</td>
+<td>卖债券坐实的浮亏，非经营现金流出</td>
+</tr>
+<tr>
+<td>+ 再保险应收回收</td>
+<td>+661</td>
+<td>从再保公司收回的钱</td>
+</tr>
+<tr>
+<td>+ 保险准备金变动</td>
+<td>+188</td>
+<td>计提的赔付准备金增加</td>
+</tr>
+<tr>
+<td>+ 所得税相关变动</td>
+<td>+206</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应收账款变动</td>
+<td>+34</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−205</td>
+<td></td>
+</tr>
+<tr>
+<td>− 出售资产损益</td>
+<td>−2</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+993</td>
+<td>保险公司的杂项调整（金额大但财报页不细拆）</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,852</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>寿险公司的经营现金流也不能当利润看。</strong> 那 7.11 亿的 DAC 摊销、1.88 亿的准备金变动，本质是在"这一年该认多少利润"上做时间挪移，不是现金的真实进出。真正的答案在法定报表（statutory）里，而那不在这四页上。</p>
+<hr />
+<h2>第三部分：保险口径的估值（替代市盈率）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>1.51 倍</strong></td>
+<td>—</td>
+<td>花 151 块买 100 块的账面净资产</td>
+</tr>
+<tr>
+<td>市有形净值比 P/TBV</td>
+<td>1.51 倍</td>
+<td>—</td>
+<td>跟 PB 一样，说明<strong>账上没有商誉</strong>，净资产是实的</td>
+</tr>
+<tr>
+<td>GAAP ROE</td>
+<td>7.14%</td>
+<td>—</td>
+<td>净资产回报率</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（保险股的标准换算）</strong></td>
+<td>7.14% ÷ 1.51</td>
+<td><strong>$4.73</strong></td>
+<td>按 GAAP 口径的真实盈利能力</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>19.18 倍</td>
+<td>$5.21</td>
+<td><strong>前面说了，这个数是噪音，仅供对照</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均 GAAP 利润口径</strong></td>
+<td>153.66 亿 ÷（8.89 −3.66 + 22.30）/3 = 9.18 亿 → <strong>16.7 倍</strong></td>
+<td><strong>$5.98</strong></td>
+<td>唯一能平滑掉重估噪音的历史口径</td>
+</tr>
+<tr>
+<td><strong>公司经营口径（前瞻市盈率）</strong></td>
+<td><strong>6.78 倍</strong></td>
+<td><strong>$14.75</strong></td>
+<td>市场对"剔除市价重估后的真实利润"的预期</td>
+</tr>
+<tr>
+<td>经营现金流口径 P/OCF</td>
+<td>8.30 倍</td>
+<td>$12.05</td>
+<td></td>
+</tr>
+<tr>
+<td>股东实际拿到手的现金（回购 + 分红）÷ 市值</td>
+<td>35.09 ÷ 153.66 = <strong>22.8%</strong></td>
+<td><strong>$22.83</strong></td>
+<td><strong>过去 12 个月真实发生的，但不可持续</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>三个必须补充的口径说明</h3>
+<p><strong>1. 那个 1.51 倍的 PB 是虚高的。</strong> 寿险公司的 GAAP 净资产里包含"其他综合收益（AOCI）"，也就是持有债券的浮盈浮亏。2022 年以来利率大涨，几千亿的债券组合浮亏巨大，把 GAAP 净资产（约 101.8 亿美元）压得很低。公司自己用的"调整后账面价值"会剔除 AOCI，那个口径下的 PB 通常明显低于 1。<strong>这一点我在这四页数据上验证不了，只能提示口径差异——如果按剔除 AOCI 的口径，这只股票的 PB 大概率在 0.8–0.9，是折价交易。</strong></p>
+<p><strong>2. 那个 1.27 倍的债务权益比看着吓人，但要分清性质。</strong> 财报页显示总债务 144.70 亿，对应净资产 101.8 亿。但这 144.70 亿里有相当大一部分是"机构市场"业务本身发行的融资协议票据（FABN）和联邦住房贷款银行借款——<strong>那是这门生意的原材料</strong>（借进来 5.1%、投出去 5.9%），不是公司的财务杠杆。真正的公司层面债务只是其中一部分，这四页数据分不开。<strong>不过整体杠杆确实高：净资产 101.8 亿撑着大约 2,900 亿的总资产（按 ROA 0.31% 倒推），权益占资产 3.5%——这是行业常态，但也意味着资产端下跌 3.5% 就能吃掉全部净资产。</strong></p>
+<p><strong>3. 综合成本率、内含价值这些指标在这里不适用。</strong> 综合成本率是财产险（车险、家财险）的承保盈亏指标，康桥是寿险和年金公司，它的对应指标是"净投资利差"（投资收益率 − 保单成本），可惜这四页数据不提供。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进康桥金融，答案分两个：</strong></p>
+<ul>
+<li><strong>按 GAAP 报表的口径算，公司一年替你赚 4 块 7 毛 3</strong>（按三年平均是 5 块 9 毛 8）。这个数字不好看，19 倍市盈率对一家不增长的寿险公司来说是贵的。</li>
+<li><strong>按公司自己的经营口径（也是市场定价用的口径）算，一年替你赚 14 块 7 毛 5</strong>，相当于 6.8 倍市盈率。这个数字非常便宜。</li>
+</ul>
+<p><strong>两个答案差三倍，差在"要不要把年金保单的市价重估算成真实盈亏"上。我的判断是：不该算。</strong> 那些重估的浮亏浮盈是保单持有到期就会归零的账面数字，客户不会因为利率变了就提前把年金退掉（有退保费拦着）。所以真相更接近 6.8 倍那一边。</p>
+<p><strong>最有说服力的不是任何一个比率，是那笔 30.36 亿美元的回购。</strong> 一家公司可以在利润表上做任何文章，但它没法用假利润去真金白银地买回自己 12.73% 的股份。<strong>管理层用行动投了票：他们认为这个价格便宜。</strong></p>
+<p><strong>这 14.75 块里，有多少回到你口袋？</strong> 过去 12 个月是 22.8%（回购 + 分红），远高于任何常规水平。但这个速度撑不住——它超过经营现金流的 1.9 倍，靠发优先股和子公司分红补的缺口。<strong>合理的可持续水平大概是每年 8%–12%</strong>（分红 3.1% + 回购 5%–9%），仍然很可观。</p>
+<p><strong>这个回报未来会变小还是变大？</strong> 大概率<strong>变小</strong>，理由很具体：这家公司 67% 的营收来自赚利差的生意，而利差在利率下行时会被压扁——老保单锁着 5% 的承诺成本，新投的钱只能拿 4.5%。同时四门生意里有三门在萎缩（机构市场 −3.6%、人寿 −0.4%、团体退休 −1.5%），只有个人退休金还在长 3.4%。<strong>唯一能对冲这个下行的，就是回购把股本继续压小。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜，但便宜得有理由——它是在用一门正在变难的生意，做一场极其激进的股本注销。</strong></p>
+<p>如果你只看 GAAP 报表，19 倍市盈率、7.14% 的 ROE、1.51 倍 PB、四门生意里三门在萎缩，这是一家不该碰的公司。如果你看懂了寿险的会计噪音，同一家公司是 6.8 倍市盈率、每年注销 12.7% 的股份、现金回报率 22.8%，这是一家便宜得离谱的公司。</p>
+<p><strong>真相偏向后者，但风险是实打实的：3.5% 的权益资产比（资产端跌 3.5% 就归零）、67% 的营收吃利差（利率下行就压缩）、以及一个几乎没有增长的存量业务基本盘。</strong></p>
+<p><strong>这是一只"靠回购挣钱"的股票，不是靠生意成长挣钱的股票。</strong> 只要管理层继续按这个速度买回股份，即使生意零增长，每股价值也会以每年两位数的速度上升。买它就是买这个动作能持续多久。一旦回购停下来，剩下的就是一家 19 倍市盈率、不增长、高杠杆的寿险公司——那时它一点也不便宜。</p>
+</div></body></html>

@@ -1,0 +1,394 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TWLO · Twilio 公司</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TWLO</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">为「三年后利润率翻两倍半」付全款，太贵</div><h1>TWLO · Twilio 公司</h1>
+<p>市值 $365.8 亿 / 股价约 $238.2 / 行业：科技服务（云通信 API）/ 数据口径：TTM，截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Twilio 卖的东西，一句话讲清楚：<strong>别的公司想在自己的 App 里发短信、打电话、发邮件，不用自己去跟移动运营商谈合同、不用自己搭机房，调用 Twilio 的一段代码就行，按条按分钟付钱。</strong></p>
+<p>打个最具体的比方。你在美团上下单，骑手接单了给你发一条"骑手已取餐"的短信——这条短信不是美团自己发的，它得先跟中国移动、联通、电信分别签协议，接三套不同的接口，还得处理"这个号码是空号""这条被判成垃圾短信"之类的一堆麻烦。美国的 DoorDash 不想干这个活，就接 Twilio：写六行代码，指定手机号和内容，Twilio 负责剩下的一切。DoorDash 每发一条美国短信付 Twilio 大约 0.79 美分，其中大约 0.5 美分 Twilio 要转手交给 AT&amp;T、Verizon 这些运营商，自己留 0.29 美分。一天发 300 万条，一年就是 860 万美元的账单。</p>
+<p>Uber 的司机和乘客互相打电话时看到的那个"中间号"——你打过去不是司机真实号码，而是一个临时虚拟号——也是 Twilio 的产品。Airbnb 的验证码、银行的"您有一笔可疑交易请回复 Y 确认"、医院的"您明天 9 点的门诊别忘了"，绝大多数美国公司背后都是这一家。</p>
+<p>按财报披露的分部，实质上是五门生意（下表是 FY2025 全年数字，TTM 期间公司没有拆分部披露）：</p>
+<h3>1）短信（Messaging）—— 占一半以上的主业</h3>
+<p>就是上面说的那个。核心是 Twilio 手上握着跟全球几百家运营商的直连协议和"短信通道信誉"——发垃圾短信被运营商拉黑是这行最大的风险，Twilio 常年维护这些通道的合规和送达率，新玩家很难在一两年内做出来。</p>
+<p>这门生意的问题是<strong>毛利很薄</strong>。收 0.79 美分，转手给运营商 0.5 美分，Twilio 的毛利率只有 35–40%（估算，公司不单独披露分部毛利）。而且运营商每年涨价，Twilio 只能同步涨价转嫁给客户——它本质上是一个批发商，赚的是"帮你把一堆运营商合同打包成一个 API"的服务费，不是赚软件的钱。</p>
+<h3>2）语音（Voice）</h3>
+<p>买一个美国虚拟号码，每月 $1.15；有人打进来每分钟收 $0.0085，打出去每分钟 $0.014。呼叫中心、外卖平台的客服热线、以及最近爆发的 AI 语音客服（客户用 Twilio 接通电话，把音频流转给 OpenAI 的实时模型）都在用。</p>
+<h3>3）邮件（SendGrid）</h3>
+<p>2019 年花 20 亿美元买来的。企业发的那种"您的订单已发货""重置密码"邮件，不能用普通 Gmail 发——量一大就进垃圾箱。SendGrid 干的就是维护一堆"高信誉发信 IP"，保证邮件能落进收件箱。按发信量收月费，小公司 $20/月发 5 万封，大电商一年付几十万美元。</p>
+<p><strong>这门生意毛利最高</strong>（估算 75–80%），因为不用给运营商分钱，成本几乎只有服务器。</p>
+<h3>4）其他类似产品（Other Similar Products）</h3>
+<p>一堆小产品打包：Verify（专做验证码，帮客户自动选最便宜的通道，比自己拼短信便宜）、Flex（可编程呼叫中心软件，按坐席每月 $150 收）、Lookup（查一个号码是不是虚拟号、有没有被换过 SIM 卡，用来防欺诈，每次查询 0.5 美分）。</p>
+<h3>5）Twilio Segment（客户数据平台，CDP）</h3>
+<p>2020 年花 32 亿美元买的。它干的事是：把一个客户在你网站上的点击、在 App 里的浏览、在客服那儿的投诉、在邮件里的点开，全部汇成一个人的档案，然后你可以基于这个档案精准发消息。按每月追踪的用户数收年费，中型客户一年 10–20 万美元。</p>
+<p><strong>这块是明显的失败收购</strong>——买来六年，收入还在 3 亿上下原地踏步，2025 年只涨了 1.9%。竞争对手是 Adobe、Salesforce 这些捆绑销售的大厂，Twilio 打不动。</p>
+<h3>五门生意的钱（FY2025，含 FY2024 对比算增速）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>FY2025 营收（百万）</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>短信 Messaging</td>
+<td>2,878</td>
+<td>+18.2%</td>
+<td>56.8%</td>
+<td>35–40%</td>
+<td>主业，薄利，靠量</td>
+</tr>
+<tr>
+<td>语音 Voice</td>
+<td>616</td>
+<td>+13.4%</td>
+<td>12.2%</td>
+<td>45–50%</td>
+<td>AI 语音带来新增量</td>
+</tr>
+<tr>
+<td>邮件 SendGrid</td>
+<td>523</td>
+<td>+7.2%</td>
+<td>10.3%</td>
+<td>75–80%</td>
+<td>最赚钱，但增长慢</td>
+</tr>
+<tr>
+<td>其他产品</td>
+<td>747</td>
+<td>+7.7%</td>
+<td>14.7%</td>
+<td>55–60%</td>
+<td>Verify / Flex / Lookup</td>
+</tr>
+<tr>
+<td>Segment（CDP）</td>
+<td>303</td>
+<td>+1.9%</td>
+<td>6.0%</td>
+<td>70%+</td>
+<td>32 亿买来，六年没长</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,067</strong></td>
+<td><strong>+13.7%</strong></td>
+<td>100%</td>
+<td>48.95%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 总营收 55.72 亿，同比 +17.8%——增速在 2026 年上半年是加速的，主要靠短信里的 AI 客服和跨境验证码需求。</p>
+<p><strong>公司不披露分部经营利润</strong>，上表的毛利率是我按整体 48.56% 的毛利率结合产品结构估算的，不是财报数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的 TTM 报表有一个<strong>极大的坑</strong>，不剥掉的话所有结论都是错的。</p>
+<h3>⚠️ 11.5 亿净利润里，9.76 亿是一笔会计分录，不是赚来的</h3>
+<p>看这条链：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营业收入</td>
+<td>5,572</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>340.1</td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>172.7</td>
+</tr>
+<tr>
+<td><strong>所得税</strong></td>
+<td><strong>+976.1（是退税，不是交税）</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>1,149</td>
+</tr>
+</tbody>
+</table></div>
+<p>税前只赚了 1.73 亿，税后变成 11.49 亿——中间凭空多出 9.76 亿。这叫<strong>递延所得税估值备抵转回</strong>。</p>
+<p>大白话：Twilio 从 2016 年上市到 2024 年，累计亏了大约 45 亿美元。美国税法允许拿以前的亏损去抵以后的利润（叫 NOL，亏损结转）。但会计准则规定，只有当你"很可能真的赚到钱、用得上这些抵扣"时才能把它记成资产。过去 Twilio 年年亏，会计师说"你八成用不上"，所以一直没记。2026 年上半年公司终于连续盈利，会计师改口说"你用得上了"，于是<strong>一次性把这笔"以后能少交的税"确认成资产，同时在利润表上记一笔 9.76 亿的所得税收益</strong>。</p>
+<p>一分钱现金都没进来。TTM 实际付出去的现金所得税是 2,814 万美元。而且这事一辈子只发生一次——明年不会再有。</p>
+<p><strong>所以看 Twilio 的净利润和市盈率，必须先把这 9.76 亿扔掉。</strong></p>
+<h3>股权激励（SBC）：5.90 亿，是净利润级别的成本</h3>
+<p>TTM 发出去 5.90 亿美元的股票给员工。这个数字有多大？<strong>它是经营利润 3.40 亿的 1.7 倍</strong>——也就是说，如果不发股票而发现金，Twilio 的经营利润是负的 2.5 亿。</p>
+<p>公司在 Non-GAAP 里会把这 5.90 亿加回去，说"这不是现金支出"。这话是骗人的：员工拿到的股票是从你手上稀释出来的，你的持股比例每年被切掉一块。<strong>全文一律按 GAAP 处理，SBC 就是成本，不加回。</strong></p>
+<h3>回购与稀释：回购了 8.69 亿，股本反而增加了 0.19%</h3>
+<p>这是本文最能说明问题的一个比值：</p>
+<ul>
+<li>TTM 回购金额：8.69 亿</li>
+<li>TTM 股权激励：5.90 亿</li>
+<li><strong>回购 ÷ SBC = 1.47</strong></li>
+</ul>
+<p>按判断标准，这个比值接近 1 说明回购只是在给员工发股擦屁股，大于 3 才算真回馈股东。1.47 属于"擦完屁股略有剩余"。</p>
+<p>结果验证：<strong>股本同比 +0.19%，还在增加</strong>（最近一个季度环比 +1.24%）。花了 8.69 亿现金，股东手上的股份不但没变多，还被稀释了。这 8.69 亿等于是替员工的薪酬买单，只不过绕了一圈从现金流量表的融资活动里走。</p>
+<h3>一次性项目</h3>
+<ul>
+<li>减值与重组：3,462 万（很小）</li>
+<li>投资损失：股权投资亏 1.08 亿 + 证券出售亏 0.70 亿 = 1.78 亿。Twilio 早年投过一堆创业公司，现在陆续减记。<strong>单期口径无法判断这是否会年年发生</strong>——从 FY2022 至今每年都有 3,500 万到 1.2 亿不等，看起来更像"经常性的一次性"。</li>
+</ul>
+<h3>资本化的支出</h3>
+<p>购买无形资产 6,120 万，主要是资本化的软件开发费。规模不大，占营收 1.1%，不构成粉饰。</p>
+<h3>利润和现金流的差：逐项对账</h3>
+<p>净利润 11.49 亿，经营现金流 10.61 亿，看起来差不多——但这是<strong>两个巨大的反向数字撞在一起</strong>的巧合：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,149</td>
+<td>含 976 的假利润</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+159.7</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他摊销（收购无形资产）</td>
+<td>+69.7</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+590.3</td>
+<td>非现金，加回</td>
+</tr>
+<tr>
+<td>+ 减值与重组</td>
+<td>+34.6</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 投资相关损失</td>
+<td>+177.7</td>
+<td>股权投资 108.1 + 证券 69.6</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+15.3</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 其他经营活动</strong></td>
+<td><strong>−906.3</strong></td>
+<td><strong>就是那 9.76 亿假利润被冲销掉</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−185.6</td>
+<td>收入增长带来的正常占款</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−5.1</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>+4.0</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>+5.4</td>
+<td></td>
+</tr>
+<tr>
+<td>≈ 经营现金流</td>
+<td><strong>≈1,109</strong>（实际 1,061）</td>
+<td>差 48 是抓取页面未逐项列出的零星科目</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表读下来的结论：<strong>Twilio 真正的现金创造力，来自把 5.90 亿的股票薪酬"当成不花钱"，加上 976 的税务分录被现金流量表老老实实地冲掉了。</strong></p>
+<p>自由现金流 10.50 亿（资本开支只有 1,090 万，是个几乎不需要重资产的生意，这点确实好）。但如果承认 SBC 是真成本：<strong>10.50 − 5.90 = 4.60 亿</strong>，这才是股东真正能拿走的现金。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 365.8 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>365.8 亿 ÷ 11.49 亿净利润</td>
+<td><strong>31.8 倍</strong></td>
+<td>3.14 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回 SBC 5.90 亿、收购摊销 0.70 亿、重组 0.35 亿后约 10.4 亿</td>
+<td><strong>约 35 倍</strong></td>
+<td>2.86 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>365.8 亿 ÷（税前 1.73 亿 × 78% 正常税率 = 1.35 亿）</td>
+<td><strong>271 倍</strong></td>
+<td><strong>0.37 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>365.8 亿 ÷ 10.50 亿 FCF</td>
+<td>34.8 倍</td>
+<td>2.87 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流扣掉 SBC</strong></td>
+<td>365.8 亿 ÷（10.50 − 5.90 = 4.60 亿）</td>
+<td><strong>79.5 倍</strong></td>
+<td><strong>1.26 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>349.9 亿 ÷ 3.40 亿经营利润</td>
+<td><strong>102.9 倍</strong></td>
+<td>0.97 元</td>
+</tr>
+<tr>
+<td>三年平均真实净利润口径</td>
+<td>三年真实净利均值仅 0.20 亿（TTM 1.35 + FY25 0.34 − FY24 1.09，取平均）</td>
+<td><strong>约 1,800 倍</strong></td>
+<td>0.06 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意 Non-GAAP 那一行的荒诞之处：<strong>公司自己"吹"出来的口径（35 倍），反而比 GAAP（31.8 倍）还贵</strong>——因为 GAAP 净利润被那笔 9.76 亿的税务分录灌了水，灌得比公司自己吹的还猛。这在美股里非常罕见，也是一个明确的信号：这一期的 GAAP 数字不能看。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Twilio，按最保守的真实口径（经营赚的钱按正常纳税），公司一年替你赚 3 毛 7。</strong></p>
+<p>按最宽松但仍诚实的口径（自由现金流扣掉股权激励），一年赚 1 块 2 毛 6。</p>
+<p>这 1 块 2 毛 6 里，<strong>一分钱都不会以分红的形式回到你口袋</strong>——Twilio 不分红。回购确实花了 8.69 亿，但如前所述，它只够抵消员工发股，你的持股比例反而缩水了 0.19%。所以现金实际去向是：进了员工的口袋。</p>
+<p>留在公司里再投资的部分：TTM 投资活动净流出 3.96 亿，主要是买证券（2.62 亿）和小额收购（0.62 亿），资本开支只有 1,090 万。这家公司<strong>基本不需要再投资</strong>——它是纯软件+批发商模式。这是它最好的一点。</p>
+<p>未来这个数字会变大还是变小？大概率变大，理由是：营收还在 17.8% 增长，而经营利润率从 FY2022 的 −26.9% 一路修到 TTM 的 +6.1%，每一个百分点的利润率提升在 55 亿营收上就是 5,500 万。如果三年后利润率做到 15%（软件公司常态），经营利润 = 8.4 亿×增长后的营收，那时的估值才说得通。<strong>但那需要三年不出错，而现在的股价已经把这三年提前付掉了。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Twilio 是一家生意扎实、终于走出亏损的公司，但股价一年涨了 134% 之后，现在的价格是在给"三年后利润率翻两倍半"这件还没发生的事付全款——按今天真实赚到的钱算，你花 100 块每年只分到 3 毛 7，太贵了。</strong></p>
+<p>要买它，你买的不是当下的 32 倍市盈率（那是假的），而是一个"每年 15% 增长 + 利润率从 6% 爬到 15%"的三年剧本。剧本演砸的话，79 倍（扣掉股权激励的现金流口径）是没有安全垫的。</p>
+</div></body></html>

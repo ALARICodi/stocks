@@ -1,0 +1,375 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CPRT · Copart（科帕特）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CPRT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">极好的生意合理偏便宜，值这个价但不算白捡</div><h1>CPRT · Copart（科帕特）</h1>
+<p><strong>市值</strong> $292.6 亿 | <strong>股价</strong> 约 $31.6 | <strong>行业</strong> 零售贸易（在线车辆拍卖） | <strong>TTM 截止</strong> 2026 年 4 月 30 日（财年 7 月结束） | <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Copart 是全球最大的<strong>报废及事故车在线拍卖平台</strong>。这家公司几乎没有中国人听过，但它做的事一句话就能说清：<strong>保险公司赔掉的那些撞坏的车，最后都从它手里卖出去。</strong></p>
+<p>先讲清楚整个链条，因为不讲清楚就完全看不懂它为什么这么赚钱。</p>
+<p>你开一辆 2019 年的凯美瑞，市值 1.1 万美元，出了车祸，修车厂报价 9000。保险公司算了算：修它不划算，直接判<strong>"全损"（total loss）</strong>，赔你 1.1 万，然后<strong>车归保险公司了</strong>。</p>
+<p>问题来了：保险公司拿一辆撞烂的凯美瑞干什么？它没有停车场、没有拖车队、不懂怎么卖二手残骸、也不想处理过户手续。于是它打给 Copart。</p>
+<p>Copart 接下来做四件事：
+1. <strong>拖走</strong>——Copart 自建了约 3500 辆拖车的运输网络，通常 24 小时内到你家或修理厂把车拖到最近的场地。
+2. <strong>存放</strong>——Copart 在全球有约 250 个场地、几万英亩土地，把车停在那里等着卖。
+3. <strong>上架</strong>——现场拍照（一辆车拍几十张标准化照片）、录入损伤等级、处理车辆产权过户（这是个专门产品叫 Title Express，替保险公司跑车管所）。
+4. <strong>卖掉</strong>——放到自己的在线竞价平台 VB3 上，全球买家实时出价。</p>
+<p>买家是谁？<strong>主要不是美国人</strong>。是波兰、立陶宛、乌克兰、阿联酋、尼日利亚的拆车厂和修车厂。一辆在美国"修了不划算"的凯美瑞，运到波兰花 1500 美元海运费，当地工时费只有美国的五分之一，修好卖 8000 欧元——<strong>利差就是这门生意的燃料</strong>。也有美国本土的拆车厂买回去拆零件卖，还有专门做"重建车"（rebuilt title）的小作坊。</p>
+<h3>它到底怎么收钱：两头都收，而且从不压货</h3>
+<p><strong>这是全篇的关键。</strong> Copart <strong>绝大部分情况下不买车</strong>。它是<strong>寄售（consignment）</strong>模式——车的所有权始终在保险公司手里，Copart 只是代卖，成交后从两边收费：</p>
+<ul>
+<li><strong>向卖方（保险公司）收</strong>：拖车费、存放费、成交服务费（按售价百分比）。</li>
+<li><strong>向买方收</strong>：<strong>这才是大头</strong>。买家中标 4200 美元，还要另付一笔"买家费"，按成交价分档累进，4200 美元这一档大概 700–900 美元，再加上门禁费、网络竞价费、代运费等等。</li>
+</ul>
+<p>所以刚才那辆凯美瑞：卖了 4200 美元，Copart 从买家收 850、从保险公司收 450，<strong>总共赚 1300 美元的服务费，而这辆车它一天都没有拥有过</strong>。保险公司拿到 4200 减去卖方费用，Copart 收 1300 计入"Service（服务）收入"——<strong>这 1300 全额是收入，没有对应的商品成本</strong>。</p>
+<p>这就解释了 47.5% 的毛利率和 37.8% 的经营利润率：<strong>收入里绝大部分是纯服务费，成本只有地租、人工、拖车油钱和 IT。</strong></p>
+<p>另外一小部分业务是<strong>买断（Purchase）模式</strong>：在英国和部分国际市场，行业惯例是平台直接把车买下来再卖，赚差价。这部分叫"Vehicle 收入"，收入按整车售价全额计入，但毛利率只有个位数——所以它占 15% 的收入，却只占很小一块利润。<strong>看 Copart 的收入结构时必须记住：Service 和 Vehicle 这两类收入的"含金量"差十倍以上。</strong></p>
+<h3>它的护城河是土地，不是软件</h3>
+<p>在线拍卖平台听起来是软件生意，其实<strong>不是</strong>。Copart 拥有（不是租，约九成自有）大城市周边数万英亩的工业用地。为什么这是护城河：</p>
+<p>飓风来了，佛罗里达一次泡掉 20 万辆车。保险公司需要有人在 72 小时内把这 20 万辆车从街上清走并存放几个月。<strong>全美国只有两家公司有这个地：Copart 和 IAA（现属 RB Global）。</strong> 一个创业公司拿风投的钱可以做出一个更好看的竞价网站，但它买不到底特律、休斯顿、坦帕城郊的几百英亩已经批下来的工业地皮——那些地皮的邻居会否决新的报废车场规划。</p>
+<p><strong>这是一个用"没人愿意住在旁边的土地"筑起来的双寡头。</strong></p>
+<h3>新方向：不只是撞坏的车</h3>
+<ul>
+<li><strong>Blue Car</strong>：拉非保险来源的车——经销商置换、租赁到期、车队淘汰、个人直卖。这是从 Manheim、ADESA（传统批发车拍）嘴里抢肉。</li>
+<li><strong>Purple Wave</strong>：2024 年收购的，做农机、工程机械、卡车的在线拍卖，把同一套"拍照 + 竞价 + 过户"的能力搬到别的品类。</li>
+</ul>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万美元）</th>
+<th>上一完整财年同比</th>
+<th>占总收入</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国服务费（寄售）</td>
+<td>3,395</td>
+<td>+10.4%</td>
+<td>73.2%</td>
+<td>约 44%（估算）</td>
+<td>约 1,494</td>
+</tr>
+<tr>
+<td>国际服务费（寄售）</td>
+<td>561</td>
+<td>+18.9%</td>
+<td>12.1%</td>
+<td>约 40%（估算）</td>
+<td>约 224</td>
+</tr>
+<tr>
+<td>美国整车买断</td>
+<td>408</td>
+<td>+19.2%</td>
+<td>8.8%</td>
+<td>约 5%（估算）</td>
+<td>约 20</td>
+</tr>
+<tr>
+<td>国际整车买断</td>
+<td>275</td>
+<td>−18.5%</td>
+<td>5.9%</td>
+<td>约 5%（估算）</td>
+<td>约 14</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,639</strong></td>
+<td><strong>+1.05%（TTM口径）</strong></td>
+<td>100%</td>
+<td>37.8%（实际）</td>
+<td><strong>1,752（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：Copart <strong>不按分部披露经营利润</strong>，上表分部利润率是按寄售/买断两种商业模式的性质和整体 37.8% 经营利润率倒推的估算，不是财报数字。分部同比用最近一个完整财年（FY2025 vs FY2024）；合计的 <strong>+1.05%</strong> 才是 TTM 同比——<strong>而这个 1.05% 是全篇最重要的数字，下面详说</strong>。</p>
+</blockquote>
+<h3>增长停了</h3>
+<p>把 TTM（截至 2026 年 4 月）和 FY2025（截至 2025 年 7 月）放一起看：</p>
+<ul>
+<li>总收入：4,639 vs 4,647 —— <strong>绝对值下降</strong></li>
+<li>美国服务费：3,395 vs 3,452 —— <strong>绝对值下降 1.7%</strong></li>
+</ul>
+<p>这家公司过去二十年是复合增长 15% 以上的典范，FY2022 增长 30%、FY2023 增长 10.5%、FY2024 增长 9.7%、FY2025 增长 9.7%，<strong>然后突然平了</strong>。股价过去 52 周跌 33.66%，市场已经充分反应。</p>
+<p>为什么会停？两个原因叠加：
+1. <strong>二手车价格从 2022 年的高点回落</strong>。买家费很大一部分是按成交价百分比累进的，同样一辆车成交价从 5000 掉到 4000，Copart 抽的钱也跟着掉。
+2. <strong>全损率见顶</strong>。过去十年 Copart 的顺风是"车越来越难修"——车上装满雷达、摄像头、铝制车身，一个小碰撞就要换 8000 块的传感器套件，保险公司越来越倾向判全损。这个比例从 2010 年的 13% 涨到现在的 22% 左右，但它不可能涨到 100%，边际增速在放缓。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分会很短，因为这家公司的账是本任务做过最干净的之一。</strong></p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>3811 万美元</strong>，占净利润 <strong>2.5%</strong>。一家一年赚 15.5 亿的公司，全年发出去的股票不到 4000 万，而且这个数字五年来几乎没变过（FY2021 是 4092 万，FY2025 是 3800 万——<strong>绝对额还降了</strong>）。相比之下同等规模的科技公司 SBC 常常占净利润的 30–50%。这一项完全不用担心。</p>
+<p><strong>一次性项目</strong>：没有。TTM 有 1102 万的资产处置<strong>收益</strong>（卖旧场地）、40 万的股权投资收益、184 万的坏账计提——三项加起来占税前利润的 0.5%，全部可以忽略。没有诉讼和解、没有重组费用、没有商誉减值、没有并购摊销。</p>
+<p><strong>资本化的支出</strong>：没有软件开发费或内容制作费的资本化游戏。资本开支就是买地、平整场地、盖办公楼和拖车——是实物资产。</p>
+<p>但资本开支这里有一个<strong>必须警惕的信号</strong>：TTM 资本开支只有 <strong>3.46 亿</strong>，而 FY2025 是 5.69 亿、FY2024 是 5.11 亿、FY2023 是 5.17 亿——<strong>一年之内砍掉了近 40%</strong>。折旧摊销是 2.09 亿，所以资本开支仍高于折旧、公司还在扩张，但<strong>扩张的速度突然踩了刹车</strong>。这跟收入停滞是同一件事的两面：管理层看到需求疲软，先把买地的钱收住。</p>
+<p><strong>这个刹车直接制造了一个假象</strong>：TTM 经营现金流是 16.85 亿，<strong>同比下降 6.4%</strong>；但自由现金流是 13.39 亿，<strong>同比上升 13.4%</strong>。现金流"变好"完全来自少花了 2.2 亿资本开支，<strong>不是生意变好了</strong>。下面算估值时我会把这一点单独列一行。</p>
+<p><strong>回购与稀释</strong>：<strong>这是这家公司历史上第一次真正的回购，规模惊人。</strong></p>
+<p>TTM 回购 <strong>16.37 亿美元</strong>。而前几年的回购金额是：FY2025 528 万、FY2024 656 万、FY2023 471 万——<strong>几乎是零</strong>。也就是说，Copart 二十年来只攒钱不回购（现金一度攒到 47.9 亿），然后在股价跌了三分之一之后，一口气砸了 16 亿进去。</p>
+<p>回购 ÷ SBC = <strong>16.37 亿 ÷ 0.38 亿 = 43 倍</strong>。这是一个极端数字，说明回购和员工发股毫无关系，是纯粹的资本返还。</p>
+<p>股本变化：一年减少 <strong>0.91%</strong>，<strong>最近一个季度减少 3.31%</strong>——说明回购是在最近几个月才发力的，年化下来的缩股速度接近 <strong>10%/年</strong>。这是本任务里少见的、正在加速的真实缩股。</p>
+<p>钱从哪来？账上现金从 47.89 亿降到 42.00 亿，同时变卖了 12.18 亿的有价证券。<strong>用的是二十年攒下的存款，不是借债</strong>（总负债只有 9312 万，基本没有债）。</p>
+<p><strong>利润和现金流的差</strong>：净利润 15.53 亿，经营现金流 16.85 亿，只差 1.32 亿——<strong>差额极小，说明利润基本上就是现金</strong>。这在做寄售生意的公司里是应该的：没有存货、没有长账期。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,553</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+209</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+14</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−11</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+38</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+2</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−10</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−89</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+8</td>
+</tr>
+<tr>
+<td>＋ 预收款增加</td>
+<td>+3</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−5</td>
+</tr>
+<tr>
+<td><strong>− 所得税相关变动</strong></td>
+<td><strong>−25</strong></td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−2</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,685</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−346</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,339</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>唯一值得看一眼的是<strong>应收账款增加了 8900 万</strong>，在收入零增长的情况下应收还在涨——买家账期在拉长，或者国际买家（东欧、中东）回款变慢。金额不大（占收入 1.9%），但方向不好，值得下个季度盯。</p>
+<p><strong>一个容易漏掉的正项</strong>：Copart 账上趴着 42 亿现金，这笔钱按当前利率一年产生约 1.6 亿的利息收入。所以税前利润 19.11 亿<strong>高于</strong>经营利润 17.52 亿——差的那 1.6 亿是吃利息赚的，不是主业。下面算估值时要把这一块单独处理。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 292.60 亿，<strong>企业价值只有 251.6 亿</strong>——因为账上有 41.07 亿净现金（现金 42.00 亿，负债只有 0.93 亿）。<strong>净现金占了市值的 14%</strong>，所以市盈率会系统性高估它的贵。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>292.60 ÷ 15.53</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.31</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>没有。Copart 不公布任何调整后利润，GAAP 就是全部</strong></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>没有障眼法可剔（SBC 已按 GAAP 扣除、无一次性项目）</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>$5.31</strong></td>
+</tr>
+<tr>
+<td><strong>剔除净现金后的主业市盈率</strong></td>
+<td>（292.60 − 41.07 净现金）÷（经营利润 17.52 × (1−18.85% 税) ＝ 14.22）</td>
+<td><strong>17.7 倍</strong></td>
+<td><strong>$5.65</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>292.60 ÷ 13.39</td>
+<td><strong>21.9 倍</strong></td>
+<td><strong>$4.58</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流（资本开支正常化到 5.2 亿）</strong></td>
+<td>292.60 ÷（16.85 − 5.20 ＝ 11.65）</td>
+<td><strong>25.1 倍</strong></td>
+<td><strong>$3.98</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>251.58 ÷ 17.52</td>
+<td><strong>14.4 倍</strong></td>
+<td><strong>$6.96</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>292.60 ÷ 三年净利润均值 13.84</td>
+<td><strong>21.1 倍</strong></td>
+<td><strong>$4.73</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行怎么读。</strong> FY2023 是 12.38 亿、FY2024 是 13.63 亿、FY2025 是 15.52 亿，均值 13.84 亿，低于当期的 15.53 亿——所以三年平均口径（21.1 倍）<strong>贵于</strong>当期口径（18.8 倍）。差距只有 12%，而且原因是这三年利润一路稳步上台阶（+10%、+14%、+0%），<strong>不是某一年有暴利高点</strong>。所以这里没有"当前利润是虚高峰值"的警报，跟英伟达那种当期 34 倍、三年平均 73.5 倍的情形完全不同。</p>
+<p><strong>但要注意增长曲线的形状</strong>：+10%、+14%、然后 <strong>0%</strong>。三年平均口径掩盖了"最新这一年停下来了"这个事实。真正的风险不在利润是不是虚高，而在<strong>它还会不会长</strong>。</p>
+<p><strong>这张表里最重要的两行</strong>是"剔除净现金后的主业市盈率 17.7 倍"和"资本开支正常化后的自由现金流 25.1 倍"，它们指向相反的方向：
+- 按利润看，扣掉那 41 亿闲置现金之后，<strong>你为主业只付了 17.7 倍</strong>——对一个 37.8% 经营利润率、30% 投入资本回报率（ROIC）、几乎没有负债的双寡头来说，这个价格不算贵。
+- 按现金看，把资本开支还原到正常水平之后是 <strong>25.1 倍</strong>——因为 Copart 是个要不断买地的生意，账面利润里有一部分要持续投回土地，<strong>它的自由现金流转换率不如利润表看起来那么漂亮</strong>。</p>
+<p><strong>说人话：你现在投 100 块进去。</strong></p>
+<p>按最保守的口径（资本开支正常化的现金流），公司一年替你赚 <strong>4 块</strong>；按 GAAP 利润口径，一年赚 <strong>5 块 3</strong>；扣掉闲置现金只看主业，一年赚 <strong>5 块 6</strong>；按企业价值口径（这是最能反映"这门生意本身贵不贵"的数字），一年赚 <strong>7 块</strong>。</p>
+<p>这里面有多少真回到你口袋？<strong>分红：零</strong>，Copart 上市三十多年从没分过一分钱。<strong>回购：TTM 16.37 亿，相当于市值的 5.6%</strong>——但这是动用二十年存款的一次性大手笔，不能按年外推。真正可持续的回购能力大约是自由现金流的水平，即 13 亿左右、约 4.5%/年。</p>
+<p>剩下的钱留在公司里干什么？看投资活动：TTM 资本开支 3.46 亿（买地、盖场）、收购只花了 476 万。<strong>所以答案是：以前是攒着，现在开始还给你了。</strong> 这实际上是本篇最重要的变化——一家常年零回购、把 47 亿现金趴在账上吃利息的公司，突然在股价腰斩后开始大规模缩股，<strong>说明管理层认为自家股票便宜</strong>。</p>
+<p>这个 5 块 3 未来会变大还是变小？<strong>取决于一件事：收入的零增长是周期性的还是结构性的。</strong></p>
+<p>看多的理由：全损率的长期上升趋势没有逆转（车越来越贵、越来越难修）；国际业务还在两位数增长（国际服务费 +18.9%）；Blue Car 和 Purple Wave 打开了非保险品类；土地护城河没有任何被侵蚀的迹象；账上 42 亿现金加零负债，抗打击能力极强。</p>
+<p>看空的理由：二手车价格仍在从 2022 年泡沫回归的路上，买家费跟着往下走；东欧和中东买家受汇率、关税、地缘政治影响，国际整车买断这一块 FY2025 已经跌了 18.5%；美国服务费 TTM 绝对值在下降；管理层自己把资本开支砍了 40%，这是内部人对短期需求最诚实的表态。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门极好的生意，遇上了一个不确定是不是暂时的减速，价格给到了"合理偏便宜"但还不是"捡便宜"。</strong></p>
+<p>先说好的：这是本任务里账面最干净的公司之一——<strong>没有 Non-GAAP、没有一次性项目、没有商誉、没有债、SBC 只占利润 2.5%、回购是 SBC 的 43 倍</strong>。37.8% 的经营利润率、30% 的 ROIC、寄售模式不压一分钱库存、护城河是别人买不到的土地。这种生意在美股里不超过几十家。</p>
+<p>再说贵不贵：扣掉 41 亿净现金后主业只有 17.7 倍市盈率、14.4 倍 EV/EBIT。<strong>如果收入增长能回到 8–10%，这个价格明显便宜</strong>，值 25 倍以上。</p>
+<p>问题全部集中在一句话上：<strong>TTM 收入 +1.05%，美国主业绝对值在下降。</strong></p>
+<p>我的判断：<strong>这大概率是周期性的，不是结构性的</strong>——全损率的长期趋势、国际业务的双位数增长、以及管理层用二十年积蓄砸 16 亿回购这个动作，三者指向同一个结论。管理层比任何人都清楚需求是暂时软还是永久没了，一个从不回购的极度保守的公司在股价跌 33% 后突然大买，这是我在整张表里最看重的信号。</p>
+<p>但价格没有给到大幅折价。18.8 倍买一家零增长的公司，你赌的是"增长会回来"。如果两三年后收入仍然趴着，18.8 倍就是贵的。<strong>值这个价，但不算白捡；真正的机会是它再跌 20% 而回购继续加速的时候。</strong></p>
+</div></body></html>

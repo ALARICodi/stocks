@@ -1,0 +1,395 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NRG · NRG 能源（NRG Energy）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NRG</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">不是投资是押注：120亿加杠杆买13吉瓦燃气机组</div><h1>NRG · NRG 能源（NRG Energy）</h1>
+<p><strong>市值</strong> 265.4 亿美元 · <strong>股价</strong> $126.26 · <strong>行业</strong> 公用事业（非受监管发电与零售售电）
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（全篇所有数字均为最近四个季度滚动）
+<strong>全榜名次</strong> 第 257 名 · <strong>分析日期</strong> 2026-08-16</p>
+<blockquote>
+<p><strong>读这份分析前必须知道的一件事</strong>：2026 年 1 月 30 日，NRG 完成了对 LS Power 发电资产的收购——18 座燃气/双燃料电厂共约 13 吉瓦装机，外加需求响应平台 CPower，总企业价值约 <strong>120 亿美元</strong>（64 亿现金 + 2,425 万股股票 + 承接债务）。这意味着 <strong>TTM 这四个季度里，只有后两个季度包含了这笔占公司体量近一半的资产</strong>。下面所有数字都被这件事扭曲着，我会逐处标明。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>NRG 和上一家 CenterPoint 正好是电力产业链上互相咬合的两端：CenterPoint 拥有电线、只收过路费、不承担电价风险；<strong>NRG 一根电线都不拥有（在德州），却承担着全部的电价风险</strong>。它是"买电、卖电、赚差价"的那一方。</p>
+<p>拆开看，它实际上在做四门差别很大的生意。</p>
+<h3>生意一：德州零售售电（Texas）—— TTM 营收 110.0 亿，占 33%</h3>
+<p>这是 NRG 的利润基本盘，也是它最赚钱的一块。</p>
+<p>德州电力零售完全自由化，居民自己挑供电品牌。NRG 手里握着一堆牌子：<strong>Reliant、Green Mountain Energy、Cirro、TXU 的部分资产</strong>——休斯顿和达拉斯的居民看到的账单抬头就是这些名字。</p>
+<p>具体怎么赚钱，拿一户真实的休斯顿家庭算：这户人跟 Reliant 签了 12 个月固定价合约，每度电 14.5 美分。夏天一个月用 1,800 度，账单 261 美元。这 261 块钱里 NRG 要付出去两笔：约 <strong>60 块交给 CenterPoint</strong> 当电线过路费（对，就是上一家公司），约 <strong>160 块</strong>是它自己发电或从德州批发市场买电的成本。剩下约 <strong>40 块</strong>才是 NRG 的毛利。</p>
+<p><strong>这门生意真正的风险，全在那 160 块上。</strong> NRG 向客户锁死了 14.5 美分的价格，但它买电的价格是浮动的。德州电网（ERCOT）在夏天热浪或冬天寒潮时，批发电价能从每度 3 美分瞬间飙到 <strong>每度 9 美元</strong>——涨 300 倍。2021 年 2 月的 Uri 暴雪就是这么把一批德州零售商直接干破产的，NRG 那次也损失了十几亿。</p>
+<p>所以它必须<strong>自己持有发电厂做物理对冲</strong>：客户锁价买我 100 万度电，我就得确保自己有 100 万度的发电能力，这样电价飙升时我左手亏的钱右手赚回来。<strong>"零售 + 自有电厂"这个组合不是为了多赚钱，是为了不被打死。</strong> 理解这一点，才能理解下面那笔 120 亿的收购为什么非做不可。</p>
+<h3>生意二：东部市场（East Segment）—— TTM 营收 168.7 亿，占 51%，同比 +18%</h3>
+<p>TTM 里最大也是变化最剧烈的一块。它包含两部分：东北部（PJM 电网、纽约、新英格兰）的零售售电，以及 <strong>2026 年 1 月并进来的 LS Power 那 13 吉瓦燃气机组</strong>。</p>
+<p>营收从 FY2025 的 142.6 亿跳到 TTM 的 168.7 亿，<strong>增长的 26 亿里绝大部分是收购并表，不是内生增长</strong>。这个数字不能当成"业务增长 18%"来读。</p>
+<p>为什么要花 120 亿买 13 吉瓦燃气电厂？一句话：<strong>AI 数据中心把美国的电不够用了</strong>。过去二十年美国用电量几乎零增长，现在 PJM 电网（覆盖弗吉尼亚、宾州、俄亥俄等 13 个州，是全球数据中心最密集的区域）的容量拍卖价格连续两年创历史新高。NRG 押的注是：手里有可随时开机的燃气机组的人，未来十年会赚到过去二十年赚不到的钱。这笔交易让 NRG 的发电装机<strong>翻了一倍</strong>。</p>
+<h3>生意三：西部/服务/其他（West/Services/Other）—— TTM 营收 30.3 亿，占 9%</h3>
+<p>加州等西部市场的售电，加上工商业能源服务，以及随 LS Power 一并买来的 <strong>CPower</strong>。</p>
+<p>CPower 值得单独讲，因为它是这四门生意里模式最巧妙的一门。它跟全美 2,000 多家工商业客户签协议，本质是：<strong>"电网紧张的时候我给你发个信号，你把冷库温度调高两度、把电解槽停 20 分钟、把数据中心切到备用柴油机——你减下来多少千瓦，我按千瓦付钱给你。"</strong> 然后 NRG 把这几千家客户挤出来的负荷聚合成一个"虚拟电厂"，卖给电网运营商换取容量费。</p>
+<p>好处是：<strong>它不用建一座电厂、不烧一方气，就凭调度别人的用电习惯，卖出了和真电厂同等的容量。</strong> 边际成本接近零，利润率远高于烧气发电。</p>
+<h3>生意四：Vivint 智能家居 —— TTM 营收 22.6 亿，占 7%，同比 +5%</h3>
+<p>这块和"能源"关系最远，也最容易被忽略。NRG 在 2023 年花约 28 亿美元买下 Vivint——卖智能门锁、摄像头、恒温器和家庭安防的公司。</p>
+<p>生意模式很具体：销售员上门，给你家装一整套设备（门锁、门窗传感器、室内外摄像头、智能恒温器），设备钱可以分期，然后你签一份 <strong>5 年合约，每月付 60–100 美元的监控订阅费</strong>——出事时有 24 小时值守中心帮你报警。</p>
+<p>NRG 对外的说法是"能源与智能家居捆绑"，但说白了这是一门<strong>独立的订阅制安防生意</strong>。它的价值在于：这是 NRG 全公司<strong>唯一一块有经常性订阅收入、且完全不受电价波动影响</strong>的业务，22.6 亿营收里的现金流可预测性远超其他三块。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>参照 FY2025</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>East（东部＋LS Power 机组）</td>
+<td>168.71 亿</td>
+<td>142.63 亿</td>
+<td><strong>+18.3%</strong>（主要靠并购）</td>
+<td>50.9%</td>
+</tr>
+<tr>
+<td>Texas（德州零售）</td>
+<td>109.98 亿</td>
+<td>111.39 亿</td>
+<td>−1.3%</td>
+<td>33.2%</td>
+</tr>
+<tr>
+<td>West/Services/Other</td>
+<td>30.27 亿</td>
+<td>32.02 亿</td>
+<td>−5.5%</td>
+<td>9.1%</td>
+</tr>
+<tr>
+<td>Vivint 智能家居</td>
+<td>22.56 亿</td>
+<td>21.44 亿</td>
+<td>+5.2%</td>
+<td>6.8%</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>−0.51 亿</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>331.25 亿</strong></td>
+<td>307.13 亿</td>
+<td><strong>+12.8%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报不按分部披露经营利润。整体经营利润 20.8 亿、经营利润率仅 6.28%——<strong>注意这个利润率有多薄</strong>：营收 331 亿的公司，只赚出 20.8 亿经营利润。这是"买电转手卖电"这门生意的本质，营收数字很大但基本是过路的货款。按行业惯例，德州零售和 Vivint 的利润率显著高于东部批发发电，但<strong>具体数字财报未提供，不做编造</strong>。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：1.44 亿美元，占归母净利润 7.82 亿的 18.4%。</strong> 这个比例不算小，而且三年内翻了 40%（FY2023 是 1.01 亿）。<strong>这笔钱按 GAAP 已经从利润里扣掉了，本篇不加回</strong>——它实实在在稀释你的股份，公司自己在宣传"调整后 EPS"时会把它加回去，那是骗人的。</p>
+<p><strong>一次性项目：这是本篇最需要小心的地方。</strong> TTM 里"其他摊销"高达 <strong>6.56 亿美元</strong>，而 FY2024 只有 3.71 亿、FY2023 只有 2.20 亿——<strong>多出来的近 3 亿，是 LS Power 收购形成的无形资产和购电合约在摊销</strong>。</p>
+<p>这笔摊销该不该加回？<strong>不该。</strong> 它虽然是非现金支出，但它对应的是 NRG 真金白银花 120 亿买来的合约在一天天到期消耗——这是真实的经济成本，不是会计幻觉。公司在"调整后 EPS"里会把它加回去，那个数字看着漂亮，但对你判断这笔生意值不值 120 亿毫无帮助。</p>
+<p><strong>同时必须承认单期口径的局限</strong>：TTM 这四个季度里既有并购交易费用（财报未单列，量级估计在 1 亿上下），又有大额收购摊销。<strong>光看这一期，无法判断哪些是真一次性、哪些会年年发生</strong>——收购摊销几乎肯定还会持续好几年，交易费用则不会。这是我不能替财报下结论的地方。</p>
+<p>资产减值 TTM 为零（FY2022 曾有 2.06 亿、FY2021 有 5.44 亿），资产处置收益 2,300 万，都不重大。</p>
+<p><strong>回购与稀释：数字漂亮，但要看穿。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股票回购金额</td>
+<td><strong>17.53 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励（SBC）</td>
+<td>1.44 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>12.2 倍</strong></td>
+</tr>
+<tr>
+<td>股本变动（同比）</td>
+<td><strong>−1.94%</strong></td>
+</tr>
+<tr>
+<td>股本变动（环比上季）</td>
+<td><strong>+1.92%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是 SBC 的 12 倍，按标准看这是<strong>货真价实的回购</strong>，不是给员工发股擦屁股。但环比 +1.92% 那一行暴露了另一半真相：<strong>为了付收购对价，NRG 向 LS Power 增发了 2,425 万股新股</strong>。一年花 17.5 亿回购，另一头又发股买资产，两相抵消后股本只净减 1.94%。</p>
+<p><strong>利润和现金流的差：差额巨大，必须逐项对账。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（百万美元）</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（现金流表口径，含少数股东与优先股）</td>
+<td><strong>849</strong></td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+1,173</td>
+</tr>
+<tr>
+<td>＋ 其他摊销（收购无形资产／购电合约）</td>
+<td>+656</td>
+</tr>
+<tr>
+<td>－ 资产处置收益</td>
+<td>−23</td>
+</tr>
+<tr>
+<td>＋ 投资处置损失</td>
+<td>+39</td>
+</tr>
+<tr>
+<td>－ 权益法投资收益</td>
+<td>−8</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+144</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+167</td>
+</tr>
+<tr>
+<td>－ 存货增加</td>
+<td>−142</td>
+</tr>
+<tr>
+<td>－ <strong>应付账款减少</strong></td>
+<td><strong>−549</strong></td>
+</tr>
+<tr>
+<td>－ <strong>其他经营性资产净变化</strong></td>
+<td><strong>−1,272</strong></td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+258</td>
+</tr>
+<tr>
+<td>＋ 数据页未单列项（递延所得税等）</td>
+<td>+263</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,555</strong></td>
+</tr>
+<tr>
+<td><strong>－ 资本开支</strong></td>
+<td><strong>−1,207</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>348</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>上表倒数第二行是配平项：把数据页披露的各行相加得 12.92 亿，与披露的经营现金流 15.55 亿差 2.63 亿，缺口来自 stockanalysis 未单列的项目（主要应为递延所得税）。这里如实标明，不假装严丝合缝。</p>
+</blockquote>
+<p>对账表里有两行是刺眼的：<strong>应付账款减少 5.49 亿 + 其他经营性资产净变化流出 12.72 亿</strong>。合计约 <strong>18 亿现金</strong>在这一年里从经营环节漏了出去（现金流量表另有一行"营运资金变动 −17.96 亿"印证）。</p>
+<p>这钱去哪了？主要是电力衍生品的保证金和抵押品。NRG 为了对冲电价，在期货市场上持有大量头寸；行情一动，交易对手就要求它追加保证金——这是纯粹的现金占用，跟利润无关，但会实打实地把经营现金流吸干。这也是经营现金流从 FY2024 的 23.06 亿一路掉到 TTM 的 <strong>15.55 亿（同比 −32%）</strong> 的主因。</p>
+<p>结果就是：<strong>账面赚 7.82 亿，最后落到手里的自由现金流只有 3.48 亿</strong>。而同期它花了 <strong>71.11 亿现金做收购</strong>、还了 106.85 亿旧债、新借了 197.13 亿——<strong>净新增债务 90.28 亿</strong>。</p>
+<p>资产负债表被这笔交易彻底改写：总债务从一年前的 <strong>166.26 亿 → 234.67 亿</strong>，股东权益只有 <strong>48.6 亿</strong>，<strong>债务/股本 4.83 倍</strong>，债务/EBITDA 6.67 倍，<strong>利息保障倍数 2.03 倍</strong>——经营利润仅够覆盖利息的两倍出头。TTM 已付现金利息 5.72 亿，而这还只包含了收购后两个季度的利息；<strong>明年利息全年化后会显著更高</strong>。</p>
+<p>顺带一提：ROE 高达 23.77% 看着很美，那只是因为分母（股东权益）被 4.8 倍杠杆压得极薄。同期 ROIC 只有 <strong>6.23%</strong>，低于公司自己的加权资本成本 <strong>7.43%</strong>——<strong>按会计口径，NRG 投出去的每一块钱，赚回来的还不够付资金的成本。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 265.4 亿，企业价值 <strong>498.4 亿</strong>——<strong>买下整个 NRG 的真实代价接近市值的两倍</strong>，因为你要一并接手那 233 亿净债务。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>265.4 亿 ÷ 7.82 亿</td>
+<td><strong>33.9 倍</strong></td>
+<td><strong>$2.95</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回收购无形资产摊销（税后约 5.0 亿）（<strong>估算</strong>）</td>
+<td>约 20.7 倍</td>
+<td>约 $4.83</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>摊销与 SBC 均<strong>不加回</strong>，仅剔并购交易费（税后估 1 亿）</td>
+<td><strong>30.1 倍</strong></td>
+<td><strong>$3.32</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>265.4 亿 ÷ 3.48 亿</td>
+<td><strong>76.3 倍</strong></td>
+<td><strong>$1.31</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>498.4 亿 ÷ 20.8 亿</td>
+<td><strong>24.0 倍</strong></td>
+<td>$4.17</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>265.4 亿 ÷ (7.97 + 10.58 − 2.56)/3 = <strong>5.33 亿</strong></td>
+<td><strong>49.8 倍</strong></td>
+<td><strong>$2.01</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的一行是最后一行。</strong></p>
+<p>三年平均口径 <strong>49.8 倍</strong>，是当期 33.9 倍的 1.5 倍。原因就写在算式里：FY2023 这家公司<strong>亏了 2.56 亿美元</strong>。三年的利润轨迹是 −2.56 亿 → +10.58 亿 → +7.97 亿 → TTM 7.82 亿，<strong>上蹿下跳，毫无规律</strong>。上一家 CenterPoint 的利润是一条笔直缓坡，NRG 是心电图。</p>
+<p>这就是"非受监管发电商"的本色：<strong>它的利润不由自己决定，由天气、天然气价格和电力批发市场决定。</strong> 冷冬热夏就是好年景，气候温和就是差年景。任何用单一年份利润给这类公司估值的做法都是错的，<strong>三年平均才是它真实的盈利中枢</strong>。</p>
+<p><strong>但这张表还有另一半故事，必须放在一起看：远期市盈率只有 12.05 倍。</strong></p>
+<p>市场预期 NRG 明年的每股收益约 <strong>$10.48</strong>，是 TTM 那 $3.87 的 <strong>2.7 倍</strong>。这个巨大的跳跃不是凭空想象，逻辑是实的：</p>
+<ol>
+<li><strong>LS Power 那 13 吉瓦机组明年将贡献完整的四个季度</strong>，而 TTM 只包含了两个季度；</li>
+<li>收购的一次性交易费用不再发生；</li>
+<li>AI 数据中心推高 PJM 和 ERCOT 的容量价格与电价利差。</li>
+</ol>
+<p><strong>所以 NRG 现在的估值本质上是一道二选一的判断题：你信 33.9 倍（甚至 49.8 倍）的过去，还是信 12.05 倍的未来？</strong></p>
+<p><strong>你现在投 100 块进去，一年公司替你赚多少？</strong></p>
+<p>按最保守的<strong>三年平均口径，只有 2.01 块</strong>；按剔除障眼法的当期口径，<strong>3.32 块</strong>；如果明年的预期兑现，则跳到 8 块以上。</p>
+<p>这 X 块里有多少真的回到你口袋：
+- <strong>股息</strong>：每股 $1.90，股息率 <strong>1.51%</strong> → 到手 1.51 块；
+- <strong>回购</strong>：净股本减少 1.94% → 折合约 <strong>1.94 块</strong>；
+- <strong>两项合计"股东实得"约 3.44 块</strong>（stockanalysis 的股东收益率 3.44% 就是这么来的）。</p>
+<p>有意思的地方在这里：<strong>NRG 发还给股东的现金（3.44 块），比它按最保守口径实际赚到的（2.01 块）还多。</strong> 差额是借来的——TTM 净新增负债 90 亿。这个组合能持续，前提只有一个：明年的利润必须真的翻上去。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong></p>
+<p><strong>方向上大概率变大，但下限极低、波动极大。</strong> 变大的理由是硬的——13 吉瓦装机全年并表、数据中心用电需求确实在爆发、CPower 的虚拟电厂模式利润率高。</p>
+<p>但风险也是硬的：
+1. <strong>杠杆</strong>。债务 234.67 亿、利息覆盖 2.03 倍、ROIC(6.23%) 低于 WACC(7.43%)。<strong>这是一个几乎没有容错空间的资产负债表</strong>。如果明年电价利差不及预期，利息会先把利润吃光。
+2. <strong>天气与电价</strong>。FY2023 亏 2.56 亿的教训摆在那里，这门生意有能力在一个温和的年份里把利润归零。
+3. <strong>营运资金的黑洞</strong>。TTM 已经被衍生品保证金抽走 18 亿现金，电价波动越大，这个数字越难看。</p>
+<p>股价过去 52 周跌了 <strong>18.55%</strong>，市场显然还没被"明年 12 倍"说服。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一笔投资，这是一次押注——押 AI 数据中心的用电荒会持续到足够久，久到 NRG 用 120 亿加杠杆买来的 13 吉瓦燃气机组能连本带利赚回来。</strong></p>
+<p>摆在明面上的事实是：按过去三年的真实盈利中枢，你现在付的是 <strong>49.8 倍市盈率</strong>，一年赚回 2 块钱；公司为了这笔赌注把债务干到 234 亿、股本只剩 48 亿、利息只覆盖 2 倍、投入资本回报率还低于资金成本；同时它发出去的股息和回购比真实赚到的钱还多，靠借债维持。</p>
+<p>赌赢了，明年 12 倍市盈率、EPS 翻 2.7 倍，现价便宜得离谱；赌输了——碰上一个不冷不热的年份、或者利率再上一台阶——<strong>这张资产负债表没有第二次机会。</strong></p>
+<p><strong>它可能很便宜，也可能很危险，而这两件事现在还分不出来。</strong> 至少要等到 LS Power 资产完整并表两到三个季度、看到真实的现金流之后，"12 倍"才配被当成一个数字而不是一个说法。在那之前买它，买的是管理层的 PPT。</p>
+<hr />
+<p><strong>资料来源</strong>：财务数据来自 <a href="https://stockanalysis.com/stocks/nrg/financials/">stockanalysis.com/stocks/nrg</a>（数据源 S&amp;P Global Market Intelligence，末次更新 2026-08-04）；收购细节来自 <a href="https://investors.nrg.com/news-releases/news-release-details/nrg-energy-completes-acquisition-13-gw-power-generation-and-ci">NRG 官方公告：完成收购 LS Power 13GW 发电与 C&amp;I 虚拟电厂组合</a>。</p>
+</div></body></html>

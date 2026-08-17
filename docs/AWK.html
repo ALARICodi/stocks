@@ -1,0 +1,390 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AWK · 美国水务公司（American Water Works）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AWK</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">护城河最硬，但24倍且分红是借来的</div><h1>AWK · 美国水务公司（American Water Works）</h1>
+<p>市值 270.7 亿美元 · 股价约 136.22 美元 · 行业：受监管的自来水与污水处理公用事业 · TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>美国水务是全美最大的上市自来水公司，服务 14 个州、约 1,400 万人。但它的生意本质，一句话就说完了：</p>
+<blockquote>
+<p><strong>它是全美最大的"买下小镇破管道"的公司。</strong></p>
+</blockquote>
+<p>要理解这句话，得先知道美国的自来水行业长什么样。美国有大约 <strong>5 万家自来水系统</strong>，其中绝大多数是<strong>镇政府自己办的</strong>——一个 8,000 人的小镇，有自己的水厂、自己的水塔、自己的地下管网，由镇上三四个市政雇员维护着。这些系统里有相当大一部分的管道是 1920–1950 年代铺的铸铁管，很多已经到了寿命末期：爆管、水压不足、铅管超标（弗林特事件之后，铅管更换成了政治高压线）。</p>
+<p>对小镇来说这是个死局：<strong>换管道要花 3,000 万美元，镇上一年的全部税收只有 400 万。</strong> 要么发市政债让下一代还，要么加水费——加水费是要镇议会投票的，没人愿意背这个锅。</p>
+<p><strong>美国水务就是来接这个盘的。</strong> 它开一张 3,000 万美元的支票买下整个系统（镇政府拿这笔钱去还债、修学校，一夜之间账上多出 3,000 万，镇长很好过），然后接管这些管道，去州公用事业委员会申请把水费提上去，用未来 30 年慢慢收回来。</p>
+<p>它凭什么能提价而镇政府不能？因为<strong>它的提价不需要镇议会投票</strong>，只需要州监管机构（比如新泽西的 BPU、宾州的 PUC）在听证会上批准。而监管的逻辑和电力公司完全一样：</p>
+<ol>
+<li>公司把水厂、水塔、地下管网、水表加总成<strong>费率基数（rate base）</strong>；</li>
+<li>监管机构批一个<strong>允许的股东回报率</strong>（水务行业目前普遍 9.5%–10%）；</li>
+<li>水费定在"能覆盖运营成本 + 折旧 + 利息 + 费率基数里股东那部分 × 允许回报率"的水平。</li>
+</ol>
+<p>于是这台机器和 PPL 是同一台：<strong>每往地里埋一块钱，未来每年就多赚约一毛。</strong> 只不过 PPL 埋的是电线，AWK 埋的是水管。</p>
+<h3>生意一：自来水（Water Services）—— 主业，占八成多</h3>
+<p><strong>TTM 营收 43.68 亿美元，占总营收 82.7%。</strong></p>
+<p>它做的事：从水源（水库、河流、地下井）取水 → 送进水厂做混凝、沉淀、过滤、消毒 → 加压送进地下配水管网 → 送到你家水表 → 每两个月读表寄账单。全流程它自己做，因为水没法像电那样"别人发我来送"——水必须就地取、就地处理、就地送，跨州输水在物理上就不成立。</p>
+<p><strong>这个物理特性，是这门生意最硬的护城河。</strong> 电力可以拆分成发电和输电，可以让用户自己选供应商（PPL 在宾州就是这样）；水不行。一个地区的地下管网只可能有一套，谁拥有它谁就是这个地区的唯一供水者，永远不会有第二家来铺第二套管子跟它抢。这是教科书级别的自然垄断，而且是<strong>永久性的</strong>。</p>
+<p>具体收多少钱：新泽西一户四口之家，一个月用水约 25 立方米（含洗澡、洗衣、冲厕所、浇草坪），账单大约 70–85 美元，其中有一个固定的"服务费"（不管你用不用水都要交，覆盖管网维护）加一个按用量的阶梯水价。工商业客户单独定价，比如一家啤酒厂或者一家医院是大客户，签的是另一套费率表。还有一块常被忽略的收入是<strong>消防栓费</strong>——市政府为了消防用水随时可用，每年按消防栓数量向 AWK 付一笔固定费用。</p>
+<p>它服务的 14 个州里，<strong>新泽西、宾夕法尼亚、密苏里、伊利诺伊、加州</strong>是最大的五个，合计占了大半营收。这个地理分布很关键：新泽西和宾州的监管环境对水务公司相对友好（有"公允市场价值"收购法，允许按评估价而不是账面价把收购的市政系统计入费率基数，这直接决定了并购划不划算）；加州则是最难的市场，监管严、干旱限水令频繁。</p>
+<p><strong>增长从哪来？两条腿：</strong>
+- <strong>一条腿是费率案（rate case）</strong>：现有 1,400 万用户，每隔一两年去各州监管机构申请一次调价，理由是"我们又投了多少钱修管道、成本涨了多少"。这条腿一年大概能带来 5%–6% 的营收增长。TTM 营收 +6.92%，主要就是它。
+- <strong>另一条腿是并购</strong>：TTM 花了 4.04 亿美元买了一批市政系统。这个数字看起来不大，但它买的是"永久收费权 + 未来几十年的资本开支机会"。AWK 一年大概完成几十笔这样的小交易，每笔从几百万到上亿不等。</p>
+<h3>生意二：污水处理（Wastewater Services）—— 小，但增长更快</h3>
+<p><strong>TTM 营收 4.34 亿美元，占 8.2%。</strong></p>
+<p>做的事是自来水的反向：收集家庭和工商业排出的污水 → 通过下水管网送到污水处理厂 → 沉淀、生物处理、消毒 → 排放回河流。收费方式和自来水一样，走同一张账单，一户人家每月大概再交 40–60 美元。</p>
+<p><strong>这块虽然只占 8%，但它是 AWK 增长最快的部分</strong>：FY24→FY25 增长 16.3%（4.22 ÷ 3.63 − 1），三年里从 3.27 亿涨到 4.34 亿，涨了三分之一。原因是<strong>污水处理厂的合规压力比自来水更大</strong>：环保署（EPA）的排放标准越收越紧，近年又加上了 PFAS（"永久化学品"）的处理要求，一座小镇的老污水厂要达标可能要花 5,000 万美元升级。镇政府更没这个钱，于是卖掉污水系统的意愿比卖自来水还强。</p>
+<p>AWK 的策略也很清楚：<strong>去已经拥有自来水系统的镇子，把污水系统也一并买下来</strong>——同一批客户、同一张账单、同一批维修队伍，边际成本极低，是纯粹的规模效应。</p>
+<h3>生意三：其他受监管业务 + 未单列的军事基地合同</h3>
+<p><strong>其他受监管业务 TTM 营收 0.73 亿美元，占 1.4%。</strong></p>
+<p>这块很小，主要是一些附属的受监管服务。</p>
+<p><strong>但这里有个必须指出的口径问题：</strong> 财报页披露的三个分部（自来水 43.68 + 污水 4.34 + 其他受监管 0.73）加起来是 <strong>48.75 亿</strong>，而总营收是 <strong>52.84 亿</strong>，<strong>中间差了 4.09 亿美元（占总营收 7.7%）没有被归到任何一个分部里</strong>。</p>
+<p>这一块的主体是 AWK 的<strong>军事基地服务合同</strong>：美国国防部把军事基地里的供水和污水系统外包出去，签的是 <strong>50 年期的长约</strong>，AWK 目前运营着十几个基地的水系统（陆军、海军、空军基地都有）。这门生意的性质和主业完全不同——<strong>它不受州公用事业委员会监管</strong>，价格是和国防部按合同谈的，不需要走听证会；而且它是"运营 + 升级改造"的服务合同，不需要 AWK 拥有资产。所以它的利润率结构、增长逻辑、风险敞口都和主业不一样，把它算在"受监管公用事业"里看是不准确的。</p>
+<p>财报页不单列这块的营收，所以上面的 4.09 亿是<strong>我用总营收减去三个分部倒推出来的</strong>，不是财报直接给的数字。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>占比</th>
+<th>上年（FY24→FY25）增速</th>
+<th>经营利润率（估算）</th>
+<th>贡献经营利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自来水</td>
+<td>4,368</td>
+<td>82.7%</td>
+<td>+9.3%</td>
+<td>约 41%</td>
+<td>约 1,790</td>
+</tr>
+<tr>
+<td>污水处理</td>
+<td>434</td>
+<td>8.2%</td>
+<td>+16.3%</td>
+<td>约 38%</td>
+<td>约 165</td>
+</tr>
+<tr>
+<td>其他受监管</td>
+<td>73</td>
+<td>1.4%</td>
+<td>+13.3%</td>
+<td>约 30%</td>
+<td>约 22</td>
+</tr>
+<tr>
+<td>未单列（军事基地合同等，倒推）</td>
+<td>409</td>
+<td>7.7%</td>
+<td>—</td>
+<td>约 1%</td>
+<td>约 3</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,284</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>+6.9%（TTM 同比）</strong></td>
+<td><strong>37.45%</strong></td>
+<td><strong>1,980</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>必须说明</strong>：财报页只按分部披露营收，<strong>不披露分部经营利润</strong>。上表利润率是估算——依据是受监管水务的利润率高度一致（同一套监管定价公式），而军事基地合同是低毛利的服务外包。加总已校准到财报的 19.80 亿经营利润。方向可信，个位数不可信。</p>
+</blockquote>
+<p><strong>顺带说一个惊人的数字：AWK 只有 7,000 名员工，服务 1,400 万人，人均创收 75.5 万美元、人均创利 16.1 万美元。</strong> 自来水是所有公用事业里人力最省的——管道埋在地下，除了爆管抢修和读表（现在也换成智能水表远程抄表了），基本不需要人。这也是它经营利润率能做到 37.45% 的原因，比 PPL 的 24.13% 高出一大截。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：<strong>财报的现金流量表上根本没有单列这一项。</strong> 它被合并进了"其他经营活动"这个 3.51 亿美元的口袋里，同一个口袋里还塞着递延所得税、养老金调整等一堆东西。这不是造假（小公司/低 SBC 公司常这么披露），但它意味着<strong>我无法从这四页财报上算出 AWK 的 SBC 到底是多少</strong>。参考同行水平，受监管公用事业的 SBC 通常在净利润的 2%–4%（PPL 是 4.3%），也就是 AWK 大概在 2,500–4,500 万美元区间，对 11.28 亿净利润的影响可以忽略。<strong>结论：这一项对估值不构成实质影响，但披露不透明这一点该记一笔。</strong></p>
+<p><strong>一次性项目</strong>：TTM 这一期很干净，没有资产减值、没有重组、没有诉讼和解、没有资产处置损益。历史上最大的一次是 FY2021 —— 那一年净利润 12.63 亿，比 FY2022 的 8.20 亿高出 54%，原因是<strong>当年卖掉了非受监管的家庭服务业务（Homeowner Services）录得 7.47 亿的一次性处置收益</strong>（现金流量表上的 "Loss (Gain) on Sale of Assets −747" 就是它）。这提醒我们：<strong>看 AWK 的历史利润必须小心，2021 年那个 12.63 亿是假的高点，剔掉一次性收益后真实利润只有 5 亿多。</strong></p>
+<p><strong>只看 TTM 这一期，我分不清"真一次性"和"年年都有的一次性"。</strong> 水务公司最容易冒出来的是干旱限水令导致的用水量下降、以及 PFAS 集体诉讼相关的费用——这两类过去几年都出现过。本期没有，不代表以后没有。</p>
+<p><strong>资本化的支出</strong>：没有软件资本化、内容资本化的问题。和 PPL 一样，AWK 是一台巨型资本化机器——TTM 花 33.64 亿在管道和水厂上，这是被监管框架认可的、必须资本化的开支。</p>
+<p><strong>回购与稀释</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>发行股票</td>
+<td><strong>+476</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>未单列（估计 250–450）</td>
+</tr>
+<tr>
+<td>回购 ÷ SBC</td>
+<td><strong>0 倍</strong></td>
+</tr>
+<tr>
+<td>股本一年变化</td>
+<td><strong>+0.26%（增加）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>AWK 一股都没回购，反而净发行了 4.76 亿美元新股。</strong> 好消息是稀释幅度很小——股本一年只增加 0.26%（PPL 是 1.31%），因为 AWK 的股价高、市值大，4.76 亿只相当于 350 万股左右。但方向是明确的：<strong>这家公司从不回购，它是长期净发股的。</strong></p>
+<p><strong>利润和现金流的差 —— 逐项对账</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,128</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+934</td>
+<td>管道按 50–75 年折旧，不花现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+351</td>
+<td><strong>递延所得税 + SBC + 养老金调整，混在一起没拆开</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−131</td>
+<td>水费收出去了还没到账</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+79</td>
+<td></td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−131</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营性资产净变动</td>
+<td>+53</td>
+<td></td>
+</tr>
+<tr>
+<td>小计</td>
+<td>2,283</td>
+<td></td>
+</tr>
+<tr>
+<td>未拆分的残差</td>
+<td>+51</td>
+<td>财报页四舍五入及未列示项</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>2,334</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−3,364</strong></td>
+<td><strong>重点</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−1,030</strong></td>
+<td><strong>负的</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>和 PPL 一模一样的故事：<strong>AWK 一年赚回 23.34 亿现金，转身花 33.64 亿修管道，另外花 4.04 亿买小镇的水系统，自由现金流 −10.30 亿。它还发了 6.58 亿分红。</strong></p>
+<p>窟窿谁填的？<strong>净借新债 +9.89 亿，发新股 +4.76 亿。</strong> 同样的结论：</p>
+<blockquote>
+<p><strong>你收到的每一分钱分红，都是公司借来的、外加发新股发出来的。</strong></p>
+</blockquote>
+<p>同样地，这在受监管公用事业里是<strong>行业常态而非财务丑闻</strong>——因为这 33.64 亿资本开支会进费率基数，监管机构允许它未来几十年从水费里连本带利收回来。</p>
+<p>需要盯的三个数：<strong>总债务 160.68 亿，债务/EBITDA 5.49 倍，利息保障 3.04 倍。</strong> 都是重资产受监管行业的典型值，但都不宽裕。TTM 付出的现金利息 5.68 亿，五年前是 3.89 亿——利率上行的账已经开始付了。</p>
+<p><strong>最刺眼的一项，和 PPL 一样：ROIC 4.62% vs WACC 5.84%。</strong> 每投一块钱创造的回报低于融资成本。给它说句公道话：分母里含了多年来收购市政系统付的溢价和商誉，压低了这个数；不含商誉的费率基数回报会好看得多（约 8%–9%）。但差距是真实的，而且它揭示了一个残酷的事实——<strong>AWK 用于并购的每一分钱，都必须靠"买来之后大幅提价"来兑现回报，如果哪天监管机构不肯批那么高的费率，这些溢价就变成了减值。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>270.7 亿 ÷ 11.28 亿</td>
+<td><strong>24.0 倍</strong>（按每股口径 23.6 倍）</td>
+<td><strong>4.17 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>AWK 用"调整后每股收益"口径</td>
+<td>财报页未提供，不编</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>本期无真一次性损益，SBC 已含在 GAAP 内</td>
+<td><strong>24.0 倍</strong></td>
+<td><strong>4.17 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>270.7 亿 ÷ (−10.30 亿)</td>
+<td><strong>不适用（FCF 为负）</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>429.1 亿 ÷ 19.80 亿</td>
+<td><strong>21.7 倍</strong></td>
+<td><strong>4.61 元</strong>（整个企业的回报，债主先拿大头）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>270.7 亿 ÷ (11.28+11.11+10.51)/3 = 10.97 亿</td>
+<td><strong>24.7 倍</strong></td>
+<td><strong>4.05 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径 24.7 倍 vs 当期 24.0 倍，差距只有 0.7 倍——几乎没有差别。</strong> 这是本篇最值得记住的一个数字：<strong>AWK 的利润稳到近乎无聊。</strong> 10.51 → 11.11 → 11.28，年年小幅上台阶，没有周期、没有高点、没有意外。这种"三年平均等于当期"的公司在美股里非常少见，它意味着<strong>你不需要担心自己买在了盈利周期的顶部</strong>。（对比一下：NVDA 当期 34 倍、三年平均 73.5 倍——那才叫周期高点。）</p>
+<p><strong>说人话的结论：</strong></p>
+<blockquote>
+<p><strong>你今天投 100 块进 AWK，无论按当期还是三年平均口径，公司一年都替你赚大约 4.1 块。</strong></p>
+</blockquote>
+<p>这 4.1 块里，有多少真回到你口袋？</p>
+<ul>
+<li><strong>分红 2.63 块</strong>（每股股息 3.58 美元 ÷ 股价 136.22 美元），派息率 58%。真钱，按季度打到账上。而且这个股息<strong>连续 8 年以每年 8% 以上的速度在涨</strong>（3.58 / 2.357 = 五年涨了 52%），这个加速度是它最吸引人的地方。</li>
+<li><strong>回购 0 块。</strong> 一股没回购。</li>
+<li><strong>减去稀释约 0.26 块</strong>：股本一年增加 0.26%，摊薄轻微。</li>
+<li><strong>剩下约 1.5 块留在公司</strong>——同样地，它没真的"留下"，自由现金流是负的，这部分只是账面数字，实际用于填资本开支的缺口。</li>
+</ul>
+<p><strong>扣掉稀释后的净现金回报约 2.4%，加上每股收益增长（公司长期指引 7%–9%）。合理的长期总回报预期在 9%–11%。</strong></p>
+<p><strong>这个 4.1 块未来会变大还是变小？变大，而且是所有公用事业里确定性最高的一种变大。</strong> 理由有三条：<strong>第一，水的需求量是不受经济周期影响的</strong>——衰退了你也得洗澡冲厕所，这是所有生意里最没弹性的需求。<strong>第二，美国自来水行业的更换周期才刚开始</strong>——全美有几十万英里的铸铁管和铅管到了寿命末期，加上 EPA 2024 年生效的铅管强制更换规定和 PFAS 处理标准，这是一个未来 20 年、上万亿美元的强制性资本开支池子，而每一块钱资本开支都是 AWK 未来的利润。<strong>第三，5 万家小型水系统的整合才走了不到 10%</strong>——AWK 服务 1,400 万人，全美 3.4 亿人，跑道非常长。</p>
+<p>风险在哪：<strong>监管机构的政治压力是唯一的真风险。</strong> 水费和电费不一样——水是生存必需品，涨水费在政治上比涨电费更敏感。已经有若干州在讨论限制"公允市场价值"收购法（就是允许 AWK 按评估价而非账面价计入费率基数的那条法），一旦这条法被削弱，AWK 的并购模型的回报会直接塌掉一大块。另外一个是干旱——加州和西南部的限水令直接砍它的销量。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>AWK 是我在这个筛选池里见过的最"无聊"的公司，而在公用事业里，无聊就是最高的褒奖。</strong></p>
+<p>它的护城河是所有行业里最硬的一种：地下管网的物理独占，永远不会有第二套管子来抢，而且卖的是人活着就必须买的东西。它的利润稳到三年平均和当期完全重合。它的股息连涨八年、每年涨 8%。</p>
+<p>但它有三个必须接受的缺点：<strong>第一，24 倍市盈率买一家年增长 7%–9% 的公用事业，不便宜</strong>——这个价格里已经包含了"最优质水务资产"的溢价，任何一次监管失望都会打掉几个市盈率倍数。<strong>第二，自由现金流常年为负，分红是借来的</strong>——这个模式绑死在利率上，利率上行它会被打两次。<strong>第三，ROIC 4.62% 低于 WACC 5.84%</strong>，从纯资本效率的角度它每年在毁灭价值，只不过监管框架允许它继续这么做。</p>
+<p><strong>和同批的 PPL 比：AWK 更贵（24.0 倍 vs 21.4 倍），但每一个质量指标都更好</strong>——利润率 37.5% vs 24.1%、ROE 10.1% vs 8.6%、利息保障 3.04 vs 2.59、稀释 0.26% vs 1.31%、股息增速 8% vs 5%。<strong>贵得有道理。</strong> 如果只能在两者里选一个长期持有，我选 AWK。</p>
+<p><strong>适合谁：</strong> 想要一份"比国债多点、比股票稳得多"的现金流，持有期以十年计，不在乎中间波动的人。过去 52 周它跌了 5.24%——它就是这个样子，不会给你惊喜，也不会给你惊吓。</p>
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截止 2026-06-30。</em></p>
+</div></body></html>

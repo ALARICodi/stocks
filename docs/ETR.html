@@ -1,0 +1,410 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ETR · 安特吉电力（Entergy Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ETR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">回报被压到3.7%，比国债还低，等跌回22倍</div><h1>ETR · 安特吉电力（Entergy Corporation）</h1>
+<p>市值 $503.2 亿 / 股价约 $107.8 / 行业：公用事业 — 受监管电力 / TTM 截止 <strong>2026 年 6 月 30 日</strong>（最近四个季度滚动）</p>
+<hr />
+<h2>开头必须先说清楚：这家公司怎么赚钱，跟你想的完全不一样</h2>
+<p>绝大多数公司的逻辑是"卖得多就赚得多"。<strong>受监管的电力公司不是。</strong></p>
+<p>Entergy 卖电的价格不是它自己定的，是四个州的公用事业委员会（相当于物价局）批的。批价的逻辑是这样：</p>
+<ol>
+<li>先认定这家公司为了给你供电，投进去了多少真金白银——电厂、变电站、输电塔、电线杆。这笔累计投资叫<strong>费率基数（rate base）</strong>。</li>
+<li>委员会再批准一个<strong>允许回报率</strong>，通常是 9.5% 到 10.5% 的净资产收益率。</li>
+<li>然后倒推电价：电价 = 运营成本（燃料、人工、维修）+ 折旧 + 税 + 费率基数 × 允许回报率。</li>
+</ol>
+<p>看明白这个公式没有？<strong>这家公司的利润，取决于它投了多少钱，而不是卖了多少电。</strong></p>
+<p>所以它的行为逻辑跟普通公司完全相反：普通公司省资本开支是好事，Entergy <strong>花资本开支才是好事</strong>——每建一座新电厂、每拉一条新输电线，费率基数就变大一截，被允许赚的利润就多一截，而且这笔利润由法律和监管保障，几乎不会落空。</p>
+<p>这一条是理解下面所有数字的钥匙。尤其是那个吓人的自由现金流数字。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上 Entergy 只披露一个板块："公用事业"，TTM 营收 134.26 亿美元，占全公司 99.6%；剩下 0.56 亿是"母公司及其他"，可以忽略。所以从财报分部看，这就是<strong>一门生意</strong>。</p>
+<p>但这一门生意里，客户结构非常特殊，值得拆开讲。</p>
+<p>Entergy 的地盘是美国南方墨西哥湾沿岸的四个州：<strong>阿肯色、路易斯安那、密西西比、得克萨斯东部</strong>，加上新奥尔良市，一共约 300 万个电表。旗下有五家受监管的子公司，各归各州管。</p>
+<h3>一、卖电给普通老百姓</h3>
+<p>大约 250 万户居民和小商户。这块最好理解：你家开空调、开冰箱，月底 Entergy 寄账单，一度电大概一毛多美元。</p>
+<p>这块生意的特点是<strong>极其稳定但几乎不增长</strong>。美国南方人口增速温和，家电越来越省电，居民用电量十年基本走平。它的价值不在增长，在于"永远不会消失"——路易斯安那的七八月份，室外 38 度、湿度 90%，不开空调是会死人的。这是刚需中的刚需。</p>
+<h3>二、卖电给工业大户 —— 这是 Entergy 跟别家电力公司最不一样的地方</h3>
+<p>Entergy 的地盘正好覆盖了<strong>美国石油化工和液化天然气出口的心脏地带</strong>。密西西比河下游从巴吞鲁日到新奥尔良那一百多公里，两岸密密麻麻全是炼油厂、乙烯厂、化肥厂、氨厂；再往西的墨西哥湾沿岸是一座接一座的 LNG 出口终端。</p>
+<p>这些厂子用电有多猛？<strong>一座大型乙烯裂解装置的用电量，相当于一座二三十万人口的城市。</strong> 一座 LNG 液化厂把天然气冷到零下 162 度变成液体，光压缩机的耗电就是天文数字。</p>
+<p>结果是 Entergy 的工业用电占比远高于全美平均水平（全美工业用电大约占四分之一，Entergy 这边接近三分之一）。这带来两个后果：</p>
+<p><strong>好处是量大且稳。</strong> 化工厂 24 小时不停机，负荷曲线是一条平直线，不像居民用电白天晚上大起大落。发电资产的利用率因此很高。</p>
+<p><strong>坏处是跟大宗商品周期绑死。</strong> 2023 年化工品价格下行、装置降负荷，Entergy 的营收就从 137.64 亿掉到 121.47 亿，<strong>跌了 11.75%</strong>。这是这门生意最大的软肋。</p>
+<h3>三、卖电给数据中心 —— 现在整个故事的核心</h3>
+<p>过去两年 Entergy 的股价逻辑几乎全在这一件事上。</p>
+<p>路易斯安那有三样东西是建 AI 数据中心的人梦寐以求的：<strong>便宜的天然气、大片的空地、能批得下来的电网容量</strong>。于是 Meta 宣布在路易斯安那东北部的 Richland Parish 建一座百亿美元级的 AI 数据中心，这将是它全球最大的一座。</p>
+<p>Entergy 拿下了这个单子，代价是<strong>新建三座燃气发电厂、总计约 2,260 兆瓦装机</strong>，专门伺候这一个客户。加上配套的输电线路，这一笔就是几十亿美元的资本开支。</p>
+<p>回到开头那个公式：<strong>资本开支 = 费率基数 = 未来的利润</strong>。所以这个单子对 Entergy 的意义不是"多卖了电"，而是"费率基数一次性做大了一截，未来二三十年每年都能在这笔投资上收 10% 的受监管回报"。而且这类客户签的是超长期合同、还常常要求预付或提供信用担保，风险比传统工业客户低。</p>
+<p>这就是市场愿意给一家增长缓慢的电力公司 27.6 倍市盈率的全部理由。</p>
+<h3>四、四座核电站 —— 突然变成了宝贝</h3>
+<p>Entergy 手上有四座核电站（阿肯色核一号、Waterford 3、River Bend、Grand Gulf）。</p>
+<p>十年前核电是负担：老、维护贵、监管严、公众不喜欢。Entergy 当年还专门把美国东北部的几座商用核电站（包括著名的印第安角）关停或卖掉了，因为在电力批发市场上跟便宜的页岩气比拼不过。</p>
+<p>现在风向完全变了。<strong>AI 数据中心需要的是一年 8,760 小时不间断的零碳电力</strong>——风电太阳能做不到（晚上没太阳、没风就停），燃气发电有碳排放。核电是目前唯一同时满足"不间断"和"零碳"的东西。所以留在受监管体系里的这四座核电站，从包袱变成了 Entergy 手上最值钱的资产之一。</p>
+<h3>营收结构</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 营收</th>
+<th>FY2025 vs FY2024 增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公用事业（全部售电业务）</td>
+<td>134.26 亿</td>
+<td>+9.2%</td>
+<td>99.6%</td>
+</tr>
+<tr>
+<td>母公司及其他</td>
+<td>0.56 亿</td>
+<td>-20.5%</td>
+<td>0.4%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>134.82 亿</strong></td>
+<td><strong>+9.0%（FY口径）/ +9.55%（TTM）</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报<strong>不按客户类别（居民/商业/工业/数据中心）披露营收金额</strong>，上面第一到第四部分的拆分是按业务实质讲的，没有对应的分部数字。整体经营利润率 23.4%，这是受监管电力公司的典型水平——它不是"高毛利"，而是"被批准的回报率"决定的。</p>
+<p>另外，2025 年 Entergy 把新奥尔良和巴吞鲁日的<strong>燃气配送业务</strong>（居民家里烧的那个天然气管道）卖掉了，现金流量表上 TTM 有 8.59 亿的处置收入。卖掉之后 Entergy 就是一家纯电力公司了。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>公用事业的会计跟制造业不是一套东西，要看的地方也不一样。</p>
+<h3>股权激励（SBC）：小到财报懒得单列</h3>
+<p>Entergy 的现金流量表上<strong>根本没有"股权激励"这一行</strong>。对一家净利润 18 亿的公司来说，这说明金额小到不需要单独列示。电力公司不需要拿股票跟硅谷抢人。这一项没有障眼法。</p>
+<h3>一次性项目：小</h3>
+<ul>
+<li>资产减值：TTM <strong>3,085 万美元</strong>，占净利润 1.7%，可以忽略。前几年也都是几千万到 1 亿的量级。</li>
+<li>处置燃气配送业务的收益：混在利润里，但金额不足以扭曲结论。</li>
+<li>有效税率 <strong>21.04%</strong>，是标准的美国企业税率。<strong>利润表上没有税务粉饰。</strong></li>
+</ul>
+<p>单期口径确实无法判断"资产减值"是不是年年都有——但对一家在墨西哥湾沿岸经营、每隔几年就要挨一次飓风的电力公司来说，几千万的减值基本可以当成常态开销，而不是意外。</p>
+<h3>所得税：这里有全篇最反直觉的一项</h3>
+<p>利润表上记了 <strong>4.79 亿美元的所得税</strong>。</p>
+<p>但翻到现金流量表最底下那一行——<strong>"实际缴纳的所得税"，FY2025 是 -5.15 亿</strong>。负号的意思是：Entergy 那一年不但一分税没交，<strong>还从税务局净退回来 5.15 亿美元</strong>。</p>
+<p>这不是逃税，是完全合法的<strong>递延所得税</strong>。美国税法允许对新建的电厂设备做加速折旧（甚至一次性全额抵扣），Entergy 每年砸 88 亿美元的资本开支，产生的税务折旧远远超过会计折旧，于是应税所得被压到零以下。会计上该记的税照记（记在"递延所得税负债"里，将来再说），现金上一分不出。</p>
+<p><strong>这意味着 Entergy 的真实现金盈利能力比 GAAP 利润好看。</strong> 这是它能一边巨额投资一边不断债的重要原因。</p>
+<p>但别高兴太早，这不是白捡的钱，有两个"但是"：第一，这是<strong>递延</strong>，不是免除，资产负债表上那笔递延税负债将来总要还；第二，在受监管体系下，这笔税务好处<strong>有相当一部分要通过降低电价还给用户</strong>，不完全归股东。</p>
+<h3>资本化的支出：非常多，但这是行业规则不是猫腻</h3>
+<p>Entergy 把大量成本资本化：在建电厂的利息、施工期间的人工、甚至<strong>在建工程占用资金的机会成本</strong>（行业术语叫 AFUDC，"建设期资金使用补贴"）。</p>
+<p>AFUDC 值得单独说一句：当 Entergy 在建一座要花三年才建成的电厂时，会计准则允许它把"这三年里占用的资金本该赚到的回报"<strong>当成当期收入记进利润表</strong>——虽然一分现金都没收到，电厂也一度电都还没发。当你手上有几十亿美元的在建工程时，这笔纸面利润可以是好几亿。</p>
+<p>这在行业里是通行做法、监管也认，<strong>但它确实是纸上的钱</strong>。这四个财务页面上没有单独披露 AFUDC 的金额，所以我没法给你精确数字，只能提醒你：Entergy 现在处在史上最大的资本开支周期里，它利润表上的"纸面成分"比正常年份高。</p>
+<h3>回购与稀释：<strong>这是全篇最刺眼的一项，方向是反的</strong></h3>
+<p>前两家公司这一项讲的是回购多不多。Entergy 这里得反过来讲：</p>
+<ul>
+<li>TTM 回购股票：<strong>0</strong></li>
+<li>TTM <strong>发行</strong>股票：<strong>+13.72 亿美元</strong></li>
+<li><strong>流通股一年增加 4.89%</strong></li>
+</ul>
+<p>也就是说，你手里这份公司的所有权比例，<strong>一年被稀释掉了将近 5%</strong>。</p>
+<p>同期 Entergy 派了 <strong>11.43 亿美元的现金股息</strong>，股息率 2.37%。</p>
+<p>把这两个数摆在一起看：<strong>公司发新股筹来的钱（13.72 亿），比它派出去的股息（11.43 亿）还多 2.3 亿。</strong></p>
+<p>说白了：<strong>你收到的这 2.37% 的股息，本质上是公司卖新股票筹来的钱发给你的，而且卖股票筹的比发出去的还多。</strong> 你左手拿到 2.37% 的现金，右手被稀释掉 4.89% 的所有权——<strong>净下来是亏的</strong>。</p>
+<p>这不是骗局，是重资产受监管公用事业的常态融资方式：股权和债权按监管认可的比例（通常各占一半）一起投进费率基数，越投越大，未来赚回来。但作为股东你必须清楚——<strong>你不是在收租，你是在持续追加投资</strong>。</p>
+<h3>利润和现金流的差：净利 18 亿，经营现金流 61 亿</h3>
+<p>差了三倍多。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,797</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+2,374</td>
+<td>电厂电网折旧，非现金，<strong>最大的一项</strong></td>
+</tr>
+<tr>
+<td>+ 资产减值</td>
+<td>+31</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td><strong>+1,259</strong></td>
+<td><strong>主要是递延所得税</strong>（见上文），非现金</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+226</td>
+<td>多欠了供应商</td>
+</tr>
+<tr>
+<td>+ 所得税相关变化</td>
+<td>+69</td>
+<td>缴税时间差</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产变化</td>
+<td>+310</td>
+<td>监管资产/负债的摊销</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>+38</td>
+<td>燃料和备件</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−30</td>
+<td>电费欠款略增</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>6,075</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− <strong>资本开支</strong></td>
+<td><strong>−8,850</strong></td>
+<td><strong>建电厂、拉电线</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−3,099</strong></td>
+<td><strong>负三十一亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最下面那一行是全篇最重要的数字：自由现金流是负 30.99 亿美元。</strong></p>
+<p>而且不是偶然。看历史：FY2021 是 -40.51 亿、FY2022 是 -27.38 亿、FY2023 是 -3.54 亿、FY2024 是 -13.48 亿、FY2025 是 -26.10 亿。<strong>Entergy 已经连续五年、大概率是连续二十年，从来没有产生过正的自由现金流。</strong></p>
+<p>按普通公司的标准，这是一家持续失血的公司。但回到开头那个公式——<strong>对受监管电力公司来说，这恰恰是它赚钱的方式</strong>。每一块钱资本开支都进入费率基数，未来二三十年按 10% 收回来。资本开支不是亏损，是投资。</p>
+<p>代价写在资产负债表上：总债务 <strong>346.27 亿美元</strong>，净负债 <strong>307.72 亿</strong>——是市值的六成。负债/EBITDA <strong>6.17 倍</strong>（前面两家公司分别是 3.78 和 2.43），<strong>利息保障倍数只有 2.01 倍</strong>——经营利润只够覆盖两倍的利息支出。一年光现金利息就要付 <strong>12.74 亿</strong>。</p>
+<p>这个杠杆水平在受监管公用事业里算正常（因为现金流受法律保障、可预测性极高，债主愿意借），但它意味着这只股票的价格<strong>对利率极其敏感</strong>。利率一升，Entergy 的融资成本上升、股息吸引力下降，股价通常应声就跌。它的贝塔值只有 0.49（波动比大盘小一半），但那说的是跟股市的相关性——跟<strong>债券收益率</strong>的相关性它高得很。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 <strong>503.20 亿</strong>，企业价值 <strong>810.90 亿</strong>（多出来的 307.7 亿是净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>503.20 ÷ 17.97</td>
+<td><strong>28.0 倍</strong></td>
+<td><strong>$3.57</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（调整项很小，与 GAAP 接近）</td>
+<td>503.20 ÷ 约 18.2</td>
+<td><strong>约 27.6 倍</strong></td>
+<td><strong>约 $3.62</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（加回资产减值税后 0.24 亿）</td>
+<td>503.20 ÷ 18.21</td>
+<td><strong>27.6 倍</strong></td>
+<td><strong>$3.62</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>503.20 ÷ <strong>(−30.99)</strong></td>
+<td><strong>不存在</strong></td>
+<td><strong>负数，见下</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>810.90 ÷ 31.60</td>
+<td><strong>25.7 倍</strong></td>
+<td><strong>$3.90</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong>（FY2023 已剔除税务一次性）</td>
+<td>503.20 ÷ 13.76（估算）</td>
+<td><strong>36.6 倍</strong></td>
+<td><strong>$2.73</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>几点解释：</p>
+<p><strong>"真实市盈率"和 GAAP 几乎一样（28.0 → 27.6）。</strong> 跟前一家 Wabtec 一样，Entergy 的利润表没有明显的会计粉饰可剔。它的问题不在利润表，在现金流量表和股本数上。</p>
+<p><strong>自由现金流那一行是负的，这不是笔误。</strong> 传统上"市值 ÷ 自由现金流"是最诚实的估值口径，因为现金流骗不了人。但对受监管公用事业，这个口径直接失效——它永远是负的。这不代表公司不行，代表<strong>这个口径不适用于这门生意</strong>。stockanalysis 上的 P/FCF 显示 n/a，就是这个原因。</p>
+<p><strong>三年平均那一行要小心地读。</strong> 表面上 FY2023 净利润 23.57 亿、FY2024 只有 10.56 亿、FY2025 是 17.58 亿，三年平均 17.24 亿，对应 29.2 倍——跟当期差不多。</p>
+<p>但 FY2023 那 23.57 亿是<strong>假的高点</strong>：那一年营收 121.47 亿、税前利润率只有 13.71%（即税前约 16.65 亿），<strong>净利润却比税前利润还高</strong>——这只能是一笔巨额的一次性税务利好。按 21% 的正常税率还原，FY2023 的真实净利润只有约 <strong>13.15 亿</strong>（估算）。三年平均因此降到约 <strong>13.76 亿</strong>，对应 <strong>36.6 倍</strong>。</p>
+<p>这个 36.6 倍高于当期的 27.6 倍，含义是：<strong>Entergy 现在的利润处在近三年的相对高位。</strong> 部分是真实增长（数据中心和工业负荷起来了、电价调涨落地了），但你不能把当前的盈利水平当成一条已经走稳的基线。</p>
+<h3>公用事业专属口径：换个角度验算一遍</h3>
+<p>因为市盈率对这门生意不是最贴切的尺子，用监管框架再算一次：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td><strong>2.76 倍</strong></td>
+<td>每 1 块钱账面净资产，你付了 2.76 块</td>
+</tr>
+<tr>
+<td>有形资产市净率</td>
+<td>2.82 倍</td>
+<td>几乎没有商誉，账面资产是实打实的电厂电线</td>
+</tr>
+<tr>
+<td>净资产收益率 ROE</td>
+<td><strong>10.25%</strong></td>
+<td>接近监管允许的回报率，说明公司挣到了它该挣的</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB</strong></td>
+<td><strong>3.71%</strong></td>
+<td><strong>你实际拿到的年回报率</strong></td>
+</tr>
+<tr>
+<td>投入资本回报率 ROIC</td>
+<td>3.95%</td>
+<td></td>
+</tr>
+<tr>
+<td>加权平均资本成本 WACC</td>
+<td>5.57%</td>
+<td><strong>ROIC 低于 WACC</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>"ROE ÷ PB = 3.71%"这一行是全篇最该记住的数字。</strong></p>
+<p>逻辑是这样：监管批准 Entergy 在它的净资产上赚 10.25%。如果你按账面价值（1 倍 PB）买入，你就拿 10.25% 的回报。但市场让你付 2.76 倍账面价值，所以<strong>你实际拿到的回报被摊薄成 10.25% ÷ 2.76 = 3.71%</strong>。</p>
+<p>这个 3.71% 和"真实市盈率 27.6 倍"的倒数 3.62% 几乎完全一致——两条完全不同的路算出同一个答案，说明这个数字是可靠的。</p>
+<p><strong>ROIC 3.95% 低于 WACC 5.57%</strong> 是个警号：字面意思是"每投一块钱进去，赚回来的还不够付资金成本"。不过对 Entergy 要打个折扣——它账上压着几十亿美元的在建工程（那三座给数据中心配套的电厂还没发电），这些资产已经算进分母但还没产生收益。等它们投运，ROIC 会往上走。但即便修正之后，这个数字也说不上宽裕。</p>
+<h3>说人话：投 100 块进去，一年能挣多少</h3>
+<p><strong>按最保守的口径（三年平均 36.6 倍），你投 100 块进去，Entergy 一年替你赚 $2.73。按当期口径（27.6 倍）算是 $3.62。</strong></p>
+<p>这 2.73 到 3.62 块里，多少真回到你口袋？</p>
+<ul>
+<li>现金股息：<strong>2.37%</strong>，也就是投 100 块每年拿 2.37 块。这是实打实到手的现金。</li>
+<li>回购：<strong>0</strong>。</li>
+<li><strong>稀释：−4.89%</strong>。</li>
+</ul>
+<p><strong>把稀释算进去，你实际上是净流出的。</strong> 公司发新股筹了 13.72 亿，派息派了 11.43 亿——从整体看，股东这一年往公司里净投了 2.3 亿，而不是从公司拿走了钱。你个人账户上确实收到了股息，但你手里那份公司的份额同时缩小了近 5%。</p>
+<p>剩下的钱去了哪？<strong>全部进了资本开支</strong>：TTM 花了 88.50 亿建电厂和电网，加上 3.24 亿的核燃料。这笔钱不是消失了，是变成了明年更大的费率基数——但那个回报要等三到五年才开始兑现。</p>
+<p><strong>这个回报未来会变大还是变小？会变大，但慢，而且你付的价格已经预支了很大一部分。</strong></p>
+<p>变大的理由：这是全美负荷增长最快的几个电力辖区之一——LNG 出口在扩、石化在回暖、Meta 那座百亿美元的数据中心正在建、还有更多科技公司在排队谈；费率基数每年以高个位数的速度增厚，被监管保障的利润跟着增厚；路易斯安那和阿肯色的监管环境相对友好，涨价申请批得下来；四座核电站在 AI 时代的战略价值还在重估。市场给的远期市盈率 23.03 倍，正是在给这条增长曲线定价。</p>
+<p>变小的理由：307 亿净负债，利息保障倍数只有 2.01 倍，利率只要往上走这只股票就难受；每年 5% 的稀释是持续的、不会停的，只要资本开支不降就得一直发股；工业客户跟大宗商品周期绑死，化工品价格一跌营收就掉两位数（2023 年就掉了 11.75%）；墨西哥湾每年六到十一月是飓风季，一次大飓风能掀掉几十亿美元的电网设施，虽然事后能通过监管机制向用户回收，但中间要垫资、要等好几年；最后，数据中心的电力需求预测目前还只是<strong>预测</strong>，如果 AI 资本开支周期降温，这些新建的燃气电厂就成了没人用的搁浅资产——而搁浅资产的成本能不能转嫁给用户，得看监管委员会的脸色。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Entergy 是一门被法律保障回报的好生意，但现在这个价格把好生意的回报压到了 3.7%——比美国国债还低，而你还要额外承担 307 亿负债的利率风险、墨西哥湾的飓风风险、和每年 5% 的稀释。</strong></p>
+<p>这只股票真正的赌注只有一个：<strong>路易斯安那的 AI 数据中心浪潮是不是真的、有多大、能持续多久</strong>。如果是真的，费率基数会以远超历史的速度膨胀，十年后回头看现在这个价不贵；如果 AI 资本开支在两三年内降温，你手上就是一家背着 307 亿债、每年稀释你 5%、只给你 2.37% 股息的重资产公司。</p>
+<p>对想要"稳定收息"的人：<strong>这不是你要的东西。</strong> 2.37% 的股息率还不如货币基金，而且被 4.89% 的稀释吃干净了。真想收息，市面上比它便宜、稀释更少的公用事业公司多的是。</p>
+<p>对想赌 AI 电力主题的人：这确实是纯度很高的一个标的——地理位置正好在浪潮中心、监管环境友好、还捏着四座核电站。但你要清楚自己在赌什么，也要接受这是一门<strong>要等三到五年才见分晓</strong>的生意。至少等它跌回 22 倍以内、或者等那三座新电厂真正并网发电、开始进入费率基数产生回报之后，风险回报才谈得上合适。</p>
+</div></body></html>

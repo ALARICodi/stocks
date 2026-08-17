@@ -1,0 +1,546 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>XEL · 埃克塞尔能源</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">XEL</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">账最干净，但不给你现金只给你稀释，故事已提前定价</div><h1>XEL · 埃克塞尔能源</h1>
+<p>市值 $494.5 亿 / 股价约 $79.16 / 行业：公用事业 — 受监管的电力与燃气
+财报口径：TTM（最近四个季度滚动），截止 <strong>2026 年 6 月 30 日</strong>。</p>
+<blockquote>
+<p>这家公司和上一家（VST 维斯特拉）市值几乎一样、行业标签一样，但<strong>生意模式完全相反</strong>。维斯特拉在自由市场里赌电价，埃克塞尔是政府批准的垄断，回报率写在文件里。看懂这一节的区别，比记住任何一个市盈率都有用。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>埃克塞尔的生意，用一句反直觉的话概括最准确：<strong>它不靠卖电赚钱，它靠花钱赚钱。</strong></p>
+<p>这句话必须解释清楚，否则后面所有数字都看不懂。</p>
+<h3>先讲清楚"受监管的公用事业"是怎么赚钱的</h3>
+<p>埃克塞尔在明尼苏达、科罗拉多、威斯康星、密歇根、北达科他、南达科他、德州狭长地带、新墨西哥这八个州拥有<strong>法定垄断权</strong>——那些地方的居民和工厂只能从它这里买电，没有第二个选择。作为交换，它的电价不能自己定，得由各州的公用事业委员会（一个由州长任命的政府机构）批准。</p>
+<p>那委员会是怎么定价的？公式是这样的：</p>
+<blockquote>
+<p><strong>你能收的电费 = 燃料成本（原样转嫁，一分钱不许加价）+ 运维成本（据实报销）+ 折旧（把投资分年摊回来）+ 已投入资本 × 批准的回报率</strong></p>
+</blockquote>
+<p>最后那一项是<strong>唯一的利润来源</strong>。"已投入资本"业内叫<strong>费率基数（rate base）</strong>——就是埃克塞尔真金白银投进电线杆、变电站、输电线、发电厂、燃气管道里的钱的账面净值。批准的回报率一般在 <strong>9.5%–10.2%</strong> 之间。</p>
+<p><strong>这条公式带来一个惊人的结论：埃克塞尔想多赚钱，唯一的办法是多投资。</strong></p>
+<p>举个具体的：埃克塞尔在科罗拉多花 10 亿美元建一条新的高压输电线。这 10 亿一投进去，就进了费率基数。委员会批准 9.7% 的回报率，于是从此以后，埃克塞尔每年可以从科罗拉多的电费单里多收：
+- 折旧 <strong>约 2,500 万</strong>（40 年摊完，这是把本金拿回来）
+- 回报 <strong>约 9,700 万</strong>（这才是利润，税前）</p>
+<p>以后每年随着折旧累积、账面净值下降，那 9,700 万会慢慢变少。所以它必须<strong>不停地建新的</strong>，费率基数才能持续增长，利润才能持续增长。</p>
+<p><strong>一个明尼阿波利斯家庭的电费单拆开看</strong>（估算，用于说明机制）：月账单 $110 左右，其中
+- 约 $30 是燃料和外购电力 —— <strong>原样转嫁，埃克塞尔一分不赚</strong>
+- 约 $50 是折旧、运维、人工、税
+- 约 $25–30 是"投入资本的回报" —— <strong>这就是股东的钱</strong></p>
+<p>所以你作为埃克塞尔的股东，本质上是<strong>通过州政府向 390 万户人家收一笔强制性的、被明码标价的资本租金</strong>。</p>
+<p><strong>这个模式的好处</strong>：不管天气冷热、经济好坏，回报率是写在批文里的。它的股价 5 年 Beta 只有 <strong>0.41</strong>——市场跌 10%，它平均只跌 4%。这是典型的"债券替代品"。</p>
+<p><strong>这个模式的坏处</strong>：上限也是写死的。它永远不可能像英伟达那样赚 60% 的利润率——委员会看到超额利润，下一轮费率听证会就会把电价压回去。<strong>你买的是一份被封顶的、9.9% 的、带杠杆的年金。</strong></p>
+<h3>生意一：受监管电力（Regulated Electric）—— 全部利润的主体</h3>
+<p>TTM 营收 <strong>$121.63 亿，占总营收 83.2%</strong>（FY2025 全年 $121.60 亿，FY2024 $111.47 亿，两年 +9.1%）。</p>
+<p>服务约 <strong>390 万电力用户</strong>，通过四个受监管的子公司运营：
+- <strong>Northern States Power (Minnesota)</strong> —— 明尼苏达、北达科他、南达科他
+- <strong>Northern States Power (Wisconsin)</strong> —— 威斯康星、密歇根上半岛
+- <strong>Public Service Company of Colorado</strong> —— 科罗拉多，包括丹佛都会区
+- <strong>Southwestern Public Service</strong> —— 德州狭长地带、新墨西哥东部</p>
+<p>发电资产的一个重点：<strong>埃克塞尔是全美拥有风电最多的公用事业公司</strong>，风机装机超过 10 GW，主要在明尼苏达、科罗拉多和德州西部那片常年刮风的大平原上。这不只是环保姿态——它直接关系到后面第二部分要讲的税收抵免。此外还有明尼苏达的两座核电站（Monticello、Prairie Island）、一批燃气机组、和正在退役的燃煤机组。</p>
+<p><strong>现在这门生意上最重要的变化：数据中心。</strong> 科罗拉多和明尼苏达正在成为超大规模云厂商建 AI 数据中心的目的地（电价便宜、气候凉爽省制冷、土地便宜）。一个 500 兆瓦的数据中心，用电量相当于 40 万户家庭，而且是 24 小时满负荷、不分季节。对一家受监管的公用事业来说，这种客户是天上掉下来的：<strong>它给了监管机构一个批准巨额新建投资的正当理由</strong>，而每一笔新建投资都会变成新的费率基数、新的 9.7% 回报。</p>
+<p>这正是资本开支从 FY2024 的 $73.64 亿暴涨到 TTM 的 <strong>$124.63 亿</strong>（+69%）的原因。</p>
+<h3>生意二：受监管天然气（Regulated Natural Gas）</h3>
+<p>TTM 营收 <strong>$23.96 亿，占 16.4%</strong>（FY2025 $24.52 亿，FY2024 $22.30 亿）。</p>
+<p>约 <strong>220 万燃气用户</strong>，主要在明尼苏达和科罗拉多——那是美国最冷的居民区之一，冬天供暖几乎全靠天然气。赚钱机制和电力<strong>完全一样</strong>：天然气本身的采购成本原样转嫁（所以 2022 年气价暴涨时用户账单翻倍，但埃克塞尔一分没多赚），利润来自埋在地下的管道、调压站、计量表这些"费率基数"的回报。</p>
+<p>规模只有电力的五分之一，逻辑没有任何不同。</p>
+<h3>生意三：其他（Other Operating）</h3>
+<p>TTM 营收 <strong>$0.57 亿</strong>，占 0.4%。可以忽略。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>受监管电力</td>
+<td>$121.63 亿</td>
+<td>83.2%</td>
+<td>vs FY2024 +9.1%（两年）</td>
+</tr>
+<tr>
+<td>受监管天然气</td>
+<td>$23.96 亿</td>
+<td>16.4%</td>
+<td>vs FY2024 +7.4%（两年）</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>$0.57 亿</td>
+<td>0.4%</td>
+<td>忽略</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$146.16 亿</strong></td>
+<td>100%</td>
+<td>TTM 同比 +4.72%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>⚠️ 财报<strong>不披露分部的经营利润</strong>，只到营收。而且分部的"上年同期 TTM"数字也没有直接披露，上表的对比用的是 FY2024/FY2025 的完整年度数。整体经营利润率 21.0%，两个分部的实际利润率应该都很接近这个数（因为回报率机制是一样的），所以在这家公司上，"哪个分部更赚钱"这个问题意义不大——<strong>它本质上就是一门生意，只是收的一半是电费一半是气费。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：$0.48 亿，占净利润 2.1% —— 全篇最干净的一家</h3>
+<p>TTM 股权激励只有 4,800 万美元，净利润 22.33 亿。<strong>2.1%。</strong> 11,534 名员工，绝大多数是线路工、抄表员、电厂运维、客服，发的是工资和退休金，不是期权。</p>
+<p>按真实成本扣掉，没有任何需要剥的东西。<strong>这一项上埃克塞尔比我分析过的绝大多数公司都干净。</strong></p>
+<h3>头号问题：<strong>税是负的 —— 有效税率为负，这是最大的口径扭曲</strong></h3>
+<p>看这两行，非常反常：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润率</td>
+<td><strong>13.70%</strong>（税前利润 $20.00 亿）</td>
+</tr>
+<tr>
+<td>净利润率</td>
+<td><strong>15.28%</strong>（净利润 $22.33 亿）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>税后利润比税前利润还高 $2.33 亿。</strong> 所得税这一栏是 <strong>-$2.31 亿</strong>，也就是政府倒贴。</p>
+<p>原因是<strong>风电生产税收抵免（PTC）</strong>。美国联邦政府为了鼓励建风电，规定风机每发一度电，业主可以从应纳税额里直接扣掉大约 2.8 美分（金额逐年按通胀调整），连扣 10 年。埃克塞尔装了 10 GW 以上的风机，一年发几百亿度风电，攒下的抵免额度大到把它全部应纳税额吃光还有余，剩下的往后结转。</p>
+<p><strong>这里必须说清楚三件事，否则容易得出错误结论：</strong></p>
+<ol>
+<li>
+<p><strong>这个税收优惠不完全归股东。</strong> 在受监管的框架下，税收抵免通常要以降低电价的方式返还给用户——委员会算电价的时候会把它算进去。所以它不是纯粹的白捡利润。但<strong>利润表上确实是它把净利润推高了</strong>，你算市盈率的时候用的就是这个被推高的数字。</p>
+</li>
+<li>
+<p><strong>它是有期限的。</strong> PTC 是每台风机投运后享受 10 年。埃克塞尔早年（2010 年代中期）建的那批风机，抵免额正在陆续到期。而《通胀削减法案》相关的新能源税收政策在 2025 年之后经历了调整，新建项目能拿到什么条件存在政策不确定性。<strong>这是一个会衰减的利润来源。</strong></p>
+</li>
+<li>
+<p><strong>它让市盈率看起来比实际便宜。</strong> 如果按正常的 21% 联邦税率（加上州税实际会更高）来算，$20.00 亿税前利润应该交约 $4.20 亿税，净利润是 <strong>$15.80 亿</strong>，而不是 $22.33 亿——<strong>账面利润被税收优惠拉高了 41%。</strong></p>
+</li>
+</ol>
+<p>我把这一项处理成第三部分表里的"剔除障眼法后的真实市盈率"。</p>
+<h3>一次性项目：没有</h3>
+<p>TTM 的现金流量表里没有资产减值、没有重组费用、没有大额诉讼和解。<strong>这一栏是空的。</strong>（诉讼风险另说，见后面的野火那一段——那是未来的或有负债，不是已经入账的费用。）</p>
+<h3>资本化的支出：<strong>这是全公司最大的一笔"资本化"，而且它是合法且必需的</strong></h3>
+<p>资本开支 <strong>$124.63 亿</strong>，是营收的 <strong>85%</strong>。这个比例在任何行业都会被当成危险信号——但在受监管公用事业上，它是<strong>商业模式本身</strong>。前面讲过：投资就是它的利润引擎。</p>
+<p>需要注意的是这个引擎烧钱的速度：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资本开支</td>
+<td><strong>$124.63 亿</strong></td>
+<td>$109.08 亿</td>
+<td>$73.64 亿</td>
+<td>$58.54 亿</td>
+<td>$46.38 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年翻了 2.7 倍。</strong> 这不是维持性支出，是一场豪赌式的扩张。</p>
+<h3>利润和现金流的差：<strong>自由现金流是 -$76.92 亿，这是关于这家公司最重要的一个数字</strong></h3>
+<p>净利润 22.33 亿，经营现金流 47.71 亿，自由现金流 <strong>负 76.92 亿</strong>。</p>
+<p>先做净利润到经营现金流的对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,233</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+3,049</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+48</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−115</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−348</td>
+</tr>
+<tr>
+<td><strong>小计（非现金调整后）</strong></td>
+<td><strong>4,867</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−128</td>
+</tr>
+<tr>
+<td>− 存货增加（燃料、备件囤货）</td>
+<td>−259</td>
+</tr>
+<tr>
+<td>− 应付账款减少（提前付了供应商的钱）</td>
+<td>−36</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产净变动</td>
+<td>+273</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>4,771</strong></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−12,463</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−7,692</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说明的事</strong>：经营层面很健康，47.71 亿现金流里 30.49 亿是折旧回来的、22.33 亿是利润，营运资金只占用了 1.5 亿——账做得很实。</p>
+<p><strong>问题全在下面那一行。</strong> 它今年赚回来 47.71 亿现金，转手花出去 124.63 亿建设施，缺口 <strong>76.92 亿</strong>。这个缺口怎么补的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>融资来源</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净新增债务</td>
+<td><strong>+$74.07 亿</strong></td>
+</tr>
+<tr>
+<td>新发行股票</td>
+<td><strong>+$22.17 亿</strong></td>
+</tr>
+<tr>
+<td>支付股息</td>
+<td><strong>−$13.65 亿</strong></td>
+</tr>
+<tr>
+<td>融资活动净流入</td>
+<td><strong>+$82.83 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读懂这四行，你就读懂了这家公司的全部风险：它今年发了 22 亿的新股、借了 74 亿的新债，然后从里面拿出 13.65 亿发给你当股息。</strong></p>
+<h3>回购与稀释：<strong>没有回购，只有稀释 —— 一年 6.16%</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>$0</strong></td>
+</tr>
+<tr>
+<td>发行股票</td>
+<td><strong>$22.17 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>$0.48 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+6.16%</strong> ⚠️</td>
+</tr>
+<tr>
+<td>分红</td>
+<td>$13.65 亿（每股 $2.37，股息率 2.99%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>你手上的股份，一年被稀释了 6.16%。</strong></p>
+<p>这不是管理层在偷偷发股票给自己（SBC 只有 0.48 亿，微不足道）。这是<strong>监管规则逼出来的</strong>：委员会要求公用事业的资本结构里权益必须占大约 45%，否则不批准回报率。所以埃克塞尔每往费率基数里加 10 亿美元，就得配套发行大约 4.5 亿美元的新股。<strong>它的商业模式内建了永久稀释。</strong></p>
+<p>这个稀释有多伤，看这组对比：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>TTM</th>
+<th>五年变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>$15.97 亿</td>
+<td>$22.33 亿</td>
+<td><strong>+39.8%</strong></td>
+</tr>
+<tr>
+<td>每股收益 EPS</td>
+<td>$2.96</td>
+<td>$3.65</td>
+<td><strong>+23.3%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>公司整体多赚了近 40%，但你每股只多分到 23%。</strong> 中间那 16.5 个百分点，被新发出去的股票稀释掉了——那是新股东用现金买走了你的一部分未来。</p>
+<p>而且稀释在<strong>加速</strong>：过去一年 +6.16%，正好对应资本开支的暴涨。</p>
+<h3>债务：$416.51 亿，四年增加 68%，利息吃掉一半以上的经营利润</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2024</th>
+<th>FY2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总债务</td>
+<td><strong>$416.51 亿</strong></td>
+<td>$302.68 亿</td>
+<td>$260.33 亿</td>
+</tr>
+<tr>
+<td>债务 / EBITDA</td>
+<td><strong>6.61 倍</strong></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td><strong>1.87 倍</strong></td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>利息保障 1.87 倍的意思是：经营利润 $30.70 亿，其中约 <strong>$16.42 亿</strong>（推算）要付给债权人。<strong>每 100 块经营利润，53 块归银行和债券持有人，剩下 47 块才轮到股东和税务局分。</strong></p>
+<p>6.61 倍的债务/EBITDA 在工业公司上是接近违约水平的，在受监管公用事业上属于"高但可接受"——因为现金流有政府背书。但<strong>它没有太多余地了</strong>：如果利率再走高、或者哪个州的委员会否掉了一轮涨价申请，这个杠杆会立刻变得难受。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $494.5 亿，企业价值 <strong>$890.9 亿</strong>（净负债 $396.33 亿——<strong>债务几乎是市值的 80%，比市值本身更能代表这家公司的规模</strong>）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>494.5 ÷ 22.33</td>
+<td><strong>22.1 倍</strong></td>
+<td><strong>$4.52</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（"持续经营 EPS"）</td>
+<td>埃克塞尔的调整项极少，与 GAAP 基本一致</td>
+<td>约 22 倍</td>
+<td>约 $4.52</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（按 21% 正常税率还原，不再享受风电税收抵免）</td>
+<td>494.5 ÷ 15.80</td>
+<td><strong>31.3 倍</strong></td>
+<td><strong>$3.19</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>-$76.92 亿</strong></td>
+<td><strong>不适用（负数）</strong></td>
+<td><strong>无</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>890.9 ÷ 30.70</td>
+<td><strong>29.0 倍</strong></td>
+<td><strong>$3.45</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>494.5 ÷ 20.62（TTM 22.33、FY25 20.18、FY24 19.36 平均）</td>
+<td><strong>24.0 倍</strong></td>
+<td><strong>$4.17</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>再补一个只对公用事业有意义、但最说明问题的口径：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净资产收益率 ROE</td>
+<td>财报披露</td>
+<td><strong>9.92%</strong></td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>财报披露</td>
+<td><strong>2.05 倍</strong></td>
+</tr>
+<tr>
+<td><strong>你实际拿到的回报率</strong></td>
+<td>ROE ÷ PB = 9.92% ÷ 2.05</td>
+<td><strong>4.84%</strong> → 投 100 块年回报 <strong>$4.84</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这一行是理解这家公司最快的路径</strong>：公司投进电网的每 1 块钱，一年赚 9.9 分（这是政府批准的回报率）。但你要买这 1 块钱的净资产，得付 <strong>2 块 5 分</strong>。所以你的回报被摊薄成 <strong>4.84%</strong>。</p>
+<p><strong>你付了 2 倍的溢价，去买一个被政府封了顶的 9.9% 回报。</strong></p>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进埃克塞尔，按最保守的真实口径（剔掉风电税收抵免的 31.3 倍），公司一年替你赚 3 块 1 毛 9。</strong> 按账面的 22.1 倍算是 4 块 5 毛 2，但那里面有 1 块 3 毛是靠税收优惠撑起来的、且会随着老风机的抵免期满而衰减。</p>
+<p><strong>这 3 块多里，有多少真回到你口袋？</strong></p>
+<p>分红 <strong>$2.99</strong>（股息率 2.99%）——听起来这一项就把大部分赚的钱发给你了。<strong>但这里有个必须点破的事实：这笔股息不是从利润里发的，是从借款和增发里发的。</strong></p>
+<p>自由现金流是 <strong>-76.92 亿</strong>。公司今年一分钱的余钱都没有，却发了 <strong>13.65 亿股息</strong>，同时发行了 <strong>22.17 亿新股</strong>、借了 <strong>74.07 亿新债</strong>。</p>
+<p><strong>说白了：它一边发新股向新股东收钱，一边把钱当股息发给老股东。</strong> 在受监管公用事业里这是行业惯例、不是欺诈——因为新投的钱确实会变成新的费率基数、产生新的回报。但作为股东你要清醒：<strong>你收到的 2.99% 股息，和你被稀释掉的 6.16% 股份，是同一件事的两面，而且后者的数字更大。</strong></p>
+<p>剩下的钱去哪了：全部投进了电网和电厂。资本开支 124.63 亿，是净利润的 5.6 倍。<strong>这就是这门生意的全部——它是一台把资本转换成受监管回报的机器，你投的钱不会以现金的形式回来，会以"公司变大了"的形式留在里面。</strong></p>
+<h3>三年平均口径：24.0 倍，跟当期几乎一样 —— 这恰恰是好消息</h3>
+<p>TTM 净利 22.33 亿、FY2025 20.18 亿、FY2024 19.36 亿，三年平均 20.62 亿。三年平均口径 <strong>24.0 倍</strong>，跟当期的 22.1 倍只差 1.9 倍。</p>
+<p><strong>对比一下前两家公司</strong>：罗克韦尔当期 41.6 倍、三年平均 49.7 倍（差 8 倍，说明当期是周期高点）；维斯特拉当期 27.1 倍、三年平均 28.4 倍（表面接近，但中间年份的数字剧烈跳动）。<strong>埃克塞尔是三家里唯一一家三年利润几乎是一条直线的</strong>：19.36 → 20.18 → 22.33，年年涨 4%–10%，一次都没跌过。</p>
+<p><strong>所以对埃克塞尔，"现在的利润是不是高点"这个问题的答案是：不是，它没有高点也没有低点，它就是一条被监管机构画好的斜线。</strong> 这是它作为投资标的的最大优点，也几乎是唯一的优点。</p>
+<h3>一个没法量化但必须写出来的风险：野火诉讼</h3>
+<p>埃克塞尔的输电线路已经两次被卷入美国重大野火：<strong>2021 年 12 月科罗拉多博尔德的 Marshall Fire</strong>（烧毁上千栋房屋，是科罗拉多史上损失最大的野火），以及 <strong>2024 年 2 月德州狭长地带的 Smokehouse Creek Fire</strong>（德州史上过火面积最大的野火，超过 100 万英亩）。两起事件中公司设施都被指与起火有关，相关诉讼和索赔仍在进行。</p>
+<p>这类风险的可怕之处在于<strong>它不出现在任何一张财报表格里，直到它突然出现</strong>。加州的太平洋煤气电力（PG&amp;E）就是被 2017–2018 年的野火索赔直接送进了破产保护——那家公司当时也是一家"稳健的受监管公用事业"，市盈率也是二十几倍。</p>
+<p>我不去估这个数字（没有可靠依据，不编），但你在给这家公司 22 倍市盈率的时候，要知道<strong>它的下行不是"利润少赚 20%"，而是一条低概率但可能归零的尾巴</strong>。这也部分解释了为什么它有 <strong>6.80% 的做空比例</strong>（4,246 万股被做空）——对一只 Beta 只有 0.41 的公用事业股来说，这个空头比例相当高。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是三家里生意最稳、账做得最干净的一家——2.1% 的股权激励、零一次性费用、三年利润一条直线、Beta 只有 0.41——但它同时是一台不给你现金、只给你稀释的机器。</strong></p>
+<p>真实口径 31.3 倍，投 100 块一年赚 3 块 2；按净资产口径算是 4.84%——你付了 2.05 倍的账面价格，去买一个政府封顶在 9.9% 的回报。而为了维持这个回报，它每年要发 22 亿新股（稀释你 6.16%）、借 74 亿新债（债务已经是市值的 80%，利息吃掉一半以上的经营利润），自由现金流深度为负，发给你的股息实质上是借来的和增发来的。</p>
+<p><strong>如果你要的是"睡得着觉的 3% 股息 + 每年 5% 左右的 EPS 增长"，它给得了，而且大概率给得到。</strong> 但你必须接受两件事：一是那 4.5% 的账面回报里有三分之一靠会衰减的风电税收抵免撑着；二是野火这条尾巴一旦咬中，公用事业股是可以归零的。</p>
+<p><strong>在 22 倍这个位置上，它没有便宜到值得为这些风险买单。</strong> 这门生意的合理价格应该在 EPS 的 15–17 倍附近，也就是股价 55–62 美元。现在的 79 块，是过去几年市场把"数据中心用电"的故事提前定价进去了——而那个故事最终会变成什么，取决于八个州的委员会愿意批多少电价涨幅，不取决于英伟达卖了多少芯片。</p>
+</div></body></html>

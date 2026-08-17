@@ -1,0 +1,316 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TOST · Toast（餐厅收银与支付系统）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TOST</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">值得一个高倍数，但不值这个高倍数（真实53倍）</div><h1>TOST · Toast（餐厅收银与支付系统）</h1>
+<p>市值 200.9 亿美元 / 股价约 $34.8 / 行业：科技服务（餐饮 SaaS + 支付） / TTM 截止日 2026-06-30</p>
+<p>全榜名次 307（2026-08-17 抓取时）。全篇所有数字都是 TTM（最近四个季度滚动），截止 2026 年 6 月 30 日。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Toast 财报只拆三块：订阅服务、金融科技解决方案、硬件与专业服务。但这三块的实质差别极大，说是三门生意毫不夸张——一门是软件租赁，一门是刷卡抽成，一门是赔本卖铁疙瘩。</p>
+<h3>生意一：把收银系统按月租给餐厅（订阅服务）</h3>
+<p>这是它的"本体"。一家开在街角的披萨店要开门做生意，得有一套东西：前台点单的收银机、后厨那台自动吐小票的打印机、服务员手上那个能在餐桌旁刷卡的巴掌大终端、给客人自己点单的立式屏幕、还有老板半夜在家用手机看今天卖了多少钱的后台。以前这些东西是从五六家不同的公司分别买的，收银机是 A 家的、外卖平台对接是 B 家的、排班软件是 C 家的，互相不通，老板每周得手工把三份数据抄进 Excel 对账。</p>
+<p>Toast 干的事就是把这一整套打包成一个系统，按月收租。定价是按"模块"叠加的：最基础的一套收银软件大概每月 69 美元一个终端，加上线上点单模块再加几十块，加上员工排班和薪资模块（Toast Payroll）按每个员工每月约 4 美元收，加上礼品卡和会员积分模块再加一笔，加上库存管理模块再加一笔。一家有 15 个员工、3 台终端的普通街边餐厅，一个月大概付 400–700 美元；一家有 30 家门店的连锁餐饮集团，一个月能付到一两万美元。</p>
+<p>关键在于<strong>这个租金几乎不可能停</strong>。收银系统是餐厅的心脏，换系统意味着停业培训、历史销售数据搬迁、所有员工重新学操作、会员积分重新导入。一家忙到脚不沾地的餐厅老板，除非 Toast 涨价涨到离谱，否则绝不会为了每月省 200 块去折腾一次换系统。所以这门生意的续费率极高，收入可预测性接近公用事业。</p>
+<p>TTM 收入 10.58 亿美元，占总营收 15.5%，但它才是整家公司的价值所在——毛利率约 68–70%，是三门生意里唯一真正赚钱的软件生意。</p>
+<h3>生意二：每一笔刷卡都抽一层（金融科技解决方案）</h3>
+<p>这是收入的绝对大头，占 82%。逻辑很直白：既然收银机是 Toast 的，那客人刷卡的钱就必须流经 Toast。</p>
+<p>具体怎么收钱：客人在这家披萨店刷 100 美元，这 100 块要经过发卡行、卡组织（Visa/Mastercard）、收单机构，最后进餐厅账户。中间的通道费（interchange + 卡组织费）大约 1.8–2.0%，这部分 Toast 拿不到，是转付给银行和卡组织的。Toast 向餐厅收的总费率大概 2.4–2.6%，也就是说 100 块的交易里，Toast 收 2.5 块、付出去 1.9 块，<strong>自己净落 0.5–0.6 块</strong>。</p>
+<p>这就解释了一个新手常看错的地方：这块业务 TTM 收入 55.72 亿美元，看着占了全公司 82%，但<strong>里面绝大部分是"过路钱"</strong>，要原封不动转给银行和卡组织。真正留下的毛利只有约 22%，也就是 12 亿左右。所以千万别用"营收 68 亿"去想这家公司的规模——它真正的"自己的钱"（毛利）只有 18.2 亿。</p>
+<p>按 2.5% 费率倒推，TTM 流经 Toast 系统的餐厅刷卡总额大约 2,200 亿美元。这个数字每年跟着新增门店和门店本身的生意一起涨，是它增长最直接的引擎。</p>
+<p>这块里还夹着一小撮利润率更高的东西：<strong>Toast Capital</strong>（给餐厅放贷）。逻辑是 Toast 每天看得见这家店流水多少，风控数据比任何银行都准，于是直接放款——一家月流水 8 万美元的店，可以借到 3 万美元，不按月还，而是从每天的刷卡流水里自动扣走 12%，直到还完。年化成本对餐厅来说不低（折合 20–30%），但对一个急着修坏掉的制冰机、又拿不到银行贷款的小餐馆来说，这是唯一能几天内拿到钱的渠道。代价写在现金流表里：TTM 计提坏账 1.05 亿美元，比上一年的 0.91 亿又涨了 15%。</p>
+<h3>生意三：赔本卖硬件（硬件与专业服务）</h3>
+<p>收银终端、手持刷卡机、厨房打印机、自助点单立柱，这些实体设备，Toast 基本上是<strong>贴钱卖</strong>的。TTM 收入 1.74 亿美元，是三块里唯一在<strong>萎缩</strong>的（FY2024 是 2.01 亿，FY2025 掉到 1.80 亿）。萎缩的原因不是卖得少，而是为了抢客户，硬件越送越便宜、甚至白送。</p>
+<p>这不是一门生意，是<strong>获客成本的会计伪装</strong>。硬件毛利率是负的（估算约 -20% 到 -30%），Toast 每装进一家新餐厅就先亏几百块设备钱，然后靠后面几年的订阅费和刷卡抽成慢慢赚回来。理解这一点很关键：硬件收入下滑不是坏消息，是它在用更狠的补贴换更多门店。</p>
+<h3>三门生意的钱（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(百万美元)</th>
+<th>增速</th>
+<th>占总营收</th>
+<th>毛利率</th>
+<th>贡献毛利(百万美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅服务（软件月租）</td>
+<td>1,058</td>
+<td>+32.6%</td>
+<td>15.5%</td>
+<td>约 68%（估算）</td>
+<td>约 719</td>
+</tr>
+<tr>
+<td>金融科技（刷卡抽成+放贷）</td>
+<td>5,572</td>
+<td>+24.3%</td>
+<td>81.9%</td>
+<td>约 21%（估算）</td>
+<td>约 1,170</td>
+</tr>
+<tr>
+<td>硬件与专业服务</td>
+<td>174</td>
+<td>-10.4%</td>
+<td>2.6%</td>
+<td>约 -25%（估算）</td>
+<td>约 -44</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>6,804</strong></td>
+<td><strong>+23.1%</strong></td>
+<td>100%</td>
+<td>26.8%</td>
+<td><strong>1,823</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>增速一列用的是 FY2025 对 FY2024 的整年比较（分部的上年同期滚动数财报页没给）；合计一行的 +23.1% 是真正的 TTM 同比。毛利率一列财报只披露到公司整体，分部毛利率是按行业常识和公司整体毛利倒推的<strong>估算</strong>，三块加总回 18.23 亿与实际毛利一致，但单块可能各差几个点。分部经营利润（扣掉销售和研发之后）财报完全没披露，无法拆。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 2.31 亿美元，等于 TTM 净利润 4.86 亿的 <strong>47.5%</strong>。也就是说这家公司赚的钱里，将近一半的等值金额是以股票形式发给了员工。这笔钱在 GAAP 净利润里已经扣掉了，本文全程不加回——它稀释你手上的股份，是真实成本。值得注意的是 SBC 绝对额在下降（FY2023 是 2.77 亿，现在 2.31 亿），说明公司在收敛，这是好事。</p>
+<p><strong>一次性项目</strong>：几乎没有。TTM 资产减值和重组只有 300 万美元，可以忽略。没有大额诉讼和解，没有并购费用（TTM 收购支出为零）。这一点上 Toast 的账很干净。</p>
+<p><strong>资本化的支出</strong>：现金流表里"其他摊销"TTM 9,700 万美元，主要是资本化的软件开发费在往后摊。这个规模相对于 68 亿营收不算大，但说明每年有近一亿的研发人力成本没有当期费用化，而是挂在资产上慢慢摊——这会让当期利润看起来比实际现金消耗好看一点。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 5.62 亿美元，同期 SBC 2.31 亿，<strong>回购/SBC = 2.43 倍</strong>。这个比值超过 2，说明回购不只是在填员工发股的坑，确实有真金白银在缩股本。实际股本一年减少 2.27%，是真的减了。这是这家公司质地里比较硬的一块。不过要注意：回购是 FY2025 的 1.07 亿一下跳到 TTM 的 5.62 亿，是最近才大幅加码的，能不能持续要看后面几季。</p>
+<p><strong>利润和现金流的差</strong>：净利润 4.86 亿，经营现金流 6.35 亿，自由现金流 5.76 亿。差额不算特别大，但结构值得看清楚：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>486</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>51</td>
+</tr>
+<tr>
+<td>+ 其他摊销（资本化软件）</td>
+<td>97</td>
+</tr>
+<tr>
+<td>+ 资产减值重组</td>
+<td>3</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC（非现金）</td>
+<td>231</td>
+</tr>
+<tr>
+<td>+ 坏账计提（非现金）</td>
+<td>105</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>-42</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>-114</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>-10</td>
+</tr>
+<tr>
+<td>+ 预收账款增加</td>
+<td>13</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>-185</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>635</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-59</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>576</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>读法：现金流比净利润多出来的 1.49 亿，全部来自加回 SBC（2.31 亿）和坏账计提（1.05 亿）这两笔非现金项，一共 3.36 亿；但被营运资金占用（存货、应收、其他，合计 -3.38 亿）吃掉了绝大部分。<strong>换句话说，这家公司的现金流质量并没有表面上那么好</strong>——它之所以现金流看着比利润高，靠的是把发给员工的股票和计提的坏账加回来，而这两样都是真实成本，只是不花现金而已。存货增加 1.14 亿也值得注意，那是囤在仓库里准备贴钱卖出去的收银机。</p>
+<p><strong>最大的一处失真：税</strong>。TTM 所得税只交了 1,200 万美元，<strong>有效税率 2.41%</strong>。税前利润约 4.98 亿，正常美国企业该交 21–25%。这么低是因为前几年累计的巨额亏损（FY2021–FY2023 累计亏了约 10 亿）形成的递延所得税资产在抵扣，同时估值备抵释放。这不是一次性收益，但<strong>也绝对不可持续</strong>——亏损额度用完之后税率会跳回正常水平。按 24% 的正常税率重算，TTM 净利润应该是约 <strong>3.78 亿</strong>，而不是 4.86 亿。这是本篇最重要的一个调整。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 200.9 亿美元，企业价值 183.7 亿（净现金 17.1 亿，无有息负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（摊薄）</td>
+<td>股价 34.8 ÷ 摊薄 EPS 0.78</td>
+<td><strong>44.3 倍</strong></td>
+<td><strong>2.26 元</strong></td>
+</tr>
+<tr>
+<td>市值 ÷ GAAP 净利润</td>
+<td>20,090 ÷ 486</td>
+<td>41.3 倍</td>
+<td>2.42 元</td>
+</tr>
+<tr>
+<td>公司口径（加回 SBC 后重构）</td>
+<td>20,090 ÷ (486+231)</td>
+<td>28.0 倍</td>
+<td>3.57 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>20,090 ÷ 正常化税率后净利 378</td>
+<td><strong>53.1 倍</strong></td>
+<td><strong>1.88 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>20,090 ÷ 576</td>
+<td>34.9 倍</td>
+<td>2.87 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>18,370 ÷ 436</td>
+<td>42.1 倍</td>
+<td>2.37 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>20,090 ÷ (486+342+19)/3 = 282</td>
+<td><strong>71.2 倍</strong></td>
+<td><strong>1.40 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>几点说明：</p>
+<ul>
+<li><strong>GAAP 那一行为什么有两个数</strong>。市值除净利润是 41.3 倍，但按摊薄 EPS 算是 44.3 倍。差别在于流通股 5.78 亿、摊薄股本 6.23 亿——中间那 4,500 万股是尚未行权的期权和限制性股票。摊薄口径更诚实，因为那些股份迟早会变成真股份来分你的利润。</li>
+<li><strong>"公司口径 28 倍"是我按公司的调整逻辑重构的，不是公司官方数字</strong>。Toast 主推的指标是 Adjusted EBITDA（TTM 约 7.2 亿），不直接公布 adjusted EPS。加回 SBC 就是这个数字变好看的全部魔法——而 SBC 是真成本，这一行只是让你看清"公司希望你看到的版本"和"真相"差多远。</li>
+<li><strong>真实口径 53.1 倍是全表最该看的数</strong>。它做的唯一调整就是把税率从 2.41% 拨回正常的 24%。这不是吹毛求疵：递延税资产总有用完的一天，用完那天利润会凭空掉 20%，而股价当初是按 44 倍买的。</li>
+<li><strong>三年平均 71.2 倍暴露了另一件事</strong>：这家公司三年前（FY2024）净利润才 1,900 万，两年前还在亏 2.46 亿。它是刚刚跨过盈亏平衡线的公司，当期利润是一个"刚起飞"的数字，不是一个稳态数字。三年平均倍数远高于当期倍数，在成长股身上是正常现象，不必然是坏事，但它告诉你：<strong>你买的 44 倍，是在赌利润还会继续往上跳，而不是在买一个已经稳定的利润流。</strong></li>
+</ul>
+<h3>说人话：投 100 块，一年替你赚多少</h3>
+<p>按最保守的真实口径（正常化税率后的 53.1 倍），你现在投 100 块进去，公司一年替你赚 <strong>1.88 元</strong>。按自由现金流口径宽松一点算，是 2.87 元。</p>
+<p>这 1.88 元里，有多少真回到你口袋？TTM 公司回购了 5.62 亿股票，不分红。回购金额 ÷ 市值 = 2.8%，但其中约 1.15 亿只是抵消了当年新发给员工的股票（净股本才减 2.27%）。所以真正回到股东手里的、以缩股本形式体现的收益率约 <strong>2.3%/年</strong>。剩下的钱留在公司：TTM 投资活动净流出 2.98 亿，主要是买了 1.89 亿的有价证券（就是把现金存起来吃利息），并没有大手笔的收购或建设。手上还躺着 17.1 亿净现金没花。</p>
+<p><strong>这个 1.88 元未来大概率会变大</strong>，理由有三：营收还在以 23% 增长，且订阅这块（最赚钱）增得比整体快；经营杠杆明显——营收从 FY2024 到 TTM 涨了 37%，经营利润从 6,700 万涨到 4.36 亿，涨了 5.5 倍；SBC 在收敛。<strong>但也有两件事会往下拽</strong>：税率迟早正常化，那是一次性砍掉 20% 的利润；坏账计提年年在涨，Toast Capital 这块的放贷生意如果碰上餐饮业下行周期，坏账会跳。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这是一家生意模式极好、账也基本干净、但价钱已经把未来三年的好消息全部提前算进去的公司——真实口径 53 倍、你的钱一年只替你挣 1.88 块，而餐饮业本身是全美国最脆弱的行业之一；它值得一个高倍数，但不值这个高倍数。</p>
+</div></body></html>

@@ -1,0 +1,466 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>V · Visa</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">V</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">接近完美的生意，但29.7倍要等十年才靠利润回本</div><h1>V · Visa</h1>
+<p><strong>市值</strong> $6,708 亿 | <strong>股价</strong> 约 $365 | <strong>行业</strong> 支付网络（分类归在金融，但不是银行） | <strong>TTM 截止</strong> 2026年6月30日</p>
+<blockquote>
+<p>提前说明一句：Visa 被行业分类塞进"金融"，但它<strong>不是银行</strong>——它不放贷、不吸存款、不承担任何一分钱的坏账风险。它是一条收费公路。所以下面第三部分照常用市盈率，不用市净率（它的账面净资产只有 352 亿，市净率 19.4 倍，这个数字对它毫无意义）。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先把最基础的一件事讲透，因为不懂这个，下面全看不明白。</p>
+<h3>一笔刷卡到底发生了什么</h3>
+<p>你在星巴克买一杯 5 美元的咖啡，刷了一张 Chase 发的 Visa 卡。这 5 美元是这么分的：</p>
+<ul>
+<li><strong>星巴克实际收到约 4.90 美元。</strong> 被扣掉的约 0.10 美元（约 2%）叫商户扣率。</li>
+<li>这 0.10 里，<strong>约 0.08 美元归发卡银行 Chase</strong>（这叫交换费 interchange），因为是 Chase 垫的钱、承担你赖账的风险。</li>
+<li><strong>约 0.01 美元归收单机构</strong>（给星巴克装 POS 机、做结算的那家公司，比如 Fiserv）。</li>
+<li><strong>Visa 自己只拿约 0.005~0.008 美元</strong>，也就是这杯咖啡的千分之一二。</li>
+</ul>
+<p><strong>Visa 在整条链条里拿得最少，但它是唯一一个不承担任何风险、不需要投入任何资本的角色。</strong> 它既没借出去一分钱，也不用买 POS 机，它只是那根线——告诉星巴克"这张卡有效，钱我保证给你"，然后在两天后把银行之间的账轧平。</p>
+<p>这门生意的经济学在于：单笔小得可笑，但过手的笔数是天文数字。Visa 全年过手的交易额是十万亿美元量级，千分之几乘上去，就是 TTM <strong>619.3 亿美元的毛收入</strong>。</p>
+<p>而它的成本几乎是固定的——多处理一亿笔交易，服务器成本增加的部分接近于零。<strong>这就是为什么一家只有 3.4 万名员工的公司，能做到 60.7% 的经营利润率、50.8% 的净利率、和 54.8% 的投入资本回报率。</strong> 全世界能达到这个组合的公司不超过十家。</p>
+<p>Visa 自己把收入拆成四进一出，下面逐个说。</p>
+<h3>收入一：服务费（Service）—— 品牌和网络的"会员费"</h3>
+<p><strong>这是什么：</strong> Visa 按会员金融机构上个季度的<strong>支付金额</strong>收一个百分比，大约万分之十三。一家银行发了 500 万张 Visa 卡，持卡人一个季度总共刷了 100 亿美元，那这家银行就要给 Visa 交大约 1,300 万美元。</p>
+<p><strong>它凭什么收这个钱：</strong> 凭"Visa"这两个字被全球两亿多家商户接受。一家新银行如果不用 Visa/Mastercard 而自己搞一套，它发的卡出了国境就是废塑料。<strong>这是全世界最纯粹的网络效应之一</strong>：商户接受 Visa 是因为持卡人多，持卡人办 Visa 是因为商户接受。这个循环转了六十年，任何新玩家都进不来。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>占毛收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务费</td>
+<td>$192.7 亿</td>
+<td>$175.4 亿</td>
+<td>31.1%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>收入二：数据处理费（Data Processing）—— 按笔收的过路费</h3>
+<p><strong>这是什么：</strong> 上面那个是按金额收，这个是<strong>按笔数</strong>收。每一笔授权（问银行"这张卡还有额度吗"）、清算、结算，Visa 收几分钱。你在便利店买一瓶水刷卡，和你买一台电脑刷卡，这部分收的钱是一样的。</p>
+<p><strong>这块为什么在变大：</strong> 因为世界在往小额、高频走。移动支付、订阅扣款、公交刷卡、无接触支付——交易笔数的增长快过交易金额的增长。TTM 数据处理费 225.2 亿，已经<strong>超过服务费成为第一大收入来源</strong>，五年前它还和服务费差不多。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>占毛收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据处理费</td>
+<td>$225.2 亿</td>
+<td>$199.9 亿</td>
+<td>36.4%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>收入三：跨境交易费（International Transactions）—— 最肥的一块</h3>
+<p><strong>这是什么：</strong> 只要发卡行的国家和商户的国家不一样，Visa 就额外收一道费用，而且是<strong>费率高一个量级</strong>的费用。一个中国游客在纽约的酒店刷 2,000 美元，Visa 从这一笔里拿到的钱，可能是一个纽约人刷同样金额的<strong>五到十倍</strong>——因为它同时收跨境处理费和货币兑换费（把美元换成人民币计价，中间的汇率价差也归它）。</p>
+<p><strong>为什么这块最值得盯：</strong> 它只占毛收入的 24.1%，但因为费率高、成本相同，<strong>它对利润的贡献远超这个比例</strong>。同时它是 Visa 业绩里波动最大的部分——2020 年国际旅行停摆，这块直接砍掉一半，Visa 那年利润跳水，就是这个原因。反过来，旅行复苏时它是最强的引擎。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>占毛收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>跨境交易费</td>
+<td>$149.4 亿</td>
+<td>$141.7 亿</td>
+<td>24.1%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>收入四：其他（Other）—— 增长最快，也是 Visa 未来的赌注</h3>
+<p><strong>这是什么：</strong> 一堆卖给银行和商户的<strong>增值服务</strong>，靠数据和规模变现：</p>
+<ul>
+<li><strong>反欺诈风控</strong>：Visa 每天看到几十亿笔交易，它比任何单一银行都更清楚"什么样的交易是盗刷"。它把这个能力打包成服务卖给发卡行，一家中型银行一年可能付几百万美元。</li>
+<li><strong>Visa Direct</strong>：实时转账网络。你用打车软件跑单，平台给你即时结算到借记卡，走的就是这条线，Visa 按笔收费。</li>
+<li><strong>咨询与数据分析</strong>：帮商户分析"你的客户还在哪里花钱"。</li>
+<li><strong>代币化和开放银行</strong>：把卡号换成一串代币存进手机，每次交易临时生成——这既是安全服务，也让 Visa 把自己焊进了 Apple Pay 这类钱包的底层。</li>
+</ul>
+<p>TTM 52.1 亿，同口径下比 FY2025 的 40.5 亿增长了 28%，是四块里增速最快的。<strong>Visa 的长期故事就押在这一块</strong>——因为刷卡本身的增长终究会随着现金替代完成而放缓，而增值服务的天花板还远。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>占毛收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>其他</td>
+<td>$52.1 亿</td>
+<td>$40.5 亿</td>
+<td>8.4%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>那个"一出"：客户激励（Client Incentives）—— 全篇最该看的数字</h3>
+<p><strong>这是什么：</strong> Visa 每年<strong>倒贴给银行和大商户</strong>的钱。为什么要倒贴？因为发卡行有选择权。摩根大通如果决定把 Sapphire 系列从 Visa 换成 Mastercard，一年几千亿美元的交易额就搬家了。所以每次续约，银行都会说"给我更好的条件，不然我谈谈别家"。Visa 就得掏出真金白银——签约奖金、按量返点、联名卡营销补贴。</p>
+<p><strong>这笔钱有多大：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>毛收入</th>
+<th>客户激励</th>
+<th>占毛收入比例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>$324.7 亿</td>
+<td>$83.7 亿</td>
+<td>25.8%</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>$396.1 亿</td>
+<td>$103.0 亿</td>
+<td>26.0%</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$449.5 亿</td>
+<td>$123.0 亿</td>
+<td>27.4%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$496.9 亿</td>
+<td>$137.6 亿</td>
+<td>27.7%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$557.5 亿</td>
+<td>$157.5 亿</td>
+<td>28.3%</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$619.3 亿</strong></td>
+<td><strong>$174.4 亿</strong></td>
+<td><strong>28.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Visa 每收 100 块毛收入，要还给银行 28 块。而且这个比例在五年里从 25.8% 爬到了 28.2%。</strong></p>
+<p>这是全篇最重要的一张表，因为它揭示了一件容易被忽略的事：<strong>Visa 的护城河很宽，但它面对的不是分散的小客户，是一群体量比它自己还大的银行。</strong> 摩根大通的市值是 Visa 的 1.4 倍。护城河挡得住新进入者，挡不住上下游把利润切走。这条曲线如果继续以每年 0.5 个百分点的速度往上爬，十年后就是 33%，相当于每年吃掉 Visa 一个多百分点的营收增长。</p>
+<p><strong>扣完激励后的净营收 = 619.3 − 174.4 = 444.9 亿美元。</strong> 下面所有的利润率、市盈率，用的都是这个净额。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 9.19 亿美元，占净利润 4.1%。</strong> 这个比例在大型科技/支付公司里<strong>低得罕见</strong>（很多同规模的软件公司这个比例是 25~40%）。原因是 Visa 的员工总数只有 3.4 万人，且薪酬结构以现金为主。9.19 亿已经在 GAAP 里扣掉了，下面估值不需要再调。<strong>这一项上 Visa 是干净的。</strong></p>
+<p><strong>一次性项目：这里有一个必须警惕的地方。</strong> 看经营利润率的走势：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润率</td>
+<td>64.31%</td>
+<td>65.68%</td>
+<td><strong>59.98%</strong></td>
+<td><strong>60.68%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FY2025 突然掉了 5.7 个百分点，而且 TTM 没有恢复。</strong> 按 FY2024 的 65.68% 算，TTM 的经营利润应该是 292.2 亿，实际是 270.0 亿——<strong>少了大约 22 亿美元</strong>。</p>
+<p>这 22 亿去哪了？最可能的答案是诉讼准备金——Visa 和 Mastercard 与美国商户之间关于交换费的集体诉讼打了二十年，期间反复计提和调整。<strong>但只看 TTM 一期，我无法确认这是不是真的一次性。</strong> 诚实的表述是：<strong>这 22 亿的利润率缺口，单期口径判断不了它是"一次性的官司钱"还是"结构性的成本上升"。</strong> 如果是前者，Visa 的真实盈利能力比现在看到的高约 8%；如果是后者，那 60% 就是新常态。</p>
+<p>我倾向于<strong>不给它算回去</strong>——因为 Visa 的诉讼是那种"年年都有的一次性"，二十年没断过。</p>
+<p><strong>资本化的支出：</strong> 资本开支 15.7 亿，折旧摊销 13.4 亿，两者基本相等，说明没有靠"少提折旧"美化利润。资本开支只占营收的 3.5%——<strong>这是一门几乎不需要花钱维护的生意</strong>。</p>
+<p><strong>回购与稀释——教科书级别的好：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股票回购</td>
+<td>$213.6 亿</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>$9.2 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>23.2 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>$50.0 亿</td>
+</tr>
+<tr>
+<td>合计还给股东</td>
+<td>$263.6 亿</td>
+</tr>
+<tr>
+<td>股本一年实际减少</td>
+<td><strong>-2.88%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>标准是"接近 1 倍说明回购只是在抵消发股，大于 3 倍才是真回购"。<strong>Visa 是 23 倍。</strong> 这不是抵消稀释，这是在系统性地把公司买回来。加上股息，股东收益率 3.61%。</p>
+<p>但要指出一个隐患：<strong>263.6 亿的股东回报，超过了 210.1 亿的自由现金流，超出 25%。</strong> 差额是靠账上现金和借债补的——现金及投资从 FY2025 的 190.0 亿掉到现在的 125.1 亿，净负债从 61.7 亿扩大到 113.5 亿。<strong>这个节奏不能永远持续。</strong> 以 Visa 的现金生成能力这不构成风险，但意味着回购力度未来大概率要往下调到 FCF 以内。</p>
+<p><strong>利润和现金流的差——差得很小，但里面有一对很大的抵消项：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+$225.9 亿</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+$13.4 亿</td>
+</tr>
+<tr>
+<td>加：股权激励（非现金）</td>
+<td>+$9.2 亿</td>
+</tr>
+<tr>
+<td>加：其他调整</td>
+<td><strong>+$166.0 亿</strong></td>
+</tr>
+<tr>
+<td>减：其他经营活动变动</td>
+<td><strong>−$183.9 亿</strong></td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−$5.8 亿</td>
+</tr>
+<tr>
+<td>加：应付/预提变动</td>
+<td>+$1.8 亿</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>$225.8 亿</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−$15.7 亿</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>$210.1 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 225.9 亿 → 经营现金流 225.8 亿，几乎一模一样。</strong> 这是最高质量的一种情况：<strong>赚的每一块钱都是现金。</strong></p>
+<p>中间那对 +166 亿 / −184 亿是什么？是客户激励和诉讼准备金的"计提"与"实付"之间的时间差——会计上先按合同全额计提进费用（所以往回加），实际付款按进度分期出账（所以再减掉）。两边基本对冲，说明<strong>Visa 没有靠"多计提少付款"来做资金池，也没有靠"少计提"来虚增利润</strong>。</p>
+<p><strong>还有一件必须点出来的事：有效税率只有 16.19%。</strong> TTM 税前利润 269.6 亿，交税 43.6 亿。<strong>这个税率低于美国 21% 的法定税率，也低于 Visa 自己历史上 19~20% 的水平。</strong> 原因通常是海外利润的税收安排和一些税务和解。<strong>如果税率回到 20%，净利润会少约 10 亿美元（−4.5%），市盈率从 29.7 倍变成 31.1 倍。</strong> 这不是造假，但它是一份"借来的"利润——税务安排是可以被立法改掉的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,708 亿 ÷ 225.9 亿</td>
+<td><strong>29.7 倍</strong></td>
+<td><strong>$3.37</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这四页不提供调整后净利，<strong>不编</strong></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已按 GAAP 扣除、不加回；诉讼类成本不视为一次性、不剔除</td>
+<td><strong>29.7 倍</strong></td>
+<td><strong>$3.37</strong></td>
+</tr>
+<tr>
+<td>税率正常化口径</td>
+<td>按 20% 税率重算净利 215.7 亿</td>
+<td><strong>31.1 倍</strong></td>
+<td><strong>$3.21</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>6,708 亿 ÷ 210.1 亿</td>
+<td><strong>31.9 倍</strong></td>
+<td><strong>$3.13</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>6,809 亿 ÷ 270.0 亿</td>
+<td><strong>25.2 倍</strong></td>
+<td><strong>$3.97</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>6,708 亿 ÷ 三年平均净利 190.3 亿</td>
+<td><strong>35.3 倍</strong></td>
+<td><strong>$2.84</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>网站首页显示市盈率 31.11 倍，那是"股价 ÷ 每股收益"；我用"市值 ÷ 净利润"算出 29.7 倍。差别来自过去一年回购掉的 2.88% 股份。</p>
+<p>三年平均用 FY2023–FY2025 净利润：172.7 亿 / 197.4 亿 / 200.6 亿，平均 190.3 亿。</p>
+</blockquote>
+<p><strong>关于三年平均这一行，Visa 和周期股要反着读。</strong> 上一家分析的 NVDA 是当期 34 倍、三年平均 73.5 倍，那个巨大的差值是危险信号——说明当期利润远高于历史，可能是周期顶点。<strong>Visa 是当期 29.7 倍、三年平均 35.3 倍，差值只有 19%，而且这个差值完全来自"它每年都在稳定地多赚一点"</strong>（172.7 → 197.4 → 200.6 → 225.9）。这不是警告，这是一条平滑向上的曲线。</p>
+<p><strong>能拿到这种曲线的公司，全美股不超过二十家。</strong></p>
+<h3>大白话：你投 100 块，一年替你赚多少</h3>
+<p><strong>按最保守的三年平均口径，你投 100 块进 Visa，公司一年替你赚 2.84 块。按当期口径是 3.37 块。</strong></p>
+<p>这 3.37 块的去向：</p>
+<ul>
+<li><strong>0.73 块</strong>以现金分红打给你（每股年分红 2.68 美元）</li>
+<li><strong>2.88 块</strong>通过回购让你手上的股份占比变大</li>
+<li>合计 <strong>3.61 块</strong>回到你这边——<strong>注意这个数字超过了 3.37 块的当期利润</strong>，也就是说 Visa 现在把超过 100% 的利润还给了股东，还倒贴了一点债</li>
+<li>留在公司里再投资的部分：<strong>几乎为零</strong>。看投资活动现金流，TTM 净流出只有 4.5 亿——收购花了 7.1 亿，资本开支 15.7 亿，卖掉一些投资又收回 18.4 亿。<strong>这门生意根本不需要钱。</strong></li>
+</ul>
+<p><strong>这 3.37 块未来大概率变大还是变小？我的判断是——缓慢变大，但没有惊喜。</strong></p>
+<p>三条理由：</p>
+<p><strong>支撑变大的：</strong> 全球现金替代还没完成（新兴市场、日本、德国仍有大量现金交易）；跨境旅行还在恢复通道上；增值服务这块 28% 的增速能拉动整体；再加上每年 2.9% 的股份注销，每股利润的复合增速大概率能维持在 10~13%。</p>
+<p><strong>压着不让它变大的：</strong> 客户激励占比每年往上爬 0.5 个百分点，是一条持续失血的口子；有效税率 16% 是借来的、迟早要还；诉讼成本二十年没停过；欧美监管每隔几年就要来啃一次交换费；再往远看，各国央行推的实时支付网络（巴西 Pix、印度 UPI）是<strong>唯一一个真正绕开 Visa 的东西</strong>——它们不收费或近乎不收费，且有政府背书。巴西和印度已经发生了，问题是会不会扩散到 Visa 的利润重心（美国和跨境）。</p>
+<p><strong>净效果：这是一门几乎不会出意外、但也不会给你惊喜的生意。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Visa 是一门接近完美的生意——不占资本、不担风险、50% 净利率、赚的每一块都是现金、六十年建起来的网络效应无人能破——但 29.7 倍市盈率意味着你要等大约十年才能靠利润回本，而这门生意的增长天花板（全球刷卡量）已经能看见了。</strong></p>
+<p>它不贵得离谱，也绝对不便宜。你付的价格里，有大约三分之一是在为"确定性"付费——为那份"未来十年它几乎不可能出事"的安心。<strong>如果你认这份确定性值这个钱，它是一笔很好的、无聊的长期资产；如果你要的是收益率，3.4% 的当期回报率还不如摩根大通的 6.5%，而且它没有摩根大通那种"经济一好就爆发"的弹性。</strong></p>
+<p>真正的风险不在估值，在那张客户激励的表上——<strong>Visa 最大的敌人不是竞争对手，是它自己的客户。</strong></p>
+</div></body></html>

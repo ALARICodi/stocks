@@ -1,0 +1,320 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RMD · 瑞思迈（ResMed Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RMD</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">最好的一门生意，而且现在有折价</div><h1>RMD · 瑞思迈（ResMed Inc.）</h1>
+<p>市值 $323.8 亿 · 股价 $224.46 · 行业：医疗科技（睡眠呼吸机 + 耗材 + 护理软件）· TTM 截止 2026 年 6 月 30 日（等于其 FY2026 完整财年）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>瑞思迈做的是「睡眠呼吸暂停」这一件病。这个病是这样的：人睡着以后喉咙软组织塌下来把气道堵住，一晚上憋醒几十上百次，自己没感觉，但白天困得要死、血压高、心脏出问题。全球大约有 9 亿人有这个病，绝大多数人不知道自己有。</p>
+<p>治疗办法几十年没变过：晚上戴个面罩，一台机器往你气道里持续吹正压空气，把塌下来的软组织顶开。这就是 CPAP。瑞思迈和飞利浦两家几乎垄断了全球市场——2021 年飞利浦因为呼吸机降噪泡棉降解要召回 500 多万台，基本退出了美国市场，瑞思迈捡走了一大块份额。</p>
+<p>财报把它拆成三块，但真实的商业逻辑是<strong>「一个钩子，两块肉」</strong>：</p>
+<p><strong>1. 设备（Devices）——TTM 28.92 亿，占 51%，这是钩子</strong></p>
+<p>主力产品 AirSense 11，一台在美国零售价大约 $900–1,200。病人做完睡眠监测确诊之后，医生开处方，通过一家叫 DME（家用医疗设备经销商）的中间商拿到机器，商业保险或 Medicare 报销大部分，病人自付一部分。另外还有便携旅行用的 AirMini（巴掌大，出差带着）、给 COPD 和神经肌肉病人用的家用无创呼吸机 AirCurve 和 Astral。</p>
+<p>机器本身毛利不算特别高，寿命 5 年左右。它的真正作用是<strong>把病人锁进瑞思迈的生态</strong>——因为下面这块。</p>
+<p><strong>2. 面罩及其他（Masks &amp; Other）——TTM 20.86 亿，占 37%，增长最快、最赚钱</strong></p>
+<p>这才是这门生意的本体。面罩不是耐用品，是<strong>耗材</strong>：</p>
+<ul>
+<li>硅胶垫圈（直接贴脸那圈）每 1–3 个月就要换，戴久了变形漏气；</li>
+<li>头带每半年换一次，松了固定不住；</li>
+<li>整套面罩，美国保险通常允许每 3 个月换一套新的。</li>
+</ul>
+<p>一套完整面罩 $100–170，一个病人一年在耗材上大约花 $300–500。关键是<strong>面罩和机器是配套的</strong>——AirSense 的接口、湿化器水盒、管路都是瑞思迈规格，第三方兼容件质量参差，医生和 DME 也懒得混搭。</p>
+<p>所以这块生意的数学非常漂亮：过去卖出去的每一台机器，都变成一个每年给你交 300–500 美元的年金。装机量只增不减，耗材收入就自动往上滚。TTM 增速 <strong>+13.4%</strong>，比设备的 +8.5% 快得多，正是因为这个滚雪球效应。</p>
+<p>还有一层护城河藏在数据里：每台联网的 AirSense 每天把使用数据上传到瑞思迈的 AirView 云平台。为什么重要？因为<strong>美国保险公司要看「依从性」才肯继续报销</strong>——规定是头 90 天里，至少 70% 的夜晚每晚用够 4 小时，达不到就停止报销、机器要退回去。这套数据只有瑞思迈的云能出，DME 靠它跟保险公司结算，医生靠它调参数。等于瑞思迈把自己焊死在了报销流程的中间。</p>
+<p><strong>3. 居家护理软件（Residential Care Software）——TTM 6.76 亿，占 12%，是买来的另一门生意</strong></p>
+<p>这块跟呼吸机没关系。它是卖给美国的家庭护理机构、养老院、临终关怀机构的软件（品牌 MatrixCare、Brightree、citus Health），瑞思迈是花钱买来的。</p>
+<p>具体是什么：一家有 500 张床的养老院，用 MatrixCare 管电子病历、排护士班表、记录每个老人的用药和跌倒事件，最重要的是<strong>自动生成 Medicare 报销单据</strong>——美国长期护理的报销规则极其繁琐，填错一项就被拒付，所以这类软件是刚需。按床位数或按月订阅收费，一家 500 床的机构一年可能付十几万美元。</p>
+<p>这是订阅制 SaaS，续约率高，但增速最慢（TTM +5.4%），市场分散、竞争者多（PointClickCare 是最大对手）。它对瑞思迈的意义更多是「多一条现金流」，不是增长引擎。</p>
+<h3>三块生意的钱（TTM = FY2026，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备 Devices</td>
+<td>$28.92 亿</td>
+<td>$26.65 亿</td>
+<td>+8.5%</td>
+<td>51.2%</td>
+<td>约 28%（估算）</td>
+<td>约 $8.1 亿</td>
+</tr>
+<tr>
+<td>面罩及其他 Masks</td>
+<td>$20.86 亿</td>
+<td>$18.40 亿</td>
+<td><strong>+13.4%</strong></td>
+<td>36.9%</td>
+<td>约 42%（估算）</td>
+<td>约 $8.8 亿</td>
+</tr>
+<tr>
+<td>居家护理软件</td>
+<td>$6.76 亿</td>
+<td>$6.41 亿</td>
+<td>+5.4%</td>
+<td>12.0%</td>
+<td>约 33%（估算）</td>
+<td>约 $2.2 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$56.53 亿</strong></td>
+<td>$51.46 亿</td>
+<td><strong>+9.85%</strong></td>
+<td>100%</td>
+<td><strong>33.96%（实际）</strong></td>
+<td><strong>$19.20 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部利润。上表利润率是按整体 33.96% 结合「面罩毛利显著高于整机、软件是 SaaS 但摊销重」拆出来的，<strong>属于估算</strong>，看结构别抠小数点。</p>
+</blockquote>
+<p>整体毛利率 61.62%（上年 59.99%），经营利润率 33.96%（上年 32.79%）——<strong>营收涨了 9.85%，利润率还在往上走</strong>，说明高毛利的面罩占比在提升，同时供应链成本（2021–22 芯片荒时买高价芯片）已经消化完了。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的账<strong>极其干净</strong>，干净到有点乏味。逐项过：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1.04 亿美元，占净利润 15.23 亿的 <strong>6.9%</strong>。这是我看过的美股公司里最低的一档。按规矩我把它当成实打实的现金成本扣掉（GAAP 里本来就扣了），扣了也不影响任何结论。</p>
+<p><strong>一次性项目</strong>：TTM <strong>没有</strong>资产减值、<strong>没有</strong>重组费用（这一行是空的）、没有诉讼和解、没有税务一次性调整。唯一两笔小的是投资出售损失 0.11 亿和股权投资收益 0.02 亿，加起来不到净利润的 1%，忽略不计。上一个财年（FY2024）有一笔 0.33 亿的重组减值，但已经滚出 TTM 窗口了。<strong>结论：GAAP 净利润 = 真实利润，一分钱都不用调。</strong></p>
+<p><strong>资本化的支出</strong>：没有软件开发费资本化的把戏。资本开支只有 1.56 亿，折旧摊销 2.44 亿——<strong>折旧比投资多</strong>，说明公司甚至没把该花的钱花满，绝不存在「靠少提折旧虚增利润」。资本开支只占营收 2.8%，这是一家极其轻资产的公司（面罩是外包+自有产线混合生产，软件根本不需要重资产）。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>7.22 亿</strong>，同期 SBC 只有 1.04 亿，<strong>比值 6.9 倍</strong>。这个数字非常硬——每花 1 块钱抵消员工发股的稀释，公司还多花 5.9 块真正在为你减少股份。这是<strong>真回购</strong>，不是做样子。（对比标准：接近 1 倍是骗人的，大于 3 倍才算真回购。）</p>
+<p>实际股本一年减少 0.87%，看起来比回购金额（占市值 2.2%）少，原因是员工行权发新股又发回去了 0.75 亿。净额算下来还是在减。加上 3.50 亿分红，TTM 总共还给股东 <strong>10.72 亿</strong>，占自由现金流的 65%。</p>
+<p><strong>利润和现金流的差</strong>：净利润 15.23 亿，经营现金流 18.06 亿，自由现金流 16.50 亿——<strong>现金流比利润还高</strong>，这是好公司的标志。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,523</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+244</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+104</td>
+</tr>
+<tr>
+<td>+ 投资出售损失（非经营）</td>
+<td>+11</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−2</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−97</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−10</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+173</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变化</td>
+<td>−140</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,806</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−156</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,650</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表最值得注意的是<strong>存货只增加了 0.10 亿</strong>。对比 FY2023 那一年存货暴增 2.49 亿——那是飞利浦召回后瑞思迈疯狂囤芯片、抢产能的时期。现在存货基本不动而营收还涨 10%，说明供应链彻底恢复正常，那笔被套在仓库里的钱已经全部变回现金了。应付账款还增加了 1.73 亿（占用供应商的钱），这是议价能力变强的信号。</p>
+<p><strong>资产负债表</strong>：现金 14.69 亿，总负债 8.26 亿，<strong>净现金 6.43 亿</strong>。这家公司没有债务问题——FY2023 时还有 13.52 亿净负债（为了买软件公司借的），三年就还清并转正了。流动比率 3.10，ROE 24.27%，ROIC 26.23%。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>323.79 亿 ÷ 15.23 亿</td>
+<td><strong>21.3 倍</strong></td>
+<td><strong>$4.70</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>—</td>
+<td>未披露（估计接近 GAAP）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 无需调整（无一次性项目，SBC 已扣）</td>
+<td><strong>21.3 倍</strong></td>
+<td><strong>$4.70</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>323.79 亿 ÷ 16.50 亿</td>
+<td><strong>19.6 倍</strong></td>
+<td><strong>$5.10</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>317.36 亿 ÷ 19.20 亿</td>
+<td><strong>16.5 倍</strong></td>
+<td><strong>$6.05</strong>（税前、付利息前）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>323.79 亿 ÷ (15.23+14.01+10.21)/3 = 13.15 亿</td>
+<td><strong>24.6 倍</strong></td>
+<td><strong>$4.06</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Non-GAAP 那一行公司口径不在我取数的四页里。但因为 TTM 本身就没有重组、没有减值，瑞思迈的调整后利润和 GAAP 之间只差一点点并购无形资产摊销，<strong>差距很小</strong>，不像那些靠加回 SBC 化妆的公司。这条空着不编。</p>
+</blockquote>
+<p>三年平均口径 24.6 倍，比当期 21.3 倍<strong>高一截</strong>——这说明利润这两年在快速爬升（FY2024 的 10.21 亿 → FY2025 的 14.01 亿 → TTM 的 15.23 亿，两年涨了 49%）。跟英伟达那种「当期便宜、三年平均贵一倍」的情况不同：英伟达是当期利润踩在暴涨的高点上、随时可能回落；瑞思迈是<strong>利润率一年一个台阶稳步爬上来的</strong>（经营利润率 29.5% → 32.8% → 34.0%），而且驱动因素是产品结构（高毛利面罩占比提升），不是一次性的价格暴涨。所以这里的「三年平均更贵」不算警报，只是提醒你：<strong>当前 21 倍的便宜，是建立在利润率已经爬到历史最高位的基础上的</strong>，再往上的空间有限。</p>
+<p><strong>说人话：你现在投 100 块进瑞思迈，按最保守的真实口径算，公司一年替你赚 4 块 7。</strong></p>
+<p>这 4 块 7 里，实打实回到你口袋的：回购 2.2 块（7.22 亿 ÷ 323.79 亿市值 × 100）+ 分红 1.08 块，合计 <strong>3 块 3</strong>，是 70%。剩下 1 块 4 留在公司：一部分买了小公司（TTM 花 3.51 亿现金收购），一部分建产线（1.56 亿），剩下堆成净现金。<strong>这是本批三家里股东回报比例最高的一家</strong>——赚到的钱七成直接还给你，不是拿去乱买东西。</p>
+<p>这个 4 块 7 未来是变大还是变小？这是这只股票唯一真正要回答的问题，下面单独说。</p>
+<hr />
+<h3>房间里的大象：GLP-1 减肥药会不会把这门生意干掉</h3>
+<p>必须直说，因为它解释了这只股票为什么便宜：<strong>过去 52 周股价跌了 22.14%，空头持仓占流通股 10.87%</strong>（正常公司是 1%–3%）。市场上有一大批人在赌瑞思迈完蛋。</p>
+<p>逻辑是这样的：睡眠呼吸暂停的头号成因是肥胖，脖子上的脂肪压塌气道。2024 年礼来的替尔泊肽（Zepbound）拿到了 FDA 批准，成为<strong>第一个获批治疗睡眠呼吸暂停的药</strong>。如果病人吃药瘦下来病就好了，谁还愿意每晚戴个面罩睡觉？</p>
+<p><strong>但 TTM 的实际数字是这样的</strong>：营收 +9.85%，设备 +8.5%，面罩 +13.4%，毛利率从 60.0% 涨到 61.6%，经营利润率从 32.8% 涨到 34.0%。<strong>如果 GLP-1 真在杀这门生意，两年过去了，数字上一点都看不出来。</strong></p>
+<p>原因大概有三条：（一）全球 9 亿患者里只有不到 20% 被确诊、更少的人在治疗，市场根本没渗透完，减掉一部分人还有海量增量；（二）GLP-1 药一年费用一万多美元、停药就反弹、副作用让很多人吃不下去，而 CPAP 一年几百美元；（三）临床上两者更多是<strong>联用</strong>——礼来自己的试验里，替尔泊肽组也有相当比例的人仍需 CPAP，因为不是所有睡眠呼吸暂停都由肥胖引起（下颌结构、扁桃体、神经性中枢型都不是减肥能解决的）。</p>
+<p>我的判断：这是一个<strong>真实但被过度定价的风险</strong>。它会拉低瑞思迈的长期增速（原本可能 10%，未来可能 6%–8%），但不会把这门生意从 10% 增长打成负增长。空头 10.87% 的仓位是在赌后者。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是本批三家里最好的一门生意，而且现在有折价。</strong> 61.6% 的毛利、34% 的经营利润率、26% 的 ROIC、净现金、资本开支只占营收 2.8%、账上一分钱会计花招都没有、赚的钱七成直接还给股东、最赚钱的耗材业务增速最快（+13.4%）——这些指标凑在一起的公司，正常市场愿意给 30 倍以上。它现在只要 21.3 倍，唯一的原因就是市场怕减肥药把 CPAP 干掉。而两年过去了，数字上看不到任何被干掉的迹象。<strong>你付的是「行业将被颠覆」的价格，买到的是一家收入还在加速、利润率还在创新高的公司。</strong> 风险不是零——如果 GLP-1 的渗透真的起来，未来的增速要打折——但 21 倍这个价已经把相当一部分坏消息算进去了。</p>
+<hr />
+<p><strong>数据来源</strong>：stockanalysis.com 的 RMD 利润表 / 现金流量表 / 统计页 / 比率页（S&amp;P Global Market Intelligence，最后更新 2026-08-06）。</p>
+</div></body></html>

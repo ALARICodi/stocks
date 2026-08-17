@@ -1,0 +1,372 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>C · 花旗集团（Citigroup, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">C</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">PB1.21不贵但便宜得有道理，不是好生意</div><h1>C · 花旗集团（Citigroup, Inc.）</h1>
+<p><strong>市值</strong> $2343 亿 ｜ <strong>股价</strong> 约 $139 ｜ <strong>行业</strong> 银行 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>全榜名次</strong> 第 36 名</p>
+<blockquote>
+<p><strong>这是银行，下面第三部分用市净率（PB）和 ROTCE 而不是市盈率。</strong> 原因是：银行的"利润"取决于它今年愿意为坏账计提多少准备金，而这个数字是管理层估出来的，可以调节；同时银行是靠 10 倍以上的杠杆在赚钱，同样的市盈率，风险完全不是一回事。看银行只有两个问题真正重要——<strong>它的自有资本有多少（账面价值）</strong>，以及<strong>这些自有资本一年能生出多少利润（ROE / ROTCE）</strong>。市盈率把这两件事糊在了一起。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>花旗自己把公司切成五块。先说一件事：网站上那个"营收 814 亿"的数字，其实是<strong>已经扣掉了坏账计提之后的</strong>。把五个分部的营收原样加起来是 <strong>913.6 亿美元</strong>，减去当期 100.0 亿的信用减值计提，正好等于 813.6 亿——2024、2025 两个财年也都是分毫不差的同一个算法。所以下面讲每门生意用的是 913.6 亿这个口径，你看到别处写"花旗营收 814 亿"不用奇怪，那是扣完坏账的。</p>
+<h3>1. Services（交易服务）— TTM 营收 244.9 亿，占 26.8%</h3>
+<p><strong>这是花旗最值钱、也最没人讲清楚的一块。</strong> 它不面向个人，只面向跨国公司和其他银行，干的是"让钱在国界之间流动"这件事。</p>
+<p>具体是这样：假设一家中国的电子厂给沃尔玛供货，沃尔玛在美国付美元，工厂要在深圳收人民币发工资，同时在越南的分厂要付越南盾买原料。这中间需要有人在几十个国家同时持有银行牌照、同时接进当地的清算系统、还要在周一早上告诉这家公司"你在全球 18 个账户里现在一共有多少钱"。<strong>全世界能干这件事的银行不超过三家，花旗是最大的一家</strong>——它在 90 多个国家有实体牌照，这是几十年攒下来的、新玩家几乎不可能复制的东西。</p>
+<p>收钱方式有三种叠在一起：
+- <strong>按笔收费</strong>：每处理一笔跨境付款收几美元到几十美元，一家大型跨国公司一年几十万笔，光手续费就是几百万美元。
+- <strong>吃存款利差（这块最大）</strong>：客户为了随时能付款，必须在花旗账上常年趴着一笔现金。花旗给这笔钱的利息很低甚至不给，转手拿去放贷或买国债。<strong>这块钱的规模是以千亿美元计的</strong>——利率高的时候，这就是白捡的利润，这也是过去两年 Services 收入猛涨的直接原因。
+- <strong>贸易融资</strong>：给出口商开信用证、做应收账款保理，按融资额收年化两三个点。</p>
+<p>还包括 <strong>Securities Services（证券托管）</strong>：养老金和资管公司买了全球几万亿美元的股票债券，得有人替它们保管、收股息、报税、做估值。花旗按托管资产规模收千分之零点几，听着薄，但基数是万亿级，而且<strong>客户几乎不会换托管行</strong>——换一次要迁移几万个账户，成本高到没人愿意折腾。</p>
+<p>对比 2025 全年增长 +8.2%。<strong>这块生意的特点是：不占什么资本金、不怎么产生坏账、客户黏性极高。</strong> 它是花旗估值里唯一算得上"优质资产"的部分。</p>
+<h3>2. Markets（交易业务）— TTM 营收 246.1 亿，占 26.9%</h3>
+<p>做市商。对冲基金想买 5 亿美元的巴西国债，打电话给花旗，花旗立刻报一个买价一个卖价，中间差价就是花旗赚的。这里面利率、外汇、大宗商品占大头（花旗是全球外汇做市的头部玩家），股票交易相对小。</p>
+<p><strong>这块收入的真相是：它随行情剧烈波动，而且需要占用大量资本金和资产负债表。</strong> 花旗过去 12 个月交易性资产增加了 <strong>659.6 亿美元</strong>——这就是做市的代价，你得先把货囤在自己账上。市场一波动，这些存货能亏钱。对比 2025 全年 +9.8%，最近两年市场波动大，做市生意就好，这不是可持续的增长。</p>
+<h3>3. Banking（投行）— TTM 营收 71.1 亿，占 7.8%</h3>
+<p>帮公司发股票、发债、做并购顾问，按交易金额抽费。一笔 100 亿美元的并购，顾问费大概 3000–5000 万美元。对比 2025 全年 <strong>+11.4%，是五块里增速最快的</strong>，因为并购市场回暖了。但这是全公司最靠天吃饭的一块，市场一冷能腰斩。</p>
+<h3>4. Wealth（财富管理）— TTM 营收 119.4 亿，占 13.1%</h3>
+<p>给有钱人管钱，按管理资产规模收年费（通常 0.5%–1%），外加卖理财产品、给富人做抵押贷款。客户分三层：普通高净值（花旗的信用卡金卡客户升上来的）、私人银行（资产千万美元以上）、以及给对冲基金老板这类超高净值人群的家族办公室服务。</p>
+<p>对比 2025 全年 +6.0%。花旗这块历来是短板——<strong>同样是财富管理，摩根士丹利和瑞银做得比它大得多也赚得多</strong>，现任管理层把这块列为重点改造对象已经好几年了，进展算不上惊艳。</p>
+<h3>5. U.S. Personal Banking（美国个人银行）— TTM 营收 185.0 亿，占 20.2%</h3>
+<p><strong>这块本质上就是一家信用卡公司。</strong> 三部分：
+- <strong>自有品牌信用卡</strong>（Citi Double Cash、Custom Cash 这些）：你刷卡，商户被抽 1.5%–2.5%，花旗分走一部分；你如果不全额还款，年化利率 20%–29%。<strong>花旗真正赚钱的是后者</strong>——循环余额的利息。
+- <strong>零售商联名卡</strong>：跟家得宝、好市多、百思买这些零售商合作发卡。卡面印着零售商的 logo，坏账风险和利息收入归花旗，零售商拿分成。
+- <strong>零售银行</strong>：美国境内几百家网点，收存款放房贷。规模比摩根大通、美国银行小一大截。</p>
+<p>对比 2025 全年只有 <strong>+1.3%，五块里最差</strong>。而且——<strong>全公司那 100 亿美元的坏账计提，绝大部分是这块产生的</strong>（信用卡是所有贷款里违约率最高的品种，年化冲销率通常在 3%–4%）。</p>
+<h3>各分部营收一览（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（亿美元）</th>
+<th>对比 2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Markets 交易</td>
+<td>246.1</td>
+<td>+9.8%</td>
+<td>26.9%</td>
+<td>中等（估算）</td>
+</tr>
+<tr>
+<td>Services 交易服务</td>
+<td>244.9</td>
+<td>+8.2%</td>
+<td>26.8%</td>
+<td><strong>最高（估算）</strong></td>
+</tr>
+<tr>
+<td>U.S. Personal Banking 信用卡</td>
+<td>185.0</td>
+<td>+1.3%</td>
+<td>20.2%</td>
+<td><strong>最低，坏账全在这（估算）</strong></td>
+</tr>
+<tr>
+<td>Wealth 财富管理</td>
+<td>119.4</td>
+<td>+6.0%</td>
+<td>13.1%</td>
+<td>偏低（估算）</td>
+</tr>
+<tr>
+<td>Banking 投行</td>
+<td>71.1</td>
+<td>+11.4%</td>
+<td>7.8%</td>
+<td>中等（估算）</td>
+</tr>
+<tr>
+<td>All Other 其他</td>
+<td>46.8</td>
+<td>+5.4%</td>
+<td>5.1%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>913.6</strong></td>
+<td>—</td>
+<td>100%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润率一列全部是估算，必须说清楚：这四个财报页面只披露到分部营收，不披露分部利润。</strong> 上面的排序依据是两条硬事实：一是 Services 几乎不占资本金也几乎不产生坏账，二是全公司 100 亿的信用减值计提绝大部分由信用卡业务承担。不要把这一列当精确数字用。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：花旗的现金流量表<strong>没有把 SBC 单列出来</strong>，它被合并进了"其他调整"（TTM −17.8 亿）这一行，从这四个页面拿不到确切金额。但有一个更硬的替代指标：<strong>过去一年流通股数减少了 6.42%</strong>——这是发完股票给员工之后的净结果，比 SBC 金额本身更能说明问题。稀释是真实存在的，但回购的力度远远压过了它。</p>
+<p><strong>一次性项目</strong>：TTM 这一期没有能从财报页面上看出来的大额一次性损益。有效税率 26.03%，交税 64.3 亿，是个正常水平，没有靠税务一次性调整撑利润。<strong>但要提醒一句：单看 TTM 一期无法判断"信用减值计提"这 100 亿是不是被人为调节过。</strong> 这是银行会计里最大的一个可调节旋钮——少提 20 亿准备金，税前利润就凭空多 20 亿。能看到的事实是这个数字三期高度稳定（TTM 100.0 亿 / 2025 年 102.7 亿 / 2024 年 101.1 亿），没有突然大幅下调的迹象，这算是个正面信号。</p>
+<p><strong>资本化的支出</strong>：银行没有软件资本化这类常见花招的重大敞口，跳过。</p>
+<p><strong>回购与稀释 —— 这是花旗最值得说的一件事</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购普通股</td>
+<td><strong>−210.4 亿美元</strong></td>
+</tr>
+<tr>
+<td>派发普通股股息</td>
+<td>−54.4 亿美元</td>
+</tr>
+<tr>
+<td><strong>合计还给股东</strong></td>
+<td><strong>−264.8 亿美元</strong></td>
+</tr>
+<tr>
+<td>同期归属普通股股东的净利润</td>
+<td>约 +164.6 亿美元</td>
+</tr>
+<tr>
+<td><strong>派发比例</strong></td>
+<td><strong>约 161%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>花旗过去一年还给股东的钱，是它同期赚到的钱的 1.6 倍。</strong> 多出来的部分是在消耗账上多余的资本金——这不是坏事（监管资本超标本来就该退给股东），但<strong>这个速度按定义不可持续</strong>：等超额资本放完，回购规模必然大幅下降。</p>
+<p>还有一个细节值得摆出来：同期花旗<strong>发行优先股募了 69.8 亿、赎回 38.0 亿，净增 31.8 亿优先股</strong>。也就是说，这轮巨额回购里有一部分是"用优先股换普通股"——普通股股东的份额确实变少了，但公司要付的优先股股息变多了。这不算作假，但把它算成纯粹的"股东回报"就不诚实了。</p>
+<p>回购/SBC 的比值因为 SBC 拿不到而算不出来，但从量级判断（银行的 SBC 通常在净利润的 5%–10%，即十几亿美元级别）<strong>，210 亿的回购是货真价实的回购，不是给员工发股票打掩护</strong>。</p>
+<p><strong>利润和现金流的差 —— 银行这里必须换个看法</strong>：</p>
+<p>花旗 TTM 经营现金流是 <strong>−182.97 亿美元</strong>，自由现金流 <strong>−245.11 亿美元</strong>。<strong>如果这是一家制造业公司，看到这个数字应该立刻走人。但对银行来说这个指标基本没有意义。</strong> 下面这张对账表说明了为什么：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+17,842</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+4,488</td>
+</tr>
+<tr>
+<td>加：信用减值计提（非现金）</td>
+<td>+9,997</td>
+</tr>
+<tr>
+<td>加：待售贷款净变动</td>
+<td>+2,635</td>
+</tr>
+<tr>
+<td>减：其他调整</td>
+<td>−1,776</td>
+</tr>
+<tr>
+<td><strong>减：交易性资产增加</strong></td>
+<td><strong>−65,956</strong></td>
+</tr>
+<tr>
+<td>加：应收利息及应收账款变动</td>
+<td>+5,834</td>
+</tr>
+<tr>
+<td>加：交易性负债增加</td>
+<td>+23,241</td>
+</tr>
+<tr>
+<td>减：其他经营性项目变动</td>
+<td>−14,740</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>−18,297</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看清楚了：把利润变成负现金流的，就是那一行 −659.6 亿的"交易性资产增加"。</strong> 花旗做市业务的存货（债券、外汇头寸）涨了 660 亿，会计上这被算作"经营活动的现金流出"。可是这些资产是可以随时卖掉变现的流动资产，不是花掉的钱。<strong>银行是靠扩张资产负债表赚钱的，扩得越猛，账面经营现金流越难看。</strong> 同期花旗的存款增加了 1476 亿、贷款增加了 724 亿——这是生意在做大，不是钱在流失。</p>
+<p>所以对花旗：<strong>忘掉自由现金流，忘掉市盈率里的现金流口径，只看账面价值和 ROE。</strong></p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>股价 ÷ 每股账面价值（$139 ÷ $114.74）</td>
+<td><strong>1.21 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形账面市净率 P/TBV</td>
+<td>股价 ÷ 每股有形账面价值（$139 ÷ 约 $101）</td>
+<td><strong>1.38 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE（普通股口径）</td>
+<td>归属普通股净利润 ÷ 普通股权益（164.6 ÷ 约 1928 亿）</td>
+<td><strong>8.5%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形普通股回报率）</strong></td>
+<td>164.6 亿 ÷ 有形普通股权益约 1700 亿</td>
+<td><strong>约 9.7%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB</strong></td>
+<td>8.5% ÷ 1.21</td>
+<td>—</td>
+<td><strong>$7.05</strong></td>
+</tr>
+<tr>
+<td>ROTCE ÷ P/TBV（交叉验算）</td>
+<td>9.7% ÷ 1.38</td>
+<td>—</td>
+<td><strong>$7.03</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>市值 2343 亿 ÷ 三年平均归母普通股利润约 107 亿</td>
+<td><strong>约 21.9 倍</strong></td>
+<td><strong>$4.57</strong></td>
+</tr>
+<tr>
+<td>股东实际到手（分红+回购）</td>
+<td>分红 1.92% + 回购 6.42%</td>
+<td>8.35%</td>
+<td>$8.35</td>
+</tr>
+<tr>
+<td>参考：GAAP TTM 市盈率</td>
+<td>2343 亿 ÷ 178.4 亿</td>
+<td>15.1 倍</td>
+<td>$6.63</td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均那一行：2023 年归母普通股利润约 78 亿、2024 年约 113 亿、2025 年约 129 亿，平均 107 亿。ROTCE 里的有形普通股权益是从 P/TBV 与 PB 的比值倒推的：每股有形账面价值 ≈ $139 ÷ 1.38 ≈ $101，乘以 16.8 亿股 ≈ 1700 亿。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块钱买花旗，按最保守的口径算，公司一年替你赚 7 块钱左右。</strong></p>
+<p>这 7 块钱的去向很清楚：<strong>大约 1.9 块以现金股息直接打到你账上，剩下的 5 块多以回购的形式回到你手里</strong>——花旗买走并注销别人的股票，你手上的股票占公司的比例自动变大。过去一年流通股少了 6.42%，就是这么来的。花旗几乎没有把利润留在公司里再投资，因为<strong>它不需要</strong>：这是一家资产 2.4 万亿美元的成熟银行，业务扩张靠的是吸存款和加杠杆，不靠留存利润。</p>
+<p><strong>但那一行"三年平均口径 21.9 倍、只赚 4.57 块"，才是这份分析里最该盯住的数字。</strong></p>
+<p>TTM 的 15.1 倍和三年平均的 21.9 倍差了将近一半。这个差距说明：<strong>花旗现在的利润处在一个明显高于过去三年平均水平的位置上。</strong> 2023 年它只赚了 92 亿，2024 年 127 亿，2025 年 143 亿，过去 12 个月 178 亿——三年翻了将近一倍。</p>
+<p>这个利润跳升的来源里，有一部分是真本事：管理层花了几年时间关掉十几个国家的零售业务、砍掉冗余、把公司从"什么都做一点"收缩成五块清晰的业务，这个整改是真的在见效（三年前 ROTCE 只有 5% 出头，现在 9.7%）。<strong>但也有很大一部分是运气</strong>——利率高企让 Services 那几千亿的低息客户存款变成了印钞机，而市场持续波动让 Markets 的做市生意异常好做。<strong>这两件事都会掉头。</strong> 利率一降，存款利差立刻收窄；市场一平静，交易收入立刻回落。</p>
+<p>还要说一句这几个页面<strong>没能提供的关键数字：CET1 核心一级资本充足率</strong>。这是判断一家银行"回购还能持续多久"的唯一硬指标，四个财报页面里没有。只能从行为反推：一家愿意用 161% 的比例把利润往外发、还额外发优先股来加大回购的银行，说明它自己认为资本严重过剩。这是间接证据，不是直接证据。</p>
+<p><strong>最后，"投 100 块赚 7 块"这个回报是建立在 10 倍杠杆之上的。</strong> 花旗用 2144 亿的自有资本，撑起 2.4 万亿的资产。经济一旦转差，信用卡坏账率从 3.5% 涨到 6%（2009 年那次涨到 10% 以上），那 100 亿的年度计提就要变成 200 亿，利润会瞬间腰斩甚至归零。<strong>你拿到的这 7 块钱，是在经济不出事的前提下的 7 块钱。</strong> 这也正是市场只肯给它 1.21 倍市净率的原因——摩根大通同期能拿到 2 倍以上。市场不是不知道花旗在改善，市场是在说"我不信你能在下一次衰退里守住这个 ROTCE"。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>花旗现在这个价不贵，但它便宜得有道理，而且你买的是一个"整改故事的后半段 + 一个利率赌注"，不是一门好生意。</strong></p>
+<p>1.21 倍市净率、8.35% 的股东实际到手回报，在大盘普遍偏贵的环境里确实有吸引力，管理层的整改也确实在见效（ROTCE 从 5% 干到 9.7% 不是假的）。但它的核心问题一个都没解决：<strong>五块生意里只有 Services 一块算得上优质</strong>，信用卡那块增速只有 1.3% 还背着全公司的坏账，财富管理常年打不过对手，而 Markets 和 Services 眼下的好业绩很大程度上是高利率和高波动的馈赠。ROTCE 9.7% 仍然低于同业最好水平一大截，而这已经是"整改成功"之后的数字了。</p>
+<p>一句话：<strong>它是个还算合理的价值型仓位，不是一门你想长期持有二十年的生意。</strong></p>
+</div></body></html>

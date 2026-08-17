@@ -1,0 +1,369 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TSN · 泰森食品（Tyson Foods）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TSN</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">卡在几十年一遇的牛周期谷底，赌母牛什么时候变多</div><h1>TSN · 泰森食品（Tyson Foods）</h1>
+<p>市值 204.1 亿美元 / 股价约 $58.2 / 行业：非耐用消费品（肉类加工） / TTM 截止日 2026-06-27</p>
+<p>全榜名次 308（2026-08-17 抓取时）。全篇所有数字都是 TTM（最近四个季度滚动），截止 2026 年 6 月 27 日。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>泰森是美国最大的肉类公司，一年卖 557 亿美元的肉。它财报拆五块：牛肉、猪肉、鸡肉、预制食品、国际及其他。这五块<strong>不是五个部门，是五门经济学完全不同的生意</strong>——有的是纯周期的大宗商品加工，有的是稳定的品牌消费品。把它们混在一起看，是散户看错这家公司的头号原因。</p>
+<h3>生意一：牛肉——一门今年在亏钱的"过手"生意（占 39%）</h3>
+<p>泰森从牧场主手里买活牛，拉到自己的屠宰厂，一头牛在流水线上被分解成牛排、碎牛肉、牛腩、内脏和皮，然后卖给 Costco、Walmart、麦当劳和肉铺。一个典型的大厂一天处理 5,000 头牛。</p>
+<p>关键在于<strong>它两头都不定价</strong>。买活牛的价格由牛市场决定，卖牛肉的价格由批发市场决定，泰森赚的只是这中间的"加工价差"（packer spread）。这个价差在好年份能有一头牛 300 美元，在坏年份是<strong>负的</strong>——也就是说，把牛买回来、杀掉、切好、卖出去，全套干完还亏钱。</p>
+<p>现在正是坏年份，而且是几十年来最坏的。原因是美国母牛存栏量掉到 1950 年代以来的最低点：前几年大旱，草场没草，牧场主大批把母牛也宰了变现，母牛少了，小牛就少，几年后可供屠宰的牛就少。牛少了，活牛价格暴涨；但消费者不可能跟着按同比例接受牛排涨价，零售端涨不动。两头一挤，屠宰厂就成了被夹的那一层。更糟的是屠宰厂是重资产、高固定成本的——厂子开着，每天必须处理够量才能摊薄成本，宁可亏本也不能停线。</p>
+<p>TTM 牛肉收入 218.56 亿美元，是全公司最大的一块，但<strong>我的估算是它在亏约 8 亿美元的经营利润</strong>。这个亏损数字财报没有单独披露（见下方说明），是我按整体经营利润倒推的。</p>
+<h3>生意二：鸡肉——现在的利润奶牛（占 31%）</h3>
+<p>鸡和牛完全不同，因为泰森<strong>自己控制整条链</strong>：自己的种鸡场孵蛋，把小鸡分发给几千个签约农户去养（农户出鸡舍和人工，泰森出小鸡和饲料，按体重付代养费），养到 6–7 周拉回泰森的加工厂宰杀分割，卖成鸡胸、鸡腿、鸡翅、鸡块。</p>
+<p>这条链的经济学好在两点：一是<strong>周期短</strong>，从蛋到上市只要 9 周左右，供给能快速跟着需求调，不像牛要三年；二是<strong>最大的成本是玉米和豆粕</strong>，而这两年谷物价格从 2022 年的高位跌下来了，饲料便宜了，利润就厚了。同时消费者因为牛肉贵，纷纷改吃鸡——这叫"降级替代"，牛肉的坏消息正好是鸡肉的好消息。</p>
+<p>TTM 鸡肉收入 171.64 亿美元，估算经营利润约 12.5 亿（利润率约 7.3%）。<strong>这一块目前扛着整个公司</strong>。</p>
+<h3>生意三：预制食品——唯一有品牌溢价的生意（占 18%）</h3>
+<p>这是超市里那些印着牌子的东西：Jimmy Dean 的早餐香肠和三明治、Hillshire Farm 的午餐肉、Ball Park 的热狗、Aidells 的鸡肉肠，还有卖给学校食堂、连锁餐厅、监狱和医院的预调理肉品（比如给某连锁快餐供的已经腌好裹粉、只需下锅炸的鸡块）。</p>
+<p>为什么这块值钱：一个赶时间的上班族在冷柜前拿 Jimmy Dean 的早餐三明治，是认牌子拿的，不会为了便宜 0.4 美元换成不认识的杂牌。这就是品牌溢价，意味着当猪肉原料涨价时，泰森可以把价格往零售端传导，而不像牛肉那样只能自己吞。所以这块的利润率不随牲畜周期剧烈波动，是全公司最稳的现金来源。</p>
+<p>TTM 收入 102.87 亿美元，估算经营利润约 9 亿（利润率约 8.7%），是全公司利润率最高的一块。</p>
+<h3>生意四：猪肉——小一号的牛肉（占 11%）</h3>
+<p>跟牛肉同样的模式：买生猪、屠宰、分割、卖白条和分割肉，赚加工价差。规模小得多，TTM 收入 61.82 亿美元。猪的繁殖周期比牛短得多（母猪一年能生两窝、每窝十几头），所以供给调整快，不会像牛那样陷入多年的结构性短缺，价差波动也温和。估算 TTM 经营利润约 1.5 亿，微利。</p>
+<h3>生意五：国际及其他（占 4%）</h3>
+<p>主要是在中国、泰国、马来西亚、澳大利亚的鸡肉和加工厂。TTM 收入 23.44 亿美元，规模不大，估算基本盈亏平衡或微亏。战略意义大于当期财务意义。</p>
+<h3>五门生意的钱（TTM，截至 2026-06-27）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(百万美元)</th>
+<th>增速</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献经营利润(百万美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>牛肉</td>
+<td>21,856</td>
+<td>+5.6%</td>
+<td>39.2%</td>
+<td>约 -3.7%（估算）</td>
+<td>约 -800</td>
+</tr>
+<tr>
+<td>鸡肉</td>
+<td>17,164</td>
+<td>+2.5%</td>
+<td>30.8%</td>
+<td>约 +7.3%（估算）</td>
+<td>约 +1,250</td>
+</tr>
+<tr>
+<td>预制食品</td>
+<td>10,287</td>
+<td>+0.8%</td>
+<td>18.5%</td>
+<td>约 +8.7%（估算）</td>
+<td>约 +900</td>
+</tr>
+<tr>
+<td>猪肉</td>
+<td>6,182</td>
+<td>-2.1%</td>
+<td>11.1%</td>
+<td>约 +2.4%（估算）</td>
+<td>约 +150</td>
+</tr>
+<tr>
+<td>国际及其他</td>
+<td>2,344</td>
+<td>-2.6%</td>
+<td>4.2%</td>
+<td>约 -0.9%（估算）</td>
+<td>约 -20</td>
+</tr>
+<tr>
+<td>内部抵销</td>
+<td>-2,139</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>55,694</strong></td>
+<td><strong>+2.9%</strong></td>
+<td>100%</td>
+<td><strong>2.66%</strong></td>
+<td><strong>1,479</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润一列全部是估算，必须说清楚</strong>：财报页只披露到分部营收，没有分部经营利润。上表的利润是我按"整体经营利润 14.79 亿 + 各品类当前的行业周期状态"反推分配的，五块加总恰好等于实际的 14.79 亿，但<strong>单块可能各差两三亿</strong>。方向（牛肉巨亏、鸡肉大赚、预制稳赚）是有把握的，绝对数不要当精确值用。</p>
+<p>看这张表最重要的一件事：<strong>占营收 39% 的最大一块生意，正在亏钱</strong>。整家公司 2.66% 的经营利润率——卖 100 块的肉只赚 2.66 块——就是"两块赚、一块大亏"互相抵消之后的结果。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.00 亿美元，占 TTM 净利润 5.74 亿的 17.4%。相对于 557 亿的营收这是很小的数（0.18%），泰森是个用现金付工资的传统制造企业，不是靠发股票养人的科技公司。这一项没什么可挑剔的。</p>
+<p><strong>一次性项目——这是本篇最该警惕的一处</strong>。TTM"资产减值与重组费用"2.09 亿美元。单看这一期，公司会告诉你这是关闭低效工厂的一次性支出。但把五年摆在一起：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产减值与重组（百万美元）</td>
+<td>209</td>
+<td>508</td>
+<td>131</td>
+<td>901</td>
+<td>34</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年里有四年在计提，累计 17.8 亿美元。</strong>这已经不是"一次性"，这是这门生意的常态成本——肉类加工是一个不断关掉旧厂、建新厂、调整产能的行业，每一轮周期都要减值一批资产。所以本篇<strong>不把它加回利润</strong>。需要诚实说明的是：只看 TTM 这一期确实无法判断某一笔具体的减值是不是真的一次性，但五年的分布已经足以说明这个科目会年年出现。</p>
+<p><strong>资本化的支出</strong>：没有值得一提的软件或内容资本化。TTM"其他摊销"仅 1,100 万美元。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 2.77 亿美元，SBC 1.00 亿，<strong>回购/SBC = 2.77 倍</strong>——超过 2，是真回购不是抵消。但实际股本一年只减少 0.77%，因为回购金额相对 204 亿的市值本来就小（1.4%）。同时 TTM 派发现金股息 7.02 亿美元，股息才是泰森回馈股东的主力，股息率约 3.4%。</p>
+<p><strong>利润和现金流的差——这是全篇含金量最高的一张表</strong>。净利润 5.74 亿，经营现金流 20.04 亿，差了整整 14.3 亿，差额是净利润的 2.5 倍。这么大的口子必须逐项对清楚：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>574</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>1,293</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>11</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组（非现金部分）</td>
+<td>209</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC（非现金）</td>
+<td>100</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>122</td>
+</tr>
+<tr>
+<td>+ 应收账款减少（收回现金）</td>
+<td>124</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>-530</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加（占用供应商的钱）</td>
+<td>299</td>
+</tr>
+<tr>
+<td>− 应交税金变化</td>
+<td>-217</td>
+</tr>
+<tr>
+<td>+ 其他经营资产变化</td>
+<td>19</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>2,004</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-843</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,161</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>读法：14.3 亿的差额里，<strong>12.93 亿是折旧摊销</strong>——这是过去建厂买设备花掉的钱在账上慢慢摊，不再花现金，所以现金流比利润高。这在重资产制造业是完全正常的，不是造假。</p>
+<p>但这张表藏着一个必须挑明的问题：<strong>折旧 12.93 亿，资本开支只有 8.43 亿</strong>。也就是说泰森今年"账面上损耗掉的产能"比"实际补上的产能"多了 4.5 亿美元。这个缺口在过去几年还在扩大（FY2023 资本开支还有 19.39 亿，现在腰斩到 8.43 亿）。短期看这让自由现金流很好看——11.61 亿的 FCF 里有一部分其实是"少花的维护钱"；长期看，工厂会老化，这笔钱迟早要补上。<strong>如果按资本开支等于折旧来算，"可持续的"自由现金流应该是 20.04 − 12.93 = 7.11 亿，而不是 11.61 亿。</strong></p>
+<p>另一处：存货一年增加 5.3 亿。在牛价高企的环境下，这既可能是主动囤便宜的鸡肉，也可能是牛肉卖不动积压。财报数据分不出是哪一种。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 204.1 亿美元，企业价值 275.9 亿（有息负债 80.06 亿，现金 8.29 亿，净负债 71.77 亿）。<strong>注意：这家公司三分之一的市值是借来的，所以看市盈率会严重低估它的真实杠杆，EV/EBIT 那一行才是更公道的口径。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>20,410 ÷ 574</td>
+<td><strong>35.6 倍</strong></td>
+<td><strong>2.81 元</strong></td>
+</tr>
+<tr>
+<td>公司口径（加回税后重组后重构）</td>
+<td>20,410 ÷ (574 + 209×0.73=727)</td>
+<td>28.1 倍</td>
+<td>3.56 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>重组费用年年发生，不加回 = GAAP</td>
+<td><strong>35.6 倍</strong></td>
+<td><strong>2.81 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>20,410 ÷ 1,161</td>
+<td>17.6 倍</td>
+<td>5.69 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（资本开支补到折旧）</td>
+<td>20,410 ÷ 711</td>
+<td>28.7 倍</td>
+<td>3.48 元</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td>27,590 ÷ 1,479</td>
+<td><strong>18.7 倍</strong></td>
+<td><strong>5.36 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>20,410 ÷ (574+474+800)/3 = 616</td>
+<td><strong>33.1 倍</strong></td>
+<td><strong>3.02 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>几点说明：</p>
+<ul>
+<li><strong>"公司口径 28.1 倍"是我按公司的调整逻辑重构的，不是官方数字</strong>。泰森公布 adjusted EPS 时会把重组和减值扣掉。上面第三行给出了我的判断：不该扣，因为它年年都有。</li>
+<li><strong>自由现金流两行差一倍，必须一起看</strong>。17.6 倍那个数是市场最常引用的，看着很便宜；但它建立在"资本开支只有折旧的 65%"这个不可持续的状态上。把资本开支补回折旧水平，就是 28.7 倍。真相在两者之间，靠近后者。</li>
+<li><strong>EV/EBIT 18.7 倍是本表最诚实的一行</strong>。它把 71.77 亿净负债算进了你买这家公司的总代价，也绕开了利息和税的干扰。18.7 倍对一个几乎零增长（营收 +2.9%）的周期性加工企业来说，是<strong>贵</strong>，不是便宜。</li>
+<li><strong>三年平均 33.1 倍——但这个数字这次特别不可靠</strong>。用的是 TTM 5.74 亿、FY2025 4.74 亿、FY2024 8.00 亿。往前再看一年，FY2023 是<strong>亏 6.48 亿</strong>；再往前 FY2022 是<strong>赚 32.38 亿</strong>。五年之内，同一家公司的年度净利润在 +32.4 亿和 -6.5 亿之间摆动了 39 亿美元。<strong>任何一个"平均利润"在这种波动面前都没有意义</strong>。这才是关于泰森最重要的一句话：你不是在给一个利润流定价，你是在猜牛周期什么时候转。</li>
+</ul>
+<h3>说人话：投 100 块，一年替你赚多少</h3>
+<p>按最保守的真实口径（35.6 倍市盈率），你现在投 100 块进去，公司一年替你赚 <strong>2.81 元</strong>。用 EV/EBIT 口径（把债算进去、按经营利润算）是 5.36 元，但那 5.36 元里要先拿约 1.5 元去付利息给银行，才轮到股东。</p>
+<p>这 2.81 元里回到你口袋的部分反而超过 100%：TTM 派息 7.02 亿 + 回购 2.77 亿 = 9.79 亿，而净利润只有 5.74 亿。<strong>派息加回购是净利润的 1.7 倍</strong>。这在会计上能撑住，是因为现金流（20.04 亿）远高于净利润；但如上所述，那部分现金流有一块是靠少花维护钱换来的。同时公司 TTM 净还债 11.45 亿——这是好事，说明管理层在去杠杆。股息率 3.4%，是持有这只股票最实在的回报。</p>
+<p><strong>这个 2.81 元未来大概率会变大，而且可能变很大</strong>。理由是牛周期：美国母牛存栏已经在触底，牧场主开始留母牛扩群（因为牛价太高，养牛有利可图）。留母牛意味着眼下可屠宰的牛更少（短期更痛），但两三年后小牛出栏，活牛价格回落，屠宰价差会重新打开。历史上每一轮牛周期反转，泰森的牛肉分部都会从亏 8 亿变成赚 10 亿以上——那就是 18 亿的利润摆动，相对于现在 5.74 亿的净利润是翻好几倍。市场也是这么看的：<strong>远期市盈率只有 13.15 倍</strong>，说明分析师普遍预期未来 12 个月利润会翻 2.7 倍。</p>
+<p><strong>往下拽的因素</strong>：牛周期反转的时点无法预测，可能还要熬两三年；关税和贸易摩擦影响出口；鸡肉现在赚得多，是因为饲料便宜，谷物一涨这块也会缩；71.77 亿净负债在高利率下每年要吃掉约 4 亿利息。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这不是一家 35 倍市盈率的贵公司，也不是一家 13 倍远期市盈率的便宜公司——它是一家利润正卡在几十年一遇的牛周期谷底、账面利润严重失真的周期股；<strong>买它就是在赌美国的母牛什么时候重新变多</strong>，赌对了两三年后利润翻几倍，赌错了你要拿着 3.4% 的股息干等，而这期间它的自由现金流还在靠少花维护钱撑着。</p>
+</div></body></html>

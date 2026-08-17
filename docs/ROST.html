@@ -1,0 +1,314 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ROST · 罗斯百货（Ross Stores）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ROST</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意是一流的，价格是三流的</div><h1>ROST · 罗斯百货（Ross Stores）</h1>
+<p><strong>市值</strong> $789.7 亿 · <strong>股价</strong> 约 $246 · <strong>行业</strong> 零售（折扣服装百货） · <strong>TTM 截止</strong> 2026-05-02 · <strong>交易所</strong> NASDAQ
+<strong>全量筛选榜名次</strong> 第 119 名 · <strong>分析日期</strong> 2026-08-14</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>罗斯在财报里<strong>只报一个分部</strong>——它自己认为整家公司就是一门生意。但从商业实质上看，它是<strong>一门主生意 + 一门小得多的副生意</strong>，两块用的是同一套后台、同一批买手、同一个仓储网络。</p>
+<h3>主生意：Ross Dress for Less —— 约 1,850 家店，占营收九成上下</h3>
+<p><strong>这门生意的本质，是替品牌商处理他们卖不掉的货，然后靠"寻宝感"让顾客反复进店。</strong></p>
+<p>具体怎么运作，一步步说清楚：</p>
+<p><strong>第一步，买手在市场上"捡漏"。</strong> 罗斯养了一支几百人的买手团队，常年泡在纽约、洛杉矶的服装批发市场和品牌商的库房里。他们买的不是新品——是 Calvin Klein 秋装压了 8 万件没卖动、是某个百货公司订单取消导致工厂手上多出 5 万条牛仔裤、是某品牌换了包装设计导致旧包装的货成了滞销品。<strong>罗斯出的价通常是批发价的四到六折，而且现金结账、整批吃下、不退不换。</strong> 品牌商愿意卖，是因为这些货堆在仓库里每天都在贬值，而且不能进正价渠道打折——那会砸自己的牌子。卖给罗斯，货会出现在一个跟品牌自己门店完全隔离的渠道里，不伤品牌形象。</p>
+<p><strong>第二步，定价定在"正价的四到六折"。</strong> 一件正价店卖 $79.99 的品牌衬衫，罗斯进价可能 $18，标价 $29.99。顾客看到吊牌上印着"Compare at $79.99"，感觉省了 50 块。罗斯的毛利率 28.09%，比正价百货（40%+）低得多，但<strong>它的成本结构也完全不同</strong>：门店在租金便宜的社区购物中心（不是商场主力位），装修极简（水泥地、铁货架、荧光灯），几乎不做广告，也不搞导购。</p>
+<p><strong>第三步，也是最关键的一步——货品永远在换。</strong> 罗斯的门店没有固定 SKU 清单。今天你去看到的是这批货，两周后来就换了一半。这造成了两个效果：一是<strong>顾客养成了高频来逛的习惯</strong>（"不知道今天有什么"的寻宝感），二是<strong>顾客不敢等打折</strong>——因为货就那么几件，你今天不买，下周它就不在了。这解决了折扣零售最要命的问题：正价百货一打折顾客就学会了等打折，罗斯的模式让"等"变得没有意义。</p>
+<p><strong>第四步，规模变成议价权的飞轮。</strong> 罗斯一年买 200 多亿美元的货，它是品牌商处理尾货时绕不开的少数几个买家之一（另一个主要玩家是 TJX 旗下的 TJ Maxx）。<strong>规模越大，能吃下的整批货越大，拿到的折扣越深，卖得越便宜，客流越多，规模又更大。</strong> 这个飞轮转了四十年，新进入者几乎无法复制——你不能靠融资砸出一支懂货的买手团队和四十年的品牌商关系。</p>
+<p><strong>举个具体的单店经济账</strong>：一家典型的 Ross 门店面积约 2.5 万平方英尺，年销售额约 1,100–1,300 万美元（23,776 ÷ 约 2,200 家店 ≈ 1,080 万），门店层面的利润率大约 15–18%，前期开店投入（装修 + 首批铺货）约 200–250 万美元，两年内回本。这是零售业里回本速度非常快的模型。</p>
+<h3>副生意：dd's DISCOUNTS —— 约 360 家店，占营收不到一成</h3>
+<p>同样的模式，但对准<strong>收入更低的顾客群</strong>。店开在人均收入更低的社区，货的价位带更低（Ross 卖 $29.99 的衬衫，dd's 卖 $12.99），品牌层级也更下沉。它不是 Ross 的低配版，而是<strong>用同一套供应链去覆盖 Ross 覆盖不到的价格带</strong>——罗斯买手一次吃下一整批货时，里面质量参差不齐，好的进 Ross，次一档的进 dd's，<strong>这让罗斯敢于整批吃货，进一步压低进价</strong>。所以 dd's 的战略价值大于它的营收贡献。</p>
+<h3>钱：这门生意的账（TTM 截止 2026-05-02，单位百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>23,776</td>
+<td>21,254</td>
+<td><strong>+11.86%</strong></td>
+<td>加速，见下文</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>6,680</td>
+<td>—</td>
+<td>—</td>
+<td>毛利率 28.09%（上年 27.71%）</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>2,905</td>
+<td>—</td>
+<td>—</td>
+<td>经营利润率 12.22%（上年 11.90%）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>2,316</td>
+<td>—</td>
+<td>—</td>
+<td>净利率 9.74%（上年 9.43%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报不按分部披露利润</strong>，Ross 和 dd's 的单独利润率是公司不披露的信息，本文不做估算。</p>
+<p><strong>+11.86% 这个数字需要解释，因为它是全篇最反常的地方。</strong> 罗斯 FY2025 全年才 +7.67%，FY2024 只有 +3.69%，一家有 2,200 家店的成熟零售商突然加速到接近 12%，通常只有两种原因：疯狂开店，或者同店销售爆发。罗斯每年净开店约 80–100 家（约 4% 的门店增长），剩下的 7–8 个百分点来自同店。<strong>折扣零售的同店在这种量级上跑起来，几乎总是意味着两件事同时发生了</strong>——上游品牌商库存过剩（罗斯拿货更便宜、货更好），加上消费者往下迁移（本来去正价店的人开始来罗斯）。这两件事都是<strong>周期性的顺风，不是永久性的</strong>：品牌商的库存总会清完，消费者的收入回来了也会走。<strong>把 11.86% 当成新常态去外推，是这只股票现在最大的定价风险。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>罗斯的账是我在这个系列里见过最干净的之一，逐项过一遍：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1.95 亿美元，占净利润 23.16 亿的 <strong>8.4%</strong>。这个比例在美股大公司里属于很低的一档（科技公司常见 30–50%）。原因很实在——罗斯的 11.1 万名员工里绝大多数是时薪制的店员和仓库工人，拿的是工资不是股票，发股票的只有总部几百人。这笔钱按 GAAP 已经扣除，本文不加回。</p>
+<p><strong>一次性项目</strong>：<strong>没有。</strong> TTM 内没有重组费用、没有资产减值、没有诉讼和解、没有并购费用。现金流量表里"其他调整" +8,403 万美元是唯一的非常规项，占净利润 3.6%，可以忽略。罗斯不做并购、不做重组、不关店潮——这是一家四十年只做一件事的公司。</p>
+<p><strong>资本化的支出</strong>：没有软件资本化或内容资本化。8.21 亿美元的资本开支全部是实打实的开新店、翻新老店、扩建配送中心，走的是固定资产。</p>
+<p><strong>回购与稀释——这一项是罗斯的加分项</strong>：</p>
+<ul>
+<li>TTM 回购 12.60 亿美元 ÷ 同期 SBC 1.95 亿 = <strong>6.46 倍</strong>。这远远超过"大于 3 才是真回购"的门槛，是本系列里少见的高分。</li>
+<li><strong>流通股一年实际减少了 1.92%</strong>（3.208 亿股），而不是名义上回购了却被增发抵消。</li>
+</ul>
+<p>意思很直白：<strong>罗斯回购的每一块钱里，只有约 15 分是在抵消员工发股，剩下 85 分是真金白银地把股份从市场上买回来注销掉。</strong> 你什么都不做，手上每股背后对应的公司权益一年自动增厚约 2%。这跟 SLB 那种"一边回购一边为并购增发 7.57%"的情况，是两个世界。</p>
+<p><strong>利润和现金流的差</strong>：TTM 净利润 23.16 亿，经营现金流 34.53 亿，差了 11.37 亿。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,316</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>526</td>
+<td>门店装修、配送中心、设备的折旧，不花现金</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>195</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>+ 其他调整</td>
+<td>84</td>
+<td>递延税等小项</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−307</td>
+<td>备货占用了现金（营收在涨，正常）</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>480</td>
+<td><strong>多欠了供应商 4.8 亿，等于无息占用上游资金</strong></td>
+</tr>
+<tr>
+<td>+ 应交税费增加</td>
+<td>31</td>
+<td>小项</td>
+</tr>
+<tr>
+<td>+ 其他经营性变动</td>
+<td>128</td>
+<td>小项</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>3,453</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−821</td>
+<td>开新店、翻新、配送中心</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>2,632</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最值得看的是应付账款 +4.80 亿和存货 −3.07 亿的组合。</strong> 罗斯的营收涨了 11.86%，备货只多占了 3.07 亿现金，同时从供应商那里多"借"了 4.80 亿——<strong>净效果是营运资金不但没吃掉现金，反而净贡献了 1.73 亿</strong>。这是零售商健康度的核心体检指标：货卖得比进得快，账期还在延长。差公司在营收高增长时会被存货吸干现金，罗斯没有。</p>
+<p>自由现金流 26.32 亿 vs 净利润 23.16 亿，<strong>现金比利润多 13.7%</strong>，账面利润没有水分。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $789.7 亿，企业价值 $795.6 亿（净负债仅 $5.92 亿，其中大部分是门店经营租赁负债，实际有息债务很轻）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>789.7 ÷ 23.16</td>
+<td><strong>34.1 倍</strong></td>
+<td><strong>2.93 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>罗斯<strong>不报</strong>调整后利润，与 GAAP 一致</td>
+<td>34.1 倍</td>
+<td>2.93 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 按 GAAP 已扣不加回；TTM 无任何一次性项目</td>
+<td><strong>34.1 倍</strong></td>
+<td><strong>2.93 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>789.7 ÷ 26.32</td>
+<td><strong>30.0 倍</strong></td>
+<td><strong>3.33 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>795.6 ÷ 29.05</td>
+<td><strong>27.4 倍</strong></td>
+<td><strong>3.65 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>789.7 ÷ 20.37（FY23–FY25 均值）</td>
+<td><strong>38.8 倍</strong></td>
+<td><strong>2.58 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四个口径挤在 27–38 倍这个窄区间里，本身就是一个信号</strong>——没有任何会计手法在这家公司的估值上做文章，GAAP 口径就是真实口径，这在美股大公司里很罕见。</p>
+<p><strong>最后一行说明了问题所在。</strong> FY2023 净利润 18.75 亿、FY2024 20.91 亿、FY2025 21.45 亿、TTM 23.16 亿——利润在持续创新高，所以三年平均口径 38.8 倍比当期 34.1 倍<strong>更贵</strong>。<strong>这意味着现在的利润是三年里的高点，市场付的价钱是按这个高点算的。</strong> 结合第一部分说的 +11.86% 营收加速大概率是周期性顺风，这两条放在一起就是核心风险：<strong>如果营收增速回落到历史常态的 4–7%，利润会跟着走平，现在 34 倍的价格就要靠时间去消化。</strong></p>
+<p><strong>你现在投 100 块进去，按最保守的真实 GAAP 口径算，公司一年替你赚 2.93 元。</strong> 这 2.93 元的去向：</p>
+<ul>
+<li><strong>约 0.68 元以分红形式发到你手上</strong>（TTM 分红 5.38 亿 ÷ 789.7 亿 = 0.68% 股息率）；</li>
+<li><strong>约 1.60 元用于回购，而且这部分你是真拿到了</strong>（12.60 亿 ÷ 789.7 亿 = 1.60%，股本实际减少 1.92%）；</li>
+<li>分红加回购合计约 <strong>2.28 元</strong>，占了 2.93 元利润的 <strong>78%</strong>；</li>
+<li><strong>剩下约 0.65 元留在公司里再投资</strong>——TTM 投资活动流出 8.21 亿，全部是资本开支：开新店、翻新老店、扩建配送中心。罗斯不做并购、不买金融资产，投资活动现金流跟资本开支完全相等，这是我见过最简单的一张投资活动表。</li>
+</ul>
+<p><strong>这个 2.93 元未来会不会变大？</strong> 分两层看：</p>
+<ul>
+<li><strong>股本端确定会帮你</strong>。每年注销约 2% 的股份，意味着即便公司总利润原地踏步，每股利润也会每年自动涨 2%。十年下来这一项就是 22% 的复利。</li>
+<li><strong>利润端不确定</strong>。开店空间还有（管理层长期目标是 Ross 2,900 家 + dd's 700 家，比现在多约 1,400 家，按每年净开 100 家还有十几年可开），这是可见的增长跑道。但<strong>当前 12.22% 的经营利润率已经接近历史高位</strong>，靠涨利润率来增厚利润的空间不大；同店增速回归常态几乎是必然的。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是一流的，价格是三流的。</strong></p>
+<p>罗斯的商业模式几乎无懈可击：40 年不变的单一模式、无并购、无重组、无一次性项目、SBC 只占利润 8.4%、回购/SBC 高达 6.5 倍且股本真实缩减 1.92%、营运资金净贡献现金、ROE 38.98%、ROIC 32.31%、还剩十几年的开店跑道。<strong>从"这家公司的账干不干净、生意护城河深不深"这两个问题看，它在本系列里排得进前列。</strong></p>
+<p>问题全在价格上。<strong>34.1 倍市盈率，买的是一家净利率 9.74%、营收长期增速 5–8% 的服装折扣零售商。</strong> 而支撑这个估值的 TTM +11.86% 增速，大概率是品牌商库存过剩 + 消费降级带来的周期性顺风——这两个顺风都会停。三年平均口径 38.8 倍比当期贵，这个方向已经把话说清楚了：你现在买的是利润高点。过去 52 周股价涨了 63.70%，市场已经把好消息定价完了。</p>
+<p><strong>投 100 块一年赚 2.93 元，其中 2.28 元真的回到你口袋。</strong> 这个回报本身不难看，问题是你为一家增速会回落的零售商付了成长股的价钱。<strong>想买这家公司是对的，但不是现在这个价。</strong> 等增速回落到 5% 附近、市盈率跌回 22–25 倍，那才是这门生意应该值的钱。</p>
+</div></body></html>

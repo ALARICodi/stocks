@@ -1,0 +1,356 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JAZZ · Jazz 制药</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">JAZZ</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">便宜得有理由：核心药专利像一根倒计时引线</div><h1>JAZZ · Jazz 制药</h1>
+<p><strong>市值 $159.0 亿 / 股价约 $245 / 行业：医药（Health Technology）/ TTM 截止 2026 年 6 月 30 日</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Jazz 是一家注册在爱尔兰、总部实际在都柏林和费城两头跑的制药公司。它不做基础研究起家，它的玩法是<strong>买</strong>——把别人开发到一半或者已经上市但卖不动的药买过来，靠自己那支非常凶的销售队伍和一套"专科医生渗透"的打法，把销量做上去。所以看它的业务，本质上就是看它手里那几个药各自卖得怎么样。</p>
+<p>财报把营收分成五块，实质上是<strong>两门生意 + 一笔躺着收的过路费</strong>。</p>
+<h3>生意一：神经科学（Neuroscience）—— 卖给"睡不着 / 睡太多 / 抽搐"的病人</h3>
+<p>这是公司的命根子，TTM 卖了 30.49 亿美元，占总营收的 66%。</p>
+<p>具体在卖什么：</p>
+<p><strong>Xywav 和 Xyrem</strong> —— 这两个是同一种东西的两代产品，成分是 γ-羟基丁酸钠，俗称"液体摇头丸"的医用版。听着吓人，但它是目前治<strong>发作性睡病（narcolepsy）</strong>唯一真正有效的药。发作性睡病是什么？就是一个人白天走着走着突然睡着，情绪一激动（大笑、生气）全身肌肉瞬间失力瘫倒在地。美国大概有 17 万确诊患者。这个药的用法很反直觉：<strong>睡前喝一次，凌晨 2 点半闹钟叫醒再喝一次</strong>，喝完立刻昏睡，第二天白天就能清醒。因为副作用和滥用风险极大，美国 FDA 规定它只能通过<strong>一个</strong>中央药房发货（叫 REMS 认证药房），医生开处方后，药是快递到病人家门口的，全国就这一个渠道。</p>
+<p>这个"单一渠道"就是 Jazz 最深的护城河：它不需要养一支跑遍全美几万家药店的队伍，它只要说服<strong>几千个睡眠科医生</strong>就行了。一个病人一年的药费大约 <strong>15 万到 19 万美元</strong>，几乎全部由商业保险和 Medicare 报销，病人自付部分 Jazz 还有慈善基金帮着兜。所以一个病人一旦上药，往往吃十年二十年。3 万多个在用病人 × 每人每年十几万美元，就是二十几亿的年收入。</p>
+<p>Xywav 是 Xyrem 的"低钠版"——把原来配方里 90% 的钠换掉了。为什么要换？因为老年患者天天喝那么多钠等于每天多吃一勺半盐，心血管风险大。Jazz 花了大力气做临床证明低钠版更安全，然后<strong>主动把自己的老药病人往新药上赶</strong>——这一步是典型的"专利悬崖自救"：Xyrem 专利到期后被 Hikma 做成仿制药，Jazz 就把病人先搬到还有十几年专利期的 Xywav 上。目前超过八成的病人已经在用 Xywav。</p>
+<p><strong>Epidiolex（欧洲叫 Epidyolex）</strong> —— 从大麻植物里提纯出来的纯大麻二酚（CBD），不含致幻成分。它治的是三种极其凶险的儿童癫痫：Dravet 综合征、Lennox-Gastaut 综合征、结节性硬化症。这些孩子一天可能抽搐几十次，普通抗癫痫药全部无效。Epidiolex 是全球第一个（也基本是唯一一个）拿到正规药监批准的大麻提取药。一个孩子一年药费大约 <strong>3 万美元</strong>，全球在用患者数万人。这个药是 2021 年 Jazz 花 72 亿美元收购英国 GW Pharma 拿来的——那笔收购是公司历史上最大的一笔赌注，也是今天资产负债表上还背着 44 亿美元债和每年 7 亿多摊销的直接原因。</p>
+<p><strong>Sunosi</strong> —— 白天犯困的口服药，规模小，几千万美元级别，可以忽略。</p>
+<h3>生意二：肿瘤（Oncology）—— 卖给血癌和肺癌病人</h3>
+<p>TTM 卖了 13.21 亿美元，占 29%，是增长最快的一块（较 2025 全年折算约 +17%）。</p>
+<p><strong>Rylaze</strong> —— 治急性淋巴细胞白血病（ALL，最常见的儿童白血病）。化疗方案里有一味必需的酶叫门冬酰胺酶，来源是大肠杆菌；但大约 20% 的孩子对大肠杆菌来源的过敏，一过敏整个化疗方案就断了。Rylaze 是从另一种细菌（欧文氏菌）里做出来的替代品，专门救这批过敏的孩子。全美每年新发 ALL 儿童约 3000 例，其中几百个需要它。一个疗程药费<strong>十几万美元</strong>。它是 Jazz 自己开发的，从递交申请到批准只用了 23 天——因为在此之前市场上唯一的竞品全球断供了，孩子没药用。</p>
+<p><strong>Zepzelca</strong> —— 治<strong>小细胞肺癌</strong>复发患者。小细胞肺癌是肺癌里最恶的一种，一线化疗后几乎必然复发，复发后中位生存期只有几个月。Zepzelca 是二线用药，一个疗程数万美元。2025 年它拿到了和默沙东 Keytruda 联用做维持治疗的新适应症，把用药时间从"复发后几个月"拉长到"一线治疗后持续用"，这是这块业务今年增长的主要来源。</p>
+<p><strong>Ziihera（zanidatamab）</strong> —— 双特异性抗体，治 HER2 阳性的胆管癌，2024 年底批准，刚起量。</p>
+<p><strong>Modeyso（dordaviprone）</strong> —— 2025 年 Jazz 花 8.58 亿美元收购 Chimerix 拿到的，治一种叫 H3 K27M 突变弥漫性中线胶质瘤的脑瘤，主要发生在儿童和年轻人，过去完全无药可治。2025 年 8 月加速批准上市。</p>
+<p>肿瘤这块的共同特征是：<strong>都是罕见病、都没有替代品、都由几百家癌症中心的专科医生开方</strong>。销售队伍规模小、单价极高。</p>
+<h3>第三块：高钠羟丁酸盐授权仿制药分成（AG Royalty）—— 躺着收的过路费</h3>
+<p>TTM 1.87 亿美元，纯利润，几乎零成本。</p>
+<p>这是什么？当年 Xyrem 的专利被仿制药厂 Hikma 挑战，Jazz 打了官司后选择和解：<strong>我不告你了，但你卖的仿制药得分我一部分钱</strong>。于是 Hikma 卖出去的每一瓶仿制 Xyrem，都要按比例把钱汇给 Jazz。这笔钱没有生产成本、没有销售费用、没有研发投入，直接落进营业利润。</p>
+<p>但要注意：<strong>这块在缩水</strong>（TTM 1.87 亿 vs 2025 全年 2.12 亿），因为 Jazz 自己在把病人往 Xywav 上搬，老药市场整体在萎缩，分成的基数自然在缩。这是一笔注定要归零的钱，只是慢一点。</p>
+<p>另有"其他授权与合同收入"3583 万，规模可忽略。</p>
+<h3>各门生意的钱（TTM，截止 2026 年 6 月 30 日，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>较 2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>神经科学</td>
+<td>3,049</td>
+<td>+5.9%</td>
+<td>66.3%</td>
+<td>约 30%（估算）</td>
+<td>约 915</td>
+</tr>
+<tr>
+<td>肿瘤</td>
+<td>1,321</td>
+<td>+17.0%</td>
+<td>28.7%</td>
+<td>约 15%（估算）</td>
+<td>约 198</td>
+</tr>
+<tr>
+<td>高钠 AG 分成</td>
+<td>187</td>
+<td>−11.6%</td>
+<td>4.1%</td>
+<td>约 95%（估算）</td>
+<td>约 178</td>
+</tr>
+<tr>
+<td>其他授权/合同</td>
+<td>36</td>
+<td>+5.4%</td>
+<td>0.8%</td>
+<td>约 90%（估算）</td>
+<td>约 32</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,601</strong></td>
+<td><strong>+12.6%</strong>（真同比）</td>
+<td>100%</td>
+<td>26.3%（实际）</td>
+<td>1,209</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润</strong>，上表的利润率是按整体 26.3% 经营利润率、结合各产品结构和研发/销售费用投向估算的，<strong>不是财报数字</strong>。真正确定的只有最后一行的 1,209（整体经营利润）和各块的营收。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：3.07 亿美元，占净利润的 33%</h3>
+<p>TTM 股权激励 3.0673 亿美元，占 GAAP 净利润 9.41 亿的 <strong>32.6%</strong>，占营收 6.7%。这笔钱在 GAAP 里已经扣掉了，本文不加回——它是真实成本，员工拿的股票是从股东兜里稀释出来的。</p>
+<h3>一次性项目：TTM 1.19 亿减值，但去年是 9.48 亿</h3>
+<p>TTM 有 1.1946 亿美元的资产减值与重组费用。<strong>关键背景是：2025 全年这一项高达 9.4786 亿美元</strong>，正是这笔减值把 2025 年整年做成了 −3.56 亿的净亏损。</p>
+<p>那笔巨额减值几乎可以确定是 GW Pharma 那 72 亿美元收购形成的无形资产减值——买贵了，会计上认账。问题在于：<strong>只看 TTM 这一期，无法判断这类减值是"真一次性"还是"年年都有"</strong>。翻一下往年：2022 年 5.778 亿、2023 年 8001 万、2025 年 9.479 亿、TTM 1.195 亿——<strong>五年里有三年出现大额减值</strong>。这已经不叫一次性了，这叫"每隔一两年就要为过去的收购认一次错"。对一家靠并购驱动的药企，这是结构性的。</p>
+<h3>税：2.13 亿的税收"退款"，这是净利润的最大水分</h3>
+<p>这是本篇最需要盯住的一处。</p>
+<ul>
+<li>税前利润：<strong>7.275 亿美元</strong></li>
+<li>所得税：<strong>−2.1324 亿美元</strong>（负号 = 不是交税，是税务上得了 2.13 亿的好处）</li>
+<li>净利润：<strong>9.4075 亿美元</strong></li>
+</ul>
+<p>也就是说，<strong>净利润比税前利润还高 2.13 亿</strong>。一家公司赚了 7.3 亿，税务局倒贴 2.1 亿。这种情况通常来自递延所得税资产的重新确认（去年巨亏形成的税务亏损，今年确认可以抵扣未来的税，于是账上一次性冲回一笔利得）。</p>
+<p>这是<strong>纯账面数字，没有一分现金流进公司</strong>。现金流量表上"其他经营活动 −4.0948 亿"，很大一块就是在把这类非现金收益从利润里减掉。所以看到"PE 只有 16.7 倍好便宜"的人，实际上是在给一笔税务会计调整估值。</p>
+<h3>资本化的支出：无形资产采购 2.03 亿</h3>
+<p>TTM 花了 2.03 亿美元"购买无形资产"（通常是给合作方的里程碑付款和授权费）。这笔钱是真金白银出去的，但不进利润表、只进投资活动现金流，再通过未来的摊销慢慢体现。资本开支本身只有 6975 万——药企不重资产，这块很干净。</p>
+<h3>回购与稀释：<strong>这是最难看的一项</strong></h3>
+<ul>
+<li>TTM 回购金额：<strong>1.1894 亿美元</strong></li>
+<li>TTM 股权激励：<strong>3.0673 亿美元</strong></li>
+<li><strong>回购 ÷ SBC = 0.39</strong></li>
+</ul>
+<p>标准是：这个比值接近 1 说明回购只够抵消员工发股、股东一分没占到；大于 3 才算真回馈。Jazz 是 <strong>0.39</strong>——回购连员工发股的四成都对冲不掉。</p>
+<p>更直接的证据在股本上：<strong>流通股数一年增加了 5.40%</strong>（64.91 百万股），最近一个季度就增加了 4.99%。股价过去 52 周涨了 109%，公司发行的可转换债券因此进入了转股价，稀释效应集中兑现。</p>
+<p>所以事实是：<strong>股价翻倍的这一年里，你手上的股份被稀释掉了 5.4%</strong>，公司还同时发行了 1.41 亿美元新股（Issuance of Common Stock）、回购只有 1.19 亿——<strong>净融资是正的，它在向股东要钱，不是还钱</strong>。Jazz 不分红。</p>
+<h3>利润和现金流的差：现金流反而更漂亮</h3>
+<p>净利润 9.41 亿，经营现金流 16.61 亿，自由现金流 15.91 亿——现金流是净利润的 1.77 倍。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>940.75</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+718.00</td>
+<td>主要是 GW Pharma 收购形成的无形资产摊销，不花现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+306.73</td>
+<td>发股票不花现金（但稀释股东）</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+119.46</td>
+<td>账面认错，不花现金</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+34.01</td>
+<td>计提不花现金</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−409.48</td>
+<td><strong>主要是把那笔递延所得税收益等非现金利得减掉</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−168.18</td>
+<td>卖出去的货还没收到钱</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−131.84</td>
+<td>备货占用现金</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+40.45</td>
+<td>欠供应商的钱多了，等于占用别人资金</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−22.38</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营性资产变动</td>
+<td>+233.54</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,661</strong></td>
+<td>分毫不差</td>
+</tr>
+</tbody>
+</table></div>
+<p>结论很清楚：<strong>这家公司的现金流质量比利润表看起来好，但净利润的质量比现金流看起来差</strong>。7.18 亿的摊销是"买药买贵了"的历史成本在慢慢摊，不花现金是真的；但那 2.13 亿的税收利得也是不进现金的，属于纯粹的账面美化。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 159.01 亿美元，企业价值 181.1 亿美元（多出来的 22.1 亿是净负债：44.09 亿债 − 22.00 亿现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>159.01 ÷ 9.41</td>
+<td><strong>16.9 倍</strong></td>
+<td><strong>5.92 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>159.01 ÷ 约 18.2（加回摊销+SBC+减值，按低税率）</td>
+<td>约 8.7 倍</td>
+<td>约 11.5 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 7.275 + 减值 1.195 = 8.47，按正常 12% 税率 → 7.45</td>
+<td><strong>21.3 倍</strong></td>
+<td><strong>4.69 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>159.01 ÷ 15.91</td>
+<td><strong>10.0 倍</strong></td>
+<td><strong>10.01 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>181.1 ÷ 12.09</td>
+<td><strong>15.0 倍</strong></td>
+<td><strong>6.68 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>159.01 ÷ [(9.41 + (−3.56) + 5.60) ÷ 3 = 3.82]</td>
+<td><strong>41.7 倍</strong></td>
+<td><strong>2.40 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：十亿美元）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去：</strong></p>
+<ul>
+<li>按报出来的 GAAP 数字，公司一年替你赚 <strong>5.92 元</strong>；</li>
+<li>把那笔 2.13 亿的税务账面利得剔掉、把减值加回来，按正常税率算，一年替你赚 <strong>4.69 元</strong>——这是最保守也最诚实的数字；</li>
+<li>但如果你看现金，一年产生 <strong>10.01 元</strong>的自由现金流；</li>
+<li>而如果你把最近三年拉平（因为这家公司隔一年就要为收购认一次错），一年只赚 <strong>2.40 元</strong>。</li>
+</ul>
+<p><strong>从 2.40 到 10.01，四倍的差距，这就是这家公司的全部争议所在。</strong></p>
+<p>差距来自同一个东西：<strong>72 亿美元买 GW Pharma 那笔账</strong>。它每年产生 7 亿多的摊销，压着利润表；这笔摊销不花现金，所以现金流很漂亮；但它偶尔要一次性认几亿的减值，把某一年的利润直接打到负数。你信"摊销是假成本、现金才是真的"，就该看 10 倍 P/FCF；你信"当年那 72 亿是真金白银花出去的、现在只是分期认账"，就该看 41.7 倍的三年平均。</p>
+<p><strong>这 X 块钱有多少回到你口袋？答案是：负的。</strong></p>
+<p>Jazz 不分红。TTM 回购 1.19 亿，同时发新股 1.41 亿，股本净增 5.4%。你作为股东，这一年不但没收到钱，持有的比例还缩了。那 15.91 亿自由现金流去哪了？主要还债——TTM 净还债 10.31 亿，把总债务从 54.27 亿压到 44.09 亿。<strong>这不是在回报股东，这是在给 2021 年那笔收购还账。</strong></p>
+<p><strong>这个 X 未来会变大还是变小？</strong></p>
+<p>大概率变大，但有一个硬悬崖。</p>
+<p>变大的理由：肿瘤板块增速 17%、新药 Ziihera 和 Modeyso 刚上市还没起量、前瞻市盈率只有 9.7 倍说明卖方普遍预期明年利润大幅上台阶；债务还完后利息支出会减少；GW 那笔无形资产的摊销总有摊完的一天，摊完后利润会自然跳升。</p>
+<p>悬崖在于：<strong>Xywav 的专利。</strong> 神经科学占 66% 的营收，其中绝大部分是 Xywav 一个药。仿制药厂已经在排队挑战它的专利。这个药一旦被仿制，公司三分之二的收入基本盘会在两三年内塌掉一大截——2025 年那笔 9.48 亿的减值本质上就是在为"高钠版被仿制"提前认账。所以 PEG 只有 0.18、前瞻 PE 只有 9.7 倍，市场不是在说这家公司便宜，市场是在说<strong>这些利润有保质期</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Jazz 是一家"数字好看但便宜得有理由"的公司——16.9 倍的表面市盈率里塞了一笔 2.13 亿的税务账面利得，剔掉后是 21 倍，拉平三年是 41.7 倍；它一分钱不分红、股本一年还稀释了 5.4%，赚的现金全在给 2021 年那笔 72 亿的收购还债；它真正的问题不是贵不贵，而是占六成营收的核心药 Xywav 的专利保护期像一根倒计时的引线，市场给的 9.7 倍前瞻市盈率不是折扣，是对这根引线的定价。</strong></p>
+</div></body></html>

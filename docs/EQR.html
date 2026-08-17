@@ -1,0 +1,310 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EQR · Equity Residential（公平住屋房托）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EQR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">4.3%收益率的债券，自带4.5倍杠杆</div><h1>EQR · Equity Residential（公平住屋房托）</h1>
+<p>市值 $253.5 亿 / 股价 $65.97 / 行业：住宅型 REIT（公寓出租） / TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家房地产信托（REIT），下面主要用 FFO / AFFO 口径而不是市盈率。</strong>
+原因很直接：REIT 的会计利润里塞了两样假东西。第一是折旧——按会计规矩，一栋公寓楼要在 27.5 年里"折旧"到零，可现实是波士顿一栋 1998 年的公寓楼今天比当年更值钱。EQR 一年折旧掉 10.19 亿美元，这笔钱没有一分是真花出去的。第二是卖楼收益——EQR 每年卖掉一批老楼，账面上的卖楼利得直接计入净利润，看起来像"赚的"，实际上是把家底变现。这两样加起来，让 GAAP 净利润完全无法反映这家公司到底一年能收上来多少租金。所以行业统一改用 FFO（资金营运额 = 净利润 + 折旧 − 卖楼收益），本文照办。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>结论：EQR 只做一件事——在美国最贵的几个城市里当包租公。</strong> 财报把收入分成"同店"和"非同店"两栏，但那是会计上的切法（同一批楼今年 vs 去年），不是两门不同的生意。</p>
+<h3>这门生意具体长什么样</h3>
+<p>EQR 手里大约有 <strong>300 多个公寓社区、接近 8 万套公寓</strong>，全部是租的，一套都不卖。这些楼不是随便哪儿的楼，几乎全部压在六个地方：波士顿、纽约、华盛顿特区、西雅图、旧金山湾区、南加州（洛杉矶/橙县/圣地亚哥），最近几年往丹佛、亚特兰大、达拉斯、奥斯汀扩了一点。</p>
+<p>一套典型的 EQR 公寓是什么样：西雅图市中心一栋 20 层的楼，一居室，带健身房、屋顶露台、地下车位、24 小时前台和快递柜。一个在亚马逊上班的工程师签一年租约，每月付大约 2,800 美元。楼里 300 户，全部住满的话这一栋楼一年收租约 1,000 万美元。</p>
+<p>用 TTM 数字倒推平均租金：全年租金收入 31.29 亿美元 ÷ 约 8 万套 ≈ <strong>每套每年 3.9 万美元，即每月约 3,260 美元</strong>。这个数字本身就说明了 EQR 的定位——它不租给普通打工的家庭，它租给的是年收入十几万美元、在大城市不打算（或买不起）买房的白领单身和小两口。EQR 官方口径里，租客平均年收入是租金的 6 倍以上。</p>
+<h3>钱是怎么收的、为什么客户跑不掉</h3>
+<p><strong>收钱方式极其简单</strong>：每月 1 号，房租自动从租客银行账户扣走。没有账期，没有坏账催收（收不到就 30 天走人换下一个），没有大客户谈判——单个租客占公司收入的比例是 0.001%。这是全世界现金流最干净的生意模型之一：<strong>8 万个互不相识的小客户，每月 1 号同时给你打钱。</strong></p>
+<p><strong>为什么客户跑不掉</strong>：短期看，搬家成本高（押金、中介、搬运、换通勤路线），一年租约到期时涨 4% 大多数人会忍。长期看，真正的护城河在供给端——波士顿后湾、旧金山 SoMa、纽约上西区这些地方不可能再盖出大批新公寓了，地皮没有、审批要五年、反对建房的居民团体极其强势。这意味着当这些城市就业增长时，租金几乎必然上涨，因为房子数量基本是固定的。<strong>EQR 赌的不是自己经营得多好，赌的是"美国最贵城市的公寓永远不够住"。</strong></p>
+<p><strong>它同时也在做资产买卖</strong>：TTM 里卖掉了 9.17 亿美元的老楼，买进 5.94 亿美元的新楼，净回收 3.23 亿现金。这不是副业投机，是持续的换仓——把已经涨够了的旧资产卖掉，换成新兴市场（丹佛、达拉斯）的新楼。但要注意，卖楼产生的会计利得会大幅美化净利润，这是下一部分的重点。</p>
+<h3>钱：TTM 分部数据</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同店租金收入</td>
+<td>2,967</td>
+<td>+5.1%</td>
+<td>94.8%</td>
+<td>连续两年都在手里的那批楼</td>
+</tr>
+<tr>
+<td>非同店/其他</td>
+<td>162</td>
+<td>−40.4%</td>
+<td>5.2%</td>
+<td>新买的、在建的、待售的</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,129</strong></td>
+<td><strong>+2.8%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>（"同店"的池子每年会重新划分，所以 +5.1% 和总收入 +2.8% 对不上是正常的，不是数据错误。同店口径更能反映真实的涨租能力。）</p>
+<p><strong>利润率</strong>：财报不按分部披露利润，只有整体数字——TTM 经营利润 8.82 亿美元，经营利润率 28.19%。看起来不高，但那是因为 10.19 亿美元的折旧全压在里面了。<strong>把折旧加回去，这 31.29 亿收入里大约有 19 亿是真实的现金毛利（EBITDA 18.9 亿），毛利率约 60%。</strong> 剩下的 40% 是什么：物业管理人员工资（全公司只有 2,400 名员工）、水电、保险、地产税、维修、营销。其中地产税是最大的一块，也是最没办法省的一块。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 2,982 万美元，只占净利润的 3.4%。<strong>这是全篇最不用担心的一项</strong>——REIT 不是科技公司，不靠发股票养人，2,400 名员工大多是物业经理和维修工，发的是工资不是期权。按 GAAP 已经扣除，不加回，就这样。</p>
+<p><strong>一次性项目</strong>：没有诉讼和解、没有重组、没有资产减值。干净。</p>
+<p><strong>资本化支出</strong>：没有软件或内容资本化的问题。但有一个 REIT 特有的版本——<strong>楼的翻新支出被资本化了</strong>。EQR 每年花几亿美元换厨房、换地板、换电梯，这些钱进了资产负债表而不是利润表，所以 FFO 会系统性高估真实可分配现金。这就是为什么要看 AFFO（下面算）。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 5.00 亿美元，SBC 只有 0.30 亿，<strong>回购/SBC = 16.8 倍</strong>。这是真回购，不是抵消发股。股本一年实际减少 1.06%。这一项 EQR 表现很好。</p>
+<p><strong>利润和现金流的差 —— 这是本篇的核心</strong></p>
+<p>净利润 8.74 亿，经营现金流 15.66 亿，差了整整 6.9 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>873.9</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+1,019.0</td>
+<td><strong>假成本</strong>，楼没有真的在变旧变不值钱</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+14.1</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>− 卖楼收益</strong></td>
+<td><strong>−397.2</strong></td>
+<td><strong>假利润</strong>，这是卖家底不是赚钱</td>
+</tr>
+<tr>
+<td>− 卖投资收益</td>
+<td>−35.8</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+29.8</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 权益投资损益等</td>
+<td>+20.5</td>
+<td></td>
+</tr>
+<tr>
+<td>± 营运资金变化</td>
+<td>+7.6</td>
+<td>忽略不计</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>+32.3</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,566</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看清楚这张表意味着什么</strong>：8.74 亿的 GAAP 净利润里，有 <strong>4.33 亿（占 49.5%）是卖楼和卖投资的一次性利得</strong>。也就是说，EQR 靠收租真正赚到的会计利润只有大约 <strong>4.41 亿美元</strong>，剩下一半是把资产变现变出来的。</p>
+<p>同时，10.19 亿的折旧是完全虚构的成本。两个方向的扭曲差不多互相抵消，最后剩下的 <strong>FFO ≈ 14.6 亿美元，每股 $3.80</strong> —— 这才是这家公司一年真实收上来的、扣完所有真实开销之后的钱。</p>
+<p><strong>再往下一步算 AFFO</strong>：FFO 没扣掉每年翻新公寓的真实花费。EQR 这类公寓 REIT 每套每年的持续性资本开支（换电器、翻新、屋顶、外墙）大约 1,800–2,000 美元，8 万套算下来约 <strong>1.5 亿美元</strong>（<strong>此为估算</strong>——stockanalysis 的现金流表把物业资本开支混在"购置房地产"里，没有单独拆出维护性支出这一项）。</p>
+<p><strong>AFFO ≈ 14.6 − 1.5 = 约 13.1 亿美元，每股约 $3.41。</strong></p>
+<p><strong>最后一个必须点出来的问题：EQR 发的钱比赚的多。</strong> TTM 派息 10.52 亿 + 回购 5.00 亿 = <strong>15.52 亿</strong>，而 FFO 只有 14.6 亿、AFFO 只有 13.1 亿。差额靠什么补？靠卖楼——TTM 净卖出房地产回收现金 3.23 亿。<strong>这不是在用经营现金回馈股东，是在一边收租一边卖家底来维持派息和回购。</strong> 短期没问题（EQR 的家底几百亿），但这个模式不能无限持续，而且它意味着未来的租金收入基数在缓慢缩小。</p>
+<hr />
+<h2>第三部分：估值 —— 多口径，投 100 块一年赚多少</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>253.5 亿 ÷ 8.74 亿</td>
+<td><strong>29.0 倍</strong></td>
+<td><strong>$3.45</strong></td>
+</tr>
+<tr>
+<td>剔除卖楼收益后的"真实"市盈率</td>
+<td>253.5 亿 ÷ 4.41 亿（扣掉 4.33 亿资产处置利得）</td>
+<td><strong>57.5 倍</strong></td>
+<td><strong>$1.74</strong></td>
+</tr>
+<tr>
+<td><strong>P/FFO（REIT 主口径）</strong></td>
+<td>253.5 亿 ÷ 14.6 亿</td>
+<td><strong>17.4 倍</strong></td>
+<td><strong>$5.75</strong></td>
+</tr>
+<tr>
+<td><strong>P/AFFO（最保守，扣维护开支）</strong></td>
+<td>253.5 亿 ÷ 13.1 亿（估算）</td>
+<td><strong>19.3 倍</strong></td>
+<td><strong>$5.17</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径 P/OCF</td>
+<td>253.5 亿 ÷ 15.66 亿</td>
+<td>16.2 倍</td>
+<td>$6.18</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>338.7 亿 ÷ 18.9 亿</td>
+<td>17.9 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>338.7 亿 ÷ 8.82 亿</td>
+<td>38.4 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均 FFO 口径</strong></td>
+<td>253.5 亿 ÷ 14.67 亿（FY23/24/25 三年平均 FFO）</td>
+<td><strong>17.3 倍</strong></td>
+<td><strong>$5.78</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行是全表信息量最大的。</strong> FY2023 的 FFO 是 14.49 亿、FY2024 是 14.48 亿、FY2025 是 15.04 亿，三年平均 14.67 亿，而 TTM 是 14.60 亿——<strong>几乎完全一样</strong>。这说明现在这个盈利水平既不是周期高点也不是低谷，它就是 EQR 的常态。（对比一下：NVDA 那次当期 34 倍、三年平均 73.5 倍，差了一倍多，说明当期利润是极端高点。EQR 完全没有这个问题。）</p>
+<p>但这个"稳定"是双刃剑：<strong>三年过去了，FFO 只从 14.49 涨到 14.60 亿，年化增长不到 0.3%。</strong> 这家公司基本没有增长。</p>
+<h3>说人话：你投 100 块进去，一年到底赚多少</h3>
+<p><strong>按最保守的 AFFO 口径，你投 100 块，公司一年替你赚 5.17 块。</strong></p>
+<p>这 5.17 块的去向：
+- <strong>约 4.26 块以现金分红打进你账户</strong>（当前股息率 4.26%）。这部分是真金白银，不是纸面数字。
+- <strong>约 1.06 块以回购的形式回到你手里</strong>（股本一年减少 1.06%，你手里的股份自动变值钱一点）。
+- 加起来 <strong>5.32 块</strong>，比 AFFO 的 5.17 块还多——<strong>超出的部分是靠卖楼补的</strong>，这一点上面说过了。
+- <strong>留在公司里再投资的部分：零，甚至是负的。</strong> EQR 不留存收益，它买楼的钱来自卖楼和借债，不来自留存利润。这是 REIT 的法定结构（必须把 90% 以上应税收入分掉才免公司所得税——TTM 所得税只交了 159 万美元，有效税率 0.18%，这就是免税的代价）。</p>
+<p><strong>这个 5.17 块未来会变大还是变小？</strong> 大概率<strong>非常缓慢地变大</strong>，年化 2–4%：
+- 往上的力量：同店租金 TTM 涨了 5.1%，沿海大城市的公寓供给确实建不出来，就业只要不崩，涨租能力就在。
+- 往下的力量：债务 85.66 亿美元，利息保障倍数只有 2.69 倍（经营利润 8.82 亿，利息约 3.3 亿）。EQR 手里有一批便宜的老债，<strong>这些债到期后按现在的利率再融资，利息会显著上升，直接从 FFO 里扣</strong>。财报页面没有披露债务到期结构，但 Debt/EBITDA = 4.46 倍这个杠杆水平，意味着利率每上升 1 个百分点，长期看要吃掉 FFO 的 5–6%。
+- 另一股向下的力量：上面说的"卖家底维持派息"，卖掉的楼明年就不产生租金了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一只成长股，是一张收益率 4.3%、每年大概能跟上通胀的债券，而且这张债券自带 4.5 倍杠杆和一个正在慢慢变贵的利息账单。</strong></p>
+<p>值不值这个价，取决于你拿它跟什么比。跟 10 年期美债比——4.26% 的股息 + 2–4% 的租金增长，明显比国债强，而且沿海大城市公寓这个资产本身很硬。跟标普 500 比——一家 FFO 三年零增长、发的钱比赚的多、要靠卖楼补窟窿的公司，17.4 倍 P/FFO 谈不上便宜，谈不上贵，就是个公道价。</p>
+<p>真正扎眼的是那个 <strong>57.5 倍的"剔除卖楼收益后市盈率"</strong>：如果你只看会计利润，EQR 靠本业赚的钱只够支撑 1.74% 的回报率，剩下的全靠折旧是假的这件事撑着。这个生意的全部价值，建立在"我持有的这堆混凝土不会像会计说的那样贬值"这个假设上。过去三十年这个假设是对的。要相信 EQR，你必须继续相信它。</p>
+</div></body></html>

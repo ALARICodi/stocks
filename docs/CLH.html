@@ -1,0 +1,395 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CLH · 清洁港（Clean Harbors, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CLH</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">护城河真，39倍买四年利润零增长，价格明显偏贵</div><h1>CLH · 清洁港（Clean Harbors, Inc.）</h1>
+<p>市值 $170.0 亿 / 股价约 $322.0 / 行业：工业服务（危险废物处理与工业清洁）/ 数据口径：TTM，截至 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Clean Harbors 是<strong>北美最大的危险废物处理公司</strong>。它的生意可以用一句话概括：<strong>别人产生的、没人愿意碰的、法律规定不能随便扔的东西，交给它来收、来运、来烧、来埋，按吨收费。</strong></p>
+<p>这门生意的本质不是技术，是<strong>许可证</strong>。在美国，建一座危险废物焚烧炉需要联邦 EPA 加州政府的层层审批，周期十年以上，选址要过环评和当地居民听证会——过去二十多年，美国<strong>几乎没有新建成的商业危废焚烧炉</strong>。Clean Harbors 手上握着北美最大的一张网：约十座危废焚烧炉、多个危废填埋场、几十个处理和转运站。这张网既建不出第二张，也拆不掉。</p>
+<p>它对外报两个大部门，但里面装了五门客户和收费方式都不一样的生意。</p>
+<h3>生意一：技术服务（Technical Services）—— 烧和埋，最赚钱的核心</h3>
+<p><strong>TTM 营收 19.63 亿，占 31.4%。</strong></p>
+<p>具体在干什么：一家化工厂生产过程中产生了 20 吨含氯有机废液，法律规定这东西不能倒、不能填，必须在 1,200℃ 以上的回转窑里焚烧，尾气还要洗涤。工厂打电话给 Clean Harbors，它派罐车来拉走，运到焚烧炉，烧掉，出具一份"废物处置证明"存档十年。<strong>收费按吨算，含氯高、热值低、腐蚀性强的废物单价更高</strong>，一吨从几百到几千美元不等。</p>
+<p>这里面最赚钱的一块叫 <strong>PFAS，"永远的化学品"</strong>——就是不粘锅涂层、防水外套、消防泡沫里那类含氟化合物。它在自然界几乎不降解，正在被美国各州陆续列为强制清理对象。<strong>目前公认能彻底销毁 PFAS 的方法只有超高温焚烧</strong>，而北美有能力接这个活的炉子屈指可数。Clean Harbors 2022 年在内布拉斯加州 Kimball 新建的那座炉子，就是冲着这个来的。这是它未来十年最重要的一张牌。</p>
+<p><strong>客户为什么非买不可</strong>：这不是选择题。美国的《资源保护与回收法》规定，废物产生方对废物承担<strong>"从摇篮到坟墓"的终身责任</strong>——你把废物交给一家不合规的小公司，它半夜倒进河里，几年后被查出来，<strong>罚的是你</strong>，不是它。所以大企业只敢找有完整合规记录和保险的大公司。这就是为什么这门生意的利润率能维持在 20% 上下（估算），而且几乎不打价格战。</p>
+<h3>生意二：工业服务（Industrial Services and Other）—— 去客户厂里干脏活</h3>
+<p><strong>TTM 营收 13.05 亿，占 20.9%。</strong></p>
+<p>炼油厂每隔几年要停产大修一次（业内叫 turnaround）。停产期间，几百个储罐、换热器、管道里结的油泥、焦炭、催化剂残渣得清出来。Clean Harbors 派几百号人带着高压水枪（压力能到 40,000 psi，切得动钢板）、真空罐车进厂，把这些东西掏出来、装罐、拉走处理。一次大修合同几百万到上千万美元。</p>
+<p><strong>这门生意的问题</strong>：它是纯粹的人力和设备出租，进入门槛远低于焚烧炉，竞争者多，利润率只有个位数（估算 8% 左右）。而且它跟着炼油厂的检修周期走——<strong>TTM 营收是五门生意里唯一在下滑的（FY25 同比 −3.6%）</strong>，因为炼厂延后了检修计划。</p>
+<h3>生意三：现场与应急响应（Field and Emergency Response）—— 出事了打的电话</h3>
+<p><strong>TTM 营收 9.59 亿，占 15.4%。</strong></p>
+<p>火车脱轨、油罐车翻车、飓风过后化工厂泄漏、工厂着火——出这类事的时候，第一批赶到的除了消防队就是 Clean Harbors。它有全美最大的应急车队，24 小时待命，到现场堵漏、围控、把污染的土壤和水全挖走拉走。<strong>2023 年俄亥俄州东巴勒斯坦那场著名的列车脱轨事故，清理工作就是 Clean Harbors 做的。</strong></p>
+<p><strong>收费方式</strong>：按人工时 + 设备台班 + 处置吨数计价，出了事的一方（铁路公司、化工厂、保险公司）付钱。这门生意<strong>没法预测</strong>——好年份靠几起大事故就能多赚几亿，风平浪静的年份就萎缩。但它有个隐性价值：应急现场挖出来的污染土壤，最后会拉进它自己的焚烧炉和填埋场，<strong>给生意一送去了原料</strong>。</p>
+<h3>生意四：Safety-Kleen 环境服务 —— 全美 20 万家汽修店的收废油生意</h3>
+<p><strong>TTM 营收 13.87 亿，占 22.2%，增长最快（FY25 同比 +10.8%）。</strong></p>
+<p>这是全美最密集的一张小微客户网。想象一个街角的汽修店：修理工洗零件用的是一台绿色的"零件清洗槽"，里面装着溶剂。这台机器是 Safety-Kleen 的，每隔几周会有一辆蓝色的卡车开来，技师把脏溶剂抽走、换上干净的，顺手把店里换下来的废机油、废机油滤芯、防冻液、废电池也一并收走。<strong>店主每月付几十到几百美元的服务费，一年一签。</strong></p>
+<p>全美有 20 多万家这种小店，Safety-Kleen 跑着几千辆这样的车。<strong>这门生意的护城河是路线密度</strong>——一辆车一天能跑二十家店，成本就摊薄了；如果一个新对手只签下三家店，一天跑三家，怎么算都亏。这是典型的"最后一公里"生意，先到者通吃。</p>
+<h3>生意五：Safety-Kleen 油品 —— 把废机油炼回新机油</h3>
+<p><strong>TTM 营收 6.29 亿，占 10.1%，五门里唯一在明显萎缩的（FY25 同比 −15.1%）。</strong></p>
+<p>生意四收上来的废机油，拉到自家的再炼厂，蒸馏、加氢，变回可以用的<strong>基础油</strong>，再调配成机油卖出去（自有品牌 Performance Plus，也卖给壳牌、嘉实多这类调配商）。</p>
+<p><strong>为什么在萎缩</strong>：这门生意的利润 = 基础油售价 − 收油成本。两头都由外部决定：基础油价格跟着原油走，收油成本跟着市场上抢油的人多不多走。原油一跌，卖价立刻跌，收油成本却因为竞争降不下来，利差就被挤扁。<strong>这是全公司最像大宗商品、最没有定价权的一块</strong>，营收从 FY2022 的 8.22 亿一路掉到 TTM 的 6.29 亿。</p>
+<h3>五门生意的钱（TTM，截至 2026-06-30，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>FY25 vs FY24 增速</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>技术服务（烧和埋）</td>
+<td>1,963</td>
+<td>31.4%</td>
+<td>+7.3%</td>
+<td>~20%</td>
+<td>~393</td>
+</tr>
+<tr>
+<td>工业服务（进厂干活）</td>
+<td>1,305</td>
+<td>20.9%</td>
+<td><strong>−3.6%</strong></td>
+<td>~8%</td>
+<td>~104</td>
+</tr>
+<tr>
+<td>现场与应急响应</td>
+<td>959</td>
+<td>15.4%</td>
+<td>+4.7%</td>
+<td>~10%</td>
+<td>~96</td>
+</tr>
+<tr>
+<td>Safety-Kleen 环境服务</td>
+<td>1,387</td>
+<td>22.2%</td>
+<td><strong>+10.8%</strong></td>
+<td>~18%</td>
+<td>~250</td>
+</tr>
+<tr>
+<td>Safety-Kleen 油品</td>
+<td>629</td>
+<td>10.1%</td>
+<td><strong>−15.1%</strong></td>
+<td>~5%</td>
+<td>~31</td>
+</tr>
+<tr>
+<td>小计</td>
+<td>6,244</td>
+<td>100%</td>
+<td>总营收 TTM <strong>+5.1%</strong></td>
+<td></td>
+<td>~874</td>
+</tr>
+<tr>
+<td>减：未分摊总部费用</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>~−133</td>
+</tr>
+<tr>
+<td><strong>合计经营利润</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>11.87%</strong></td>
+<td><strong>741.4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只披露到分部营收，不披露分部经营利润</strong>，上表利润率是按整体 11.87% 的经营利润率、结合五门生意的资产属性和议价能力估算的，不是精确数字。</p>
+<p>一句话看懂这张表：<strong>这家公司的钱，一大半来自"技术服务"和"Safety-Kleen 环境服务"这两门有许可证或有路线密度护城河的生意；另外三门要么在萎缩，要么只是勉强不亏。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>4,340 万美元</strong>，占净利润 4.39 亿的 <strong>9.9%</strong>。中等偏低。GAAP 里已经扣了，我不加回。</p>
+<p><strong>一次性项目</strong>：TTM 干净得出奇——资产处置收益 78 万，坏账计提 1,078 万，就这些。<strong>没有大额诉讼、重组或减值</strong>。"其他经营调整 2,242 万"是递延税之类的零碎。<strong>单看 TTM 一期，我判断不出这些小额调整是不是年年发生</strong>，但金额只占净利润 5%，不影响任何结论。</p>
+<p><strong>资本化的支出</strong>：这家公司不做软件或内容资本化，但它有个<strong>性质更重的东西：填埋场和焚烧炉的建设支出</strong>。这些是实打实的重资产投入，走资本开支，然后按年折旧——<strong>TTM 折旧摊销高达 4.55 亿，比净利润 4.39 亿还多</strong>。这不是障眼法，是这门生意的本质：它靠钢铁和土地赚钱，不是靠代码。</p>
+<p><strong>回购与稀释</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>252.3</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>43.4</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>5.8 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td><strong>0（不分红）</strong></td>
+</tr>
+<tr>
+<td>股本一年实际变化</td>
+<td><strong>−1.41%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>5.8 倍，是真回购，远超"大于 3"的及格线。股本一年少 1.41%。但注意：<strong>这家公司一分钱红都不分</strong>，股东唯一拿到手的现金回报就是这 1.41% 的回购。</p>
+<p><strong>利润和现金流的差 —— 这里有全篇最需要盯的一个数字。</strong></p>
+<p>净利润 4.39 亿，经营现金流 9.03 亿，差了 4.64 亿。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>439.1</td>
+</tr>
+<tr>
+<td>＋ <strong>折旧与摊销</strong></td>
+<td><strong>+455.4</strong></td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+5.6</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−0.8</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+43.4</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+10.8</td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>+22.4</td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−177.7</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−2.2</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+68.3</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>+38.4</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>902.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>第一件事：4.55 亿的折旧撑起了大半个现金流。</strong> 但这不是白送的钱——<strong>同期资本开支 4.41 亿</strong>，几乎跟折旧一样多。也就是说，公司每年赚回来的折旧，第二天就得原样投回去买新罐车、修炉子、开新填埋坑。<strong>这跟前一家诺信（折旧 1.49 亿、资本开支只有 0.48 亿）是完全不同的物种</strong>。</p>
+<p>所以：<strong>经营现金流 9.03 亿看着漂亮，减掉 4.41 亿资本开支之后，自由现金流只剩 4.62 亿</strong>，FCF 利润率 7.4%。这才是这家公司真实的赚钱能力。</p>
+<p><strong>第二件事，也是最刺眼的：应收账款一年增加了 1.78 亿。</strong> 而同期营收只增加了约 3 亿（5.07%）。<strong>收入涨 5%，客户欠的钱涨了这么多，比例明显失衡</strong>。可能的解释有两种：一是 TTM 里那笔 3.58 亿现金收购并进来了一批应收账款（这是良性的）；二是回款在变慢，或者应急响应类项目的账期本来就长（这是需要警惕的）。<strong>单看 TTM 一期的数据我无法区分这两者</strong>——这是下个季度财报第一个该去核对的地方。如果没有这 1.78 亿的占用，自由现金流本该是 6.4 亿。</p>
+<p><strong>债务</strong>：净负债 <strong>27.3 亿美元</strong>，TTM 实付利息 1.56 亿。经营利润 7.41 亿 → 税前利润 5.97 亿，中间蒸发的 1.44 亿基本就是利息。Debt/EBITDA 2.19，利息保障 4.46——<strong>不算轻松，但对一家重资产公司来说是可控的</strong>，比上一家 Gen Digital（净负债 76 亿、吃掉三成经营利润）健康得多。</p>
+<p>TTM 还花了 <strong>3.58 亿现金做收购</strong>，加上 4.41 亿资本开支——<strong>这家公司把赚的钱几乎全投回去了</strong>，这也解释了为什么现金从 9.54 亿降到 5.17 亿。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>170.0亿 ÷ 4.391亿</td>
+<td><strong>39.0 倍</strong></td>
+<td><strong>$2.56</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（估算）</td>
+<td>加回税后收购摊销与零星项目约 0.5亿</td>
+<td>~34.7 倍</td>
+<td>$2.88</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 几乎无一次性项目可剔，SBC 按 GAAP 扣</td>
+<td><strong>39.0 倍</strong></td>
+<td><strong>$2.56</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>170.0亿 ÷ 4.617亿</td>
+<td><strong>36.8 倍</strong></td>
+<td><strong>$2.72</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>197.3亿 ÷ 7.414亿</td>
+<td><strong>26.6 倍</strong></td>
+<td><strong>$3.76</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>170.0亿 ÷ 4.108亿（TTM/FY25/FY24 平均）</td>
+<td><strong>41.4 倍</strong></td>
+<td><strong>$2.42</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径 41.4 倍，和当期的 39.0 倍几乎一样。</strong> 这句话的意思是：<strong>Clean Harbors 现在这个利润不是周期高点，但也不是低点——它就是这个水平。</strong> FY2022 净利润 4.12 亿，四年过去 TTM 是 4.39 亿，<strong>四年只涨了 6.6%</strong>，而同期营收从 51.7 亿涨到 62.4 亿（+21%）。<strong>营收在涨，利润几乎没动</strong>——涨的收入被人工成本、燃油、保险和折旧吃掉了。</p>
+<p><strong>说人话：你现在投 100 块进去。</strong></p>
+<p>按最保守的真实口径，公司一年替你赚 <strong>2.56 块</strong>——2.6% 的收益率，<strong>比美国国债还低</strong>。按自由现金流口径也只有 2.72 块。这是全篇最需要停下来想一想的数字：<strong>你花 100 块买下这门生意，它一年替你赚不到 3 块钱。</strong></p>
+<p>这 2.56 块里，回到你口袋的是多少？<strong>只有 1.41 块</strong>（回购），因为<strong>它不分红</strong>。剩下的全部留在公司里——TTM 具体去了哪：4.41 亿修炉子买车（资本开支）、3.58 亿买别的公司、0.45 亿还债。</p>
+<p><strong>关键问题是：这些留存的钱，创造了多少价值？</strong> 看一个数字就够了：<strong>ROIC 只有 9.91%，而它自己的加权平均资本成本 WACC 是 8.12%。</strong> 差 1.8 个百分点。意思是——<strong>这家公司每投入一块钱，创造的价值只比资金成本高一点点</strong>。它不是不会赚钱，是<strong>赚的钱刚好覆盖成本，几乎没有超额收益</strong>。这跟诺信（ROIC 12.25% vs WACC 8.98%，差 3.3 个点）和 Gen Digital（ROIC 14.37% vs WACC 8.80%，差 5.6 个点）比，是三家里最差的。</p>
+<p><strong>这个 2.56 块未来变大还是变小？我判断会慢慢变大，但速度撑不住 39 倍的估值。</strong></p>
+<p>变大的理由：
+1. <strong>PFAS 是真实的、可能很大的增量</strong>。全美各州陆续立法强制清理，而能烧的炉子极少，Clean Harbors 有定价权。这是唯一能让它从"稳健低增长"变成"高增长"的变量。
+2. <strong>焚烧和填埋的价格能持续涨</strong>。产能建不出新的，需求只增不减，这门生意每年提价 4%–6% 客户只能接受。
+3. <strong>股本每年缩 1.4%</strong>。
+4. <strong>Safety-Kleen 环境服务 +10.8%</strong> 的增速稳定且高利润。</p>
+<p>变小或走平的风险：
+1. <strong>工业服务（占 21%）在萎缩</strong>，炼厂检修延后是行业性的。
+2. <strong>Safety-Kleen 油品（占 10%）是大宗商品生意</strong>，原油一跌就亏，四年营收掉了 23%。
+3. <strong>人力成本</strong>：22,591 名员工，人均创收只有 27.6 万美元、人均创利 1.94 万美元——<strong>这是个高度依赖人工的行业</strong>，工资每涨 5%，利润就被啃掉一大块。这也是为什么四年营收涨 21%、利润却纹丝不动。
+4. <strong>ROIC 只比资本成本高 1.8 个点</strong>，意味着它的增长是"要花钱买的增长"，不是自动来的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意很好，护城河是真的，但 39 倍市盈率买一家四年利润零增长、ROIC 只比资本成本高 1.8 个点的重资产公司，这个价格没有道理。</strong></p>
+<p>先说好的：危废焚烧许可证是这个国家最难拿的牌照之一，二十多年没有新炉子建成；Safety-Kleen 那张覆盖 20 万家汽修店的路线网也是买不来的；PFAS 这张牌确实可能很大。这是一门<strong>几乎不可能被颠覆</strong>的生意，五十年后它还在。</p>
+<p>问题全在数字上：
+- 净利率只有 <strong>7%</strong>（诺信 18%、Gen Digital 21%）
+- ROIC <strong>9.9%</strong>，仅比资本成本高 1.8 个点
+- 折旧 4.55 亿、资本开支 4.41 亿，<strong>赚回来的钱要原样投回去</strong>
+- <strong>四年营收 +21%，利润 +6.6%</strong>——增长没有落到股东身上
+- <strong>不分红</strong>，股东现金回报只有 1.41% 的回购
+- 应收账款一年多占用 1.78 亿，需要下季财报确认原因
+- 股价过去 52 周涨了 28.6%，估值是被市场情绪推上去的</p>
+<p>39 倍这个价格，市场买的是"PFAS 故事"，不是现在的利润。<strong>如果 PFAS 三年内没有变成实实在在的、每年几亿美元的高利润收入，那么现在买入的人，是在为一个还没发生的故事付 39 倍的钱。</strong></p>
+<p><strong>判断：公司值得放进关注列表，价格明显偏贵。</strong> 合理的买点应该在 22–26 倍附近，也就是股价 $180–$215 之间——那通常出现在应急响应业务淡季、或者油品业务被原油拖累的坏季度里。等它。</p>
+</div></body></html>

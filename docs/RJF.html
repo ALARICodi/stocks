@@ -1,0 +1,380 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RJF · Raymond James Financial（雷蒙詹姆斯金融）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RJF</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">三家里最实在：干净利润、真回购、价格没被炒起来</div><h1>RJF · Raymond James Financial（雷蒙詹姆斯金融）</h1>
+<p>市值 $347.8 亿 · 股价 $180.80 · 1.924 亿股 · 行业：金融（券商 / 财富管理）· TTM 截止 2026 年 6 月 30 日（公司财年 9 月 30 日结束）</p>
+<blockquote>
+<p><strong>这是一家券商兼银行，第三部分主用市净率（PB）、有形账面市净率（P/TBV）和净资产收益率（ROE / ROTCE）</strong>，市盈率只作参考。原因：券商的利润随资本市场活跃度大幅波动，单看某一年的市盈率会在牛市里显得便宜、熊市里显得贵；而净资产是它承接业务的本钱，"本钱值几倍"是更稳定的尺子。<strong>另外这家公司的自由现金流也不能看</strong>——FY2023 的经营现金流是 <strong>负 35.14 亿</strong>，FY2021 是 <strong>正 66.47 亿</strong>，这不是经营好坏，是客户资金和交易头寸在资产负债表上进出的结果。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司总部在佛罗里达的圣彼得堡，1962 年成立。它的本质是<strong>一个给独立理财顾问用的"平台"</strong>，外加一家挂在这个平台下面吃利差的银行。财报分四块，我按赚钱机制重新解释：</p>
+<h3>生意一：私人客户业务（Private Client Group）——把 8000 多个理财顾问变成"加盟商"</h3>
+<p>TTM 收入 <strong>110.79 亿美元，占总收入的 72.7%</strong>，同比 +8.8%。这是绝对的主体。</p>
+<p><strong>这门生意到底怎么运作？</strong> 举个具体例子：</p>
+<p>坦帕有个理财顾问，做了 15 年，手里管着 60 个富裕家庭、总共 1.8 亿美元的资产。他现在在美林证券（Merrill Lynch）当<strong>雇员</strong>：办公室是公司的、名片是公司的、客户名义上是公司的，他一年给公司创造 180 万美元的管理费收入（客户资产的 1%），公司分给他 <strong>40%，也就是 72 万</strong>。</p>
+<p>他跳槽到 Raymond James，身份变成<strong>独立签约顾问</strong>：自己租办公室、自己雇助理、自己交房租和电脑钱。作为交换，那 180 万收入里他能拿走 <strong>90%，也就是 162 万</strong>。Raymond James 只留 18 万。</p>
+<p>Raymond James 拿这 18 万提供什么？</p>
+<ul>
+<li><strong>牌照和合规</strong>：他不用自己去申请券商牌照，也不用自己应付 FINRA 和 SEC 的检查——出了事 Raymond James 的合规部门顶着。</li>
+<li><strong>交易和托管平台</strong>：客户的股票债券实际存在 Raymond James 名下，下单、清算、对账单、税务表格全是它出。</li>
+<li><strong>研究和产品货架</strong>：股票研究报告、基金、年金、保险、另类投资，顾问直接从货架上选。</li>
+<li><strong>给客户放贷的能力</strong>：客户想借钱不卖股票，Raymond James 可以按股票市值放款。</li>
+<li><strong>搬家费</strong>：为了挖他过来，Raymond James 通常会先给一笔<strong>可豁免贷款</strong>（比如 100 万，干满 9 年就不用还）。这是真实成本，是这门生意最大的前期投入。</li>
+</ul>
+<p><strong>为什么留 10% 也能做成一门大生意？</strong> 因为规模。Raymond James 全网约 <strong>8800 名理财顾问</strong>，管理的客户资产总规模在 <strong>1.6 万亿美元</strong>量级。10% 的抽成乘以这个基数，就是 110 亿的收入。</p>
+<p>但收入 110 亿不代表赚 110 亿——这 110 亿里有 <strong>80%以上要作为佣金付给顾问本人</strong>。所以这块业务的营业利润率很薄。它真正的价值不在这 10% 的抽成，而在下面这件事：<strong>这 1.6 万亿资产里，永远有几百亿是趴着不动的现金。</strong></p>
+<h3>生意二：Raymond James Bank——整个公司最赚钱的一块，靠客户的闲钱吃利差</h3>
+<p>TTM 收入 <strong>19.20 亿美元，占 12.6%</strong>，同比 +8.1%。</p>
+<p><strong>具体机制：</strong> 一个客户在 Raymond James 有 300 万的账户，其中 15 万是刚卖了股票还没再投出去的现金。这笔现金会被<strong>自动扫入（sweep）</strong>Raymond James Bank，变成一笔银行存款。银行付给客户的利息可能只有 <strong>0.5%</strong>。</p>
+<p>然后银行把这笔钱贷出去：</p>
+<ul>
+<li><strong>证券抵押贷款</strong>：贷给同一批富裕客户。客户想买个海边的房子但不想卖掉持仓（卖了要交资本利得税），就拿账户里 300 万的股票抵押借 100 万，利率 SOFR+2%，大约 <strong>6.5%</strong>。这种贷款几乎零风险——抵押品就在券商自己手里，跌破线系统自动强平。</li>
+<li><strong>公司贷款、商业地产贷款、住房抵押贷款</strong>。</li>
+</ul>
+<p><strong>0.5% 收进来、6.5% 放出去，中间 6 个点的差就是利润。</strong> 全公司这类扫入存款有几百亿美元规模，这就是那 19.20 亿收入的来源，而且它几乎不需要额外的人力成本。</p>
+<p><strong>这也是全公司对利率最敏感的一块。</strong> 联储降息，贷款利率跟着降，但给客户的存款利率已经接近零、降无可降，利差直接被压缩。</p>
+<h3>生意三：资本市场（Capital Markets）——投行，全公司最不稳定的一块</h3>
+<p>TTM 收入 <strong>18.34 亿美元，占 12.0%</strong>，同比 +3.6%。</p>
+<p>两件事：
+- <strong>投行</strong>：给中型公司做并购顾问和股票发行。具体例子：一家做工业阀门的家族企业，年收入 3 亿，老板想退休卖掉。Raymond James 的银行家做估值、写材料、找 15 家私募基金来竞标、最后 4 亿成交，收 <strong>1.5% 的成功费 = 600 万美元</strong>。事情做成才收钱，没做成基本白干。
+- <strong>固定收益交易和机构股票销售</strong>：给银行、保险公司做债券做市，赚买卖价差。</p>
+<p><strong>这块的波动性看历史数字最直观</strong>：FY2021 收入 18.85 亿 → FY2023 掉到 <strong>12.14 亿</strong>（并购市场冻结，跌了 36%）→ TTM 恢复到 18.34 亿。<strong>一块能三年跌 36% 再涨回来的业务。</strong> 好在它只占 12%，砸不垮公司。</p>
+<h3>生意四：资产管理（Asset Management）</h3>
+<p>TTM 收入 <strong>13.29 亿美元，占 8.7%</strong>，同比 +11.9%——<strong>四块里增速最快的</strong>。</p>
+<p>这块是公司自己下场管钱：旗下的 Carillon Tower Advisers 发行共同基金，以及那些"顾问不自己选股、交给 Raymond James 的模型组合去管"的账户。按管理资产收 <strong>20~70 个基点</strong>，管理规模约 2600 亿美元。<strong>利润率是四块里最高的</strong>，因为一个基金经理管 50 亿和管 100 亿的成本差不多。</p>
+<h3>汇总</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 收入</th>
+<th>同比</th>
+<th>占比</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>私人客户业务</td>
+<td>110.79 亿</td>
+<td>+8.8%</td>
+<td>72.7%</td>
+<td>规模大、抽成薄、极稳定</td>
+</tr>
+<tr>
+<td>Raymond James Bank</td>
+<td>19.20 亿</td>
+<td>+8.1%</td>
+<td>12.6%</td>
+<td>利差生意，最赚钱，对利率敏感</td>
+</tr>
+<tr>
+<td>资本市场（投行）</td>
+<td>18.34 亿</td>
+<td>+3.6%</td>
+<td>12.0%</td>
+<td>强周期，三年内曾跌 36%</td>
+</tr>
+<tr>
+<td>资产管理</td>
+<td>13.29 亿</td>
+<td>+11.9%</td>
+<td>8.7%</td>
+<td>增速最快，利润率最高</td>
+</tr>
+<tr>
+<td>内部抵销</td>
+<td>-9.13 亿</td>
+<td></td>
+<td>-6.0%</td>
+<td>主要是银行付给券商的存款转移价</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>152.49 亿</strong></td>
+<td><strong>+10.7%</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不披露分部利润，我不编具体数字。但结构上可以确定：<strong>银行和资产管理这两块（合起来才占 21% 的收入）贡献的利润，很可能超过占 73% 收入的私人客户业务</strong>——因为后者的钱绝大部分要付给理财顾问。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>2.38 亿美元</strong>，占净利润 22.99 亿的 <strong>10.4%</strong>。金额温和，GAAP 已经扣掉了，我不加回去。</p>
+<h3>回购与稀释：这一项非常干净</h3>
+<p>TTM 回购 <strong>16.72 亿美元</strong>，同期 SBC 2.38 亿，<strong>比值 7.02 倍</strong>。</p>
+<p>标准是这样的：比值接近 1 = 回购只是在填员工发股的坑，不算回馈股东；<strong>大于 3 才算真回购</strong>。7.02 倍是货真价实的股东回报。</p>
+<p>结果直接体现在股份数上：<strong>流通股一年减少 3.82%</strong>。回购金额的历史轨迹也在加速：FY2022 只有 2.16 亿 → FY2023 8.62 亿 → FY2024 9.84 亿 → FY2025 12.67 亿 → TTM 16.72 亿。</p>
+<p>加上分红 4.28 亿，TTM 一共还给股东 <strong>21.00 亿</strong>，占净利润 22.99 亿的 <strong>91%</strong>。</p>
+<h3>一次性项目：几乎没有，这很难得</h3>
+<p>TTM"其他经营性活动"只有 <strong>-0.86 亿</strong>，投资出售损益 -0.08 亿，都是小数。<strong>没有大额减值、没有大额诉讼计提、没有重组费用。</strong> 唯一的非常规动作是 TTM 花了 <strong>4.84 亿做了一笔收购</strong>（现金流量表 Cash Acquisitions），但没有随之出现异常的整合费用。</p>
+<p>有效税率 <strong>21.67%</strong>，接近美国法定税率，没有一次性税务调整的痕迹。</p>
+<p><strong>这是三家里利润质量最干净的一家。</strong> 对比看：另外两家（QSR、NTRS）的当期利润里都有需要打折的成分，这家没有。</p>
+<h3>资本化的支出</h3>
+<p>资本开支 TTM <strong>1.97 亿</strong>，折旧摊销 <strong>1.20 亿</strong>。<strong>资本开支高于折旧 64%</strong>，说明公司在实打实地花钱（主要是技术平台和办公楼）。这是保守方向的偏差——费用没有被藏起来，反而在多花。</p>
+<h3>利润和现金流的差：差了 29%，要看懂原因</h3>
+<p>净利润 22.99 亿，经营现金流只有 16.39 亿，自由现金流 14.42 亿。<strong>现金流比利润少了 6.6 亿。</strong> 逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,299</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+120</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+238</td>
+</tr>
+<tr>
+<td>− 投资出售收益</td>
+<td>−8</td>
+</tr>
+<tr>
+<td><strong>− 应收款项增加</strong></td>
+<td><strong>−1,075</strong></td>
+</tr>
+<tr>
+<td>+ 应付款项增加</td>
+<td>+585</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−609</td>
+</tr>
+<tr>
+<td>− 其他经营性项目</td>
+<td>−86</td>
+</tr>
+<tr>
+<td>+ 未单列项目（递延税等）</td>
+<td>+175</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,639</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−197</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,442</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>差额的元凶是应收款项增加了 10.75 亿。</strong> 对券商来说，这一栏装的是客户融资融券余额、未交割的交易应收款、给理财顾问的搬家贷款。<strong>这不是"卖了货收不回钱"，而是资产负债表在扩张</strong>——客户融资余额上升本身就意味着业务在增长，而且这些应收有抵押品。</p>
+<p>但必须诚实说一句：<strong>这类券商的经营现金流数字本身没有分析价值。</strong> 看历史就知道——FY2023 是 <strong>-35.14 亿</strong>，FY2021 是 <strong>+66.47 亿</strong>，一年之间摆动一百亿。判断这家公司利润真不真，不能靠现金流量表。</p>
+<h3>⚠️ 最需要警惕的一个障眼法：那 99.36 亿的"净现金"是假的</h3>
+<p>网站显示这家公司现金 <strong>160.20 亿</strong>、负债 60.84 亿、<strong>净现金 +99.36 亿（每股 $51.65）</strong>，因此企业价值 EV 只有 248.4 亿，比 347.8 亿的市值还低，算出来 <strong>EV/利润只有 10.81 倍</strong>——看上去便宜得不可思议。</p>
+<p><strong>这个数字不能信。</strong> 券商资产负债表上的"现金"里，有很大一部分是<strong>按美国证监会规定必须单独隔离存放的客户资金</strong>（cash segregated under federal regulations）。那是客户的钱，法律上不属于 Raymond James，不能拿去回购股票、不能拿去分红、不能拿去还债。把它当成"公司的净现金"从市值里扣掉，是一个系统性的高估。</p>
+<p><strong>所以下面的估值表里，EV 口径我列出来但标注为不可用，不要拿 10.81 倍去跟别的公司比。</strong></p>
+<hr />
+<h2>第三部分：券商口径估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>股价 $180.80 ÷ 每股净资产 $66.10</td>
+<td><strong>2.74 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形账面市净率 P/TBV</td>
+<td>剔除商誉无形资产后（每股有形净资产约 $52.4）</td>
+<td><strong>3.45 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>净资产收益率 ROE</td>
+<td>TTM 净利润 ÷ 平均净资产</td>
+<td><strong>18.42%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形净资产收益率 ROTCE</td>
+<td>每股收益 $11.48 ÷ 每股有形净资产 $52.4</td>
+<td><strong>约 21.9%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>总资产收益率 ROA</td>
+<td></td>
+<td>2.58%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>$180.80 ÷ 每股收益 $11.48</td>
+<td><strong>15.75 倍</strong></td>
+<td><strong>$6.35</strong></td>
+</tr>
+<tr>
+<td>盈利收益率（ROE ÷ PB）</td>
+<td>18.42% ÷ 2.74</td>
+<td>6.72%</td>
+<td>$6.72</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td><strong>没有需要剔除的一次性项目；股权激励按 GAAP 已扣不加回 → 等于 GAAP</strong></td>
+<td><strong>15.75 倍</strong></td>
+<td><strong>$6.35</strong></td>
+</tr>
+<tr>
+<td>~~企业价值口径 EV/利润~~</td>
+<td>~~10.81 倍~~</td>
+<td><strong>不可用</strong>（净现金含客户隔离资金，见上）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>$180.80 ÷ 三年平均每股收益 $9.32（FY23 $7.97 / FY24 $9.70 / FY25 $10.30）</td>
+<td><strong>19.4 倍</strong></td>
+<td><strong>$5.15</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，这家公司一年替你赚 6.35 块。</strong></p>
+<p><strong>关键的一句在最后一行：按过去三年平均算，还有 5.15 块。</strong> 当期口径和三年平均口径只差 19%——这是三家里差距最小的。对比一下：QSR 差 20%、NTRS 差 48%。<strong>差距小说明这家公司的盈利是一条稳步往上的斜线，而不是一个刚从坑里爬出来的尖峰。</strong> 每股收益轨迹：FY21 $6.63 → FY22 $6.98 → FY23 $7.97 → FY24 $9.70 → FY25 $10.30 → TTM $11.48，<strong>五年连续上升，一年没跌过</strong>，其中还包括了 FY2023 投行收入崩掉 36% 的那一年。这是本篇最有分量的一个数字。</p>
+<p><strong>这 6.35 块里有多少真的到你口袋？</strong></p>
+<ul>
+<li><strong>分红：1.20 块</strong>（每股年息 $2.16，派息率只有 18.8%——非常低）。</li>
+<li><strong>回购：约 4.81 块</strong>（TTM 回购 16.72 亿 ÷ 347.8 亿市值）。这是主力。管理层明显选择了"少分红、多回购"，在股价不贵的时候这对股东更有利（回购不产生股息税）。</li>
+<li><strong>留在公司里：只剩 0.34 块。</strong> 91% 的利润都还出去了。剩下的那点加上资本开支 1.97 亿，用在技术平台和挖顾问上。</li>
+</ul>
+<p><strong>这 6.35 块未来会变大还是变小？我判断会缓慢变大，但有一个明确的风险点。</strong></p>
+<p>往上的力量：
+- <strong>回购每年注销约 4% 的股份</strong>，这本身就自动带来每股收益 4% 的增长，不需要业务增长一分钱。
+- <strong>理财顾问净流入是持续的</strong>。独立顾问模式（顾问拿 90%）对从大行出来的人有结构性吸引力，这个趋势已经跑了 20 年还没结束。
+- <strong>资产管理和银行两块高利润业务增速快于整体</strong>（+11.9% 和 +8.1%），收入结构在往赚钱的方向偏。
+- 分析师预期未来三年营收年增 9.34%、每股收益年增 14.00%，PEG 只有 <strong>0.70</strong>（低于 1 通常被视为便宜）。远期市盈率 <strong>13.12 倍</strong>。</p>
+<p>往下的风险，只有一个但很大：
+- <strong>降息。</strong> Raymond James Bank 那 19.20 亿收入和它对应的高额利润，建立在"客户存款成本几乎为零、贷款收 6.5%"的利差上。联储每降 100 个基点，贷款端立刻跟着降，而存款端已经降到 0.5% 附近没有空间。<strong>这一块的利润对利率是单边敏感的。</strong> 这也是为什么这只股票过去 52 周只涨了 10.36%（同期 NTRS 涨了 52%）——市场已经在担心这件事了。
+- 次要风险：投行业务的周期性（但只占 12%），以及美股如果大跌，1.6 万亿客户资产缩水会直接按比例砍掉管理费收入。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>三家里最实在的一家：干净的利润、真金白银的回购、五年没跌过的盈利曲线，价格也没被炒起来。</strong></p>
+<p>这家公司做的事不性感——给八千多个理财顾问当后台，抽 10%；再把客户账上的闲钱扫进自己的银行放贷吃利差。但它有两个别人给不了的东西：<strong>第一，利润质量干净</strong>——没有大额减值、没有可疑的一次性收益、股权激励只占利润 10%、有效税率正常，当期和三年平均只差 19%；<strong>第二，回购是真的</strong>——TTM 回购金额是股权激励的 7 倍，股份一年实打实少 3.82%，管理层把 91% 的利润还给了股东。</p>
+<p>15.75 倍市盈率、2.74 倍市净率、18.4% 的 ROE（有形口径 21.9%）、远期市盈率 13.12 倍、PEG 0.70、过去 52 周只涨了 10.36%——<strong>这不是一个被追捧的价格</strong>。投 100 块一年赚 6.35 块，其中 6 块以分红加回购的形式回到你手里，这个交换是合理的。</p>
+<p>唯一要想清楚的问题是利率：如果你认为未来两年联储会连续降息，那 12.6% 收入来源、但贡献利润远高于 12.6% 的那块银行业务会明显缩水，6.35 块会掉到 5 块出头。市场给这只股票 15.75 倍而不是 20 倍，扣的就是这一块。<strong>如果你认为利率会在高位多待一阵，那这个价格是划算的。</strong></p>
+</div></body></html>

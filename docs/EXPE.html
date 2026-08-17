@@ -1,0 +1,323 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EXPE · Expedia 集团</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EXPE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">没有余量的价格，赌Google五年不绕开OTA</div><h1>EXPE · Expedia 集团</h1>
+<p>市值 399.3 亿美元 / 股价 332.69 美元 / 行业：消费服务（在线旅游）/ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Expedia 干的事一句话说得清：<strong>帮别人卖机票酒店，从中抽成。</strong> 它自己不拥有一间客房、一架飞机、一辆租车。但把这句话展开，里面其实是三门差别很大的生意。</p>
+<p><strong>第一门：Retail（B2C），直接卖给游客。</strong> 这是大众熟悉的那个 Expedia，旗下有 Expedia.com、Hotels.com、Vrbo（民宿短租，Airbnb 的对手）、Orbitz、Travelocity、CheapTickets 等一堆牌子。</p>
+<p>具体怎么赚钱？举个例子：你要去东京住五晚，在 Hotels.com 上订了一家酒店，五晚 1,000 美元。这 1,000 美元<strong>先全额打给 Expedia</strong>，Expedia 记成"应付款"，等你入住退房之后，才把大约 850 美元付给酒店，自己留 150 美元——<strong>抽成大约 15%</strong>。机票不一样，机票的抽成极低（每张几美元），航空公司不给中介让利，所以 Expedia 卖机票基本是为了引流，靠后面卖酒店赚钱。Vrbo 那边是双向收费：房东交约 5% 佣金，房客再付约 6%–12% 的服务费。</p>
+<p>这里有个关键点后面会反复出现：<strong>钱先到 Expedia 手里，几个月后才付出去。</strong> 全球随时有几百万人预订了未来的行程还没出发，这笔浮存金常年趴在 Expedia 账上。TTM 账上现金 71.3 亿美元，很大一部分就是这个。</p>
+<p><strong>第二门：B2B，把整套系统卖给别人用。</strong> 这是增长最快、最不为人知的一块。Expedia 有全球最大的酒店库存数据库之一（约 300 万套房源），它把这套库存打包成 API 卖给别人：</p>
+<ul>
+<li>美国运通旅行、日本乐天旅行这类线上旅行社，直接调用 Expedia 的库存，用户看到的是运通的界面，后台订单走的是 Expedia；</li>
+<li>达美航空的官网上你订完机票会跳出"要不要加订酒店"，那个酒店列表是 Expedia 提供的；</li>
+<li>万豪、凯悦这类酒店集团反过来用 Expedia 的技术做自己的分销；</li>
+<li>银行信用卡的积分兑换旅行商城，后台也常常是 Expedia。</li>
+</ul>
+<p>一家中型航空公司接入之后，一年可能通过这个渠道卖出 2 亿美元的酒店，Expedia 抽 10%–12%，分给合作方一部分，自己留个七八千万。这门生意<strong>没有广告投放成本</strong>（流量是合作方的），所以边际利润率比 B2C 高得多。TTM 营收 53.6 亿，两年涨了 31%。</p>
+<p><strong>第三门：trivago，比价网站。</strong> 你在 trivago 上搜一家酒店，它列出 Booking、Expedia、酒店官网各自的报价。你点哪个链接，那家平台就要按点击付钱给 trivago（CPC 竞价，一次点击几毛到几美元）。有意思的是：<strong>trivago 最大的客户之一就是 Expedia 自己和它的死对头 Booking</strong>。Expedia 持有 trivago 多数股权并合并报表。TTM 营收 5.04 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(百万美元)</th>
+<th>FY25 vs FY24 增速</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Retail（B2C）</td>
+<td>9,834</td>
+<td>+2.2%</td>
+<td>62.6%</td>
+<td>~12%</td>
+<td>~1,180</td>
+</tr>
+<tr>
+<td>B2B</td>
+<td>5,362</td>
+<td>+18.0%</td>
+<td>34.2%</td>
+<td>~28%</td>
+<td>~1,500</td>
+</tr>
+<tr>
+<td>trivago</td>
+<td>504</td>
+<td>+32.4%</td>
+<td>3.2%</td>
+<td>~10%</td>
+<td>~50</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>15,700</td>
+<td>+12.0%(TTM)</td>
+<td>100%</td>
+<td>17.4%(实际)</td>
+<td>2,738(实际)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只披露到分部营收，<strong>分部利润率是按各业务的获客成本结构估算的，不是财报数字。</strong></p>
+</blockquote>
+<p>这张表说明的事很清楚：<strong>Expedia 的增长几乎全部来自 B2B，而 B2C 已经停滞了。</strong> Retail 从 2024 到 2025 只涨了 2.2%，而 B2B 涨了 18%。原因不难想：在 B2C 战场上，Expedia 一头被 Booking.com（欧洲酒店库存更深、执行更强）压着，另一头被 Google 的旅行搜索和酒店直连截流，还要跟 Airbnb 抢短租。<strong>它打不赢正面战场，但它把军火卖给了所有参战方。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 4.12 亿美元，占 GAAP 净利润 <strong>20.2%</strong>。这是硅谷式公司的典型水平。GAAP 里已经扣掉了，但 Expedia 自己公布的"调整后 EBITDA"和"调整后 EPS"会把它加回去——<strong>那是骗人的，一律不加回</strong>。4.12 亿美元的股票发给员工，就是从你的股份里切走的，跟发现金没有区别。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>2.16 亿美元的投资处置收益</strong>（Loss/Gain from Sale of Investments −216，负号代表从现金流里扣除，即非现金收益）。这不是卖机票卖出来的。另外所得税那一行也不正常：税前利润 24.37 亿，实际所得税 3.98 亿，<strong>有效税率只有 16.33%</strong>，明显低于美国 21% 的法定税率加州税之后的正常水平（Expedia 过去几年的有效税率在 20%–25%）。这两笔加起来把利润垫高了不少。单期口径无法判断这类税务优惠是否会持续，但把它当常态显然不安全。</p>
+<p><strong>资本化的支出——这一项在 Expedia 身上很重要。</strong> 现金流量表里"Other Amortization"一行是 <strong>7.49 亿美元</strong>，而正常的"折旧摊销"只有 1.52 亿。这 7.49 亿绝大部分是<strong>资本化的网站与软件开发费用的摊销</strong>。也就是说 Expedia 每年花在写代码上的几亿美元，不是当期计入费用，而是先资本化成资产、再分几年摊销。这个做法完全合规，但它把当期利润做高了，同时让"资本开支"（TTM 7.57 亿）看起来像是买服务器，其实里面装的是工程师工资。</p>
+<p><strong>回购与稀释——这是 Expedia 最扎实的一项。</strong> TTM 回购 <strong>19.16 亿美元</strong>，同期 SBC 4.12 亿，<strong>比值 4.65 倍</strong>。远超"1 倍只是抵消员工发股"的及格线，是真回购。股本一年实际减少 <strong>6.17%</strong>，加上 0.58% 的股息，股东实际回报率 <strong>6.75%</strong>。管理层把赚到的现金大部分买回了自己的股票，而且买的量足以对冲掉 SBC 还有大量剩余。</p>
+<p><strong>利润和现金流的差——这是本篇含金量最高的一段，因为 Expedia 的现金流表面上好得离谱，但一半是假的。</strong></p>
+<p>TTM 净利润 20.36 亿，经营现金流 <strong>52.16 亿</strong>——现金流是净利润的 2.6 倍。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>2,036</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+152</td>
+</tr>
+<tr>
+<td>+ 其他摊销（资本化软件等）</td>
+<td>+749</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+412</td>
+</tr>
+<tr>
+<td>− 投资处置收益（非现金）</td>
+<td>−216</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+541</td>
+</tr>
+<tr>
+<td>+ 应收账款变动</td>
+<td>−878</td>
+</tr>
+<tr>
+<td>+ 应付账款变动</td>
+<td>+319</td>
+</tr>
+<tr>
+<td><strong>+ 预收账款变动（游客付了钱还没出行）</strong></td>
+<td><strong>+1,958</strong></td>
+</tr>
+<tr>
+<td>+ 所得税相关变动</td>
+<td>−23</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产</td>
+<td>+166</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>5,216</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−757</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>4,459</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看那一行 +19.58 亿。</strong> 这是"预收账款（unearned revenue）"的增加——全球游客交给 Expedia 但还没出发的钱变多了 19.58 亿。这不是 Expedia 赚的钱，是<strong>它替别人保管的钱</strong>。全年营运资金净贡献 +15.42 亿。</p>
+<p>这笔浮存金的性质和保险公司的浮存金一模一样：<strong>只要业务在增长，它就一直在账上、可以拿去投资；一旦业务停止增长，它就不再增加；一旦业务下滑（比如 2020 年那样），它会瞬间反向抽走几十亿现金。</strong></p>
+<p>所以真实的、可持续的自由现金流应该这么算：</p>
+<blockquote>
+<p>经营现金流 52.16 亿 − 营运资金浮存贡献 15.42 亿 − 资本开支 7.57 亿 = <strong>约 29.2 亿美元</strong></p>
+</blockquote>
+<p>而不是财报上那个 44.59 亿。<strong>这个差距是理解 Expedia 估值的关键。</strong></p>
+<p>顺带一提：账面净资产只有 24.7 亿，PB 高达 33 倍。这不是资产泡沫，是多年巨额回购把权益买没了，跟百胜的情况一样，不用大惊小怪。但 Altman Z 分数 1.45 偏低，主要是因为流动比率 0.80——<strong>账上的现金里有一大块是不属于自己的浮存金</strong>，这个财务安全指标看着比实际弱。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>399.3 亿 ÷ 20.36 亿</td>
+<td><strong>19.6×</strong></td>
+<td><strong>5.10 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算，加回 SBC 和无形摊销）</td>
+<td>399.3 亿 ÷ 约 25.2 亿</td>
+<td><strong>15.9×</strong></td>
+<td><strong>6.30 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>399.3 亿 ÷ 17.10 亿（剔 2.16 亿投资收益 + 税率还原到 23%）</td>
+<td><strong>23.4×</strong></td>
+<td><strong>4.28 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（财报数）</td>
+<td>399.3 亿 ÷ 44.59 亿</td>
+<td><strong>9.0×</strong></td>
+<td><strong>11.17 元</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除浮存金）</strong></td>
+<td>399.3 亿 ÷ 29.20 亿</td>
+<td><strong>13.7×</strong></td>
+<td><strong>7.30 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>384.9 亿 ÷ 27.38 亿</td>
+<td><strong>14.1×</strong></td>
+<td><strong>7.11 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>399.3 亿 ÷ 14.13 亿（TTM还原17.10 / FY25 12.94 / FY24 12.34）</td>
+<td><strong>28.3×</strong></td>
+<td><strong>3.54 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表的分歧比前两家公司都大，得挨个说清楚：</p>
+<ul>
+<li>券商终端上写的 <strong>20.7 倍市盈率</strong>，含着一笔投资处置收益和一个 16.3% 的异常低税率。把这两样还原，真实是 <strong>23.4 倍</strong>。</li>
+<li>网上很多人拿 <strong>9 倍 P/FCF</strong> 说 Expedia "白菜价"——那 44.59 亿里有 15.42 亿是游客的预付款，不是公司赚的。<strong>剔掉浮存金，是 13.7 倍，不是 9 倍。</strong></li>
+<li>三年平均口径 <strong>28.3 倍</strong>，是当期 GAAP 口径的 1.44 倍。原因是 Expedia 这一年的利润确实跳了一大截：净利润从 12.94 亿涨到 20.36 亿（+57%），而营收只涨 12%。<strong>利润率的改善是真实的</strong>（经营利润率从 14.68% 提到 17.44%，来自 B2B 占比提升和减少 B2C 的广告烧钱），但一年提 2.8 个百分点的速度不可能年年重复。</li>
+</ul>
+<p><strong>说人话：</strong> 你现在投 100 块进 Expedia，按最保守的真实口径（剔除一次性收益、还原税率）算，公司一年替你赚 <strong>4.28 元</strong>；按剔除浮存金的现金口径算是 <strong>7.30 元</strong>。这两个数字差得远，原因是资本化软件摊销和 SBC 让会计利润远低于现金利润——对 Expedia 这种"资产就是代码"的公司，<strong>现金口径的 7.30 元更接近真相</strong>，我倾向于取 6–7 元这个区间。</p>
+<p>这 7 块钱里有多少真回到你口袋？股息 0.58 元 + 回购 6.17 元 = <strong>6.75 元</strong>，几乎全部。Expedia 是本批三家公司里唯一一家<strong>把赚到的现金真正还给股东</strong>的：不像百胜要拿钱去买回门店，也不像 ED 要靠发新股维持股息。它的资本开支只有 7.57 亿（占经营现金流 14.5%），投资活动主要是一笔 5.63 亿的收购。</p>
+<p>这个数字未来会变大还是变小？两股力量在拉扯：</p>
+<ul>
+<li><strong>往上：</strong> B2B 还在以 18% 增长，而且它的利润率结构更好；回购每年吃掉 6% 的股本，光这一项就让每股收益自动涨 6%；管理层给的三年 EPS 增速指引是 20.6%，前瞻市盈率只有 15 倍。</li>
+<li><strong>往下：</strong> B2C 已经零增长，占了 62.6% 的营收。Google 的 AI 搜索正在把"订酒店"这个动作从"去 Expedia 网站"变成"在搜索结果里直接完成"，这对所有 OTA 都是生存级威胁。而且股价一年涨了 58.7%，RSI 73.6（超买区），分析师目标价 333.86 美元——<strong>只比现价高 0.35%，等于华尔街已经全部打完了</strong>。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>三家里面唯一有点意思的一家，但已经不便宜了。真实市盈率 23 倍、剔除浮存金后的现金市盈率 13.7 倍，买的是一家 B2C 已经停滞、全靠 B2B 撑增长、但确实在用 6% 的年化速度回购注销自己股票的公司。一年 58.7% 的涨幅已经把"利润率改善"这个故事完整定价进去了，分析师目标价和现价一分钱不差就是证明。<strong>生意是好生意，价格是没有余量的价格——现在买，你赌的是 Google 未来五年不会绕过 OTA 直接卖酒店，这个赌注我不会下。</strong></p>
+</div></body></html>

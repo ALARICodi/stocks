@@ -1,0 +1,413 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NWS · 新闻集团（News Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NWS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">伪装成报业的在线房产平台，不便宜但内容比标签好</div><h1>NWS · 新闻集团（News Corporation）</h1>
+<p>市值 $164.8 亿 / 股价约 <strong>$30.5</strong>（NWS 是有投票权的 B 类股；NWSA 是无投票权的 A 类股，价格略低）/ 行业：媒体、出版与在线房产平台 / TTM 截止 <strong>2026年6月30日</strong>（该公司财年6月底结束，TTM 正好等于刚公布的 FY2026 完整一年）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>这家公司的名字骗人。</strong> 叫"新闻集团"，是默多克家族控制的报业帝国，你会以为它主要靠卖报纸和登广告赚钱。<strong>实际上它今天最赚钱的生意是澳大利亚的一个房产网站，第二赚钱的是给对冲基金卖数据订阅。</strong> 报纸——《华尔街日报》《太阳报》《泰晤士报》《纽约邮报》——加起来贡献的利润还不到公司的两成。</p>
+<p>它实质上是<strong>四家完全不相干的公司被装进同一个上市壳里</strong>：</p>
+<h3>生意一：Digital Real Estate Services 在线房产（FY2026 营收约 $20.5 亿，<strong>估算</strong>）</h3>
+<p><strong>这是全公司最值钱的东西。</strong> 里面装着两个网站：</p>
+<ul>
+<li><strong>REA Group（realestate.com.au）</strong>——澳大利亚的"贝壳找房 + 链家网"，市占率碾压式领先，本身在澳交所单独上市，新闻集团持股约 61%。它的商业模式极其干净：<strong>中介要卖一套房，必须在 realestate.com.au 挂牌，否则没人看得到。</strong> 挂一条基础房源广告要付几百澳元；想让房源出现在搜索结果第一屏、配大图、加视频，就是"Premiere"套餐，一条能收到 <strong>2,000–4,000 澳元</strong>。一个悉尼中介一年经手 40 套房，光挂牌费就要付 REA 十几万澳元。而且<strong>每年提价 8–12%，中介照付不误</strong>——因为不挂就卖不掉，成本最后转嫁给房主。这是教科书级别的收费站生意。</li>
+<li><strong>Realtor.com（Move 公司）</strong>——美国版，但日子难过得多，因为美国市场的老大是 Zillow。它的模式是把买家线索卖给经纪人：一个亚特兰大的买方经纪每月付 $1,500–3,000，换取平台推给他的潜在买家电话。<strong>FY2026 它终于连续七个季度实现增长</strong>，扭转了此前连年下滑的局面。</li>
+</ul>
+<p>这块 FY2026 第四季度营收 <strong>$5.53 亿（+19%）</strong>、分部 EBITDA <strong>$2.22 亿（+46%）</strong>——<strong>是全公司增长最快、利润率最高的部分。</strong></p>
+<h3>生意二：Dow Jones 道琼斯（FY2026 营收约 $25.0 亿，<strong>估算</strong>）</h3>
+<p>大家以为这是《华尔街日报》，但《华尔街日报》只是它的门面。<strong>它真正的利润机器是卖给企业的专业数据订阅：</strong></p>
+<ul>
+<li><strong>Factiva</strong>：全球报刊数据库，一家投行的研究部门一年付几十万美元，让分析师能全文检索三十年的新闻档案。</li>
+<li><strong>Dow Jones Risk &amp; Compliance</strong>：银行做反洗钱和制裁筛查时，要比对"这个客户是不是某国政要的亲属、是不是在制裁名单上"。这套数据库一家大银行一年付<strong>七位数美元</strong>，而且是监管强制要求，砍预算的时候动谁都不能动它。</li>
+<li><strong>Dow Jones Energy（OPIS）</strong>：全美加油站的批发油价基准数据。你在美国加油站看到的价格，背后的定价参考很可能来自 OPIS。这是被收购来的，2022 年花 11 亿美元买的（现金流量表 FY2022 那笔 $15.01 亿收购就是它）。</li>
+<li><strong>WSJ 消费者订阅</strong>：数字版一年一两百美元，几百万订户。</li>
+</ul>
+<p>这块的关键特征：<strong>几乎全是订阅制，续订率高，广告依赖度低。</strong> FY2026 第四季度营收 $6.44 亿（+7%）、EBITDA $1.81 亿（+20%）。</p>
+<h3>生意三：Book Publishing 图书出版 —— HarperCollins（FY2026 营收约 $21.9 亿，<strong>估算</strong>）</h3>
+<p>全球第二大英语图书出版社。做的事就是最传统的出版：签作者、付预付款、编辑、印刷、铺进 Barnes &amp; Noble 和亚马逊。旗下有托尔金的全部版权（《魔戒》《霍比特人》）、阿加莎·克里斯蒂、C.S.刘易斯的《纳尼亚》。</p>
+<p><strong>它这两年的增长引擎其实是有声书和电子书</strong>——FY2026 营收 +15%，主要来自数字格式。有声书的经济性远好于纸书：<strong>没有印刷成本、没有退货</strong>（实体书行业最大的成本黑洞是书店可以把卖不掉的书原价退回来）。另外它开始把版权目录授权给 AI 公司做训练数据，这是一块凭空多出来的高毛利收入。</p>
+<h3>生意四：News Media 新闻传媒（FY2026 营收 <strong>$22.88 亿</strong>，+6%，这是财报硬数字）</h3>
+<p>这里才是"报纸"：英国的《太阳报》《泰晤士报》、美国的《纽约邮报》、澳大利亚的 news.com.au 和一堆地方报、还有 TalkTV。</p>
+<p><strong>这块是全公司唯一在萎缩的：营收 +6%（主要靠汇率和 AI 授权费），但分部 EBITDA 反而 −3% 到 $2.87 亿。</strong> 意思是收入涨了、利润跌了——印刷和发行成本、内容成本还在上升，而广告收入结构性下滑。《纽约邮报》长期是亏损的（默多克家族出于影响力原因养着它）。</p>
+<p>这块唯一的新故事是<strong>跟 AI 公司签授权</strong>：2024 年跟 OpenAI 签的多年协议（外界估算五年超过 2.5 亿美元），把《华尔街日报》《太阳报》等内容授权给 ChatGPT 使用。这笔钱是纯利润，不需要多雇一个记者。</p>
+<h3>财报实际披露的口径：按收入类型</h3>
+<p>新闻集团在这个财报数据源上<strong>只按"收入类型"披露，不按分部披露营收</strong>。下面这张表是硬数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入类型</th>
+<th>TTM 营收</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>主要来自哪块生意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>订阅与发行</strong></td>
+<td>$32.03 亿</td>
+<td><strong>+6.4%</strong></td>
+<td>35.5%</td>
+<td>道琼斯（Factiva/风控数据/WSJ）+ 报纸订阅</td>
+</tr>
+<tr>
+<td><strong>消费品（图书）</strong></td>
+<td>$21.85 亿</td>
+<td><strong>+6.7%</strong></td>
+<td>24.2%</td>
+<td>HarperCollins</td>
+</tr>
+<tr>
+<td><strong>房产</strong></td>
+<td>$15.71 亿</td>
+<td><strong>+11.4%</strong></td>
+<td>17.4%</td>
+<td>REA Group + Realtor.com</td>
+</tr>
+<tr>
+<td><strong>广告</strong></td>
+<td>$13.91 亿</td>
+<td>+1.8%</td>
+<td>15.4%</td>
+<td>报纸 + 部分道琼斯</td>
+</tr>
+<tr>
+<td><strong>其他</strong></td>
+<td>$6.78 亿</td>
+<td>+9.5%</td>
+<td>7.5%</td>
+<td>授权、活动、AI 内容授权</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$90.28 亿</strong></td>
+<td><strong>+6.8%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>广告只占 15.4% 了。</strong> 一家以报业起家的公司，广告收入已经缩到六分之一，其余全是订阅、书和房产平台费——这是过去十年最重要的一个结构性变化。</p>
+<h3>分部利润（<strong>估算</strong>，方法见下）</h3>
+<p>公司公布 FY2026 <strong>分部 EBITDA 合计 $16.3 亿（+15%）</strong>，并单独公布了 News Media 的 $2.87 亿。其余按各分部披露的季度增速倒推：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>FY2026 营收（估算）</th>
+<th>分部 EBITDA（估算）</th>
+<th>利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dow Jones 道琼斯</td>
+<td>~$25.0 亿</td>
+<td>~$6.8 亿</td>
+<td>~27%</td>
+</tr>
+<tr>
+<td>Digital Real Estate 在线房产</td>
+<td>~$20.5 亿</td>
+<td>~$6.3 亿</td>
+<td>~31%</td>
+</tr>
+<tr>
+<td>Book Publishing 图书</td>
+<td>~$21.9 亿</td>
+<td>~$3.1 亿</td>
+<td>~14%</td>
+</tr>
+<tr>
+<td><strong>News Media 新闻传媒</strong></td>
+<td><strong>$22.88 亿</strong>（硬数字）</td>
+<td><strong>$2.87 亿</strong>（硬数字）</td>
+<td>12.5%</td>
+</tr>
+<tr>
+<td>公司总部及其他</td>
+<td>—</td>
+<td>~−$2.7 亿</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$90.28 亿</strong>（硬数字）</td>
+<td><strong>$16.30 亿</strong>（硬数字）</td>
+<td>18.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论方向是确定的：营收上四块生意几乎平分秋色，但利润上道琼斯和在线房产合起来贡献了 80%，而报纸这块用四分之一的营收换回不到两成的利润。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：<strong>这个数据源没有把 SBC 单列成一行</strong>，它被并进了现金流量表里 $2.69 亿的"其他经营活动"。我不编数字，只能标记：<strong>SBC 金额不透明，无法核算它占净利润的比例。</strong> 这是本次分析里唯一一个我拿不到的关键数据，读者需要自己去季报里翻。</p>
+</li>
+<li>
+<p><strong>一次性项目 —— 这是全篇最重要的一条</strong>：</p>
+</li>
+</ul>
+<p>表面上看，新闻集团刚刚经历了利润腰斩：<strong>净利润从 FY2025 的 $11.80 亿掉到 TTM 的 $5.73 亿，−51%；每股收益从 $2.07 掉到 $1.03。</strong> 看到这个数字的人会以为公司出事了。</p>
+<p><strong>完全不是。</strong> 同一期间：
+  - 营收 <strong>+6.8%</strong>（84.52 亿 → 90.28 亿）
+  - 毛利率 <strong>55.92% → 57.17%</strong>
+  - <strong>经营利润 $9.56 亿 → $11.57 亿，+21%</strong>
+  - 分部 EBITDA <strong>+15%</strong>
+  - 经营现金流 <strong>+8.6%</strong></p>
+<p>真实情况是：<strong>FY2025 那 11.8 亿里塞了一笔巨额的一次性处置收益</strong>——公司在 2025 年 4 月把澳洲付费电视业务 <strong>Foxtel 卖掉了</strong>。证据就在现金流量表上：FY2025 的"其他经营活动"是 <strong>−$5.48 亿</strong>（正常年份是 +2~3 亿），这个反常的巨额负数正是在把一笔非现金的处置收益从利润里冲回。</p>
+<p><strong>所以"利润腰斩"是纯粹的比较基数假象。FY2026 是这家公司经营层面最好的一年。</strong></p>
+<p>TTM 本期的一次性项目则很小：资产减值与重组 $2,700 万、出售投资损失 $2,000 万、权益法投资损失 $800 万，加起来 $5,500 万，相对 5.73 亿净利润不算重大。<strong>但要诚实说一句：只看单期口径，分不清这类减值重组是"真一次性"还是"年年都有"——过去五年这一行分别是 27/12/44/2/15，看起来更像是年年都有的小额常规项，不该加回。</strong></p>
+<ul>
+<li>
+<p><strong>资本化的支出</strong>：资本开支 $4.26 亿，占营收 4.7%——对媒体公司来说偏高，主要是 REA/Realtor.com 的平台开发和道琼斯的数据产品开发被资本化了。同时"其他摊销"高达 <strong>$3.04 亿</strong>，远大于常规折旧的 $1.81 亿。<strong>这一大块是历年收购（OPIS、Base Chemicals 等）形成的无形资产摊销。</strong> 注意：本页给出的 EBITDA $13.40 亿只加回了 1.81 亿折旧、<strong>没有加回这 3.04 亿摊销</strong>，所以它和公司自己说的"分部 EBITDA 16.3 亿"对不上——两个口径差的就是这块。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：<strong>这一年明显认真了。</strong> TTM 回购 <strong>$7.82 亿</strong>，而 FY2025 只有 1.50 亿、FY2024 只有 1.17 亿——<strong>一年翻了五倍多</strong>。分红另付 $1.12 亿。股本减少 <strong>2.02%</strong>。</p>
+</li>
+</ul>
+<p>没有单列 SBC 就没法算标准的"回购÷SBC"比值，但可以从股本变化反推：股本净减 2.02%，说明回购的规模<strong>远超</strong>员工发股的稀释，是真回购。合计股东回报 7.82+1.12 = <strong>$8.94 亿，占自由现金流 8.05 亿的 111%</strong>——它把当年赚的现金全还给股东了还不够，动用了账上现金（现金从 24.10 亿降到 21.01 亿）。</p>
+<ul>
+<li><strong>利润和现金流的差</strong>：净利润 5.73 亿，经营现金流 12.31 亿，差了 2.15 倍。对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>573</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+181</td>
+<td>印刷设备、办公楼，非现金</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+304</td>
+<td><strong>收购来的无形资产摊销，这是差额的最大来源</strong></td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+27</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 出售投资损失</td>
+<td>+20</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 权益法投资损失</td>
+<td>+8</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营活动（含 SBC）</td>
+<td>+269</td>
+<td><strong>SBC 藏在这里，不透明</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−237</td>
+<td>生意变大，客户欠款增加</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>+33</td>
+<td>书的库存降了</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+59</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,231</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−426</td>
+<td>平台开发、印刷设备</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>805</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润和现金流的鸿沟，八成来自那 3.04 亿"其他摊销" + 2.69 亿"其他经营活动"（含 SBC）。</strong> 前者是历史收购的账面残影、可以合理认为是纸面成本；后者里的 SBC 是真成本，但看不见金额。</p>
+<p>税的质量还行：实交现金所得税 $2.74 亿 vs 计提 $3.03 亿，差 0.29 亿，没有靠递延税注水。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>164.8亿 ÷ 5.73亿</td>
+<td><strong>28.8 倍</strong></td>
+<td><strong>$3.48</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（<strong>估算</strong>）</td>
+<td>加回 3.04 亿收购无形摊销（税后约 2.2 亿）</td>
+<td>约 20.7 倍</td>
+<td>约 $4.83</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>减值重组视为年年发生不加回；SBC 按 GAAP 已扣（金额不明）</td>
+<td><strong>28.8 倍</strong></td>
+<td><strong>$3.48</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>164.8亿 ÷ 8.05亿</td>
+<td><strong>20.5 倍</strong></td>
+<td><strong>$4.88</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>180.0亿 ÷ 11.57亿</td>
+<td><strong>15.6 倍</strong></td>
+<td><strong>$6.43</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>164.8亿 ÷ (5.73+11.80+2.66)/3 = 6.73亿</td>
+<td><strong>24.5 倍</strong></td>
+<td><strong>$4.08</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>三年平均那一行这次特别不可信，必须打折看。</strong> 分子里的 FY2025（11.80 亿）含 Foxtel 处置的巨额一次性收益，FY2024（2.66 亿）又是被减值和重组压到异常低的一年。<strong>两个极端凑出来的"平均"没有意义。</strong> 更接近真实常态利润的数字是 TTM 的 5.73 亿本身——那是唯一一个既没有大额一次性收益、也没有大额一次性损失的年份。<strong>所以真实市盈率就取 28.8 倍。</strong></p>
+</blockquote>
+<p><strong>注意这里有一个别的公司没有的复杂性</strong>：REA Group 是单独上市的，新闻集团只持有约六成，剩下四成属于 REA 自己的股东。<strong>在线房产这块最好的那部分利润，有相当一部分在合并报表里被扣给了少数股东，并不属于你。</strong> 反过来说，市场对这家公司长期存在一个"控股公司折价"——你花 164.8 亿买下整个新闻集团，但光是它手里那 61% 的 REA 股份，按 REA 在澳交所的市值折算就是一笔非常大的数字，剩下的道琼斯、HarperCollins、全部报纸相当于<strong>近乎白送</strong>。这是这只股票几十年来最持久的多头论点，也是它几十年来一直没兑现的论点。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 3 块 5。</strong> 如果按自由现金流算是 4 块 9，按企业价值口径（把 8.14 亿净负债算进去、看未扣摊销的经营利润）是 6 块 4。</p>
+<p>这 3 块 5 里，<strong>有约 5 毛以分红形式直接进你口袋</strong>（股息率约 1.7%），<strong>另有约 2 块 4 通过回购间接回到你手上</strong>（TTM 回购 7.82 亿 ÷ 市值 164.8 亿 = 4.7%，但这一年是异常放量）。合起来股东回报率约 5.4%，<strong>超过了公司当年赚到的自由现金流</strong> —— 也就是说这个派发速度靠动用存量现金维持，不可持续，明年大概率回落。</p>
+<p>这个数字未来变大还是变小？<strong>大概率变大，理由有三条硬的</strong>：（1）营收结构里<strong>广告已经压缩到只剩 15%</strong>，剩下的 85% 是订阅、图书和房产平台费，波动性和结构性衰退风险都低得多；（2）在线房产和道琼斯这两块占利润八成、且分别以 19% 和 7% 的速度在长；（3）AI 内容授权是纯增量利润，几乎零边际成本。</p>
+<p><strong>变小的风险也有两条</strong>：报纸那块（占营收四分之一）的 EBITDA 已经在下滑，且没有止跌迹象；以及澳大利亚房地产周期——REA 的收入直接挂钩澳洲的房屋挂牌量，一旦澳洲楼市成交量冻结，全公司最好的一块生意会立刻掉两位数。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家伪装成报业集团的"在线房产平台 + 金融数据公司"，28.8 倍市盈率买它并不便宜，但你买到的东西比标签好得多。</strong></p>
+<p>看清三件事就够了：第一，<strong>"净利润腰斩 51%"是假的</strong>，那是去年卖 Foxtel 的一次性收益造成的比较假象，经营利润其实涨了 21%，FY2026 是它经营层面最好的一年。第二，<strong>它已经不靠广告活了</strong>——广告只剩 15%，订阅和平台费构成了绝大部分收入，这是过去十年默多克家族做对的一件大事。第三，<strong>它最好的资产（REA Group）单独上市、只持有六成</strong>，这既是价值所在，也是这只股票长年打折的原因——控股公司结构 + 双层股权 + 家族控制，机构投资者会一直给它扣分。</p>
+<p><strong>最大的问题不是估值，是它为什么还要拥有那些报纸。</strong> 用四分之一的营收换不到两成的利润、EBITDA 还在下滑，若把 News Media 剥离出去，剩下的公司会是一家增长 12%、EBITDA 利润率接近 30% 的订阅制企业，市场愿意给的倍数会比现在高得多。<strong>但默多克家族拥有 B 类股的控制权，而报纸正是这个家族全部政治影响力的来源——它永远不会被卖掉。</strong> 你买这只股票，就是在为这份影响力持续买单。</p>
+</div></body></html>

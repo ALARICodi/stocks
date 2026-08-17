@@ -1,0 +1,443 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LUV · 西南航空（Southwest Airlines）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LUV</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">把50年品牌资产当燃料烧，赔率不划算</div><h1>LUV · 西南航空（Southwest Airlines）</h1>
+<p><strong>市值</strong> $216.5 亿 ｜ <strong>股价</strong> 约 $44.26 ｜ <strong>行业</strong> 交通运输（航空客运）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<p>全文所有数字都是 TTM 口径（2025 年 7 月 — 2026 年 6 月这最近四个季度），单位美元。</p>
+<blockquote>
+<p><strong>先给一句定性</strong>：这是一家<strong>正在中途拆掉自己引擎的公司</strong>。西南航空过去 50 年靠三件事出名——不指定座位、免费托运两件行李、不收改签费。<strong>这三件事在过去两年里被拆掉了两件半。</strong> 这份分析的核心，就是把"拆掉这些换来了多少钱"算清楚。TTM 净利润 8.37 亿，是 FY2025（4.41 亿）的 1.9 倍——这个跳涨的来源，几乎全部在下面那张表的第三行。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>先说清一件事</strong>：西南航空在财报上<strong>只有一个经营分部</strong>（就是"航空运输"）。它没有货运子公司、没有维修子公司、没有区域航空子公司。所以下面这个拆法，用的是财报按<strong>收入类型</strong>（ASC 606 收入分解）的披露，不是分部利润表。<strong>这意味着我拿不到任何一块的独立利润率</strong>，只能拿到营收。这一点我在下文会反复标注。</p>
+<h3>生意 A：卖机票本身 —— 71.6% 的营收（TTM 215.19 亿）</h3>
+<p>最朴素的那件事：你花 149 美元买一张达拉斯飞凤凰城的票，坐上去，飞过去。</p>
+<p><strong>西南跟别的航司在这件事上的根本区别，在两个结构性选择上：</strong></p>
+<p><strong>第一，全公司只飞一种飞机——波音 737。</strong> 800 多架，全是 737（-700、-800、MAX 8）。这件事的威力比它听起来大得多：
+- <strong>飞行员</strong>：一个西南的机长可以开机队里任何一架飞机。达美有 A220、A320、A330、A350、737、757、767，飞行员按机型分池子，某个机型缺人，别的机型的人调不过来。西南没有这个问题。
+- <strong>备件</strong>：一个机场备件库只需要备 737 的件。达美要在同一个库里备七套。
+- <strong>培训</strong>：一套模拟机、一套手册、一套检查单。
+- <strong>调度</strong>：任何一架飞机可以顶替任何一架飞机的航班。飞机坏在丹佛，随便从别的航线抽一架过来就行。</p>
+<p>这套"单一机型"的打法是西南 1971 年就定下的，也是过去半个世纪它成本比对手低的<strong>唯一真正原因</strong>。</p>
+<p><strong>第二，点对点（point-to-point），不是轮辐（hub-and-spoke）。</strong> 达美的模式是：全国的旅客先飞到亚特兰大，在亚特兰大换机，再飞到目的地。好处是能把冷门城市对的客流聚起来。坏处是亚特兰大一下雪，全网瘫痪。西南的模式是：达拉斯直飞凤凰城，凤凰城直飞拉斯维加斯，拉斯维加斯直飞奥克兰——<strong>一架飞机一天飞 6—7 个航段，像公交车一样跑</strong>。好处是飞机利用率高、旅客不用转机、不受单一枢纽拖累。坏处是<strong>一旦某个环节脱节，后面 5 个航段全部连环晚点</strong>——2022 年圣诞节那次系统崩溃、取消 1.7 万个航班、赔了 10 亿美元，根源就在这里。</p>
+<p><strong>这块营收 TTM 涨了 5.3%（对比 FY2025 的 204.41 亿）</strong>，是最平淡的一块——机票就是机票，涨幅基本等于运力增长加一点票价。</p>
+<h3>生意 B：附加服务费 —— 全篇最重要的一块（TTM 28.71 亿，占 9.5%）</h3>
+<p><strong>这一块两年前只有 10.29 亿。现在是 28.71 亿。涨了 179%。</strong></p>
+<p>这是整份分析的核心，我详细讲。</p>
+<p><strong>西南航空过去 50 年的广告词是"Bags Fly Free"（行李免费飞）——每位旅客可以免费托运两件行李。</strong> 全美所有其他航司都收：第一件 35 美元、第二件 45 美元。西南不收。这是它品牌的灵魂，也是它每年主动放弃的<strong>十几亿美元收入</strong>。</p>
+<p><strong>2024 年，激进投资人 Elliott Management 买入了西南约 11% 的股份，公开发难</strong>，核心指控就一句话：你们守着一套 1971 年的打法，利润率被达美、美联航甩开了三条街。这场仗打到 2024 年 10 月，Elliott 拿到了 5 个董事会席位。</p>
+<p><strong>接下来发生的事，就写在这一行数字里：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>附加服务费收入</th>
+<th>发生了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>9.25 亿</td>
+<td>老西南：免费行李、自由落座</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>10.29 亿</td>
+<td>Elliott 入场，董事会改组</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>18.35 亿</td>
+<td><strong>开始收托运行李费</strong>、推出指定座位与加宽座位、开卖基础经济舱、上红眼航班</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>28.71 亿</strong></td>
+<td>新政策跑满一整年</td>
+</tr>
+</tbody>
+</table></div>
+<p>具体收的是什么钱：
+- <strong>托运行李费</strong>：第一件 35 美元，第二件 45 美元（信用卡持卡人和 A-List 会员仍免）。西南一年运 1.3 亿人次，哪怕只有三成人交这个钱，就是十几亿。
+- <strong>指定座位与"加长腿部空间"座位</strong>：以前是上飞机抢座，现在按 A/B/C 分组卖号，靠前的位置和前排加宽座另外收 30—80 美元。
+- <strong>基础经济舱（Basic Economy）</strong>：一个更便宜、但不能选座不能改签的票种。这不是降价，这是<strong>把原来的标准票拆成"廉价版 + 加钱恢复"</strong>。
+- <strong>上线第三方渠道</strong>：以前西南的票只在自己官网卖（这是它省渠道费的手段，也是它的骄傲）。现在 Expedia、Google Flights 都能买了——多付了渠道费，但换来了新客源。</p>
+<p><strong>这一块的经济含义</strong>：附加费收入几乎<strong>没有边际成本</strong>。你多交 35 美元行李费，飞机不会多烧一滴油。所以这 28.71 亿里，<strong>接近 28.71 亿是纯利润</strong>。而全公司 TTM 的经营利润才 10.91 亿。</p>
+<p><strong>换句话说：如果把附加费砍回 FY2024 的水平（10.29 亿），西南航空的经营利润是负的。</strong>（这是一个粗略但方向正确的推算：10.91 − (28.71 − 10.29) = −7.5 亿。）</p>
+<h3>生意 C：常旅客积分兑换的机票 —— 10.1%（TTM 30.43 亿）</h3>
+<p>这是"Rapid Rewards"会员用积分兑换的那部分机票，按会计准则单独确认收入。</p>
+<p><strong>这一块 TTM 反而跌了 6.6%</strong>（FY2025 是 32.59 亿），是全公司唯一下滑的大项。为什么会跌，从这四页数据看不出确定原因——可能是积分贬值（兑换同一张票要更多分）、也可能是会员在囤分不兑。<strong>这一行值得盯，因为它是"品牌忠诚度"最直接的温度计</strong>：西南刚刚拿走了老客户最看重的免费行李，如果忠诚度在流失，这一行会继续跌。</p>
+<h3>生意 D：其他收入 —— 8.2%（TTM 24.59 亿），其实是"卖积分给摩根大通"</h3>
+<p>这块名字叫"其他"，但里面最大的一项是<strong>信用卡联名</strong>。</p>
+<p>具体怎么运作：摩根大通（Chase）发行"Southwest Rapid Rewards"联名信用卡。你刷卡消费 1 美元，Chase 给你 1—2 个西南积分。<strong>这些积分不是凭空来的——Chase 是花真金白银从西南手里买的</strong>，大约 1.4—1.8 美分一个点。</p>
+<p><strong>这门生意的本质是：西南在向银行批发售卖"未来的空座位"。</strong> 一个积分在西南的账上成本极低（用它兑机票的边际成本就是一份餐食和一点燃油），卖给 Chase 却是真金白银。这是全公司<strong>利润率最高、最稳定、最不像航空业</strong>的一块——它更像一门授权生意。TTM 24.59 亿，同比稳增 4.3%，五年从 15.37 亿涨上来，<strong>从来没跌过</strong>。</p>
+<h3>生意 E：货运 —— 0.6%（TTM 1.79 亿）</h3>
+<p>客机腹舱里顺便带的货。五年基本没动过（1.87 → 1.79 亿）。规模太小，不影响任何判断。</p>
+<h3>一张表看全貌</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入类型</th>
+<th>TTM（亿美元）</th>
+<th>FY2025（亿美元）</th>
+<th>变化</th>
+<th>占总营收</th>
+<th>边际利润率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 客运机票（非积分）</td>
+<td>215.19</td>
+<td>204.41</td>
+<td>+5.3%</td>
+<td><strong>71.6%</strong></td>
+<td>低，几乎全部成本压在这块</td>
+</tr>
+<tr>
+<td>B <strong>附加服务费</strong></td>
+<td><strong>28.71</strong></td>
+<td><strong>18.35</strong></td>
+<td><strong>+56.5%</strong></td>
+<td>9.5%</td>
+<td><strong>接近 100%</strong></td>
+</tr>
+<tr>
+<td>C 积分兑换机票</td>
+<td>30.43</td>
+<td>32.59</td>
+<td><strong>−6.6%</strong></td>
+<td>10.1%</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>D 其他（信用卡联名为主）</td>
+<td>24.59</td>
+<td>23.57</td>
+<td>+4.3%</td>
+<td>8.2%</td>
+<td><strong>很高</strong></td>
+</tr>
+<tr>
+<td>E 货运</td>
+<td>1.79</td>
+<td>1.71</td>
+<td>+4.7%</td>
+<td>0.6%</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>300.73</strong></td>
+<td><strong>280.63</strong></td>
+<td><strong>+7.2%</strong></td>
+<td><strong>100%</strong></td>
+<td>整体经营利润率 <strong>3.63%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：（1）财报<strong>只按收入类型披露营收，不披露任何一块的利润</strong>——西南只有一个经营分部，成本（燃油、人工、维修、机场费）根本没法按收入类型分摊。上表"边际利润率"一列是我按业务性质做的<strong>定性估算</strong>，不是财报数字，不要当精确值用；（2）对比列是 FY2025 整年（截至 2025 年 12 月），跟 TTM 错开半年；按网站口径，TTM 对上一个 TTM 的营收增速是 <strong>+9.47%</strong>。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：<strong>现金流量表里根本没有单列这一项</strong>。这本身就是信息——说明金额小到不值得单列，被并进了"其他经营活动"那 1.78 亿里。这在航空公司很正常：7.28 万员工里绝大多数是飞行员、乘务、地勤、机务，他们拿的是工会谈下来的工资和"利润分享计划"（西南的传统，按年度利润分现金给全体员工），<strong>不是股票</strong>。<strong>这一点对股东是纯粹的好消息</strong>——你不用担心自己的股份被员工期权一点点稀释掉。</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：TTM <strong>干净得出奇</strong>——资产减值与重组是空的，资产出售损益是空的，投资出售损益是空的。往前看，FY2025 有 800 万重组、9,200 万资产出售收益（FY2024），量级都很小。<strong>所以 TTM 的 8.37 亿净利润里，没有任何一次性成分需要剔除。这在美股里不常见，值得肯定。</strong></p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：航空公司没有软件资本化这类猫腻。但有一个必须点破的会计特性——<strong>飞机大修的成本是资本化的</strong>（按"延期大修法"，一次发动机翻修花几百万美元，不是当期费用，而是摊到未来几年）。这不是造假，是行业通行准则，但它意味着<strong>折旧摊销这 12.47 亿里，有一部分是过去几年真实花掉的现金在慢慢回吐</strong>。</p>
+</li>
+<li>
+<p><strong>回购与稀释 —— 这里藏着这份分析里最尖锐的一个问题</strong>：</p>
+</li>
+<li>TTM 回购 <strong>15.50 亿美元</strong>（FY2025 更狠，25.50 亿）。SBC 小到没单列。<strong>回购 ÷ SBC 是个天文数字，远超"大于 3 倍才算真回购"的门槛。</strong></li>
+<li><strong>股本一年实实在在减少了 13.01%</strong>——这是我在这批公司里见过最大的单年缩股幅度。</li>
+<li><strong>但是，这笔钱是哪来的？</strong> 看现金流量表：TTM 净借款 <strong>+18.86 亿美元</strong>。同时，账上现金从 FY2024 年底的 87.25 亿，掉到现在的 37.91 亿。总债务从 80.58 亿降到 68.89 亿（这是好的），但净现金头寸从 <strong>+6.67 亿变成了 −30.98 亿</strong>。</li>
+<li><strong>翻译成大白话：西南航空过去两年花掉了约 41 亿美元回购自己的股票，而同期它的自由现金流是负的。这笔钱来自烧掉疫情期间攒下的现金储备，加上新借的债。</strong></li>
+<li>
+<p><strong>这是好事还是坏事？取决于你信不信这次转型。</strong> 如果附加费带来的利润是可持续的，那么在股价低位借钱缩股 13%，是教科书级的资本配置。如果附加费只是一次性的、老客户正在流失，那么这就是<strong>在周期顶点用债务买回高估的股票</strong>——航空业历史上这么干然后破产的公司，能排一长串。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差 —— 对账表</strong>：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>837</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>1,247</td>
+<td>飞机、发动机、地面设备</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>318</td>
+<td>主要是大修成本摊销</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>178</td>
+<td>含未单列的 SBC、递延税等</td>
+</tr>
+<tr>
+<td><strong>小计（营运资金变动前）</strong></td>
+<td><strong>2,580</strong></td>
+<td><strong>这门生意一年真正的造血能力</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−151</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+382</td>
+<td></td>
+</tr>
+<tr>
+<td>− <strong>预收款（机票款）减少</strong></td>
+<td><strong>−112</strong></td>
+<td><strong>值得盯的一行，见下</strong></td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−171</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>营运资金合计</strong></td>
+<td><strong>−52</strong></td>
+<td>几乎没影响</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>2,528</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2,934</td>
+<td><strong>买新飞机</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−406</strong></td>
+<td><strong>负的，连续第五年</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要看三个地方：</strong></p>
+<ol>
+<li>
+<p><strong>"预收款"这一行是航空公司独有的、也是最该盯的指标。</strong> 你今天买了三个月后的机票，钱先给了航空公司，但服务还没提供——这笔钱记在负债里，叫"预收运输款"（air traffic liability）。西南的营运资金是 <strong>−67.9 亿</strong>、流动比率只有 <strong>0.49</strong>，看起来像要破产，其实全是这笔预收款撑起来的负债。<strong>这是航空公司的常态，不是危险信号。</strong> 但反过来说：<strong>这一行如果开始持续下降，就是需求在塌的最早预警</strong>。TTM 是 −1.12 亿（FY2025 是 −10.78 亿，那个更值得警惕），目前算温和。</p>
+</li>
+<li>
+<p><strong>自由现金流 −4.06 亿，连续第五年为负。</strong> FY2021 是 +18.11 亿（那年不买飞机），之后 −1.56、−3.56、−15.92、−8.31、−4.06。<strong>这不是经营出了问题，是波音在交飞机。</strong> 资本开支 29.34 亿，对着折旧摊销 15.65 亿，是 1.9 倍——它在换机队（老的 737-700 退役，换 737 MAX 8）。</p>
+</li>
+<li>
+<p><strong>所以"常态化"的自由现金流应该是多少？</strong> 如果只做维持性投入（capex ≈ D&amp;A），那就是 2,580 − 1,565 = <strong>约 10.15 亿美元</strong>（这是估算）。这个数字比账面的 −4.06 亿好看得多，也更接近这门生意的真实产出。<strong>但要注意：航空公司的"维持性资本开支"是个滑头概念——飞机不换新，油耗和维修费就往上走，省下来的资本开支会变成运营成本。</strong></p>
+</li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>TTM 净利润 8.37 亿，市值 216.52 亿，企业价值 247.50 亿（净债务 30.98 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>216.52 ÷ 8.37</td>
+<td><strong>25.9 倍</strong></td>
+<td><strong>3.86 元</strong></td>
+</tr>
+<tr>
+<td>↳ <em>（按股价 ÷ EPS 算是 27.7 倍）</em></td>
+<td><em>44.26 ÷ 1.60</em></td>
+<td><em>27.7 倍</em></td>
+<td><em>3.61 元</em></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页未提供调整后净利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无任何一次性项目可剔</td>
+<td><strong>25.9 倍</strong></td>
+<td><strong>3.86 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 −4.06 亿</td>
+<td><strong>无意义（负）</strong></td>
+<td><strong>−1.88 元</strong></td>
+</tr>
+<tr>
+<td>↳ <em>（剔掉扩张性买飞机的常态化 FCF，估算）</em></td>
+<td><em>216.52 ÷ 10.15</em></td>
+<td><em>21.3 倍</em></td>
+<td><em>4.69 元</em></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>247.50 ÷ 10.91</td>
+<td><strong>22.7 倍</strong></td>
+<td>4.41 元（给全体资本方，含债主）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>216.52 ÷ [(8.37 + 4.41 + 4.65) ÷ 3 = 5.81]</td>
+<td><strong>37.3 倍</strong></td>
+<td><strong>2.68 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先解释第一行和第二行为什么不一样</strong>：市值 ÷ 净利润是 25.9 倍，股价 ÷ EPS 是 27.7 倍。差在哪？<strong>差在过去一年回购掉的 13% 股份上。</strong> EPS 用的是过去 12 个月的<strong>平均</strong>股本，而市值用的是<strong>现在</strong>的股本（已经少了 13%）。<strong>25.9 倍是更贴近当下现实的那个数。</strong></p>
+<p><strong>再看最后一行——37.3 倍，这是全表最重要的数字。</strong></p>
+<p>三年平均利润 5.81 亿，只有 TTM 8.37 亿的 69%。也就是说：<strong>如果你认为西南航空的"正常"盈利能力是过去三年的平均水平，那你现在付的是 37 倍市盈率。</strong> 这个价格对一家净利率 2.78%、自由现金流为负、需求高度顺周期的航空公司，是<strong>明显偏贵</strong>的。</p>
+<p><strong>但市场显然不是这么想的。前瞻市盈率只有 10.27 倍，PEG 只有 0.12。</strong> 这两个数字说的是同一件事：<strong>卖方普遍预期明年 EPS 从 1.60 跳到约 4.3 美元，涨 170%。</strong></p>
+<p><strong>这两个视角的鸿沟——37.3 倍 vs 10.27 倍——就是这只股票的全部争议。</strong> 一边说"过去三年它只能赚 5.8 亿"，一边说"明年它能赚 21 亿"。你必须选一边。</p>
+<h3>说人话：你现在投 100 块进去，一年拿多少？</h3>
+<p><strong>按最保守的真实口径（25.9 倍），公司一年替你赚 3.86 块。</strong></p>
+<p>这 3.86 块的去向：
+- <strong>1.71 块以分红形式进你口袋</strong>（TTM 分红 3.70 亿 ÷ 216.5 亿市值 = 1.71% 股息率）；
+- <strong>7.16 块名义上以回购形式还给你</strong>（15.50 亿 ÷ 216.5 亿）——<strong>注意这个数字比公司当年赚的 3.86 块还大得多</strong>。加上分红，TTM 还给股东 19.20 亿，是净利润 8.37 亿的 <strong>229%</strong>。差额靠借债和消耗现金储备。<strong>这不可持续，最多再撑一两年</strong>；
+- <strong>留在公司里的是负数</strong>：29.34 亿的资本开支，全部靠经营现金流 25.28 亿加借款覆盖。</p>
+<p><strong>这个 3.86 块未来会变大还是变小？我判断短期会变大，但确定性远低于市场定价的水平。</strong></p>
+<p>变大的理由：（1）<strong>附加费的跑道还很长</strong>——达美和美联航的附加费占营收比例比西南高得多，西南从 9.5% 往上走还有空间；指定座位、加宽座位这些才刚开始一年，第二年会跑满；（2）<strong>成本端在改善</strong>——老 737-700 退役换 MAX 8，单座油耗降 15%；（3）<strong>运力纪律</strong>——整个美国航空业在削减国内运力，票价环境比前两年好；（4）<strong>股本还在以每季度约 2% 的速度减少</strong>，同样的利润摊到更少的股票上。</p>
+<p>变小的风险，我要说得直白一点：
+1. <strong>它拿掉的是自己最后的差异化。</strong> 西南过去能收到比精神航空（Spirit）、边疆航空（Frontier）更高的票价，靠的就是"我贵一点，但行李免费、改签免费、服务好"。现在行李收费了、座位分等级了、还上了基础经济舱——<strong>它在把自己变成一家普通航司，而普通航司这个位置上已经站满了人</strong>。积分兑换收入 TTM 跌 6.6%，可能是这个逻辑的第一个数据点。
+2. <strong>它的成本优势已经基本没了。</strong> 每员工创收 41.3 万美元，每员工创利 1.15 万美元——在四大航里垫底。单一机型省下来的钱，被工会薪资和低效率吃掉了。<strong>ROIC 8.51%，WACC 8.39%——它创造的回报只比资金成本高 0.12 个百分点，本质上等于没创造价值。</strong>
+3. <strong>资产负债表已经从"航空业最强"变成"平庸"。</strong> 疫情前和疫情中，西南是唯一保持投资级评级和净现金的美国航司，那是它历次危机活下来的原因。<strong>现在净债务 30.98 亿，现金从 87 亿掉到 38 亿。下一次危机来的时候，它没有以前那层甲了。</strong>
+4. <strong>6.73% 的流通股被做空</strong>，且空头仓位在上升（上月 3,116 万股 → 现在 3,290 万股）。市场上有相当一部分资金在赌这次转型不成。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家用 25.9 倍市盈率、37 倍三年平均市盈率的价格，卖给你一个"转型能成"的故事——而故事的第一年数据确实很漂亮，代价是它把 50 年的品牌资产当燃料烧掉了。</strong></p>
+<p>不含糊地说：<strong>附加费这一块是真的，28.71 亿、两年涨 179%、边际利润率接近 100%，这不是会计游戏，是实打实的现金。</strong> 如果只看这一块，西南值得重估。</p>
+<p>但把镜头拉远，我看到的是一家<strong>用债务和现金储备回购自己股票（两年 41 亿）、同时自由现金流连续五年为负、ROIC 只比资金成本高 0.12 个百分点、并且刚刚亲手拆掉了自己唯一差异化的公司</strong>。市场给它 10.27 倍的前瞻市盈率，等于已经把"明年利润翻 1.7 倍"当成既成事实定价了。</p>
+<p><strong>在这个价位，你赚的不是"公司变好"的钱，而是"公司比市场已经很高的预期变得更好"的钱。这个赔率不划算。</strong></p>
+<p>真正值得买的时点，不是现在股价一年涨了 42.91% 之后，而是下一次油价飙升或需求走软、市场重新怀疑这次转型的时候。<strong>航空股的规律从来没变过：在所有人都相信这次不一样的时候卖，在所有人都觉得它要完的时候买。</strong></p>
+</div></body></html>

@@ -1,0 +1,316 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RL · 拉夫劳伦（Ralph Lauren Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RL</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">它值这个价但不便宜，是好公司的合理价不是好价</div><h1>RL · 拉夫劳伦（Ralph Lauren Corporation）</h1>
+<p>市值 $231.7 亿 / 股价约 $388.9 / 行业：消费品（服装与配饰）/ TTM 截止日：2026 年 6 月 27 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>拉夫劳伦财报只按<strong>地理</strong>切三块：北美、欧洲、亚洲。但地理不是"生意"，只是收钱的地方。这家公司实质上做的是<strong>同一件事，用三种渠道卖</strong>——所以下面先讲这一件事到底是什么，再讲三个地区。</p>
+<h3>这门生意的本质：卖一个"美国上流生活"的符号，赚品牌溢价</h3>
+<p>拉夫劳伦不生产布料，也基本不自己开工厂。它做的事是：设计一件 Polo 衫，在左胸绣上那个打马球的小人，然后以 3～4 倍于制造成本的价格卖出去。</p>
+<p>具体到数字上：TTM 营收 83.55 亿美元，毛利 58.71 亿，<strong>毛利率 70.3%</strong>。也就是说你花 100 块买的衣服，公司拿到手的原料+代工成本只有约 30 块。剩下 70 块里，约 54 块花在开店租金、店员工资、广告、设计师、物流上，最后剩 16 块是经营利润。</p>
+<p>这 70% 的毛利率是怎么撑住的？靠三件具体的事：</p>
+<p><strong>一是死守价格，宁可少卖。</strong> 过去五年公司主动砍掉了廉价产品线——2021 年把 Club Monaco 卖了，2022 年把 Chaps（在 Kohl's 卖 39 美元一件的低端线）授权出去了。营收从 FY2022 的 62 亿只涨到 FY2026 的 81 亿，五年才涨 30%，但毛利率从 65% 提到 70%，净利润从 6.0 亿涨到 9.4 亿，涨了 57%。这是典型的"减量提价"打法：少卖便宜货，多卖贵货。</p>
+<p><strong>二是把货从批发抢回自营。</strong> 传统上拉夫劳伦是把衣服整批卖给梅西百货（Macy's）、诺德斯特龙（Nordstrom）、Dillard's 这些百货公司，一件衣服公司拿到的是零售价的一半左右，而且百货打折促销公司管不了——货一旦出手，梅西挂 5 折清仓，品牌形象就砸了。所以公司这些年拼命开自己的店和自己的官网：现在全球约 570 家直营店 + 700 多家奥莱店 + 各地官网。一件 Polo 衫在自营渠道卖 110 美元，公司拿全部 110 美元；批发给梅西可能只拿 55 美元。渠道结构一变，同样一件衣服的营收和毛利就翻倍。</p>
+<p><strong>三是授权费，纯白捡钱。</strong> 公司自己不做香水、不做眼镜、不做床品，而是把"Ralph Lauren"这四个字租给别人用：香水线给 L'Oréal（欧莱雅）做，眼镜给 Luxottica 做，家纺给专门的代工商做。别人负责生产、铺货、承担库存风险，公司按销售额抽一个百分点。这部分钱计入各地区收入里，规模不大（一年约 1.5～2 亿美元），但它<strong>几乎零成本</strong>——不占库存、不用开店、不请人，收进来接近 100% 是利润。</p>
+<h3>三个地区，实际上是三种不同的生意阶段</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收（百万美元）</th>
+<th>占比</th>
+<th>FY26 全年同比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>北美</td>
+<td>3,414</td>
+<td>40.9%</td>
+<td>+9.2%</td>
+<td>约 13%</td>
+<td>约 4.4 亿</td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>2,579</td>
+<td>30.9%</td>
+<td>+16.7%</td>
+<td>约 21%</td>
+<td>约 5.4 亿</td>
+</tr>
+<tr>
+<td>亚洲</td>
+<td>2,219</td>
+<td>26.6%</td>
+<td>+23.1%</td>
+<td>约 20%</td>
+<td>约 4.4 亿</td>
+</tr>
+<tr>
+<td>其他/未分部</td>
+<td>144</td>
+<td>1.7%</td>
+<td>−1.5%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>8,355</strong></td>
+<td>100%</td>
+<td><strong>+14.7%（TTM 口径）</strong></td>
+<td><strong>16.2%</strong></td>
+<td><strong>13.57 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按地区披露营收，<strong>不披露地区经营利润</strong>。上表的利润率是按整体 16.2% 经营利润率、结合三地渠道结构（北美奥莱和批发占比高、欧亚直营和正价占比高）做的<strong>估算</strong>，不是财报数字。</p>
+</blockquote>
+<p><strong>北美（40.9%）</strong>——最老、最成熟、增长最慢的市场。这里的问题是历史包袱：过去二十年公司在美国把货铺得太广、奥莱店开得太多，"Polo 衫在奥特莱斯 2 件 99 美元"这个印象已经烙在美国消费者脑子里了。现在公司要做的是把这个印象扭回来——关掉低效奥莱、减少给百货的供货、在纽约麦迪逊大道这种地方开旗舰店。所以北美增长只有 9%，是三个地区最慢的，利润率也最低。</p>
+<p><strong>欧洲（30.9%）</strong>——最赚钱的一块。原因很简单：欧洲市场从一开始就是按"美国轻奢"定位进入的，没有奥莱的历史包袱，正价直营店占比高，一件衬衫在巴黎卖 150 欧元，在美国奥莱可能 60 美元。同店销售连续多个季度双位数增长。</p>
+<p><strong>亚洲（26.6%）</strong>——增长最快，+23%。这里的生意逻辑跟前两个都不同：欧美是"守住老客户、提价"，亚洲是"每年新开几十家店、每家店都是新增量"。中国、日本、韩国的中产阶层第一次买"美式经典"，而拉夫劳伦的定位（比优衣库贵三倍、比 Gucci 便宜三倍）刚好卡在这批人愿意掏钱的价位带上。这块生意目前占四分之一多一点，是未来五年估值故事的主要来源。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM 1.146 亿美元，占净利润 11.7%。这个比例在服装行业不算高（科技公司常见 30%～100%）。<strong>本文一律把它当真实成本扣掉</strong>——公司给员工发股票，等于替你稀释了你手上的股份，GAAP 已经扣了这笔，不加回。</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：TTM 期内基本<strong>没有</strong>。资产减值和重组费用这一行 TTM 是 0（FY2023 还有 970 万、FY2022 有 2130 万，现在清零了）。这意味着公司报的 GAAP 利润没什么水分需要挤，是本文比较少见的干净情形。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：TTM 资本开支 2.742 亿美元（主要是开店装修和物流中心），另有 4120 万买无形资产。服装公司不存在"把研发资本化"这种游戏，这块干净。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：<strong>这是全篇最漂亮的一个数字</strong>。TTM 回购 6.256 亿美元，同期 SBC 1.146 亿，<strong>比值 5.46 倍</strong>。判断标准是：接近 1 说明回购只是在抵消员工发股、股东一分钱没拿到；大于 3 才叫真回购。5.46 倍是实打实回馈股东。结果反映在股本上——流通股一年减少 2.32%，从约 61 百万股降到 59.58 百万股。加上分红 2.206 亿，TTM 一共还给股东 8.46 亿美元，占同期自由现金流 10.43 亿的 <strong>81%</strong>。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：净利润 9.829 亿 → 经营现金流 13.17 亿 → 自由现金流 10.43 亿。现金流<strong>高于</strong>净利润，这是好现象。逐项对账：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>982.9</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+236.4</td>
+<td>店铺装修、设备的账面折旧，不是真花钱</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+114.6</td>
+<td>发股票不出现金（但稀释你，所以下面估值里不加回）</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+11.8</td>
+<td>计提批发客户可能收不回的货款</td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>+41.2</td>
+<td>汇兑、递延等零碎项</td>
+</tr>
+<tr>
+<td>− 营运资金占用</td>
+<td>−69.5</td>
+<td>应收 −15.6、存货 +34.3、应付 +109.7、税款 −72.4、其他 −125.5</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,317.4</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−274.2</td>
+<td>开店、装修、物流中心</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,043</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>营运资金只占用了 6950 万，对一家 83 亿营收的服装公司来说非常小——说明库存管得住（存货甚至还释放了 3430 万现金）。服装公司最怕的就是库存堆积然后打折清仓，这张表说明目前没这个问题。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>231.7 亿 ÷ 9.829 亿</td>
+<td><strong>23.6 倍</strong></td>
+<td><strong>$4.24</strong></td>
+</tr>
+<tr>
+<td>按每股收益算的 PE</td>
+<td>股价 388.9 ÷ EPS 15.87</td>
+<td>24.5 倍</td>
+<td>$4.08</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>TTM 无重大调整项</td>
+<td>≈ 23.6 倍</td>
+<td>≈ $4.24</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无真一次性损益可剔，SBC 按 GAAP 已扣</td>
+<td><strong>23.6 倍</strong></td>
+<td><strong>$4.24</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>231.7 亿 ÷ 10.43 亿</td>
+<td>22.2 倍</td>
+<td>$4.50</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>242.4 亿 ÷ 13.57 亿</td>
+<td>17.9 倍</td>
+<td>$5.59</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>231.7 亿 ÷ 7.768 亿（FY26/25/24 均值）</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>$3.35</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（"按每股收益算"和"按总利润算"差了 0.9 倍，是因为过去一年回购让股本降了，摊薄股数比现在的流通股多——不是数据错。）</p>
+<p><strong>说人话：</strong></p>
+<p>你现在投 100 块进拉夫劳伦，按最保守的口径（三年平均利润），公司一年替你赚 <strong>3.35 元</strong>；按当期真实口径，一年赚 <strong>4.24 元</strong>。</p>
+<p>这 4.24 元里，有多少真的回到你口袋？TTM 公司拿出 8.46 亿分红+回购，占自由现金流 81%，占净利润 86%。所以 <strong>4.24 元里约 3.6 元是以现金分红和回购股份的形式还给你的</strong>，只有 0.6 元多一点留在公司里再投资。看投资活动现金流：一年净流出 3.62 亿，主要是开店和物流，没有大额并购——这家公司现在不搞扩张故事，就是把钱赚出来还给股东。</p>
+<p><strong>这个 X 未来是变大还是变小？</strong> 大概率<strong>缓慢变大</strong>，但幅度有限。变大的三个来源：亚洲每年 20% 以上的增长带来的增量、渠道从批发转直营带来的毛利提升、每年 2%～3% 的股本缩减自动抬高每股收益。变小的风险：这门生意的增长完全靠"提价+开店"，一旦欧美消费降级、或者中国市场的美式轻奢热度过去，营收增速会立刻掉到个位数，而 70% 毛利率意味着营收一降利润降得更快（经营杠杆是双向的）。另外 23.6 倍的当期 PE 已经比它自己过去十年的中枢（15～18 倍）高一截，<strong>市场已经把"高端化转型成功"这件事定价进去了</strong>。</p>
+<p>三年平均口径 29.8 倍 vs 当期 23.6 倍，差了 26%——这说明<strong>现在的利润处在一个相对高点</strong>，不是常态化水平。买它就是在赌高端化转型能持续，而不是在捡便宜货。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>一家把自己从"美国奥莱大路货"硬拉回"轻奢品牌"的公司，转型确实做成了——70% 毛利率、37.5% 的净资产收益率、5.46 倍的回购/SBC 比、81% 的现金回馈率，每一项都是优等生。但 23.6 倍当期、29.8 倍三年平均的价格，已经把这份优秀完整地付了款：股价一年涨了 28.7%，涨的全是估值。<strong>它值这个价，但不便宜；现在买是买一家好公司的合理价，不是好价。</strong></p>
+</div></body></html>

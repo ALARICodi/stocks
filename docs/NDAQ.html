@@ -1,0 +1,355 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NDAQ · 纳斯达克（Nasdaq, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NDAQ</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">装着两三门世界级生意，但整体按「全是好生意」标价</div><h1>NDAQ · 纳斯达克（Nasdaq, Inc.）</h1>
+<p><strong>市值</strong> $542.3 亿 | <strong>股价</strong> $97.02 | <strong>行业</strong> 金融（交易所与金融科技，NASDAQ） | <strong>TTM 截止</strong> 2026 年 6 月 30 日（2026 年 7 月 23 日发布）</p>
+<blockquote>
+<p><strong>口径说明：这家公司虽然归在"金融"行业里，但它不是银行、不是保险、不是 REITs——它不用自有资本放贷、不承保风险、不持有大量投资资产。它是一家收费服务公司，收入来自年费、授权费、软件订阅和交易撮合费。所以本文照常用市盈率，不换成市净率/ROE 那套。唯一的例外是它在北欧拥有一家清算所，会承担会员违约风险，但规模对整体估值影响很小。</strong></p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先纠正一个几乎所有人都有的误解：<strong>纳斯达克现在主要不是一家股票交易所，是一家卖软件的公司。</strong></p>
+<p>撮合股票交易这门生意（也就是大家心目中的"纳斯达克"），只贡献了它 <strong>23%</strong> 的净营收。剩下的 77% 来自上市年费、指数授权费、反洗钱软件、银行风控系统。过去五年它花了 <strong>$27.5 亿买 Verafin、$105 亿买 Adenza</strong>，就是在系统性地把自己从交易所改造成软件公司。</p>
+<p>在拆业务之前，必须先讲清一个会计陷阱，否则后面所有数字都会看错：</p>
+<p><strong>纳斯达克有两个"营收"，差了 $31 亿。</strong> 财报里"Revenue"这一行是 <strong>$56.14 亿</strong>，但分部营收加起来是 <strong>$87.51 亿</strong>。差额来自交易业务的定价模式：股票交易所用的是 maker-taker 制——谁挂单提供流动性（maker），交易所<strong>倒给他返佣</strong>；谁吃单成交（taker），交易所收他钱。交易所赚的只是这一收一付之间的差价。所以毛营收里有 $31 亿是要原样返还给做市商的，从来就不属于纳斯达克。<strong>看交易所公司只能看净营收，看毛营收会把这家公司的规模高估 56%。</strong></p>
+<p>TTM 净营收 $56.14 亿（+14.22%），经营利润率 <strong>48.15%</strong>，净利率 <strong>35.04%</strong>。这个利润率是前面两家（Cardinal Health 1.29%、L3Harris 12.87%）根本够不着的量级。财报拆成四块：</p>
+<h3>生意 A：资本准入平台 — TTM 净营收 $23.04 亿，占 41.0%</h3>
+<p>这是最大也最"躺着收钱"的一块，里面装着三样东西：</p>
+<p><strong>第一样是上市费。</strong> 一家公司要在纳斯达克挂牌，先交一笔初始上市费（几十万美元），之后<strong>每年</strong>交年费，按股本规模从 $5 万到 $18.2 万不等。目前约 4000 家公司挂在这里。这门生意的关键不在收费高低，在于<strong>上市了就搬不走</strong>：转板到纽交所要开股东大会投票、要重印所有法律文件、要通知全世界跟踪它的指数基金和 ETF、股票代码后缀要改——一堆麻烦换不来任何好处。所以这笔年费实际上是<strong>永久年金</strong>，而且纳斯达克每隔几年小幅涨一次价，没人退。</p>
+<p><strong>第二样是指数授权，这是全公司最漂亮的生意。</strong> 纳斯达克100指数（NDX）是全球被追踪资金第二多的指数。Invesco QQQ 这一只 ETF 规模就有三千多亿美元，它每年按管理资产规模付给纳斯达克一笔授权费（大约万分之二到万分之五）。<strong>纳斯达克为此要做什么？维护一份成分股名单，一年调整几次。</strong> 没有工厂、没有库存、没有销售员、没有边际成本。QQQ 的规模涨 10%，这笔收入就涨 10%，公司这边一个人都不用多招。全球还有几千只 ETF 和结构化产品挂在纳斯达克的各类指数上。</p>
+<p><strong>第三样是数据和上市公司软件。</strong> 把实时行情卖给券商、终端商、量化基金（这是交易业务的副产品，成本几乎为零）；卖 IR 软件给上市公司——管股东名册、办业绩发布电话会、生成 ESG 报告，一家上市公司一年付几万到几十万美元。</p>
+<h3>生意 B：金融犯罪与监管科技 — TTM 净营收 $8.26 亿，占 14.7%，增速最快（+21.4%）</h3>
+<p>主角是 2021 年花 $27.5 亿买来的 <strong>Verafin</strong>。</p>
+<p>它解决的问题很具体：美国有几千家中小银行和信用社，法律强制要求它们监控每一笔交易，发现洗钱、诈骗、恐怖融资的迹象就必须上报可疑活动报告（SAR），漏报要被监管重罚。但一家资产 $10 亿的社区银行根本养不起一支反洗钱团队和一套数据科学系统。它们就买 Verafin 的云服务。</p>
+<p><strong>Verafin 的杀手锏是跨机构数据网络。</strong> 它把 2500 多家接入机构的交易数据放在同一朵云里做交叉比对：一个骗子今天在爱荷华的 A 银行开户被识别拒绝，明天他去俄亥俄的 B 银行开户，B 银行的 Verafin 系统立刻就知道这个人有问题。一家银行单打独斗永远看不到这个模式。<strong>这是真正的网络效应——接入的机构越多，识别能力越强，越多机构想接入，而且已经接入的谁都不会退出。</strong> 一家小银行一年付 $5 万，中型银行几十万，大银行几百万。</p>
+<p>这块的另一半是 <strong>AxiomSL</strong>（跟着 Adenza 一起买来的）：全球大银行要向几十个国家的监管机构报送几百种不同格式的报表，规则每年都改，改错了罚款。AxiomSL 把这些监管规则做成软件，自动从银行的数据库里抓数生成报表。世界主要大行几乎都在用。</p>
+<h3>生意 C：资本市场科技 — TTM 净营收 $11.85 亿，占 21.1%</h3>
+<p><strong>核心是 Calypso</strong>，2023 年那笔 $105 亿收购 Adenza 的另一半。</p>
+<p>它是什么：一家大银行的交易部门，外汇台、利率衍生品台、大宗商品台每天做几千笔交易，管理层随时要知道全行的总风险敞口是多少、要交多少保证金、这些头寸现在值多少钱。Calypso 就是跑在后台算这些的系统。一家大行的部署合同金额几千万美元，实施要一两年。</p>
+<p><strong>装上去之后基本换不掉。</strong> 换这套系统意味着要在银行不停业的前提下，把几十万笔存续到十年后的衍生品合约，连同全部估值模型和历史数据，一笔不差地迁到新系统上——任何一个 CTO 都不会在这种项目上签字。这就是为什么这块业务的客户流失率接近于零。</p>
+<p>另一块是<strong>把纳斯达克自己的撮合引擎打包卖给别人</strong>。全球 130 多家交易所和清算所（包括不少中小国家的国家级交易所）跑的是纳斯达克的交易系统。纳斯达克自己每天要撮合几十亿股，这套系统被压力测试了三十年，别人自研没有意义。</p>
+<h3>生意 D：市场服务（交易撮合）— TTM 净营收约 $13.0 亿，占 23.2%</h3>
+<p>这就是大家以为的纳斯达克本体：撮合美股现货交易（市占约 15%）、经营六个期权交易所、以及拥有斯德哥尔摩、哥本哈根、赫尔辛基、冰岛四个北欧交易所和一家清算所。</p>
+<p>前面说过，这块的毛营收 $43.64 亿里有约 $30 亿是返还给做市商的返佣，只剩 $13 亿是自己的。</p>
+<p>这门生意的经济学有一个特点：<strong>收入完全由成交量决定，成交量由市场波动决定。</strong> 行情剧烈震荡的月份成交量暴增，纳斯达克赚翻；行情死水一潭的月份收入立刻掉下来。这是全公司唯一一块无法预测的收入——但它有个隐藏的好处：<strong>它和其他三块是反向的对冲</strong>。市场崩盘的时候，IPO 停摆、上市费掉、指数规模缩水、指数授权费掉，但恰恰是那几个月成交量最大、交易费最高。这就是为什么纳斯达克整体的收入曲线比想象中平稳。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 净营收</th>
+<th>占比</th>
+<th>同比（FY2025 vs FY2024）</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 资本准入平台（上市费/指数/数据）</td>
+<td>$23.04 亿</td>
+<td>41.0%</td>
+<td>+9.9%</td>
+<td>~55%</td>
+<td>~$12.7 亿</td>
+</tr>
+<tr>
+<td>B 金融犯罪与监管科技（Verafin/AxiomSL）</td>
+<td>$8.26 亿</td>
+<td>14.7%</td>
+<td><strong>+21.4%</strong></td>
+<td>~40%</td>
+<td>~$3.3 亿</td>
+</tr>
+<tr>
+<td>C 资本市场科技（Calypso/撮合引擎）</td>
+<td>$11.85 亿</td>
+<td>21.1%</td>
+<td>+9.5%</td>
+<td>~35%</td>
+<td>~$4.1 亿</td>
+</tr>
+<tr>
+<td>D 市场服务（交易撮合，净额）</td>
+<td>~$13.0 亿</td>
+<td>23.2%</td>
+<td>+17.7%</td>
+<td>~52%</td>
+<td>~$6.8 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$56.14 亿</strong></td>
+<td>100%</td>
+<td><strong>TTM 整体 +14.22%</strong></td>
+<td><strong>48.15%</strong></td>
+<td><strong>$27.0 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两点说明：一、分部经营利润财报不披露，上表利润率是按各块商业模式和整体 48.15% 倒推的估算；二、同比那一列用的是 FY2025 对 FY2024 的完整财年增速，因为公司没有披露 TTM 口径的分部同比——TTM 只有整体增速 +14.22%。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM $1.71 亿，只占 GAAP 净利润 8.7%。</strong> 对一家自称软件公司的企业来说，这个比例低得惊人（软件行业普遍在 20%~40%）。原因是纳斯达克骨子里还是家交易所公司，薪酬结构偏现金。这一项一律按现金成本扣掉、不加回，但它对结论几乎没影响。</p>
+<p><strong>一次性项目：这一期有两笔，而且方向和大多数公司相反——它们是一次性的「收益」，不是损失，所以真实利润要往下调，不是往上调。</strong>
+- <strong>资产处置收益 $1.36 亿</strong>（TTM 卖掉了一些资产，投资活动里有 $1.77 亿的处置回款对应）
+- <strong>股权投资估值收益 $0.80 亿</strong>（持有的一些非上市公司股权账面价值上涨，一分钱没收到）</p>
+<p>这两笔加起来 $2.16 亿税前，占 GAAP 净利润的 11%。<strong>它们让 TTM 的利润看起来比实际经营赚到的多了一成。</strong> 减值只有 $100 万，可以忽略。</p>
+<p><strong>收购无形资产摊销：折旧摊销 $6.50 亿，资本开支只有 $2.95 亿，差额约 $3.55 亿是摊销买来的无形资产</strong>——来自 Adenza（$105 亿）和 Verafin（$27.5 亿）。这是公司自家 Non-GAAP 数字远高于 GAAP 的主要原因。跟上一家 L3Harris 一样，我不加回：那 $132.5 亿是真金白银付出去的。</p>
+<p><strong>资本化的软件开发费：有，但这四个页面拆不出金额。</strong> 资本开支 $2.95 亿占营收 5.3%，对一家没有工厂、没有重资产的公司来说这个比例偏高，里面相当一部分应该是自研软件的资本化。这会让当期利润好看一点，但规模不足以改变结论。</p>
+<p><strong>回购与稀释：TTM 回购 $13.82 亿，除以 SBC $1.71 亿 = 8.1 倍。这是本批三家里最漂亮的一个比值</strong>——回购完全不是在给员工发股擦屁股，是实打实回馈股东。</p>
+<p>但有个矛盾要指出：回购金额相当于市值的 <strong>2.55%</strong>，股本却只减少了 <strong>0.99%</strong>。中间 1.5 个百分点的差额说明公司同时还在往外发相当数量的新股。这多半和 2023 年收购 Adenza 时向卖方 Thoma Bravo 支付的股票对价、以及后续的员工行权有关。<strong>所以别只看回购金额，要看股本净减少——真实答案是每年缩股 1%，不是 2.55%。</strong></p>
+<p><strong>利润和现金流的差：净利润 $19.67 亿，经营现金流 $22.46 亿，自由现金流 $19.51 亿。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,967</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销（其中约 355 是收购无形摊销）</td>
+<td>650</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>171</td>
+</tr>
+<tr>
+<td>＋ 减值</td>
+<td>1</td>
+</tr>
+<tr>
+<td>− <strong>资产处置收益（非现金/非经营）</strong></td>
+<td><strong>−136</strong></td>
+</tr>
+<tr>
+<td>− <strong>股权投资估值收益（非现金）</strong></td>
+<td><strong>−80</strong></td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>108</td>
+</tr>
+<tr>
+<td><strong>小计：不含营运资金的经营现金流</strong></td>
+<td><strong>2,681</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款变化</td>
+<td>−302</td>
+</tr>
+<tr>
+<td>＋ 应付账款变化</td>
+<td>−3</td>
+</tr>
+<tr>
+<td>＋ 预收款（订阅预收）变化</td>
+<td>+104</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变化</td>
+<td>−234</td>
+</tr>
+<tr>
+<td><strong>＝ 营运资金合计贡献</strong></td>
+<td><strong>−435</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>2,246</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−295</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,951</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里藏着一件反常识的事：自由现金流 $19.51 亿 &lt; 净利润 $19.67 亿。</strong></p>
+<p>一家有 $3.55 亿非现金摊销、48% 经营利润率的软件型公司，自由现金流居然低于会计利润，这不正常。原因有三：应收账款增加 $3.02 亿（软件合同越签越大，回款周期越拉越长）、其他经营资产净流出 $2.34 亿、加上要减掉那 $2.16 亿的非现金收益。<strong>这意味着一件重要的事：公司自己的 Non-GAAP 数字告诉你"真实盈利能力被摊销掩盖了"，但现金流并不支持这个说法。现金流恰恰站在 GAAP 这一边。</strong></p>
+<p><strong>顺便说一个看这家公司现金流量表时必须跳过的东西：</strong> TTM"其他融资活动"是 <strong>−$28.46 亿</strong>、净现金流 <strong>−$34.01 亿</strong>，但公司账上现金只有 $5.55 亿。这些几十亿的进出是纳斯达克北欧清算所替会员保管的保证金和违约基金在流动，<strong>不是公司自己的钱</strong>。看的时候直接忽略这两行，否则会得出完全错误的结论。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>企业价值 $629.9 亿（市值 $542.3 亿 ＋ 净债务 $87.6 亿）。这笔 $93.2 亿的债务基本全部来自 2023 年买 Adenza。有效税率 19.39%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>542.3 ÷ 19.67</td>
+<td><strong>28.3 倍</strong></td>
+<td><strong>$3.54</strong></td>
+</tr>
+<tr>
+<td>市场用的前瞻 Non-GAAP</td>
+<td>股价 97.02 ÷ 前瞻每股利润约 $4.38</td>
+<td><strong>22.2 倍</strong></td>
+<td><strong>$4.51</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>542.3 ÷ 17.93（净利润 19.67 <strong>减去</strong>资产处置收益 1.36 和股权估值收益 0.80 的税后 1.74；收购无形摊销不加回；SBC 已按 GAAP 扣除）</td>
+<td><strong>30.2 倍</strong></td>
+<td><strong>$3.31</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>542.3 ÷ 19.51</td>
+<td><strong>27.8 倍</strong></td>
+<td><strong>$3.60</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>629.9 ÷ 27.03</td>
+<td><strong>23.3 倍</strong></td>
+<td><strong>$4.29</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>542.3 ÷ 15.27（TTM 17.93 / FY2025 16.53 / FY2024 11.34，均已剔除各年的一次性损益）</td>
+<td><strong>35.5 倍</strong></td>
+<td><strong>$2.82</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：亿美元）</p>
+<p><strong>这张表有两处必须看懂。</strong></p>
+<p>第一，<strong>真实市盈率（30.2 倍）比 GAAP 市盈率（28.3 倍）还高。</strong> 这在本批三家里是独一份——Cardinal Health 和 L3Harris 剔完障眼法后倍数都是往下走的，纳斯达克是往上走的。原因就是那 $2.16 亿的一次性收益：它们把这一期的账面利润垫高了，剥掉之后估值反而更贵。</p>
+<p>第二，<strong>三年平均口径 35.5 倍，比当期 30.2 倍高出 18%。</strong> 这个缺口告诉你当前利润处在一个相对高位。缺口主要来自 FY2024——那一年真实净利润只有 $11.34 亿，因为刚吞下 Adenza，整合费用和摊销一次性压满，同时那年市场成交量也平淡。这个高位不算离谱（不像有些周期股当期和三年平均差两三倍），但它提醒你：现在这个 35% 的净利率是消化完收购、又赶上活跃行情的组合结果，不是永远的常态。</p>
+<p><strong>现在说人话。</strong></p>
+<p>你今天投 100 块进纳斯达克：</p>
+<ul>
+<li>按 GAAP 账面利润算，公司一年替你赚 <strong>$3.54</strong>。</li>
+<li>按剔掉一次性收益的真实利润算，一年 <strong>$3.31</strong>。</li>
+<li>按自由现金流算，一年 <strong>$3.60</strong>——注意这个数字和会计利润几乎一样，说明这家公司的利润是"真"的，没有虚增，但也没有藏起来的现金流。</li>
+<li>按三年平均口径算（把消化 Adenza 那个坏年份算进来），一年只有 <strong>$2.82</strong>。</li>
+</ul>
+<p><strong>最保守的是 $2.82，最接近真相的是 $3.31。</strong></p>
+<p>这 $3.31 里有多少真的到你口袋？TTM 分红 $6.35 亿 ＋ 回购 $13.82 亿 = <strong>$20.17 亿</strong>，占市值 <strong>3.72%</strong>。这里有个值得注意的地方：<strong>$20.17 亿已经超过了自由现金流 $19.51 亿本身。</strong> 公司同时还净还了 $3.31 亿的债。加起来的支出超过了当期赚到的现金，缺口靠卖资产（$1.77 亿处置回款）和账上余额补。这不是危险信号——债务/EBITDA 只有 2.67 倍，完全撑得住——但它说明<strong>这家公司已经在满负荷分配现金，未来提高回购力度的空间不大了</strong>。</p>
+<p>剩下的钱去哪了？几乎没有剩下的。资本开支 $2.95 亿，收购为零（TTM 一笔没买）。<strong>纳斯达克现在的状态是：消化 Adenza 的债务、把赚的钱全分掉，没有在做新的大动作。</strong> 这跟 Cardinal Health（把现金全砸进收购）是两个极端。</p>
+<p><strong>这个 $3.31 未来会变大还是变小？我判断会稳步变大，理由比前两家扎实：</strong>
+- 指数授权费是纯粹的资产规模函数。只要指数基金这个大趋势不逆转、只要标的资产长期上涨，这笔钱就自动增长，成本为零。
+- Verafin 的跨机构网络在持续加厚，增速 +21.4% 是四块里最快的，而且它卖的是"不买会被监管罚款"的强制性产品，不是可选消费。
+- 上市费是永久年金，每年小幅涨价，客户几乎不流失。
+- 债务在还，利息支出逐年下降，直接变成净利润。</p>
+<p><strong>拖后腿的：</strong> ROIC <strong>10.43%</strong> 对比加权平均资本成本 <strong>8.63%</strong>，只高出 1.8 个百分点。这个数字揭示了一件事——<strong>纳斯达克买 Adenza 买贵了。</strong> $105 亿买来的资产年营收才 $11.85 亿、增速 9.5%，这笔钱严重稀释了公司原本极高的资本回报率。一家净利率 35%、有指数授权这种躺赚生意的公司，本应该有 20% 以上的 ROIC。另外交易撮合那块（23% 营收）是没有定价权的——纳斯达克、纽交所、Cboe、以及 IEX 和各种暗池天天在抢单，费率长期只能往下走。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>里面装着两三门世界级的好生意，但整体价格是按"全是好生意"标的。</strong></p>
+<p>纳斯达克的指数授权（零边际成本的永久授权费）、上市年费（搬不走的年金）、Verafin（真网络效应的强制性合规软件）——这三样单独拿出来，都值得 35 倍甚至更高的市盈率。问题在于它们只占公司一半左右的营收，另一半是没有定价权的交易撮合，和一个花 $105 亿买贵了、把全公司资本回报率从二十几个点拉到 10.43% 的 Adenza。</p>
+<p>现在 30 倍的真实市盈率，买的是一家净营收增长 14%（其中相当部分靠收购并表）、ROIC 只比资金成本高 1.8 个点、股东回报率 3.72% 且已经用尽现金流的公司。而且当期利润里还有一成是卖资产和账面估值涨出来的。</p>
+<p><strong>股价过去一年只涨了 1.52%，市场已经在原地等它把 Adenza 消化完。这个等待是合理的。</strong> 我的判断是：这家公司的商业模式质量在本批三家里最好，但它的价格没有给你留任何余地。<strong>投 100 块一年赚 3 块 3，还要指望管理层未来不再用 $105 亿去买 $11.85 亿营收的东西——这个价位不值得下手，等回到 22~24 倍再说。</strong></p>
+</div></body></html>

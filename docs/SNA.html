@@ -1,0 +1,394 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNA · 施耐宝（Snap-on Incorporated）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SNA</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">好得没什么可挑剔但不长个子，20倍是公道价</div><h1>SNA · 施耐宝（Snap-on Incorporated）</h1>
+<p>市值 208.7 亿美元 · 股价约 403 美元 · 5173 万股 · 行业：耐用消费品（专业工具）· 交易所 NYSE
+<strong>TTM 口径截止日：2026 年 7 月 4 日</strong>（最近四个季度滚动，下文所有数字除非特别说明都是这个口径）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Snap-on 表面上是"卖扳手的"，实际上是<strong>三门卖工具的生意 + 一家藏在里面的银行</strong>。滚动一年总收入 52.75 亿美元，拆开是：工具及设备净销售 48.65 亿，金融服务收入 4.10 亿。</p>
+<h3>生意一：Snap-on Tools Group —— 开着货车挨家卖工具（20.06 亿美元，占净销售 41%）</h3>
+<p>这是 Snap-on 最独特、也最难被复制的一块。</p>
+<p><strong>它不在商店里卖工具，它开着车去找修车工。</strong> 全美有大约 3400 辆白色的 Snap-on 货车，每辆车由一个加盟商拥有和驾驶。这个加盟商有一条固定路线，覆盖大约 200–300 家汽修厂，<strong>每周去一次，一次一家，风雨无阻，一年五十几次</strong>。车厢里塞着几万美元的库存：套筒、棘轮扳手、扭力扳手、气动工具，还有那种上万美元的红色大工具柜。</p>
+<p>具体是怎么成交的？一个在 Firestone 干活的技师，手里的 3/8 英寸棘轮扳手坏了。他不会上网买——他星期二中午等 Snap-on 的车来，走出去，站在车尾，加盟商拉开抽屉，"这个 89 块"，技师说"记账上"。这把扳手在亚马逊上同规格的中国产品可能卖 25 块。<strong>他为什么愿意付三倍多？</strong></p>
+<p>三个原因，缺一不可：</p>
+<ol>
+<li><strong>终身保修，当场换。</strong> 棘轮扳手断了，下周车来的时候把断的给他，当场拿一把新的走，不问理由不要发票。对一个靠手艺按小时计费的技师来说，工具趴窝一天就是几百美元收入没了。</li>
+<li><strong>他不是在买工具，是在按周付款。</strong> 一个 12000 美元的工具柜，技师签个字，每周从工资里付 100 美元，付两年多。<strong>这笔账是 Snap-on 自己借给他的</strong>（见下文金融服务）。他一辈子可能在这辆车上花掉十几万美元，但每次感受到的只是"一周一百块"。</li>
+<li><strong>它是身份符号。</strong> 修车间里，谁的工具柜是 Snap-on 的红色大柜子，谁就是那个"干了二十年的老师傅"。这一点不好量化，但它真实存在，而且是 Snap-on 敢卖三倍价的核心。</li>
+</ol>
+<p><strong>加盟商模式的妙处在于：Snap-on 不承担销售风险。</strong> 加盟商自己出钱买车、买库存、发展客户；卖不动是加盟商亏。Snap-on 只管把货批发给加盟商，收钱，再顺便把买车买库存的钱也借给加盟商。</p>
+<h3>生意二：Repair Systems &amp; Information —— 卖给修理厂老板（18.98 亿美元，占净销售 39%）</h3>
+<p>上一块卖给"技师个人"，这一块卖给"开修理厂的老板"和"4S 店"，单笔金额大得多。</p>
+<ul>
+<li><strong>诊断设备</strong>：一个手持大屏幕仪器，插进车上的 OBD 接口，读故障码、看实时数据流、做执行器测试。一台 3000–12000 美元。关键是它必须认识市面上所有品牌所有年份的车，这个数据库每年要更新。</li>
+<li><strong>车间大设备</strong>：轮胎拆装机、动平衡机、四轮定位仪、举升机、钣金校正架。一台四轮定位仪 2 万–4 万美元，一家修理厂买一台用十年。</li>
+<li><strong>维修信息订阅（Mitchell 1 / ShopKey）</strong>：这是这块里最好的生意。一个技师要修 2019 款福特 F-150 的变速箱，他需要知道拆装顺序、每颗螺丝的扭矩值、线束图。这些资料在 Mitchell 1 的数据库里，<strong>修理厂按月订阅，一家店每月 200–400 美元，年年续费</strong>。这是纯软件收入，毛利极高，而且黏性极强——技师习惯了这个界面就不换。</li>
+<li><strong>给车厂做的项目</strong>：给通用、丰田这样的整车厂定制"每家 4S 店都必须配备"的专用工具包和诊断设备，一单几千万美元。</li>
+</ul>
+<h3>生意三：Commercial &amp; Industrial —— 卖给企业和政府（15.43 亿美元，占净销售 32%）</h3>
+<p>这块是"不修车的用户"，最典型的是航空和军队。</p>
+<p><strong>举个最能说明问题的例子：航空工具管控。</strong> 波音的技师在装配线上给发动机拧螺丝，工具箱里有 150 件工具。如果收工时少了一把镊子，而这把镊子留在了发动机里，这架飞机就不能飞——查不到就得把发动机拆开重装，损失几百万美元。Snap-on 卖的是一套<strong>"泡沫定位 + 自动清点"的工具管控系统</strong>：每件工具在泡沫上有自己的凹槽，柜子上有摄像头和 RFID，关柜门的一瞬间自动扫描，少一件就报警并记录是谁借走的。一套系统几万到几十万美元，联邦航空局和各国空军是强制要求。</p>
+<p>这块还包括欧洲的 Bahco 品牌（锯和手工具）、美国的 Williams 品牌（工业级重型工具），以及卖给矿业、铁路、发电厂的大型工具。</p>
+<p><strong>这块生意的利润率明显低于前两块</strong>，因为客户是采购部门，会招标比价，不吃"每周一次货车"那一套。</p>
+<h3>生意四：金融服务 —— 藏在工具公司里的一家银行（4.10 亿美元收入，但贡献约 20% 的经营利润）</h3>
+<p>这是理解 Snap-on 的关键，也是外行最容易忽略的一块。</p>
+<p>Snap-on Credit 干两件事：
+1. <strong>借钱给技师买工具</strong>。一个技师买 12000 美元的工具柜，分 3 年付。这笔贷款的<strong>实际年化利率在 15%–19%</strong> ——注意，这是给一个信用记录一般、没有抵押物（工具搬走就不值钱了）的蓝领工人的无担保消费贷。
+2. <strong>借钱给加盟商</strong>。加盟商要买货车、进第一批库存，大约需要 15 万–20 万美元起步，这笔钱也是 Snap-on 借的。</p>
+<p>这块生意的账面：一年 4.10 亿美元收入（几乎全是利息），运营成本很低（不用开网点），<strong>经营利润率在 65% 左右</strong>。也就是说，<strong>8% 的收入贡献了约 20% 的利润</strong>。</p>
+<p><strong>它同时也是最大的隐藏风险。</strong> 这本质上是次级消费贷。经济好的时候技师收入高，还款正常；一旦汽修行业不景气或者技师失业，坏账会同时从两头来——技师还不上钱，加盟商也卖不动货还不上车贷。TTM 计提的坏账准备是 2550 万美元，同比在上升（FY2025 是 2130 万，FY2024 是 2280 万）。这个数字要盯着。</p>
+<h3>四块生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>vs 2025 财年</th>
+<th>占总收入比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Snap-on Tools（货车）</td>
+<td>20.06 亿</td>
+<td>+2.1%</td>
+<td>38.0%</td>
+<td>约 21%（估算）</td>
+<td>约 4.3 亿</td>
+</tr>
+<tr>
+<td>Repair Systems（修理厂）</td>
+<td>18.98 亿</td>
+<td>+1.1%</td>
+<td>36.0%</td>
+<td>约 24%（估算）</td>
+<td>约 4.6 亿</td>
+</tr>
+<tr>
+<td>Commercial &amp; Industrial</td>
+<td>15.43 亿</td>
+<td>+5.8%</td>
+<td>29.2%</td>
+<td>约 15%（估算）</td>
+<td>约 2.3 亿</td>
+</tr>
+<tr>
+<td>金融服务</td>
+<td>4.10 亿</td>
+<td>−0.7%</td>
+<td>7.8%</td>
+<td>约 65%（估算）</td>
+<td>约 2.7 亿</td>
+</tr>
+<tr>
+<td>内部抵销 + 总部费用</td>
+<td>−5.82 亿</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −0.6 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>52.75 亿</strong></td>
+<td><strong>+4.0%</strong></td>
+<td>100%</td>
+<td><strong>25.2%</strong></td>
+<td><strong>13.27 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须说明：Snap-on 的财报页只按分部披露营收，不披露分部经营利润。</strong> 上表的利润率是我按整体 25.16% 经营利润率、结合各块的商业模式（金融服务几乎无边际成本、C&amp;I 是招标业务）<strong>估算</strong>的，不是财报数字。分部之间的比例关系可信，绝对值请当量级参考。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Snap-on 是我做到现在为止<strong>财报最干净的公司之一</strong>。逐项过：</p>
+<h3>股权激励（SBC）：0.32 亿，占净利润 3.1%</h3>
+<p>TTM 发了 3210 万美元股票给员工，占 10.34 亿净利润的 <strong>3.1%</strong>。这个比例低得几乎可以忽略——对比一下，科技公司普遍在 30%–100%。原因很简单：Snap-on 的员工是产线工人、货车加盟商、销售，不是需要用期权抢的硅谷工程师。按 GAAP 已扣除，本文不加回。</p>
+<h3>一次性项目：只有一笔小额资产处置收益</h3>
+<p>TTM 有一笔 <strong>1600 万美元的资产出售收益</strong>（Loss/Gain From Sale of Assets = −16，负号表示是收益要从现金流里减掉）。同期出售厂房设备收到现金 2060 万。这是唯一一笔非经常项目，占净利润 1.5%，下面算"真实市盈率"时会把它剔掉。</p>
+<p>没有重组费用、没有资产减值、没有诉讼和解、没有并购费用。TTM 花了 1.59 亿做了一笔收购，但没有产生一次性费用。</p>
+<p>（按规格要求说明：单看 TTM 一期，我无法百分之百确认这笔 1600 万的资产处置是否年年都有——从五年历史看，FY2024 只有 60 万、FY2023 是 100 万、FY2022 是 310 万，所以今年这笔明显偏大，按一次性处理是合理的。）</p>
+<h3>资本化的支出：没有</h3>
+<p>没有软件开发资本化，没有内容制作资本化。资本开支只有 7770 万美元，占营收 <strong>1.5%</strong>——这是一家极其轻资产的制造公司，因为它的销售网络（3400 辆货车）是加盟商自己出钱的。</p>
+<h3>回购与稀释：<strong>这是全篇最漂亮的数字</strong></h3>
+<ul>
+<li><strong>TTM 回购金额：3.537 亿美元</strong></li>
+<li><strong>TTM 股权激励：0.321 亿美元</strong></li>
+<li><strong>回购 ÷ SBC = 11.0 倍</strong></li>
+</ul>
+<p>规格里说"接近 1 说明回购只是在抵消员工发股，大于 3 才是真回购"。<strong>Snap-on 是 11 倍。</strong> 这意味着回购的 353.7 元里，只有 32.1 元用来填员工发股的坑，剩下 321.6 元是真金白银在替股东减少股份。</p>
+<p>股本实际变化：<strong>一年减少 1.03%</strong>。（回购 3.537 亿理论上能减掉市值的 1.7%，实际只减了 1.03%，差额来自期权行权带来的 9580 万新股发行。净回购 = 353.7 − 95.8 = 2.579 亿。）</p>
+<p>再加上分红 <strong>4.914 亿美元</strong>，TTM 一共返还股东 8.451 亿，对应 208.7 亿市值 = <strong>4.05% 的股东回报率</strong>（分红 2.35% + 净回购 1.24%）。</p>
+<p>分红还在快速增长：4.914 亿 vs 五年前的 2.758 亿，<strong>五年涨了 78%</strong>，而且从来没减过。</p>
+<h3>利润和现金流的差：现金流略好于利润</h3>
+<p>净利润 10.34 亿，经营现金流 11.86 亿，自由现金流 11.09 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+1,034.0</td>
+<td>GAAP 起点</td>
+</tr>
+<tr>
+<td>加：折旧与摊销</td>
+<td>+88.4</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>加：其他摊销</td>
+<td>+11.6</td>
+<td></td>
+</tr>
+<tr>
+<td>减：资产处置收益</td>
+<td>−16.0</td>
+<td>这是一次性收益，不是主业赚的</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+32.1</td>
+<td>非现金，但是真成本</td>
+</tr>
+<tr>
+<td>加：坏账准备计提</td>
+<td>+25.5</td>
+<td>非现金，是"预计技师还不上的钱"</td>
+</tr>
+<tr>
+<td>加：其他经营活动</td>
+<td>+34.0</td>
+<td>递延税等</td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−114.3</td>
+<td><strong>主要是给技师和加盟商的赊账在增加</strong></td>
+</tr>
+<tr>
+<td>减：存货增加</td>
+<td>−36.3</td>
+<td></td>
+</tr>
+<tr>
+<td>减：应付账款减少</td>
+<td>−13.3</td>
+<td></td>
+</tr>
+<tr>
+<td>加：其他净经营资产</td>
+<td>+68.8</td>
+<td></td>
+</tr>
+<tr>
+<td>加：未拆分的其他项目</td>
+<td>+71.5</td>
+<td>财报页明细不完整，此为倒挤差额</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,186.0</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−77.7</td>
+<td>只占营收 1.5%，极轻资产</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,109.0</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最值得看的一行是应收账款 −1.143 亿。</strong> 收入只涨了 4%，应收账款却增加了 1.14 亿——增速远超收入。这里面有相当一部分是 Snap-on Credit 的贷款余额在扩张。<strong>这是双刃剑</strong>：一方面它推动了工具销售（技师买得起了），另一方面公司在承担越来越多的信用风险。配合上升的坏账计提（2550 万 vs 去年 2130 万，+20%），这是全篇唯一需要真正警惕的信号。</p>
+<p>除此之外，自由现金流 11.09 亿 &gt; 净利润 10.34 亿，比值 1.07，非常健康。<strong>Snap-on 报出来的利润是真的，甚至略微保守。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>208.7 亿 ÷ 10.34 亿</td>
+<td><strong>20.2 倍</strong></td>
+<td><strong>4.95 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>Snap-on 基本不搞 Non-GAAP</strong>，报的就是 GAAP</td>
+<td>20.2 倍</td>
+<td>4.95 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>208.7 亿 ÷ 10.22 亿（剔掉 1600 万税后资产处置收益，SBC 按 GAAP 已扣不加回）</td>
+<td><strong>20.4 倍</strong></td>
+<td><strong>4.90 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>208.7 亿 ÷ 11.09 亿</td>
+<td><strong>18.8 倍</strong></td>
+<td><strong>5.32 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>205.4 亿 ÷ 13.27 亿</td>
+<td><strong>15.5 倍</strong></td>
+<td><strong>6.46 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>208.7 亿 ÷ 10.32 亿（TTM 10.34 + FY25 10.17 + FY24 10.44）</td>
+<td><strong>20.2 倍</strong></td>
+<td><strong>4.95 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表本身就是本篇最重要的结论：六个口径全部落在 15.5–20.4 倍这个窄区间里，没有一个口径能把另一个口径打脸。</strong></p>
+<p>对比一下我在同一批里分析的 MKS：当期 47.9 倍、真实 53.3 倍、三年平均 68.2 倍——三个数字互相差一倍多，说明它的当期利润是周期高点、且有会计粉饰。<strong>Snap-on 的三年平均市盈率 20.2 倍和当期 20.2 倍完全一样</strong>，意味着这家公司过去三年的利润几乎是一条直线（10.44 → 10.17 → 10.34 亿）。<strong>你今天看到的利润就是它常年的真实赚钱能力，不是运气好的一年。</strong></p>
+<p>（企业价值口径之所以更便宜，是因为 Snap-on 是<strong>净现金</strong>公司：手里 16.44 亿现金，只有 13.10 亿债，净现金 3.34 亿。买它相当于市值里已经含着一笔现金白送。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Snap-on，按最保守的真实口径（20.4 倍）算，公司一年替你赚 4.90 块。</strong> 按自由现金流算 5.32 块，按企业价值口径算 6.46 块。取最保守的 4.90 块。</p>
+<p><strong>这 4.90 块里，有多少真回到你口袋？</strong></p>
+<ul>
+<li><strong>分红 2.35 块</strong>——现金直接打到账户，2026 年 8 月 19 日就是下一个除息日。</li>
+<li><strong>净回购 1.24 块</strong>——公司拿钱把股票买回来注销，你的持股比例被动变大 1.03%。</li>
+<li><strong>剩下约 1.3 块留在公司里</strong>：其中 0.37 块买设备（资本开支只占营收 1.5%），1.59 亿做了一笔收购，其余变成了给技师和加盟商的贷款（应收账款增加 1.14 亿）和账上现金（现金余额一年从 16.24 亿涨到 16.44 亿）。</li>
+</ul>
+<p><strong>也就是说，赚的 4.90 块里，3.59 块（73%）当年就以分红和回购的形式回到股东手里。</strong> 这个比例在美股里属于非常高的。</p>
+<p><strong>这个 4.90 块未来会变大还是变小？大概率缓慢变大，但幅度不会让人兴奋。</strong></p>
+<p>先说不会大幅变大的原因，这是本篇必须直说的话：<strong>Snap-on 已经不增长了。</strong></p>
+<p>营收：2023 年 51.08 亿 → 2024 年 51.08 亿 → 2025 财年 51.56 亿 → TTM 52.75 亿。<strong>四年时间收入涨了 3.3%，还跑不赢通胀。</strong> 经营利润更差：FY2023 是 13.48 亿，TTM 是 13.27 亿，<strong>三年不升反降</strong>。经营利润率从 26.4% 滑到 25.2%。</p>
+<p>净利润之所以还能创新高（10.34 亿），靠的不是主业，<strong>靠的是股本在缩</strong>——每股收益从 18.76 涨到 19.60，涨了 4.5%，其中一大半来自回购。</p>
+<p>所以未来利润增长的来源只有三个，每个都不大：
+1. <strong>提价</strong>。工具是耐用消费品，Snap-on 的品牌溢价允许它每年提 2%–3% 的价，这是最可靠的一块。
+2. <strong>继续回购</strong>。以 3.5 亿/年的回购速度，每年缩股 1%–1.7%，每股收益自动涨这么多。这个可以持续很久——公司零负债压力，自由现金流 11 亿。
+3. <strong>金融服务扩张</strong>。这是唯一一块能快速做大的，但也是风险最大的。</p>
+<p>市场的判断跟这个一致：<strong>远期市盈率 19.50 倍，只比当期 20.59 倍低 5%</strong>——华尔街预计未来一年利润只涨 5% 左右。PEG 比率 2.70（超过 2 通常意味着"为增长付的钱偏贵"）。</p>
+<p>再说风险。Snap-on 最大的风险不是竞争，是<strong>它的客户群体在结构性萎缩</strong>：电动车零件比燃油车少一半，没有火花塞、没有机油滤芯、没有变速箱油、刹车片因为动能回收磨得慢得多。<strong>一辆电动车一生需要的维修工时，可能只有燃油车的一半。</strong> 美国车队的电动化目前只走了个开头，但这是一条不可逆的曲线。Snap-on 的应对是往诊断和软件（RS&amp;I）转——电动车的电子系统更复杂，诊断需求反而更高——这个方向对，但能不能补上机械维修流失的量，现在还看不出来。</p>
+<p>第二个风险前面说过：金融服务的坏账。技师是一群收入不高、无抵押、经济下行时第一批被裁的人，而 Snap-on 借给他们的钱正在越滚越大。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Snap-on 是一家好得没什么可挑剔、但也确实不长个子的公司，20 倍市盈率是个公道价，不是便宜价。</strong></p>
+<p>它的护城河是真的：3400 辆每周准时出现的货车、断了就当场换的终身保修、修车间里的身份象征、以及一家藏在工具公司里的高利贷银行。这套东西亚马逊复制不了，中国制造商也复制不了——因为要复制的不是扳手，是那条跑了几十年、每周都在的路线和路线上攒下的人情。财报干净得不像话：3.1% 的 SBC、11 倍的回购/SBC 比、净现金、四年三个口径的市盈率全部落在 15–20 倍。</p>
+<p>问题也同样清楚：<strong>四年收入涨 3.3%，经营利润三年负增长，每股收益的涨幅主要靠回购缩股撑着。</strong> 你买的不是一台增长机器，是一台每年吐出 4% 现金、并且大概率能一直吐下去的印钞机——只要美国人还在开燃油车。</p>
+<p><strong>这个价值不值？值，但要买对理由。</strong> 如果你想要的是"每年稳稳拿 4% 现金回报，波动比大盘小（贝塔 0.72），二十年不用操心"，Snap-on 是这一类里质量最高的选择之一。如果你想要的是股价翻倍，20 倍市盈率买一家零增长的公司，你等不到。</p>
+<p>真正的坑在于电动化——那是一条十年才走完的慢曲线，短期看不出来，但每过一年，Snap-on 那 4% 的回报能持续的年限就少一年。</p>
+</div></body></html>

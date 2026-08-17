@@ -1,0 +1,388 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BG · 邦吉全球（Bunge Global）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">22倍是假贵，但170亿债务是张周期彩票</div><h1>BG · 邦吉全球（Bunge Global）</h1>
+<p><strong>市值</strong> $218.4 亿 ｜ <strong>股价</strong> 约 $113.69 ｜ <strong>行业</strong> 加工工业（农产品压榨与贸易）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<p>全文所有数字都是 TTM 口径（2025 年 7 月 — 2026 年 6 月这最近四个季度），单位美元。</p>
+<blockquote>
+<p><strong>先摆一个必须先说清楚的事实</strong>：邦吉在 <strong>2025 年 7 月 2 日</strong>完成了对 Viterra 的合并。所以本文用的这个 TTM（2025 年 7 月起算）<strong>恰好是合并后的第一个完整年度</strong>——干净、可用。但它跟去年、前年的数字<strong>不是一家公司</strong>：营收从 531 亿跳到 918 亿（+80.5%），股本一年增加了 <strong>42.56%</strong>（新股付给了 Viterra 的股东，主要是嘉能可）。所以本文凡是涉及历史对比的地方，我都会明确标出"这是两家不同规模的公司在比"。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>邦吉是一家 200 多年历史的农产品公司。它<strong>不种地，也不做品牌食品</strong>。它干的事情，本质上只有一句话：<strong>把农民地里的大豆、菜籽、玉米、小麦，从产地搬到需要它们的工厂和口岸，中间顺手把油籽压碎，卖油和粕。</strong></p>
+<p>财报按产品线拆出四块，我一块一块讲。</p>
+<h3>生意 A：大豆压榨与精炼 —— 全公司的地基（TTM 营收 435.25 亿，占 47.4%）</h3>
+<p>这是邦吉最核心、也最难被替代的一门生意。</p>
+<p>具体怎么运作：巴西马托格罗索州的一个大豆农，收完豆子，卡车拉到邦吉在当地的收购站。邦吉按芝加哥期货价（CBOT）减去一个运费和品质折扣的价格收下来——比如期货 1050 美分/蒲式耳，实际给农民 950 美分，这 100 美分的差额叫"基差"，是邦吉的第一层收入。豆子进邦吉的压榨厂，一蒲式耳（约 27.2 公斤）大豆压出来大概 <strong>11 磅豆油 + 44 磅豆粕</strong>。豆粕卖给养猪场、养鸡场当蛋白饲料，豆油一部分卖去做食用油，一部分卖去做生物柴油。</p>
+<p><strong>赚钱的关键指标叫"压榨价差"（crush spread）</strong>：豆油售价 + 豆粕售价 − 大豆采购价 − 加工成本。举个真实量级的例子：一吨大豆成本 400 美元，压出来的油和粕能卖 445 美元，加工（电、蒸汽、人工）花 20 美元，那这一吨就赚 25 美元。邦吉一年压榨的规模在<strong>几千万吨</strong>这个量级，所以一吨多赚 5 美元、少赚 5 美元，全年利润就差好几亿。</p>
+<p><strong>为什么客户非用它不可</strong>：不是因为邦吉的豆粕更好——豆粕就是豆粕，完全同质化。而是因为一家河南的大型饲料厂需要的是"每周三上午 8 点，2000 吨蛋白含量 43% 的豆粕，准时到厂门口，价格半年前就锁死"。全世界能做到这件事的公司不超过五家（ADM、邦吉、嘉吉、路易达孚，加上现在被邦吉吃掉的 Viterra）。这门生意的护城河<strong>不在技术，在资产</strong>：港口的深水泊位、内陆的收购站网络、几百艘租船的合约、以及最重要的——<strong>能在期货市场同时对冲几十亿美元敞口的资产负债表</strong>。一家新公司想进来，光是把巴西到荷兰鹿特丹的物流链搭起来就得十年。</p>
+<p><strong>精炼</strong>是压榨的下一道：毛豆油送进精炼厂脱胶、脱色、脱臭，变成超市货架上的瓶装油，或者变成给食品厂用的起酥油、人造奶油。这一段毛利率比压榨高一点点，但量小得多。</p>
+<p><strong>"精炼"里现在最值钱的一块是可再生柴油原料</strong>。美国的炼油厂（比如雪佛龙、马拉松）把豆油加氢做成可再生柴油，能拿联邦的税收抵免。邦吉在路易斯安那和印第安纳跟雪佛龙合资建了压榨厂，专门供这条线。这是过去三年豆油需求增长的主要来源，也是最大的政策风险——<strong>美国国会一句话改掉 45Z 税收抵免的规则，这块需求可以一夜之间蒸发一半</strong>。</p>
+<h3>生意 B：软籽压榨与精炼 —— 合并 Viterra 带来的最大增量（TTM 营收 162.05 亿，占 17.6%）</h3>
+<p>"软籽"指菜籽（canola）、葵花籽、棉籽这些非大豆的油籽。</p>
+<p>这块营收从 FY2024 的 69.51 亿，涨到 TTM 的 162.05 亿，<strong>翻了一倍多</strong>。原因不是市场变好了，而是 Viterra 并进来了——Viterra 的强项恰好是加拿大的菜籽和澳大利亚的油菜、以及欧洲的葵花籽，跟邦吉原来以南美大豆为主的盘子几乎不重叠。</p>
+<p>生意逻辑跟大豆一模一样：加拿大萨斯喀彻温省的农民把菜籽卖给邦吉/Viterra 的收购站，压榨厂压出菜籽油和菜籽粕。菜籽油的卖点是<strong>芥酸低、烟点高</strong>，欧洲和加拿大的餐饮业大量用它炸东西；菜籽粕蛋白含量比豆粕低（约 36%），主要喂奶牛。</p>
+<p><strong>这块的战略意义大于当期利润</strong>：全球油籽价格是联动的，但<strong>区域价差经常打架</strong>。当巴西大豆丰收、南美压榨价差被压扁的时候，加拿大菜籽可能正因为干旱而紧俏。以前邦吉只有南美这条腿，赚钱赚得很颠簸；现在两条腿站着，理论上波动会小一点。这是这笔 180 亿美元收购最核心的商业理由。</p>
+<h3>生意 C：谷物贸易与磨粉 —— 纯粹的搬运工（TTM 营收 272.01 亿，占 29.6%）</h3>
+<p>这块营收从 FY2024 的 100.73 亿涨到 272.01 亿，同样是 Viterra 带来的——Viterra 本来就是全球最大的谷物贸易商之一。</p>
+<p><strong>这门生意不做任何加工，就是搬运和择时。</strong> 具体是这样：邦吉在乌克兰敖德萨港有筒仓，在阿根廷罗萨里奥港有筒仓，在美国墨西哥湾有筒仓。埃及的国家粮食采购局（GASC）发个标，要 6 万吨小麦、9 月装船。邦吉去投标，报一个 CIF 价（含运费保险）。中标之后，它去黑海市场收小麦、租一条巴拿马型散货船、买保险、办报关。整单营收 2000 万美元，<strong>净赚可能只有 20—40 万美元，毛利率 1%—2%</strong>。</p>
+<p><strong>为什么这么薄的生意还有人做？</strong> 因为量大到不可思议，而且它有两个隐藏的赚钱层：
+1. <strong>基差交易</strong>：邦吉买现货的同时在期货市场做空同等数量。这样小麦价格涨跌跟它无关，它只赚"现货价和期货价之间的差"（基差）。基差是区域性的、不透明的，全世界只有几家公司有足够的仓储和信息网络能看清它，这就是超额收益的来源。
+2. <strong>物流套利</strong>：船租、仓储费、内河驳船的时刻表，这些东西邦吉能提前几个月锁定，小玩家不能。</p>
+<p><strong>"磨粉"</strong>是这块里唯一带加工的：把小麦磨成面粉、把玉米磨成玉米粉，主要在巴西和墨西哥卖给面包厂和食品厂。规模不大，但现金流稳定，是这块波动性极强的贸易业务里的压舱石。</p>
+<h3>生意 D：热带油脂与特种成分（TTM 营收 48.85 亿，占 5.3%）</h3>
+<p>主要是棕榈油和椰子油，加上一些给食品厂定制的特种油脂。</p>
+<p>具体的例子：一家做巧克力的公司需要一种"在 32 度以下是固体、入口 36 度立刻融化"的植物脂——邦吉的实验室用棕榈仁油分提出特定熔点的组分卖给它，一吨卖 1800 美元，比普通棕榈油贵一倍。再比如给某速食面厂供应炸面饼用的棕榈硬脂，要求是"连续炸 8 小时酸价不超标"。</p>
+<p><strong>这是全公司毛利率最高的一块</strong>，因为它卖的是配方和稳定性，不是大宗商品。但它只占 5.3% 的营收，对整体影响有限。它的软肋是 ESG——棕榈油的毁林争议让欧洲客户越来越挑剔，邦吉必须做全链路可追溯，这是成本。</p>
+<h3>一张表看清全貌</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>FY2024（并购前整年，亿美元）</th>
+<th>占总营收</th>
+<th>经营利润率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 大豆压榨与精炼</td>
+<td>435.3</td>
+<td>319.3</td>
+<td>47.4%</td>
+<td>约 2.5%—3%</td>
+</tr>
+<tr>
+<td>B 软籽压榨与精炼</td>
+<td>162.1</td>
+<td>69.5</td>
+<td>17.6%</td>
+<td>约 2%—2.5%</td>
+</tr>
+<tr>
+<td>C 谷物贸易与磨粉</td>
+<td>272.0</td>
+<td>100.7</td>
+<td>29.6%</td>
+<td>约 1%—1.5%</td>
+</tr>
+<tr>
+<td>D 热带油脂与特种成分</td>
+<td>48.9</td>
+<td>41.5</td>
+<td>5.3%</td>
+<td>约 5%—7%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>918.2</strong></td>
+<td><strong>531.1</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>2.36%（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>两个必须标注的口径问题</strong>：（1）FY2024 那一列是<strong>并购 Viterra 之前</strong>的邦吉，跟 TTM 不是一家公司，放在这里只为让你看清增量来自哪里，<strong>不要拿它算增长率</strong>；（2）<strong>财报只按产品线披露到营收，不披露分部利润</strong>，上表利润率是我按整体 2.36% 的经营利润率、结合各块业务的常识性毛利结构<strong>估算</strong>的，不是财报数字。</p>
+</blockquote>
+<p><strong>看完这张表，你应该记住的只有一件事</strong>：这家公司 918 亿美元的营收，只换来 21.65 亿的经营利润和 10.07 亿的净利润。<strong>净利率 1.10%。</strong> 也就是说，它每做 100 块钱生意，赚 1 块 1 毛。这不是它经营得差，这是这门生意的本质——它是全球粮食系统的搬运工和物流商，不是品牌商。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM 9,100 万美元，占净利润 9.0%。<strong>这个比例低得让人舒服</strong>——对比科技股动辄 30%—60%，邦吉的员工拿的是工资不是股票。这 9,100 万我按规矩当真实成本扣掉，GAAP 里本来就扣了，不加回。</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：TTM 有资产减值与重组费用 5,300 万（合并 Viterra 的整合成本，这项 FY2025 也是 5,300 万、FY2023 是 1.25 亿），投资处置收益 1,800 万、股权投资收益 3,700 万。三项加起来净影响只有 <strong>−200 万美元</strong>，可以忽略。<strong>但要提醒一句：单看 TTM 这一期，分不清"整合费用是不是还要再花两三年"</strong>——大型并购的整合成本通常持续 24—36 个月，未来两年这一行很可能还是几千万到一两亿。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：没有软件或内容资本化这类问题。邦吉的资本开支全是实打实的钢筋水泥——压榨厂、筒仓、码头。</p>
+</li>
+<li>
+<p><strong>回购与稀释 —— 这里有全篇最刺眼的一个矛盾</strong>：</p>
+</li>
+<li>TTM 回购股票 8.00 亿美元，同期 SBC 只有 0.91 亿，<strong>回购 ÷ SBC = 8.8 倍</strong>。单看这个比值，是教科书级的"真回购"。</li>
+<li><strong>但是股本一年增加了 42.56%。</strong> 因为为了买 Viterra，邦吉增发了大量新股。8 亿美元的回购在这个稀释面前，连零头都算不上。</li>
+<li>
+<p><strong>这两件事同时为真，不矛盾，但结论只有一个</strong>：作为老股东，你手里每股对应的公司份额在过去一年<strong>大幅缩水了</strong>。回购是真的，但它在做的是"把增发的洪水舀出去一瓢"。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差 —— 这张对账表是全篇含金量最高的东西</strong>：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,007</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>961</td>
+<td>不花钱的账面费用，加回来</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>53</td>
+<td>不花钱，加回来</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>91</td>
+<td>不花现金（但稀释股东），加回来</td>
+</tr>
+<tr>
+<td>− 投资处置与股权投资收益</td>
+<td>−55</td>
+<td>账面赚的、没进经营口袋，减掉</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>7</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>小计（营运资金变动前）</strong></td>
+<td><strong>2,064</strong></td>
+<td><strong>这才是这门生意一年真正的造血能力</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−324</td>
+<td>客户欠的钱变多了</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−1,655</strong></td>
+<td><strong>钱全变成了仓库里的粮食</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+552</td>
+<td>欠供应商的钱变多了，等于占用别人的钱</td>
+</tr>
+<tr>
+<td>− 预收款减少</td>
+<td>−152</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 所得税相关</td>
+<td>+5</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>+585</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>营运资金合计</strong></td>
+<td><strong>−989</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,075</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,786</td>
+<td>建新压榨厂、码头</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−711</strong></td>
+<td><strong>负的</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表告诉你三件事：</strong></p>
+<ol>
+<li>
+<p><strong>自由现金流是 −7.11 亿美元，负的。</strong> 这家公司过去 12 个月不但没给股东挣出现金，还倒贴了 7 亿。而它同期还花了 8 亿回购、5.49 亿分红、43.06 亿收购 Viterra。<strong>这些钱全是借的和账上原有的</strong>——现金从 FY2024 年底的 37.95 亿掉到现在的 7.88 亿，总债务从 71.19 亿涨到 <strong>170.61 亿</strong>。</p>
+</li>
+<li>
+<p><strong>但负得有原因，而且原因大部分是"好"的</strong>：−16.55 亿全砸在存货上。<strong>大宗农产品公司的存货不是滞销库存，是随时能在期货市场变现的大豆和菜籽。</strong> 存货周转率 7.07 次、营收 918 亿，倒推存货大概在 <strong>130 亿美元</strong>量级（估算）。这跟一家卖不掉的家具厂囤了 130 亿家具<strong>完全不是一回事</strong>。同理，170 亿总债务里有相当大一部分是为这批"随时能卖的粮食"融的短期资金，行业内叫"可交易存货融资"。所以看到 5.21 倍的净债务/EBITDA 时，别直接吓死——但也别完全无视，因为粮价一旦暴跌，抵押品价值和债务一起出问题。</p>
+</li>
+<li>
+<p><strong>剔掉营运资金的干扰，真实造血是 20.64 亿，扣掉 17.86 亿资本开支，还剩 2.78 亿。</strong> 这才是这门生意在"不扩不缩"状态下一年的余粮。<strong>2.78 亿，对着 218 亿的市值。</strong> 而它一年要付 5.49 亿分红。<strong>分红是靠借钱在发的。</strong></p>
+</li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>TTM 净利润 10.07 亿，市值 218.42 亿，企业价值 381.15 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>218.42 ÷ 10.07</td>
+<td><strong>22.1 倍</strong></td>
+<td><strong>4.52 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页未提供调整后净利润</td>
+<td>取不到，不编</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>218.42 ÷（10.07 + 0.53 减值重组 − 0.55 投资收益）= 218.42 ÷ 10.05</td>
+<td><strong>21.7 倍</strong></td>
+<td><strong>4.60 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 −7.11 亿</td>
+<td><strong>无意义（负）</strong></td>
+<td><strong>−3.26 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>381.15 ÷ 21.65</td>
+<td><strong>17.6 倍</strong></td>
+<td>5.68 元（给全体资本方，含债主）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>218.42 ÷ [(10.07 + 8.16 + 11.37) ÷ 3 = 9.87]</td>
+<td><strong>22.1 倍</strong></td>
+<td><strong>4.52 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关于"三年平均"这一行，必须加两句注解，否则会误导你：</strong></p>
+<p>第一，这三年（TTM、FY2025、FY2024）里，<strong>只有 TTM 是并购后的邦吉，另外两年是只有一半体量的老邦吉</strong>。三年平均 9.87 亿这个数，本质上是"大公司的一年 + 小公司的两年"求平均，严格说不可比。</p>
+<p>第二，<strong>更要命的是这三年恰好全是农产品的低谷。</strong> 把时间拉到 FY2023——那年邦吉净利润 <strong>22.43 亿</strong>，是现在的 2.2 倍；毛利率 8.20%，是现在 4.92% 的 1.7 倍。如果用 FY2023—FY2025 三年平均（13.99 亿），市盈率是 <strong>15.6 倍</strong>。</p>
+<p><strong>这个差异说明了一件对判断这只股票最关键的事：22 倍这个数字，不是因为股价贵，是因为分母（利润）被踩在了周期的地板上。</strong></p>
+<h3>说人话：你现在投 100 块进去，一年拿多少？</h3>
+<p><strong>按最保守的真实口径（21.7 倍），公司一年替你赚 4.6 块。</strong></p>
+<p>这 4.6 块里：
+- <strong>约 2.5 块以分红形式真进你口袋</strong>（TTM 分红 5.49 亿 ÷ 净利润 10.07 亿 = 54.5% 派息率，对应股息率约 2.5%）；
+- <strong>约 3.7 块名义上以回购形式还给你</strong>（8 亿回购 ÷ 218 亿市值），但如前所述，这 3.7 块被 42.56% 的增发稀释淹没了，<strong>实际到手接近 0</strong>；
+- <strong>剩下的加上借来的钱，全砸进了 17.86 亿的资本开支</strong>——新的压榨厂、码头、可再生柴油原料产能。</p>
+<p><strong>这个 4.6 块未来大概率变大还是变小？我判断是变大，理由有三个，风险也有三个。</strong></p>
+<p>变大的理由：（1）市场自己就是这么想的——<strong>前瞻市盈率只有 10.5 倍</strong>，意味着卖方普遍预期明年 EPS 从 5.13 涨到 10.8 左右，翻一倍；（2）压榨价差已经在周期底部趴了两年，历史上这个位置往上走的概率大于往下；（3）Viterra 的协同效应（公司自己目标是每年 2.5 亿美元）还没体现在 TTM 里，整合费用倒是先花出去了。</p>
+<p>风险：（1）<strong>170 亿总债务、利息保障倍数只有 2.72 倍</strong>——经营利润只够付 2.7 倍的利息，这在利率还没降下来的环境里是紧的；（2）<strong>可再生柴油的政策风险</strong>——美国税收抵免规则一改，豆油需求塌一块，压榨价差直接完蛋；（3）自由现金流已经连续两年为负，资本开支还在 17.86 亿的高位，<strong>如果周期不回来，分红迟早要动</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一只被市场当成"周期底部买入"的票，22 倍市盈率是假贵——真正该担心的不是估值，是那 170 亿债务能不能撑到周期回来。</strong></p>
+<p>买它等于下一个明确的赌注：赌全球压榨价差在未来 12—24 个月内从地板反弹，赌 Viterra 的整合真能省出 2.5 亿。赌对了，前瞻 10.5 倍市盈率意味着股价还有一大截；赌错了——自由现金流为负、利息保障 2.72 倍、分红靠借钱的公司，会先砍分红，然后股价打回原形。<strong>这不是一只可以"买了不管"的股票，它是一张有明确到期时间的周期彩票。</strong></p>
+</div></body></html>

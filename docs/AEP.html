@@ -1,0 +1,441 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AEP · 美国电力公司（American Electric Power）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AEP</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">估值没被周期扭曲，但股息一半是增发付的</div><h1>AEP · 美国电力公司（American Electric Power）</h1>
+<p><strong>市值</strong> 680.4 亿美元 ｜ <strong>股价</strong> $124.99 ｜ <strong>企业价值 EV</strong> 1209.7 亿美元 ｜ <strong>行业</strong> 公用事业 / 受监管电力 ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日：2026 年 6 月 30 日</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AEP 是美国最大的电网公司之一，在 <strong>11 个州</strong>给约 <strong>560 万户</strong>供电，拥有全美最大的高压输电网络（40,000 英里输电线，其中包括美国绝大部分的 765 千伏超高压线路）。</p>
+<p>但"卖电"这个描述会让你完全误解它怎么赚钱。<strong>受监管的公用事业公司，赚的不是卖电的差价，赚的是"我在电网上投了多少资本"的固定回报。</strong> 这个机制必须先讲明白，否则后面所有数字都看不懂。</p>
+<h3>先搞懂这门生意的底层规则：资本回报，不是商品买卖</h3>
+<p>假设西弗吉尼亚州的阿巴拉契亚电力（AEP 的子公司）要建一条新输电线，花了 <strong>10 亿美元</strong>。这 10 亿会被计入所谓的"<strong>费率基数（rate base）</strong>"。然后州公用事业委员会（一个政府监管机构）开听证会，裁定：这笔投资是必要的、造价是合理的，因此<strong>允许 AEP 在这 10 亿上赚 9.7% 的股本回报率（ROE）</strong>。</p>
+<p>接下来监管机构反推电价：AEP 需要收多少电费，才能覆盖燃料成本、运维成本、折旧、利息，再剩下这 9.7% 的回报？算出来是多少，电价就定成多少，写进法规，用户必须按这个价交钱。</p>
+<p><strong>结果就是：AEP 的利润跟它卖了多少度电关系不大，跟它在地上埋了多少资本关系极大。</strong> 电线杆越多、变电站越多、输电塔越多，允许赚的钱就越多。这是一门<strong>"花钱换利润"的生意</strong>——跟正常公司"省钱赚利润"的直觉完全相反。</p>
+<p>这也解释了后面那些看起来很吓人的数字：为什么 AEP 一年花 <strong>101.75 亿</strong>做资本开支（是净利润的 3.2 倍）、为什么它背着 <strong>535 亿</strong>的债、为什么自由现金流是 <strong>−67.54 亿</strong>。<strong>这不是失控，这就是它的商业模式本身。</strong> 它是一台把资本转化为受监管利润的机器，机器越大、吞的钱越多，产出的利润越多。</p>
+<p>理解了这个，再看四门生意：</p>
+<h3>生意一：垂直一体化公用事业（TTM 132.26 亿，占 58%）</h3>
+<p>在<strong>没有电力市场化改革的州</strong>——西弗吉尼亚、弗吉尼亚、印第安纳、密歇根、俄克拉荷马、阿肯色、路易斯安那、德州部分地区、肯塔基——AEP 的子公司同时拥有发电厂、输电线、配电网，一条龙包到底，给用户开一张打包账单。</p>
+<p>具体拥有什么：燃煤电厂（阿摩司、洛克波特等，仍是 AEP 发电结构里的大头）、燃气机组、<strong>库克核电站</strong>（密歇根，两台机组约 2.2 吉瓦）、以及这些年新建的大量风电和太阳能。</p>
+<p>收钱方式：印第安纳一个普通家庭一个月用 900 度电，账单大约 130 美元。这 130 里，燃料成本是"<strong>过手</strong>"的——煤价涨了，AEP 通过燃料调整条款直接转嫁给用户，自己不赚也不亏（这就是为什么油气价格波动对 AEP 影响远小于你以为的）。AEP 真正赚的，是账单里对应"输配电资产回报"的那一部分。</p>
+<p>大工业客户不一样：一家铝厂或一个数据中心，可能单独跟 AEP 谈一个专门的费率合同，一年电费上亿美元。</p>
+<p><strong>TTM 增速 +3.2%</strong>（相对 FY2025），是稳定的低增长业务。</p>
+<h3>生意二：只管输配电的公用事业（TTM 63.62 亿，占 28%）</h3>
+<p>在<strong>已经市场化的州</strong>——主要是俄亥俄（AEP Ohio）和德州（AEP Texas）——法律不允许电网公司同时卖电。用户从竞争性的售电商（比如 Constellation、NRG）那里买电，但电还是通过 AEP 的线路送到家。</p>
+<p><strong>AEP 在这里只收"过路费"。</strong> 它不承担燃料价格风险、不承担发电厂故障风险、也不承担用户不交电费的坏账风险（那是售电商的事）。它只负责：线路能通、坏了修好，然后按输送的电量收一笔受监管的配送费。</p>
+<p><strong>这是 AEP 里质量最好的一块</strong>——最纯粹的收租模式，风险最低。而且俄亥俄州的哥伦布地区这几年成了美国最密集的数据中心集群之一（多家超大规模云厂商在那里建园区），单个数据中心园区的用电量能顶一座小城市。这块业务的负荷增长，是整个 AEP 未来十年最重要的成长故事。</p>
+<p><strong>TTM 增速 +3.5%。</strong></p>
+<h3>生意三：AEP 输电控股（TTM 22.86 亿，占 10%）—— 增速最好、回报最高的一块</h3>
+<p>这是纯粹的高压输电线建设公司。它建的是跨州的 345 千伏和 765 千伏骨干线路，然后把电"批发"输送给自己的其他子公司和别家的电网。</p>
+<p>为什么单独拆出来：<strong>因为输电业务归联邦能源监管委员会（FERC）管，不归各州管。</strong> FERC 的裁定通常比州委员会更慷慨、更快、更可预测——批准的 ROE 更高，而且有"在建工程即可计入费率基数"的机制，意味着 AEP 建线的钱<strong>还没建完就开始收回报了</strong>，不用等通电。</p>
+<p>对 AEP 来说这是最好的赛道：美国电网老化严重、可再生能源需要长距离输送、数据中心负荷激增——三件事都需要大量新建输电线，而 AEP 手握全美最大的超高压网络和最完整的建设能力。</p>
+<p><strong>TTM 增速 −3.8%</strong>（相对 FY2025），这个短期回落不改变结构性方向。</p>
+<h3>生意四：发电与市场化销售（TTM 31.10 亿，占 14%）</h3>
+<p><strong>不受监管的那部分</strong>：竞争性零售售电、批发电力交易、可再生能源开发（AEP OnSite Partners 之类），以及一些在市场化地区自负盈亏的发电资产。</p>
+<p><strong>这是 AEP 唯一有真实经营风险的业务</strong>——赚多少取决于电价、交易能力和天气，没有监管兜底。TTM 增速 <strong>+12.6%</strong>，是四块里最快的，但也是波动最大、利润质量最差的一块（里面含大宗商品套保的公允价值变动，会在季度间大幅摆动）。</p>
+<h3>一张钱的表（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>占抵销前比例</th>
+<th>较 FY2025 增速</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>垂直一体化公用事业</td>
+<td>132.26</td>
+<td>52.7%</td>
+<td>+3.2%</td>
+<td>受监管，全包</td>
+</tr>
+<tr>
+<td>输配电公用事业</td>
+<td>63.62</td>
+<td>25.3%</td>
+<td>+3.5%</td>
+<td>受监管，纯收过路费（质量最好）</td>
+</tr>
+<tr>
+<td>AEP 输电控股</td>
+<td>22.86</td>
+<td>9.1%</td>
+<td>−3.8%</td>
+<td>联邦监管，回报最高</td>
+</tr>
+<tr>
+<td>发电与市场化销售</td>
+<td>31.10</td>
+<td>12.4%</td>
+<td><strong>+12.6%</strong></td>
+<td><strong>不受监管，有真实风险</strong></td>
+</tr>
+<tr>
+<td>公司及其他</td>
+<td>1.31</td>
+<td>0.5%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>分部小计</td>
+<td>251.15</td>
+<td>100%</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>减：分部间抵销</strong></td>
+<td><strong>−23.24</strong></td>
+<td></td>
+<td></td>
+<td>输电子公司卖给自家配电子公司的部分</td>
+</tr>
+<tr>
+<td><strong>合计营收</strong></td>
+<td><strong>227.91</strong></td>
+<td></td>
+<td><strong>+10.3%（同比）</strong></td>
+<td>整体经营利润率 <strong>23.0%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关于抵销的说明</strong>：各分部加总（251.15 亿）大于合并营收（227.91 亿），差额 23.24 亿是分部之间的内部交易——AEP 输电控股把电输给自家的配电公司，这笔收入在合并报表里要抵掉。这是正常会计处理，不是数据错误（历年各期均如此）。</p>
+<p><strong>分部利润 AEP 在这几个页面上不披露，所以上表不给分部利润率。</strong> 按行业常识，受监管的三块回报率被监管锁定在 9%–10.5% 的 ROE 区间，市场化那块波动大——但这是常识不是财报数字，所以我不做估算表格。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：小到财报不单列</h3>
+<p>标准化现金流量表里<strong>没有独立的股权激励行</strong>，被合并进"其他调整（+7.42 亿）"。公用事业公司普遍不靠股票发薪，这一项对 AEP 不构成问题。<strong>没有障眼法。</strong></p>
+<h3>但是——AEP 有一个比 SBC 严重得多的稀释问题：它在持续增发股票</h3>
+<p>看这两个数：</p>
+<ul>
+<li><strong>流通股一年增加了 1.77%</strong>（QoQ 还在增 0.65%）；</li>
+<li>TTM <strong>发行新股融资 +10.48 亿美元</strong>，回购 <strong>零</strong>。</li>
+</ul>
+<p><strong>AEP 每年往市场上多发近 2% 的股票。</strong> 这意味着什么？意味着你作为老股东，每年被无声地稀释掉 1.77% 的所有权。</p>
+<p>配合股息看，问题就非常清楚了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+<th>占市值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 派发现金股息</td>
+<td>20.48 亿</td>
+<td><strong>+3.01%</strong></td>
+</tr>
+<tr>
+<td>TTM 增发股票稀释</td>
+<td>—</td>
+<td><strong>−1.77%</strong></td>
+</tr>
+<tr>
+<td><strong>净额</strong></td>
+<td></td>
+<td><strong>+1.24%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>AEP 名义上给你 3.0% 的股息率，但同时用增发把你的所有权摊薄 1.77%，实际净回馈只有 1.24%。</strong> 左手发股息，右手发股票——本质上是<strong>在用新股东的钱给老股东发股息</strong>。这不是欺诈（公用事业行业普遍如此，监管资本结构要求维持一定的股权比例），但<strong>如果你以为自己在拿 3% 的股息，你算错了一半以上</strong>。</p>
+<h3>回购 / SBC 比值：负值，这一项 AEP 是全表最差</h3>
+<p>回购金额 <strong>0</strong>，增发 <strong>10.48 亿</strong>。这个比值不是"小于 1"，是<strong>负的</strong>。按"接近 1 说明回购只在抵消发股、大于 3 才是真回馈"的标准，<strong>AEP 连及格线都够不到——它在反方向走</strong>。</p>
+<h3>有效税率只有 9.73%：这是 AEP 利润质量里最需要警惕的一处</h3>
+<p>TTM 税前利润 <strong>36.10 亿</strong>，实缴所得税只有 <strong>3.51 亿</strong>，有效税率 <strong>9.73%</strong>。而美国法定联邦税率是 21%。</p>
+<p>差额从哪来？主要是两类：<strong>可再生能源的生产税抵免/投资税抵免</strong>（AEP 大量建风电和光伏，拿到大额税收抵免），以及 <strong>2017 年减税法案留下的"超额递延所得税"的摊回</strong>（税率从 35% 降到 21% 时，AEP 账上多计提的递延税负债要在此后几十年里逐年摊销回来，冲减税费）。</p>
+<p><strong>为什么这值得警惕</strong>：这些税收优惠<strong>大部分最终要按监管要求返还给用户</strong>，并不完全归股东。而且它们是有期限的——超额递延税总有摊完的一天，可再生能源税收抵免政策也可能变。<strong>用 9.73% 的税率算出来的利润，不是一个可以线性外推二十年的利润。</strong></p>
+<p>做一个正常化测算：如果按 21% 的税率征税，TTM 净利润会从 31.41 亿降到约 <strong>27.5 亿</strong>，市盈率从 21.7 倍升到 <strong>24.7 倍</strong>。这个数字后面会进估值表。</p>
+<h3>一次性项目：TTM 有一笔 34.09 亿的现金收购，但看不出是什么</h3>
+<p>现金流量表显示 TTM"现金收购"支出 <strong>34.09 亿</strong>（FY2025 同为 34.53 亿，说明是同一笔发生在 2025 年下半年的交易落在两个统计窗口里）。<strong>这四个数据页没有说明标的是什么，我不猜。</strong> 对一家常年靠内生资本开支成长的受监管电力公司来说，这是一笔异常大的外部支出，值得单独留意。</p>
+<p>另外，TTM 每股收益 <strong>同比下滑 15.64%</strong>（$6.62 → $5.77），而营收还在 <strong>+10.3%</strong> 增长。营收涨、利润跌，中间被什么吃掉了——<strong>只看 TTM 单期口径无法判断这是"真一次性"还是新常态</strong>，我不硬下结论。可能的方向是利息支出上升（债务一年增了 40 亿）和市场化业务的公允价值变动，但这几个页面不足以证实。</p>
+<h3>资本化支出：这就是 AEP 的商业模式本身</h3>
+<p>TTM 资本开支 <strong>101.75 亿</strong>，占营收 <strong>44.6%</strong>，是净利润的 <strong>3.2 倍</strong>。前面说过，这不是浪费——<strong>每一块钱资本开支都会变成费率基数，明年开始按 9%–10% 的允许回报率往回收钱</strong>。这是特征，不是缺陷。</p>
+<p>但要看清代价：这 101.75 亿全部是外部输血——TTM 净借入长期债 <strong>62.40 亿</strong>、短期债 <strong>5.26 亿</strong>、增发股票 <strong>10.48 亿</strong>，合计 <strong>78.14 亿</strong>新资本。<strong>AEP 每年都必须去资本市场融到几十亿美元，否则模式转不下去。</strong> 这让它对利率极度敏感：利率每上一个台阶，同样的费率基数增长需要付出更多的利息，而监管批准电价上调总是滞后的。</p>
+<h3>利润和现金流的差：这里有一处我必须如实说明的数据矛盾</h3>
+<p>先摆事实：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（合并）</td>
+<td>3,255</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>3,510</td>
+</tr>
+<tr>
+<td>＋ 其他调整</td>
+<td>742</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−132</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−161</td>
+</tr>
+<tr>
+<td>＋ 应付账款</td>
+<td>+373</td>
+</tr>
+<tr>
+<td>＋ 应交税金</td>
+<td>+104</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>+198</td>
+</tr>
+<tr>
+<td><strong>各项加总</strong></td>
+<td><strong>7,889</strong></td>
+</tr>
+<tr>
+<td><strong>数据源标注的经营现金流</strong></td>
+<td><strong>3,421</strong></td>
+</tr>
+<tr>
+<td><strong>对不上的缺口</strong></td>
+<td><strong>−4,468</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这两个数字差了 44.68 亿，而且这个矛盾只出现在 TTM 这一列。</strong> 我把 FY2021–FY2025 五个完整年度全部验算了一遍：FY2025（6,944）和 FY2023（5,012）能精确加总吻合，FY2024 差 2.37 亿（可接受的四舍五入范围）。<strong>唯独 TTM 这一列，明细加总是 78.89 亿，而标注的经营现金流是 34.21 亿。</strong></p>
+<p>两种可能：（一）TTM 期内确实有一笔约 45 亿的大额现金流出（比如递延所得税的巨额转回、燃料成本递延回收、养老金一次性注资），而标准化明细里没有单列出来；（二）数据源的 TTM 列存在口径错误。<strong>我无法从这四个页面分辨是哪一种，所以我两个都摆出来，不替你选一个。</strong></p>
+<p><strong>好消息是：这个不确定性不影响结论。</strong> 因为不论按哪个数：</p>
+<ul>
+<li>按 34.21 亿算：自由现金流 = 34.21 − 101.75 = <strong>−67.54 亿</strong>；</li>
+<li>按 78.89 亿算：自由现金流 = 78.89 − 101.75 = <strong>−22.86 亿</strong>。</li>
+</ul>
+<p><strong>两种算法下自由现金流都是负的，而且负得不少。</strong> 这跟"AEP 靠借钱和增发来同时支撑资本开支和股息"这个判断完全一致，不受数据矛盾影响。</p>
+<h3>杠杆：重，但是被监管默许的重</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总债务</td>
+<td>534.98 亿（是市值的 79%）</td>
+</tr>
+<tr>
+<td>净债务</td>
+<td>528.23 亿（每股背 $97 的债）</td>
+</tr>
+<tr>
+<td>债务 / 股东权益</td>
+<td>1.61</td>
+</tr>
+<tr>
+<td>债务 / EBITDA</td>
+<td>6.12 倍</td>
+</tr>
+<tr>
+<td><strong>利息保障倍数</strong></td>
+<td><strong>2.41 倍</strong></td>
+</tr>
+<tr>
+<td>TTM 利息支出（推算）</td>
+<td>约 16.3 亿（经营利润 52.43 亿 − 税前利润 36.10 亿）</td>
+</tr>
+<tr>
+<td>账面股东权益</td>
+<td>332.9 亿，每股 $58.93，PB 2.13</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营利润 52.43 亿里，有 16.3 亿（31%）付了利息。</strong> 利息保障 2.41 倍对普通工业企业是危险区，对受监管公用事业是行业常态——因为现金流被监管保护，违约概率远低于同等杠杆的工业公司。但<strong>常态不等于安全</strong>：AEP 的 ROIC 只有 <strong>4.16%</strong>，而它自己的加权平均资本成本 <strong>WACC 是 5.56%</strong>。</p>
+<p><strong>读懂这一句：AEP 投出去的每一块钱，赚回来的回报（4.16%）低于这块钱的成本（5.56%）。</strong> 它的股东 ROE 之所以还能有 10.13%，靠的是 1.61 倍的债务杠杆把差额放大到了股权那一头。这个模型能运转的唯一前提是：<strong>监管机构允许它继续这样加杠杆，而债务成本不再往上走。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>680.4 亿 ÷ 31.41 亿（归属普通股东）</td>
+<td><strong>21.7 倍</strong></td>
+<td><strong>$4.62</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>AEP 主打"operating earnings"（剔除商品套保公允价值变动等）。<strong>这四个页面没有 TTM 口径的该数据，不编造。</strong> 作为参照：前瞻市盈率 19.04 倍，对应市场预期每股约 $6.56</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>把 9.73% 的异常低税率正常化到 21% → 净利润约 27.5 亿</td>
+<td><strong>24.7 倍</strong></td>
+<td><strong>$4.04</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>负</strong>（−67.5 亿 或 −22.9 亿，见上文数据矛盾说明）</td>
+<td><strong>无意义</strong></td>
+<td><strong>负</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1209.7 亿 ÷ 52.43 亿</td>
+<td><strong>23.1 倍</strong></td>
+<td><strong>$4.33</strong>（其中三成先归债主）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>680.4 亿 ÷ [(31.41+35.80+29.67)/3 = 32.29 亿]</td>
+<td><strong>21.1 倍</strong></td>
+<td><strong>$4.75</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径这一行的读法</strong>：21.1 倍 vs 当期 21.7 倍，<strong>基本重合</strong>。这说明 AEP 当前的利润既不在高点也不在低点，就是它的常态水平——<strong>你看到的估值没有被周期扭曲</strong>。这跟 NVDA（当期 34 倍 / 三年平均 73.5 倍，当期是峰值）和帕卡 PCAR（当期 27.5 倍 / 三年平均 22.9 倍，当期是谷底）都不同。<strong>受监管公用事业本来就不该有周期，这个结果反过来验证了监管模式确实在起作用。</strong></p>
+<p><strong>注意"自由现金流口径为负"这一行不要误读成"公司在烧钱"。</strong> 对受监管电网来说，资本开支就是产品本身——它花 101.75 亿建电网，这 101.75 亿会变成费率基数，明年起按 9%–10% 的允许回报率往回收。真正该问的不是"自由现金流为什么是负的"，而是"<strong>这些新投的资本，监管机构会不会足额批准回报</strong>"。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 AEP，按最保守的真实口径（税率正常化后 24.7 倍），公司一年替你赚 $4.04。</strong></p>
+<p>这 $4.04 里，有多少真回到你口袋？</p>
+<ul>
+<li><strong>表面上的现金股息</strong>：TTM 派了 20.48 亿，市值 680.4 亿，股息率 <strong>3.01%</strong>，每股约 $3.76。也就是 $4.04 里有 <strong>$3.01 看起来是打进你账户的现金</strong>——派息率高达 75%，符合公用事业的一贯做法。</li>
+<li><strong>但要扣掉稀释</strong>：同期股本增发 1.77%。<strong>净回馈 = 3.01% − 1.77% = 1.24%。</strong> 换算过来，$4.04 里真正落到你手上的只有约 <strong>$1.66</strong>。</li>
+<li><strong>回购</strong>：零。反向增发 10.48 亿。</li>
+<li><strong>留在公司里再投资的</strong>：TTM 资本开支 101.75 亿 + 现金收购 34.09 亿，合计 135.84 亿——<strong>是净利润的 4.3 倍</strong>。这些钱<strong>不是 AEP 从利润里省下来的</strong>，是从债市（净借入 67.66 亿）和股市（增发 10.48 亿）新融来的。</li>
+</ul>
+<p><strong>说到底，AEP 的现金流公式是：借新债 + 发新股 → 建电网 → 建成的电网进费率基数 → 明年收更高的电价 → 用收来的钱付利息、付股息，缺口再借新债 + 发新股。</strong> 这个循环能一直转下去，只要两个条件成立：监管机构继续批准回报，利率不再往上走。</p>
+<p><strong>这个 $4.04 未来会变大还是变小？</strong></p>
+<p><strong>大概率缓慢变大，但每股的增速会被稀释吃掉相当一块。</strong></p>
+<p>往上推的：（1）<strong>数据中心负荷是二十年一遇的需求爆发</strong>。俄亥俄哥伦布地区是全美最密集的数据中心集群之一，AEP Ohio 直接受益，而且大负荷客户还要额外掏钱建专线；（2）<strong>输电控股是最好的赛道</strong>——FERC 监管比州监管更慷慨、在建工程即可计入费率基数；（3）费率基数按现在的资本开支节奏，年化增长约 7%–8%，这直接翻译成利润增长；（4）AEP 已经把最脏的煤电逐步退役，未来的合规成本风险在下降。</p>
+<p>往下压的：（1）<strong>每年 1.77% 的股本稀释是硬扣</strong>，费率基数涨 8%，每股利润只能涨 6% 出头；（2）<strong>利率</strong>——535 亿债务，每年还要新借几十亿，融资成本每上 100 个基点，一年就多掏 5 亿多，而电价上调总是滞后一到两年；（3）<strong>9.73% 的税率必然回升</strong>，超额递延税总有摊完的一天；（4）<strong>监管风险</strong>——电价连年上涨会引发政治反弹，州委员会可能压低允许 ROE 或否决部分投资；（5）ROIC 4.16% 已经低于 WACC 5.56%，<strong>这个模式没有犯错的余地</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一台运转正常的资本转化机器，价格公道，但你实际拿到手的东西比标签上写的少一半。</strong></p>
+<p>AEP 是这批公司里唯一一家<strong>估值完全没有被周期扭曲</strong>的——当期 21.7 倍、三年平均 21.1 倍，两个数字重合，说明这就是它真实的常态盈利。监管模式提供了实实在在的下行保护，数据中心带来的负荷增长是二十年一遇的真实顺风，输电业务是全美最好的资产之一。</p>
+<p>但有三处必须扣分，而且都不小：</p>
+<ol>
+<li><strong>3.01% 的股息率是虚的</strong>。同期增发稀释 1.77%，净回馈只有 <strong>1.24%</strong>——你以为自己在收租，其实一半的租金是用新发的股票付给你的；</li>
+<li><strong>9.73% 的有效税率不可持续</strong>。按正常税率算，市盈率从 21.7 倍变成 <strong>24.7 倍</strong>，一家零成长属性的公用事业公司付这个价并不便宜；</li>
+<li><strong>ROIC 4.16% &lt; WACC 5.56%</strong>。总资本口径上，AEP 投出去的钱赚不回它的成本，股东那 10.13% 的 ROE 完全建立在 1.61 倍杠杆之上——利率是这台机器唯一的、也是致命的敏感变量。</li>
+</ol>
+<p>再加上 TTM 每股收益同比下滑 15.6%（营收还在涨 10%）、数据源上一笔对不上账的 44.68 亿经营现金流缺口、以及一笔看不出标的的 34.09 亿现金收购——<strong>这份报表比它表面上的"稳健公用事业"标签要毛糙</strong>。</p>
+<p><strong>值不值这个价？</strong> 如果你要的是抗跌和确定性，21.7 倍买 AEP 比 37.8 倍买 TDG 安全得多，贝塔只有 0.51，监管兜底是真的。但如果你冲着 3% 的股息来，<strong>请把它改写成 1.24%</strong>，然后重新问一遍这个问题——按 1.24% 的净现金回馈加上 6% 左右的每股利润增速，这笔投资的合理预期年回报大约是 <strong>7%–8%</strong>，不多不少，刚好是一家杠杆很重的受监管电力公司该给的回报。<strong>没有便宜可捡，也没有明显的坑。</strong></p>
+</div></body></html>

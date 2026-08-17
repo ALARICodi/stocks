@@ -1,0 +1,306 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SPOT · Spotify（Spotify Technology S.A.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SPOT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">好生意，但它是别人生意里的一环，不值这个价</div><h1>SPOT · Spotify（Spotify Technology S.A.）</h1>
+<p>市值 $1062.9 亿（约 €930.7 亿）/ 股价约 $517 / 行业：科技服务 — 音乐与音频流媒体 / TTM 截止 2026 年 6 月 30 日</p>
+<p><strong>记账货币是欧元。</strong> 下面的营收、利润、现金流全部是欧元；市值和估值倍数按 TTM 期间的汇率 1 欧元 ≈ 1.142 美元换算。别把欧元数字和美元市值直接相除。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Spotify 的分部只有两个：付费订阅（Premium）和免费听广告（Ad-Supported）。但这两个分部的实际重要性差得离谱——一个占 90%，另一个占 10% 且在萎缩。所以严格讲，这是<strong>一门半生意</strong>。</p>
+<h3>生意一：付费订阅（TTM €163.34 亿，占 90.2%）</h3>
+<p>你每个月付大约 12 美元（不同国家不同，印度可能只有 1.5 美元），换来无广告、可离线下载、音质更好的全曲库。就这么简单。</p>
+<p>但真正决定这门生意能不能赚钱的，不在你付的那 12 块，而在<strong>这 12 块里 Spotify 能留下多少</strong>。答案是：留不下多少。</p>
+<p>音乐版权的钱是这么分的。你付 12 块，Spotify 先把当月<strong>全平台所有订阅收入汇总成一个池子</strong>，从池子里切出大约 三分之二 分给版权方，剩下三分之一留给自己。切出去的那部分再按播放量分配给三大唱片公司（环球、索尼、华纳，加上独立厂牌合计控制着大部分曲库）和词曲版权方（音乐出版商、词曲作者）。注意这个机制的两个要害：</p>
+<p>第一，<strong>这是按收入比例分，不是按每次播放固定单价分</strong>。所以 Spotify 涨价的时候，版权方也跟着多拿——涨价并不能一比一地改善利润率，只能改善一点点（因为部分协议有保底和上限）。</p>
+<p>第二，<strong>曲库是租来的，而且租不断</strong>。三大唱片公司手里握着你想听的绝大部分歌，Spotify 不可能不签；反过来唱片公司也不可能不在 Spotify 上架，因为这是全球最大的付费音乐渠道。这是一个<strong>双方都掐着对方脖子但谁也不敢真掐死</strong>的关系，结果就是每隔两三年重新谈一次条件，价格在一个窄区间里来回挪。</p>
+<p>这就解释了整篇分析里最重要的一个数字：<strong>Spotify 的毛利率只有 32.8%。</strong> 一家没有工厂、没有库存、边际成本几乎为零的互联网公司，毛利率却只有传统制造业的水平——因为它 67% 的收入直接付给了内容的真正主人。作为对比，同样是订阅制的软件公司毛利率普遍在 75%–85%。<strong>Spotify 不是一家软件公司的成本结构，它是一家渠道商的成本结构。</strong></p>
+<p>不过这几年这个数字在实打实地改善：25.6%（2023）→ 30.1%（2024）→ 32.0%（2025）→ 32.8%（TTM）。三年提升了 7.2 个百分点，每个百分点在 181 亿营收上就是 1.8 亿欧元的利润。改善来自三件事，都值得讲清楚：</p>
+<p><strong>一是硬涨价。</strong> 2023 年起 Spotify 在美国等主要市场连续提价，个人套餐从 9.99 涨到 11.99 甚至更高。这是它上市后头一次敢连续涨价——敢涨的底气是用户流失率没有明显上升，说明它已经变成了水电煤那样的默认消费。</p>
+<p><strong>二是把有声书塞进套餐里。</strong> 这一步表面上是"加福利"，实际上是一步很精明的合规操作：美国的词曲版权费率是由版权费率委员会（CRB）按法定公式定的，但公式对"捆绑了非音乐内容的套餐"给出的费率更低。Spotify 把有声书打包进 Premium，套餐在法律定义上就从"纯音乐订阅"变成了"捆绑套餐"，付给美国音乐出版商的机械版权费应声下降。出版商为此把它告上法庭。<strong>这不是虚构的会计技巧，这是真金白银省下来的成本，但它也是一笔有法律风险的成本节约</strong>——如果官司输了要补缴，毛利率的改善会吐回去一部分。</p>
+<p><strong>三是播客的止血。</strong> 2019 到 2021 年 Spotify 花了大约 10 亿美元买播客公司和签独家（Joe Rogan 那份合约据报道超过 2 亿美元），逻辑是播客内容不用付音乐版权费，能拉高毛利率。结果是内容花的钱远超广告收进来的钱。2023 年之后它砍掉了大量自制播客、裁掉相关团队、把独家改成分成，这块的窟窿基本堵上了。</p>
+<h3>生意二：免费听广告（TTM €17.79 亿，占 9.8%，且在缩水）</h3>
+<p>免费用户听歌，每几首插一条音频广告；播客里也插广告。品牌主（比如可口可乐）通过 Spotify 的自助广告平台投放，按千次播放计费。</p>
+<p><strong>这门生意讲了十年故事，现在基本可以认定它失败了。</strong> 数字说话：FY2021 €12.08 亿 → FY2022 €14.76 亿 → FY2023 €16.81 亿 → FY2024 €17.98 亿 → FY2025 €17.95 亿 → TTM €17.79 亿。<strong>过去两年不增反降。</strong> 同期公司总营收从 132 亿涨到 181 亿，也就是说广告业务的占比从 12.7% 一路掉到 9.8%。</p>
+<p>为什么做不起来？音频广告的库存卖不出高价——广告主的预算大头在有画面、能点击、能直接归因到成交的地方（搜索、短视频、电商），纯音频既不能点也很难证明效果。Spotify 又没有像 YouTube 那样的视频体量去跟 Google 的广告系统抢预算。它换了几任广告业务负责人、重做了一遍自助投放平台，效果都不明显。</p>
+<p><strong>但这门生意的存在有另一个意义：它是漏斗。</strong> 免费用户是付费用户的水库，全球大约十几亿人有听音乐的需求但不愿意每月掏钱，Spotify 用免费层把他们圈住，等他们受够了广告、或者收入涨上来了，再转成付费。从这个角度，免费层的合理定位不是利润中心，而是<strong>一笔用广告收入自己覆盖掉大部分的获客成本</strong>。财报没有单独披露分部利润，但按行业常识和公司过往表述，这块的毛利率显著低于订阅，接近盈亏平衡。</p>
+<h3>分部的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万欧元）</th>
+<th>占比</th>
+<th>FY25 vs FY24 增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>付费订阅 Premium</td>
+<td>16,334</td>
+<td>90.2%</td>
+<td>+10.9%</td>
+</tr>
+<tr>
+<td>免费广告 Ad-Supported</td>
+<td>1,779</td>
+<td>9.8%</td>
+<td>−0.2%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>18,113</strong></td>
+<td>100%</td>
+<td><strong>TTM 同比 +9.0%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报<strong>只披露到分部营收，不披露分部利润</strong>，上表不给利润率。整体口径：TTM 毛利率 32.8%，经营利润率 14.65%，净利率 18.43%（净利率高于经营利润率，这件事有蹊跷，下一节专门拆）。</p>
+<p>顺带说一个能看出经营效率的数字：员工 7,323 人，人均创收 283 万美元、人均创利 52 万美元。2023 年底那次裁掉约 1500 人（占当时员工的 17%）之后，Spotify 的费用曲线被彻底压住了——营收从 132 亿涨到 181 亿的同时，经营利润从 −4.46 亿变成 +26.53 亿。<strong>这三年的利润几乎全部来自"不再乱花钱"，而不是来自新业务。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一节是这篇分析的重点。<strong>Spotify 报出来的 33.39 亿欧元净利润里，有相当大一块不是经营赚来的。</strong></p>
+<p>先看一个反常现象：<strong>净利率（18.43%）高于经营利润率（14.65%）。</strong> 正常公司这两个数的关系是反过来的——经营利润要先减利息、再减所得税才轮到净利润。Spotify 反着来，说明经营线以下有两笔大额的"加分"。</p>
+<p><strong>加分一：8.52 亿欧元的非经营收益。</strong> 税前利润 = 181.13 亿 × 19.35% = <strong>35.05 亿</strong>，而经营利润只有 26.53 亿，差额 <strong>8.52 亿</strong>全部来自经营线以下。这笔钱由两部分组成：一是账上趴着的 93.88 亿欧元现金和投资产生的利息收入（按当前欧美利率水平，一年三四亿是合理的）；二是<strong>非现金的公允价值变动收益</strong>。现金流量表给出了硬证据：TTM 的"其他调整"是 <strong>−6.76 亿</strong>——现金流量表要从净利润出发倒推现金，凡是被减掉的项目就是"计进了利润但没收到钱"的东西。也就是说，<strong>净利润里有 6.76 亿欧元是纸面收益，一分钱现金没进来</strong>。</p>
+<p>这笔钱大概率来自可交换债券的公允价值重估：Spotify 的总债务在 TTM 期间从 18.91 亿骤降到 4.04 亿（现金流量表显示偿还长期债务 13.69 亿），这是把发行在外的可交换票据清掉了。这类工具按公允价值计量，股价在过去 52 周跌了 25.2%，负债端的公允价值随之下降，差额直接计入利润表当收益。<strong>说白了：股价跌了，所以账面上多赚了 6.76 亿。</strong> 这显然不是可以给它 27 倍市盈率的那种利润。</p>
+<p><strong>加分二：所得税只交了 4.74%。</strong> TTM 所得税 1.897 亿美元（约 1.66 亿欧元），除以 35.05 亿欧元税前利润，有效税率 <strong>4.74%</strong>。一家总部在卢森堡、主要运营在瑞典的公司，正常有效税率应该在 20%–25%。为什么只有 4.7%？因为 Spotify 从 2018 年上市到 2023 年连亏六年，累积了巨额的税务亏损结转和递延所得税资产。以前因为"不确定未来能不能赚钱"这些资产被计提了减值准备（估值备抵），现在确认能赚钱了，减值准备被冲回，形成一次性的税收利益。</p>
+<p><strong>这笔便宜是有限的、会用完的。</strong> 亏损结转额度用一年少一年，等用光了，Spotify 的税率就会跳回正常水平。按 23% 的正常税率算，光这一项每年就要多交约 6.5 亿欧元的税——相当于当期净利润的 20%。</p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>2.74 亿欧元</strong>，占净利润 8.2%、占经营利润 10.3%。这个绝对比例在科技公司里算克制的（美股大型科技公司普遍在 15%–40%），而且趋势在降：FY2022 €3.81 亿 → FY2023 €3.21 亿 → FY2024 €2.67 亿 → FY2025 €2.47 亿。按规矩这笔钱当真实成本，GAAP 已经扣了，不加回。</p>
+<p><strong>资本化的支出</strong>：几乎没有。资本开支 TTM 仅 <strong>7,000 万欧元</strong>，占营收 0.4%——这是全篇最能说明这门生意性质的数字之一：它不需要买设备（服务器基本全租 Google Cloud）、不需要建厂、不需要囤货。<strong>代价是它也不拥有任何东西</strong>：曲库是租的，服务器是租的，唯一自己的资产是那个推荐算法和用户习惯。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>11.82 亿欧元</strong>，同期 SBC 2.74 亿，<strong>比值 4.3 倍</strong>——按标准算是真回购（大于 3）。但看实际效果就很难堪了：<strong>流通股不但没减少，反而增加了 0.07%。</strong> 原因在现金流量表里：期权行权带来的"发行普通股"有 2.04 亿欧元，加上可交换票据转股，把回购的效果几乎全部抵消掉了。<strong>花了 11.82 亿现金，股本纹丝不动。</strong> 这是本篇最需要警惕的一条：单看"回购/SBC = 4.3 倍"会得出"真回馈股东"的结论，但看股本变化就知道，这笔钱实际是在填历史遗留的稀释窟窿。Spotify 也不分红。</p>
+<p><strong>利润和现金流的差</strong>：净利润 33.39 亿，经营现金流 33.37 亿，自由现金流 32.67 亿。总数看着几乎一样，但<strong>内部的构成差得很远</strong>，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万欧元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,339</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+104</td>
+</tr>
+<tr>
+<td>＋ 股权激励（发股不发现金）</td>
+<td>+274</td>
+</tr>
+<tr>
+<td><strong>− 其他调整（剔除纸面公允价值收益）</strong></td>
+<td><strong>−676</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+226</td>
+</tr>
+<tr>
+<td>＋ 预收款（用户预付的订阅费）增加</td>
+<td>+105</td>
+</tr>
+<tr>
+<td>＋ 其他经营性变动</td>
+<td>+183</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−81</td>
+</tr>
+<tr>
+<td>− 应交税金减少</td>
+<td>−130</td>
+</tr>
+<tr>
+<td>− 应计费用减少</td>
+<td>−7</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>3,337</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−70</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>3,267</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表把话说透了：<strong>表面上"净利润 ≈ 经营现金流"是一种巧合</strong>——利润里多算了 6.76 亿纸面收益（要减掉），同时又有 2.74 亿的股权激励和 4.04 亿的营运资金流入（要加回来），一减一加正好抵平。真实情况是：<strong>经营本身产生的现金比账面净利润所暗示的要少约 6.8 亿欧元，而营运资金和不发现金的股权薪酬帮它补上了。</strong></p>
+<p>还要注意一个结构性优势：预收款每年净增（TTM +1.05 亿）。订阅制是<strong>先收钱后服务</strong>，用户的钱先到 Spotify 账上，版权费下个月才付出去——这意味着规模越大，账上白用的浮存资金越多。这是订阅生意的真便宜。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 €930.7 亿（$1062.9 亿 ÷ 1.142），企业价值 €865.5 亿（净现金 89.84 亿欧元，是账上真有的钱）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>930.7 亿 ÷ 33.39 亿</td>
+<td><strong>27.9 倍</strong></td>
+<td><strong>$3.59</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页未提供调整后净利润</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>930.7 亿 ÷ 21.78 亿（税前 35.05 − 纸面收益 6.76 = 28.29 亿，再按 23% 正常税率纳税）</td>
+<td><strong>42.7 倍</strong></td>
+<td><strong>$2.34</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>930.7 亿 ÷ 32.67 亿</td>
+<td><strong>28.5 倍</strong></td>
+<td><strong>$3.51</strong></td>
+</tr>
+<tr>
+<td>自由现金流扣掉股权激励</td>
+<td>930.7 亿 ÷（32.67 − 2.74）亿</td>
+<td><strong>31.1 倍</strong></td>
+<td><strong>$3.22</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>865.5 亿 ÷ 26.53 亿</td>
+<td><strong>32.6 倍</strong></td>
+<td><strong>$3.07</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>930.7 亿 ÷ 9.39 亿（FY23 −5.32 + FY24 +11.38 + FY25 +22.12，取平均）</td>
+<td><strong>99.1 倍</strong></td>
+<td><strong>$1.01</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的是第三行和最后一行。</strong></p>
+<p>第三行（真实市盈率 42.7 倍）比 GAAP 的 27.9 倍高出 53%，差距全部来自两处：6.76 亿的纸面公允价值收益（因为自家股价跌而"赚到"的钱），以及那个用一年少一年的 4.7% 超低税率。<strong>把这两件不可持续的事情还原，Spotify 现在是 42.7 倍市盈率，不是 27.9 倍。</strong></p>
+<p>最后一行（三年平均 99.1 倍）看着夸张，但它讲的是一个真实的事：<strong>Spotify 直到 2024 年才第一次全年盈利。</strong> 2023 年还亏 5.32 亿，2024 年赚 11.38 亿，2025 年赚 22.12 亿，TTM 赚 33.39 亿——三年从亏损变成三十多亿，这条曲线太陡了。99 倍这个数在提醒你：你不是在给一段稳定的盈利历史付钱，你是在给"最近这一年半的利润是新常态"这个假设付钱。</p>
+<p>那么说人话：</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 2.34 块；按它实际收到的现金减掉股权激励算，一年赚 3.22 块。</strong></p>
+<p>这些钱有多少回到你口袋？<strong>几乎没有。</strong> Spotify 不分红。TTM 回购了 11.82 亿欧元，但股本反而增加了 0.07%——回购的钱被期权行权和可转债转股全部吃掉了。所以你的那 2.34 块，<strong>目前是 100% 留在公司里</strong>。留下来干什么用了？看投资活动：TTM 净投资流出只有 2.73 亿欧元，其中收购只花了 900 万，资本开支 7,000 万。<strong>也就是说钱既没还给你，也没花出去，就是趴在账上。</strong> 现金和投资已经堆到 93.88 亿欧元，占市值的 10%。</p>
+<p>这个 X 未来变大还是变小？分两段看。</p>
+<p><strong>近两年大概率还能变大。</strong> 毛利率还有提升空间（提价的传导、有声书捆绑的费率红利、广告业务哪怕只是止跌）；费用端裁员后的纪律看起来是持续的，营收涨 9% 而经营利润涨得快得多；账上百亿现金的利息收入是白拿的。</p>
+<p><strong>再往后要打问号，问号有三个。</strong> 第一，税率一定会往上走，从 4.7% 回到 20%+ 是迟早的事，光这一项就要吃掉两成利润，而且这个变化是确定的，只是不知道哪一年。第二，营收增速已经降到 9%，付费用户的增长越来越依赖印度、巴西、东南亚这些客单价只有欧美零头的市场——<strong>用户数还在涨，但每个用户贡献的收入在被稀释</strong>，这是流媒体行业绕不过去的天花板。第三，也是最根本的：<strong>它的成本大头是别人的定价权</strong>。唱片公司随时可以在下一轮谈判里多要几个点，而 Spotify 除了涨价转嫁给用户之外没有别的办法，涨价又会推高流失率。它做了十年想摆脱这个结构（播客、有声书、自制内容），只有部分成功。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Spotify 是一门好生意，但它是别人生意里的一环，而且现在的价格是按"它已经挣脱了这个身份"来定的。</strong></p>
+<p>先承认它做对的：这是全世界最大的付费音乐平台，用户已经把它当成默认习惯，敢连着涨价而不掉人；资本开支只占营收 0.4%，赚的钱不用往回填；账上净现金 90 亿欧元没有任何财务风险；管理层在 2023 年那次裁员之后，费用纪律是真的立住了，三年把经营利润从亏 4.46 亿做到赚 26.53 亿。这些都是硬的。</p>
+<p>但账面上那个 27.9 倍市盈率是有水分的，<strong>真实的数字是 42.7 倍</strong>——水分来自一笔因为自家股价下跌而产生的 6.76 亿纸面收益，和一个 4.74% 的、注定会消失的所得税率。43 倍对应每年 2.34% 的回报，而营收增速只有 9%、股本还在微增、一分钱不分红。你付出的价格需要未来很多年 20% 以上的利润增长才能兑现，而利润增长的来源目前主要是"少花钱"而不是"多赚钱"——<strong>省钱是一次性的，省完就没了</strong>。</p>
+<p>最要命的还是那 32.8% 的毛利率。它把 67% 的收入交给唱片公司，这个比例十年来没有实质性下降。Spotify 可以做世界上最好的推荐算法、最好的产品体验，但只要曲库是租的，它就永远是一个替别人收钱、抽三成手续费的渠道，而不是一个拥有内容的公司。<strong>市场给它 43 倍，是在给一家掌握定价权的平台公司估值；它的损益表说它是一家毛利率 33% 的分销商。</strong></p>
+<p><strong>结论：不值这个价。</strong> 它值得关注——毛利率的爬升是真的，费用纪律是真的——但要买，得等到把税率正常化、把纸面收益剔掉之后仍然是 25 倍出头的位置。股价过去一年已经跌了 25%，方向是对的，只是还不够。</p>
+</div></body></html>

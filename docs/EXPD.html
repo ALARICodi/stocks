@@ -1,0 +1,334 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EXPD · 康捷国际货运（Expeditors International of Washington）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EXPD</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">干净得不像美股，但26倍买五年负增长的中间商贵了</div><h1>EXPD · 康捷国际货运（Expeditors International of Washington）</h1>
+<p>市值 $241.9 亿 / 股价 $186.12 / 行业：运输与物流（无资产型货运代理）/ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说清楚一件事：<strong>这家公司一架飞机、一条船、一辆卡车都没有。</strong></p>
+<p>它干的活儿，本质上是"运费的批发零售商"。</p>
+<h3>生意一：空运代理（Airfreight）</h3>
+<p>想象一家在深圳做无人机的厂子，接到美国客户的单，要在 5 天内把 8 吨货送到芝加哥。这家厂子自己去找航空公司，人家理都不理——航空公司只跟大客户打交道，而且散客价贵得离谱。</p>
+<p>Expeditors 干的就是：<strong>它提前跟国泰、大韩、汉莎这些航司签下整年的舱位合同</strong>，比如"每周三、五从香港飞洛杉矶的这架货机，腹舱我全包了，一年 X 吨，给我批发价"。然后它把这架飞机的肚子切成小块，卖给这家无人机厂、那家做鞋的、隔壁做半导体设备的——一家 8 吨、一家 2 吨、一家 500 公斤，拼满一架飞机。</p>
+<p><strong>钱是怎么赚的</strong>：假设它从航司拿到的批发价是每公斤 $3.2，卖给无人机厂 $3.9，8 吨货就是 8000 公斤 × $0.7 = <strong>赚 5600 美元</strong>。它向客户开的发票是 $31,200（这全额计入营业收入），付给航司 $25,600（计入成本）。所以你看到 EXPD 一年"营收 120 亿美元"，<strong>这里面九成是替客户垫付给航空公司和船公司的钱，不是它自己的</strong>。</p>
+<p><strong>客户为什么非用它不可</strong>：因为运价一天一个样。2021 年一公斤空运到美国要 $12，2023 年跌到 $4，2026 年上半年因为红海绕行和电商小包裹又涨回去。厂子自己去谈，永远是被宰的那个。而且旺季（比如中国工厂十一月赶圣诞订单）舱位一票难求——<strong>Expeditors 常年包舱，旺季的时候它有位子，你没有</strong>。这就是它最硬的护城河：不是技术，是常年的采购量。</p>
+<h3>生意二：海运代理（Ocean freight）</h3>
+<p>同样的逻辑，换成集装箱。它跟马士基、地中海航运这些船公司包下整船的箱位，再切开卖。</p>
+<p>区别在于：海运有个"拼箱"（LCL）的活儿——你只有 15 立方米的货，不够装一个 40 尺柜（约 67 立方米）。EXPD 在香港、上海、鹿特丹这些地方有仓库，把五六家小客户的货拼进同一个柜子，一起运，到目的地再拆开各自派送。<strong>拼箱的毛利率明显高于整柜</strong>，因为客户自己没法干这事。</p>
+<p>海运运价比空运更疯。2021 年一个 40 尺柜从上海到洛杉矶炒到 $20,000，2023 年跌回 $1,500，2024 年红海危机又冲到 $6,000。这种剧烈波动在 EXPD 的财报上表现得极其明显：<strong>FY2022 营收 170.7 亿，FY2023 直接砍到 93 亿，一年蒸发 45.5%</strong>——不是客户跑了，是运价崩了。</p>
+<h3>生意三：报关与增值服务（Customs brokerage &amp; other）</h3>
+<p>货到了美国海关，你得申报品名、HS 编码、原产地、完税价格，交关税。填错一个字，整柜扣在港口，一天几百美元滞港费。</p>
+<p>Expeditors 是持牌报关行，这活儿它替你干。<strong>收费模式是按票收</strong>，一票报关几十到几百美元不等——单价很低，但<strong>量极大，而且不占用资本</strong>：一年上百万票，纯粹是人工和系统的钱。</p>
+<p>这块还包括仓储、送货上门、订单管理系统（客户可以在它的 exp.o 平台上看到自己每一票货现在在哪个港口）。<strong>这是最赚钱、最稳定的一块</strong>——运价崩了，报关的活儿一票不少，因为货还是那么多货。</p>
+<p>关税战对它反而是好事：<strong>规则越复杂，客户越不敢自己报关</strong>。2025-2026 年美国关税政策反复变动，EXPD 的报关业务量和单价都在往上走。</p>
+<h3>分部数据（财报按地区披露，不按业务线）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收（百万美元）</th>
+<th>较 FY2025 全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>3,971</td>
+<td>+10.8%</td>
+<td>33.0%</td>
+</tr>
+<tr>
+<td>北亚（中国大陆/香港/台湾/日韩）</td>
+<td>2,826</td>
+<td>+3.2%</td>
+<td>23.5%</td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>1,926</td>
+<td>+5.3%</td>
+<td>16.0%</td>
+</tr>
+<tr>
+<td>南亚（东南亚）</td>
+<td>1,823</td>
+<td>+17.2%</td>
+<td>15.1%</td>
+</tr>
+<tr>
+<td>中东、非洲与印度</td>
+<td>723</td>
+<td>+13.2%</td>
+<td>6.0%</td>
+</tr>
+<tr>
+<td>其他北美</td>
+<td>517</td>
+<td>+10.0%</td>
+<td>4.3%</td>
+</tr>
+<tr>
+<td>拉美</td>
+<td>260</td>
+<td>−0.8%</td>
+<td>2.2%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>12,036</strong></td>
+<td><strong>+6.8%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的一行是南亚 +17.2%、北亚只有 +3.2%。</strong> 这是"中国+1"产能外迁在一家货代公司账上的直接读数：越南、泰国、马来西亚的出货在涨，中国大陆的份额在被稀释。EXPD 两头都布了点，所以整体没伤到。</p>
+<p><strong>利润分不到地区</strong>：财报只披露到营收层面的地区拆分，各地区的经营利润没有公开数字。整体经营利润率 10.04%（这是对全额运费收入而言，不是对它自己赚的差价而言）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司在这一节里<strong>乏善可陈——而这恰恰是最大的优点</strong>。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 7,544 万美元，占净利润 8.2%。放在美股大公司里属于低到罕见的水平（软件公司普遍 30-60%）。这笔钱按 GAAP 已经从利润里扣掉了，本文不加回。</p>
+<p><strong>一次性项目</strong>：<strong>没有。</strong> 没有大额诉讼和解、没有重组费用、没有商誉减值、没有并购。这家公司二十年没做过像样的并购，账上商誉几乎为零（市净率 11.42、有形账面价值市净率 11.46，两个数几乎相等，说明资产里几乎没有商誉和无形资产）。</p>
+<p><strong>资本化的支出</strong>：无。资本开支一年才 4,868 万美元——<strong>占营收 0.4%</strong>。这就是"无资产型"的字面含义：不买飞机、不买船、不买仓库（仓库基本是租的）。</p>
+<p><strong>回购与稀释</strong>：这一项是全文最漂亮的数字。</p>
+<ul>
+<li>TTM 回购 <strong>9.229 亿美元</strong>，同期 SBC <strong>0.754 亿美元</strong></li>
+<li><strong>回购 ÷ SBC = 12.2 倍</strong></li>
+</ul>
+<p>规格里说这个比值接近 1 就是骗人的（回购只是在填员工发股的坑），大于 3 才算真回购。<strong>12.2 倍属于真金白银在注销股份</strong>。实际效果：<strong>股本一年减少 3.73%</strong>，也就是说你什么都不做，手里这股代表的公司比例一年自动多 3.9%。</p>
+<p>要挑刺的话：TTM 还发行了 7,436 万美元的新股（员工持股计划按折扣价买入），净回购是 8.49 亿。即便如此，倍数仍有 11 倍。</p>
+<p><strong>利润和现金流的差</strong>：TTM 净利润 9.188 亿，经营现金流 9.725 亿，差额只有 5,370 万——<strong>看起来几乎没差</strong>。但这是两笔大数抵消出来的巧合，值得逐项拆开：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>918.8</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+54.9</td>
+<td>不花钱的账面费用，加回来</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+75.4</td>
+<td>发股票不出现金，现金流上加回（但它是真成本，前面已在利润里扣过了）</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+5.0</td>
+<td>同上，账面数</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>−12.5</td>
+<td>零碎</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−633.7</strong></td>
+<td><strong>客户还没付钱</strong></td>
+</tr>
+<tr>
+<td><strong>+ 应付账款增加</strong></td>
+<td><strong>+486.7</strong></td>
+<td><strong>它也还没付给航司船司</strong></td>
+</tr>
+<tr>
+<td>− 预收款减少</td>
+<td>−29.8</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应交税金增加</td>
+<td>+78.9</td>
+<td>税暂时还没缴</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产</td>
+<td>+28.9</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>972.5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关键在中间那两行：应收账款一年涨了 6.34 亿，应付账款涨了 4.87 亿。</strong> 这是货代生意的天然形态——运价涨、货量涨的时候，垫付的钱同步膨胀，它一边多欠航司的钱、一边多被客户欠钱。净差 1.47 亿是它自己垫出去的。</p>
+<p>这意味着一件事：<strong>这家公司的现金流在生意扩张时会被营运资金吃掉一块，在生意收缩时反而会吐出一大笔现金</strong>。看 FY2022：那年运价崩塌的下半场，应收账款回收了 15.9 亿，经营现金流冲到 21.3 亿，是净利润的 1.57 倍。所以别被单年现金流的暴涨暴跌吓到，那是账期在呼吸。</p>
+<p>自由现金流 9.239 亿（经营现金流 9.725 亿 − 资本开支 0.487 亿）。<strong>FCF 几乎等于净利润的 100.5%</strong>——利润是真的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>241.9 亿 ÷ 9.188 亿</td>
+<td><strong>26.3 倍</strong></td>
+<td><strong>¥3.80</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这家公司<strong>不发布调整后利润</strong>，无此口径</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔，SBC 已按 GAAP 扣除</td>
+<td><strong>26.3 倍</strong></td>
+<td><strong>¥3.80</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>241.9 亿 ÷ 9.239 亿</td>
+<td><strong>26.2 倍</strong></td>
+<td><strong>¥3.82</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>237.3 亿 ÷ 12.09 亿（账上净现金 4.64 亿，EV 比市值还小）</td>
+<td><strong>19.6 倍</strong></td>
+<td><strong>¥5.09</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>241.9 亿 ÷ 8.464 亿（TTM 9.19、FY25 8.10、FY24 8.10 的均值）</td>
+<td><strong>28.6 倍</strong></td>
+<td><strong>¥3.49</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（数据源标的 27.10 倍是"现价 ÷ 每股收益"，用的是全年加权平均股本；本表用"市值 ÷ 净利润"，因为公司一直在回购，年末股本比全年平均少，两者差 3%。）</p>
+<p><strong>三年平均口径 28.6 倍 只比当期 26.3 倍高一点，说明现在的利润不在异常高点。</strong> 而且要注意 FY2022 净利润高达 13.57 亿——那是疫情运价泡沫的顶峰，现在的 9.19 亿只有那个数字的 68%。<strong>这家公司的利润不但没虚高，还在从周期底部往回爬。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的口径（三年平均真实利润）算，公司一年替你赚 ¥3.49；按当期真实利润算是 ¥3.80。</strong></p>
+<p>这 ¥3.80 里，实际打回你口袋的部分：</p>
+<ul>
+<li><strong>分红</strong>：股息率 0.87%，也就是 ¥0.87</li>
+<li><strong>回购注销</strong>：股本一年缩 3.73%，等于 ¥3.73</li>
+</ul>
+<p>两项加起来 <strong>¥4.60，比它当年赚的 ¥3.80 还多</strong> —— 它在动用账上的存量现金加码回购。证据：账面净现金从一年前的 7.44 亿降到 4.64 亿。留在公司里再投资的钱基本是零（资本开支只占营收 0.4%）。</p>
+<p><strong>这是一家把赚的钱几乎百分之百还给股东、还倒贴老本回购的公司。</strong> 好处是你不用担心管理层拿着现金去乱并购；坏处是它也基本不增长——过去五年营收从 165 亿到 120 亿，是缩的。</p>
+<p><strong>这个 ¥3.80 未来是变大还是变小？</strong> 我的判断是<strong>缓慢变大，但靠的不是生意变好，是股本变少</strong>。营收增速 6.8%、利润增速 11.8%，本身不算差；股本每年缩 3.7%，等于每股收益天然有个 3-4% 的推力。真正的风险在于运价：这是个<strong>没有定价权的中间商</strong>，运价崩了它的绝对差价就缩水（看 FY2023，净利润从 13.57 亿掉到 7.53 亿，腰斩）。它的抗跌不在利润，在于<strong>利润崩的时候现金流反而变好</strong>（营运资金释放），公司不会死，只会难看几年。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家干净得不像美股的公司——没有一次性项目、没有商誉、没有 Non-GAAP 魔术、SBC 只占利润 8%、回购是 SBC 的 12 倍——但你要用 26 倍市盈率去买一个营收五年负增长、完全被运价周期摆布的中间商，价格贵了。</strong></p>
+<p>过去 52 周股价涨了 52.25%，市盈率从 19 倍推到 26-27 倍，<strong>涨的全是估值不是利润</strong>。19.6 倍的 EV/EBIT 是全表最公道的数字（因为它有净现金），但也谈不上便宜。这家公司值得放进观察名单，等下一次运价周期崩塌、市场恐慌抛售、市盈率回到 15-18 倍的时候再看——<strong>它以前给过这个价（FY2022 只有 12.18 倍），以后大概率还会给。</strong></p>
+</div></body></html>

@@ -1,0 +1,438 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ODFL · 老自治领货运（Old Dominion Freight Line, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ODFL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意最好价格也最贵，最想拥有但最不愿这个价买</div><h1>ODFL · 老自治领货运（Old Dominion Freight Line, Inc.）</h1>
+<p><strong>市值</strong> $437.5 亿 | <strong>股价</strong> $210.99 | <strong>行业</strong> 零担卡车运输（NASDAQ） | <strong>TTM 截止</strong> 2026 年 6 月 30 日（2026 年 7 月 29 日发布）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>只做一件事。</strong> 财报分两块：LTL Services $55.51 亿（99.1%）、Other Services $0.51 亿（0.9%）。那 0.9% 是给客户做的一点仓储、集装箱拖运之类的边角料，可以直接忽略。所以这一部分不拆分部，我把这一门生意讲透。</p>
+<h3>LTL 到底是什么</h3>
+<p>LTL = Less-Than-Truckload，中文叫<strong>零担运输</strong>。要理解它，先看它的对立面：</p>
+<p><strong>整车运输（Truckload）</strong>：你有整整一挂车的货（一个 53 英尺挂车，约 20 吨、26 个托盘）。司机开到你厂门口，装满，直接开到收货方门口卸下，中途不停不倒。每吨每英里最便宜，因为全程只装卸一次。</p>
+<p><strong>零担运输（LTL）</strong>：你只有 5 个托盘、1.2 吨货，要发到 600 英里外。你租不起一整辆车，所以 ODFL 这么干：</p>
+<ol>
+<li>上午，一辆小卡车（pickup truck）开到你厂里，装走你这 5 个托盘；</li>
+<li>下午，这辆小卡车跑完当地十几家客户，把当天收的所有货拉回<strong>本地服务中心</strong>——一块十几亩的场地，一排几十个装卸门；</li>
+<li>傍晚，服务中心的工人把当天收到的几百票货<strong>按目的地城市重新分拣</strong>，你的 5 个托盘跟另外二十几个客户发往同一个城市的货拼进同一辆挂车；</li>
+<li>晚上 10 点，干线司机开着这辆满载的挂车上高速，跑一夜；</li>
+<li>第二天早上，货到目的地城市的服务中心，<strong>再分拣一次</strong>；</li>
+<li>上午，当地的小卡车把你的 5 个托盘送到收货方门口。</li>
+</ol>
+<p><strong>一票货平均要经过 2 到 3 次装卸。</strong> 这就是零担的全部成本结构：取货 + 分拣 + 干线 + 再分拣 + 派送。运价按「重量 × 距离 × 货物等级」定——同样重量，泡沫塑料这种密度低的比钢材贵（占地方），易碎品和危险品加价。你那 5 个托盘、1.2 吨跑 600 英里，运费大约 <strong>$400 到 $700</strong>。</p>
+<h3>它的壁垒是什么：那 260 多块地</h3>
+<p>这门生意的护城河不在卡车上（卡车谁都能买），<strong>在于那张服务中心网络</strong>。</p>
+<p>ODFL 有 <strong>260 多个服务中心</strong>。每一个都是城市工业区里的一块几十亩土地，配几十个装卸门、维修车间、司机休息区，还得能容纳几十辆挂车整夜停放和调头。这种场地今天<strong>在美国基本批不下来了</strong>——没有一个社区愿意在自家附近建一个每晚有上百辆重卡进出的卡车场，环评、噪音、交通评估一关一关卡下来，选址一块地要谈三五年。</p>
+<p>ODFL 是从 1934 年开始，一块一块把这些地买下来的。今天要复制这张网，钱不是关键问题，<strong>时间和批文才是</strong>。这就是为什么零担行业几十年来几乎没有新进入者，也是为什么 2023 年 Yellow（当时全美第三大零担公司）破产时，它的服务中心被同行以远超账面价的价格抢购一空——大家买的不是它的卡车，是它的地。</p>
+<h3>它凭什么比同行贵还能抢到货</h3>
+<p>ODFL 的运价通常比同行高 5%~10%，客户还是选它。原因是两个数字：</p>
+<p><strong>准时到达率约 99%，货损率约 0.1%</strong>（每 1000 票货只有 1 票破损或丢失，行业平均高好几倍）。</p>
+<p>为什么客户愿意为这个多付钱：ODFL 的主力客户是制造商和工业分销商。一批零件晚到一天，下游装配线就停一天；一批货损坏了，重新生产加补发要两周。<strong>停一条产线一天的损失，是几百票货运费的量级。</strong> 所以对这些客户来说，运费从 $500 涨到 $550 完全不是问题，货准时完好到达才是。</p>
+<p>支撑这个可靠性的是三个不常见的选择：
+- <strong>全自营，零外包</strong>：20591 名员工全部是自己的，司机是自己雇的、卡车是自己的、场地是自己的。没有加盟商、没有转包。服务标准才能一致。
+- <strong>无工会</strong>：ODFL 是非工会企业，用工和排班的灵活度远高于工会化的竞争对手（当年的 Yellow、现在的 ABF）。这既是成本优势也是效率优势。
+- <strong>司机自己培养</strong>：有自己的驾驶学校，从码头装卸工里提拔司机。行业普遍缺司机、流失率 90%+，ODFL 的流失率是行业零头。</p>
+<h3>这门生意现在的处境：连着四年没长大</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>营收</th>
+<th>同比</th>
+<th>经营利润率</th>
+<th>净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>$52.56 亿</td>
+<td>+30.9%</td>
+<td>26.47%</td>
+<td>$10.34 亿</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>$62.60 亿</td>
+<td>+19.1%</td>
+<td><strong>29.40%</strong></td>
+<td><strong>$13.77 亿</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$58.66 亿</td>
+<td>−6.3%</td>
+<td>27.97%</td>
+<td>$12.40 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$58.15 亿</td>
+<td>−0.9%</td>
+<td>26.55%</td>
+<td>$11.86 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$54.96 亿</td>
+<td>−5.5%</td>
+<td>24.76%</td>
+<td>$10.24 亿</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$56.03 亿</strong></td>
+<td><strong>−0.6%</strong></td>
+<td><strong>25.42%</strong></td>
+<td><strong>$10.89 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年过去，营收比 2022 年低了 10.5%，利润低了 21%，经营利润率掉了 4 个百分点。</strong></p>
+<p>原因是行业性的：疫情期间美国人不能出门旅游吃饭，把钱都花在买东西上，货运需求被硬拉高了一大截；2022 年之后需求回到常态，全行业进入了一场<strong>持续三年多的货运衰退</strong>。运量下降，卡车产能过剩，运价被压。ODFL 是行业里表现最好的一家（同行的利润率跌得更惨、Yellow 直接破产了），但它也躲不开。</p>
+<p>TTM 营收终于止跌回正一点点（$54.96 亿 → $56.03 亿），这是四年来第一个好消息。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这家公司的账，是我做到现在见过最干净的之一。</strong> 逐项过一遍，大部分是「没有」：</p>
+<p><strong>股权激励（SBC）：TTM 只有 $1285 万，占净利润 1.2%。</strong> 这个数字低到不可思议——同规模的科技公司通常是净利润的 20%~40%，前面分析的纳斯达克是 8.7%。ODFL 基本用现金发工资，几乎不发股票。这一项对结论毫无影响。</p>
+<p><strong>一次性项目：只有 $2046 万的资产处置收益</strong>（卖掉一些旧卡车和土地赚的），占净利润 1.9%。这是收益不是损失，所以算真实利润时要<strong>减掉</strong>它。除此之外没有诉讼、没有重组、没有减值。</p>
+<p><strong>资本化的支出：没有。</strong> 没有软件资本化，没有内容资本化。资本开支全是卡车、挂车、土地、装卸门——真花出去的钱。</p>
+<p><strong>收购无形资产摊销：零。这家公司从来不做收购。</strong> 折旧摊销 $3.69 亿全部是自有资产的真实折旧。（对比一下：L3Harris 的 $11.9 亿折旧摊销里有 $7 亿是收购无形，纳斯达克的 $6.5 亿里有 $3.55 亿是。）</p>
+<p><strong>回购与稀释：TTM 回购 $5.45 亿，除以 SBC $0.13 亿 = 42 倍。</strong> 这个比值高到没有讨论价值——回购跟对冲员工发股基本无关，是纯粹的股东回报。股本一年实际减少 <strong>1.92%</strong>。</p>
+<p><strong>债务：几乎为零。总债务 $2000 万，现金 $2.84 亿，净现金 +$2.64 亿。</strong> 利息保障倍数 2148 倍（这个数字的意思就是「没有利息」）。这也是为什么它的税前利润（$14.50 亿）比经营利润（$14.24 亿）还高——它不但不付利息，还从现金存款里赚利息。<strong>在这个批次里，这是唯一一家净现金的公司</strong>（Cardinal Health 净负债 $51 亿、L3Harris $95 亿、纳斯达克 $88 亿）。</p>
+<p><strong>利润和现金流的差：净利润 $10.89 亿，经营现金流 $13.94 亿，自由现金流 $11.15 亿。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,089</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>368.9</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>12.9</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−20.5</td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>8.7</td>
+</tr>
+<tr>
+<td><strong>小计：不含营运资金的经营现金流</strong></td>
+<td><strong>1,459.0</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款变化</td>
+<td>+28.4</td>
+</tr>
+<tr>
+<td>＋ 应付账款变化</td>
+<td>−29.1</td>
+</tr>
+<tr>
+<td>＋ 应交税金变化</td>
+<td>+17.1</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变化</td>
+<td>−81.5</td>
+</tr>
+<tr>
+<td><strong>＝ 营运资金合计贡献</strong></td>
+<td><strong>−65.1</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,393.9</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−279.3</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1,114.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>营运资金净贡献 <strong>−$0.65 亿</strong>，几乎为零。没有 Cardinal Health 那种被应付账款充气的现金流。<strong>这张表没有任何一处需要打问号。</strong></p>
+<h3>但是——这家公司有一个必须单独讲的问题，而且它藏在最容易被忽略的地方</h3>
+<p><strong>自由现金流 TTM 暴涨 42.75%，从 $9.55 亿冲到 $11.15 亿。但同期营收下降 0.64%，净利润只增长 6.3%。</strong></p>
+<p>现金流为什么涨这么多？看资本开支这一行：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>资本开支</th>
+<th>占营收</th>
+<th>折旧摊销</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>$7.75 亿</td>
+<td>12.4%</td>
+<td>$2.76 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$7.57 亿</td>
+<td>12.9%</td>
+<td>$3.24 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$7.71 亿</td>
+<td>13.3%</td>
+<td>$3.45 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$4.15 亿</td>
+<td>7.6%</td>
+<td>$3.65 亿</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$2.79 亿</strong></td>
+<td><strong>5.0%</strong></td>
+<td><strong>$3.69 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>资本开支两年之内砍掉了 64%，而且现在已经低于折旧了。</strong></p>
+<p>这是本篇最重要的一段。ODFL 的自由现金流创新高，<strong>不是因为它赚得更多了，是因为它停止了投资</strong>。它在 2021~2024 年花了大钱建服务中心、买地、扩车队，为下一轮景气周期做准备；结果货运衰退拖了三年多，需求没来，它就把扩张按了暂停键。</p>
+<p>这有什么问题？<strong>用当前的自由现金流去给这家公司估值，等于假设它可以永远不投资。</strong></p>
+<p>拆开看：折旧 $3.69 亿代表现有资产的正常损耗——卡车要换、装卸门要修、场地要维护。<strong>当资本开支（$2.79 亿）低于折旧（$3.69 亿）时，公司实际上在消耗自己的资产存量。</strong> 短期可以（卡车多开一年不会散架），长期不行。</p>
+<p>而如果它想恢复增长、重新扩张网络，资本开支得回到 $7~8 亿的水平。那时候自由现金流是什么样：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>资本开支假设</th>
+<th>自由现金流</th>
+<th>市值 ÷ 自由现金流</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现在的报表值 $2.79 亿</td>
+<td>$11.15 亿</td>
+<td><strong>39.2 倍</strong></td>
+</tr>
+<tr>
+<td>维持性（= 折旧 $3.69 亿）</td>
+<td>$10.25 亿</td>
+<td><strong>42.7 倍</strong></td>
+</tr>
+<tr>
+<td>恢复扩张（$7.5 亿，接近 FY22~24 平均）</td>
+<td>$6.44 亿</td>
+<td><strong>67.9 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这就是关键：现在这个 39 倍的市销……市价现金流比，是踩在「公司暂停投资」这个临时状态上算出来的。</strong> 一旦货运周期回来、ODFL 重新开始建服务中心，自由现金流会立刻掉一半。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>企业价值 $434.8 亿（市值 $437.5 亿 <strong>减去</strong>净现金 $2.64 亿——注意是减，因为它没有净负债）。有效税率 24.91%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>437.5 ÷ 10.89</td>
+<td><strong>40.6 倍</strong></td>
+<td><strong>$2.46</strong></td>
+</tr>
+<tr>
+<td>市场用的前瞻数字</td>
+<td>股价 210.99 ÷ 前瞻每股利润约 $6.23</td>
+<td><strong>33.9 倍</strong></td>
+<td><strong>$2.95</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>437.5 ÷ 10.74（净利润 10.89 <strong>减去</strong>资产处置收益 0.20 亿税后 0.15；SBC 已按 GAAP 扣除）</td>
+<td><strong>40.7 倍</strong></td>
+<td><strong>$2.46</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表原值）</td>
+<td>437.5 ÷ 11.15</td>
+<td><strong>39.2 倍</strong></td>
+<td><strong>$2.55</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（资本开支恢复到扩张水平）</strong></td>
+<td>437.5 ÷ 6.44</td>
+<td><strong>67.9 倍</strong></td>
+<td><strong>$1.47</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>434.8 ÷ 14.24</td>
+<td><strong>30.5 倍</strong></td>
+<td><strong>$3.28</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>437.5 ÷ 10.94（TTM 10.74 / FY2025 10.26 / FY2024 11.84，均剔除当年处置损益）</td>
+<td><strong>40.0 倍</strong></td>
+<td><strong>$2.50</strong></td>
+</tr>
+<tr>
+<td><strong>参考：周期高点利润口径</strong></td>
+<td>437.5 ÷ 13.77（FY2022 的利润）</td>
+<td><strong>31.8 倍</strong></td>
+<td><strong>$3.15</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：亿美元）</p>
+<p><strong>这张表有三处要看懂：</strong></p>
+<p><strong>第一，GAAP 市盈率和真实市盈率几乎完全一样（40.6 vs 40.7）。</strong> 前面三家公司剔完障眼法后倍数都会动几个点，ODFL 一动不动。这是干净的证据——<strong>这家公司的账面利润就是它真实赚到的钱，没有加，也没有减。</strong></p>
+<p><strong>第二，三年平均口径（40.0 倍）和当期口径（40.7 倍）几乎相同，说明当前利润既不是高点也不是低点，是这三年的常态。</strong> 但要注意最后那一行：如果按 2022 年周期高点的 $13.77 亿利润算，市盈率只有 <strong>31.8 倍</strong>。ODFL 的当期利润其实处在<strong>周期底部区域</strong>——这跟前面三家（利润在高位）方向相反，是它唯一的估值缓冲。</p>
+<p><strong>第三，那个 33.9 倍的前瞻市盈率，含义跟前几家完全不同。</strong> Cardinal Health 和 L3Harris 的前瞻数字之所以低，是因为把摊销、重组、诉讼加回去了——那是会计游戏。ODFL 没有任何东西可以加回（SBC 才 $1285 万，没有摊销，没有重组），所以它的前瞻市盈率低，<strong>纯粹是分析师预期货运周期回暖、利润恢复</strong>。这个预期可能对也可能错，但它至少不是会计包装出来的。</p>
+<p><strong>现在说人话。</strong></p>
+<p>你今天投 100 块进 ODFL：</p>
+<ul>
+<li>按 GAAP 利润算，公司一年替你赚 <strong>$2.46</strong>。</li>
+<li>按剔除障眼法的真实利润算，还是 <strong>$2.46</strong>（因为根本没有障眼法）。</li>
+<li>按三年平均算，<strong>$2.50</strong>。</li>
+<li>按现在这个「暂停投资」状态的自由现金流算，<strong>$2.55</strong>——但如果它恢复正常扩张，这个数字会掉到 <strong>$1.47</strong>。</li>
+</ul>
+<p><strong>最保守的口径是资本开支正常化的 $1.47，最合理的口径是真实市盈率的 $2.46。</strong></p>
+<p>这 $2.46 里有多少真的到你口袋？TTM 分红 $2.38 亿 ＋ 回购 $5.45 亿 = <strong>$7.83 亿</strong>，占市值 <strong>1.79%</strong>。这个比例在本批四家里最低（Cardinal 3.53%、L3Harris 3.27%、纳斯达克 3.72%）。</p>
+<p>为什么这么低？不是公司不想分——是<strong>它的股价太贵了</strong>。ODFL 的自由现金流 $11.15 亿相当于市值的 2.55%，就算把每一分钱都拿去分红回购，股东回报率也只有 2.55%。而且这里有个值得警惕的地方：<strong>在 40 倍市盈率上回购自己的股票，每花 1 块钱只买回 2.5 分钱的利润。</strong> 这是一家优秀公司在做一件算术上不划算的事——但它也没有更好的选择，因为它不做收购，而扩张的机会又要等周期。</p>
+<p>剩下的钱去哪了？<strong>攒着。</strong> TTM 自由现金流 $11.15 亿，分红回购花了 $7.83 亿，还了 $1.5 亿债，现金余额净增 $2.6 亿。这家公司现在在囤弹药，等周期。</p>
+<p><strong>这个 $2.46 未来会变大还是变小？我判断会变大，而且是本批里增长确定性最高的一家：</strong>
+- 货运衰退已经拖了三年多，TTM 营收终于止跌回升。历史上每一轮货运周期都会回来，问题是什么时候不是会不会。
+- 2023 年 Yellow 破产，全行业约 10% 的运力永久消失了，服务中心也被瓜分。周期回来的时候，供给端比上一轮更紧，运价弹性更大。
+- 经营利润率从 29.40% 掉到 25.42%，掉的这 4 个点是产能利用率不足造成的（服务中心和车队是固定成本，运量少了摊不薄）。<strong>运量一旦回来，这 4 个点会自动回来，而且是纯利润</strong>——每恢复 1 个点的利润率，净利润多约 $0.42 亿。
+- ROIC <strong>25.36%</strong> 对比资金成本 <strong>10.72%</strong>，高出 <strong>14.6 个百分点</strong>——这是本批四家里唯一一个有真正宽裕资本回报的公司（Cardinal 之外的另外两家只高 1.5~1.8 点）。这个数字说明它的生意本质极好。</p>
+<p><strong>变小的风险：</strong> 亚马逊在自建货运网络并开始对外承运；如果货运衰退再拖两年，资本开支的暂停不能永远持续；卡车司机工资和保险成本长期上涨快于运价。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意本身是本批四家里最好的一家，价格也是最贵的一家。</strong></p>
+<p>25.36% 的资本回报率、零负债、几乎不发股票、账上没有一处需要调整、260 块批不下来的地——这是教科书级的优质生意。它唯一的问题是<strong>你要为它付 40 倍市盈率，而它已经四年没有增长了。</strong></p>
+<p>40 倍对应的是一家高速成长公司；ODFL 的营收比四年前低 10.5%。支撑这个估值的全部逻辑是「周期会回来」——如果货运周期在未来两年真的回暖，利润率从 25.4% 回到 29%，利润能涨 40% 以上，那 40 倍就变成了 28 倍，这笔投资说得过去。如果周期继续拖，你就是在为一家不增长的公司付 40 倍。</p>
+<p>还有一个容易被漏掉的陷阱要再强调一遍：<strong>它现在漂亮的自由现金流，有相当一部分是靠把资本开支砍到低于折旧换来的。这是暂时的，不是能力的提升。</strong> 周期一旦回来，它必须重新开始花钱建服务中心，自由现金流会掉到现在的六成。市场看到的「创纪录自由现金流」，实际上是「公司在踩刹车」的另一种说法。</p>
+<p><strong>投 100 块一年赚 2 块 46，还要赌一个不知道什么时候到来的周期反转——这是本批里我最想拥有、但最不愿意在这个价格买的公司。</strong> 值得列进观察名单，等它回到 28~30 倍市盈率（大约对应股价 $150~160），或者等到货运运量数据出现连续三个月的实质性反弹。</p>
+</div></body></html>

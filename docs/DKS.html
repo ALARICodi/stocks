@@ -1,0 +1,362 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DKS · Dick's Sporting Goods（迪克体育用品）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DKS</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">20倍买的是Foot Locker整合赌注，得季季盯</div><h1>DKS · Dick's Sporting Goods（迪克体育用品）</h1>
+<p>市值 $180.8 亿 / 股价约 $202.0 / 行业：零售（体育用品连锁） / TTM 截止 2026 年 5 月 2 日</p>
+<blockquote>
+<p><strong>先说一件必须知道的事</strong>：Dick's 在 2025 年 9 月完成了对 <strong>Foot Locker（富乐客）</strong> 的收购，交易金额约 24 亿美元。TTM 数字里包含了大约三个季度的 Foot Locker，上年同期一天都没有。<strong>所以 TTM 营收 +41.2% 这个增速是假的，不是内生增长。</strong> 全篇凡是涉及同比的地方，都要记住这一点。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Dick's 财报按<strong>商品品类</strong>分部（不是按业务），分四类：鞋、硬件、服装、其他。但从生意本质讲，收购 Foot Locker 之后它实际上变成了两门差别很大的生意。</p>
+<h3>生意 A：Dick's 本体——大店卖运动装备（营收约 74%）</h3>
+<p>全美约 850 家门店，主力店型 5-8 万平方英尺。卖的东西可以想象成「一个中国人心目中的迪卡侬，但更贵、更美国」：棒球棒、橄榄球头盔、高尔夫球杆、跑鞋、瑜伽垫、露营帐篷、健身器械、球衣。</p>
+<p><strong>怎么赚钱</strong>：进货加价卖。一双 Nike 跑鞋进价约 $78、标价 $130，赚 $52。一套 Callaway 高尔夫球杆进价 $900、卖 $1,499。<strong>整体毛利率 33.6%</strong>——比百思买（22.5%）高出 11 个百分点，因为运动用品的厂商定价权比苹果三星弱，而且里面掺了大量自有品牌。</p>
+<p><strong>自有品牌是关键的利润来源</strong>：CALIA（女子运动服）、DSG（平价运动服）、VRST（男子运动休闲）、Field &amp; Stream（户外）。自有品牌的毛利率能到 45%–55%，是卖 Nike 的两倍。这块估算占营收 12%–15%。</p>
+<p><strong>House of Sport（体育之家）——这是它最近几年真正的赌注</strong>：一种 10 万平方英尺的超级店型，店里有<strong>真的攀岩墙、真的棒球打击笼、真的室内跑道、真的高尔夫模拟器、真的曲棍球射门区</strong>。你带孩子去买球棒，孩子在打击笼里试打半小时。一家 House of Sport 的营收是普通门店的 2-3 倍，坪效更高。目前开了几十家，计划到 2027 年开到 75-100 家。<strong>每家的建店成本是普通门店的三倍以上</strong>——这直接解释了资本开支为什么爆表（见第二部分）。</p>
+<p><strong>GameChanger（游戏改变者）——藏在零售壳子里的软件生意</strong>：一个青少年体育赛事的直播 + 计分 + 数据 App。美国的少棒、青少年足球联赛用它记分、直播比赛给爷爷奶奶看、生成球员数据。<strong>家长订阅费约 $9.99/月</strong>，活跃用户数百万级。这块营收估算 1-2 亿美元，但毛利率 80%+，是纯软件生意，而且是 Dick's 唯一有网络效应的资产。</p>
+<h3>生意 B：Foot Locker——街边的球鞋店（营收约 26%，从 2025 年 9 月起并表）</h3>
+<p>全球约 2,400 家门店，开在购物中心里，300-500 平方英尺的小店，专门卖球鞋和街头运动服。品牌包括 Foot Locker、Kids Foot Locker、Champs Sports、WSS、atmos。</p>
+<p><strong>跟 Dick's 本体的差别很大</strong>：
+- <strong>Foot Locker 严重依赖 Nike</strong>——Nike 占它进货的约 60%。这是一个巨大的单点风险：Nike 前几年推 DTC（直销）战略，砍批发渠道，直接把 Foot Locker 打得半死，这也是它最终卖身的原因。
+- <strong>店小、租金贵、在衰落的购物中心里</strong>。美国购物中心客流长期下滑。
+- <strong>利润率比 Dick's 低得多</strong>。Foot Locker 被收购前的经营利润率只有 2%–3%，Dick's 本体是 11%。这就是为什么 TTM 整体经营利润率从 FY2025 的 10.96% 掉到了 <strong>8.71%</strong>——<strong>这个下滑主要不是因为一次性费用，是因为掺进来一块低利润率的生意</strong>。</p>
+<p><strong>Dick's 为什么要买？</strong> 三个理由：一是拿到球鞋这个高频品类和年轻客群；二是把 Foot Locker 的采购并进来，在 Nike 面前的议价权翻倍；三是关掉不赚钱的店、把好店改造成 Dick's 的店型。<strong>这是一个典型的「买来做手术」的收购，成败要看未来两三年的整合执行。</strong></p>
+<h3>数字（按品类，单位：百万美元）</h3>
+<p>TTM 的品类拆分财报尚未披露（页面显示为空），用最近一个完整财年（截至 2026 年 1 月 31 日）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品类</th>
+<th>营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>鞋类 Footwear</td>
+<td>6,888</td>
+<td><strong>+79.9%</strong></td>
+<td>40.0%</td>
+<td>财报不披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>硬件 Hardlines（器械、球具、户外）</td>
+<td>5,048</td>
+<td>+3.0%</td>
+<td>29.3%</td>
+<td>财报不披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>服装 Apparel</td>
+<td>4,895</td>
+<td>+10.6%</td>
+<td>28.4%</td>
+<td>财报不披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>383</td>
+<td>+32.6%</td>
+<td>2.2%</td>
+<td>财报不披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>17,215</strong></td>
+<td><strong>+28.1%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>8.66%</strong></td>
+<td><strong>1,491</strong></td>
+</tr>
+<tr>
+<td><strong>TTM 合计（截至 2026-5-2）</strong></td>
+<td><strong>19,205</strong></td>
+<td><strong>+41.2%</strong></td>
+<td>—</td>
+<td><strong>8.71%</strong></td>
+<td><strong>1,672</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>鞋类 +79.9% 那一栏就是 Foot Locker 并表的全部效果——<strong>它一个品类贡献了几乎全部的增长</strong>。剔掉 Foot Locker，Dick's 本体的内生增长大概是个位数（硬件 +3.0%、服装 +10.6% 里也有一部分是并表）。</p>
+<p><strong>财报只披露到品类营收，不披露品类利润，也无法可靠估算</strong>——因为 Dick's 的成本是按门店而不是按品类归集的，硬拆没有意义。这里不给假数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.344 亿，占净利润 9.05 亿的 <strong>14.8%</strong>。比例正常。历史看是在快速上升的（FY2024 0.573 亿 → FY2025 0.71 亿 → FY2026 1.237 亿 → TTM 1.344 亿），主要是并购后要留住 Foot Locker 的人。按规矩<strong>当真实成本，不加回</strong>。</p>
+<p><strong>一次性项目</strong>：TTM 的「资产减值与重组费用」栏是 <strong>0</strong>——但这<strong>不代表没有一次性支出</strong>。Foot Locker 的收购和整合费用（投行费、法务费、遣散费、门店关闭费）大概率被计入了销售管理费用，没有单列。从利润率倒推：经营利润率从 10.96% 掉到 8.71%，掉了 225 个基点，其中大部分是 Foot Locker 的低利润率拉低的结构性因素，小部分是整合费用。</p>
+<p><strong>这里必须诚实地说：只看 TTM 这一期，分不清哪些是「真一次性的整合费用」、哪些是「Foot Locker 本来就低的利润率」。</strong> 而且并购整合费用通常要持续两到三年——所以即便它是「一次性」的，也还有好几期要发生。</p>
+<p><strong>资本化的支出</strong>：<strong>这是本篇最需要盯住的一项。</strong>
+- TTM 资本开支 <strong>12.33 亿美元</strong>，占营收 6.4%。
+- 历史对比：FY2023 3.64 亿 → FY2024 5.87 亿 → FY2025 8.03 亿 → FY2026 11.37 亿 → TTM 12.33 亿。<strong>三年翻了 3.4 倍。</strong>
+- 同期折旧摊销只有 5.45 亿。<strong>资本开支是折旧的 2.26 倍</strong>——公司在大规模超额投资（House of Sport 建店 + Foot Locker 门店改造）。
+- 后果：<strong>自由现金流被彻底压垮</strong>。经营现金流 16.36 亿是历史最好水平，但减掉 12.33 亿资本开支后，自由现金流只剩 <strong>4.03 亿</strong>。</p>
+<p><strong>回购与稀释</strong>：这一项表面及格，实际不及格。
+- TTM 回购 <strong>2.489 亿</strong>，TTM SBC <strong>1.344 亁</strong> → <strong>回购/SBC = 1.85 倍</strong>。按标准，1.85 倍属于「回购主要在抵消员工发股，略有盈余」，<strong>远够不上「大于 3 才是真回购」的线</strong>。
+- 更关键：<strong>股本 YoY 增加了 5.96%</strong>。原因是收购 Foot Locker 时用股票支付了一部分对价。<strong>你作为老股东，被稀释了近 6%。</strong> 回购的 2.49 亿完全不够抵消。
+- 回购力度也在萎缩：FY2022 11.77 亿 → FY2024 7.47 亿 → FY2026 4.16 亿 → TTM 2.49 亿。钱被建店和还债占用了。
+- 分红 TTM <strong>4.278 亿</strong>，股息率 2.48%，每股 $5.00，连续多年增长。这是股东实际拿到的主要回报。</p>
+<p><strong>利润和现金流的差</strong>：净利润 9.05 亿，经营现金流 16.36 亿，差 7.31 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>904.8</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+544.6</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+12.6</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+134.4</td>
+</tr>
+<tr>
+<td>+ 其他经营活动（递延税等）</td>
+<td>+86.3</td>
+</tr>
+<tr>
+<td><strong>= 非现金调整后小计</strong></td>
+<td><strong>1,682.6</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−12.0</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−113.2</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+9.2</td>
+</tr>
+<tr>
+<td>+ 递延收入（礼品卡、会员费）增加</td>
+<td>+29.2</td>
+</tr>
+<tr>
+<td>+ 所得税相关变化</td>
+<td>+35.3</td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>+4.7</td>
+</tr>
+<tr>
+<td><strong>营运资金变化合计</strong></td>
+<td><strong>−46.8</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,635.8</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−1,233.0</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>402.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表讲了一个很清楚的故事</strong>：经营层面没有任何猫腻——7.31 亿的差额里 5.45 亿是折旧、1.34 亿是 SBC，营运资金只占用了 0.47 亿（存货管得很好）。<strong>问题不在利润质量，问题全在资本开支这一刀</strong>：12.33 亿砍下去，16.36 亿的经营现金流只剩 4.03 亿。</p>
+<p><strong>债务也要提一句</strong>：净负债从 FY2025 的 27.98 亿飙到 <strong>67.91 亿</strong>（收购 Foot Locker 借的钱 + 承接的租赁负债）。总债务 77.89 亿，账上现金只有 9.98 亿。TTM 利息支出约 4.32 亿（经营利润 16.72 亿 vs 税前利润 12.40 亿，差额就是它）。<strong>Debt/EBITDA = 2.13 倍，Debt/FCF = 19.35 倍</strong>——按 EBITDA 算不算高，按自由现金流算就很吓人了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $180.8 亿，企业价值 $248.7 亿（净负债 67.9 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>18,077 ÷ 904.8</td>
+<td><strong>20.0 倍</strong></td>
+<td><strong>$5.01</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回估计约 1.5–2.0 亿税前整合费用 → 约 10.4 亿</td>
+<td>约 17.4 倍</td>
+<td>约 $5.75</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>整合费用未来两年还会持续，不加回；SBC 已按 GAAP 扣除</td>
+<td><strong>20.0 倍</strong></td>
+<td><strong>$5.01</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表原值）</td>
+<td>18,077 ÷ 402.6</td>
+<td><strong>44.9 倍</strong></td>
+<td><strong>$2.23</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（正常化资本开支）</td>
+<td>18,077 ÷ 1,036（资本开支按折旧 6 亿计）</td>
+<td>17.5 倍</td>
+<td>$5.73</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>24,870 ÷ 1,672</td>
+<td><strong>14.9 倍</strong></td>
+<td>$6.72</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>18,077 ÷ 1,020（FY2024 10.47 + FY2025 11.65 + FY2026 8.49 亿的均值）</td>
+<td><strong>17.7 倍</strong></td>
+<td><strong>$5.65</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有两个数字值得单独说。</strong></p>
+<p><strong>第一，自由现金流的两个版本差了 2.6 倍（44.9 倍 vs 17.5 倍）。</strong> 这是全表最重要的分歧点，本质上是一个问题：<strong>12.33 亿的资本开支，有多少是「不投就活不下去的维持性支出」，有多少是「为了未来增长的扩张性支出」？</strong>
+- 折旧是 5.45 亿，可以粗略当成维持性资本开支的下限。
+- 剩下的 6.9 亿是 House of Sport 建新店和 Foot Locker 门店改造——这是<strong>可以停的</strong>。如果 Dick's 明天宣布不建新店了，自由现金流立刻从 4 亿跳到 10 亿以上。
+- 所以真实答案在中间：<strong>扩张期的公司用报表 FCF 估值会严重低估它，但用「假装不扩张」的正常化 FCF 估值又会忽略这些钱可能打水漂的风险。</strong></p>
+<p><strong>第二，三年平均口径 17.7 倍 比当期 20.0 倍还低。</strong> 这跟大部分公司相反（一般是当期低、三年平均高，说明当期是周期高点）。Dick's 反过来，说明 <strong>TTM 这个 9.05 亿的净利润是三年里最差的一年</strong>（FY2025 曾赚到 11.65 亿）。利润下滑的原因不是生意坏了，而是并购带来的利息支出（4.32 亿）和低利润率的 Foot Locker 拉低了整体。<strong>换句话说：现在的利润是被并购压住的低点，不是高点。</strong></p>
+<p><strong>你现在投 100 块进去，按最保守的口径（报表自由现金流）算，公司一年替你赚 $2.23；按 GAAP 净利润算，赚 $5.01；按三年平均算，赚 $5.65。</strong></p>
+<p>这 $5.01 里回到你口袋的：
+- <strong>分红 $2.48</strong>（股息率 2.48%，每股 $5.00，每季度到账）。
+- <strong>回购 $1.38</strong>（TTM 2.49 亿 ÷ 180.8 亿市值）。
+- <strong>但股本同期增加 5.96%</strong>——收购发的新股把回购完全吃掉还倒欠。<strong>净算下来，你实际只拿到了 $2.48 的分红，回购的部分被稀释抵消了。</strong>
+- 剩下的钱去哪了？投资活动净流出 10.30 亿，其中 12.33 亿是资本开支，收购净流入 2.57 亿（会计上的现金收购调整）。<strong>几乎全部砸进了 House of Sport 和门店改造。</strong></p>
+<p><strong>这个 $5.01 未来是变大还是变小？</strong> 我认为<strong>大概率变大</strong>，这是本篇跟前两家最不一样的判断：
+- 利润现在被三件事压着：Foot Locker 的低利润率、并购整合费用、4.32 亿的利息支出。<strong>这三件事都是可以改善的</strong>——整合费用会在两三年内消失；债务会随现金流偿还；Foot Locker 的利润率如果能从 2%–3% 提到 5%–6%（关掉差店、换店型、用 Dick's 的采购议价权），仅这一项就能加 2 亿以上的经营利润。
+- House of Sport 的资本开支会在 2027–2028 年建店完成后回落，届时自由现金流会从 4 亿跳回 10 亿以上。
+- 风险在于：<strong>整合可能失败。</strong> 零售业大型并购的失败率很高（Foot Locker 本身就是被 Nike 的渠道策略打垮的，Dick's 买它并没有改变 Nike 的战略）。而且 67.9 亿净负债意味着没有犯错的余地——一旦消费转弱、经营现金流掉到 10 亿以下，利息 4.32 亿 + 分红 4.28 亿就会吃掉几乎全部现金流。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家在做大手术的公司——20 倍市盈率买的不是现在的 Dick's，是赌它能在两三年内把 Foot Locker 修好，同时还完 68 亿的债。</strong></p>
+<p>跟 BBY（干净但没增长）和 CRCL（贵且假设在漏气）不同，Dick's 的账本身没有粉饰：现金流跟利润严丝合缝，存货管得很好，SBC 只占利润 14.8%，一次性项目栏是零。<strong>问题不在会计，在资产负债表和执行力。</strong></p>
+<p>三个数字概括这家公司现在的状态：<strong>经营现金流 16.36 亿（历史最好）、资本开支 12.33 亿（历史最高、是折旧的 2.26 倍）、净负债 67.91 亿（一年翻了 1.4 倍）。</strong> 它在同时做三件重活——建 House of Sport、整合 Foot Locker、还并购欠的债——而自由现金流只剩 4 亿。</p>
+<p><strong>乐观的看法</strong>：TTM 的 9.05 亿净利润是三年最低点（三年平均口径 17.7 倍 比当期 20.0 倍还便宜，这在任务1里很少见），利息和整合费用是暂时的，EV/EBIT 只有 14.9 倍，一旦手术成功，17.5 倍的正常化 FCF 口径是合理的，甚至偏低。</p>
+<p><strong>悲观的看法</strong>：Foot Locker 是被 Nike 打垮的，Dick's 买下它并没有让 Nike 改变主意；68 亿债务在一个可选消费品零售商身上，遇到衰退会非常难看；股东刚被稀释近 6%，回购已经缩水到只够填 SBC。</p>
+<p><strong>我的判断：不贵，但也不是便宜货，风险敞口比 20 倍市盈率看起来的要大。</strong> 这不是一个能安心放三年不看的标的——它的价值完全取决于 Foot Locker 整合的执行结果，而那个结果现在还看不到。<strong>要买就得盯着每个季度的 Foot Locker 同店销售和资本开支拐点，看不动这些就别碰。</strong></p>
+</div></body></html>

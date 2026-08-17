@@ -1,0 +1,336 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FTV · 福迪威（Fortive Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FTV</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">为一段已经发生过的分拆故事付溢价</div><h1>FTV · 福迪威（Fortive Corporation）</h1>
+<p>市值 $186.1 亿 / 股价 $61.62 / 行业 电子科技（工业仪器 + 医疗灭菌 + 垂直软件）/ TTM 截止 2026 年 7 月 3 日</p>
+<blockquote>
+<p><strong>看这家公司前必须先知道一件事</strong>：2025 年 6 月底，Fortive 把公司最大的一块——精密技术板块（Precision Technologies，含 Tektronix 示波器、Sensing 传感器等）整个拆分出去独立上市了，新公司叫 Ralliant。所以今天你买的 FTV，跟 2024 年那个 FTV 已经不是一家公司了，营收从 60 多亿掉到 43 亿，不是生意崩了，是切走了一半。</p>
+<p>财报网站上 FY2023 营收显示 39.14 亿、FY2022 显示 58.26 亿，看起来像是"暴跌 33%"——那是假的，是因为 2023/2024 两年被重述成"剔除 Ralliant 后的口径"，而 2022/2021 没重述。<strong>下文一律只用 TTM，不看那几个被污染的历史数字。</strong></p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>拆分之后，Fortive 只剩两门生意。</p>
+<h3>生意一：智能运营解决方案（Intelligent Operating Solutions，IOS）</h3>
+<p><strong>TTM 营收 29.70 亿，占 68.8%</strong></p>
+<p>这门生意的本质是：<strong>卖给"负责让工厂/楼/设备别出事"的那批人的工具和软件</strong>。它下面装着好几个牌子，每个牌子干的事都挺具体：</p>
+<p><strong>Fluke（福禄克）</strong>——做电工手里那把黄色万用表的。一个电气维修工去查配电柜为什么跳闸，掏出来的那个黄黑配色的表，大概率就是 Fluke 87V，零售价三四千人民币，比国产同类贵三到五倍。为什么还有人买？因为它摔了不坏、进水不坏、测错量程不炸，而且工业现场认这个牌子——保险公司和验收方看到 Fluke 的检测报告不问第二句。除了万用表还有红外热像仪（拿去扫配电柜，哪个接头发热一目了然，一台一两万到十几万）、钳形表、振动分析仪、校准仪。<strong>生意模式是买断式，一把表用八到十年</strong>，所以增长慢，但毛利极高（这类仪器毛利率普遍 60% 以上），而且几乎不可能被便宜货打死——一个电工不会为了省两千块，赌自己测错电压。</p>
+<p><strong>Industrial Scientific（工业科学）</strong>——做气体检测仪的，这个牌子的模式比 Fluke 高明。炼油厂、污水处理厂、化工厂的工人要下到密闭空间作业（进罐、进井、进管道）之前，必须先测里面有没有硫化氢、一氧化碳、缺不缺氧。Industrial Scientific 不卖仪器给你，<strong>是"租 + 订阅"</strong>：叫 iNet，一台检测仪每月付几十美元，坏了直接换新的，传感器到期它自动寄新的来，数据自动上传到云端做合规记录。一个中型炼油厂租 300–500 台，一年就是十几万到几十万美元，<strong>而且这笔钱是安全合规部门的预算，砍不掉</strong>——出一次事故的赔偿是这个数字的几百倍。这就把一门"卖硬件"的生意变成了每月自动扣款的订阅。</p>
+<p><strong>Accruent / Gordian / Intelex / ServiceChannel</strong>——这一堆是软件，卖给管资产、管设施、管施工的人：</p>
+<ul>
+<li><strong>Gordian</strong> 手上握着一套叫 RSMeans 的建筑成本数据库。举个具体的：俄亥俄州一个学区要换体育馆屋顶，怎么知道包工头报的 180 万是不是宰你？学区订阅 Gordian，查到"这个地区、这个面积、这种材料的屋顶，人工加材料的市场价是 142 万"。更赚钱的是它的 JOC（工作订单承包）业务——学区、军方、市政直接用 Gordian 的标准价目表发包，Gordian 按合同额抽点数。<strong>这是数据垄断生意，全美几十年的建筑造价数据只有它一家攒齐了。</strong></li>
+<li><strong>ServiceChannel</strong> 是设施维修的撮合平台。一家有 2000 家门店的连锁餐饮，某店的冷柜坏了，店长在 App 上点一下，系统自动派给该区域评分最高、报价合规的维修商，完工后自动核价付款。品牌方按门店数付订阅费，一年几十万到几百万美元。<strong>换掉它的成本是重新对接几千个维修商，几乎没人愿意折腾。</strong></li>
+<li><strong>Accruent</strong> 管固定资产台账（医院有多少台设备、在哪、什么时候要保养），<strong>Intelex</strong> 管环境健康安全（EHS）合规记录。</li>
+</ul>
+<p><strong>IOS 这门生意为什么值钱</strong>：里面大约一半以上的收入是经常性的（订阅、耗材、校准服务、租赁），客户是安全和合规部门，不是"想省钱就砍"的部门。缺点是增长慢，工业客户的资本开支跟着制造业周期走。</p>
+<h3>生意二：先进医疗解决方案（Advanced Healthcare Solutions，AHS）</h3>
+<p><strong>TTM 营收 13.46 亿，占 31.2%</strong></p>
+<p>这门生意的核心是一台机器和它的耗材。</p>
+<p><strong>ASP（Advanced Sterilization Products）</strong>是主力。医院做完手术，那些内窥镜、腔镜器械不能高温高压蒸，一蒸就废（光学件受不了）。ASP 的 STERRAD 机器用的是<strong>过氧化氢低温等离子灭菌</strong>——柜子大小的机器，塞进去器械，五十分钟出来，不伤精密器械。<strong>关键在于：每跑一次都要塞进去一个专用的过氧化氢药盒（cassette），一次几十美元，只能买 ASP 的。</strong> 机器本身十几万美元卖给（或者干脆低价放给）医院，真正赚钱的是之后十几年、一天二十几次循环的耗材。这就是标准的"剃须刀 + 刀片"，而且医院一旦把灭菌流程、员工培训、感控 SOP 全绑在 STERRAD 上，换供应商要重新做验证、重新培训、重新过 FDA/JCI 审计——<strong>基本没人换</strong>。</p>
+<p><strong>Landauer</strong> 做辐射剂量监测徽章。医院放射科、核医学科的每个员工胸口别的那个小牌子就是它，每个季度收回来寄给 Landauer 读数、出报告、存档。一家大医院五百个员工，一年几万美元。<strong>这是法规强制的</strong>，联邦和州法都要求辐射工作人员做剂量监测，所以这笔钱跟"景气不景气"完全无关。</p>
+<p><strong>Provation</strong> 是消化内镜的报告软件。医生做完肠镜，不用手打字，在结构化界面上点几下就生成符合报销和质控要求的完整报告，还自动抓质量指标（腺瘤检出率之类）。按医生人头年费。<strong>Censis</strong> 用 RFID 追踪手术器械包，防止"这套包上次给谁用的、灭菌没灭菌"这类事故。</p>
+<p><strong>AHS 的特点</strong>：收入里耗材和订阅占比更高，跟手术量挂钩，抗周期性比 IOS 强，但增长也不快——手术量一年就涨那么几个点。</p>
+<h3>钱怎么分</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 营收（百万美元）</th>
+<th>FY25 vs FY24 增速</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>智能运营解决方案 IOS</td>
+<td>2,970</td>
+<td>+2.3%</td>
+<td>68.8%</td>
+<td>约 22%</td>
+<td>约 653</td>
+</tr>
+<tr>
+<td>先进医疗解决方案 AHS</td>
+<td>1,346</td>
+<td>+1.2%</td>
+<td>31.2%</td>
+<td>约 17%</td>
+<td>约 229</td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −95</td>
+</tr>
+<tr>
+<td><strong>合计（GAAP 经营利润）</strong></td>
+<td><strong>4,316</strong></td>
+<td>TTM +5.62%</td>
+<td>100%</td>
+<td><strong>18.2%</strong></td>
+<td><strong>787.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>利润率是估算的</strong>：财报网站只披露到分部营收，不披露分部利润。上表按整体经营利润 7.871 亿倒推、并参考两块业务的产品结构分配，<strong>不是精确数字</strong>。可以确定的是 IOS 利润率高于 AHS（软件和订阅占比更高），且公司层面有一块并购无形资产摊销拖累了 GAAP 利润率。</p>
+<p>另外注意：分部增速用的是 FY25 对 FY24（只有这两年是同口径的），只有 +2% 左右；而 TTM 整体增速是 +5.62%。<strong>说明 2026 上半年明显提速了</strong>，这是个正面信号。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.16 亿美元，占 GAAP 净利润 5.34 亿的 <strong>21.7%</strong>。占比不算小但也不夸张，比科技公司温和得多。GAAP 里已经扣掉了，下面所有口径都不加回去——它实实在在稀释你的股份。</p>
+<p><strong>一次性项目</strong>：TTM 利润表里"合并重组费用""资产处置损益""法律和解"这几行<strong>全是空的</strong>，很干净。唯一的大额非经常项目是<strong>终止经营业务亏损 6,780 万美元</strong>——这是 Ralliant 分拆的尾巴（分拆相关费用和残留调整）。这一块以后不会再有，算真一次性，评估时应该剔除。</p>
+<p><strong>税率异常低，但不是一次性</strong>：TTM 交了 6,980 万税，税前利润 6.72 亿，<strong>有效税率只有 10.39%</strong>。乍看像是一次性税务优惠。但翻回去看：FY2024 是 4.7%、FY2023 是 5.7%、FY2022 是 13.5%——<strong>这家公司常年就是个位数到十几个点的税率</strong>，靠的是海外知识产权架构和研发抵免，属于结构性的。所以下面<strong>不做税率正常化调整</strong>，如果硬按 21% 补税，那是在惩罚一个已经持续五年的事实。但要提醒：这种架构是各国税改（比如全球最低税）的直接打击对象，未来税率往上走的概率大于往下。</p>
+<p><strong>资本化支出</strong>：没有异常的软件开发费资本化迹象，资本开支 TTM 只有 1.137 亿，占营收 2.6%，是典型的轻资产工业软件公司。</p>
+<p><strong>回购 vs 稀释——这家公司最大的亮点</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 回购股票</td>
+<td><strong>1,973</strong></td>
+</tr>
+<tr>
+<td>TTM 股权激励 SBC</td>
+<td>116</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>17.0 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>标准是：比值接近 1 说明回购只是在替员工发的股票擦屁股，大于 3 才算真回馈股东。<strong>17 倍是我见过的最干净的回购之一。</strong> 结果也实打实：<strong>股本一年减少 8.24%</strong>（3.35 亿股 → 3.02 亿股），股东手里每股对应的公司份额一年多了 9%。这笔钱是分拆 Ralliant 时拿到的现金和自身现金流，公司选择了几乎全砸回购，而不是乱并购。同时把股息从每股 0.28 美元砍到 0.12 美元（因为股东额外拿到了 Ralliant 的股票，Ralliant 自己付息），股息率只剩 0.19%——<strong>这家公司现在几乎不分红，全部靠回购还给你</strong>。</p>
+<p><strong>利润和现金流的差</strong>：这是全篇最值得看的一张表。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>534.4</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>447.5</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>116.0</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目（主含终止经营调整）</td>
+<td>67.8</td>
+</tr>
+<tr>
+<td>＋ 营运资金变化合计</td>
+<td>42.2</td>
+</tr>
+<tr>
+<td>−  其他非现金调整/递延税等（倒轧）</td>
+<td>−157.0</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,051.0</strong></td>
+</tr>
+<tr>
+<td>−  资本开支</td>
+<td>−113.7</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>937.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>净利润 5.34 亿，自由现金流 9.38 亿，<strong>现金是账面利润的 1.75 倍</strong>。差额的来源很清楚：<strong>4.48 亿的折旧摊销里，绝大部分是并购来的无形资产摊销</strong>（客户关系、技术、商标），这些是当年买 Fluke、买 ASP、买 Accruent 时付过的钱在会计上分年扣，今天并不掏现金。这是典型的连环并购型工业集团的特征：<strong>GAAP 利润被系统性低估，现金流才是真相</strong>。</p>
+<p>但要泼一盆冷水：这种"利润被摊销压低"的说法只有在<strong>公司不需要靠持续并购来维持增长</strong>时才成立。Fortive 的两块业务内生增速只有 2%（FY25 口径），历史上增长靠的就是不停买公司。TTM 并购花了 8,380 万，很少——但这只是分拆过渡期的一年，不代表以后不买。</p>
+<p><strong>净负债</strong>：现金 3.74 亿，总债务 35.98 亿，<strong>净债务 32.24 亿</strong>。净债务/EBITDA 2.61 倍，利息保障倍数 6.38 倍，不算危险但也不轻松——回购花掉 19.7 亿之后，杠杆是升上去的（债务权益比从 0.37 升到 0.59）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>186.1 亿 ÷ 5.344 亿净利润</td>
+<td><strong>34.8×</strong></td>
+<td><strong>$2.87</strong></td>
+</tr>
+<tr>
+<td>持续经营口径（剔除分拆尾巴）</td>
+<td>186.1 亿 ÷ 6.022 亿</td>
+<td><strong>30.9×</strong></td>
+<td><strong>$3.24</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>186.1 亿 ÷ 约 8.9 亿调整后净利</td>
+<td>约 <strong>21×</strong></td>
+<td>约 <strong>$4.76</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>186.1 亿 ÷ 6.022 亿（SBC 不加回、剔除分拆一次性亏损、税率不做正常化）</td>
+<td><strong>30.9×</strong></td>
+<td><strong>$3.24</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>186.1 亿 ÷ 9.376 亿 FCF</td>
+<td><strong>19.8×</strong></td>
+<td><strong>$5.04</strong></td>
+</tr>
+<tr>
+<td>FCF 再扣掉 SBC</td>
+<td>186.1 亿 ÷ 8.216 亿</td>
+<td><strong>22.6×</strong></td>
+<td><strong>$4.42</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>218.3 亿 ÷ 7.871 亿经营利润</td>
+<td><strong>27.7×</strong></td>
+<td><strong>$3.61</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>186.1 亿 ÷ 三年持续经营平均 4.745 亿</td>
+<td><strong>39.2×</strong></td>
+<td><strong>$2.55</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>几点说明</strong>：
+- "公司自己吹的 Non-GAAP"是<strong>估算</strong>：把 GAAP 持续经营利润加回并购无形资产摊销（税后约 2.6 亿）和分拆相关费用，得到约 8.9 亿。财报网站不提供 TTM 调整后净利，这个数字参考了前瞻市盈率 19.68 倍反推的水平（对应每股约 3.13 美元）。<strong>公司口径把 SBC 也加回去了，那部分我不认。</strong>
+- <strong>三年平均口径用的是"持续经营利润"</strong>（FY23 4.084 亿、FY24 4.825 亿、FY25 5.327 亿），也就是剔除 Ralliant 之后的可比数字。39.2 倍比当期的 30.9 倍高出 27%，说明<strong>现在这个利润水平是三年里的高点，不是低点</strong>——买在这里，等于假设利润还能继续往上走。</p>
+<p><strong>大白话结论</strong>：</p>
+<p><strong>你现在投 100 块进 Fortive，按最保守的真实口径（GAAP 持续经营、SBC 照扣）算，公司一年替你赚 3.24 块。</strong> 如果按现金流算，一年赚 4.42 到 5.04 块。取中间，<strong>大约 4 块钱，也就是 4% 左右的收益率</strong>。</p>
+<p>这 4 块钱里，<strong>几乎全部通过回购回到你口袋</strong>——股息只有 0.19%，可以忽略；而回购一年注销了 8.24% 的股份。换句话说，公司不但把当年赚的现金全还给你了，还额外动用了分拆拿到的现金和一部分新增债务在回购。<strong>这不可持续</strong>：TTM 回购 19.7 亿，而自由现金流只有 9.38 亿，超出的部分靠的是分拆时的一次性现金和加杠杆。<strong>未来的回购规模大概率要腰斩到每年 8–10 亿的水平。</strong></p>
+<p>至于这个 4 块未来会不会变大：分子端（利润）内生增长只有 2%–5%，加上回购减少 3%–4% 的股本，每股利润年化增长大约 6%–9%，属于"温和但确定"。风险在于税率——10% 的有效税率是这家公司当前利润的重要支柱，一旦被全球最低税等规则打回 15%–18%，净利润要掉 6%–9%。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家生意质量很好、资本配置也很干净的公司，但价格已经把"好"完全算进去了，甚至算多了。</strong></p>
+<p>好的地方是真好：Fluke 和 STERRAD 这类东西属于"客户不会为省钱冒险"的品类，Gordian 的造价数据库接近垄断，一半以上收入是耗材和订阅；管理层刚拆完公司就把 19.7 亿砸进回购、一年注销 8.24% 的股份，比大部分只会喊口号的管理层强得多。</p>
+<p>贵的地方也真贵：内生增长只有 2%–5%，却要给 30.9 倍的真实市盈率、39.2 倍的三年平均市盈率、19.8 倍的自由现金流倍数。<strong>一家增长个位数的工业公司，合理区间大约在 18–22 倍真实利润、13–16 倍自由现金流</strong>，现在的价格比这个高出 40%–70%。支撑这个溢价的两根柱子——超额回购、10% 的税率——<strong>都是借来的，不是长出来的</strong>。</p>
+<p>要买这家公司，等它跌到 45 美元以下（约 22 倍持续经营利润、14 倍 FCF）再说。现在 61.62 美元，是在为一段已经发生过的分拆故事付溢价。</p>
+</div></body></html>

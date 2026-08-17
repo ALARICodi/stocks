@@ -1,0 +1,423 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ISRG · 直觉外科 Intuitive Surgical</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ISRG</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">质量近乎完美，价格从「荒谬」降到「偏贵」</div><h1>ISRG · 直觉外科 Intuitive Surgical</h1>
+<p><strong>市值</strong> $1418 亿 · <strong>股价</strong> 约 $401 · <strong>行业</strong> 医疗科技（手术机器人）· <strong>TTM 截止</strong> 2026 年 6 月 30 日 · <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说一句最重要的话：<strong>直觉外科名义上有三条收入线，但它实质上只做一件事——达芬奇手术机器人。</strong> 那三条线不是三门生意，是<strong>同一台机器的三种收钱方式</strong>：卖机器、卖机器每天要吃的刀具、卖机器的年度维保。所以下面我先把这台机器讲透，再讲三种收钱方式各自的经济学。</p>
+<h3>这台机器到底在干什么</h3>
+<p>传统的微创手术（腹腔镜）是这样的：医生在病人肚子上开几个 1 厘米的小孔，把一根长杆子伸进去，杆子头上是钳子或剪刀，医生在体外扭动杆子的另一头来操作。问题是，杆子是<strong>直的、硬的</strong>——它只能前后进退、左右摆动、绕轴旋转，头上没有"手腕"。缝合一个深处的伤口，等于让你用两根一米长的筷子在纸箱里打结，而且方向是反的（杠杆原理，你手往左，钳子往右）。所以传统腹腔镜只能做相对简单的操作，复杂的还得开大刀。</p>
+<p>达芬奇解决的就是这件事。以最典型的<strong>前列腺癌根治术</strong>为例：</p>
+<p>医生不站在手术台边，而是坐在离病人几米远的一个控制台前，把脸埋进一个 3D 目镜里，两只手的拇指和食指插进两个指环。病人肚子上开四个 8 毫米的孔，四条机械臂伸进去——一条拿摄像头，三条拿器械。关键在于，达芬奇的器械头上有一个<strong>微型手腕</strong>，能在体内做出 <strong>540 度旋转</strong>、七个自由度的动作，比人的手腕还灵活。同时系统把医生手的动作<strong>缩小 5 倍</strong>（你手动 5 毫米，器械动 1 毫米），并且<strong>滤掉手抖</strong>——人手天生有每秒几次的生理性震颤，在放大 10 倍的视野里那是灾难，机器把它抹平了。</p>
+<p>结果是什么？前列腺周围有一层负责勃起功能的神经血管束，薄得像蛛网，传统开刀时医生看不清、手抖、剥离不彻底，术后阳痿和尿失禁的比例很高。用达芬奇，医生能看到放大的 3D 图像，手稳到能一根一根地剥。病人出血少、住院从一周变成一两天。</p>
+<p>对医院来说这笔账是这么算的：机器很贵，但病人恢复快意味着床位周转快，同一张床一年能收更多病人；同时"我们医院有机器人"是拉病源的招牌，尤其在泌尿科、妇科和普外这几个患者会主动挑医院的科室。</p>
+<h3>收钱方式一：卖机器（Systems）</h3>
+<p>TTM 收入 <strong>27.1 亿美元，占 25%</strong>。</p>
+<p>一台达芬奇 5 卖给医院大约 <strong>200 万美元</strong>（老型号、简配版或新兴市场会便宜到五六十万）。现在越来越多的是<strong>租赁或按手术量付费</strong>——医院不掏 200 万，改成每月付租金，或者每做一台手术付一笔钱。这对直觉外科其实是好事：把一次性大额支出变成经常性收入，也让预算紧张的中小医院进得来。全球装机量已经超过 1 万台。</p>
+<p>这条线本身<strong>不是主要利润来源</strong>，机器的毛利率明显低于另外两条。它的真正作用是<strong>装地雷</strong>——每装一台机器，就在那家医院埋下了未来十年的耗材订单。</p>
+<h3>收钱方式二：卖刀具耗材（Instruments &amp; Accessories）—— 真正的印钞机</h3>
+<p>TTM 收入 <strong>66.0 亿美元，占 60%</strong>。这是全公司的命根子。</p>
+<p>机械臂末端的那些钳子、剪刀、持针器、能量器械，全是消耗品。而且这里有一个设计得极其精明的商业机制：<strong>每把器械里有一颗芯片，出厂时被设定只能用固定的次数（典型是 10 次手术），用满之后自己"锁死"，机器就不认它了，必须扔掉换新的。</strong></p>
+<p>于是每做一台手术，医院要消耗掉大约 <strong>1800–2000 美元</strong>的器械和附件（具体看手术类型，复杂的更贵）。全球一年做接近 <strong>300 万台</strong>达芬奇手术。所以这条收入线的公式简单到可以写在餐巾纸上：</p>
+<blockquote>
+<p><strong>耗材收入 ≈ 手术台数 × 约 1900 美元</strong></p>
+</blockquote>
+<p>这也是为什么全世界跟踪这家公司的人只盯一个指标——<strong>手术量增速</strong>。手术量增，其他一切都增；手术量停，故事就完了。TTM 这条线收入 66 亿、增速约 19%，说明手术量还在快速渗透。</p>
+<p>顺带说一句为什么医院跑不掉：器械的接口是达芬奇专用的，别家机器人的刀装不上去；医生是在住院医培训期就在达芬奇上练出来的肌肉记忆，换品牌要重新认证；那台 200 万美元的机器还有七八年折旧没走完。这三重锁加起来，比合同还结实。</p>
+<h3>收钱方式三：年度维保（Services）</h3>
+<p>TTM 收入 <strong>17.2 亿美元，占 16%</strong>。</p>
+<p>每台装机的机器都要签年度服务合同，一台一年大约 <strong>10 万到 19 万美元</strong>，包括定期上门校准、软件升级、坏了随时来修。医院实际上不可能不签——手术做到一半机械臂罢工是医疗事故级别的风险。所以这是一条<strong>跟装机量线性挂钩、几乎零流失、毛利极高</strong>的年金收入。装机量 1 万台还在往上走，这条线就自动往上走。</p>
+<h3>三条线的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入线</th>
+<th>TTM 营收（亿美元）</th>
+<th>对比 FY2025 全年</th>
+<th>占比</th>
+<th>大致毛利率</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>器械与附件 I&amp;A</td>
+<td>66.0</td>
+<td>60.2</td>
+<td><strong>60%</strong></td>
+<td>约 73%（估算）</td>
+<td>手术量驱动的耗材，利润核心</td>
+</tr>
+<tr>
+<td>系统 Systems</td>
+<td>27.1</td>
+<td>24.7</td>
+<td>25%</td>
+<td>约 55%（估算）</td>
+<td>卖/租机器，装地雷用</td>
+</tr>
+<tr>
+<td>服务 Services</td>
+<td>17.2</td>
+<td>15.7</td>
+<td>16%</td>
+<td>约 65%（估算）</td>
+<td>年度维保年金</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>110.3</strong></td>
+<td><strong>100.7</strong></td>
+<td>100%</td>
+<td><strong>66.7%（实际）</strong></td>
+<td>经营利润率 31.3%（实际）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按收入线披露营收，不披露各线的经营利润。上表毛利率是按整体 66.7% 毛利、结合行业常识<strong>估算</strong>的，不是财报数字。合计的 66.7% 毛利率和 31.3% 经营利润率是真实数字。</p>
+<p>TTM 与 FY2025 有半年错位，三条线在这半年里都增长约 9.6%，年化差不多都在 <strong>19%–20%</strong>——三条腿增速高度一致，这正是"同一台机器三种收钱方式"的直接证据。全公司 TTM 收入同比 <strong>+20.66%</strong>。</p>
+</blockquote>
+<h3>谁在追它</h3>
+<p>绕不开的现实：<strong>这个市场的垄断期正在结束。</strong> 美敦力的 Hugo、强生的 Ottava、英国 CMR 的 Versius，以及中国的微创图迈等国产系统，都在往里冲。国产机器在中国的价格可能只有达芬奇的一半甚至更低，而中国又是集采（政府统一压价采购）最凶的市场。直觉外科二十多年积累的手术数据、培训体系和医生习惯是很厚的护城河，但<strong>它已经不再是唯一选项了</strong>，这一点必须记在估值里。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）—— 这项数额不小，但公司很诚实</h3>
+<p>TTM <strong>8.26 亿美元</strong>，占净利润的 <strong>26.3%</strong>、占营收的 <strong>7.5%</strong>。这不是个小数字，一年发掉四分之一的利润给员工。</p>
+<p>但要给公司一句公道话：<strong>直觉外科的"调整后 EPS"并没有把 SBC 加回去。</strong> 对照一下——FY2025 GAAP EPS 是 7.87 美元，公司口径的调整后大约 8.7 美元，差 0.8 美元；而 SBC 折成每股是 2.23 美元。如果它像很多软件公司那样把 SBC 加回来，两者应该差 2 美元以上。它没有。它调的只是无形资产摊销、部分法务费和超额税收优惠这类小项。</p>
+<p><strong>在美股里这算相当诚实的一档。</strong> 本文一律按 GAAP 处理，SBC 当真实成本，不加回。</p>
+<h3>一次性项目</h3>
+<p>TTM 内<strong>没有识别出大额一次性损益</strong>。有一项值得提一句：现金流量表里"其他调整"这一行 TTM 是 <strong>+3.61 亿</strong>，而过去五年全是负数（−0.39 / −1.80 / −2.74 / −1.40 / −0.52 亿）。这是一个方向性的反转，金额也不小。这几个页面不披露它的构成，最可能是递延所得税或投资的未实现损益。<strong>单看一期无法判断这是真一次性还是会持续</strong>，我把它标出来，不下结论。</p>
+<p>另外，税前利润率 34.49% 高于经营利润率 31.28%，多出来的约 3.5 亿是 52 亿现金的利息和投资收益。<strong>这不是一次性的</strong>，只要它守着这堆现金就年年都有；但也要知道，这部分利润的质量和主营不同，是靠利率吃饭的。</p>
+<h3>资本化的支出</h3>
+<p>没有软件或内容资本化这类粉饰。但<strong>资本开支本身有个非常值得注意的变化</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>资本开支（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>10.64</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>11.11</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>5.40</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td><strong>4.84</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>前两年它在美国佐治亚和加州大规模建厂扩产能，一年砸十亿；现在厂建完了，资本开支砍到不足一半。这就是为什么自由现金流从 FY2023 的 7.5 亿暴涨到 TTM 的 <strong>32.2 亿</strong>（四倍）。</p>
+<p><strong>必须说清楚：这一跳里有相当一部分不是经营变好，是建厂周期结束的会计效果。</strong> 用当前 32 亿的自由现金流去线性外推未来，会高估——产能再上一个台阶时资本开支还会回来。</p>
+<h3>回购与稀释</h3>
+<ul>
+<li>TTM 回购：<strong>35.58 亿美元</strong></li>
+<li>TTM SBC：<strong>8.26 亿美元</strong></li>
+<li><strong>回购 ÷ SBC = 4.31 倍</strong></li>
+</ul>
+<p>按标准（接近 1 是假回购，大于 3 才算真）：<strong>4.31 倍，是真回购</strong>。回购的钱里约四分之一在抵消员工发股稀释，四分之三是实打实减少股份。</p>
+<p>实际效果：<strong>流通股一年减少 1.11%</strong>（3.533 亿股）。不分红，股东回报全靠回购，总股东回报率 1.11%。回购幅度看着不大，是因为股价高、市值大——35.6 亿只买得动 2.5% 的市值，扣掉稀释剩 1.11%。</p>
+<h3>利润和现金流的差 —— 全篇最该看的一张表</h3>
+<p>净利润 31.4 亿，经营现金流 37.1 亿，自由现金流 32.2 亿。表面上现金流比利润高 18%，看着健康。<strong>但拆开以后是另一个故事：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>3,139</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+794</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+826</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他调整</td>
+<td>+361</td>
+<td>递延税/投资损益，构成未披露</td>
+</tr>
+<tr>
+<td><strong>小计（非现金加回）</strong></td>
+<td><strong>5,120</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−307</td>
+<td>卖得多，钱还没收回来</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−1,084</strong></td>
+<td><strong>见下</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款</td>
+<td>+7</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应计费用</td>
+<td>−2</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 预收账款</td>
+<td>+71</td>
+<td>维保合同预收</td>
+</tr>
+<tr>
+<td>− 其他经营项</td>
+<td>−118</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>营运资金合计</strong></td>
+<td><strong>−1,433</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>3,706</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−484</td>
+<td>建厂周期结束，已大幅回落</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>3,223</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的核心是那 10.84 亿的存货增加。</strong> 折旧摊销加股权激励一共加回来 16.2 亿，结果被 14.3 亿的营运资金占用几乎吃光，其中存货一项就吃掉 10.8 亿。</p>
+<p>为什么存货涨这么猛？两个原因，一好一坏。<strong>好的解释</strong>：达芬奇 5 正在放量，公司在提前备货备零件，等着装机；同时它在有意扩充耗材库存以防供应链断供。<strong>坏的解释</strong>：存货周转率只有 <strong>1.99</strong>——意思是全部存货要将近<strong>半年</strong>才卖得掉一轮，这对一个 66% 毛利的公司来说非常慢。存货堆积也可能是终端需求没有跟上生产计划。</p>
+<p>这件事的判断方法很简单：<strong>接下来两个季度，如果手术量增速保持在 15%–18% 以上而存货增速开始回落，那是备货；如果手术量增速掉到 10% 出头而存货还在涨，那就是压货。</strong> 现在还看不出来，但这是这家公司短期最值得盯的一个数。</p>
+<p>必须强调，这<strong>不是</strong>利润造假——它的利润是真的，只是变成了仓库里的机器和刀具，还没变成钱。资产负债表极其干净：<strong>零负债，52 亿净现金，流动比率 4.96</strong>，扛得住。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1417.6 ÷ 31.4</td>
+<td><strong>45.2 倍</strong></td>
+<td><strong>2.21 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>1417.6 ÷ 约 34.6（不加回 SBC，只调摊销等小项）</td>
+<td>约 41.0 倍</td>
+<td>2.44 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已按 GAAP 扣除不加回；未识别出大额真一次性损益</td>
+<td><strong>45.2 倍</strong></td>
+<td><strong>2.21 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1417.6 ÷ 32.2</td>
+<td><strong>44.0 倍</strong></td>
+<td><strong>2.27 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1365.4 ÷ 34.5</td>
+<td><strong>39.6 倍</strong></td>
+<td>2.53 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1417.6 ÷ 27.7（TTM 31.4、FY25 28.6、FY24 23.2 的均值）</td>
+<td><strong>51.1 倍</strong></td>
+<td><strong>1.96 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（单位：亿美元）</p>
+<p><strong>关于"三年平均"这一行，必须说明白它在这家公司身上的含义和 DHR 正相反。</strong></p>
+<p>三年平均口径 51.1 倍，比当期 45.2 倍<strong>更贵</strong>，看起来像是坏消息。但原因不是"当期利润是周期高点"，而是<strong>这家公司三年里利润从 23.2 亿涨到 31.4 亿，年年创新高</strong>。用三年前那个更小的利润去平均，当然会把倍数拉高。</p>
+<p>所以这一行在这里的正确读法是：<strong>它不能证明现在贵，但它确实告诉你，你付的 45 倍，是在为"未来利润继续以每年 20% 增长"这件事预付账单。</strong> 如果增速掉到 10%，这 45 倍立刻变成一个很难看的数字。三年平均口径存在的意义就在这儿——它逼你面对"这个增速停下来会怎样"。</p>
+<p><strong>第二件要说的：估值已经被砍了一大截。</strong> 看历史市盈率：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>现在</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率</td>
+<td>77.1</td>
+<td>72.7</td>
+<td>67.1</td>
+<td>81.3</td>
+<td>72.0</td>
+<td><strong>46.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>过去五年这只股票从来没便宜过 67 倍，现在 46 倍。<strong>过去 52 周股价跌了 16%，同期每股收益涨了 22%</strong>——市场把估值倍数硬生生压掉了三分之一。原因不难猜：竞争对手集体入场、中国集采、以及利率环境下市场对高倍数成长股整体的重新定价。</p>
+<p>也就是说，<strong>这已经是十年来最便宜的直觉外科了</strong>。这不代表它便宜，只代表它比过去便宜。</p>
+<p><strong>第三：EV 口径比市值口径便宜一点（39.6 倍 vs 45.2 倍），因为它手上 52 亿净现金、零负债。</strong> 这 52 亿占市值 3.7%，扣掉之后你实际为主营付的钱少一点。资产负债表干净是实打实的加分，跟前面 DHR 背着 222 亿净债完全是两个物种。</p>
+<h3>你投 100 块，一年赚多少</h3>
+<p><strong>按最保守的真实口径（三年平均利润 51.1 倍），你投 100 块进去，直觉外科一年替你赚 1.96 元。</strong> 按当期 GAAP 是 2.21 元，按自由现金流是 2.27 元。</p>
+<p>这不到 2 块钱里，有多少回到你口袋？<strong>它一分钱股息都不发</strong>，唯一的回馈是回购，TTM 回购 35.6 亿，折成股东回报率 <strong>1.11%</strong>——你那 100 块里，<strong>大约 1.1 元</strong>通过减少股份的方式回到了你手上。</p>
+<p>剩下的钱去哪了？留在公司里，但<strong>没有大手笔扩张</strong>：TTM 投资活动净流出只有 7.5 亿，其中资本开支 4.8 亿，其余是在买卖短期证券（买 18.7 亿、卖 21.0 亿，基本是现金管理，不是投资）。它既不并购、也不加杠杆、也不烧钱进新赛道。这是一家<strong>把钱堆在账上的公司</strong>——52 亿现金趴着，一年吃三点几亿利息。</p>
+<h3>这个 1.96 元未来是变大还是变小？</h3>
+<p><strong>大概率变大，而且是这三家里最有可能明显变大的一个。</strong> 理由：</p>
+<ol>
+<li><strong>手术量还在 19%–20% 增长</strong>，全球能用机器人做的手术里，实际用机器人做的还是少数，普外科、胸科、结直肠这些大科室渗透率远未见顶；</li>
+<li><strong>耗材占比 60% 且随手术量线性增长</strong>，装机量 1 万台是已经埋下的地雷，这些机器未来十年每天都在产生耗材订单；</li>
+<li><strong>建厂周期结束</strong>，资本开支从 11 亿降到 4.8 亿，自由现金流的分母压力小了；</li>
+<li>ROIC <strong>21.89%</strong> 远高于资金成本 12.28%，它每投一块钱进去，赚回来的比成本高得多——这跟 DHR 的 6.44% vs 7.37% 是天壤之别。</li>
+</ol>
+<p>变小的理由只有一个，但很重的一个：<strong>竞争。</strong> 美敦力、强生、中国国产机器一起挤进来，最先受伤的会是"卖机器"那 25%（价格战），然后才轮到耗材。以及中国市场的集采可能直接把当地的耗材单价腰斩。</p>
+<p>我的判断：未来三年利润年增 15%–20% 是合理预期，三年后这个 1.96 元大概能到 <strong>3.0–3.4 元</strong>。前提是竞争只侵蚀份额、不引发价格战。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家生意质量近乎完美的公司，现在的价格是十年来最讲道理的一次，但仍然算不上便宜——它值得你放进观察名单的最前排，而不是立刻满仓。</strong></p>
+<p>它把一台 200 万美元的机器变成了一台印钞机：装机 1 万台，每台每年吃掉 10 万以上的维保，每做一台手术再吃掉 1900 美元的刀具，而刀具用满 10 次自己锁死。零负债、52 亿净现金、ROIC 21.9%、收入年增 20%、回购是 SBC 的 4.3 倍、连非 GAAP 都没敢把股权激励加回去——这些指标叠在一起，在整个美股都属于最上乘的一档。</p>
+<p>问题只有价格和竞争两条。你付 45 倍市盈率，一年拿回 2.21 元（保守口径 1.96 元），这个回报本身跟国债差不多，全部意义在于"三年后它会变成 3 块多"。这个假设的成立完全押在手术量继续以近 20% 的速度增长上，而美敦力、强生和中国国产机器人正在同时冲进这个市场。短期还有个具体的雷要盯：<strong>TTM 存货猛增 10.8 亿、周转率只有 1.99</strong>，是备货还是压货，下两个季度就见分晓。</p>
+<p><strong>结论：好公司，价格从"荒谬"降到了"偏贵"。如果手术量增速能守住 18% 以上，40 倍以下是可以动手的位置；跌到 35 倍是好机会。现在的 45 倍——再等等。</strong></p>
+</div></body></html>

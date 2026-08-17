@@ -1,0 +1,351 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HOOD · 罗宾汉市场（Robinhood Markets）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HOOD</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">伪装成科技公司的高杠杆券商，三年增长已付清</div><h1>HOOD · 罗宾汉市场（Robinhood Markets）</h1>
+<p><strong>市值 874.1 亿美元 · 股价 $97.23 · 行业：金融／零售券商 · TTM 截止 2026-06-30</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>罗宾汉对外只有一个产品——那个绿色的炒股 App。但它靠这个 App 收钱的方式有<strong>六条完全不同的路子</strong>，而且赚钱最多的那条，跟"炒股"几乎没关系。</p>
+<p>TTM 营收 49.32 亿美元，同比 +38.3%。拆开看：</p>
+<h3>生意一：期权交易的"订单流回扣"（12.20 亿，25%）</h3>
+<p>这是罗宾汉的招牌生意，也是它当年被骂上国会山的那件事。</p>
+<p>具体怎么运作：你在罗宾汉 App 上点"买入 1 张英伟达 12 月 200 美元看涨期权"，你付 0 元手续费。罗宾汉不把这张单子送到交易所，而是转手卖给 Citadel Securities、Susquehanna 这类做市商。做市商愿意为这笔单子付钱——因为散户的单子"好做"（不像对冲基金那样单边砸盘，做市商赚买卖价差几乎稳赚）。行价大约是<strong>每张合约 0.4–0.6 美元</strong>。</p>
+<p>所以一个玩期权玩得凶的用户，一天来回买卖 10 张合约，罗宾汉当天从做市商那里收到约 5 美元，而这个用户自己觉得"我一分钱手续费都没交"。一年下来这么一个用户能贡献一千多美元。TTM 期权收入 12.2 亿，按每张 0.5 美元倒推，一年经手了<strong>约 24 亿张合约</strong>。</p>
+<p>期权只占罗宾汉总交易笔数的一小部分，却贡献了交易类收入的近一半——因为期权的单笔回扣是股票的几十倍。这也是为什么罗宾汉的 App 设计一路把用户往期权那边推。</p>
+<h3>生意二：加密货币价差（7.23 亿，15%）</h3>
+<p>同一个套路，但收钱方式换成了<strong>点差</strong>而不是回扣。你花 1000 美元买比特币，屏幕上显示"手续费 $0"，实际成交价比市场中间价贵了约 0.4%–0.5%，这 4–5 美元就是罗宾汉的。买卖各一次，来回吃两道。</p>
+<p>2025 年罗宾汉花约 2 亿美元买下了欧洲老牌交易所 Bitstamp，把生意从"卖给散户"扩到了"给机构和其他平台做撮合与托管"。这块收入的问题是<strong>跟币价高度绑定</strong>：TTM 7.23 亿，比 2025 全年的 9.01 亿反而低了——说明 2026 上半年加密交易明显降温。这是全公司唯一一块在缩的生意。</p>
+<h3>生意三：股票交易回扣（3.91 亿，8%）</h3>
+<p>跟期权同一个机制，但单价低得多。股票的订单流回扣大约是<strong>每股千分之二美分</strong>量级，一笔 100 股的交易，罗宾汉只收到 2 美分。所以尽管"买股票"是罗宾汉最出名的功能，它只贡献 8% 的收入。</p>
+<h3>生意四：其他交易类收入（5.71 亿，12%）——增长最猛的一块</h3>
+<p>这一块 2023 年只有 4100 万，2024 年 8400 万，2025 年 3.02 亿，TTM 已经 5.71 亿——<strong>三年翻了 14 倍</strong>。主体是<strong>事件合约（预测市场）</strong>：诸如"美联储 12 月降不降息""某场超级碗谁赢""某位候选人当不当选"这类二元合约，买对了到期赔付 1 美元，买错了归零。罗宾汉按每张合约收固定手续费（约 1 美分量级），量大到吓人。</p>
+<p>这块生意的好处是<strong>没有库存风险</strong>——罗宾汉只是做通道，赔付责任在交易所（KalshiEX 这类持牌事件合约交易所）那边。坏处是监管随时可能变脸：美国 CFTC 对体育类事件合约的态度一直摇摆，各州博彩监管机构也在告。这 5.71 亿有多少能留到明年，是个政策问题不是商业问题。</p>
+<h3>生意五：净利息收入（16.15 亿，33%）——最大的一块，也最没人注意</h3>
+<p><strong>罗宾汉最赚钱的生意其实是当银行。</strong> 净利息收入 TTM 16.15 亿，占总营收三分之一，比期权还多。它由四条腿组成：</p>
+<ol>
+<li><strong>吃客户的闲置现金差价。</strong> 你账户里放着 5000 美元还没买股票，罗宾汉把这笔钱扫到合作银行，拿 4% 的利息；分给你 1%（不是 Gold 会员的话可能是 0）。中间那 3% 就是罗宾汉的。一百万个这样的账户就是一年 1.5 亿美元，而罗宾汉什么都不用做。</li>
+<li><strong>融资融券放贷。</strong> 你想加杠杆买股票，罗宾汉借你钱，年化收 5%–6%（Gold 会员便宜些）。它的资金成本接近零，因为借出去的钱本身就是别的用户的闲置现金。</li>
+<li><strong>证券出借。</strong> 把用户账上的股票借给要做空的对冲基金，收取借券费。用户通常毫不知情，收益分成也极少。</li>
+<li><strong>Gold 信用卡的循环利息。</strong></li>
+</ol>
+<p>这块生意有个关键弱点：<strong>它是利率的函数，不是罗宾汉本事的函数。</strong> 美联储每降 1 个百分点，这 16 亿里就有一大块直接蒸发。2021 年这块只有 2.56 亿，之所以涨到 16 亿，一半功劳是加息周期。</p>
+<h3>生意六：其他产品收入（4.12 亿，8%）</h3>
+<p>主要是 <strong>Robinhood Gold 订阅</strong>（每月 5 美元，一年 60 美元），以及 Gold 信用卡的商户刷卡分成。订阅是全公司<strong>利润率最高</strong>的收入——服务器成本已经花了，多一个订户几乎是纯利。几百万订户就是两三亿美元一年，而且不随行情波动。这是罗宾汉最想做大的一块。</p>
+<h3>营收结构表（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>2025 全年</th>
+<th>2024 全年</th>
+<th>2025 同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入</td>
+<td>1,615</td>
+<td>32.7%</td>
+<td>1,514</td>
+<td>1,109</td>
+<td>+36.5%</td>
+</tr>
+<tr>
+<td>期权</td>
+<td>1,220</td>
+<td>24.7%</td>
+<td>1,123</td>
+<td>760</td>
+<td>+47.8%</td>
+</tr>
+<tr>
+<td>加密货币</td>
+<td>723</td>
+<td>14.7%</td>
+<td>901</td>
+<td>626</td>
+<td>+43.9%</td>
+</tr>
+<tr>
+<td>其他交易类（事件合约等）</td>
+<td>571</td>
+<td>11.6%</td>
+<td>302</td>
+<td>84</td>
+<td>+259.5%</td>
+</tr>
+<tr>
+<td>其他产品（Gold 订阅等）</td>
+<td>412</td>
+<td>8.4%</td>
+<td>331</td>
+<td>195</td>
+<td>+69.7%</td>
+</tr>
+<tr>
+<td>股票</td>
+<td>391</td>
+<td>7.9%</td>
+<td>302</td>
+<td>177</td>
+<td>+70.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,932</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>4,473</strong></td>
+<td><strong>2,951</strong></td>
+<td><strong>+51.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润。</strong> 整体经营利润率 46.0%（22.70 亿 ÷ 49.32 亿）。按常识估算：Gold 订阅和净利息的边际利润率应该在 70%–80%（几乎没有增量成本），期权和股票的订单流回扣接近纯利，加密因为有 Bitstamp 的运营成本会低一些——但这些都是<strong>估算</strong>，财报里没有。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 3.51 亿，占净利润 16.9%。</strong> 这个数字比过去干净多了——2021 年 IPO 那年 SBC 高达 15.72 亿（创始人巨额授予的摊销），把公司砸出 36.87 亿的亏损。现在降到 3.5 亿，说明当年那批授予基本摊完了。<strong>按规矩这 3.51 亿已经在 GAAP 净利润里扣掉了，我们不加回来。</strong></p>
+<p><strong>一次性项目：TTM 看不到大额一次性损益。</strong> 现金流表上"其他调整" 3.36 亿，规模不算小但没有细分，单期口径判断不了性质。</p>
+<p><strong>税率异常低，这是全篇最需要警惕的一项。</strong> TTM 税前利润 24.17 亿，实缴所得税 3.35 亿，<strong>有效税率仅 13.87%</strong>——美国联邦法定税率是 21%，加上州税，一家纯美国业务的公司正常应该在 24% 上下。低 10 个百分点意味着净利润被垫高了约 <strong>2.4 亿美元</strong>，占净利润的 12%。这种低税率通常来自股权激励行权的税务抵扣（股价涨得越猛抵扣越多）或递延所得税估值备抵的释放。<strong>单期口径无法判断这是不是年年都有</strong>——但股价过去 52 周跌了 10.4%，靠股价上涨换来的税务抵扣明年大概率变小。</p>
+<p><strong>资本化支出：无形资产购置 4100 万，规模很小，不构成粉饰。</strong></p>
+<p><strong>回购与稀释：这是最有意思的一项。</strong> TTM 回购 9.59 亿，SBC 3.51 亿，<strong>回购／SBC = 2.73 倍</strong>，看起来是真回购。但你去看股本：<strong>流通股数同比反而增加了 0.89%</strong>。9.59 亿真金白银砸下去，股本非但没降还涨了——差额去哪了？去了收购对价（Bitstamp、TradePMR 这类交易用股票支付）和员工行权。所以对股东来说，这 9.59 亿的回购<strong>没有让你手里的股份变值钱一分</strong>，只是把公司买东西和发工资用掉的股票补了回来。<strong>罗宾汉过去五年每一年的"回购收益率"都是负数</strong>（-0.89%、-1.39%、-1.72%、-1.39%、-78.45%），一次都没正过。</p>
+<p><strong>利润和现金流的差：这是全篇最触目惊心的一组数字。</strong></p>
+<p>净利润 20.72 亿，经营现金流只有 <strong>2.45 亿</strong>，自由现金流 <strong>2.19 亿</strong>。赚了 20 亿，账上只多出 2 亿。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+2,072</td>
+<td></td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+91</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>加：股权激励 SBC</td>
+<td>+351</td>
+<td>非现金（发股票不花钱）</td>
+</tr>
+<tr>
+<td>加：其他调整</td>
+<td>+336</td>
+<td></td>
+</tr>
+<tr>
+<td>减：客户应收款变动</td>
+<td><strong>−12,582</strong></td>
+<td>借给客户炒股的融资余额暴增</td>
+</tr>
+<tr>
+<td>减：受限现金／隔离资金变动</td>
+<td>−3,575</td>
+<td>监管要求为客户存的钱</td>
+</tr>
+<tr>
+<td>加：证券出借负债变动</td>
+<td>+7,896</td>
+<td>借出证券收到的抵押金</td>
+</tr>
+<tr>
+<td>加：应付款变动</td>
+<td>+6,763</td>
+<td>欠客户和清算所的钱</td>
+</tr>
+<tr>
+<td>加：证券借入变动</td>
+<td>+123</td>
+<td></td>
+</tr>
+<tr>
+<td>减：其他经营项目</td>
+<td>−1,109</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+245</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>看懂这张表你就看懂券商了：<strong>罗宾汉的"利润"是真的，但它的现金全被自己的资产负债表吸走了。</strong> 客户融资余额一年增加了 125.8 亿美元——这钱是罗宾汉借给客户去买股票的，虽然会连本带利收回来（还是那 33% 净利息收入的来源），但它是<strong>现金流出</strong>。生意做得越猛，融资余额涨得越快，现金流看起来就越难看。</p>
+<p>所以<strong>对罗宾汉这种公司，自由现金流是个废指标</strong>（P/FCF 高达 408 倍纯属噪音）。真正该看的是净利润和净资产收益率。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>这是一家券商，所以除了市盈率我还加了 PB／ROE 口径。</strong> 原因是券商的利润建立在资产负债表之上——罗宾汉总资产扩张得越快、融资盘放得越大，利润越高，但风险也同步放大。单看市盈率会漏掉杠杆这一层。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>874.13 亿 ÷ 20.72 亿</td>
+<td><strong>42.2 倍</strong></td>
+<td><strong>$2.37</strong></td>
+</tr>
+<tr>
+<td>公司吹的 Non-GAAP</td>
+<td>罗宾汉主吹调整后 EBITDA，不公布调整后净利。按加回 SBC 造一个：(20.72+3.51)=24.23 亿</td>
+<td>36.1 倍</td>
+<td>$2.77</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>把 13.87% 的异常低税率normalize 到 24%：24.17×0.76 = 18.37 亿</td>
+<td><strong>47.6 倍</strong></td>
+<td><strong>$2.10</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>874.13 ÷ 2.19 亿</td>
+<td>399 倍</td>
+<td>$0.25（<strong>废数字，见上文</strong>）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>864.33 亿 ÷ 22.70 亿</td>
+<td>38.1 倍</td>
+<td>$2.62</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>874.13 ÷ (20.72+18.83+14.11)/3 = 17.89 亿</td>
+<td><strong>48.9 倍</strong></td>
+<td><strong>$2.04</strong></td>
+</tr>
+<tr>
+<td>券商口径：ROE ÷ PB</td>
+<td>23.62% ÷ 9.42 倍</td>
+<td>相当于 39.9 倍</td>
+<td>$2.51</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径 48.9 倍 vs 当期 42.2 倍</strong>——差距不算大，说明罗宾汉现在的利润<strong>不是一个孤立的高点</strong>，而是一条还在往上走的曲线（2024 年 14.11 亿 → 2025 年 18.83 亿 → TTM 20.72 亿）。这跟英伟达那种"当期 34 倍、三年平均 73 倍"的情况完全不同。这是罗宾汉估值故事里最站得住脚的一点。</p>
+<p><strong>说人话：你现在投 100 块进罗宾汉，按最保守的真实口径（把税率修回正常水平），公司一年替你赚 2 块 1。</strong></p>
+<p>这 2 块 1 里有多少回到你口袋？<strong>基本上一分都没有。</strong> 罗宾汉不分红（Ex-Dividend Date: n/a），回购的 9.59 亿全部被新发股票抵消掉了，股本反而增加 0.89%。钱留在公司里干什么了？看投资活动：TTM 净流出 17.54 亿，其中"其他投资活动" 38.85 亿（主要是买入债券等生息资产，为净利息收入服务）、收购 1.54 亿。也就是说<strong>利润全部再投入到自己的资产负债表里，用来放更大的融资盘、赚更多的利息</strong>。</p>
+<p>这个 2 块 1 未来会变大还是变小？分三层看：
+- <strong>会变大的</strong>：事件合约（三年 14 倍）、Gold 订阅（纯利、粘性高）、Bitstamp 带来的机构业务。这三块都还小但斜率陡。
+- <strong>会变小的</strong>：净利息收入（占 33%，直接绑美联储，降息就掉）、加密（TTM 已经比 2025 全年缩了）、低税率红利（股价已经跌了，抵扣会变少）。
+- <strong>看政策的</strong>：事件合约的监管、订单流回扣（PFOF）本身在欧盟已被禁、美国 SEC 也反复研究过。<strong>PFOF 一旦被禁，期权 + 股票那 16.11 亿收入（33%）的商业模式要重写。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>罗宾汉本质上是一家伪装成科技公司的高杠杆券商，业务确实在真实地变大，但 42 倍市盈率（修正税率后 48 倍）已经把未来三年的增长全部付掉了，而且股东一分钱都拿不到——不分红，回购全被稀释吃掉，利润 100% 留在公司里放大自己的融资盘。</strong></p>
+<p>值不值这个价，取决于你信不信两件事：事件合约能不能撑过监管、以及降息周期里那 33% 的净利息收入能不能被新业务补上。这两件事任何一件出问题，48 倍的估值都会很难看。它不贵在"公司烂"——ROE 23.6% 是实打实的好生意——它贵在<strong>你付的价格里，属于"还没发生的事"的比重太高了</strong>。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（Fiscal.ai 数据源），TTM 截止 2026-06-30，最近财报 2026-07-29。</em></p>
+</div></body></html>

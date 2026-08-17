@@ -1,0 +1,381 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CRCL · Circle Internet Group（USDC 稳定币发行方）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CRCL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">7%利润率全押联储不降息，贵在漏气的假设上</div><h1>CRCL · Circle Internet Group（USDC 稳定币发行方）</h1>
+<p>市值 $181.8 亿 / 股价约 $71.6 / 行业：科技服务（加密金融基础设施） / TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Circle 名义上有四条收入线，但<strong>实质上只有一门生意，占营收 95.2%</strong>。剩下三条加起来不到 5%，可以当成边角料。</p>
+<h3>生意 A：靠别人存在它这儿的钱吃利息（Reserve Income，TTM 27.65 亿，占 95.2%）</h3>
+<p>这是整家公司的全部。讲清楚它怎么运转，你就懂了这家公司的一切。</p>
+<p><strong>USDC 是什么</strong>：一种「数字美元」。你给 Circle 转 100 万美元真钱，Circle 在区块链上给你铸造 100 万枚 USDC 代币。这些代币可以在以太坊、Solana 等链上秒级转账、24 小时不打烊、转到地球任何角落手续费几美分。你随时可以拿 USDC 回来找 Circle 换回 100 万美元真钱，1:1，不打折。</p>
+<p><strong>Circle 靠什么赚钱</strong>：你换走的那 100 万枚代币在链上流通，而你交给 Circle 的那 100 万美元真钱<strong>留在 Circle 手里</strong>。Circle 把这笔钱（以及所有其他人交的钱，合计几百亿美元）几乎全部买成<strong>短期美国国债和隔夜逆回购</strong>，由贝莱德管理一支专门的政府货币市场基金持有。</p>
+<p><strong>这笔国债的利息，全部归 Circle。你一分钱利息都拿不到。</strong></p>
+<p>举个具体的数：假设 USDC 流通量 640 亿美元，短期美债收益率 4.3%，Circle 一年就白拿 <strong>27.5 亿美元利息</strong>——这跟 TTM 的 27.65 亿几乎完全对上。<strong>Circle 的营收 ≈ USDC 流通量 × 短期美债利率</strong>，就这么一个公式，没有别的。</p>
+<p><strong>它凭什么能白拿？</strong> 因为持有 USDC 的人图的不是利息，是<strong>用途</strong>：加密货币交易所的交易对全用 USDC 计价；跨境汇款走 USDC 比 SWIFT 快三天、便宜 90%；拉美和土耳其的人用 USDC 躲本币贬值；DeFi 协议的抵押品是 USDC。这些人愿意放弃利息换取「随时能用的链上美元」。</p>
+<p><strong>这是一门极好的生意——但 Circle 只拿到了它 22%。</strong></p>
+<h3>关键：78% 的钱被渠道分走了</h3>
+<p>看毛利率：<strong>TTM 毛利率只有 22.0%</strong>。一家「收利息」的公司，成本从哪来？</p>
+<p>答案是<strong>分销成本（Distribution Costs）</strong>，付给帮它推广 USDC 的渠道，绝大部分给了 <strong>Coinbase</strong>：
+- 存放在 Coinbase 平台上的 USDC，<strong>产生的利息 100% 归 Coinbase</strong>，Circle 一分不拿。
+- 不在 Coinbase 上的部分，Circle 和 Coinbase 按大约五五分账。
+- 币安（Binance）也拿一份，还有其他钱包和交易所的分成。</p>
+<p>翻译成人话：<strong>27.65 亿的利息收入里，21.5 亿（78%）交给了 Coinbase 等渠道，Circle 自己只留下 6.39 亿毛利。</strong> 再扣掉 4.24 亿的运营开销（1,100 名员工的工资、合规、法务、审计），只剩 <strong>2.16 亿经营利润</strong>。</p>
+<p>这就是这家公司最致命的结构：<strong>它做的是一门 100% 毛利的生意，却被渠道方按 78% 抽成，自己只是个持牌的托管壳。</strong> Coinbase 才是这门生意的真正受益人。</p>
+<h3>生意 B、C、D：加起来 4.8%，可以忽略</h3>
+<ul>
+<li><strong>订阅与服务</strong> TTM 1.113 亿（3.8%）——主要是 Circle Mint（机构直接铸造/赎回 USDC 的通道，收年费和月费）、以及 Arc 区块链和开发者 API 的费用。同比从 0.85 亿涨到 1.11 亿，增速不错，但基数太小。</li>
+<li><strong>交易服务</strong> TTM 0.289 亿（1.0%）——跨境支付、企业结算的手续费。</li>
+<li><strong>其他</strong> TTM 0.003 亿——四舍五入为零。</li>
+</ul>
+<p>管理层讲故事时会重点讲这三块（「我们不只是靠利息，我们在建支付网络」），但<strong>它们合计 1.4 亿，占营收 4.8%，连覆盖运营开销的三分之一都不到</strong>。目前完全撑不起估值。</p>
+<h3>数字（TTM，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比（对上一完整财年）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>储备利息收入</td>
+<td>2,765</td>
+<td>+4.9%</td>
+<td>95.2%</td>
+<td>财报未分部披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>订阅与服务</td>
+<td>111.3</td>
+<td>+31.3%</td>
+<td>3.8%</td>
+<td>财报未分部披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>交易服务</td>
+<td>28.9</td>
+<td>+18.9%</td>
+<td>1.0%</td>
+<td>财报未分部披露</td>
+<td>—</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>0.3</td>
+<td>−56%</td>
+<td>0.01%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,905</strong></td>
+<td><strong>+37.2%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>7.42%</strong></td>
+<td><strong>215.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润，也无法估算</strong>——因为分销成本（21.5 亿）全部挂在储备利息这条线上，而运营开销是共享的，硬拆没有意义。所以这里不给估算数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分是全篇最重要的。Circle 报出来的 4.51 亿净利润，有一大半不是经营赚来的。</strong></p>
+<p>先看一个刺眼的事实：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润（Operating Income）</td>
+<td><strong>215.6</strong></td>
+</tr>
+<tr>
+<td>税前利润（Pretax Income）</td>
+<td><strong>402.3</strong></td>
+</tr>
+<tr>
+<td>净利润（Net Income）</td>
+<td><strong>451.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润比经营利润高出一倍多，而且净利润居然比税前利润还高。</strong> 正常公司交完税净利润必然低于税前，Circle 反过来了。逐项拆开：</p>
+<p><strong>1. 所得税是负的 −0.49 亿（税收优惠，一次性）</strong>
+TTM 所得税 −4,899 万美元——<strong>不但没交税，还从税上白得了 4,899 万利润</strong>。这几乎肯定是递延所得税资产估值备抵的转回（公司过去年年亏损累积了大量可抵扣亏损，现在开始盈利，会计上一次性确认这些亏损的未来抵税价值）。<strong>这是纯一次性会计收益，明年不会再有。</strong> 占净利润的 10.9%。</p>
+<p><strong>2. 税前利润比经营利润多出 1.867 亿（非经营收益）</strong>
+这 1.867 亿来自经营线以下：公司自有现金 17.3 亿的利息收入、投资出售收益（0.079 亿）、以及其他项。<strong>自有现金吃的利息是真实的、可持续的，但它跟 USDC 生意无关</strong>——本质上是「公司账上趴着 17 亿现金买国债」，任何人自己拿 17 亿去买国债都能赚到，不该给它高估值。而且这部分收益同样随利率浮动。</p>
+<p><strong>3. 股权激励（SBC）：TTM 2.244 亿，占净利润的 49.7%</strong>
+将近净利润的一半。这个比例极高。GAAP 已经扣了，按规矩<strong>不加回</strong>——它实打实稀释你的股份。
+更要命的是历史：FY2025 的 SBC 是 <strong>5.629 亿</strong>（IPO 时集中归属），直接把公司从盈利打成亏损 −0.695 亿。TTM 降到 2.244 亿是正常化的结果，但 2.24 亿对一家只有 1,100 名员工的公司来说仍是天文数字——<strong>人均每年发 20.4 万美元的股票</strong>，还不算工资。</p>
+<p><strong>4. 资本化的支出：0.671 亿购买无形资产 + 0.919 亿「其他摊销」</strong>
+投资活动里 TTM 花了 <strong>6,711 万</strong>买/开发无形资产（自研软件、许可证），这笔钱不进利润表、直接上资产负债表。同时现金流表里有 <strong>9,192 万的「其他摊销」</strong>加回——是在摊销以前资本化的东西（很可能是预付给渠道的分销成本）。<strong>这意味着自由现金流被高估了：真实 FCF 应该是 7.615 − 0.671 = 6.944 亿。</strong></p>
+<p><strong>5. 回购与稀释：这一项是灾难</strong>
+- TTM 回购 <strong>2.974 亿</strong>，TTM SBC <strong>2.244 亿</strong> → 回购/SBC = <strong>1.33 倍</strong>。看起来勉强及格。
+- 但同期 <strong>发行新股融资 5.316 亿</strong>——回购 2.97 亿的同时又发了 5.32 亿新股，<strong>净发行 +2.34 亿，是净稀释不是净回购</strong>。
+- 股本 YoY <strong>增加 265.38%</strong>（IPO 后股份类别转换导致，这个数字失真），但环比 QoQ 仍在 <strong>+0.73%</strong>，年化约 <strong>+3.0% 的持续稀释</strong>。
+- <strong>结论：回购是化妆，公司整体在往外发股票，不是在回收。</strong></p>
+<p><strong>6. 利润和现金流的对账</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>451.3</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+13.3</td>
+</tr>
+<tr>
+<td>+ 其他摊销（预付分销成本等）</td>
+<td>+91.9</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+224.4</td>
+</tr>
+<tr>
+<td>− 投资出售收益</td>
+<td>−7.9</td>
+</tr>
+<tr>
+<td>− 其他经营活动（递延税转回等）</td>
+<td>−80.2</td>
+</tr>
+<tr>
+<td><strong>= 非现金调整后小计</strong></td>
+<td><strong>692.8</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−55.2</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−10.8</td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>+150.2</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>776.9</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−15.4</td>
+</tr>
+<tr>
+<td><strong>= 报表口径自由现金流</strong></td>
+<td><strong>761.5</strong></td>
+</tr>
+<tr>
+<td>− 无形资产购置（应扣未扣）</td>
+<td>−67.1</td>
+</tr>
+<tr>
+<td><strong>= 真实自由现金流</strong></td>
+<td><strong>694.4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>注意：现金流表里那个「其他融资活动 +117.9 亿」是 USDC 储备金的进出（用户存钱赎钱），<strong>不是公司的钱</strong>，跟股东价值完全无关，看的时候直接忽略。</p>
+<p><strong>这张表的关键发现：经营现金流 7.77 亿看起来远高于净利润 4.51 亿，但差额的 2.24 亿全部是 SBC——也就是「用发股票代替发工资」省下来的现金。</strong>把 SBC 当真成本扣掉，现金流的含金量立刻打回原形。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $181.8 亿，企业价值 $164.6 亿（净现金 17.1 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>18,180 ÷ 451.3</td>
+<td><strong>40.3 倍</strong></td>
+<td><strong>$2.48</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>通常加回 SBC 2.24 亿 → 调整后约 6.76 亿</td>
+<td>26.9 倍</td>
+<td>$3.72</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔除 −0.49 亿税收优惠，税前 4.02 亿按 25% 正常税率纳税 → 3.02 亿</td>
+<td><strong>60.3 倍</strong></td>
+<td><strong>$1.66</strong></td>
+</tr>
+<tr>
+<td><strong>只看经营利润（最严口径）</strong></td>
+<td>2.156 亿按 25% 税 → 1.62 亿；剔除非经营性利息收入</td>
+<td><strong>112 倍</strong></td>
+<td><strong>$0.89</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>18,180 ÷ 694.4（已扣无形资产支出）</td>
+<td>26.2 倍</td>
+<td>$3.82</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>16,460 ÷ 215.6</td>
+<td><strong>76.4 倍</strong></td>
+<td>$1.31</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>18,180 ÷ 133.3（TTM 4.513 + FY2025 −0.695 + FY2024 0.181，取均值）</td>
+<td><strong>136 倍</strong></td>
+<td><strong>$0.73</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最有价值的是最后一行和倒数第三行。</strong></p>
+<p>三年平均利润口径 <strong>136 倍</strong>，对比当期 GAAP 的 40.3 倍——<strong>差了 3.4 倍</strong>。这说明 TTM 这个 4.51 亿的利润是历史上从未有过的高点：FY2024 只赚 0.18 亿，FY2025 直接亏 0.70 亿。<strong>Circle 从来没有稳定盈利过，TTM 是它第一次像样地赚钱</strong>，而这次赚钱同时踩中了三件事：利率维持高位、USDC 流通量创新高、以及一次性的税收优惠。</p>
+<p>EV/EBIT <strong>76.4 倍</strong> 同样刺眼——把公司账上 17 亿净现金剔掉之后，市场为它的<strong>真实经营业务</strong>付了 76 倍经营利润的价钱。</p>
+<p><strong>你现在投 100 块进去，按最保守的口径（三年平均利润）算，公司一年替你赚 $0.73；按剔除一次性税收优惠后的当期口径算，赚 $1.66。</strong></p>
+<p>这 $1.66 里，<strong>有多少回到你口袋？零。</strong>
+- <strong>不分红</strong>（Dividend Yield: n/a）。
+- <strong>不净回购</strong>——回购 2.97 亿的同时发行新股 5.32 亿，你被稀释了，不是被回馈了。
+- 钱去哪了？投资活动只花了 0.95 亿（其中 0.67 亿买无形资产、0.15 亿资本开支），公司几乎没有再投资的去处。<strong>剩下的钱就堆在账上</strong>——自有现金从 15.3 亿涨到 17.3 亿。</p>
+<p><strong>这个 $1.66 未来是变大还是变小？</strong> 这是整篇分析唯一真正重要的问题，答案是：<strong>极大概率变小，而且可能塌方式变小。</strong></p>
+<p>理由只有一条，但它压倒一切：<strong>营收 = USDC 流通量 × 短期美债利率。</strong></p>
+<ul>
+<li><strong>利率是最大的杠杆，而且方向不利。</strong> 假设 USDC 流通量不变，联储每降息 100 个基点，Circle 的储备利息收入直接掉约 <strong>6.4 亿美元</strong>。这 6.4 亿里 78% 是渠道分成会跟着一起降，Circle 自己的毛利掉约 <strong>1.4 亿</strong>——而它 TTM 的全部经营利润只有 <strong>2.16 亿</strong>。<strong>换句话说：联储降息 150 个基点，Circle 的经营利润归零。</strong> 这不是危言耸听的推演，这是一道除法。</li>
+<li><strong>流通量能不能补上？</strong> 需要 USDC 流通量增长 30%+ 才能抵消 100 个基点的降息。历史上储备收入 FY2024→FY2025 增长了 58.7%，TTM 同比只剩 +4.9%——<strong>增速已经从三位数掉到个位数，扩张明显见顶</strong>。</li>
+<li><strong>竞争在恶化。</strong> Tether（USDT）流通量是 USDC 的两三倍且成本结构更好；美国《GENIUS Act》之类的稳定币立法落地后，摩根大通、花旗、PayPal 这些自带渠道和牌照的玩家会直接进场，它们不需要付 78% 给 Coinbase。</li>
+<li><strong>渠道分成只会涨不会跌。</strong> Coinbase 的议价权来自它是 USDC 最大的分发入口，Circle 没有筹码把 78% 谈下来。</li>
+</ul>
+<p><strong>股价已经在讲这个故事了：52 周跌了 53.25%。</strong> 市场不是没看见，是在重新定价。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家把一门 100% 毛利的生意做成 7% 经营利润率的公司，而且这 7% 建立在联储不降息的假设上——40 倍市盈率买它，是在为一个正在消失的利率环境付钱。</strong></p>
+<p>USDC 本身是个好东西，稳定币这条赛道也是真的。但<strong>赛道好不等于这家公司好</strong>：Circle 把 78% 的经济价值让给了 Coinbase，自己只留下 22%；这 22% 再扣掉 1,100 人的开销和人均 20 万美元的股票激励，只剩 2.16 亿经营利润；而报表上 4.51 亿的净利润里，有 1.87 亿来自自有现金买国债、0.49 亿来自一次性税收优惠——<strong>真正跟稳定币业务有关的利润，是那 2.16 亿。</strong></p>
+<p>按这 2.16 亿算，市场给的是 <strong>112 倍</strong>。三年平均口径是 <strong>136 倍</strong>。投 100 块一年赚 7 毛 3。</p>
+<p>而且这门生意的核心变量——利率——<strong>不在公司控制范围内，方向还是往下的</strong>。联储降 150 个基点，经营利润归零。你买不到任何护城河，只买到了一张利率的看跌保险的反面。</p>
+<p><strong>贵，而且贵在一个正在漏气的假设上。</strong> 不值。</p>
+</div></body></html>

@@ -1,0 +1,352 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>URI · 联合租赁（United Rentals）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">URI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">在周期股身上用周期顶部的倍数，历史上很少有好下场</div><h1>URI · 联合租赁（United Rentals）</h1>
+<p>市值 $715.3 亿 / 股价 $1,149.20 / 行业：设备租赁（NYSE）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>联合租赁是全世界最大的工程设备出租行号。它不生产任何东西，也不长期持有任何东西——它买设备、出租、租到旧了再卖掉，然后再买新的。整个公司就是这么一个循环。</p>
+<p>财报按"收入类型"披露五条线，但本质上是<strong>一门主业加四条附属线</strong>。</p>
+<h3>生意一：设备出租（TTM 145.14 亿，占 86.2%）</h3>
+<p>这是全部。</p>
+<p>想象一个场景：一家建筑公司在得州接了个活，要给一栋 12 层的楼装外墙玻璃，工期 4 个月。装玻璃需要一台 60 英尺的高空作业升降车。这台车新买要 12 万美元左右，买回来这 4 个月天天用，工程一结束就闲在院子里生锈、还得交保险、还得雇人保养、下一个工地在另一个州还得花钱运过去。</p>
+<p>所以这家建筑公司不买，他去联合租赁的门店租。租金大概每月 3,500 到 4,500 美元，租 4 个月花掉一万五六。用完还回去，不用管保养、不用管保险、不用管折旧、不用管下个月它闲不闲着。对建筑公司来说，这笔钱直接算进这个项目的成本，报价时加给业主就行。</p>
+<p>联合租赁在北美有一千六百多个门店，铺得比任何对手都密。它的车队按"原始购买价"算大概两百多亿美元的设备——从最普通的发电机、空压机、小型挖掘机，到 185 英尺的超高作业平台、大型土方机械、临时供电系统。</p>
+<p><strong>为什么客户非租不可，而且非租它不可？</strong></p>
+<p>第一，规模决定利用率。一台升降车买回来放在自己院子里，一年可能只有 30% 的时间在干活；放在联合租赁的调度网络里，这个月租给休斯顿的写字楼项目、下个月租给新奥尔良的炼油厂检修、再下个月租给达拉斯的数据中心工地，一年能有 65%–70% 的时间在收租金。同一台机器，它能榨出的钱是自购客户的两倍多。这个差额就是它的毛利来源。</p>
+<p>第二，大客户要的是"一个电话搞定所有事"。一个 20 亿美元的芯片厂工地上同时有几十家分包商，需要几百台不同设备。总包方不想跟 30 家租赁商分别签合同、分别对账、分别扯皮。联合租赁能派驻场团队，把整个工地的设备需求包下来，进场、调度、维修、撤场全管。这种"现场管理"合同一签就是整个工期，是小租赁商根本吃不下的活。</p>
+<p>第三，它还有一块高价值的<strong>专业设备</strong>线——挖沟防塌支护、临时供电、抽水排水、移动储存箱、施工便道垫板。这些东西单价不高但极其刚需：一条管道要在市区挖 6 米深的沟，法规强制要求装防塌支护，不装就是违法施工；一个数据中心工地在电网正式接入前要靠柴油机组供电，一个月的租金能到六位数。这类设备的租金回报率比普通设备高一截，也是它这些年增长最快、最愿意花钱收购扩张的部分（TTM 花了 7.41 亿美元收购同行）。</p>
+<p><strong>这门生意的钱怎么算的</strong>：客户付的是租金，成本是设备折旧（TTM 折旧摊销 32.13 亿，几乎全是车队折旧）、门店和运输人工、维修保养。设备折旧完了还能按残值卖掉——这就引出下面第二条线。</p>
+<h3>生意二：卖二手设备（TTM 13.99 亿，占 8.3%）</h3>
+<p>设备租个五到七年，租金基本把成本收回来了，账面折到一个较低的残值。这时候把它卖给小承包商、卖给二线市场、卖给出口商。</p>
+<p>关键在于：<strong>它卖的价格通常高于账面残值</strong>，所以每卖一台就产生一笔账面利润。这不是意外收获，而是它折旧政策的必然结果——折旧折得比真实磨损快，卖的时候就有"赚"。这笔钱是循环里的正常一环，不是一次性收益。</p>
+<p>TTM 这块营收 13.99 亿，同比反而下滑约 4.6%（估算，见下表说明）。原因是它在把车队做大而不是做旧——买得多、卖得少。</p>
+<h3>生意三：卖新设备（TTM 3.73 亿，占 2.2%）</h3>
+<p>有些客户租着租着决定买下来，或者门店顺手做经销商代理。这块增长最快（估算 +18%），但<strong>毛利很薄</strong>，几乎是通道生意，对利润贡献可以忽略。</p>
+<h3>生意四：卖工具耗材（TTM 1.70 亿，占 1.0%）</h3>
+<p>安全帽、手套、钻头、锯片、绑带。客户来门店取设备时顺手买。金额小，但是黏性工具——把客户拴在门店里。</p>
+<h3>生意五：服务及其他（TTM 3.76 亿，占 2.2%）</h3>
+<p>送货、维修、损坏赔偿险（客户租设备时买的那份"免赔"服务）。<strong>毛利率很高</strong>，因为几乎不占用资本。</p>
+<h3>各生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期(估算)</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率(估算)</th>
+<th>贡献利润(估算)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备出租</td>
+<td>145.14 亿</td>
+<td>134.18 亿</td>
+<td>+8.2%</td>
+<td>86.2%</td>
+<td>约 27%</td>
+<td>约 39 亿</td>
+</tr>
+<tr>
+<td>卖二手设备</td>
+<td>13.99 亿</td>
+<td>14.67 亿</td>
+<td>−4.6%</td>
+<td>8.3%</td>
+<td>约 20%</td>
+<td>约 2.8 亿</td>
+</tr>
+<tr>
+<td>卖新设备</td>
+<td>3.73 亿</td>
+<td>3.15 亿</td>
+<td>+18.4%</td>
+<td>2.2%</td>
+<td>约 5%</td>
+<td>约 0.2 亿</td>
+</tr>
+<tr>
+<td>工具耗材</td>
+<td>1.70 亿</td>
+<td>1.59 亿</td>
+<td>+6.9%</td>
+<td>1.0%</td>
+<td>约 15%</td>
+<td>约 0.25 亿</td>
+</tr>
+<tr>
+<td>服务及其他</td>
+<td>3.76 亿</td>
+<td>3.64 亿</td>
+<td>+3.4%</td>
+<td>2.2%</td>
+<td>约 40%</td>
+<td>约 1.5 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>168.32 亿</strong></td>
+<td><strong>157.22 亿</strong></td>
+<td><strong>+7.1%</strong></td>
+<td>100%</td>
+<td><strong>24.8%</strong></td>
+<td><strong>41.73 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：财报只按收入类型披露营收，<strong>不披露每条线的利润</strong>。上表利润率是按行业常识和整体 24.79% 经营利润率倒推的<strong>估算</strong>，不是财报数字。"上年同期"也是估算——公司只给 TTM 和完整财年，我用 FY2024 与 FY2025 的中值近似上一个 TTM（用总数验算：估算增速 7.1% vs 财报实际 6.88%，误差可以接受）。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.43 亿美元，占净利润 5.4%。这个比例在美股里算非常低——租赁公司靠的是门店师傅和调度员，不是硅谷工程师。<strong>按 GAAP 已经扣在成本里，不加回</strong>。对估值几乎没有影响。</p>
+<p><strong>一次性项目</strong>：没有大额的。TTM 现金流量表里"其他调整"只有 +0.30 亿，税率 25.04% 也是正常水平，没有税务一次性调整。TTM 花了 7.41 亿做收购，会带来一些并购费用和无形资产摊销，但金额不足以改变结论。</p>
+<p><strong>资本化的支出</strong>：租赁公司的"资本化"就是买车队本身，这是明账，不存在把费用藏进资产的空间。没有软件或内容资本化问题。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>20.65 亿</strong>，同期 SBC 只有 1.43 亿，<strong>比值 14.4 倍</strong>。这是真回购，不是给员工发股票擦屁股。股本实际减少 <strong>3.39%</strong>，一年少了 220 万股。加上 4.77 亿分红，股东回报率 4.08%。这一项是全篇最干净的地方——管理层是真的在把钱还给股东。</p>
+<p><strong>利润和现金流的差 —— 这是 URI 全篇最要命的地方</strong></p>
+<p>净利润 26.38 亿，经营现金流 57.42 亿，差了 31 亿。但自由现金流只有 <strong>6.32 亿</strong>。为什么？</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,638</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销（几乎全是车队折旧）</td>
+<td>＋3,213</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>＋143</td>
+</tr>
+<tr>
+<td>＋ 其他调整</td>
+<td>＋30</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−397</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−51</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>＋72</td>
+</tr>
+<tr>
+<td>＋ 预提费用增加</td>
+<td>＋134</td>
+</tr>
+<tr>
+<td>＋ 其他经营性项目</td>
+<td>＋9</td>
+</tr>
+<tr>
+<td>小计</td>
+<td>5,791</td>
+</tr>
+<tr>
+<td>尾差（四舍五入及未拆分项）</td>
+<td>−49</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,742</strong></td>
+</tr>
+<tr>
+<td>− 买设备（资本开支）</td>
+<td>−5,110</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流（毛口径）</strong></td>
+<td><strong>632</strong></td>
+</tr>
+<tr>
+<td>＋ 卖旧设备收回的现金</td>
+<td>＋1,450</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流（净口径）</strong></td>
+<td><strong>2,082</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看懂这张表，就看懂了这家公司。</p>
+<p><strong>它的利润是"折旧变出来的"，而折旧变出来的钱又必须原样投回去买新设备。</strong> 32 亿的折旧看起来是"不用花钱的成本"，可它对应的是真实磨损的钢铁。TTM 净买设备（51.10 亿 − 卖旧收回 14.50 亿）＝ <strong>36.60 亿</strong>，比折旧的 32.13 亿还多 4.5 亿。也就是说，这家公司连"原地不动"都要每年掏出比折旧更多的现金。</p>
+<p>所以 URI 的自由现金流是 6.32 亿还是 20.82 亿？<strong>答案是 20.82 亿</strong>——卖旧设备是这门生意的固有环节，收回来的现金必须计入。用毛口径算出 113 倍的市现率是误导。但即便用 20.82 亿，也只有净利润的 79%，而且这里面还有一部分是扩张车队的钱。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>715.3 亿 ÷ 26.38 亿</td>
+<td><strong>27.1 倍</strong></td>
+<td><strong>$3.69</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>715.3 亿 ÷ 约 28.5 亿（剔并购摊销/费用）</td>
+<td>25.1 倍</td>
+<td>$3.98</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>715.3 亿 ÷ 23.03 亿（用净资本开支 36.6 亿替代折旧 32.13 亿，差额 4.47 亿税后扣掉）</td>
+<td><strong>31.1 倍</strong></td>
+<td><strong>$3.22</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（净）</td>
+<td>715.3 亿 ÷ 20.82 亿</td>
+<td>34.4 倍</td>
+<td>$2.91</td>
+</tr>
+<tr>
+<td>自由现金流口径（毛，误导）</td>
+<td>715.3 亿 ÷ 6.32 亿</td>
+<td>113 倍</td>
+<td>$0.88</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>868.0 亿 ÷ 41.73 亿</td>
+<td>20.8 倍</td>
+<td>$4.81</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>715.3 亿 ÷ 25.69 亿（FY24/FY25/TTM 平均）</td>
+<td><strong>27.8 倍</strong></td>
+<td><strong>$3.60</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话版本：你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 3.22 块。</strong></p>
+<p>这 3.22 块里有多少真到你手里？分红 0.69 块、回购 3.39 块，合计 <strong>4.08 块</strong>——比它赚的还多。多出来的部分是借的：TTM 净新增债务 6.85 亿，总债务已经到 153.85 亿，净负债 / EBITDA 2.07 倍。它一边掏空自己回购，一边把车队做大，两头的钱都靠借。这个玩法在利率友好、工程需求旺盛时非常漂亮，反过来时会很难看。</p>
+<p><strong>这个 3.22 块未来会变大还是变小？</strong></p>
+<p>先看一件让人不舒服的事。三年前（2023 年底）URI 的市盈率是 <strong>16.25 倍</strong>，两年前 18.21 倍，一年前 20.96 倍，现在 <strong>26.93 倍</strong>。而同期净利润是：24.24 亿 → 25.75 亿 → 24.94 亿 → 26.38 亿。<strong>三年下来利润只涨了 8.8%，股价涨了 100%。这 100% 里有 92% 是估值涨的，只有 8% 是公司真的多赚了钱。</strong></p>
+<p>三年平均利润口径 27.8 倍和当期 27.1 倍几乎重合，说明<strong>这不是"利润在高点、估值失真"的情况</strong>——URI 的利润非常平，它就是老老实实赚这么多。问题不在利润虚高，问题在市场愿意为同样的利润多付 66% 的价钱。</p>
+<p>市场为什么愿意？押的是数据中心和电网改造。AI 数据中心、变电站扩容、芯片厂、电池厂——这些都是超大型、超长工期、设备密集的工地，正好是 URI 最赚钱的那类活。这个逻辑是真的，TTM 设备出租收入涨 8.2% 也确实在验证它。</p>
+<p>但要小心两点。第一，<strong>ROIC 13.17% 只比它自己的资金成本 WACC 12.22% 高不到一个百分点</strong>——它每投一块钱进车队，创造的超额价值薄得像纸。这不是复利机器，是重资产周转机器。第二，<strong>Beta 1.80</strong>，工程设备需求是所有行业里周期性最强的之一，2008 年那种衰退里租金率和利用率会同时崩，而 153 亿的债务不会跟着崩。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是好生意，价格不是好价格。</strong> URI 是行业里做得最好的那家，回购真诚、执行扎实、数据中心的顺风是真的；但你要用 27 倍去买一家利润三年没怎么涨、真实资本回报只比资金成本高 1 个百分点、扛着 2 倍 EBITDA 债务的重资产周期股，赚的是别人愿意接更高估值的钱，不是公司赚的钱。<strong>在周期股身上用周期顶部的估值倍数，历史上很少有好下场。</strong></p>
+</div></body></html>

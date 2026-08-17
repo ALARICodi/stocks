@@ -1,0 +1,396 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRAB · Grab Holdings（东南亚超级应用）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GRAB</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">当期数字完全无法支撑股价</div><h1>GRAB · Grab Holdings（东南亚超级应用）</h1>
+<p><strong>市值</strong> $147.7 亿 ｜ <strong>股价</strong> 约 $3.62（40.8 亿股）｜ <strong>行业</strong> 交通运输 / 东南亚出行·外卖·数字金融平台 ｜ <strong>企业价值 EV</strong> <strong>$102.7 亿</strong>（手上净现金 45 亿）
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日</p>
+<blockquote>
+<p>一句话先说在前面：<strong>这家公司报出来的 5.98 亿净利润里，真正来自主营业务的只有 1.38 亿；自由现金流是负的 1.60 亿。</strong> 下面把这件事拆开。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Grab 在东南亚八个国家运营（新加坡、马来西亚、印尼、泰国、越南、菲律宾、柬埔寨、缅甸），覆盖大约 6.5 亿人口。它是那种"一个 App 什么都能干"的超级应用——打车、点外卖、买菜、寄快递、付款、借钱、买保险，全在一个图标里。一年收入 37.31 亿美元，1.2 万名正式员工（司机和骑手不算员工）。</p>
+<h3>生意 A：外卖和跑腿（Deliveries）—— 53.3% 的收入，第一大生意</h3>
+<p><strong>GrabFood / GrabMart / GrabExpress。</strong></p>
+<p>具体怎么赚钱，以曼谷一单午餐为例：
+- 一个上班族在 App 上点了一份 200 泰铢（约 44 元人民币）的猪肉饭。
+- <strong>餐厅给 Grab 的佣金约 25-30%</strong>，也就是 50-60 泰铢。这是最大的一块。
+- <strong>用户另付配送费</strong> 20-40 泰铢，其中大部分给骑手，Grab 留一小部分。
+- <strong>骑手的钱</strong> Grab 不算自己的收入（会计上按净额确认），所以 200 泰铢的订单，Grab 记进"收入"的大概只有 60-80 泰铢。
+- <strong>还有第三块钱，也是利润率最高的一块：广告。</strong> 那家猪肉饭餐厅想在"午餐推荐"里排在前面、想在你搜"猪肉饭"时第一个出现，要另外买广告位。这笔钱几乎是纯利——不需要多派一个骑手，只是把搜索结果重排一下。<strong>广告业务是 Grab 外卖板块从亏钱转成赚钱的关键，也是这两年毛利率能站上 40% 的原因。</strong>
+- <strong>GrabMart</strong>（超市代购）和 <strong>GrabExpress</strong>（同城快递）用的是同一批骑手、同一套调度系统，属于把已有运力的空闲时间填满，边际成本极低。</p>
+<p><strong>为什么用户不跑</strong>：Grab 在多数东南亚市场是第一或第二大平台，商家密度和骑手密度形成双边网络——商家多所以用户来，用户多所以商家不敢不上，骑手多所以送得快。竞争对手主要是印尼的 GoTo（Gojek）和 Foodpanda。这场仗打了近十年，烧掉几百亿美元，现在基本打完了，各家开始收手涨价、削补贴——<strong>这是 Grab 利润率转正的根本原因</strong>。</p>
+<h3>生意 B：打车（Mobility）—— 35.1% 的收入，最赚钱的生意</h3>
+<p><strong>GrabCar（四轮）和 GrabBike（摩托车）。</strong></p>
+<p>这里有个中国人容易忽略的关键点：<strong>在印尼、越南、泰国，摩托车打车才是主流</strong>。雅加达堵车堵到极致，四个轮子过不去，两个轮子能。一个雅加达上班族早高峰用 GrabBike 走 5 公里，付大约 2 万印尼盾（约 9 元人民币），司机拿走 8 成，<strong>Grab 抽 2 成，约 1.8 元</strong>。一天下来一个骑手跑二三十单。</p>
+<p>四轮的 GrabCar 单价高得多（机场接送、雨天、跨城），抽成比例类似，一单 Grab 能拿到几元到十几元。</p>
+<p><strong>这门生意的经济性明显好于外卖</strong>：不需要备货、不需要处理"菜洒了"这种纠纷、履约时间短、客单价高、抽成率稳定。而且它自带一个隐藏优势——<strong>Grab 手上有大量高频出行数据，知道谁在哪上班、每月出行多少、消费能力如何</strong>，这直接喂给了下面的第三门生意。</p>
+<h3>生意 C：数字金融（Financial Services）—— 11.5% 的收入，增速最快（年增 37%），也是最大的变数</h3>
+<p>这门生意包含四层：</p>
+<ol>
+<li><strong>支付钱包（GrabPay）</strong>：用户在 App 里存钱，打车、点外卖直接扣。商家收单也走 Grab，Grab 抽手续费。</li>
+<li><strong>给司机和商家的小额贷款</strong>：这是最聪明的一块。Grab 知道某个骑手每周跑多少单、收入多稳定，也知道某家小餐馆每天出多少单。传统银行不敢贷给一个没有工资流水的摩托车司机，Grab 敢——因为<strong>如果他不还钱，Grab 可以直接从他下周的接单收入里扣</strong>。一笔贷款几百到几千美元，年化利率往往在 20-40%。</li>
+<li><strong>消费信贷 / 先买后付</strong>：用户点外卖时可以选"下个月还"。</li>
+<li><strong>数字银行</strong>：Grab 拿到了正经的银行牌照——新加坡的 <strong>GXS Bank</strong>（和新加坡电信合资）、马来西亚的 <strong>GXBank</strong>、印尼的 <strong>Superbank</strong>（和 Emtek、韩国 KakaoBank 合资）。这些银行吸收存款、发放贷款、发信用卡。</li>
+</ol>
+<p><strong>这门生意为什么危险</strong>：银行的利润是"先确认、后暴雷"。你今天放出去一笔年化 30% 的贷款，利息立刻算进收入；坏账要一两年后才浮现。<strong>东南亚的无抵押消费信贷从来没有经历过一次完整的经济下行周期的考验。</strong> 下面第二部分会看到，Grab 的现金流被这块业务吞掉了一大半。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>增速（2025 对 2024 完整年度）</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>外卖与跑腿 Deliveries</td>
+<td>$19.87 亿</td>
+<td>53.3%</td>
+<td>+20.6%</td>
+<td>估算微利，约 2-4%</td>
+</tr>
+<tr>
+<td>打车 Mobility</td>
+<td>$13.10 亿</td>
+<td>35.1%</td>
+<td>+16.4%</td>
+<td>估算最好，约 10-14%</td>
+</tr>
+<tr>
+<td>数字金融 Financial Services</td>
+<td>$4.30 亿</td>
+<td>11.5%</td>
+<td><strong>+37.2%</strong></td>
+<td>估算仍在亏钱</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>$0.04 亿</td>
+<td>0.1%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$37.31 亿</strong></td>
+<td>100%</td>
+<td><strong>+20.5%</strong></td>
+<td><strong>3.70%（真实）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报<strong>只按分部披露营收，不披露分部利润</strong>。上表利润率是我按行业常识倒推的<strong>估算</strong>（打车板块履约成本低、抽成高，历来利润率明显优于外卖；数字金融板块在放贷扩张期几乎必然亏损）。合计那一行的 3.70% 是真实数字。
+增速用 2025 完整年度对 2024 完整年度，因为 TTM（截至 2026 年 6 月）与 2025 年报有半年重叠。</p>
+</blockquote>
+<p><strong>这张表的核心信息</strong>：收入还在以 20% 的速度增长，毛利率 40.5%，经营利润率从两年前的 <strong>−5.58%</strong> 翻到了 <strong>+3.70%</strong>。<strong>规模效应是真实的、正在发生的。</strong> 但 3.70% 这个数字有多薄，下一节会讲清楚。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一节是本篇的重点。Grab 的报表有三层"看起来比实际好"的地方。</p>
+<h3>第一层：净利润 5.98 亿，经营利润只有 1.38 亿</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 利润表往下走</th>
+<th>金额</th>
+<th>中间发生了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营业收入</td>
+<td>$37.31 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>$15.10 亿（40.5%）</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>$1.38 亿（3.70%）</strong></td>
+<td>← <strong>这才是主营业务赚的钱</strong></td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>$5.17 亿</td>
+<td><strong>＋$3.79 亿的非经营收入</strong></td>
+</tr>
+<tr>
+<td><strong>净利润</strong></td>
+<td><strong>$5.98 亿</strong></td>
+<td><strong>＋$0.81 亿的税收优惠</strong>（所得税是 −800 万，负数）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>多出来的 3.79 亿从哪来？</strong> Grab 手上趴着 <strong>65.32 亿美元现金和投资</strong>。按东南亚和美元当前的利率，这笔钱一年产生 2.5-3 亿美元的利息收入是很自然的，剩下的是投资公允价值变动和汇兑。</p>
+<p><strong>这不是造假</strong>——利息收入是真钱。但它意味着一件事：<strong>Grab 的利润有超过六成来自"它 IPO 时融来的一大笔钱放在银行吃利息"，而不是来自打车和外卖。</strong> 如果哪天利率降下来，或者这笔钱被花掉（拿去放贷、拿去收购），这部分利润就消失了。</p>
+<p><strong>税收优惠那 0.81 亿更明确是一次性的</strong>：一家有效税率应该为正的公司报出负的所得税，通常是因为确认了递延所得税资产（把过去累积的巨额亏损"变现"成未来的抵税额度）。这是一次性的会计动作，明年不会再有。</p>
+<h3>第二层：股权激励 2.40 亿，占净利润的 40%</h3>
+<p><strong>TTM 股权激励 2.40 亿美元。相对于 5.98 亿的净利润，这是 40%；相对于 1.38 亿的经营利润，这是 174%。</strong></p>
+<p>也就是说，<strong>如果 Grab 不发股票、改成发现金给员工，它的主营业务是亏钱的。</strong></p>
+<p>按本分析的规则，SBC 一律当成真实现金成本，<strong>GAAP 里已经扣掉了，我不加回</strong>。要警惕的是 Grab 自己爱用的口径——它主推的业绩指标是 "Adjusted EBITDA"，这个指标把股权激励、折旧摊销、利息、税全部加回去。用那个口径，Grab 看起来一年赚 5.8 亿多；用 GAAP 经营利润，只有 1.38 亿。<strong>差了四倍多，差的就是发给员工的股票和折旧。</strong></p>
+<p>股本一年<strong>增加了 4.45%</strong>。你手上的股份被稀释了。</p>
+<h3>第三层：净利润 +5.98 亿，自由现金流 −1.60 亿</h3>
+<p>这是最刺眼的一条。<strong>一家号称转正盈利的公司，一整年自由现金流是负的。</strong> 逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（TTM，百万美元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>598</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+205</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td><strong>+240</strong></td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+19</td>
+</tr>
+<tr>
+<td>＋ 投资处置损失</td>
+<td>+85</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+183</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td><strong>−617</strong></td>
+</tr>
+<tr>
+<td>− 其他净经营资产变化（主要是银行放贷）</td>
+<td><strong>−856</strong></td>
+</tr>
+<tr>
+<td>− 应收账款/存货/权益投资等</td>
+<td>−36</td>
+</tr>
+<tr>
+<td>＋ 未单列科目轧差（递延税等）</td>
+<td>+119</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>−60</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−100</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−160</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两个大坑要解释清楚：</strong></p>
+<p><strong>坑一："其他净经营资产变化 −8.56 亿"。</strong> 这几乎全部是<strong>数字银行的贷款净投放</strong>——GXS、GXBank、Superbank 把存款和自有资金借了出去。会计上，银行放贷算经营现金流出。</p>
+<p>这笔钱不是"烧掉了"，它变成了资产负债表上的贷款资产，理论上会连本带利收回来。<strong>但要清醒地看到两点</strong>：第一，这是真金白银出去了 8.56 亿，是当年全部经营现金流的量级；第二，<strong>贷款的利息今天就计入收入，坏账要一两年后才浮现</strong>。Grab 在东南亚做无抵押小额消费信贷，客户是摩托车司机、小摊主、月薪几百美元的年轻人。这个模式在经济上行期非常赚钱，在下行期会非常难看。这块业务今年增长 37%，是全公司最快的，<strong>利润表在享受它的好处，风险还在路上</strong>。</p>
+<p><strong>坑二："其他经营活动 −6.17 亿"。</strong> 这一项没有明细，绝对值比净利润本身还大。它大概率主要是把上面第一层讲的那些<strong>非现金的利息/公允价值收益扣回去</strong>（现金流量表里要把利润表上不产生现金的收益减掉）。这恰好从另一个角度印证了第一层的结论：<strong>那 3.79 亿的非经营收入里，有相当一部分不是当期收到的现金。</strong></p>
+<h3>其他检查项</h3>
+<ul>
+<li><strong>一次性项目</strong>：TTM 有 8,500 万美元的投资处置损失，以及上面说的 8,100 万美元税收优惠（正向）。<strong>单看这一期无法判断投资损失是否年年都会发生</strong>——Grab 手上有大量对被投公司的股权，公允价值波动可能每年都有。</li>
+<li><strong>资本化的支出</strong>：无形资产购买 2,600 万，资本开支 1.00 亿，规模都很小。<strong>没有靠资本化粉饰利润的问题。</strong></li>
+<li><strong>回购与稀释</strong>：TTM 回购 <strong>4.00 亿</strong>，SBC <strong>2.40 亿</strong>，<strong>比值 1.67</strong>。这个比值比 CACI（1.01）好，说明 Grab 除了抵消稀释还多回购了一点。但<strong>股本同比仍然增加了 4.45%</strong>——只是最近一个季度环比降了 6.15%，说明回购是最近才开始发力的。<strong>目前为止，Grab 的回购还没能让股东的持股比例真正增厚。</strong></li>
+<li><strong>负债</strong>：总债务 20.33 亿，现金和投资 65.32 亿，<strong>净现金 45 亿</strong>。这是 Grab 最强的一张牌：企业价值只有 102.7 亿，比市值低 45 亿。它有充足的弹药，短期完全没有生存风险。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>先说明一个口径问题：TTM 净利润 5.98 亿是<strong>合并口径</strong>，其中约 1.31 亿归属于少数股东（数字银行的合资伙伴，比如新加坡电信、KakaoBank、Emtek），<strong>真正归属 Grab 股东的约 4.67 亿</strong>。下表用归属股东口径。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（归属股东）</td>
+<td>147.7 亿 ÷ 4.67 亿</td>
+<td><strong>31.6 倍</strong></td>
+<td><strong>$3.16</strong></td>
+</tr>
+<tr>
+<td>公司爱用的 Adjusted EBITDA 口径</td>
+<td>147.7 亿 ÷ 约 5.83 亿（把 SBC 和折旧当不存在）</td>
+<td>约 25.3 倍</td>
+<td>约 $3.95</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（剔掉 0.81 亿一次性税收优惠）</td>
+<td>147.7 亿 ÷ 3.86 亿</td>
+<td><strong>38.3 倍</strong></td>
+<td><strong>$2.61</strong></td>
+</tr>
+<tr>
+<td><strong>纯主营口径</strong>（税后经营利润 1.38 亿 ×76%）</td>
+<td>147.7 亿 ÷ 1.05 亿</td>
+<td><strong>140 倍</strong></td>
+<td><strong>$0.71</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 <strong>−1.60 亿</strong></td>
+<td><strong>无法计算</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>102.7 亿 ÷ 1.38 亿</td>
+<td><strong>74.4 倍</strong></td>
+<td><strong>$1.34</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>FY2025 +2.68 亿、FY2024 −1.05 亿、FY2023 −4.34 亿，平均 <strong>−0.90 亿</strong></td>
+<td><strong>无法计算（三年平均是亏的）</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径这一行，本身就是本篇最重要的一句话</strong>：Grab 三年平均净利润是<strong>负的</strong>。这家公司在 2023 年还亏 4.34 亿、2022 年亏 16.83 亿、2021 年亏 34.49 亿。<strong>它转正才一年多。</strong> 所以"当前市盈率 31 倍"这个数字背后，没有任何可以回溯验证的盈利历史来支撑它是不是可持续。</p>
+<p><strong>说人话</strong>：</p>
+<p>你现在投 100 块进 Grab。</p>
+<ul>
+<li>按 GAAP 报表，<strong>公司一年替你赚 3.16 块</strong>。</li>
+<li>剔掉一次性的税收优惠，<strong>2.61 块</strong>。</li>
+<li>如果你只认打车和外卖这些真正的主营业务赚的钱（不算 65 亿现金吃的利息），<strong>0.71 块</strong>——140 倍市盈率。</li>
+<li>而这一年公司的自由现金流是 <strong>负 1.60 亿</strong>，也就是说它经营一整年，现金是净流出的。</li>
+</ul>
+<p><strong>这 X 块里有多少回到你口袋？零，甚至是负的。</strong> Grab 不分红。它回购了 4.00 亿，但同期发出去 2.40 亿的员工股票，而且股本同比还增加了 4.45%——<strong>你的持股比例被稀释了，不是增厚了</strong>。剩下的钱去哪了？8.56 亿投放成了银行贷款，1 亿资本开支，3,900 万小额收购。<strong>全部留在公司里，赌下一个阶段的增长。</strong></p>
+<p><strong>这个 X 未来是变大还是变小？我判断会变大，而且可能变得很快，理由是</strong>：</p>
+<ol>
+<li><strong>经营杠杆是真实的。</strong> 收入年增 20.5%，但成本增速远低于此——经营利润率两年内从 −5.58% 翻到 +3.70%。外卖和打车的调度系统、地图、风控是固定成本，多跑一单几乎不增加成本。如果收入再涨 50%，经营利润率有机会从 3.7% 走到 10-15%，那时候经营利润就是 5-8 亿而不是 1.38 亿。</li>
+<li><strong>打车外卖的补贴战基本打完了。</strong> 十年的烧钱竞争结束，剩下 Grab 和 GoTo 两家在多数市场分天下。抽成率有提升空间，补贴有削减空间。</li>
+<li><strong>广告和金融是纯增量利润。</strong> 广告几乎零边际成本；金融业务只要坏账控住，是高利润率生意。</li>
+</ol>
+<p><strong>但也说清楚会变小的可能</strong>：
+- <strong>利息收入会消失。</strong> 现在净利润有六成靠 65 亿现金吃利息。这笔钱正在被拿去放贷（今年就出去 8.56 亿），一旦花完或利率下行，这块利润就没了，而主营业务的 1.38 亿还远远补不上。
+- <strong>东南亚消费信贷从没经历过完整的下行周期。</strong> 这是我看这家公司最大的担心。今天的 37% 增速，可能是明天的坏账。
+- <strong>股价过去一年跌了 29.3%，做空比例 6.67%</strong>。市场对它的怀疑不是空穴来风。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>按当下的盈利，贵得离谱；按它可能变成的样子，不算贵。这两句话都对，你必须选一个来相信。</strong></p>
+<p>用最诚实的口径看：一家主营业务一年赚 1.38 亿、自由现金流是负数、三年平均还在亏钱的公司，市值 147.7 亿。<strong>没有任何传统估值方法能证明这个价格合理。</strong></p>
+<p>但换个角度：企业价值只有 102.7 亿（因为手握 45 亿净现金），对应 37.31 亿收入是 <strong>2.75 倍市销率</strong>，而这家公司还在以 20% 增长、毛利率 40%、经营利润率刚刚转正、垄断了 6.5 亿人口市场的出行和外卖入口、还额外拿了三张银行牌照。<strong>2.75 倍市销率对这样一个资产，一点都不贵。</strong></p>
+<p><strong>所以买 Grab 不是在买 3.16 块的年回报，是在买一个期权</strong>：赌它在未来三到五年把经营利润率从 3.7% 做到 15%，同时数字银行不炸雷。赌对了，现在的 147 亿市值会显得很便宜；赌错了——利率降了、利息收入没了、消费贷坏账起来了——你手上就是一家真实盈利只有一亿多、还在被稀释的公司。</p>
+<p><strong>本批三家里，这是唯一一家"当期数字完全无法支撑股价"的公司。要不要买，取决于你对东南亚未来十年的看法，而不是取决于这份财报。</strong></p>
+</div></body></html>

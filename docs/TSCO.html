@@ -1,0 +1,362 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TSCO · Tractor Supply Company（拖拉机供应公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TSCO</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">19倍不便宜也不算贵，价值在于「不会出事」</div><h1>TSCO · Tractor Supply Company（拖拉机供应公司）</h1>
+<p>市值 186.7 亿美元 / 股价约 35.8 美元 / 行业：零售（美国乡村生活方式连锁店）/ TTM 截止 2026 年 6 月 27 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先纠正一个望文生义：<strong>这家公司不卖拖拉机。</strong> 名字是 1938 年创业时留下的——那年它靠邮购拖拉机零件起家。今天它是<strong>美国乡村和城郊居民的"什么都有"大卖场</strong>，2400 家左右的门店几乎全部开在人口不到 5 万的小镇上，专门服务一类人：住在带地的房子里、养马养鸡养狗、自己修栅栏割草的美国中产。</p>
+<p>它的选址逻辑非常清楚：<strong>去沃尔玛嫌小、家得宝嫌偏的地方开店。</strong> 一家典型门店 1.5 万平方英尺卖场 + 后面 2 万平方英尺的露天货场（堆围栏、饲料、拖车），开在小镇公路边，停车场能停皮卡。这个位置上它几乎没有竞争对手——亚马逊送不了 50 磅一袋的马饲料，沃尔玛不会为了 3 万人的镇子开店。</p>
+<p>财报页面<strong>没有披露分部数据</strong>（它作为单一零售分部报告），下面按公司在年报里披露的商品品类拆，比例是<strong>估算</strong>。</p>
+<h3>生意一：牲畜和宠物（约占营收 48–50%，是压舱石）</h3>
+<p>卖的是<strong>吃的和用的消耗品</strong>：50 磅一袋的马饲料 22 美元、鸡饲料 18 美元、狗粮 60 美元一大袋、猫砂、鸟食、马厩垫料、驱虫药、疫苗。</p>
+<p><strong>为什么这是全公司最值钱的一块：马和鸡不会因为经济衰退就不吃饭。</strong> 一个养三匹马的客户，每个月雷打不动要买 6 袋饲料，一年 1500 美元以上，风雨无阻。这带来两件事：一是<strong>收入极度抗周期</strong>（2008 年金融危机时它同店销售还在涨），二是<strong>客户一个月来店 2–4 次</strong>，每次来买饲料的路上顺手买了个手电筒、一件工装裤、一桶机油——<strong>饲料是引流品，利润在顺手买的那些东西上</strong>。</p>
+<p>这一块还包括两个附属业务：<strong>Petsense</strong>（收购来的 200 多家小镇宠物专卖店）和 <strong>Allivet</strong>（2025 年花约 1.3 亿美元收购的线上宠物药房，TTM 现金收购支出 1.298 亿就是它）。买 Allivet 的逻辑很直白：宠物处方药是高毛利、高复购、且必须凭兽医处方——线上药房是它唯一还没吃到的一块蛋糕。</p>
+<h3>生意二：五金、工具和皮卡用品（约占营收 21%）</h3>
+<p>链锯、发电机、焊机、工具箱、拖车挂钩、皮卡货箱盖、机油、电池、螺丝钉论磅卖。<strong>典型场景</strong>：小镇上一个自己养了 20 英亩地的业主，秋天树倒了压住围栏，他开皮卡来买一把 400 美元的斯蒂尔链锯、两卷 80 美元的铁丝网、一箱手套，一趟花 600 美元。这活儿他不会请人干，因为方圆 30 英里没人接这种小活。</p>
+<p><strong>这块的毛利率比饲料高，但它跟房屋和农场的资本开支挂钩</strong>——利率高、农产品价格低的年份，农民会推迟买新设备，这块就掉。</p>
+<h3>生意三：季节性商品、礼品和玩具（约占营收 19%，波动最大）</h3>
+<p>春天卖割草机（一台骑乘式割草机 2500–4000 美元，是店里单价最高的商品）、种子、园艺土；夏天卖泳池化学品和烧烤炉；秋天卖打猎装备；冬天卖取暖炉、融雪盐、圣诞装饰。<strong>这块是全店"看天吃饭"的部分</strong>——冬天不冷，取暖炉和融雪盐就砸手里；春天雨水太多，割草机就卖不动。</p>
+<h3>生意四：服装鞋帽 + 农业设备（合计约占营收 10%）</h3>
+<p>Carhartt 工装、防水靴、劳保手套；以及拖拉机配件、犁具、牲畜围栏、饮水槽。规模小，但服装是店里毛利率最高的品类之一。</p>
+<h3>钱（TTM，截止 2026 年 6 月 27 日）</h3>
+<p><strong>财报未按品类披露利润，下表利润率全部是按零售业常规品类毛利结构估算的，不是财报原文。</strong> 品类营收占比也是估算。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品类</th>
+<th>TTM 营收（估算，百万美元）</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>牲畜与宠物（含 Petsense、Allivet）</td>
+<td>约 7,720</td>
+<td>约 49%</td>
+<td>约 30%</td>
+<td>引流品，毛利低但复购最高</td>
+</tr>
+<tr>
+<td>五金、工具、皮卡用品</td>
+<td>约 3,310</td>
+<td>约 21%</td>
+<td>约 38%</td>
+<td>跟农场资本开支挂钩</td>
+</tr>
+<tr>
+<td>季节性、礼品、玩具</td>
+<td>约 2,990</td>
+<td>约 19%</td>
+<td>约 40%</td>
+<td>看天吃饭，波动最大</td>
+</tr>
+<tr>
+<td>服装鞋帽</td>
+<td>约 790</td>
+<td>约 5%</td>
+<td>约 45%</td>
+<td>毛利最高</td>
+</tr>
+<tr>
+<td>农业设备与其他</td>
+<td>约 940</td>
+<td>约 6%</td>
+<td>约 32%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>15,751</strong></td>
+<td>100%</td>
+<td><strong>36.50%</strong></td>
+<td>经营利润率 9.03%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>整体 TTM 营收增长 3.98%，但这里有个必须点破的事</strong>：它每年新开 80–90 家店，门店基数约 2400 家，<strong>光是开新店就贡献了约 3.5% 的营收增长</strong>。也就是说，<strong>老店的同店销售基本是零增长</strong>。这家公司现在是靠"多开店"而不是"店里卖得更多"在长——这是零售业最需要警惕的信号，因为新店是有天花板的（美国够格开 Tractor Supply 的小镇总共就那么多）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：6425 万美元，占 GAAP 净利润 10.12 亿的 6.3%。</strong> 这是我看过的美股里最低的一档。它是零售公司，五万多员工里绝大多数是时薪店员，不发股票。这一项完全不用担心，是明确的加分项。</p>
+<p><strong>一次性项目：TTM 有 6275 万美元的资产减值和重组费用</strong>——这是历史上第一次出现（FY2021–FY2025 这一行全是零）。大概率是关掉部分表现不佳的 Petsense 门店或整合仓储。单期口径无法判断这是关店的开始还是一次性清理，<strong>要看下一个季度还会不会有</strong>。</p>
+<p><strong>这家公司真正的障眼法在另一个地方：卖房子的利润混进了卖饲料的利润里。</strong></p>
+<p>现金流量表上有一行 <code>Loss (Gain) From Sale of Assets −101.1</code>。负号意味着这是<strong>收益</strong>——TTM 里公司卖资产赚了 1.011 亿美元，而这 1.011 亿<strong>全额计入了 GAAP 净利润</strong>。同时投资活动里 <code>Sale of Property, Plant &amp; Equipment</code> 收到 2.831 亿现金。这是典型的<strong>售后回租</strong>：把自己名下的配送中心或门店地产卖给地产基金，账面上确认一大笔处置收益，然后再租回来继续用。</p>
+<p>问题在于，这不是偶发的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产处置收益（百万美元）</td>
+<td>101.1</td>
+<td>93.06</td>
+<td>62.5</td>
+<td>48.01</td>
+<td>−2.16</td>
+</tr>
+<tr>
+<td>占当期净利润</td>
+<td><strong>10.0%</strong></td>
+<td>8.5%</td>
+<td>5.7%</td>
+<td>4.3%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年时间，这笔"卖房子的钱"占净利润的比重翻了一倍多。</strong> 而与此同时，卖饲料的经营利润率从 10.26% 一路降到 9.03%。翻译成人话：<strong>主业的利润率在慢慢滑，公司靠不断卖掉自己的地产来把报表上的利润托住。</strong> 这一招能用的次数是有限的——地产总有卖完的一天，而卖掉之后每年还要多付租金。</p>
+<p><strong>利润和现金流的差：净利润 10.12 亿，经营现金流 12.86 亿。</strong> 逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,012.0</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>509.28</td>
+<td>门店装修、货架、配送中心、租赁使用权</td>
+</tr>
+<tr>
+<td><strong>− 资产处置收益</strong></td>
+<td><strong>−101.1</strong></td>
+<td><strong>卖房子赚的钱不算经营现金，要从利润里剔出去</strong></td>
+</tr>
+<tr>
+<td>+ 资产减值和重组</td>
+<td>62.75</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>64.25</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>82.31</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 存货增加</strong></td>
+<td><strong>−423.44</strong></td>
+<td>大幅备货</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>235.11</td>
+<td>拖了供应商一半的钱</td>
+</tr>
+<tr>
+<td><strong>− 所得税项</strong></td>
+<td><strong>−343.55</strong></td>
+<td><strong>单笔最大的拖累，见下</strong></td>
+</tr>
+<tr>
+<td>+ 其他营运资金</td>
+<td>188.29</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,285.9</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>两行需要单独说：</p>
+<p><strong>存货增加 4.234 亿。</strong> 存货周转率只有 <strong>3.03 次/年</strong>，也就是货平均躺 4 个月才卖掉。这个数字对零售业不算差（卖饲料和割草机本来就慢），但 TTM 的存货增幅（4.23 亿）是 FY2025（2.26 亿）的近两倍，而营收只涨了 4%。<strong>备货速度明显快过卖货速度。</strong> 部分是为 Allivet 和新店铺货，但不全是。</p>
+<p><strong>所得税项 −3.4355 亿。</strong> 这是 TTM 经营现金流从 16.35 亿掉到 12.86 亿的主因——公司补缴了一大笔以前靠加速折旧递延下来的税。这是<strong>时间差，不是真亏损</strong>，明年不会重复。所以看 TTM 的自由现金流（3.07 亿，比去年的 7.40 亿腰斩再腰斩）会严重低估这家公司的真实现金能力。</p>
+<p><strong>回购与稀释：这一项非常干净。</strong> TTM 回购 4.607 亿 ÷ SBC 0.6425 亿 = <strong>7.17 倍</strong>，远超"大于 3 才算真回购"的标准。股本一年实实在在减少 1.21%。再加上 4.953 亿的分红（股息率约 2.68%），<strong>TTM 还给股东 9.56 亿，相当于市值的 5.1%</strong>。这家公司在给股东回钱这件事上是认真的，连续 16 年提高股息。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 186.7 亿美元，企业价值 249.8 亿（净负债 63.1 亿，其中很大一部分是租赁负债——它把地产卖了之后租回来，租约都计在负债里）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>186.7 亿 ÷ 10.12 亿</td>
+<td><strong>18.4 倍</strong></td>
+<td>5.43 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>它基本不搞调整口径，调整后≈GAAP</td>
+<td>约 18 倍</td>
+<td>5.5 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>186.7 亿 ÷ 9.82 亿（GAAP − 卖房收益税后 0.80 亿 + 重组减值税后 0.50 亿）</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>5.26 元</strong></td>
+</tr>
+<tr>
+<td>更保守（连重组也不加回）</td>
+<td>186.7 亿 ÷ 9.32 亿</td>
+<td>20.0 倍</td>
+<td>5.00 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（网站口径）</td>
+<td>186.7 亿 ÷ 3.07 亿</td>
+<td>60.8 倍</td>
+<td>1.64 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（还原掉一次性补税）</strong></td>
+<td>186.7 亿 ÷ 约 6.5 亿（3.07 亿 + 补税 3.44 亿）</td>
+<td><strong>28.7 倍</strong></td>
+<td><strong>3.48 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>249.8 亿 ÷ 14.22 亿</td>
+<td>17.6 倍</td>
+<td>5.68 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>186.7 亿 ÷ 11.01 亿（FY23/24/25 净利润 1107、1101、1096 的均值）</td>
+<td><strong>17.0 倍</strong></td>
+<td>5.88 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有一个跟大多数公司相反的信号，值得单独说：三年平均口径（17.0 倍）比当期口径（18.4 倍）更便宜。</strong> 绝大多数公司是反过来的——当期利润在高点，一平均就露馅。TSCO 的情况是：<strong>当期利润在低点。</strong> FY2023 赚 11.07 亿、FY2024 赚 11.01 亿、FY2025 赚 10.96 亿、TTM 只有 10.12 亿——<strong>净利润连续四年在往下走，TTM 同比跌了 5.4%</strong>（EPS −5.36%，是五年来第一次负增长）。</p>
+<p>所以这里没有"高点泡沫"的问题，问题是<strong>"这条下滑线什么时候停"</strong>。</p>
+<p><strong>说人话：你现在投 100 块进拖拉机供应公司，按最保守的真实口径（19.0–20.0 倍市盈率），公司一年替你赚 5.0–5.3 元。</strong></p>
+<p>这 5 块钱里，多少真的回到你口袋？<strong>TTM 分红 4.95 亿 + 回购 4.61 亿 = 9.56 亿，占市值 5.1%。</strong> 也就是说，<strong>它赚的钱几乎全部还给了你</strong>——这是三家里唯一一家真金白银把利润还回来的。剩下没还的部分呢？TTM 资本开支 9.79 亿（新开店、盖配送中心），但同时卖地产收回 2.83 亿，净投入 6.96 亿；另外借了 4.78 亿新债。<strong>它其实是一边借钱一边给股东发钱</strong>，靠加杠杆维持 5.1% 的股东回报率。债务四年从 39.19 亿涨到 65.45 亿，涨了 67%，而利润在下降。这不能一直持续。</p>
+<p>这个 5 块钱未来会变大还是变小？<strong>短期大概率还要小一点，中期取决于一件事：同店销售什么时候恢复。</strong> 支撑因素：饲料宠物那 49% 的消耗品收入几乎不会掉，利息覆盖倍数 21 倍，债务压力不算紧急，ROIC 12.81% 明显高于加权资本成本 5.20%（这是三家里唯一一家真正在创造价值的），股票已经跌了 40%，估值不再有幻想成分。压制因素：同店零增长、经营利润率五年从 10.26% 掉到 9.03%、卖地产撑利润的招数快用完了、5.56% 的流通股被做空。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门好生意被时代温和地压着，19 倍买它不便宜也不算贵，它的价值在于"不会出事"，不在于"会有惊喜"。</strong></p>
+<p>它真正的优点是那种老派的、朴素的优点：<strong>SBC 只占利润 6.3%（几乎不稀释你）、回购是 SBC 的 7.2 倍（真回购）、连续 16 年加股息、ROIC 12.8% 对 WACC 5.2%（真正在创造价值）、贝塔只有 0.45（跌起来比大盘轻）。</strong> 在一个满是靠发股票给员工发工资的美股市场里，这些品质稀缺得可笑。</p>
+<p>但它有三个必须认的问题：<strong>第一，同店销售已经零增长，4% 的营收增长全靠新开店，而美国够格开这种店的小镇正在被开完</strong>；<strong>第二，卖自有地产做售后回租的收益已经占到净利润 10%，四年翻倍，这是在用一次性的家底填经常性的窟窿</strong>；<strong>第三，净利润连跌四年，债务四年涨 67%，股东回报中有一部分是借来的。</strong></p>
+<p>我的判断：<strong>这是一只可以拿着睡觉但不该指望它翻倍的票。</strong> 5% 左右的真实年回报 + 5.1% 的股东现金返还，如果它同店销售能重新转正，这两个数字会重叠得很好；如果继续零增长，你拿到的就是一个每年 5% 的类债券资产，外加一个越来越沉的资产负债表。以 40% 的跌幅和 19 倍的估值来说，赔率不难看——但这不是一个便宜到闭眼买的价格，它只是一个"公道价"。</p>
+<p><em>数据来源：stockanalysis.com 财报页，TTM 截止 2026 年 6 月 27 日。</em></p>
+</div></body></html>

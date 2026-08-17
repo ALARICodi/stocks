@@ -1,0 +1,416 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LOW · 劳氏（Lowe's Companies, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LOW</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">18倍不贵也不便宜，便宜的原因它自己解决不了</div><h1>LOW · 劳氏（Lowe's Companies, Inc.）</h1>
+<p><strong>市值</strong> $1,223.6 亿 · <strong>股价</strong> $218.2 · <strong>行业</strong> 零售（家居建材 / NYSE）
+<strong>数据口径</strong> TTM = 最近四个季度滚动，截止 <strong>2026年5月1日</strong>（2026年5月28日发布；下次财报 8月19日）
+<strong>全量筛选榜名次</strong> 第 72 名 · <strong>分析日期</strong> 2026-08-14</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>劳氏是<strong>美国第二大的家装建材连锁超市</strong>，在北美开着约 1,750 家店，每家店的面积大约 1.1 万平方米——差不多两个足球场，外加一个露天的木材和苗木堆场。它跟家得宝（Home Depot）合起来吃掉美国家装零售市场的一半以上。</p>
+<p>它的生意本质上只有一种：<strong>开大店，进货，卖给来修房子的人。</strong>财报把商品分成几个大类，但那不是几门不同的生意，只是同一门生意的货架分区。真正需要分清的是<strong>两类完全不同的客户</strong>，以及最近新增的<strong>第三门生意</strong>。</p>
+<h3>客户一：DIY 业主（约占七成销售）</h3>
+<p>一个美国中产家庭，周六早上开车去劳氏，买两加仑油漆、一把电钻、几块地板、一袋草籽、一台除草机。客单价从 30 美元到 3,000 美元不等。</p>
+<p>美国人自己动手修房子的比例远高于中国，原因很实在：<strong>请工人太贵</strong>。换一个厨房水龙头，叫水管工上门光出场费就 150 美元，而水龙头本身在劳氏卖 89 美元，YouTube 上有教程，很多人就自己拧了。这个"人工贵 vs 材料便宜"的价差，就是劳氏存在的基础。</p>
+<p>这类生意的特点是：<strong>毛利率高（DIY 客户不砍价）、但极度依赖房地产的活跃度</strong>。人什么时候去劳氏花大钱？刚买了房、刚卖了房要装修、房价涨了觉得自己有钱了。三件事全都被房贷利率卡着。</p>
+<h3>客户二：Pro 专业施工方（约占三成销售，公司的战略重点）</h3>
+<p>一个装修包工头，手下五个工人，同时接三个活。他每天早上 6 点开着皮卡来劳氏，买 40 张石膏板、200 根 2x4 龙骨、几箱螺丝，刷企业账户，两周后结账。</p>
+<p>这类客户的经济学跟 DIY 完全相反：<strong>单笔金额大（几千到几万美元）、频次极高（一周来五次）、但毛利率低（他们天天比价，还要账期和批量折扣）</strong>。</p>
+<p>劳氏这几年最重要的战略就是抢 Pro 客户，因为家得宝在这块领先它太多（家得宝的 Pro 占比约 50%，劳氏只有 30%出头）。而 Pro 客户的价值在于<strong>逆周期性</strong>：房子卖不动的时候，业主不装修了，但<strong>房子还在老化</strong>——屋顶还是会漏、热水器还是会坏、飓风过后还是要重建。这些活是包工头干的，不是业主自己干的。</p>
+<h3>生意三（新增）：建材批发分销（TTM 约 40 亿营收）</h3>
+<p>FY2025 劳氏花了 <strong>100.88 亿美元现金</strong>做了一笔大收购（Foundation Building Materials，建材分销商）。这不是开店，是<strong>批发仓库</strong>：不做零售，直接给大型建筑承包商送整卡车的石膏板、钢骨架、保温棉、天花板系统，送到工地上。</p>
+<p>为什么买它？因为劳氏的门店卖不了这种量级——一个商业建筑项目一次要 5,000 张石膏板，不可能开皮卡来店里搬。买下这个网络，等于劳氏第一次能接触到<strong>商业建筑和大型住宅开发商</strong>这个它此前完全够不着的客户群。</p>
+<p><strong>这笔收购在财务上非常关键，因为它掩盖了核心业务的停滞——下面这个数是本篇最重要的发现。</strong></p>
+<h3>各生意的钱（TTM，截止 2026-05-01，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>商品类别</th>
+<th style="text-align: right;">TTM 营收</th>
+<th style="text-align: right;">占比</th>
+<th style="text-align: right;">FY2025 营收</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home Decor 家居装饰</td>
+<td style="text-align: right;">31,150</td>
+<td style="text-align: right;">35.2%</td>
+<td style="text-align: right;">31,527</td>
+<td>油漆、地板、灯具、厨卫、家电</td>
+</tr>
+<tr>
+<td>Building Products 建材</td>
+<td style="text-align: right;">26,795</td>
+<td style="text-align: right;">30.3%</td>
+<td style="text-align: right;">26,533</td>
+<td>木材、石膏板、屋顶、门窗</td>
+</tr>
+<tr>
+<td>Hardlines 硬件工具</td>
+<td style="text-align: right;">24,567</td>
+<td style="text-align: right;">27.8%</td>
+<td style="text-align: right;">24,185</td>
+<td>电动工具、五金、园艺、户外设备</td>
+</tr>
+<tr>
+<td>Other Merchandise 其他商品</td>
+<td style="text-align: right;">1,960</td>
+<td style="text-align: right;">2.2%</td>
+<td style="text-align: right;">1,833</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>分销业务（FBM）</strong></td>
+<td style="text-align: right;"><strong>~3,963</strong></td>
+<td style="text-align: right;"><strong>~4.5%</strong></td>
+<td style="text-align: right;">2,208</td>
+<td><strong>估算</strong>（由总数倒推；FY2025 只含并表后的部分年份）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>88,435</strong></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+<td style="text-align: right;">86,286</td>
+<td>同比 <strong>+6.24%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>现在做一道算术，这是全篇最值钱的一段：</strong></p>
+<p>TTM 营收 884.35 亿，同比 +6.24%，即比上一个 TTM（约 832.40 亿）多了 <strong>51.95 亿</strong>。</p>
+<p>但上一个 TTM（截止 2025年5月）<strong>完全不包含 FBM</strong>（这笔收购是 FY2025 年中才并表的）。而本期 TTM 里 FBM 贡献约 <strong>39.63 亿</strong>。</p>
+<p><strong>所以：51.95 亿的增长里，39.63 亿是买来的，只有 12.32 亿是自己长的。核心零售业务的真实增速 = 12.32 ÷ 832.40 = +1.5%。</strong></p>
+<p>美国通胀率大约就是 2–3%。<strong>这意味着劳氏的核心业务按实际购买力算，是在萎缩的。</strong></p>
+<p>再往前看更清楚。营收轨迹：FY2021 = 962.50 亿 → FY2022 = 970.59 亿 → FY2023 = 863.77 亿 → FY2024 = 836.74 亿 → FY2025 = 862.86 亿 → TTM = 884.35 亿。</p>
+<p><strong>五年过去，营收比 2021 年的高点还低 7.8%，而且现在这个数还包含了一笔 100 亿买来的业务。</strong>剔掉收购，核心零售的规模大约是 845 亿，比五年前低 12%。</p>
+<p>这不是劳氏一家的问题——是整个美国家装行业的问题：房贷利率从 3% 涨到 6–7% 之后，<strong>存量房换手率跌到了三十多年的最低点</strong>。没有人搬家，就没有人装修。劳氏 2020–2021 那两年是疫情居家的暴利期，之后就一直在还债。</p>
+<p><strong>财报不按分部披露利润</strong>，只有整体数据：毛利率 33.29%（六年稳如磐石，33.2–33.5% 之间），经营利润率 11.55%。这个毛利率的稳定性本身说明一件事：<strong>劳氏没有陷入价格战，它的问题是没客人，不是被砍价。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：254 百万，占净利润 3.8%。</strong> 三家里最低，也是传统零售业的正常水平。零售公司不需要用股票跟硅谷抢人。按 GAAP 已扣，不加回。</p>
+<p><strong>一次性项目：没有明确披露的大额一次性项目，但有一个 9.47 亿的黑箱。</strong></p>
+<p>现金流量表里"其他非现金调整"TTM 是 <strong>+9.47 亿</strong>（正号 = 加回到现金流里），相当于净利润的 <strong>14.3%</strong>。这个科目财报页没有细分。参考历史：FY2025 是 +8.81 亿、FY2024 只有 +3.57 亿、FY2022 高达 +28.30 亿。</p>
+<p>从体量和趋势看，大概率是递延所得税 + FBM 收购的相关调整 + 门店资产减值的混合。<strong>单期口径无法判断这里面有多少是"真一次性"、多少是年年都有的常规项目</strong>，所以我在第三部分不对它做任何调整——但读者要知道，净利润里有 14% 的部分对应的现金流向说不清楚。</p>
+<p><strong>资本化的支出：正常，且是健康的信号。</strong>
+资本开支 22.16 亿 vs 折旧摊销 23.31 亁。<strong>资本开支略低于折旧</strong>，说明劳氏现在<strong>不是在扩张，是在维持</strong>——它没有大规模开新店（美国家装市场已经饱和，好位置都被自己和家得宝占完了），钱主要花在翻新老店、建配送中心、升级 IT 上。</p>
+<p>这不是坏事（不用烧钱扩张），但它印证了前面的判断：<strong>这是一家没有增长空间的成熟企业</strong>。</p>
+<p><strong>回购与稀释：这是全篇第二重要的发现——劳氏的核心引擎熄火了。</strong></p>
+<p>先看比值：TTM 回购 <strong>4.62 亿</strong>，SBC 2.54 亿 → <strong>比值只有 1.8 倍</strong>，勉强超过 1，也就是刚够抵消员工发股再多一点点。股本同比 <strong>−0.89%</strong>。</p>
+<p>但真正的问题要看历史序列（回购金额，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th style="text-align: right;">回购金额</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td style="text-align: right;"><strong>13,012</strong></td>
+<td>←—— 巅峰</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td style="text-align: right;"><strong>14,124</strong></td>
+<td>←—— 巅峰</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td style="text-align: right;">6,138</td>
+<td>腰斩</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td style="text-align: right;">4,053</td>
+<td>再砍</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td style="text-align: right;"><strong>211</strong></td>
+<td><strong>几乎归零</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td style="text-align: right;">462</td>
+<td>仍然接近零</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>从一年买回 141 亿，到一年买回 4.6 亿——降幅 97%。</strong></p>
+<p>这个变化的意义远超数字本身。看一下过去五年劳氏的账：净利润 FY2021 是 84.42 亿，TTM 是 66.42 亿，<strong>利润下降了 21%</strong>；但每股收益 FY2021 是 $12.04，TTM 是 $11.83，<strong>只下降了 1.7%</strong>。差距全部来自回购——股本从约 7.01 亿股压到 5.61 亿股，<strong>五年注销了 20% 的股份</strong>。</p>
+<p>也就是说，<strong>过去五年劳氏的每股收益之所以看起来"没怎么跌"，靠的不是生意变好，是把公司买回来烧掉。现在这台机器停了。</strong></p>
+<p>为什么停？三个原因叠加：
+1. <strong>钱花在 FBM 上了</strong>——FY2025 拿走 100.88 亿现金。
+2. <strong>债台太高</strong>——总债务 425.40 亿，净负债 412.96 亿，是市值的三分之一。TTM 还了 41.85 亿长期债，利息覆盖倍数只有 6.49 倍（标普全球是 23 倍）。
+3. <strong>股东权益已经是负的：−92.7 亿。</strong></p>
+<p>最后这一点值得单独说。<strong>劳氏的账面净资产是负的 92.7 亿美元</strong>，市净率 PB 显示为 n/a，净资产收益率 ROE 显示为 n/a——因为分母是负数，算不出来。这不是因为亏损，而是因为<strong>过去十几年它回购注销的股票金额超过了历史累计的留存利润</strong>。</p>
+<p>这在会计上不违法，在生意上也不必然危险（劳氏的门店大量是租的，资产轻），但它意味着一件很实在的事：<strong>劳氏已经没有资产负债表的余地了</strong>。它不能再靠借钱回购来托 EPS，因为债务已经在 425 亿、评级机构在盯着。<strong>未来的每股收益增长必须来自真实的经营改善，没有财技可用了。</strong></p>
+<p><strong>利润和现金流的差：逐项对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td style="text-align: right;">6,641</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td style="text-align: right;">+2,331</td>
+<td>1,750 家店的货架、叉车、屋顶、收银系统在折旧</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td style="text-align: right;">+254</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td style="text-align: right;"><strong>+947</strong></td>
+<td><strong>黑箱，占净利润 14.3%，未细分</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td style="text-align: right;">−63</td>
+<td>零售基本是现款，几乎无影响</td>
+</tr>
+<tr>
+<td><strong>+ 存货减少</strong></td>
+<td style="text-align: right;"><strong>+484</strong></td>
+<td><strong>值得注意</strong>：存货下降释放了 4.84 亿现金。这在零售业是双刃剑——可能是供应链效率提升，也可能是<strong>因为预期生意不好而主动少进货</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td style="text-align: right;">+340</td>
+<td>晚付供应商，占用供应商的钱</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td style="text-align: right;">−1,135</td>
+<td>未细分的经营负债变化</td>
+</tr>
+<tr>
+<td>+ 未单列（倒挤）</td>
+<td style="text-align: right;">+36</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td style="text-align: right;"><strong>9,835</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td style="text-align: right;">−2,216</td>
+<td>翻新老店、建配送中心</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td style="text-align: right;"><strong>7,619</strong></td>
+<td>占营收 8.62%</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表整体是干净的：经营现金流 98.35 亿 vs 净利润 66.41 亿，差额主要就是 23.31 亿的折旧——这是零售业最正常的形态，<strong>没有"赚了利润收不到钱"的问题</strong>。零售的现金流质量天然好于制造业，因为客户当场刷卡，供应商却给你 60 天账期。</p>
+<p>唯一要打问号的是那个 +9.47 亿的黑箱和 +4.84 亿的存货释放：<strong>这两项加起来 14.3 亿，占自由现金流的 19%，都不是可以年年重复的东西。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 1,223.60 亿，企业价值 <strong>1,641.30 亿</strong>（净负债 417.7 亿），股本 5.6071 亿股。</p>
+<p><strong>先注意企业价值：EV 比市值高出 34%。</strong>这在前两家公司身上都不明显（史赛克 +9%，标普 +9%）。劳氏背着 425 亿的债，所以任何只看市值的估值口径都会低估它的真实价格——你买这家公司，还得连它的债一起买。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th style="text-align: right;">倍数</th>
+<th style="text-align: right;">投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>1,223.60 ÷ 66.42</td>
+<td style="text-align: right;"><strong>18.4 倍</strong></td>
+<td style="text-align: right;"><strong>$5.43</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>1,223.60 ÷ ~68.4（<strong>估算</strong>：零售业调整项很小，主要是 FBM 并购费用，调整后每股约 $12.2）</td>
+<td style="text-align: right;">~17.9 倍</td>
+<td style="text-align: right;">$5.59</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>同 GAAP。SBC 已按 GAAP 扣除不加回；那 9.47 亿"其他非现金调整"单期无法判断是否一次性，<strong>不做调整</strong></td>
+<td style="text-align: right;"><strong>18.4 倍</strong></td>
+<td style="text-align: right;"><strong>$5.43</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,223.60 ÷ 76.19</td>
+<td style="text-align: right;">16.1 倍</td>
+<td style="text-align: right;">$6.23</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td><strong>1,641.30 ÷ 102.12</strong></td>
+<td style="text-align: right;"><strong>16.1 倍</strong></td>
+<td style="text-align: right;"><strong>$6.22</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,223.60 ÷ [(66.42+66.54+69.57)/3 = 67.51]</td>
+<td style="text-align: right;"><strong>18.1 倍</strong></td>
+<td style="text-align: right;"><strong>$5.52</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行说明了什么：</strong> 18.1 倍 vs 当期 18.4 倍，<strong>几乎完全一样</strong>。</p>
+<p>这跟英伟达那种"当期 34 倍、三年平均 73.5 倍"的暴利高点是两个极端。<strong>劳氏的利润没有任何周期泡沫——它三年就没动过：69.57 → 66.54 → 66.42 亿。</strong>这是一条平直的横线。</p>
+<p>好消息：<strong>你不用担心买在利润高点上</strong>。坏消息：<strong>你也别指望有任何增长</strong>。这条横线本身就是全篇的诊断结果——<strong>一家已经完全停止增长的公司</strong>。</p>
+<p>再往前一年，FY2023 的净利润是 77.26 亿，FY2021 是 84.42 亿。<strong>今天的利润比五年前低 21%。</strong>三年平均之所以看起来"稳定"，只是因为它已经在低位横盘了三年。</p>
+<h3>说人话：你现在投 100 块进去，公司一年替你赚多少？</h3>
+<p><strong>按最保守的真实口径（18.4 倍 GAAP），一年赚 $5.43。</strong> 三年平均口径 $5.52，几乎相同。这是本批三家里最高的账面回报率（史赛克 $2.85，标普 $3.58）。</p>
+<p>这 $5.43 里，多少真正回到你口袋？</p>
+<ul>
+<li><strong>分红</strong>：TTM 派息 26.65 亿，股息率 <strong>2.29%</strong> → 投 100 块拿到 <strong>$2.29 的现金</strong>。这是三家里唯一像样的现金分红（史赛克 $1.01，标普 $0.92），而且劳氏已经<strong>连续 54 年提高股息</strong>。</li>
+<li><strong>回购</strong>：TTM 净回购只有 3.13 亿，股本减少 0.89% → 相当于 <strong>$0.89</strong>。跟历史上的两位数完全不是一个量级了。</li>
+<li><strong>合计股东回报 $3.18</strong>（股息率 2.29% + 回购收益率 0.89%）。</li>
+<li><strong>留在公司里的 $2.25</strong>：TTM 资本开支 22.16 亿（翻新门店）+ 还债 41.85 亿。<strong>注意，最大的一笔留存资金去向是还债，不是投资增长。</strong></li>
+</ul>
+<p>这里有个不太舒服的事实：<strong>账面赚 $5.43，实际回到你手上 $3.18，中间的差额有相当一部分是在还为收购 FBM 而借的钱。</strong>你是在替上一笔并购买单。</p>
+<p><strong>这个 $5.43 未来会变大还是变小？</strong></p>
+<p>这是全篇最难判断的一点，因为它取决于一个劳氏完全控制不了的变量：<strong>美国房贷利率</strong>。</p>
+<p><strong>看跌的理由（当下的事实）：</strong>
+- 核心业务实际增速 +1.5%，扣掉通胀是负的。
+- 回购引擎熄火，EPS 增长失去了过去五年唯一的驱动力。
+- 股东权益 −92.7 亿，425 亿债务，没有加杠杆的空间了。
+- 家得宝在 Pro 客户上领先且规模更大（营收约为劳氏的 1.7 倍），劳氏是追赶者，追赶者的利润率天然更薄。</p>
+<p><strong>看涨的理由（这个不是为了平衡硬凑的，是真实的）：</strong></p>
+<p>劳氏的<strong>单店经济学依然非常好</strong>：投入资本回报率 ROIC <strong>22.48%</strong>、已动用资本回报率 ROCE <strong>29.46%</strong>。这个数字比史赛克（ROIC 12.52%）高出快一倍。翻译过来：<strong>劳氏每往一家店里投 100 块钱，一年能赚回 22 块。</strong>这门生意的底子没坏，坏的是客流。</p>
+<p>而客流被卡住的原因是单一且可逆的：<strong>美国存量房换手率处在三十多年最低点，因为大家都锁在 3% 的旧房贷里不肯卖房</strong>。这个锁定效应会随时间自然消解（人总要因为工作、生育、离婚、去世而搬家），也会随房贷利率下行而快速解冻。</p>
+<p>一旦解冻，需求会<strong>同时</strong>从两端回来：搬家的人要装修（DIY），接活的包工头要材料（Pro）。而劳氏的成本结构是高度固定的（1,750 家店的租金、水电、人工），所以<strong>增量收入的边际利润率极高</strong>——营收回到 FY2021 的 962 亿而毛利率不变的话，经营利润率能从 11.55% 回到 13% 以上，净利润轻松回到 80 亿以上，也就是每股 $14.3，<strong>EPS 增长 21% 而公司什么都不用做</strong>。</p>
+<p>所以这只股票本质上是<strong>一张押注美国房贷利率下行的看涨期权，而且你在等待期间每年收 2.29% 的股息</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家生意底子很好、但已经原地踏步四年的成熟零售商，18 倍的市盈率不贵也不便宜——它便宜是有原因的，而这个原因（美国人不搬家了）劳氏自己解决不了。</strong></p>
+<p>把三个数字并排放，它的处境就一目了然了：</p>
+<ul>
+<li><strong>ROIC 22.48%</strong> —— 单店赚钱能力极强，这门生意本身是好的。</li>
+<li><strong>核心营收增速 +1.5%</strong> —— 但没有客人来。</li>
+<li><strong>回购从 141 亿降到 4.6 亿，股东权益 −92.7 亿</strong> —— 而过去五年掩盖问题的那块遮羞布，已经用完了。</li>
+</ul>
+<p>过去五年劳氏净利润跌了 21%，每股收益只跌了 1.7%，靠的是注销 20% 的股份。这不是造假，是完全合法且常见的资本运作，但它<strong>把一个"生意在萎缩"的故事包装成了"每股收益很稳"的故事</strong>。现在钱花在了 100 亿的并购上、债务堆到 425 亿、净资产为负，<strong>这个包装做不下去了</strong>。往后每一分 EPS 增长都得靠真实的客流。</p>
+<p>同时也别把它说得太惨。相比史赛克（35 倍市盈率、$2.85 的回报、回购为零、把钱全拿去并购），劳氏给你的是 <strong>18 倍、$5.43 的账面回报、2.29% 的实打实现金股息、54 年不间断的提息记录</strong>。你付的是一个成熟企业该有的价格，拿的是一份成熟企业该有的现金回报，没有人在骗你。</p>
+<p><strong>我的判断：</strong>
+- 如果你要的是<strong>每年拿现金、不指望增长</strong>，18 倍 + 2.29% 股息是一笔说得过去的买卖，年化回报大概 5–7%（股息 2.3% + 低个位数的 EPS 增长）。
+- 如果你想赚大的，那你实际上是在赌美国房贷利率下行。<strong>这个赌注是合理的（利率总会下来），但劳氏不是最好的下注工具</strong>——家得宝规模更大、Pro 占比更高、资产负债表更健康，同样的房地产解冻，它的弹性只多不少。
+- <strong>在 18 倍这个价格上，我不会主动买。</strong>真正的机会窗口是它跌到 14–15 倍（约 $175）的时候——那时候你等于免费拿到了房地产解冻的期权。现在这个价格，期权已经算了一半的钱进去了。</p>
+</div></body></html>

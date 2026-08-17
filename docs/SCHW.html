@@ -1,0 +1,315 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SCHW · 嘉信理财（The Charles Schwab Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SCHW</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">利率股市交易量三个变量同时最友好，为顶点付溢价</div><h1>SCHW · 嘉信理财（The Charles Schwab Corporation）</h1>
+<p><strong>市值</strong> $1903.3 亿｜<strong>当前股价</strong> 约 $110｜<strong>行业</strong> 金融（证券经纪 + 储蓄银行控股）｜<strong>交易所</strong> NYSE
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动）｜<strong>分析日期</strong> 2026-08-14｜<strong>全榜名次</strong> 第 47 名</p>
+<blockquote>
+<p><strong>这是一家金融企业，下面第三部分用市净率 PB / 有形账面市净率 P/TBV / ROE / ROTCE / 净息差 NIM 这一套，而不是普通市盈率。</strong> 原因是：银行和券商的利润是「用别人的钱赚的息差」，资产负债表本身就是生产设备，同样 1 块钱利润，靠 10 倍杠杆赚的和靠 2 倍杠杆赚的，值的价钱完全不同——只看市盈率会把高杠杆的高风险公司误认成便宜货。市盈率作为参考仍会列出。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>先说一句会颠覆大多数人认知的话：嘉信理财主要不是靠帮你买卖股票赚钱的，它接近一半的收入来自「拿着你账户里没投出去的现金去放贷吃利差」。它本质上是一家银行，只不过前台挂着券商的招牌。</strong></p>
+<p>财报把收入拆成五类，按大小排：</p>
+<h3>生意一：净利息收入（127.23 亿，占 48.9%）—— 真正的主业</h3>
+<p><strong>这是嘉信最赚钱、也最被误解的一块。机制说透了极其简单：</strong></p>
+<p>你在嘉信开户，卖掉一只股票，或者刚打进来 10 万美元准备找机会。这笔现金不会躺在你的证券账户里——它会<strong>自动「扫」（sweep）进嘉信旗下的银行</strong>，变成一笔银行存款。嘉信付给你的利率极低，通常年化 0.05% 到 0.45%。然后嘉信拿这笔钱去买美国国债、买抵押贷款支持证券、或者放贷给别的客户，<strong>收 4% 到 5%</strong>。</p>
+<p><strong>具体算一笔：</strong> 你放 10 万美元现金在嘉信账上等着抄底，嘉信一年付你 0.05%，也就是 <strong>50 美元</strong>。同一时间，嘉信把这 10 万买了两年期国债收 4.3%，拿到 <strong>4300 美元</strong>。中间的 <strong>4250 美元</strong> 全归嘉信。你什么都没做错，你只是没注意到「现金默认扫进银行」这个设置。乘上全公司几千亿美元的客户闲置现金，就是这 127 亿。</p>
+<p>另一半是<strong>融资融券（margin loan）</strong>：你想加杠杆，把手里 20 万的股票抵押给嘉信，借出 10 万再买股票。嘉信收你年化约 10%（大额账户能谈到 6–7%），而它借这笔钱的成本只有 0.05%（就是别的客户的闲置现金）。<strong>它等于是把 A 客户的活期存款，以 10% 的利率借给了 B 客户。</strong></p>
+<p>这块 TTM 收入 127.23 亿，比上一个完整财年增长约 8%，是全公司增长最主要的来源。</p>
+<h3>生意二：资产管理与账户服务费（69.90 亿，占 26.9%）</h3>
+<p>分三层收钱：</p>
+<p><strong>第一层，自家产品的管理费。</strong> 嘉信自己发行 ETF（比如 SCHD 高股息 ETF、SCHB 全市场 ETF）和一大堆货币市场基金。货币基金是重头——费率约 0.34%，客户觉得「这是现金，安全」，其实每年被抽走 0.34%。</p>
+<p><strong>第二层，独立理财顾问（RIA）平台的托管。</strong> 这是嘉信最独特的一块。美国有大约一万多家独立理财顾问公司，自己不做后台，把客户资产托管在嘉信。<strong>具体举例：</strong> 一家管着 3 亿美元的小型 RIA 公司，把全部客户账户开在嘉信。嘉信不向这家 RIA 收托管费（免费是它抢生意的武器），但这 3 亿里的现金部分自动扫进嘉信银行吃息差，货币基金部分收 0.34% 管理费，用到的第三方共同基金嘉信还向基金公司收「上架费」（shelf space fee）。一家 3 亿规模的 RIA，一年给嘉信贡献大约 100 万到 150 万美元收入，<strong>而这家 RIA 自己一分钱都没付</strong>。</p>
+<p><strong>第三层，向别人的基金收上架费。</strong> 你在嘉信平台上买富达或先锋的基金「免佣金」，是因为那些基金公司向嘉信付了钱。</p>
+<p>TTM 收入 69.90 亿，增长约 7.4%，随股市涨跌走——市场涨，管理资产涨，费收入自然涨。</p>
+<h3>生意三：交易收入（43.65 亿，占 16.8%）—— 零佣金之后钱从哪来</h3>
+<p>2019 年嘉信率先把股票佣金砍到零，逼得全行业跟进。那现在这 43.65 亿是什么？</p>
+<p><strong>主要是订单流付款（PFOF）。</strong> 你在嘉信 App 上点「买 100 股苹果」，这笔订单不会直接送到纽交所——嘉信把它卖给 Citadel Securities、Virtu 这类高频做市商，做市商付给嘉信大约每股 0.1 到 0.2 美分。<strong>你的一笔 100 股订单，嘉信赚到大约 0.1 到 0.2 美元。</strong> 做市商用什么赚回来？用买卖价差和你订单里的信息。零佣金不是免费，只是把明码标价的佣金变成了藏在成交价里的隐性成本。</p>
+<p><strong>期权是明收费的</strong>：每张合约 $0.65。一个活跃的期权交易者一个月做 200 张合约，一年给嘉信 1560 美元。</p>
+<p>另外还有融券（把你的股票借给做空的人，收借券费，一部分分给你、大部分留给自己）和期货交易费。</p>
+<p>TTM 收入 43.65 亿，增长约 11%——市场活跃度高、散户参与度高的时候这块就涨。</p>
+<h3>生意四：银行存款账户费（11.13 亿，占 4.3%）</h3>
+<p>这是收购 TD 美国证券（TD Ameritrade）继承下来的：部分客户现金放在加拿大道明银行（TD Bank）的账上，嘉信按约定分成。这是一块正在按合约逐年缩小的收入，属于历史遗留。</p>
+<h3>生意五：其他服务费（8.34 亿，占 3.2%）</h3>
+<p>零碎：账户维护费、纸质对账单费、汇款费、遗产账户处理费之类。</p>
+<h3>钱怎么分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万$）</th>
+<th>较上一财年</th>
+<th>占总收入</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入</td>
+<td>12,723</td>
+<td>+8.3%</td>
+<td>48.9%</td>
+<td>息差，随利率和客户现金余额走</td>
+</tr>
+<tr>
+<td>资产管理与账户服务费</td>
+<td>6,990</td>
+<td>+7.4%</td>
+<td>26.9%</td>
+<td>按资产规模抽成，随股市走</td>
+</tr>
+<tr>
+<td>交易收入</td>
+<td>4,365</td>
+<td>+11.3%</td>
+<td>16.8%</td>
+<td>订单流 + 期权，随市场活跃度走</td>
+</tr>
+<tr>
+<td>银行存款账户费</td>
+<td>1,113</td>
+<td>+13.9%</td>
+<td>4.3%</td>
+<td>TD 遗留分成，长期缩小</td>
+</tr>
+<tr>
+<td>其他服务费</td>
+<td>834</td>
+<td>+8.7%</td>
+<td>3.2%</td>
+<td>零碎</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>26,025</strong></td>
+<td><strong>+20.3%（真实TTM同比）</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>13,058</td>
+<td></td>
+<td>利润率 50.2%</td>
+<td></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>9,722</td>
+<td></td>
+<td>利润率 38.8%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>「较上一财年」是 TTM 与 FY2025 相比，两者错开半年，只看方向；总收入那行的 +20.3% 才是财报给的真实 TTM 同比。财报不披露分部利润，此处不估算——因为券商的成本（客服中心、分支机构、合规、IT）几乎无法按收入类型分摊，硬估会误导。</p>
+</blockquote>
+<p><strong>看懂这家公司只需要记住一件事：它的收入 49% 靠利率，27% 靠股市点位，17% 靠市场活跃度。三样全都不在它自己手里。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 3.49 亿，占净利润 3.6%。跟营收 260 亿比更是零头。对一家 3.3 万人的金融公司来说这个数字非常克制——嘉信给员工发的是现金奖金，不是股票。按规矩 SBC 当真实成本扣，但扣不扣结果差不多。</p>
+<p><strong>一次性项目</strong>：TTM 没有重大的一次性项目。但必须提上一段历史，因为它直接决定第三部分的估值判断：<strong>2023–2024 年嘉信经历过一次真正的危机。</strong> 美联储快速加息后，客户发现账上现金只拿 0.05%，纷纷把钱搬去货币基金和别处（行业叫「现金搬家 / cash sorting」）。嘉信的低成本存款一下子流失，只能去联邦住房贷款银行（FHLB）借高息资金顶上，净利息收入被压死——FY2024 净利润只有 54.78 亿，比 FY2022 的 66.35 亿还低。<strong>现在 TTM 的 97.22 亿，是从那个坑里爬出来之后的高位。</strong> 单看 TTM 一期完全看不到这段，会误以为这家公司一直这么赚钱。</p>
+<p><strong>资本化的支出</strong>：券商没什么可资本化的，没有软件开发费大额资本化的迹象。折旧摊销 13.45 亿，其中相当一部分是 TD Ameritrade 收购形成的无形资产摊销（客户关系摊销），这是<strong>收购的会计后果，不是真实的经营损耗</strong>——这一项让 GAAP 利润低于实际现金利润。</p>
+<p><strong>回购与稀释</strong>：这是全篇最亮眼的一项。<strong>TTM 回购普通股 88.90 亿，同期 SBC 只有 3.49 亿，比值高达 25.5 倍。</strong> 规矩说大于 3 才算真回购——嘉信是 25 倍，这是彻头彻尾的真回购。股本 TTM 实际减少 3.36%，另外还赎回了 20.55 亿的优先股（优先股股息是实打实的现金支出，赎回等于永久省下这笔钱，对普通股东是纯利好）。</p>
+<p><strong>但这里藏着一个大问题：</strong> 回购 88.90 亿 + 分红 24.01 亿 + 赎回优先股 20.55 亿 = <strong>133.46 亿，而 TTM 净利润只有 97.22 亿。嘉信正在按利润的 137% 往外发钱。</strong> 多出来的钱从哪来？从缩表来——它在偿还前几年借的高息资金、卖掉部分投资组合、释放监管资本。这是一次性的红利，<strong>不可能年年持续</strong>。把这个回购速度当成常态去估值，会算错。</p>
+<p><strong>利润和现金流的差</strong>：这里必须说清楚一件事——<strong>券商和银行的「自由现金流」这个指标基本没有意义，不要看。</strong> 嘉信 TTM 经营现金流 114.17 亿，看起来跟净利润 97.22 亿差不多，但拆开看：应收账款变化 −578.72 亿、应付账款变化 +398.56 亿、受限现金和隔离资产变化 +178.04 亿——<strong>这些几百亿的进出全是客户的钱在账上进出，跟嘉信赚了多少钱毫无关系。</strong> FY2024 的经营现金流只有 26.70 亿，FY2023 却是 195.87 亿，波动 7 倍，而同期净利润只差 20%。</p>
+<p>所以对这家公司：<strong>看净利润和 ROE，不要看现金流，更不要看「自由现金流 107.89 亿、P/FCF 17.6 倍」这种数字——它是客户资金搬家的副产品，不是股东的钱。</strong></p>
+<p><strong>资本充足率</strong>：这四个财报页不提供 CET1 或一级杠杆率，<strong>此处不编数字</strong>。但要点是明确的：嘉信是储蓄贷款控股公司，它真正的约束不是 CET1 而是<strong>一级杠杆率</strong>（分母是全部资产，不按风险加权）——因为它的资产几乎全是国债和政府担保的抵押证券，风险权重极低，所以风险加权的指标根本不构成约束，反而是「总资产/资本」这个不看风险的比率卡着它。总资产估算约 4700 亿（用净利润 97.22 亿 ÷ ROA 2.07% 倒推），权益 439.6 亿，<strong>杠杆约 10.7 倍</strong>。这个杠杆水平对券商来说不算激进，但 2023 年的教训是：当资产端是长久期债券、负债端是随时能搬走的活期存款时，<strong>杠杆 10 倍就足以让一家公司陷入流动性危机</strong>。</p>
+<hr />
+<h2>第三部分：银行 / 券商口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>投 100 块的年回报</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>4.33 倍</strong></td>
+<td>—</td>
+<td>每 1 块钱账面净资产，你付 4.33 块</td>
+</tr>
+<tr>
+<td>ROE（净资产收益率）</td>
+<td>20.27%</td>
+<td>—</td>
+<td>公司用净资产赚钱的效率</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB</strong></td>
+<td>—</td>
+<td><strong>$4.68</strong></td>
+<td>最核心的一行：按账面价值口径，你投 100 块年赚 4.68 块</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td><strong>7.81 倍</strong></td>
+<td>—</td>
+<td>剔掉 TD Ameritrade 收购形成的约 196 亿商誉和无形资产后</td>
+</tr>
+<tr>
+<td>ROTCE（有形资本回报率，估算）</td>
+<td>约 39.9%</td>
+<td>—</td>
+<td>97.22 亿 ÷ 有形净资产约 243.7 亿</td>
+</tr>
+<tr>
+<td><strong>ROTCE ÷ P/TBV</strong></td>
+<td>—</td>
+<td><strong>$5.11</strong></td>
+<td>有形资产口径，你投 100 块年赚 5.11 块</td>
+</tr>
+<tr>
+<td>净息差 NIM（估算）</td>
+<td>约 2.89%</td>
+<td>—</td>
+<td>127.23 亿 ÷ 生息资产约 4400 亿</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（参考）</td>
+<td>20.05 倍</td>
+<td>$4.99</td>
+<td></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td><strong>不适用</strong></td>
+<td>—</td>
+<td>券商的经营现金流是客户资金流动，无意义</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td><strong>25.2 倍</strong>（每股 $110 ÷ 三年平均 EPS $4.38）</td>
+<td><strong>$3.97</strong></td>
+<td>TTM $5.50、FY25 $4.65、FY24 $2.99 的平均</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>ROTCE 和 NIM 是估算：有形净资产用市值 ÷ P/TBV 倒推，生息资产用总资产估算值扣除非生息部分。<strong>四个财报页不提供拨备覆盖率和 CET1，这两项此处留空，不编数字</strong>——顺带说一句，嘉信的贷款几乎全是有股票抵押的融资融券和优质住房抵押贷款，历史坏账率接近零，拨备指标对它本来也不是关键。</p>
+</blockquote>
+<p><strong>这张表里最重要的一行，还是最后一行。</strong></p>
+<p>当期市盈率 20.05 倍，三年平均 25.2 倍——<strong>当期利润比三年平均高出 26%。</strong> 这跟百事（当期 18.4、三年平均 20.4，只差 11%）的性质不一样，方向也更危险：嘉信当前的利润处在一个<strong>周期性的高位</strong>。原因很直白：现在利率高（息差宽）、股市在高位（管理费高）、市场活跃（交易收入高）——<strong>三个变量同时处在对它最有利的位置</strong>。FY2024 那个 2.99 美元的每股利润，就是这三个变量里最重要的那个（利率与现金搬家）反过来时会发生什么的实况录像。</p>
+<h3>说人话：你投 100 块进去，一年赚多少</h3>
+<p><strong>按最保守的口径（三年平均利润），你投 100 块，嘉信一年替你赚 3.97 块；按有形资产回报的口径，赚 5.11 块；按当期市盈率，赚 4.99 块。取最保守的：3.97 块。</strong></p>
+<p>而且必须加一句规矩要求的警告：<strong>这个回报是建立在 10.7 倍杠杆之上的。</strong> 嘉信 39.9% 的有形资本回报率听起来惊人，但它不是靠什么神奇的能力赚来的——是靠「用 0.05% 的成本拿到客户现金，再以 4.5% 投出去，然后把这件事放大 10 倍」。经济下行、利率下行、或者客户再来一次现金搬家时，这个数字会剧烈缩水，2024 年已经演示过一次（ROE 从 20% 掉到 11% 附近）。</p>
+<p>这 4.99 块（当期口径）里，钱是怎么回到你口袋的：</p>
+<ul>
+<li><strong>约 1.26 块以现金分红</strong>（24.01 亿 ÷ 1903 亿 = 1.26%）。很少，嘉信不是分红股。</li>
+<li><strong>约 4.67 块以回购</strong>（88.90 亿 ÷ 1903 亿）。股本一年真实减少 3.36%，你什么都不做，手里股票占公司的比例就自动变大 3.36%。<strong>这是嘉信回报股东的主要方式。</strong></li>
+<li>分红 + 回购合计 = 每年 5.93% 回到股东，<strong>已经超过了 4.99% 的当期利润率</strong>。多出来的部分靠缩表和释放监管资本，<strong>不可持续</strong>。</li>
+<li><strong>留在公司里的：负数。</strong> 嘉信当期不是在积累资本，是在把过去几年危机期间被迫囤起来的资本还给股东。</li>
+</ul>
+<p><strong>这个数字未来大概率变大还是变小？我的判断是：短期维持，中期偏向变小，而且波动会很大。</strong></p>
+<p>理由：往上的力量是客户资产还在净流入（嘉信在 RIA 托管市场的份额还在涨，散户开户数还在增），以及优先股赎回后每年少付的股息。往下的力量更硬——利率下行会直接压缩 127 亿的息差收入（这是接近一半的收入）；回购的资金来源（释放的监管资本）是一次性的，用完就没了；订单流付款一直有被监管禁掉的风险（SEC 讨论过多次），真被禁掉那 43 亿里的一大块会消失。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>嘉信是一家披着券商外衣的高杠杆银行，现在正处在利率、股市、交易量三个变量同时对它最友好的时刻，用 4.33 倍市净率、7.81 倍有形市净率买这个时刻，是在为周期的顶点付溢价。</strong></p>
+<p>它的生意本身是真好——RIA 托管平台的网络效应实实在在（一万多家理财顾问的后台系统迁移成本极高，几乎不可能搬走），零佣金抢来的散户基数是真的，客户现金自动扫进自家银行这个设计堪称印钞。25.5 倍的回购/SBC 比值和一年 3.36% 的股本缩减，也确实是在真心回报股东，这比绝大多数公司诚实。</p>
+<p>但两件事让我不觉得现在这个价划算：第一，<strong>三年平均口径下的回报只有 3.97%</strong>，说明你付的是高峰价；第二，<strong>它正在按利润的 137% 发钱</strong>，这个慷慨是有期限的。2024 年那次现金搬家危机距今才两年，公司结构一点没变——负债端仍然是随时能搬走的客户现金，资产端仍然是长久期的债券。同样的事完全可能再发生一次。</p>
+<p>一句话：好生意，但你现在买的是它最好的那一年的价格，而下一个 2024 年不需要理由就会来。</p>
+</div></body></html>

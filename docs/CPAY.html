@@ -1,0 +1,481 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CPAY · Corpay（原 FLEETCOR，中文常译"科佩支付"）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CPAY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">好生意被越来越激进的资本结构拖累</div><h1>CPAY · Corpay（原 FLEETCOR，中文常译"科佩支付"）</h1>
+<p>市值 $274.2 亿 | 股价 $417.60 | 行业：商业服务（企业支付） | TTM 截止 2026-06-30 | 交易所 NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Corpay 是一家<strong>专门替企业管住"钱怎么花出去"的公司</strong>。它不做消费者生意，你个人一辈子也不会用到它。它的客户是卡车队、修车厂、进出口商、航空公司、工程承包商——这些公司每个月有几百上千笔钱要付出去，Corpay 的产品就是<strong>把这些付款变成受控的、有数据的、能抽成的</strong>。</p>
+<p>它 2024 年 3 月前叫 FLEETCOR，从加油卡起家，这几年正在拼命把重心挪到企业支付上。财报分四段：</p>
+<h3>生意一：车辆支付（Vehicle Payments）—— 起家的老本行，靠"管住司机"赚钱</h3>
+<p>TTM 收入 <strong>$22.70 亿</strong>，占 45%，最大的一块，但增速最慢（约 +6.5%）。</p>
+<p><strong>具体怎么运作</strong>：一家有 200 辆卡车的物流公司，最头疼的事是柴油。柴油占它总成本的三成，而司机在外面跑，加油这件事完全不受控——司机可能在贵的油站加、可能顺手买两条烟记进油钱、可能加了 300 升报 400 升、甚至给自己的私家车加。</p>
+<p>Corpay 给这家公司发 200 张加油卡，一张卡绑一个司机一辆车。然后做四件事：</p>
+<ol>
+<li><strong>卡住能买什么</strong>：这张卡只能买柴油，买不了香烟零食；单次限 500 升；只能在指定油站刷；晚上 11 点到早 5 点不能用。司机想作弊，卡直接拒绝。</li>
+<li><strong>记下所有数据</strong>：每次刷卡自动记录司机工号、车牌、里程表读数、加了多少升。系统能自动算出"3 号车这个月油耗突然从 30 升/百公里跳到 38 升"，管理员立刻知道要么车有问题要么司机在偷油。</li>
+<li><strong>替客户去谈折扣</strong>：Corpay 手上握着几百万辆车的加油量，它去跟 Pilot、Flying J、TA 这些卡车服务区谈——"我一年给你导 20 亿加仑，你每加仑给我便宜 6 美分。"然后它把其中 4 美分让给车队客户（客户觉得赚了），<strong>自己留 2 美分</strong>。这 2 美分乘以几十亿加仑，就是几亿美元。</li>
+<li><strong>收费 + 放贷</strong>：每张卡每月收 2–4 美元管理费；每笔交易收手续费；最关键的是——<strong>这张卡是先用后付的，等于 Corpay 先垫钱给客户加油，月底再收账</strong>。晚付要收滞纳金和利息，<strong>这部分收入的利润率接近 100%</strong>。</li>
+</ol>
+<p>除了美国的加油卡，这块还包括英国的 Allstar 卡、欧洲各国的燃油卡，以及<strong>巴西的 Sem Parar</strong>——挡风玻璃上贴个电子标签，过高速收费站、进停车场、甚至去麦当劳得来速都能自动扣款。巴西这块因为覆盖场景多，是这个分部里增长最好的部分。</p>
+<p><strong>为什么客户离不开</strong>：一旦车队把 200 个司机的加油行为、里程数据、报销流程都跑在 Corpay 系统上，换供应商意味着重新发卡、重新培训、财务系统重新对接、历史数据断档。为了省那点手续费不值得。所以这块<strong>客户流失率常年在个位数</strong>。</p>
+<h3>生意二：企业支付（Corporate Payments）—— 真正的增长引擎</h3>
+<p>TTM 收入 <strong>$19.43 亿</strong>，占 39%，<strong>FY2025 比 FY2024 增长 33.8%</strong>，是全公司唯一高速增长的板块。这块本身又是两件事：</p>
+<p><strong>（A）应付账款自动化（AP Automation）</strong></p>
+<p>一家中型制造企业每月有 2000 张供应商发票要付。传统做法是财务部打印支票、盖章、寄出去，或者一笔笔做网银转账，三个人干一周。</p>
+<p>Corpay 的做法：企业把整个应付文件丢过来，Corpay <strong>替它把每一笔钱付出去</strong>，而且<strong>自己挑最划算的通道</strong>：
+- 能刷卡的供应商 → 走<strong>虚拟信用卡</strong>（生成一个一次性卡号，金额锁死 8,742.30 元，只有这家供应商能收）。这条路 Corpay 能拿到 <strong>1.5–2% 的刷卡手续费</strong>，返一部分给企业客户当"返现"，剩下的是自己的。
+- 不收卡的 → 走 ACH 或电汇，收固定手续费。
+- 老派供应商只认支票 → Corpay 替它打印寄出，收单笔费用。</p>
+<p><strong>这门生意的利润全在"虚拟卡占比"上</strong>。Corpay 的核心工作其实是养一支销售队伍，天天打电话给客户的供应商："别收支票了，收卡吧，钱到得快。"每多说服一家，Corpay 的收入就多一截。</p>
+<p><strong>（B）跨境付款与外汇（Cross-Border）</strong></p>
+<p>一家美国进口商要付中国供应商 500 万人民币。银行给的汇率通常比中间价差 1.5–2%，还要收 45 美元电汇费，而且钱要三天到。</p>
+<p>Corpay 报一个更好的价——比如只差 0.5%，当天到账。这 0.5%（50 个基点）<strong>就是它的全部利润</strong>。听起来薄，但一年经手几千亿美元的量，就是十几亿美元收入。它还卖远期和期权：进口商锁定六个月后的汇率，Corpay 收一笔点差。</p>
+<p>这块 2025 年因为收购<strong>英国 Alpha Group International</strong>（一家做企业外汇和跨境资金管理的公司）而体量暴增，这也是 Corporate Payments 增速冲到 34% 的主要原因。万事达卡（Mastercard）还入股了 Corpay 的跨境业务，等于给这块背书并导流。</p>
+<h3>生意三：住宿（Lodging）—— 在萎缩的一块</h3>
+<p>TTM 收入 <strong>$4.74 亿</strong>，占 9.4%，<strong>FY2025 同比 -3.9%，连续两年下滑</strong>。</p>
+<p>做两种生意：
+- <strong>蓝领工程住宿</strong>：一支 40 人的管道施工队要在德州乡下待三个月。Corpay 帮他们把附近汽车旅馆的房间批量包下来，谈到比前台价低三成，统一开一张发票给工程公司。
+- <strong>航空公司机组和滞留旅客住宿</strong>：达美一个航班晚上因故障取消，180 个旅客加机组要就近找房。Corpay 的系统实时对接酒店库存，几分钟内订完并把住宿凭证推到旅客手机上。</p>
+<p>Corpay 赚的是<strong>房价里的价差</strong>。这块下滑的原因是航空业运行改善（取消航班少了）加上能源工程周期走弱。它占比小、也不赚大钱，是个可有可无的板块——<strong>不排除未来被卖掉</strong>。</p>
+<h3>生意四：其他（Other）</h3>
+<p>TTM 收入 <strong>$3.34 亿</strong>，礼品卡、工资卡、一些零散产品。</p>
+<h3>四门生意的钱（TTM，截止 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>增速（FY25 vs FY24）</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>车辆支付 Vehicle Payments</td>
+<td>2,270</td>
+<td>45.2%</td>
+<td>+6.5%</td>
+<td>~51%（估算）</td>
+<td>~1,158</td>
+</tr>
+<tr>
+<td>企业支付 Corporate Payments</td>
+<td>1,943</td>
+<td>38.7%</td>
+<td><strong>+33.8%</strong></td>
+<td>~52%（估算）</td>
+<td>~1,010</td>
+</tr>
+<tr>
+<td>住宿 Lodging</td>
+<td>474</td>
+<td>9.4%</td>
+<td><strong>-3.9%</strong></td>
+<td>~40%（估算）</td>
+<td>~190</td>
+</tr>
+<tr>
+<td>其他 Other</td>
+<td>334</td>
+<td>6.6%</td>
+<td>+11.7%</td>
+<td>~30%（估算）</td>
+<td>~100</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,021</strong></td>
+<td>100%</td>
+<td><strong>+20.4%（TTM）</strong></td>
+<td><strong>48.97%</strong></td>
+<td><strong>2,458</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>口径说明</strong>：分部经营利润 Corpay 在这个数据源上<strong>没有披露</strong>，上表按整体经营利润 24.58 亿倒推、按各板块的业务性质分配，<strong>属于估算</strong>。营收分部数字是财报原文。</p>
+</blockquote>
+<p><strong>这家公司最惊人的一个数字是 80.5% 的毛利率和 49% 的经营利润率。</strong> 一家"支付公司"能有这个利润率，说明它卖的根本不是支付服务，而是<strong>控制权和数据</strong>——加油卡的价值不在于能付钱，在于司机偷不了油；AP 自动化的价值不在于能转账，在于财务部少雇三个人。这类东西的定价权跟"转一笔账收多少钱"完全不在一个层次。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）—— 中等偏低，可以接受</h3>
+<p>TTM 股权激励 <strong>$1.149 亿</strong>，占净利润 11.34 亿的 <strong>10.1%</strong>，占营收的 2.3%。这个水平在软件/支付行业里算克制的（很多同行在 20–30%）。<strong>按规矩已在 GAAP 净利润里扣掉，本文不加回。</strong></p>
+<h3>一次性项目 —— 有一笔 $1.65 亿的资产出售收益，它在<strong>虚增</strong>利润</h3>
+<p>这是本篇最需要抓住的一项。TTM 现金流量表上有一行：<strong>Loss (Gain) From Sale of Assets = -$164.78 百万</strong>——负号在现金流表里意味着这是一笔<strong>收益</strong>，要从净利润里扣掉才能还原成经营现金流。</p>
+<p>也就是说，<strong>TTM 的 11.34 亿净利润里，有 1.65 亿（税前）不是做生意赚的，是卖东西赚的。</strong> 按 31.2% 的实际税率折算，税后约 <strong>$1.13 亿</strong>——<strong>占净利润的 10.0%</strong>。</p>
+<p>剔掉它，真实经营性净利润是 <strong>$10.21 亿</strong>，不是 11.34 亿。</p>
+<p>看历年这一行，能判断这是不是"年年都有的一次性"：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产出售收益</td>
+<td>164.78</td>
+<td>42.26</td>
+<td>121.31</td>
+<td>13.71</td>
+<td>0</td>
+</tr>
+<tr>
+<td>资产减值/重组</td>
+<td>0</td>
+<td>0</td>
+<td>-90</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：Corpay 是个连续买卖资产的公司，处置收益基本年年都有，但金额忽大忽小（从 0.14 亿到 1.65 亿）。</strong> 它既不能当成纯粹的一次性剔干净，也绝不能当成可持续的经营利润。本文在第三部分把它<strong>全额剔除</strong>，因为你买这家公司不是为了买它卖资产的能力。</p>
+<h3>资本化的支出 —— 干净，但要注意"无形资产摊销"这个陷阱</h3>
+<p>资本开支 TTM 只有 <strong>$2.09 亿</strong>，占营收 4.2%，很轻。</p>
+<p>真正的问题在另一处：<strong>折旧摊销 3.40 亿 + 其他摊销 1.26 亿 = 4.66 亿</strong>，其中绝大部分是<strong>收购来的无形资产摊销</strong>（客户关系、商标、技术）。Corpay 是个<strong>连续收购者</strong>——过去五年不停买公司，每买一家就产生一大坨无形资产，然后逐年摊销。</p>
+<p><strong>公司的 Non-GAAP 口径会把这笔摊销全部加回去</strong>，理由是"这不是真实的现金支出"。这个理由<strong>在 Corpay 身上特别站不住脚</strong>：如果一家公司的增长本身就是靠不停花钱买来的，那么买来的东西每年贬值就是<strong>真实成本</strong>，加回去等于假装收购是免费的。这是本文第三部分对公司 Non-GAAP 口径打大折扣的核心理由。</p>
+<h3>坏账拨备 —— 一个正在恶化、容易被忽略的信号</h3>
+<p>现金流量表里"坏账拨备与核销"TTM <strong>$1.511 亿</strong>，看历年：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>坏账拨备</td>
+<td>151.13</td>
+<td>122.64</td>
+<td>103.13</td>
+<td>125.15</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两年涨了 47%，占营收从 2.6% 升到 3.0%。</strong> 这不是小事——<strong>加油卡本质上是给几万家小卡车公司的无抵押循环信用</strong>。美国货运市场从 2023 年起持续低迷，运价长期在成本线附近，小车队大量倒闭。<strong>坏账上升是这个行业周期最直接的读数。</strong> 目前还没到失控（3% 营收占比在可控范围），但方向不好，值得持续盯。</p>
+<h3>回购与稀释 —— 真回购，力度极大，但用了杠杆</h3>
+<ul>
+<li>TTM 回购 <strong>$18.04 亿</strong></li>
+<li>员工行权发行新股 +$0.98 亿 → <strong>净回购 $17.06 亿</strong></li>
+<li>TTM 股权激励 <strong>$1.149 亿</strong></li>
+<li><strong>回购 / SBC = 15.7 倍</strong>（大于 3 就算真回购）</li>
+</ul>
+<p>实际效果：<strong>流通股一年减少 3.28%</strong>，从约 6,790 万股降到 <strong>6,566 万股</strong>。<strong>Corpay 完全不分红</strong>（除息日显示 n/a），股东回报 100% 靠回购。</p>
+<p>但要说清楚代价：<strong>TTM 回购 18.04 亿 &gt; 自由现金流 16.38 亿</strong>，而同期<strong>净借款 +25.26 亿</strong>，总债务从 102.90 亿涨到 <strong>107.42 亿</strong>。<strong>回购的钱有相当一部分是借的。</strong> 债务/EBITDA 3.80 倍，利息保障 5.61 倍——不算危险，但也不宽裕。</p>
+<h3>利润和现金流的差 —— 数字对得上，但中间那两行大得吓人</h3>
+<p>TTM：净利润 11.34 亿，经营现金流 18.47 亿，自由现金流 16.38 亿。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,134</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+339.8</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他摊销（收购无形资产）</td>
+<td>+126.4</td>
+<td>不花现金，但代表买来的东西在贬值</td>
+</tr>
+<tr>
+<td><strong>− 资产出售收益</strong></td>
+<td><strong>-164.8</strong></td>
+<td><strong>卖东西赚的，不是经营赚的，扣掉</strong></td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+114.9</td>
+<td>发股票不花现金，但稀释了你</td>
+</tr>
+<tr>
+<td>+ 坏账拨备</td>
+<td>+151.1</td>
+<td>计提时不花现金</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>+116.3</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>-841.7</strong></td>
+<td><strong>垫给客户的钱</strong>（先替客户加油、先替客户付供应商）</td>
+</tr>
+<tr>
+<td><strong>+ 应付账款增加</strong></td>
+<td><strong>+997.9</strong></td>
+<td><strong>还没付给商户的钱</strong>（欠油站、欠供应商）</td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>-133.5</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,847</strong></td>
+<td>对上（差 6 百万为四舍五入）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-208.9</td>
+<td>只占营收 4.2%</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,638</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最该看懂的是应收 -8.42 亿和应付 +9.98 亿这两行。</strong> 它们各自的绝对值都超过全年营收的 16%，而净额只有 +1.56 亿。这揭示了 Corpay 的一个本质：<strong>它是一台巨大的资金中转机器</strong>——一手替客户垫付（应收），一手拖欠商户（应付），中间的时间差就是它的免费资金。</p>
+<p><strong>这个结构在生意好的时候是印钞机，在生意差的时候是绞索。</strong> 一旦客户还钱变慢（坏账已经在涨了）、而油站要求更快结算，这两行就会反向撕裂，经营现金流可以在一个季度内蒸发几亿。这解释了为什么 Corpay 的经营现金流历年剧烈波动（FY2022 只有 7.55 亿，FY2023 跳到 21.01 亿，FY2025 又回到 15.00 亿）。<strong>别把任何单一年份的现金流当成常态。</strong></p>
+<p>另外还有一件事必须点明：现金流量表上"收购支出"TTM 是 <strong>+$20.88 亿（正数，净流入）</strong>，投资活动现金流整体也是 <strong>+17.71 亿（净流入）</strong>。收购怎么会赚钱？因为 Corpay 买下的是<strong>支付公司（Alpha Group）</strong>，这类公司账上趴着大量<strong>客户的钱</strong>（客户委托它去做跨境结算、还没付出去的资金）。收购一完成，这些客户资金就并进了 Corpay 的资产负债表，在现金流表上体现为巨额现金流入。</p>
+<p><strong>这笔钱不是 Corpay 的，是客户的，随时要付出去。</strong> 所以看到"净现金流 +46.37 亿"这个数字时千万别兴奋——<strong>它绝大部分是过路资金，不是公司的财富</strong>。同期真正属于公司的"现金及投资"只从 24.22 亿涨到 31.83 亿。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>净利润基数 TTM = 11.34 亿；剔除资产出售收益后 = 10.21 亿；市值 274.19 亿；企业价值 349.78 亿（= 市值 + 净负债 75.58 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>274.19 ÷ 11.34</td>
+<td><strong>24.2 倍</strong></td>
+<td><strong>$4.13</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>274.19 ÷ 约 13.75（估算）</td>
+<td>约 19.9 倍</td>
+<td>约 $5.02</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>274.19 ÷ 10.21（剔除资产出售收益，SBC 与无形资产摊销均不加回）</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.72</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>274.19 ÷ 16.38</td>
+<td><strong>16.7 倍</strong></td>
+<td><strong>$5.98</strong>（但看下面的警告）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>349.78 ÷ 24.58</td>
+<td><strong>14.2 倍</strong></td>
+<td>$7.03（全部资本口径，约三成归债主）</td>
+</tr>
+<tr>
+<td>三年平均利润口径（GAAP）</td>
+<td>274.19 ÷ [(11.34+10.68+10.04)÷3 = 10.69]</td>
+<td><strong>25.7 倍</strong></td>
+<td><strong>$3.90</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径（剔除一次性）</td>
+<td>274.19 ÷ 约 10.14</td>
+<td><strong>27.0 倍</strong></td>
+<td><strong>$3.70</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>三点必须说明：</strong>
+1. <strong>按每股口径算，GAAP 市盈率是 25.4 倍</strong>（股价 417.60 ÷ 每股收益 16.41），比上表的 24.2 倍高——差别来自这一年股本减少了 3.28%，用期末股数算会低估。<strong>保守起见应该看 25.4 倍。</strong>
+2. <strong>Non-GAAP 一行是估算</strong>：财报页不提供公司的调整后利润。上表按"加回无形资产摊销和股权激励、剔除资产出售收益"估算。但真实情况可能更夸张——<strong>前瞻市盈率显示为 14.31 倍，反推出市场预期的调整后每股利润高达约 $29，比 GAAP TTM 的 $16.41 高出 78%</strong>。当一家公司的"调整后利润"是 GAAP 的 1.8 倍时，你唯一该做的事是<strong>忽略它</strong>。
+3. <strong>自由现金流口径 16.7 倍是全表最不可信的一个数字</strong>。上面对账表已经说明，Corpay 的经营现金流被应收应付两条巨额科目主导，历年在 7.5 亿到 21 亿之间剧烈摆动。<strong>用某一年的现金流去算估值，等于用一次抽样代表一个分布。</strong></p>
+</blockquote>
+<h3>最有价值的一行：三年平均 vs 当期</h3>
+<p><strong>GAAP 当期 24.2 倍，三年平均 25.7 倍，剔除一次性后的三年平均 27.0 倍。</strong> 三个数字彼此接近，没有出现"当期利润是周期高点"的典型信号（对比 NVDA 当期 34 倍、三年平均 73.5 倍）。</p>
+<p>这说明一件事：<strong>Corpay 的利润确实在稳步增长（FY2021 的 8.40 亿到 TTM 的 11.34 亿，四年 +35%），但增速远没有它讲的故事那么快——年化只有 7.8%。</strong> 而同期营收从 28.34 亿涨到 50.21 亿，<strong>年化 15.4%，是利润增速的两倍</strong>。</p>
+<p><strong>利润跑不赢营收，是这家公司最重要的一个特征。</strong> 看利润率的滑坡就明白了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+<th>FY2021</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润率</td>
+<td>48.97%</td>
+<td>47.32%</td>
+<td>44.18%</td>
+<td>44.09%</td>
+<td>42.21%</td>
+<td>43.85%</td>
+</tr>
+<tr>
+<td><strong>净利率</strong></td>
+<td><strong>22.58%</strong></td>
+<td><strong>23.59%</strong></td>
+<td><strong>25.25%</strong></td>
+<td><strong>26.13%</strong></td>
+<td><strong>27.85%</strong></td>
+<td><strong>29.63%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营利润率在涨（43.9% → 49.0%），净利率却在跌（29.6% → 22.6%）。</strong> 中间被吃掉的 6.4 个百分点去哪了？<strong>利息和税。</strong> 经营利润 24.58 亿，税前只剩 16.70 亿——<strong>近 8 亿、也就是 32% 的经营利润拿去付利息了</strong>，这是过去几年不停借钱做收购和回购的结果。</p>
+<p><strong>翻译成人话：Corpay 用债务买增长，营收买上来了，但利息把利润吃掉了一大半。股东实际拿到的每一块钱，增长速度只有营收的一半。</strong></p>
+<h3>说人话：你投 100 块进去，一年拿多少</h3>
+<p><strong>按最保守的真实口径（26.9 倍），公司一年替你赚 $3.72。</strong></p>
+<p>这 3.72 块的去向非常干脆：</p>
+<ul>
+<li><strong>分红：$0。</strong> Corpay 一分钱不分。</li>
+<li><strong>回购：TTM 花了 18.04 亿，折算到你 100 块本金上是 $6.58</strong>——远超它赚的 3.72。多出来的部分是借的。回购把股本减了 3.28%，<strong>这确实实实在在提高了你每股的份额</strong>。</li>
+<li><strong>留在公司里再投资：资本开支只花了 2.09 亿（占自由现金流 13%）</strong>，剩下的现金全部用来还债、付利息、做收购。</li>
+</ul>
+<p>所以真实图景是：<strong>Corpay 是一家不分红、把赚的钱加上借来的钱一起砸进回购和收购的公司。</strong> 你的回报形式是"股本每年减少 3%" + "每股利润靠收购和有机增长往上推"。这个模式在利率低、并购标的便宜的时候非常有效；在利率高的时候，<strong>它就变成了用 5–6% 的债务成本去买回一个盈利收益率只有 3.7% 的股票——这笔账算不过来。</strong></p>
+<p><strong>这个 $3.72 未来会变大还是变小？会变大，但速度大概率低于市场预期。</strong></p>
+<p>变大的力量是真实的：企业支付板块增长 34% 且占比已到 39%，跨境外汇因为 Alpha Group 的并入体量翻倍，AP 自动化的虚拟卡渗透率还有很大提升空间，万事达卡的股东背书能带来渠道。<strong>这些是真东西，不是故事。</strong></p>
+<p>拖后腿的力量同样真实，而且有三个：
+1. <strong>加油卡（45% 的收入）只增长 6.5%，且面临电动化的长期威胁</strong>——卡车电动化目前还慢，但一旦发生，"管住司机加油"这门生意的存在基础就没了。
+2. <strong>坏账两年涨了 47%</strong>，货运行业还没走出低谷。
+3. <strong>32% 的经营利润被利息吃掉</strong>，而债务还在增加。<strong>Corpay 的每股利润增长有很大一部分不是经营改善，是回购的数学游戏</strong>——而回购的钱是借的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家真正的好生意，但正在被一个越来越激进的资本结构慢慢拖累，而且现在的价格已经把好的部分算进去了。</strong></p>
+<p>好的部分不假：80% 毛利、49% 经营利润率、客户换不掉、ROIC 14.55% 对 WACC 7.28%——<strong>它每投一块钱能创造两倍于资金成本的回报，这是真正在创造价值的公司</strong>（对比上一家分析的 FirstEnergy，ROIC 4.96% 对 WACC 5.00%，创造的价值恰好是零）。企业支付板块 34% 的增长也是真实的、有护城河的。</p>
+<p>但你要为这些付 <strong>26.9 倍的真实市盈率、7.74 倍的市净率</strong>，买一家：<strong>四成五的收入在个位数增长、坏账两年涨 47%、三分之一的经营利润拿去付利息、不分一分钱红、回购的钱要借、而且过去五年净利率从 29.6% 一路跌到 22.6%</strong> 的公司。股价过去一年已经涨了 <strong>31.9%</strong>，RSI 68.6，明显不在便宜区间。</p>
+<p><strong>最诚实的判断是：这家公司值得拥有，但不值得在 417 块买。</strong> 它的合理价位大概在 <strong>20 倍真实利润附近，也就是 310 元上下</strong>。真正该等的信号有两个——<strong>要么企业支付板块把占比推过 50%、让整体增速真正提上去，要么货运周期见底、坏账掉头往下</strong>。在那之前，你付的是成长股的价钱，买的是一家增速被利息吃掉一半的公司。</p>
+</div></body></html>

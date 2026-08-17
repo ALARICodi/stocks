@@ -1,0 +1,379 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CVS · CVS Health（西维斯健康）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CVS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">真实26.6倍，现金全去还债还在稀释你</div><h1>CVS · CVS Health（西维斯健康）</h1>
+<p><strong>市值</strong> $1,214.9 亿 ｜ <strong>股价</strong> 约 $94.9 ｜ <strong>行业</strong> 零售贸易 / 医疗健康 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NYSE ｜ <strong>筛选榜名次</strong> 第 73 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>CVS 财报把自己拆成三块，这三块<strong>确实是三门完全不同的生意</strong>，只是被同一个壳装在一起。三块加起来的营收是 4,860 亿美元，但公司总营收只有 4,151 亿——中间差掉的 709 亿是"内部互相卖货"抵消掉的（自己卖给自己不能算两遍）。这个 709 亿本身就说明了这家公司的结构：三门生意之间有大量互相供货。</p>
+<h3>生意一：Aetna 医疗保险（Health Care Benefits）</h3>
+<p><strong>这是一门收保费、赔医药费的生意。</strong></p>
+<p>具体怎么运作：一家有 5,000 名员工的美国制造企业，要给员工上医保。它找到 Aetna，谈下一个方案——每个员工每月 780 美元，公司出 600、员工自己出 180。5,000 人一年就是 4,680 万美元保费进 Aetna 的口袋。然后这一年里，员工去看病、住院、做手术、拿处方药，账单寄给 Aetna，Aetna 按合同报销。假如这 5,000 人这一年一共花掉 4,350 万，Aetna 就赚了 330 万（毛的，还没扣自己的运营成本）。</p>
+<p>保险公司的死穴就一个数字：<strong>赔付率</strong>（收 100 块保费，赔出去多少）。行业里这个数字在 85%–88% 算健康，超过 90% 就是在流血。Aetna 在 2024–2025 年这两年赔付率失控——原因是政府 Medicare Advantage（美国老人医保的商业化版本）报销规则收紧，同时老人在疫情后集中做被推迟的手术，赔付猛增。CVS 2025 年全年净利润只剩 17.7 亿，就是被这块拖垮的。TTM 口径已经明显在恢复。</p>
+<p>Aetna 的客户分三类：企业团体险（上面那个例子）、Medicare Advantage（政府按人头付给 Aetna 一笔钱，Aetna 包干这个老人一年的所有医疗费——赚的是"包干额 − 实际花费"的差）、Medicaid（穷人医保，逻辑同上，各州政府发包）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>$1,457.95 亿</td>
+</tr>
+<tr>
+<td>估算同比</td>
+<td>+6.4%</td>
+</tr>
+<tr>
+<td>占三块合计</td>
+<td>30.0%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>约 1.5%</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 $22 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：Caremark 药品福利管理（Health Services）</h3>
+<p><strong>这是一门"帮别人砍药价，然后从砍下来的钱里抽成"的生意，是 CVS 最赚钱、也最被政客骂的一块。</strong></p>
+<p>具体怎么运作：一家有 20 万员工的大公司（比如某航空公司）每年要给员工报销几亿美元的处方药。它自己没能力跟辉瑞、礼来这些药厂谈价，就把这件事外包给 Caremark。Caremark 手上握着<strong>全美一亿多人的处方药购买量</strong>，拿这个体量去跟药厂谈：「你这个降糖药标价 800 美元一个月，我给你 1 亿人的渠道，你回扣给我 55%。」药厂同意，因为不同意就进不了 Caremark 的报销名单（叫 formulary，"处方集"），进不了名单医生开了病人也不报销，销量归零。</p>
+<p>谈下来的回扣，Caremark 把大部分返给那家航空公司（这是它的卖点），自己留一小部分；同时按每张处方收一笔管理费（几毛到一两美元不等）。一家 20 万员工的公司，一年可能给 Caremark 付几千万美元的管理费，同时省下几亿的药费。</p>
+<p>这块营收看起来巨大（2,005 亿）是因为<strong>药品的流水全部计入营收</strong>——Caremark 名义上"买下"药再"卖给"计划成员，所以一盒标价 800 美元的药走一遍它的账，营收就 +800，成本 +780，实际只赚 20。所以它营收占比 41%，利润率却只有 3% 出头。</p>
+<p>这块还包含 Oak Street Health（CVS 2023 年花 106 亿收购的老年人诊所连锁）和 Signify Health（上门做健康评估的，2023 年花 80 亿买的）。这两笔加起来 186 亿的收购，是 CVS 目前 763 亿总负债的主要来源之一。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>$2,005.42 亿</td>
+</tr>
+<tr>
+<td>估算同比</td>
+<td>+10.2%</td>
+</tr>
+<tr>
+<td>占三块合计</td>
+<td>41.3%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>约 3.5%</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 $70 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：药店与消费品零售（Pharmacy &amp; Consumer Wellness）</h3>
+<p><strong>这是那 9,000 家街角门店，一半是药房柜台，一半是杂货便利店。</strong></p>
+<p>一个美国人拿着医生开的处方单走进 CVS，柜台后面的药剂师配好药，收他 25 美元自付额，剩下的 320 美元 CVS 去找他的保险公司要。这一单 CVS 大概赚 20–35 美元。这就是"药房柜台"的生意——<strong>占这块营收的四分之三以上</strong>，而且这门生意的对手方（保险公司/PBM）年年在压低报销价，是一门利润率被持续挤压的生意。</p>
+<p>另一半是"店前零售"（front store）：洗发水、感冒药、零食、贺卡、化妆品。这部分毛利率高得多（30%+），但被亚马逊和沃尔玛持续侵蚀，CVS 这几年一直在关店——从峰值 9,900 家关到现在 9,000 家出头。</p>
+<p>另外这块还包含疫苗接种（流感、新冠、带状疱疹），一针几十美元、几乎纯利润，是 2021–2022 年的暴利来源，现在已经回落到正常水平。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>$1,396.79 亿</td>
+</tr>
+<tr>
+<td>估算同比</td>
+<td>+5.9%</td>
+</tr>
+<tr>
+<td>占三块合计</td>
+<td>28.7%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>约 4.0%</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 $56 亿</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>注</strong>：CVS 的分部经营利润在 stockanalysis 的四张财务页上没有披露，上面三行"贡献利润"是我按整体经营利润 82.88 亿倒推的估算——三块估算合计约 148 亿，减去公司总部费用、无形资产摊销和内部抵消约 65 亿，回到 82.88 亿。<strong>这三个利润数字是估算，不是财报原文。</strong></p>
+</blockquote>
+<p><strong>这三门生意为什么绑在一起？</strong> CVS 的官方说法是"闭环"：Aetna 的参保人去 CVS 药店买药，处方走 Caremark 的通道，Caremark 把回扣返给 Aetna，Aetna 的赔付成本因此下降。理论上成立。实际上这个闭环在 2024–2025 年 Aetna 赔付率失控时完全没起到保护作用——说明三门生意的协同没有故事讲的那么强。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 7.15 亿美元，占净利润 48.9 亿的 <strong>14.6%</strong>。这笔钱 GAAP 里已经扣掉了，我不加回去——它是真成本，员工拿到的股票是从你的持股比例里稀释出来的。对一家 4,151 亿营收的公司来说，7 亿的 SBC 占营收只有 0.17%，在大型公司里算非常克制的。</p>
+<p><strong>一次性项目</strong>：TTM 现金流量表里的"其他调整"只有 1.44 亿，干净。对比一下 2025 财年这一项是 <strong>52.44 亿</strong>——那是巨额的非现金减值和保费不足准备金（Aetna 那次爆雷）。<strong>TTM 这一期看不出大额一次性项目，但单看一期无法判断这类减值是不是每隔两三年就来一次</strong>——从 CVS 过去五年的记录看（2022、2025 都有大额扰动），倾向于认为"一次性"在这家公司是常态。</p>
+<p><strong>资本化的支出</strong>：资本开支 30.22 亿，主要是门店翻新和 IT 系统，占营收 0.73%，没有软件开发费大规模资本化的痕迹。折旧摊销 45.22 亿高于资本开支 30.22 亿，差额是收购来的无形资产（Aetna、Oak Street、Signify 的客户关系和商标）在摊销——这部分不需要用现金再投入，所以现金流会持续好于账面利润。</p>
+<p><strong>回购与稀释——这里有严重问题</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 回购</td>
+<td>$1.87 亿</td>
+</tr>
+<tr>
+<td>TTM 股权激励</td>
+<td>$7.15 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.26 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+1.19%（增加）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购只覆盖了发给员工股票的四分之一，股本实际在膨胀。</strong> 换句话说，你作为股东，去年持有的公司份额在被稀释。CVS 已经基本停掉了回购（2024 财年还回购了 32.08 亿，2025 年砍到 1.58 亿，TTM 1.87 亿）——钱全去还债了。这个判断很明确：<strong>CVS 现在不是一家回馈股东的公司，是一家还债的公司。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 48.85 亿，经营现金流 147.80 亿，自由现金流 117.58 亿。差了整整 3 倍，必须逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4,885</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>4,522</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>715</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>144</td>
+</tr>
+<tr>
+<td>＋ 应收账款变动</td>
+<td>108</td>
+</tr>
+<tr>
+<td>− 存货变动</td>
+<td>−314</td>
+</tr>
+<tr>
+<td>− 应付账款变动</td>
+<td>−320</td>
+</tr>
+<tr>
+<td>＋ 其他经营性变动</td>
+<td>134</td>
+</tr>
+<tr>
+<td>小计（可逐项追踪的部分）</td>
+<td><strong>9,874</strong></td>
+</tr>
+<tr>
+<td>＋ 网站未单列的差额</td>
+<td><strong>+4,906</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>14,780</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>那笔 49 亿"未单列的差额"是什么？几乎可以肯定是<strong>保险赔付准备金（health care costs payable）的增加</strong>。保险公司收了保费，赔付要过几个月才付出去，这中间的钱躺在账上——这就是保险浮存金。<strong>只要 Aetna 的保费规模在增长，这笔钱就会持续为正；一旦保费萎缩或赔付集中兑现，它会反转成大额流出。</strong> 所以 CVS 的自由现金流里，有相当一部分不是"赚来的"，是"暂时代管的"。</p>
+<p><strong>这是评估 CVS 时最容易踩的坑</strong>：看到 P/FCF 只有 10.3 倍就以为便宜，实际上其中约 40% 的现金流来自浮存金增长，不是可持续的股东盈利。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $1,214.9 亿，企业价值 $1,838.4 亿（因为净负债 623.5 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,214.9 ÷ 48.90</td>
+<td><strong>24.8 倍</strong></td>
+<td><strong>$4.03</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这四页没提供 TTM 调整后净利润；市场按明年调整后 EPS ≈$8.1 给出 forward PE 11.7 倍</td>
+<td><em>11.7 倍（前瞻）</em></td>
+<td><em>$8.58</em></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>有效税率只有 15.6%（法定 21%），把税率还原成 21%：57.90×0.79 = 45.74 亿</td>
+<td><strong>26.6 倍</strong></td>
+<td><strong>$3.76</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,214.9 ÷ 117.58</td>
+<td><strong>10.3 倍</strong></td>
+<td><strong>$9.68</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,838.4 ÷ 82.88</td>
+<td><strong>22.2 倍</strong></td>
+<td><strong>$4.51</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1,214.9 ÷ [(48.90+17.68+46.14)/3 = 37.57]</td>
+<td><strong>32.3 倍</strong></td>
+<td><strong>$3.09</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的两行是最后两行的对比。</strong></p>
+<p><strong>低税率这件事</strong>：CVS 这一期只交了 9.02 亿的税，税前利润 57.90 亿，实际税率 15.6%。美国联邦法定税率 21%，加上州税一般公司在 23%–25%。<strong>CVS 少交的这部分税，直接变成了利润，把市盈率从 26.6 倍压到了 24.8 倍。</strong> 这不是可持续的——低税率通常来自历史亏损结转或税务和解的一次性影响。</p>
+<p><strong>三年平均口径 32.3 倍 vs 当期 24.8 倍</strong>，说明当前这个利润是<strong>过去三年里的相对高点</strong>（2025 财年只有 17.68 亿，被 Aetna 爆雷砸穿）。但这里的判断和 NVDA 那类周期股相反：CVS 的三年平均之所以低，不是因为现在虚高，而是<strong>因为中间那一年塌了</strong>。真正的问题是——Aetna 的赔付率会不会再塌一次。</p>
+<h3>你投 100 块进去，一年能拿回多少</h3>
+<p><strong>按最保守的真实口径（税率还原后的 26.6 倍），公司一年替你赚 $3.76。</strong></p>
+<p>这 $3.76 里，实际回到你口袋的是多少？</p>
+<ul>
+<li><strong>股息 $2.80</strong>（股息率 2.80%，每股 $2.66，已经连续两年没涨）</li>
+<li><strong>回购 −$0.15</strong>：这是负的。回购 1.87 亿远小于股权激励 7.15 亿，股本同比增加 1.19%，<strong>你的持股比例在被稀释</strong></li>
+<li><strong>净到手约 $2.65</strong></li>
+</ul>
+<p>剩下的钱去哪了？看融资活动现金流：TTM 净还债 <strong>91.94 亿美元</strong>（短期净还 30.4 亿 + 长期净还 61.54 亿）。<strong>CVS 把几乎全部自由现金流拿去还了 763 亿的债。</strong> 这不是在给股东创造回报，是在修复资产负债表——2023 年花 186 亿收购 Oak Street 和 Signify 留下的窟窿。</p>
+<p><strong>这个 $3.76 未来是变大还是变小？</strong></p>
+<ul>
+<li><strong>变大的理由</strong>：Aetna 的赔付率正在从 2025 年的灾难水平恢复；债务从 829 亿降到 763 亿，利息支出会跟着降（目前利息保障倍数只有 2.67 倍，很紧）；forward PE 只有 11.7 倍，说明市场共识认为明年利润会接近翻倍。</li>
+<li><strong>变小的理由</strong>：药房柜台的报销价年年被压；PBM（Caremark 那门生意）是美国两党共同的靶子，国会几轮立法都在试图强制"回扣透明化"，一旦落地这门生意的抽成模式会被直接改写；股价过去 52 周已经涨了 45%，恢复预期已经反映进价格；股本还在稀释。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一家便宜的公司，是一家刚从坑里爬出来、把所有现金拿去还债、同时还在稀释股东的公司——按真实口径 26.6 倍市盈率、每年真正落到你口袋 $2.65，前面还横着 PBM 立法这颗雷，不值这个价。</strong></p>
+<p>如果你相信 Aetna 明年利润翻倍（forward PE 11.7 倍隐含的预期），那它便宜；但这个"如果"的赌注，是押在一家过去三年有两年出现大额减值的公司身上，而且赢了之后，钱也不会先给你——会先给债主。</p>
+</div></body></html>

@@ -1,0 +1,340 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PFE · 辉瑞制药</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PFE</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">正在漏气的现金机器，靠515亿净负债吊着6.4%股息</div><h1>PFE · 辉瑞制药</h1>
+<p><strong>市值</strong> $1,527.5 亿 | <strong>股价</strong> 约 $26.8 | <strong>行业</strong> 健康科技 / 大型制药 | <strong>TTM 截止</strong> 2026 年 6 月 28 日 | <strong>分析日期</strong> 2026-08-14</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>辉瑞财报把自己分成四块：Primary Care（基础医疗）、Specialty Care（专科药）、Oncology（肿瘤）、Pfizer CentreOne（代工）。前三块本质上是同一门生意的三个赛道——<strong>卖专利药</strong>——但客户、销售方式、专利到期时间完全不同，所以值得分开看。第四块是完全不同的一门生意。</p>
+<h3>生意一：Primary Care —— 疫苗和大众处方药</h3>
+<p>这是辉瑞最大也最危险的一块。</p>
+<p>具体在卖什么：新冠疫苗 Comirnaty 和新冠口服药 Paxlovid（这两个是 2021–2022 年那波暴利的来源，现在已经缩水成常规产品）、肺炎球菌疫苗 Prevnar（给婴儿和老人打，是辉瑞最稳的一棵摇钱树，一针几百美元，全球每年打上亿针）、RSV 疫苗 Abrysvo、抗凝血药 Eliquis（和百时美施贵宝各分一半利润，全球心房颤动患者预防中风的一线用药）、偏头痛药 Nurtec。</p>
+<p>怎么收钱：以 Prevnar 为例，辉瑞不直接卖给你。它卖给医药批发商（美国就三家：McKesson、Cardinal、Cencora），批发商再铺给医院、诊所、连锁药房 CVS 和 Walgreens。真正决定销量的是"进不进医保目录"——美国是 PBM（药品福利管理公司，CVS Caremark、Express Scripts 那三家）说了算，欧洲各国是政府直接谈判。辉瑞给 PBM 一个巨大的返点（rebate），换取"优先报销层级"，病人在药房自付的部分就变低，医生就愿意开。<strong>标价 200 美元的药，扣完返点辉瑞可能实收 110 美元</strong>，这个返点在财报里是直接冲减收入的，所以你永远看不到真实标价。</p>
+<p>Eliquis 更特殊：它是和 BMS 共同开发的，辉瑞记的是"分成后的收入"，等于一半的利润天生就不是自己的。</p>
+<p><strong>这块的问题是它正在塌。</strong> TTM 收入 266.29 亿，比 2024 财年的 301.35 亿掉了 11%，新冠产品退潮是主因。而 Eliquis 的核心专利在 2026–2028 年陆续到期——仿制药一进场，价格会在 12 个月内跌掉 80%–90%。这是一个几乎确定会发生、时间表已经写在纸上的收入蒸发。</p>
+<h3>生意二：Specialty Care —— 专科药</h3>
+<p>卖给专科医生的高价小众药。</p>
+<p>代表产品是 Vyndaqel/Vyndamax，治一种叫"转甲状腺素蛋白心肌淀粉样变性"的罕见心脏病。全美患者可能只有几万人，但一个病人一年的药费是<strong>十几万美元</strong>，而且要终身吃。这就是专科药的商业模式：<strong>用户少、单价极高、几乎不会停药</strong>。销售不需要庞大的地推队伍，只要盯住全国几百家有资质的心内科中心就够了。</p>
+<p>还有免疫领域的 Xeljanz（类风湿关节炎）、Cibinqo（湿疹）、血友病凝血因子产品、生长激素 Genotropin，以及在美国以外市场销售的 Enbrel。</p>
+<p>这块的利润率是三块里最高的——没有仿制药竞争、没有医保杀价的公开压力、销售费用低。FY2025 收入 175.46 亿，同比 +5.4%，是三块里唯一稳定增长的。但 Vyndaqel 的专利也在 2028–2030 年到期。</p>
+<h3>生意三：Oncology —— 肿瘤药</h3>
+<p>这是辉瑞压了全部身家的一块。</p>
+<p>在卖的：Ibrance（乳腺癌，一天一粒，一个月一万多美元）、Xtandi（前列腺癌，和安斯泰来分成）、以及 2023 年底花 <strong>430 亿美元现金</strong>买下 Seagen 得到的一整套抗体偶联药物（ADC）——Padcev（膀胱癌）、Adcetris（淋巴瘤）、Tukysa（乳腺癌）。</p>
+<p>ADC 是什么，用大白话讲：化疗药的问题是它杀癌细胞也杀好细胞，所以病人掉头发、呕吐、免疫崩溃。ADC 的做法是把毒药挂在一个抗体上，这个抗体只认癌细胞表面的特定蛋白，像快递一样把毒药只送到癌细胞门口再释放。效果更好、副作用更小，所以能卖更贵——Padcev 一个疗程几十万美元，而且往往是"没别的办法了"的病人的唯一选择，医保很难拒付。</p>
+<p>肿瘤药的收钱方式和前两块不一样：大部分是<strong>在医院或输注中心用的</strong>（buy-and-bill），医院先买进来给病人输，再向保险公司报销，保险公司按"药价 + 6% 加成"付给医院——注意这个 6% 加成制度意味着<strong>药越贵医院赚得越多</strong>，这是美国肿瘤药价格一路飙升的制度性原因，也是辉瑞的护城河之一。</p>
+<p>FY2025 收入 168.34 亿，+7.8%。但 430 亿买回来的东西，一年贡献 100 多亿收入、几十亿利润，这笔账划不划算，后面第二部分会算。</p>
+<h3>生意四：Pfizer CentreOne —— 帮别人代工</h3>
+<p>辉瑞有一堆闲置的生物药生产线（无菌灌装、活性成分合成），就对外接单，帮别的药厂生产他们的药。TTM 收入 14.15 亿，占比 2.2%，规模很小但增长不错（FY25 +16.8%）。这是一门纯制造业生意，利润率远低于卖药，好处是能把重资产的产能利用率填满。</p>
+<h3>四门生意的钱（单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>FY2025</th>
+<th>增速（FY25 vs FY24）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary Care 基础医疗</td>
+<td>26,629</td>
+<td>26,820</td>
+<td><strong>−11.0%</strong></td>
+<td>41.8%</td>
+<td>约 25%（估算）</td>
+<td>约 6,700（估算）</td>
+</tr>
+<tr>
+<td>Specialty Care 专科药</td>
+<td>约 18,200（估算）</td>
+<td>17,546</td>
+<td>+5.4%</td>
+<td>约 28.6%</td>
+<td>约 40%（估算）</td>
+<td>约 7,300（估算）</td>
+</tr>
+<tr>
+<td>Oncology 肿瘤</td>
+<td>约 17,450（估算）</td>
+<td>16,834</td>
+<td>+7.8%</td>
+<td>约 27.4%</td>
+<td>约 22%（估算）</td>
+<td>约 3,800（估算）</td>
+</tr>
+<tr>
+<td>CentreOne 代工</td>
+<td>1,415</td>
+<td>1,338</td>
+<td>+16.8%</td>
+<td>2.2%</td>
+<td>约 15%（估算）</td>
+<td>约 210（估算）</td>
+</tr>
+<tr>
+<td>研发 + 总部 + 减值</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −13,800</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>63,696</strong></td>
+<td>62,579</td>
+<td>−0.2%（TTM 同比）</td>
+<td>100%</td>
+<td><strong>6.6%</strong>（实际）</td>
+<td><strong>4,209</strong>（实际经营利润）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部利润全部是估算的</strong>，辉瑞财报只按分部披露到营收这一层，不披露分部利润。上表是按各类药物的典型毛利率和销售费用强度倒推的，加总后用"研发 + 总部 + 减值"这一行轧平到实际经营利润 42.09 亿。<strong>Specialty Care 和 Oncology 的 TTM 营收也是估算</strong>——财报只披露了 TTM 的 Primary Care 和 CentreOne，剩下的 356.52 亿按 FY2025 的比例拆开。别把这些数字当精确值。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM 9.47 亿美元，占 GAAP 净利润 43.32 亿的 <strong>21.9%</strong>，占营收 1.5%。这在大型药企里属于正常水平，比科技公司低得多。GAAP 已经扣了，不加回来。</p>
+<p>问题在于：辉瑞 <strong>TTM 一分钱都没有回购</strong>，而股本反而增加了 0.34%。也就是说这 9.47 亿的股票发出去以后，没有任何东西把它买回来，纯稀释。</p>
+<h3>一次性项目 —— 这是辉瑞财报里最大的问题</h3>
+<p>看这条链：</p>
+<ul>
+<li>经营利润 <strong>42.09 亿</strong>（FY2025 是 75.20 亿，FY2024 是 80.23 亿）</li>
+<li>所得税 <strong>+1.64 亿</strong>（又是负税率，−3.90%）</li>
+<li>净利润归属股东 <strong>43.32 亿</strong></li>
+</ul>
+<p>利润一年之内腰斩，营收却几乎没动（−0.2%）。钱去哪了？看费用行：<strong>"其他经营费用" TTM 110.56 亿，FY2025 是 82.74 亿，FY2024 是 68.07 亿。</strong> 相比 FY2024 的常态水平多出了约 <strong>42.5 亿</strong>。</p>
+<p>现金流量表印证了这一点：TTM"其他非现金调整"是 <strong>+53.62 亿</strong>（FY2024 是 −1.32 亿）。这是典型的<strong>大额资产减值</strong>信号——账上的无形资产被冲掉了，走利润表，但没有现金出去，所以现金流量表要加回来。</p>
+<p>减值的最可能来源，就是 430 亿买来的 Seagen 那批管线，以及其他并购资产。翻译成人话：<strong>辉瑞承认自己当年买贵了，把账面价值往下调了一次。</strong></p>
+<p><strong>但这里必须说清楚一件事</strong>：单看 TTM 一期，我<strong>无法判断这笔减值是"真一次性"还是"年年都有的一次性"</strong>。而且有一个不利的迹象——辉瑞的"其他经营费用"这一行是 68.07 → 82.74 → 110.56 亿，<strong>连续三年上升</strong>。一家公司如果年年都在做减值和重组，那这些"一次性"就是它的常态成本，不该剔除。</p>
+<h3>折旧摊销 —— 比减值更重要的一项</h3>
+<p>TTM 折旧摊销 <strong>65.84 亿美元</strong>，占营收 10.3%。这几乎全部是<strong>收购来的药物专利的摊销</strong>，不是厂房设备折旧。</p>
+<p>这是一个必须想清楚的问题：辉瑞花 430 亿现金买 Seagen，会计上不能一次性费用化，要按专利剩余年限分摊，每年摊几十亿进利润表。很多分析师会说"这是非现金支出，应该加回来"——<strong>我不同意</strong>。那 430 亿是实打实付出去的现金，摊销就是这笔现金的分期确认。<strong>一家靠不断买管线活着的药企，摊销就是它的真实成本，加回来等于假装收购是免费的。</strong></p>
+<p>这就是为什么辉瑞的 GAAP 净利润（43 亿）远低于自由现金流（110 亿）：中间的差就是这些"以前付过钱的"摊销和减值。</p>
+<h3>资本化支出</h3>
+<p>资本开支 TTM 24.16 亿，占营收 3.8%，是正常的制药厂房和生产线维护水平，逐年在降（FY2023 是 39.07 亿）。研发费用<strong>全部费用化</strong>，没有资本化的猫腻，这一项干净。</p>
+<h3>回购与稀释</h3>
+<ul>
+<li>TTM 回购 <strong>0</strong></li>
+<li>TTM 股权激励 <strong>9.47 亿</strong></li>
+<li><strong>回购 ÷ SBC = 0</strong></li>
+</ul>
+<p>辉瑞已经连续三年半没有回购过一股（上一次是 FY2022 的 20 亿）。股本每年小幅增加。所有的股东回报都通过分红：<strong>TTM 派息 97.85 亿美元</strong>，每股 1.72 美元，股息率 <strong>6.42%</strong>。</p>
+<p><strong>这个 6.42% 的股息率是全篇最关键的数字，也是最脆弱的。</strong> 分红 97.85 亿 ÷ 自由现金流 109.85 亿 = <strong>89%</strong>。也就是说辉瑞把自己赚到的现金的九成拿去分了，只剩 12 亿去还那 515 亿的净负债、去做并购、去应对专利悬崖。这个分红没有任何安全垫。</p>
+<h3>利润和现金流的差 —— 逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东）</td>
+<td>4,373</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销（主要是收购专利摊销）</td>
+<td>6,584</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>947</td>
+</tr>
+<tr>
+<td><strong>＋ 其他非现金调整</strong>（主要是资产减值）</td>
+<td><strong>+5,362</strong></td>
+</tr>
+<tr>
+<td>− 其他经营性资产负债变动</td>
+<td>−3,584</td>
+</tr>
+<tr>
+<td>＋ 四舍五入及其他营运资金</td>
+<td>−281</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>13,401</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2,416</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>10,985</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说明了全部问题：<strong>净利润 43.7 亿变成现金流 134 亿，靠的是加回 65.8 亿摊销和 53.6 亿减值——这两项加起来 119.4 亿，比净利润本身大两倍多。</strong> 一家公司的现金流如果主要靠"加回已经花掉的钱"撑起来，那这个现金流的持续性完全取决于它还能不能继续买到东西、以及买回来的东西会不会继续减值。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,527.5 亿 ÷ 43.32 亿</td>
+<td><strong>35.3×</strong></td>
+<td><strong>$2.84</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（前瞻）</td>
+<td>网站前瞻市盈率</td>
+<td>9.7×</td>
+<td>$10.34（<strong>见下方说明</strong>）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,527.5 亿 ÷（43.32 亿 ＋ 减值 42.5 亿 ×80% 税后 = 77.3 亿）</td>
+<td><strong>19.8×</strong></td>
+<td><strong>$5.06</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,527.5 亿 ÷ 109.85 亿</td>
+<td>13.9×</td>
+<td>$7.19</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,045.3 亿 ÷ 42.09 亿</td>
+<td>48.6×</td>
+<td>$2.06</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,527.5 亿 ÷ 三年平均净利润 59.74 亿</td>
+<td><strong>25.6×</strong></td>
+<td><strong>$3.91</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关于"公司口径"那一行的坦白</strong>：辉瑞对外用的是"调整后每股收益"，它把无形资产摊销、减值、重组费用全部加回来。数据源没有提供辉瑞的 TTM 调整后净利润，所以我用了网站的<strong>前瞻市盈率 9.67 倍</strong>代替——这是市场对辉瑞下一年调整后利润的预期，不是 TTM 实际数。<strong>这一行和其他行不可比</strong>，我列它只是为了让你看到一件事：辉瑞的官方口径（9.7 倍）和 GAAP 口径（35.3 倍）之间差了 <strong>3.6 倍</strong>，这是整个大型制药行业最惯用的化妆术——把几十亿的收购摊销一笔勾销，就好像 430 亿是白捡的。</p>
+<p><strong>"剔除障眼法后"那一行的算法</strong>：只加回超出常态的减值部分（TTM 其他经营费用 110.56 亿 − FY2024 常态 68.07 亿 = 42.5 亿），按 20% 税率折成税后 34 亿，加回净利润。<strong>摊销 65.84 亿我没有加回来</strong>，理由见上文。</p>
+<p><strong>注意 EV/EBIT 高达 48.6 倍。</strong> 这是因为辉瑞背着 <strong>515 亿美元净负债</strong>——市值 1,527 亿，企业价值 2,045 亿，比市值高出三分之一。你买这家公司实际上是在买"股权 + 一屁股债"。</p>
+<p><strong>三年平均那一行</strong>：FY2023/24/25 净利润分别是 21.19 / 80.31 / 77.71 亿，平均 59.74 亿。注意 FY2023 那个 21.19 亿也是被 Seagen 收购费用砸下去的，所以这个"三年平均"本身也偏低。</p>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进辉瑞，按 GAAP 口径公司一年替你赚 2.84 块；剔掉那笔大额减值后是 5.06 块；按现金流算是 7.19 块。</strong></p>
+<p>这三个数差得这么远，说明辉瑞的会计利润基本没有参考价值，<strong>必须看现金</strong>。</p>
+<p>现金口径下的 7.19 块，回到你口袋的部分非常明确：<strong>分红 6.42 块</strong>，占了绝大部分。剩下不到 1 块留在公司。这跟优步、康菲那种"回购 + 留存"的结构完全不同——辉瑞是一台把现金几乎全部吐出来的机器。</p>
+<p><strong>这个 7.19 块未来会变大还是变小？大概率变小，而且是断崖式的。</strong></p>
+<p>原因很硬：Eliquis 的专利 2026–2028 年到期，Ibrance 2027 年前后，Xtandi 2027 年前后，Vyndaqel 2028–2030 年。这不是"可能发生的风险"，是<strong>日历上已经标好的日子</strong>。仿制药一进场，一个年销 60 亿美元的药能在 18 个月内掉到 8 亿。辉瑞在 2025–2030 这五年里要面对累计上百亿美元的收入蒸发。</p>
+<p>辉瑞的对策就是拿钱去买：2023 年花 430 亿买 Seagen，2025 年又花 69 亿做收购。问题是<strong>它已经没有多少子弹了</strong>——净负债 515 亿，自由现金流的 89% 被分红占用，账上现金只有 117 亿。它现在处在一个很难受的位置：想买管线要举债，想护住 6.42% 的股息率就不能举债太多，两头都紧。</p>
+<p>反过来说，市场也不是傻子。<strong>6.42% 的股息率、13.9 倍的自由现金流倍数，本身就是在定价"这家公司未来会萎缩"。</strong> 如果专利悬崖比市场预期温和一点，或者买来的 ADC 管线出一个爆款，这个价格是便宜的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>辉瑞是一台正在漏气的现金机器：现金流是真的、6.42% 的股息也是真的，但它靠 515 亿净负债和 89% 的分红率吊着，同时面对一张时间表已经写死的专利到期清单。</strong> 35 倍的 GAAP 市盈率是被减值砸出来的假象，真实大约 20 倍，现金流口径 13.9 倍——按现金看不贵，但这不是一家"便宜的好公司"，而是一家"股价已经反映了它会变小"的公司。你买它等于在赌两件事：一是那 430 亿买来的肿瘤管线能顶上专利悬崖的窟窿，二是分红在此期间不砍。这两件事里任何一件出问题，6.42% 的股息就会变成 3% 的股息加 40% 的股价下跌。</p>
+</div></body></html>

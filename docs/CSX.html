@@ -1,0 +1,489 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CSX · CSX 运输公司（美东一级铁路）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CSX</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">护城河只值20倍，剩下9倍是并购彩票</div><h1>CSX · CSX 运输公司（美东一级铁路）</h1>
+<p><strong>市值</strong> $938.1 亿 | <strong>股价</strong> $50.68 | <strong>行业</strong> 运输（一级铁路） | <strong>TTM 截止</strong> 2026-06-30
+<strong>全榜名次</strong> 第 92 名 | <strong>筛选时 PE</strong> 29.17 | <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>严格说 CSX 只做<strong>一件事</strong>：在它自己拥有的 2 万英里铁轨上，把重货从 A 拉到 B。它在财报上只报一个经营分部，因为整个公司就是一张网、一套调度、一群机车，没法按货种切开算成本。</p>
+<p>但它的<strong>收入</strong>是按 11 个货种披露的，而这些货种的经济性差别很大，所以我按经济逻辑归成四门生意来讲。</p>
+<h3>先说清楚这门生意的物理学 —— 为什么铁路根本没有对手</h3>
+<p>一列 CSX 的火车，两台机车拉 100 节车皮，从路易斯安那州的化工厂把塑料粒子拉到俄亥俄州的注塑厂，1,500 公里，收大约 30 万美元，平均<strong>一吨货运一公里收 4 美分</strong>。同样这批货用卡车拉，需要 400 辆重卡、400 个司机，成本是铁路的 3 倍以上，柴油消耗是 4 倍。</p>
+<p>原因不是「服务好」，是<strong>滚动阻力</strong>：钢轮压在钢轨上的摩擦系数只有橡胶轮压沥青的十分之一。一加仑柴油，火车能把一吨货拉 500 英里，卡车只能拉 130 英里。这个差距是物理定律给的，任何管理和技术都改不了。</p>
+<p>所以规则很简单：<strong>货够重、够远、不着急 → 铁路赢；货轻、距离短、要次日达 → 卡车赢。</strong> 中间那条线，就是 CSX 和卡车公司天天争夺的地方。</p>
+<h3>再说护城河 —— 为什么这条线上只剩两家</h3>
+<p>CSX 的路权（right-of-way）是 19 世纪一寸一寸买下来、一代代并购攒出来的，覆盖美国东部 23 个州，北到芝加哥、南到迈阿密、东到大西洋各大港口。</p>
+<p><strong>今天你想在美国东部重修一条 2 万英里的平行铁路，成本和政治阻力都是无穷大</strong>——要穿过几十万块私有土地、几百个市镇的规划审批、无数环保诉讼。这不是「很难」，是「不可能」。结果就是美国东部只剩两家一级铁路：CSX 和 Norfolk Southern；西部也只剩两家：Union Pacific 和 BNSF（巴菲特的）。</p>
+<p>这是全美国最硬的几条护城河之一。问题从来不是「这门生意好不好」，而是「这门生意值多少钱」。</p>
+<hr />
+<h3>生意 A：散货运输（Merchandise）—— 62% 的营收，最好的一块</h3>
+<p><strong>具体是什么：</strong> 把工业原料和成品，按车皮为单位，从工厂拉到工厂。</p>
+<ul>
+<li><strong>化工品（$28.73 亿）</strong> —— 最大的单一货种。塑料粒子（墨西哥湾沿岸的乙烯裂解厂是世界成本最低的，产品要运到全美的塑料加工厂）、工业气体、原油和液化石油气、硫酸烧碱。装在专用罐车里，一车皮运费 2,000–6,000 美元。</li>
+<li><strong>农产品和食品（$16.45 亿）</strong> —— 玉米、大豆、饲料、糖、罐头食品、冷藏车厢里的生鲜。</li>
+<li><strong>汽车（$11.98 亿）</strong> —— 整车（那种两层的敞篷运车车皮，一列能拉 300 辆车）和零部件。CSX 网络里有十几家整车厂。</li>
+<li><strong>矿产（$8.67 亿）</strong> —— 砂石骨料、水泥、盐。</li>
+<li><strong>林产品（$9.71 亿）</strong> —— 木材、纸浆、纸卷。</li>
+<li><strong>金属与设备（$9.12 亿）</strong> —— 钢卷、废钢、大型机械。</li>
+<li><strong>化肥（$5.32 亿）</strong> —— 氨、磷肥、钾肥。</li>
+</ul>
+<p><strong>客户为什么走铁路：</strong> 一家墨西哥湾的塑料厂，年产 100 万吨粒子，客户散布在全美。走卡车一年运费要多花上亿美元，而且根本雇不到那么多司机。这些客户跟 CSX 签的是 3–5 年合同，运价按公式调（挂钩通胀和燃油），换供应商的选项只有一个——Norfolk Southern，而对方的线路未必到得了你的厂门口。<strong>很多化工厂的专用线只接了一家铁路，那就叫「被俘获的客户」（captive shipper），运价是 CSX 说了算的。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>$89.98 亿</strong></td>
+<td>$87.73 亿</td>
+<td>+2.6%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>62.0%</td>
+<td>62.3%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>不披露（见下）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>生意 B：集装箱联运（Intermodal）—— 15% 的营收，最卷的一块</h3>
+<p><strong>具体是什么：</strong> 一个 40 英尺的海运集装箱从上海到达萨凡纳港，卸下来直接吊到火车的双层平车上（一节平车摞两个柜），火车拉到芝加哥或亚特兰大的内陆场站，再吊到卡车底盘上，卡车送最后 100 公里到沃尔玛的配送中心。CSX 收中间那段火车钱，大约 <strong>1,500–2,500 美元一个柜</strong>。</p>
+<p><strong>这门生意最难做</strong>，因为：
+1. <strong>直接跟卡车抢</strong>。芝加哥到亚特兰大 1,100 公里，卡车两天到、铁路三天到，卡车运价一跌，货就跑了。所以联运的价格弹性远高于散货。
+2. <strong>客户是货代和大型零售商</strong>，不是被俘获的化工厂，随时可以比价。
+3. <strong>利润率最低</strong>。要维护昂贵的场站、吊机、底盘池，还要按班次发车（不管装没装满）。</p>
+<p>TTM 增长 +7.4%，是所有货种里最快的——港口进口量回升，加上卡车运力这两年偏紧。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>$22.27 亿</strong></td>
+<td>$20.73 亿</td>
+<td>+7.4%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>15.3%</td>
+<td>14.7%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>生意 C：煤炭 —— 13% 的营收，最赚钱也在最快消失的一块</h3>
+<p><strong>具体是什么：</strong> 两种煤，经济性完全不同。
+- <strong>动力煤</strong>：从阿巴拉契亚的矿口拉到燃煤电厂。这块在<strong>结构性死亡</strong>——美国的燃煤电厂一座座关停，关一座就永久少一个客户。
+- <strong>冶金煤（炼焦煤）</strong>：从西弗吉尼亚、肯塔基的矿拉到弗吉尼亚州的出口码头，装船卖给印度、巴西、欧洲的钢厂。这块跟全球钢铁景气挂钩，波动大但不会归零。</p>
+<p><strong>煤是铁路运价最高的货：</strong> 一车皮煤 100 吨、运距几百公里，运费可能 3,000–5,000 美元，而且是整列专列（unit train）——100 节车皮同一个装车点、同一个卸车点，不用编组、不用调车，<strong>运营成本极低</strong>。这是铁路利润率最高的货种。</p>
+<p><strong>但它在消失：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>煤炭营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>$24.84 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$22.47 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$19.00 亿</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>$19.40 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>两年掉了 23%。TTM 微弱回升 +2.1%，大概率是冶金煤出口价格反弹，不代表趋势逆转。<strong>每少 1 美元煤炭收入，CSX 要用 1.5–2 美元的联运收入才能补上同样的利润。</strong> 这是 CSX 未来十年最确定的逆风。</p>
+<hr />
+<h3>生意 D：卡车运输和其他 —— 9%</h3>
+<p>旗下的 <strong>Quality Carriers</strong> 是北美最大的液体化工品罐车卡车运输公司（TTM $8.31 亿）。它存在的意义是：化工客户的工厂如果没有专用铁路线，或者货量不到一车皮，CSX 用自己的罐车卡车去接——把铁路够不着的客户也圈进来。另有 $5.16 亿的其他收入（燃油附加费、滞留费、线路使用费等）。</p>
+<p><strong>注：CSX 在 2025 年已宣布探索出售 Quality Carriers。</strong> 这一块利润率远低于铁路本体，拖累整体报表。</p>
+<hr />
+<h3>分部利润：财报不给，我也不编</h3>
+<p><strong>CSX 只报一个经营分部，不披露任何货种的利润率。</strong> 我能给的只有整体数：</p>
+<ul>
+<li>TTM 营收 $145.12 亿，经营利润 $49.56 亿 → <strong>经营利润率 34.2%</strong></li>
+<li>换成铁路业内的说法：<strong>营运比率（Operating Ratio）= 65.8%</strong>，即每收 100 块花 65.8 块。这是衡量铁路效率的唯一指标，60% 出头是行业顶尖（加拿大国家铁路），70% 以上算差。CSX 的 65.8% 属于中上。</li>
+</ul>
+<p>按经济逻辑排序（<strong>定性判断，非财报数字</strong>）：煤炭 &gt; 散货 &gt; 卡车 &gt; 联运。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p><strong>数据源的现金流量表没有把 SBC 单列出来</strong>，它被包含在「其他非现金调整」这一行里，而<strong>这一行 TTM 总共只有 2.41 亿美元</strong>（占净利润 32.23 亿的 7.5%）。也就是说 SBC 的<strong>上限</strong>是 2.41 亿，实际值更低。无论如何这一项对 CSX 的估值不构成实质影响——铁路是发工资的行业，不是发期权的行业。按规矩 GAAP 已扣，不加回。</p>
+<h3>一次性项目</h3>
+<p>TTM 从这四页上<strong>看不到可识别的大额一次性项目</strong>。经营利润 49.56 亿、税前 41.42 亿（差额 8.14 亿基本是利息支出，与利息保障倍数 5.85 吻合）、所得税 9.78 亿（有效税率 23.28%，正常）、净利润 32.23 亿。这条链是干净的，没有黑箱。</p>
+<p>一个要说明的历史背景：FY2025 是很差的一年（营收 −3.1%、经营利润 45.21 亿、自由现金流只有 17.11 亿）。原因是当年资本开支冲到 29.02 亿——包括飓风损毁线路重建、以及巴尔的摩 Howard Street 隧道扩建（把隧道挖高以便跑双层集装箱列车）。TTM 已经恢复正常。</p>
+<h3>资本化的支出 —— 铁路最重要的一件事</h3>
+<p><strong>这是这家公司会计上最需要盯的地方，虽然它不是「障眼法」，而是「折旧失真」。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>折旧与摊销</td>
+<td>$16.75 亿</td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td>$25.68 亿</td>
+</tr>
+<tr>
+<td><strong>资本开支 ÷ 折旧</strong></td>
+<td><strong>1.53 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>铁路的资产（路基、钢轨、轨枕、道砟、桥梁）是几十年前甚至上百年前建的，按<strong>历史成本</strong>折旧。今天换一根轨枕、一段钢轨，要按 2026 年的钢价和人工付钱。所以：<strong>折旧这个数字系统性地低估了维持这门生意所需要的真实成本，账面净利润因此被系统性高估。</strong></p>
+<p>CSX 的资本开支是折旧的 1.53 倍，多出来的 <strong>8.93 亿美元</strong>里，一部分是扩产（新场站、Howard Street 隧道），另一部分就是这个「通胀差额」。<strong>这意味着看 CSX 应该更信自由现金流，而不是净利润。</strong></p>
+<h3>回购与稀释</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>−$13.81 亿</td>
+</tr>
+<tr>
+<td>SBC（上限）</td>
+<td>≤$2.41 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>≥5.7 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>−$10.07 亿</td>
+</tr>
+<tr>
+<td>股本变化（近一年）</td>
+<td><strong>−2.28%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>远超 3 倍门槛，是真回购。回购 13.81 亿 + 分红 10.07 亿 = <strong>23.88 亿</strong>，自由现金流 <strong>26.23 亿</strong> —— 刚好覆盖得住，还剩 2.35 亿。比 3M 健康（3M 是超额派发、掏老本）。</p>
+<p>不过要注意，CSX 的回购规模在<strong>大幅收缩</strong>：FY2022 回购 47.31 亿、FY2023 34.82 亿、FY2024 22.37 亿、FY2025 13.96 亿、TTM 13.81 亿。四年砍掉 71%。原因很直接——自由现金流从 34 亿掉到 26 亿，钱不够了。同时净债务从 145 亿（2021）涨到 <strong>180.6 亿</strong>（现在），杠杆在上升。</p>
+<h3>利润和现金流的对账</h3>
+<p>净利润 31.49 亿 → 经营现金流 51.91 亿，差 20 亿，逐项（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（现金流量表口径）</td>
+<td>3,149</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td><strong>+1,675</strong></td>
+<td><strong>铁轨机车的账面折旧，不花现金（但见上文：低估了真实重置成本）</strong></td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整（含 SBC）</td>
+<td>+241</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−66</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+199</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应计费用减少</td>
+<td>−50</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应交税金增加</td>
+<td>+33</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性项目</td>
+<td>−150</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 未列示项/四舍五入</td>
+<td>+160</td>
+<td>数据源 TTM 汇总残差</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>5,191</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−2,568</strong></td>
+<td><strong>占营收 17.7%，这就是铁路的代价</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>2,623</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一句话看懂这张表：CSX 赚的钱有一半以上又埋回铁轨里了。</strong> 净利润 32 亿，自由现金流只有 26 亿。这跟万豪（净利 26 亿、自由现金流 31 亿）刚好相反——重资产和轻资产的差别，在这张表上一目了然。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>938.1 亿 ÷ 32.23 亿</td>
+<td><strong>29.1 倍</strong></td>
+<td><strong>¥3.44</strong></td>
+</tr>
+<tr>
+<td>公司/市场远期口径</td>
+<td>网站远期 PE</td>
+<td>23.4 倍</td>
+<td>¥4.27</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无可识别一次性项目，SBC 已按 GAAP 扣</td>
+<td><strong>29.1 倍</strong></td>
+<td><strong>¥3.44</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>938.1 亿 ÷ 26.23 亿</td>
+<td><strong>35.8 倍</strong></td>
+<td><strong>¥2.80</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,118.7 亿 ÷ 49.56 亿</td>
+<td>22.6 倍</td>
+<td>¥4.43</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>938.1 亿 ÷ 31.94 亿</td>
+<td><strong>29.4 倍</strong></td>
+<td><strong>¥3.40</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（网站给的 P/FCF 是 33.5，比我算的 35.8 略低，因为它的 TTM 现金流截取时点略有差异；用现金流量表原始数字算得的 35.8 更保守，我采用它。）</p>
+<p><strong>这张表里最重要的两行是自由现金流口径的 35.8 倍和 EV/EBIT 的 22.6 倍。</strong></p>
+<ul>
+<li><strong>35.8 倍</strong>才是真相，理由见上文的折旧失真：净利润里有一部分是「假利润」，因为折旧按老价钱算。</li>
+<li><strong>22.6 倍看着便宜是个陷阱</strong>。EV/EBIT 低是因为把 180.6 亿净债务塞进了分子、把利息费用从分母里剔掉了。CSX 一年付大约 8.1 亿利息，这钱是真金白银付出去的。<strong>杠杆让 EV 口径显得便宜，不等于生意便宜。</strong></li>
+</ul>
+<p><strong>三年平均 29.4 倍 ≈ 当期 29.1 倍</strong>，说明现在的利润不是异常高点也不是异常低点，是正常水位。这一点比 3M 干净得多（3M 三年 27 倍 vs 四年 110 倍）。</p>
+<h3>一个必须指出的事实</h3>
+<p>看历年市盈率：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>市值</th>
+<th>PE</th>
+<th>净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>$679.0 亿</td>
+<td>19.1</td>
+<td>$36.68 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$613.2 亿</td>
+<td>18.0</td>
+<td>$34.70 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$674.1 亿</td>
+<td>23.5</td>
+<td>$28.89 亿</td>
+</tr>
+<tr>
+<td><strong>现在</strong></td>
+<td><strong>$938.8 亿</strong></td>
+<td><strong>29.0</strong></td>
+<td><strong>$32.23 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>过去一年股价涨了 40%，而 TTM 净利润（32.23 亿）比两年前（36.68 亿）还低 12%。</strong> 也就是说，这 40% 的涨幅<strong>100% 来自估值倍数扩张，0% 来自利润增长</strong>。市盈率从 18 倍走到 29 倍。</p>
+<p>市场在给什么定价？不是当期利润，是<strong>美国铁路的合并预期</strong>——行业里已经在谈跨大陆合并，东部两家（CSX、NS）都被视为被收购或合并的标的。（这一点是我根据「利润没涨、倍数暴涨、行业正在讨论合并」推断出来的解释，不是财报数字。）</p>
+<p><strong>这意味着：如果你今天买 CSX，你有一半是在赌并购，不是在买 3.44% 的盈利收益率。</strong> 并购不成，估值有回到 20–23 倍的引力，对应股价 $35–40。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 CSX，GAAP 口径一年替你赚 3.44 元；但按更诚实的自由现金流口径，只有 2.80 元。</strong></p>
+<p>这 2.80 元的去向很清楚：
+- 分红拿走 <strong>1.07 元</strong>（分红 10.07 亿 ÷ 市值，股息率 1.07%）；
+- 回购拿走 <strong>1.47 元</strong>（回购 13.81 亿 ÷ 市值），股本一年少 2.28%；
+- 剩下 <strong>0.26 元</strong>留在公司里。</p>
+<p>也就是说，<strong>这门生意几乎把所有能分的钱都分掉了，没有再投资的空间</strong>——因为 25.68 亿的资本开支已经先被铁轨吃掉了，而那笔钱里绝大部分是「维持现状」而不是「扩张」。</p>
+<p><strong>这个 X 未来会变大还是变小？大概率是缓慢变大，但很慢。</strong> 铁路的增长引擎只有三个：涨价（每年 2–3 个点，跟着通胀）、提效（营运比率从 65.8% 往 62% 压，每压 1 个点多 1.45 亿利润）、量增（几乎没有，煤在缩、散货跟着工业景气走平）。<strong>加起来一年 4–6% 的利润增长是这门生意的天花板</strong>，除非合并。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>CSX 拥有全美国最硬的护城河之一，但今天它的股价里，护城河只值 20 倍，剩下 9 倍是并购彩票。</strong></p>
+<p>这家公司二十年后一定还在（没人能修第二条铁路），一定还在涨价（被俘获的客户没得选），也一定还在缩股本。但它的营收一年只增 2.5%，煤炭这块最赚钱的业务在结构性消失，真实的自由现金流收益率只有 2.8%——<strong>这个回报率不足以补偿你承担的周期风险，除非合并真的发生。</strong></p>
+<p><strong>29 倍买一门年增 4–6% 的生意，是在为一件还没发生的事付全款。</strong> 好公司，坏价格。等到 20–22 倍（$35–40）时，它是一门能拿二十年的生意。</p>
+</div></body></html>
