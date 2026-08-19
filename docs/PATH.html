@@ -1,0 +1,358 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PATH · UiPath（做「软件机器人」的公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PATH</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">24.6倍是1.66亿一次性税务纸面利润造的假象，真实53-75倍</div><h1>PATH · UiPath（做「软件机器人」的公司）</h1>
+<p>市值 80.7 亿美元 / 股价约 15.6 美元 / 行业：科技服务（企业软件）
+TTM 口径：截至 <strong>2026 年 4 月 30 日</strong>的最近四个季度（公司财年 1 月底结束）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是：只做一件事，但报表把这一件事切成了三行。</strong> 这是理解 UiPath 财报最关键的一点，先把生意本身讲透，再说为什么报表看着像三门生意。</p>
+<h3>这门生意是什么：替公司里的人点鼠标</h3>
+<p>想象一家中等规模的车险公司。每天收到 3000 份理赔申请，大部分是修车厂用手机拍的照片和扫描的 PDF：维修单、发票、事故现场照。公司里养着 20 个人，工作内容就是把这些 PDF 打开、看一眼、把上面的车牌号、事故日期、维修项目、金额，一个一个敲进公司 1997 年上线的理赔系统里。一天敲 3000 份，错一个数字客户就投诉。</p>
+<p>UiPath 卖给这家保险公司的东西，直白说就是<strong>一个会自己点鼠标、自己敲键盘的程序</strong>，行业里叫「机器人」（Robot）。它的工作流程是：</p>
+<ol>
+<li>有个叫 <strong>Document Understanding</strong> 的模块，先把 PDF 上的字认出来——不是简单的 OCR，是能判断「这一串数字是车牌不是发票号」。</li>
+<li>然后<strong>机器人自己打开那个 1997 年的理赔系统</strong>，像人一样点「新建理赔」按钮、在第三个输入框里填车牌、在下拉菜单里选「碰撞」、点「保存」。它没有走什么 API 接口，它就是在屏幕上模拟鼠标点击和键盘输入。</li>
+<li>遇到认不准的（照片太糊、金额和发票对不上），它就停下来把这一单推给人处理。</li>
+</ol>
+<p>结果：20 个人变成 2 个人，那 2 个人只处理机器人搞不定的疑难件。</p>
+<p><strong>客户为什么非买不可？</strong> 因为老系统改不动。这家保险公司的理赔系统是 1997 年的，源代码在一个已经离职的供应商那儿，改一个字段要走六个月审批、花两百万。但业务部门下个月就要上线新产品。RPA（机器人流程自动化）的全部价值就在于：<strong>不碰老系统，在老系统外面套一层假装是人的手。</strong> 这就是为什么 RPA 在银行、保险、医院、政府这些「系统最烂、流程最死」的地方卖得最好。</p>
+<p><strong>怎么收钱？</strong> 按机器人的数量和种类年付订阅：
+- <strong>无人值守机器人</strong>（Unattended Robot，就是上面那种自己在服务器上跑的）单价最高，一个大约每年数千美元；
+- <strong>有人值守机器人</strong>（Attended Robot，装在员工自己电脑上，员工点一下它帮你把这一单填完）便宜一些；
+- <strong>Orchestrator</strong>（调度台，管着几百个机器人什么时候跑、跑挂了怎么重试、谁有权限改）单独收费，这是真正的锁定点——机器人可以换，几百条已经配好的流程和权限体系换不了；
+- <strong>Studio</strong>（开发工具，让公司内部的业务分析员自己拖拖拽拽画出流程）通常按开发者人数收。</p>
+<p>一家中型企业一年 20–50 万美元，一家大型银行能到几百万美元。UiPath 有一万多家客户，其中年付超过 10 万美元的约 2000 多家。</p>
+<p><strong>最近两年在往哪走：</strong>从「机器人」转向「AI 智能体」（Agentic Automation）。区别是：老机器人只会严格照剧本走，剧本上没写的它就停；新的智能体接大语言模型，能自己判断「这张发票不合常规，应该走人工复核」。产品名叫 <strong>Maestro</strong>（编排智能体和机器人一起干活）和 <strong>Autopilot</strong>（你用中文/英文描述一遍流程，它帮你把机器人搭出来）。<strong>这既是机会也是这家公司最大的生死问题</strong>，第四部分再说。</p>
+<h3>再说钱：三行营收其实是一份合同被会计切开的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上一完整财年同比</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Licenses（软件许可）</td>
+<td>6.27 亿</td>
+<td>+3.3%</td>
+<td>37.5%</td>
+<td>~98%</td>
+</tr>
+<tr>
+<td>Subscription Services（订阅服务）</td>
+<td>9.90 亿</td>
+<td>+19.0%</td>
+<td>59.2%</td>
+<td>~88%</td>
+</tr>
+<tr>
+<td>Professional Services（实施咨询）</td>
+<td>0.55 亿</td>
+<td>+22.6%</td>
+<td>3.3%</td>
+<td>负的（约 −20%）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>16.72 亿</strong></td>
+<td><strong>+15.2%（TTM）</strong></td>
+<td>100%</td>
+<td><strong>83.1%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>同比一列用的是最近一个完整财年（截至 2026 年 1 月）对上一财年，因为 TTM 没有严格可比的上年同期；TTM 整体增速 15.2% 是页面直接给的。分部经营利润 UiPath 不披露，毛利率是按公司整体 83.1% 和这三类的常规结构估算的。</p>
+<p><strong>为什么说这不是三门生意：</strong> UiPath 卖的是「混合部署」订阅——客户签一份三年合同，里面既有装在自己机房的软件许可，也有云端服务和技术支持，<strong>一份合同一个价钱</strong>。但会计规则要求：许可那部分在交付当期一次性全额确认收入（进 Licenses），支持和云那部分按月摊（进 Subscription Services）。</p>
+<p>所以 Licenses 增速只有 3.3%、Subscription 增速 19%，<strong>不代表「许可生意不行了、云生意很行」</strong>——那是同一批客户的同一笔钱，只是入账节奏不同。客户续约时如果选了更多云、更少本地部署，Licenses 就会掉、Subscription 就会涨，公司拿到的钱一分没少。真正该盯的是 ARR（年度经常性收入）和净留存率，而不是这三行的增速。</p>
+<p>Professional Services 是<strong>亏钱的</strong>：派工程师去客户现场帮忙搭流程，收的钱不够付工资。这不是失误，是软件公司的常规做法——用亏钱的实施保证客户真的用起来，不然订阅就续不下去了。0.55 亿的规模说明 UiPath 尽量把这活推给合作伙伴做，是对的。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的 TTM 净利润 <strong>3.27 亿美元</strong>，问题是这 3.27 亿里有一大半根本不是经营赚来的。</p>
+<p><strong>① 一次性项目：整份财报最大的一颗雷——1.66 亿美元的「税收利润」</strong></p>
+<p>看这三个数：
+- 经营利润（营业赚的）：<strong>1.05 亿</strong>
+- 税前利润：<strong>1.61 亿</strong>（比经营利润高，因为 13 亿现金存着有利息收入）
+- 净利润：<strong>3.27 亿</strong></p>
+<p><strong>税前 1.61 亿，交完税变成 3.27 亿——税不是往外交，是往里加了 1.66 亿。</strong> 统计页面上写得很清楚：<code>Income Tax −166.09M</code>。</p>
+<p>这是怎么来的？UiPath 上市以来累计亏了十几亿美元，这些亏损按税法可以抵未来的税（叫 NOL，可结转亏损）。以前公司一直亏钱，会计师认为「你未来大概赚不到钱，这个抵税权用不上」，所以在账上打了个减值（估值备抵）。现在公司终于连续赚钱了，会计师改口说「这抵税权以后用得上」，于是把当年打掉的减值一次性加回来——<strong>账上凭空多出 1.66 亿净利润，一分钱现金都没进来。</strong></p>
+<p>现金流量表把这件事的非现金性质暴露得明明白白：<code>Other Operating Activities −174.99M</code>，就是把这笔纸面利润又减回去了。而 TTM <strong>实际交出去的现金税只有 873 万美元</strong>。</p>
+<p>这笔钱<strong>一辈子只能加一次</strong>。明年不会再有。任何拿着「市盈率 24.6 倍」说 UiPath 便宜的人，都是在拿这 1.66 亿的一次性纸面收益当经常性利润。</p>
+<p>另外 TTM 花了 1.49 亿现金做收购（<code>Cash Acquisitions −149.4M</code>），这类交易带来的无形资产摊销会压未来几年的 GAAP 利润。</p>
+<p><strong>② 股权激励（SBC）：2.68 亿美元，占净利润 82%，占营收 16%</strong></p>
+<p>这是真成本，不是「非现金费用」——公司少发工资、多发股票，代价是老股东的股份被稀释。GAAP 里已经扣掉了，但公司自己吹的 Non-GAAP 会把这 2.68 亿全额加回去，那是骗人的，<strong>本文一律不加回</strong>。</p>
+<p>给个参照：SBC 2.68 亿，而经营利润只有 1.05 亿。<strong>如果 UiPath 用现金发这部分薪酬，它现在还在亏钱</strong>（1.05 − 2.68 = −1.63 亿）。好消息是这个数在往下走：FY2022 是 5.16 亿，现在 2.68 亿，占营收比从 58% 降到 16%。方向对，绝对值仍然巨大。</p>
+<p><strong>③ 资本化的支出：销售佣金</strong></p>
+<p>现金流表里 <code>Other Amortization 114.75M</code>，主要是资本化的销售佣金摊销（签一单付给销售的提成不当期费用化，摊 5 年）加上收购来的无形资产摊销。同时 <code>Change in Other Net Operating Assets −123.18M</code>——今年新资本化出去的佣金现金<strong>比摊销回来的多 1.23 亿</strong>。也就是说这一项对当期利润是化妆的（少扣了费用），对现金是实打实的流出。软件行业普遍这么干，合规，但要知道有这回事。研发费用没有资本化。</p>
+<p><strong>④ 回购与稀释：这一项 UiPath 做得比同行好</strong></p>
+<ul>
+<li>TTM 回购 <strong>4.05 亿</strong>，同期 SBC <strong>2.68 亿</strong>，比值 <strong>1.51</strong>。</li>
+<li>股本一年真的减少了 <strong>2.68%</strong>。</li>
+</ul>
+<p>比值 1.51 意味着：回购的钱里有约三分之二是在填员工发股挖的坑，剩下三分之一是真的在替股东减少股份。按本文标准（大于 3 才算真回购）这还不够格，但比 SaaS 行业普遍的「比值 0.8、股本还在涨」好得多，<strong>该给分</strong>。</p>
+<p>代价是：4.05 亿回购 &gt; 3.75 亿自由现金流，超出的部分从现金堆里掏——现金及投资从 16.89 亿降到 14.16 亿，一年少了 2.73 亿。这个花法可以持续几年，不能永远。</p>
+<p><strong>⑤ 利润和现金流的差：逐项对账</strong></p>
+<p>净利润 3.27 亿，经营现金流 3.84 亿，差 5700 万——看着差不多，其实中间是几笔大额科目在互相抵消，全在下面这张表里：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>327.41</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>18.63</td>
+<td>硬资产很少，软件公司正常</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>114.75</td>
+<td>资本化销售佣金 + 收购无形资产</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>267.63</td>
+<td>不花现金，但稀释股份</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−7.31</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>5.74</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 递延税项等非现金调整</strong></td>
+<td><strong>−174.99</strong></td>
+<td><strong>就是上面那 1.66 亿纸面税收利润被减回去</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−29.69</td>
+<td>收入涨，客户还没付钱</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>2.74</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 递延收入减少</strong></td>
+<td><strong>−17.59</strong></td>
+<td><strong>⚠️ 预收的钱在缩水</strong></td>
+</tr>
+<tr>
+<td>− 其他净经营资产增加</td>
+<td>−123.18</td>
+<td>新资本化的销售佣金现金流出</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>384.13</strong></td>
+<td>对上了</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−8.90</td>
+<td>几乎不用买设备</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>375.23</strong></td>
+<td>自由现金流率 22.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表里有两句话最值钱：</p>
+<p>第一，<strong>3.27 亿净利润里，1.75 亿是纸面的，2.68 亿是发股票省下来的</strong>。真正经营产生的现金是 3.84 亿，这个数是真的；但这 3.84 亿之所以这么好看，是因为里面躺着 2.68 亿没花现金的薪酬。<strong>把员工薪酬按现金算，真实自由现金流只有 3.75 − 2.68 = 1.08 亿。</strong></p>
+<p>第二，<strong>递延收入减少了 1758 万</strong>。对一家订阅制软件公司，递延收入（客户预付、还没确认成收入的钱）是最灵敏的领先指标——它在缩水，说明新签和续约的预付节奏在放缓。规模不大，但方向是坏的，值得下季度盯一眼。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>80.7 亿 ÷ 3.274 亿</td>
+<td><strong>24.6 倍</strong></td>
+<td><strong>4.06 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>80.7 亿 ÷ 约 3.9 亿（加回 SBC 和摊销后）</td>
+<td><strong>约 20.7 倍</strong></td>
+<td><strong>4.83 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>80.7 亿 ÷（税前 1.613 亿 − 实付现金税 0.087 亿）＝ 1.526 亿</td>
+<td><strong>52.9 倍</strong></td>
+<td><strong>1.89 元</strong></td>
+</tr>
+<tr>
+<td>同上，但按 21% 正常税率</td>
+<td>80.7 亿 ÷ 1.274 亿</td>
+<td>63.3 倍</td>
+<td>1.58 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>80.7 亿 ÷ 3.752 亿</td>
+<td><strong>21.5 倍</strong></td>
+<td><strong>4.65 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（扣掉 SBC）</td>
+<td>80.7 亿 ÷ 1.076 亿</td>
+<td><strong>75.0 倍</strong></td>
+<td><strong>1.33 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>67.4 亿 ÷ 1.05 亿</td>
+<td><strong>64.2 倍</strong></td>
+<td>1.56 元</td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>80.7 亿 ÷ 0.651 亿（TTM 1.526 亿、FY26 剔税后 1.162 亿、FY25 −0.737 亿的平均）</td>
+<td><strong>124 倍</strong></td>
+<td><strong>0.81 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>EV 只有 67.4 亿而市值 80.7 亿，是因为账上净现金 13.3 亿——这一条是真实的加分项，13.3 亿现金、8300 万负债，等于市值的 16.5% 是现金。</p>
+<p><strong>大白话讲清楚这些数字：</strong></p>
+<p>市面上看到的「UiPath 市盈率 24.6 倍」，翻译成投 100 块一年赚 4 块。这个数是假的，因为那 3.27 亿利润里有 1.66 亿是税务会计一次性送的纸面礼物。</p>
+<p>把礼物拿掉，用真实税负算，<strong>你投 100 块进去，UiPath 一年替你赚 1 块 9</strong>。如果按软件行业正常的 21% 税率算（NOL 总有一天用完），是 1 块 6。</p>
+<p>如果你认为员工发股票也是成本（本文的立场就是这样），那么按现金流口径，<strong>投 100 块一年只赚 1 块 3</strong>。</p>
+<p>如果你还想知道「现在这个利润是不是高点」——三年平均口径给出答案：<strong>投 100 块一年赚 8 毛</strong>。但这个 8 毛的含义和别的公司不一样：不是「现在的利润是高点、以后会跌回去」，而是<strong>这家公司三年里两年在亏钱，直到最近才第一次赚到利润，三年平均本来就低</strong>。往好处说，这条曲线的方向是向上的（FY2024 亏 0.90 亿 → FY2025 亏 0.74 亿 → FY2026 赚 1.16 亿 → TTM 赚 1.53 亿）；往坏处说，你现在付的 80.7 亿，是为一条刚刚转正、只有一年半正利润记录的曲线定价。</p>
+<p><strong>这 X 块钱有多少回到你口袋？</strong> 不分红。TTM 回购 4.05 亿，占市值 5%，其中约三分之二用来抵消员工发股，真正到股东手里的约 1.4 亿（占市值 1.7%）。剩下的钱在做收购（TTM 花了 1.49 亿）和堆在账上。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong> 分子（利润）短期大概率变大：营收增速从 9.3% 回到 15.2%，SBC 占营收比一直在降，经营杠杆刚刚开始显现，公司自己给的前瞻 PE 是 18.9 倍。但这里有个陷阱——<strong>GAAP 净利润明年几乎肯定大幅下滑</strong>，因为那 1.66 亿税收礼物不会再有，明年可能出现「经营明明变好了、每股收益却腰斩」的情况。分母（市值）已经把好消息吃掉了：股价一年涨了 42%，现价 15.6 美元比 50 日均线 12.16 高出 28%。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜，而且便宜是个错觉。</strong></p>
+<p>24.6 倍的市盈率是 1.66 亿一次性税务纸面利润造出来的假象；剔掉它是 53 倍，把员工发股当真成本是 75 倍，EV/EBIT 是 64 倍。一家营收增 15%、经营利润率 6.3%、ROIC 3.49% 的软件公司，配 53–75 倍，是在预付好几年的完美执行。</p>
+<p>生意本身不烂：83% 毛利率、13.3 亿净现金零负债、自由现金流率 22%、股本真的在减少（一年 −2.68%）、SBC 从占营收 58% 降到 16%——这些都是真实的好。但它悬着一个躲不开的问题：<strong>RPA 的存在理由是「老系统改不动，所以派个机器人在外面假装是人」，而大语言模型正在让「读懂一张糊掉的发票并填进系统」这件事变成任何人都能调的通用能力。</strong> UiPath 的护城河真正硬的那块是 Orchestrator 里几百条配好的流程和权限，不是认字和点鼠标。它现在拼命往智能体转型（Maestro、Autopilot），可能成，也可能只是把自己最赚钱的那一层商品化掉。市场对这个风险的定价很明确：<strong>23.5% 的流通股被做空</strong>，这是个极高的数字。</p>
+<p>投 100 块，真实年回报 1 块 3 到 1 块 9，同时承担一个「主业可能被 AI 从下面掀掉」的存在性风险。要么等它把智能体转型证明出来（届时贵得有道理），要么等价格回到 12 美元一带（真实口径 40 倍出头）。现在这个价，是好公司、坏价格。</p>
+</div></body></html>

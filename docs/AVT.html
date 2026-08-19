@@ -1,0 +1,381 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AVT · 安富利（Avnet, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AVT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">五年自由现金流累计为负，分红回购全靠借钱</div><h1>AVT · 安富利（Avnet, Inc.）</h1>
+<p>市值 $76.7 亿 · 股价约 $93.5 · 行业：电子元器件分销（NASDAQ） · TTM 截止 2026 年 6 月 27 日（TTM 恰好等于 FY2026 完整财年）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>安富利是<strong>电子元器件的中间商</strong>。它自己不设计、不生产任何芯片，它做的事是把几百家芯片厂的货，搬到几十万家做电子产品的公司手里。财报把它拆成两门生意。</p>
+<h3>生意一：Electronic Components（电子元器件分销）—— TTM 营收 258.5 亿，占 93.6%</h3>
+<p><strong>这门生意具体是怎么运作的：</strong></p>
+<p>假设有一家做工业机器人控制器的公司，一年出 8 万台，每台里要用到 1 颗 TI 的 DSP、2 颗英飞凌的 MOSFET、1 颗美光的内存、若干 ADI 的运放，加上几百个电阻电容，一共 300 多个物料号，来自 25 个不同的原厂。</p>
+<p>这家公司不可能去跟 TI 直接签合同——TI 的直销团队只伺候年采购额上亿美元的苹果、特斯拉这种客户。一家一年买 3000 万美元元器件的公司，在 TI 眼里是「长尾客户」，TI 会说：去找安富利。</p>
+<p>于是安富利做四件事：</p>
+<ol>
+<li><strong>囤货并拆整卖零</strong>。安富利跟 TI 签的是年框，一次订几百万颗，按 TI 的排产节奏拿货，堆在自己全球的配送中心里。机器人公司要 2000 颗，安富利就发 2000 颗。原厂的最小起订量和交货周期（芯片动辄 26—52 周）被安富利的库存吸收掉了。</li>
+<li><strong>垫钱</strong>。机器人公司下单，安富利先付钱给 TI，货发出去后给客户 60—90 天账期。<strong>安富利本质上是给整个电子行业提供无息贷款的银行</strong>——这就是为什么它账上常年有 60 亿美元以上的应收账款和存货。</li>
+<li><strong>管缺货</strong>。2021 年那种缺芯行情里，谁手上有货谁说了算。安富利的价值在这种时候达到顶峰。</li>
+<li><strong>卖服务</strong>：帮客户做元器件选型（FAE 现场应用工程师）、编程烧录、来料检验、按生产线节拍配送（VMI 寄售）。这部分不单独收费，是包在毛利里的。</li>
+</ol>
+<p><strong>钱怎么收</strong>：赚的是<strong>买卖价差</strong>。从原厂拿货的价格和卖给客户的价格之间，大约有 10—12 个点。TTM 毛利率 <strong>10.43%</strong>——也就是说 276 亿的营收里，只有 28.8 亿是自己的，剩下 248 亿是替原厂过手的货款。扣掉全球 1.49 万名员工的工资、仓库、物流、IT，经营利润率只剩 <strong>3.14%</strong>。</p>
+<p><strong>为什么客户非用它不可</strong>：不是因为便宜，是因为<strong>没得选</strong>。原厂不接小单，而一个电子产品要 300 个物料号，客户不可能跟 25 家原厂各建一套采购关系。全球能做全线分销的只有安富利、艾睿（Arrow）、大联大、文晔这几家。<strong>这是个真实但极薄的护城河：门槛在规模和资金，不在技术。</strong></p>
+<p><strong>TTM 为什么涨了 24.6%</strong>：AI 数据中心。服务器、电源、光模块、散热的元器件需求把整个行业拉起来了。但注意——<strong>毛利率同时从 10.74% 掉到 10.43%</strong>。涨的是那种走量、不赚钱的生意。</p>
+<h3>生意二：Farnell（小批量目录分销）—— TTM 营收 17.8 亿，占 6.4%</h3>
+<p>Farnell 是安富利 2016 年花 18 亿美元买来的，做的是<strong>完全不同的生意</strong>：卖给工程师个人，而不是卖给工厂。</p>
+<p>一个在实验室做原型的硬件工程师，需要 5 颗某型号的传感器、1 块开发板、2 个连接器，明天就要。他上 Farnell（在美国叫 Newark）的网站，像在淘宝一样下单，第二天到货。单笔订单可能才 200 美元。</p>
+<p>这门生意的毛利率<strong>远高于</strong>主业（目录分销行业通常 30—38%），因为工程师急着要样品的时候不在乎贵 20%。但它体量太小，17.8 亿只占公司的 6.4%，撑不起大局。同比 +23.2%，跟着主业一起复苏。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>占比</th>
+<th>FY2025 营收</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Electronic Components</td>
+<td>25,852</td>
+<td>93.6%</td>
+<td>20,755</td>
+<td><strong>+24.6%</strong></td>
+</tr>
+<tr>
+<td>Farnell</td>
+<td>1,781</td>
+<td>6.4%</td>
+<td>1,446</td>
+<td><strong>+23.2%</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>27,633</strong></td>
+<td>100%</td>
+<td>22,201</td>
+<td><strong>+24.5%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部利润财报不披露，只到营收这一层。</strong> 按行业常识估算：Farnell 的经营利润率在正常年份 8—12%，主业 2.5—3%。以此推算，Farnell 大约用 6.4% 的营收贡献了 15—20% 的经营利润。<strong>这是估算，不是财报数字。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>一次性项目：<strong>连续五年的「一次性」重组费用</strong></h3>
+<p>这是本篇最该看的一行。利润表上「并购与重组费用」：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>FY2026(TTM)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>并购与重组费用（百万）</td>
+<td>5.3</td>
+<td>28.0</td>
+<td>52.6</td>
+<td>64.6</td>
+<td><strong>134.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连续五年，每年都有，而且逐年翻倍，五年累计 2.85 亿美元。</strong></p>
+<p>公司每年都会把这笔钱从「调整后利润」里加回去，理由是「一次性」。但一件事连着发生五年、金额还在指数级放大，它就不是一次性，而是<strong>这门生意的经常性成本</strong>——安富利在持续关闭仓库、裁撤区域、整合 IT 系统，这是低毛利分销商为了活下去必须一直做的事。</p>
+<p><strong>所以在本文的「真实市盈率」里，这笔钱不加回。</strong> 这也意味着安富利自己吹的 Non-GAAP 利润（把 1.35 亿加回去，税后约 9630 万）是虚高的。</p>
+<p><strong>其他项目</strong>：外汇损失 −2670 万（安富利一半以上营收在美国之外，这是常态噪音）。FY2024 有一笔 +8650 万的诉讼和解收益，FY2025 有 −4340 万的其他非常项目——<strong>单期口径无法判断这些是否年年发生</strong>，但从五年记录看，安富利的利润表底下常年挂着一堆这样的东西。</p>
+<h3>有效税率的跳动</h3>
+<p>TTM 有效税率 <strong>28.46%</strong>，FY2025 只有 <strong>4.13%</strong>，FY2024 是 21.13%。FY2025 那个 4% 明显是一次性的税务调整（那年税前才 2.51 亿，交了 1035 万税）。这意味着 <strong>FY2025 报出来的 2.40 亿净利润里，有大约 4000 万是税率异常给的</strong>，做三年平均时要意识到这一点。</p>
+<h3>股权激励（SBC）：4869 万，占净利润 14.6%</h3>
+<p>不算大也不算小。占营收才 0.18%，对一家 276 亿营收的公司来说完全可控。按 GAAP 扣除，不加回。</p>
+<h3>资本化的支出：没有异常</h3>
+<p>安富利不资本化研发（它没有研发）。资本开支 7357 万，比 FY2024 的 2.26 亿大幅收缩——<strong>在营收暴涨 24.5% 的一年里砍掉三分之二的资本开支</strong>，这不是效率提升，这是现金紧张时的取舍，下面会看到原因。</p>
+<p>折旧摊销 1.35 亿，其中约 5800 万是当年收购留下的无形资产摊销（EBITDA 口径的 D&amp;A 只有 7679 万）。</p>
+<h3>回购与稀释：回购是真的，钱不是自己赚的</h3>
+<ul>
+<li>TTM 回购 <strong>1.383 亿</strong></li>
+<li>TTM SBC <strong>4869 万</strong></li>
+<li><strong>回购 ÷ SBC = 2.84 倍</strong></li>
+<li>流通股本同比 <strong>−4.57%</strong>，五年从 9900 万股减到 8200 万股，减了 17%</li>
+</ul>
+<p>单看这几行是标准的好公司作业。但要和下面这组数一起看。</p>
+<h3>利润和现金流的差：这是全篇最关键的一张表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>334.39</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>134.75</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>48.69</td>
+</tr>
+<tr>
+<td>＋ 坏账计提 + 其他</td>
+<td>3.60</td>
+</tr>
+<tr>
+<td>－ <strong>应收账款增加</strong></td>
+<td><strong>−2,615</strong></td>
+</tr>
+<tr>
+<td>－ <strong>存货增加</strong></td>
+<td><strong>−918.33</strong></td>
+</tr>
+<tr>
+<td>＋ <strong>应付账款增加</strong></td>
+<td><strong>+2,608</strong></td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变动</td>
+<td>+122.46</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>−280.93</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>−73.57</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−354.50</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 3.34 亿，自由现金流 −3.55 亿。差了 6.9 亿。</strong></p>
+<p>原因全在营运资金：营收涨 24.5%，应收账款就涨了 26.15 亿，存货涨了 9.18 亿，两项合计吃掉 35.3 亿现金；供应商那边多欠了 26.08 亿，抵回来一部分，<strong>净流出 8.03 亿</strong>。</p>
+<p>这是分销商的宿命：<strong>生意越好，越缺钱。</strong> 每多做 100 块营收，就要先垫出去大约 15 块。所以安富利在最景气的年份反而现金流为负，在衰退年份（FY2025 营收下滑 6.55%）现金流反而是 +7.25 亿——库存和应收在收缩，钱吐出来了。</p>
+<p><strong>但这个「周期里自然平衡」的说法必须用五年数据检验：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>FY2026</th>
+<th><strong>五年合计</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自由现金流（百万）</td>
+<td>−268.2</td>
+<td>−908.4</td>
+<td>+463.5</td>
+<td>+577.0</td>
+<td>−354.5</td>
+<td><strong>−490.6</strong></td>
+</tr>
+<tr>
+<td>分红 + 回购（百万）</td>
+<td>282.9</td>
+<td>328.1</td>
+<td>274.7</td>
+<td>416.8</td>
+<td>252.7</td>
+<td><strong>1,555.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年里营收经历了完整的一涨一跌一涨，累计自由现金流仍然是负 4.9 亿；同期给股东发了 15.55 亿。</strong></p>
+<p>差额怎么补的？看债务：总债务从 FY2022 的 18.66 亿涨到今天的 <strong>34.76 亿</strong>，五年增加 16.1 亿。<strong>这笔债务和五年股东回报的数额几乎一一对应。</strong></p>
+<p>说白了：<strong>过去五年安富利分给股东和回购的每一分钱，本质上都是借来的。</strong> 生意本身在这五年里没有产生任何净现金。</p>
+<p>这不等于财务造假——垫出去的 8 亿营运资金是真实资产（应收账款和存货，将来会变回现金）。但它意味着：这门生意的增长不创造自由现金，它消耗自由现金。</p>
+<h3>债务与利息</h3>
+<p>净负债 <strong>33.2 亿</strong>，是市值的 43%。TTM 利息支出 <strong>2.531 亿</strong>——占经营利润 8.67 亿的 <strong>29%</strong>。也就是说安富利经营层面赚的每 3 块钱里，有近 1 块直接付给了银行和债权人。利息保障倍数 3.43 倍，不算危险但也不宽裕。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $7,670 百万。企业价值 $10,990 百万（加 33.2 亿净负债）。<strong>对一家净负债占市值 43% 的公司，企业价值口径远比市盈率诚实。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7,670 ÷ 334.39</td>
+<td><strong>22.9 倍</strong></td>
+<td><strong>$4.36</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 1.347 亿重组（税后 96.3）→ 430.7</td>
+<td>17.8 倍</td>
+<td>$5.62</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>重组是年年发生的，不加回，等于 GAAP</td>
+<td><strong>22.9 倍</strong></td>
+<td><strong>$4.36</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 −3.545 亿</td>
+<td><strong>无意义（负）</strong></td>
+<td><strong>负</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（参考 FY2025）</td>
+<td>7,670 ÷ 577.03</td>
+<td>13.3 倍</td>
+<td>$7.52</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>10,990 ÷ 867.37</td>
+<td><strong>12.7 倍</strong></td>
+<td><strong>$7.89</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>7,670 ÷ 357.77（334.4/240.2/498.7 均值）</td>
+<td><strong>21.4 倍</strong></td>
+<td><strong>$4.66</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均和当期几乎一样（21.4 vs 22.9），说明<strong>当前利润不是异常高点，也不是异常低点，就是这门生意的常态水平</strong>。这跟本批另外两家形成鲜明对比。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进安富利，按真实口径算，公司一年替你赚 4.36 块。</strong></p>
+<p>但这个数字有个陷阱：你买的是股权，公司还欠着 33.2 亿的债。<strong>按企业价值口径看，整个生意（股权 + 债务）一年产生 7.89 块的经营利润回报，其中 2.29 块直接付了利息，剩下的才轮到股东和税务局。</strong> 你之所以看到 4.36 块的股权回报，一部分是杠杆放大出来的——这在景气年份是加分项，在衰退年份会反过来吃你。</p>
+<p><strong>这 4.36 块里，有多少真的回到你口袋？</strong> 分红 1.144 亿 + 回购 1.383 亿 = 2.527 亿，除以 76.7 亿市值 = <strong>股东实际到手 3.3%</strong>（分红收益率 1.5% + 回购 1.8%）。这个数字本身很扎实。</p>
+<p><strong>问题是这 3.3% 不是生意赚出来的，是借出来的。</strong> 同期自由现金流是 −3.55 亿，净新增借款 +5.69 亿。</p>
+<p><strong>这个数字未来会变大还是变小？</strong></p>
+<p><strong>变大的路径</strong>：如果营收增速放缓到个位数，营运资金就不再吃钱，那 8 亿现金会吐回来，自由现金流会转正——FY2025 就是这么来的。同时重组如果真的做完，1.35 亿的费用消失，净利润能加 9600 万。市场给的 <strong>8.83 倍前瞻市盈率</strong>（对应每股收益约 10.6 美元，是 TTM 的 2.6 倍）就是在赌这两件事同时兑现。</p>
+<p><strong>我对这个前瞻数字持怀疑态度</strong>：安富利过去五年的每股收益是 6.94 → 8.26 → 5.43 → 2.75 → 4.01，波动巨大且趋势向下；毛利率连续五年下滑（12.20% → 11.99% → 11.64% → 10.74% → 10.43%）。要从 4.01 跳到 10.6，需要经营利润接近翻倍，而毛利率还在跌。这更像是分析师在把周期高点线性外推。</p>
+<p><strong>变小的风险</strong>：
+1. <strong>ROIC 7.63%，低于自己的加权资本成本 8.78%</strong>。用大白话讲：<strong>这门生意每投入一块钱，赚回来的还不够付这一块钱的资金成本。</strong> 它在毁灭价值，只是速度很慢。
+2. <strong>毛利率五年连跌</strong>。AI 拉动的是标准化、大批量、原厂直供压力最大的品类，安富利在这些品类上没有议价权。规模在涨，赚头在薄。
+3. <strong>周期一旦掉头，杠杆反向作用</strong>。FY2025 营收只跌了 6.55%，净利润就从 4.99 亿掉到 2.40 亿，腰斩。33 亿的债务在那种年份会变得很沉。
+4. <strong>原厂直销和线上化在慢慢侵蚀中间商</strong>。这是个十年维度的慢性问题，不是明年的问题。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门真实存在、但赚不回资金成本的生意，被按周期高点的利润估了 23 倍。</strong></p>
+<p>安富利不是骗子公司：它有 276 亿营收、14869 名员工、五年减了 17% 的股本、连续 20 多年分红。EV/EBIT 12.7 倍、市净率 1.53 倍，这些数字在分销行业里也称不上离谱。</p>
+<p>但把这三件事摆在一起看——<strong>ROIC 7.63% 低于 WACC 8.78%、毛利率连跌五年、五年累计自由现金流为负 4.9 亿而同期分红回购 15.6 亿全靠债务增加 16.1 亿填上</strong>——你付 23 倍市盈率买到的，是一家在行业最景气的一年里烧掉 3.5 亿现金、靠借钱维持股东回报的批发商。</p>
+<p>分销商该在周期底部、市盈率个位数、市净率 1 倍以下的时候买。现在营收刚创历史新高、股价一年涨 74.7%，是它这门生意最好看的时刻，不是最该买的时刻。</p>
+</div></body></html>

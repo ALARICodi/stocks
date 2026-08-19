@@ -1,0 +1,426 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CBC · Central Bancompany（中央银行集团）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CBC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">36%存款不付利息是真护城河，但2.21倍有形净资产+一年涨71%</div><h1>CBC · Central Bancompany（中央银行集团）</h1>
+<p><strong>市值</strong> 77.8 亿美元 ｜ <strong>股价</strong> $32.50 ｜ <strong>股本</strong> 2.3951 亿股
+<strong>行业</strong> 金融 — 密苏里州区域性银行控股公司（NASDAQ 上市）
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率 / 净资产收益率 / 净息差 / 拨备口径，而不是市盈率。</strong> 原因是银行的"利润"跟制造业公司的利润不是一回事：银行可以通过少提坏账拨备、加大杠杆、卖掉浮盈的债券这三种方式，在任何一年凭空变出漂亮的净利润，而这三样都是从未来借来的。判断一家银行贵不贵，必须回到"你付了多少倍的净资产，换来这堆净资产每年多少的回报率，以及这个回报率是在多大的杠杆和多松的信贷标准下做出来的"。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Central Bancompany 成立于 1902 年，总部在密苏里州首府杰斐逊城，是 The Central Trust Bank 的控股公司，在密苏里、堪萨斯、俄克拉荷马、科罗拉多四个州开分行。截止 2026 年 6 月 30 日总资产 203 亿美元，2,971 名员工。它做三件事。</p>
+<h3>生意一：Consumer Banking（个人银行）—— 收存款、放房贷车贷</h3>
+<p><strong>具体是什么。</strong> 密苏里州哥伦比亚市有一对夫妻，工资卡开在 Central Bank of Boone County（集团旗下的地方品牌之一），活期账户里常年趴着 8,000 美元，银行<strong>一分钱利息都不付</strong>；他们买房贷了 24 万美元、30 年期、利率 6.5%；车贷 3 万、利率 7%；还有一张这家银行发的信用卡。</p>
+<p>银行的生意就是：拿这对夫妻（和另外几十万户）几乎免费的活期存款，去放 6.5% 的房贷，中间的价差就是它的收入。</p>
+<p><strong>这里有一个数字是全篇的核心：这家银行 153.8 亿美元的存款里，有 55.7 亿是完全不付利息的活期存款，占 36.2%。</strong></p>
+<p>这个比例在美国银行业里属于顶尖水平（大多数区域银行是 20%–25%，2023 年硅谷银行倒闭之后很多银行掉到 15% 以下）。为什么它能做到？因为它的地盘是密苏里、堪萨斯这些中西部小城，客户是在同一个镇上住了三代、工资卡从爷爷辈就开在这家银行的人。这些人不会为了多 3% 的利息把钱搬到网上银行去。<strong>在 2026 年这种利率环境下，"别人的钱免费放在你这儿"就是一台印钞机。</strong></p>
+<p>结果反映在成本上：TTM 全年实付的利息现金只有 1.944 亿美元。用全部 162.9 亿的付息负债+免息存款一起摊，综合资金成本只有 <strong>1.19%</strong>；即使只算 107.2 亿的付息部分，也只有 <strong>1.81%</strong>。同期短期美债的收益率在 4% 以上。这个差额就是它的护城河，具体、可量化、写在现金流量表上。</p>
+<h3>生意二：Commercial Banking（企业银行）—— 给本地生意人放贷、管现金</h3>
+<p><strong>具体是什么。</strong> 同一个镇上的一家有 40 台车的建材运输公司，要买 8 台新卡车，找银行贷 200 万；一家开发商要盖一个小商业中心，贷 800 万的建设贷款；一个农场主每年春天贷 50 万买种子化肥、秋天卖了粮食还上。除了放贷，银行还替这些企业管钱：工资代发、收款账户归集、商户收单（这家公司的 POS 机刷卡，银行抽千分之二三）、商务信用卡。</p>
+<p><strong>这块的关键词是"关系"。</strong> 大银行给中西部一家 40 辆车的运输公司放贷，要跑标准化的风控模型；Central 的分行行长认识这个老板二十年，知道他儿子接班了、知道他去年为什么现金流紧。这种"软信息"是区域银行唯一还打得过大银行的地方，也解释了为什么它的坏账率能常年这么低。</p>
+<p>贷款总额 116.8 亿美元，主要是商业地产、建设开发贷、工商业与农业贷款、多户住宅、独栋住宅按揭。<strong>贷存比只有 76%</strong>（116.8 亿贷款 ÷ 153.8 亿存款），剩下的钱买了 70.4 亿的债券（其中 57.4 亿是抵押支持证券）。76% 的贷存比是很保守的水平——它没把能放的贷款放满。</p>
+<h3>生意三：Wealth Management（财富管理与信托）—— 不占资产负债表的纯手续费</h3>
+<p><strong>具体是什么。</strong> 一位当地企业主卖掉了自己的公司，套现 1,200 万美元，找 Central 的信托部门管这笔钱：帮他做资产配置、设立给子女的信托、做遗产和税务规划、执行遗嘱。银行按托管资产的比例每年收管理费（通常 0.5%–1%），1,200 万一年就是 6 万到 12 万美元的费用收入。</p>
+<p><strong>这块生意最值钱的地方是：它几乎不占用资本、不承担信用风险、收入极其稳定。</strong> 一笔家族信托一旦设立，可能管三代人。银行的资本充足率不因为多管了 1 亿资产而下降一分。这就是为什么财富管理业务的每一块钱收入，都比放贷赚的每一块钱更值钱。</p>
+<p>财报不单独披露分部收入，但可以倒推：TTM 总收入 10.71 亿，我估算净利息收入约 7.0 亿，剩下约 <strong>3.7 亿（34.7%）是非利息收入</strong>——信托与财富管理费、账户服务费、银行卡手续费、商户收单。对一家区域银行来说 34.7% 的手续费占比相当高，说明财富管理这块的体量不小。</p>
+<h3>三门生意合起来的成绩单（TTM，截止 2026-06-30，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>上一完整财年 FY2025</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总收入（净利息收入＋手续费）</td>
+<td><strong>1,071</strong></td>
+<td>1,012</td>
+<td>同比 <strong>+17.1%</strong></td>
+</tr>
+<tr>
+<td>其中：净利息收入</td>
+<td>约 700（估算）</td>
+<td>—</td>
+<td>财报未拆分，按利息支出倒推</td>
+</tr>
+<tr>
+<td>其中：非利息收入</td>
+<td>约 371（估算）</td>
+<td>—</td>
+<td>财富管理＋手续费</td>
+</tr>
+<tr>
+<td>坏账拨备</td>
+<td><strong>13.1</strong></td>
+<td>9.3</td>
+<td>占贷款仅 <strong>0.11%</strong></td>
+</tr>
+<tr>
+<td>营业费用</td>
+<td>约 501（倒推）</td>
+<td>—</td>
+<td><strong>成本收入比 46.8%</strong></td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>556.7</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>429.3</strong></td>
+<td>390.2</td>
+<td>同比 +10.0%</td>
+</tr>
+<tr>
+<td>每股收益</td>
+<td>$1.85</td>
+<td>$1.75</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>净利息收入、非利息收入、营业费用这三行是我用"总收入 − 拨备 − 税前利润 = 费用"倒推和估算出来的，财报的这四个页面不单独披露。<strong>总收入、拨备、税前利润、净利润是财报原值。</strong></p>
+</blockquote>
+<p><strong>成本收入比 46.8% 是这份财报第二个亮眼的数字。</strong> 意思是每收进 100 块，只花 46.8 块的人工、房租、系统就能收上来。美国区域银行的普遍水平是 55–65。46.8 属于全行业前 10%。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：财报没有单列，说明金额小到可以忽略。</strong> 这是一家 1902 年的家族控股银行，不是硅谷公司，不靠发股票招人。<strong>没有这个问题。</strong></p>
+<p><strong>一次性项目：有一笔，而且这一笔正好指向银行业最经典的一种粉饰手法。</strong></p>
+<p>现金流量表里"证券处置损益"这一行，TTM 是 <strong>−2,150 万</strong>（负号表示要从净利润里扣掉，即当期实现了 2,150 万的税前<strong>收益</strong>）。按 22.84% 的实际税率折算，税后约 <strong>1,660 万，占净利润的 3.9%</strong>。</p>
+<p>为什么这条要单独点名：<strong>卖掉浮盈的债券来凑当期利润，是银行最方便的一种调节手段</strong>——想让这个季度好看，就把账上涨了的债券卖几只。而这条线在这家公司过去几年是剧烈摆动的：FY2023 是 3,422 万的<strong>亏损</strong>、FY2024 是 4,430 万的<strong>亏损</strong>（那两年利率飙升，他们主动割肉调整债券组合），FY2025 是 1,389 万收益，TTM 是 2,150 万收益。<strong>单期口径完全判断不出常态是多少</strong>，我在下面的估值里把这 1,660 万剔掉了，但请知道这个剔法本身带着不确定性。</p>
+<p><strong>拨备水平：这是全篇最需要警惕的一处，虽然它不算"障眼法"。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贷款总额</td>
+<td>116.8 亿</td>
+</tr>
+<tr>
+<td>坏账准备金余额</td>
+<td>1.504 亿</td>
+</tr>
+<tr>
+<td><strong>准备金 ÷ 贷款</strong></td>
+<td><strong>1.29%</strong></td>
+</tr>
+<tr>
+<td>TTM 计提的拨备</td>
+<td>0.131 亿</td>
+</tr>
+<tr>
+<td><strong>本期拨备 ÷ 贷款</strong></td>
+<td><strong>0.11%</strong></td>
+</tr>
+<tr>
+<td>推算的实际核销</td>
+<td>约 0.123 亿（准备金几乎没动）</td>
+</tr>
+</tbody>
+</table></div>
+<p>准备金余额相对贷款的 1.29% 是个健康的水平。但<strong>本期只计提了 0.11%</strong>，实际核销也就 0.11%——这个坏账率低到只有在信用周期最好的时候才会出现。历史上美国银行穿越整个周期的平均净核销率大约是 0.35%–0.50%，衰退年份会到 1% 以上。</p>
+<p><strong>这不是造假，是周期。</strong> 但它意味着：现在这个 4.29 亿的净利润，是建立在"几乎没人违约"这个前提上的。如果核销率回到 0.40% 的长期均值，一年要多计提约 3.4 亿−1.3 亿 = 约 <strong>3.4 亿的差额里的一大块</strong>——具体说，0.40% × 116.8 亿 = 4.67 亿的年度拨备，比现在的 0.13 亿多出 <strong>3.4 亿税前</strong>，税后约 2.6 亿，那会把净利润从 4.29 亿砍到 1.7 亿。这是一个极端假设，但它说明当前利润对信贷环境的敏感度有多高。</p>
+<p><strong>AOCI（债券浮亏）：基本已经愈合，这是好消息。</strong>
+股东权益里"综合收益及其他"是 <strong>−6,553 万</strong>。这一栏装的是可供出售债券的未实现亏损。FY2022 是 −3.969 亿、FY2024 是 −1.399 亿，现在只剩 −0.066 亿。<strong>2022–2023 年利率暴涨给全行业债券组合砸出的坑，这家已经填得差不多了。</strong>（提醒：持有至到期类债券的浮亏不进这一栏，这四个页面看不到，属于未验证项。）</p>
+<p><strong>资本化的支出：银行没有这个概念。没有。</strong></p>
+<p><strong>回购与稀释——这一项是负分。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发行新股（上市募资）</td>
+<td><strong>+4.031 亿</strong></td>
+</tr>
+<tr>
+<td>回购股票</td>
+<td>−0.387 亿</td>
+</tr>
+<tr>
+<td>现金分红</td>
+<td>−2.806 亿</td>
+</tr>
+<tr>
+<td><strong>实际股本变化</strong></td>
+<td><strong>+5.34%（稀释）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>股本一年多了 5.34%，不是少了。</strong> TTM 里有一笔 4.03 亿的股票发行——这家银行原本是家族和当地股东持有的非上市公司，最近才登陆 NASDAQ 并配售了一部分股份。内部人现在仍持股 31.2%，公开流通股只有 7,972 万股，占总股本的 <strong>33.3%</strong>。</p>
+<p><strong>这个股权结构是理解这家公司的关键：它本质上还是一家家族控股的银行，外部股东买到的是三分之一的少数股权，对资本怎么用没有发言权。</strong></p>
+<p><strong>分红：TTM 派了 2.806 亿现金，但不要把它当常态。</strong> 常规季度股息的年化水平是每股 $0.480 × 2.395 亿股 = 约 <strong>1.15 亿</strong>（股息率 1.48%，派息率约 26%）。TTM 那 2.806 亿里超出的部分，是上市前后给原有股东的特别分配。<strong>未来能指望的是 1.15 亿，不是 2.8 亿。</strong></p>
+<p><strong>利润和现金流的差：</strong> 对银行做"净利润 → 经营现金流"逐项对账意义不大（银行的经营现金流里塞满了贷款发放和存款变动，跟工商企业的含义完全不同）。这里只说结论：TTM 经营现金流 5.017 亿高于净利润 4.293 亿，主要来自 8,095 万的"其他经营性资产变动"，是时点性的，<strong>不构成利润质量的证据，也不构成问题</strong>。</p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市值</td>
+<td>77.84 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>股东权益（账面价值）</td>
+<td>38.66 亿</td>
+<td>每股 $16.14</td>
+</tr>
+<tr>
+<td>商誉及无形资产</td>
+<td>3.50 亿</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>有形账面价值</strong></td>
+<td><strong>35.16 亿</strong></td>
+<td>每股 <strong>$14.68</strong></td>
+</tr>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>2.01 倍</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td><strong>2.21 倍</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>净资产收益率 ROE</strong></td>
+<td><strong>12.20%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>有形净资产收益率 ROTCE</strong></td>
+<td><strong>12.21%</strong></td>
+<td>商誉很少，两者几乎相同</td>
+</tr>
+<tr>
+<td>总资产收益率 ROA</td>
+<td><strong>2.12%</strong></td>
+<td>4.293 亿 ÷ 203 亿</td>
+</tr>
+<tr>
+<td><strong>股东权益 ÷ 总资产</strong></td>
+<td><strong>19.05%</strong></td>
+<td>行业普遍 9%–11%</td>
+</tr>
+<tr>
+<td>杠杆倍数</td>
+<td><strong>5.25 倍</strong></td>
+<td>行业普遍 9–11 倍</td>
+</tr>
+<tr>
+<td>有形普通股权益 ÷ 有形总资产</td>
+<td>17.6%</td>
+<td>CET1 这四页没有，但由此可知是堡垒级</td>
+</tr>
+<tr>
+<td>净息差 NIM</td>
+<td>约 3.7%（估算）</td>
+<td>生息资产约 189 亿</td>
+</tr>
+<tr>
+<td>综合资金成本</td>
+<td><strong>1.19%</strong></td>
+<td>实付利息 1.944 亿 ÷ 全部资金 162.9 亿</td>
+</tr>
+<tr>
+<td>免息存款占比</td>
+<td><strong>36.2%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>成本收入比</td>
+<td><strong>46.8%</strong>（倒推）</td>
+<td></td>
+</tr>
+<tr>
+<td>贷存比</td>
+<td>76%</td>
+<td>保守</td>
+</tr>
+<tr>
+<td>拨备覆盖：准备金/贷款</td>
+<td>1.29%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>换算成「投 100 块，一年回报多少」</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7,784 ÷ 429.3</td>
+<td><strong>18.1 倍</strong></td>
+<td><strong>5.52 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除证券处置收益后</strong></td>
+<td>7,784 ÷ 412.7</td>
+<td><strong>18.9 倍</strong></td>
+<td><strong>5.30 元</strong></td>
+</tr>
+<tr>
+<td>ROE ÷ PB 换算</td>
+<td>12.20% ÷ 2.01</td>
+<td>—</td>
+<td>6.07 元（用期末净资产，偏乐观）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>7,784 ÷ [(429.3+305.7+273.1)÷3 = 336.0]</td>
+<td><strong>23.2 倍</strong></td>
+<td><strong>4.32 元</strong></td>
+</tr>
+<tr>
+<td>假设坏账回到长期均值 0.40%</td>
+<td>净利润降至约 3.55 亿</td>
+<td><strong>21.9 倍</strong></td>
+<td><strong>4.56 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 4 块 3 到 5 块 3。</strong></p>
+<p><strong>这个回报里，有多少真回到你口袋？</strong> 约 26% 以现金股息发出来（股息率 1.48%），剩下 74% 留在银行里做净资产增厚——而且<strong>回购是负的</strong>：股本一年多了 5.34%。所以短期内你能摸到的现金只有那 1.48%，其余全靠账面价值增长和市场愿不愿意继续给 2 倍的市净率。</p>
+<p><strong>这个回报未来是变大还是变小？两股力量在拉扯。</strong></p>
+<p><strong>支持变大的（而且这一条比表面上强）：</strong> 19% 的股东权益占总资产比例意味着这家银行<strong>至少囤了 17 亿美元的多余资本</strong>（按行业正常的 11% 算）。这笔钱现在只是趴在那儿拉低 ROE。如果把它当成"附送的现金"从市值里扣掉，你实际为这台"经营中的银行"付的价格是 (77.84−17) ÷ 4.13 = <strong>14.7 倍</strong>，而那台银行的 ROE 是 22% 而不是 12%。<strong>这是买入这家公司最有力的一个论点。</strong> 加上 36.2% 的免息存款、46.8% 的成本收入比、124 年的存续史、0.08 的贝塔（几乎不跟大盘波动），这是一台质量非常高的机器。</p>
+<p><strong>支持变小的：</strong> 第一，那 17 亿的多余资本<strong>在家族手里，不在你手里</strong>。他们已经用一百多年证明了自己不着急把钱还出来——最近这一年不但没回购，反而增发了 4 亿。少数股东能不能分到这块蛋糕，完全没有保证。第二，现在的净息差是周期高点：贷款按今天的高利率重新定价，存款成本却因为免息存款占比高而几乎没涨（实付利息 TTM 1.944 亿，比 FY2024 的 2.161 亿还<strong>低</strong>）。降息周期开始后，贷款收益率会先降，这个价差会收窄。第三，坏账率 0.11% 是周期最好的时候才有的数字。第四，最直白的一条：<strong>股价过去 52 周涨了 71.05%</strong>，市净率从 FY2025 年底的 1.54 倍拉到今天的 2.01 倍——<strong>这一年的收益几乎全是估值扩张贡献的，不是利润涨出来的。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家非常好的银行，被市场用一年 71% 的涨幅重新发现了一遍，现在的价格已经把"好"这件事定价得很充分了——好生意，偏贵。</strong></p>
+<p>好在哪儿：36.2% 的存款完全不付利息，综合资金成本 1.19%，这是别人用钱砸不出来的东西，只能靠在中西部小城做一百二十四年生意攒出来；成本收入比 46.8%，全行业前 10%；总资产收益率 2.12%，是同规模银行的近两倍；股东权益占总资产 19%，杠杆只有同业的一半，这张表可以毫发无伤地穿过一次严重衰退；贷存比 76% 没放满；2022 年那轮利率冲击砸出来的债券浮亏已经从 3.97 亿收窄到 0.66 亿；账上没有股权激励、没有资本化把戏、没有需要解释的复杂结构。</p>
+<p>贵在哪儿：<strong>2.21 倍的有形账面价值。</strong> 美国区域银行的常态区间是 1.0–1.6 倍，只有最顶尖的那一小撮能长期站上 2 倍。它配得上溢价，但 2.21 倍要求它把现在 12.2% 的 ROTCE 长期维持住——而这个 12.2% 同时踩着两个周期高点：净息差在高位、坏账率在 0.11% 的地板上。按三年平均利润算是 23.2 倍，按坏账正常化算是 21.9 倍，投 100 块一年回你 4 块 3 到 4 块 6，其中只有 1 块 5 是真发到手上的现金。</p>
+<p>还有一条结构性的：这是一家家族控股、内部人持股 31.2%、流通股只占三分之一的公司。它最大的价值来源——那 17 亿的多余资本——由控股方决定怎么处置，而他们刚刚做的选择是增发新股稀释你 5.34%，不是回购。<strong>这台机器很好，但方向盘不在你手上。</strong></p>
+<p>想买这家公司，我会等它跌回 1.5 倍有形账面（约每股 $22），或者等到一轮真正的信贷坏消息把大家吓走的时候。现在这个 $32.50，是市场刚刚发现它有多好之后的价格，不是发现之前的价格。</p>
+</div></body></html>

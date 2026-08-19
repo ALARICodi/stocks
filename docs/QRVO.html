@@ -1,0 +1,352 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QRVO · 威讯联合半导体（Qorvo, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">QRVO</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">13倍自由现金流不贵，但近一半收入来自正在自研射频的苹果，营收四年掉22%</div><h1>QRVO · 威讯联合半导体（Qorvo, Inc.）</h1>
+<p><strong>市值</strong> 84.43 亿美元 ｜ <strong>企业价值</strong> 86.63 亿 ｜ <strong>股价</strong> $95.70 ｜ <strong>行业</strong> 电子科技·射频半导体 ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止 2026 年 6 月 27 日</strong>（最近四个季度滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Qorvo 是 2015 年由 RFMD 和 TriQuint 合并成的射频芯片公司。它做的东西你每天都在用但从来看不见：<strong>手机里负责「把信号发出去、把信号收进来」的那一小块芯片群</strong>。</p>
+<p>先讲清楚这件事本身。你的手机要连上基站，得干四件事：把基带芯片吐出来的微弱信号<strong>放大</strong>（功率放大器 PA）、把不属于自己频段的杂音<strong>滤掉</strong>（滤波器）、在几十条频段之间<strong>切换</strong>（开关）、再根据握持姿势<strong>调谐天线</strong>（天线调谐器）。这四样东西以前是四家公司分别卖的，现在被封装成一个指甲盖大小的「射频前端模组」（RF Front-End Module）整体卖给手机厂。Qorvo 和 Skyworks、博通是这个市场的三巨头。</p>
+<p><strong>一部旗舰手机里的 Qorvo 含量大约 8–12 美元。</strong> 苹果一年卖 2 亿多部 iPhone，你就能算出来这门生意有多大——以及它有多依赖苹果。</p>
+<p>财报分三个部分：</p>
+<h3>生意一：ACG 先进蜂窝事业部 —— TTM 营收 24.57 亿，占 67.4%</h3>
+<p>这就是上面说的手机射频前端，Qorvo 的命根子。</p>
+<p><strong>怎么收钱</strong>：苹果、三星、荣耀、OPPO、vivo、小米在设计新机型时，会提前 12–18 个月招标某一代产品的射频方案。中标之后，Qorvo 按机型出货，一个模组卖 2–4 美元，一部手机装 3–4 个。中标就是几千万到几亿美元的多年合同，落标就是断崖。这个行业叫「<strong>socket 生意</strong>」——你抢的不是订单，是主板上的那个焊盘位置，抢到了坐三年，抢不到一分钱没有。</p>
+<p><strong>这门生意正在萎缩，而且原因不是周期性的。</strong> 看数字：FY2022 营收 32.34 亿 → TTM 24.57 亿，四年掉了 24%。原因有三层：
+1. 全球智能手机出货量见顶，从 14 亿部横盘到 12 亿部；
+2. 中国安卓厂商这几年大量转向本土射频供应商（卓胜微、唯捷创芯），Qorvo 主动放弃了利润最薄的入门机型市场；
+3. <strong>最要命的一层：苹果在自研。</strong> 苹果已经开始把射频前端的一部分往内部收，配合自研基带。苹果占 Qorvo 营收接近一半，这不是「一个大客户」的问题，这是<strong>一个大客户正在学着自己做你的产品</strong>的问题。</p>
+<p>管理层的应对是主动退出低毛利业务、只保留高端 socket。效果是真的：ACG 营收在掉，但<strong>集团毛利率从 FY2023 的 37.64% 一路提到 TTM 的 48.54%</strong>，整整 11 个百分点。这是「用营收换毛利」的取舍，短期数字很好看，长期是在把地盘越守越小。</p>
+<h3>生意二：HPA 高性能模拟事业部 —— TTM 营收 7.746 亿，占 21.3%</h3>
+<p>这是 Qorvo 唯一在健康增长的部分（FY2024 的 5.73 亿 → TTM 7.75 亿，两年 +35%），也是我认为这家公司真正的价值所在。</p>
+<p><strong>具体做什么</strong>：用氮化镓（GaN）和砷化镓做<strong>国防雷达</strong>的功率放大器。一部有源相控阵雷达上有几千个 T/R 收发单元，每个单元里都要一颗高功率射频芯片——这些芯片 Qorvo 是主要供应商之一，客户是雷神、洛克希德这类防务承包商，再往上是美国国防部。这块生意的特点是：<strong>认证周期五年以上，一旦上了某型号武器的物料清单，二十年不换供应商</strong>。毛利率远高于手机，也完全不受消费电子周期影响。</p>
+<p>同一个事业部还做卫星通信地面站、5G 基站功放、以及电源管理芯片（马达驱动、数据中心电源）。</p>
+<p>一份典型合同长这样：某防务承包商的下一代舰载雷达要 1,200 个 T/R 组件，每个组件用两颗 GaN 芯片，单价 300 美元，这一个型号一年就是 700 万美元，而且要连续供货十五年。</p>
+<h3>生意三：CSG 连接与传感事业部 —— TTM 营收 4.134 亿，占 11.3%</h3>
+<p>WiFi 6/7 前端模组（装在路由器和笔记本里）、UWB 超宽带（就是 AirTag 和「精准查找」用的那个）、Matter/Thread 智能家居芯片、车载 V2X、超声波指纹传感器。</p>
+<p><strong>这块在缩水</strong>：FY2023 的 4.74 亿 → TTM 4.13 亿。智能家居芯片市场碎片化、竞争者太多（乐鑫、恩智浦、Silicon Labs），Qorvo 在这里没有规模优势。管理层已经在剥离其中的部分资产（TTM 现金流量表里有 2,147 万的资产处置收入）。</p>
+<h3>分部的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万）</th>
+<th>vs 上一财年 FY2026</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ACG 手机射频</td>
+<td>2,457</td>
+<td>−3.7%</td>
+<td>67.4%</td>
+<td>~15%（估算）</td>
+<td>~369</td>
+</tr>
+<tr>
+<td>HPA 国防/模拟</td>
+<td>774.6</td>
+<td>+9.8%</td>
+<td>21.3%</td>
+<td>~30%（估算）</td>
+<td>~232</td>
+</tr>
+<tr>
+<td>CSG 连接传感</td>
+<td>413.4</td>
+<td>−2.0%</td>
+<td>11.3%</td>
+<td>~10%（估算）</td>
+<td>~41</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,645</strong></td>
+<td><strong>−0.2%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>17.57%（实际）</strong></td>
+<td><strong>640.4（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部经营利润。</strong> 上表利润率按各业务的产品结构（国防 GaN 毛利远高于手机模组）<strong>估算</strong>，加总对齐实际经营利润 6.404 亿。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：1.28 亿，占净利润 <strong>32.1%</strong></h3>
+<p><strong>这是全篇第一个警报。</strong> 1.28 亿的 SBC，占营收 3.5%、占 GAAP 净利润接近三分之一。半导体公司普遍高，但 32% 依然属于偏高档位——意思是这家公司赚的每 3 块钱利润里，就有 1 块钱是先以股票形式发给了员工、再由 GAAP 扣回来的。</p>
+<p>Qorvo 的 Non-GAAP 口径会把这 1.28 亿全部加回去，所以你在券商报告里看到的「调整后 EPS」比 GAAP 高一大截。<strong>这里一律不加回</strong>——员工拿走的股份是从你的持股比例里稀释出去的，那是真成本。</p>
+<h3>一次性项目：<strong>8,237 万的重组与减值，但这不是「一次性」</strong></h3>
+<p>TTM 的「Asset Writedown &amp; Restructuring Costs」是 8,237 万。听起来是一次性的，但把四年摆在一起看：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>重组与减值（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>239.5</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>221.4</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>192.6</td>
+</tr>
+<tr>
+<td>FY2026 / TTM</td>
+<td>82.4</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连续四年，累计 7.36 亿。</strong> 这已经不是「一次性项目」，这是 Qorvo 这四年的经营常态——关厂、卖厂、裁员、砍产品线，年年在做。规矩上我必须明说：<strong>只看 TTM 单期确实分不清真假一次性，但四年连续出现，我倾向于认定它是经常性成本，不予加回。</strong></p>
+<p>这个判断直接决定了第三部分的真实市盈率：加回是 18 倍，不加回是 22 倍。我用 22 倍。</p>
+<h3>税率：14.54%，偏低，是利润的隐形助推器</h3>
+<p>TTM 税前利润 4.671 亿、所得税 6,792 万，实际税率 <strong>14.54%</strong>。同期实际交出去的现金税只有 5,593 万。这个税率对一家美国公司来说明显偏低（正常 21%+），来源是海外知识产权架构和历史递延税资产。<strong>它不违规，但它不稳定</strong>——税率哪年回到 20%，净利润当场少 2,500 万。</p>
+<p>另外注意一个缺口：经营利润 6.404 亿 → 税前利润 4.671 亿，中间少了 <strong>1.733 亿</strong>。其中利息支出约 7,300 万，剩下约 1 亿是各类非经营性损失（含资产处置相关）。这一块财报页上看不到明细，是我对这份报表最没把握的地方。</p>
+<h3>资本化的支出：没有</h3>
+<p>Qorvo 的研发费用全部当期费用化，不做资本化。这一点比很多软件公司干净。</p>
+<h3>回购与稀释：数字很漂亮</h3>
+<ul>
+<li>TTM 回购金额：5.177 亿</li>
+<li>TTM 股权激励：1.280 亿</li>
+<li><strong>比值 = 4.0 倍</strong></li>
+</ul>
+<p>远超 3 倍门槛，是真回购。流通股一年减少 <strong>2.45%</strong>，季度环比减少 3.53%，节奏还在加快。Qorvo 不发股息，全部股东回报都走回购这条路，回购收益率 2.45%。</p>
+<p>但要说清楚一件事：<strong>回购花的 5.18 亿，比全年自由现金流 6.50 亿的 80% 还多。</strong> 这是把绝大部分现金流拿去买自己的股票。如果你认为这家公司的主业在收缩，那这就是正确的资本配置（收缩的生意不该再投钱）；如果你认为它需要投资转型，那这就是在挖自己的墙脚。</p>
+<h3>利润和现金流的差：净利润 3.992 亿 vs 经营现金流 7.652 亿</h3>
+<p>差了 3.66 亿，<strong>接近净利润本身的规模</strong>，必须逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>399.2</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+245.1</td>
+</tr>
+<tr>
+<td>+ 减值与重组（大部分非现金）</td>
+<td>+82.4</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+128.0</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>−53.3</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−52.1</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>+42.9</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−15.0</td>
+</tr>
+<tr>
+<td>+ 所得税相关变动</td>
+<td>+19.8</td>
+</tr>
+<tr>
+<td>+ 其他营运资金</td>
+<td>−31.7</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>765.2</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说明了一件重要的事：Qorvo 的现金流之所以比利润好看这么多，靠的是三样非现金项目——折旧 2.45 亿、股权激励 1.28 亿、减值 0.82 亿，加起来 4.55 亿。</strong> 其中折旧 2.45 亿远高于资本开支 1.16 亿，说明公司在<strong>吃老本</strong>：过去建的晶圆厂在计提折旧，但现在已经不再建新厂了（资本开支从 FY2022 的 2.13 亿砍到 1.16 亿，砍了 46%）。</p>
+<p>这直接解释了为什么自由现金流 6.50 亿如此丰厚、FCF 利润率高达 17.82%。但也意味着：<strong>这个现金流水平建立在「不再扩产」的前提上</strong>。资产在折旧完之前很好看，折旧完之后要么重新花钱，要么产能就没了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>8,443 ÷ 399.2</td>
+<td><strong>22.2 倍</strong></td>
+<td><strong>4.51 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 1.28 亿 + 重组 0.82 亿等，调整后净利约 6.0 亿</td>
+<td>约 14 倍</td>
+<td>7.14 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>8,443 ÷ 399.2（SBC 不加回；重组连续四年出现，认定为经常性，也不加回）</td>
+<td><strong>22.2 倍</strong></td>
+<td><strong>4.51 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>8,443 ÷ 649.5</td>
+<td>13.0 倍</td>
+<td>7.69 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>8,663 ÷ 640.4</td>
+<td>13.5 倍</td>
+<td>7.40 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>8,443 ÷（FY24 −70.3 + FY25 55.6 + FY26 339.0）/3 = 8,443 ÷ 108.1</td>
+<td><strong>78.1 倍</strong></td>
+<td><strong>1.28 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：</strong></p>
+<p>你现在投 100 块进 Qorvo，按最保守的真实口径算，公司一年替你赚 <strong>4.51 块</strong>。</p>
+<p>但这张表里六个数字彼此差得太远了——从 1.28 元到 7.69 元，<strong>差六倍</strong>。这不是计算问题，这是这家公司当前状态的真实写照，值得逐个解释：</p>
+<ul>
+<li><strong>自由现金流 7.69 元最漂亮</strong>，但上面已经说明白，它靠的是折旧 2.45 亿 ≫ 资本开支 1.16 亿这个不可持续的差额。</li>
+<li><strong>GAAP 4.51 元是最诚实的当期数字。</strong></li>
+<li><strong>三年平均 1.28 元是最刺眼的。</strong> FY2024 亏 7,032 万、FY2025 只赚 5,562 万、FY2026 才跳到 3.39 亿。三年平均下来只有 1.081 亿，对应 78 倍市盈率。这说明<strong>当前这个 3.99 亿的利润是三年来的最高点，不是常态</strong>。它是靠「关厂 + 砍低毛利产品 + 低税率」拼出来的，不是靠生意变好拼出来的——<strong>营收在同期是往下走的</strong>。</li>
+</ul>
+<p>这 4.51 块里，有多少回到你口袋？Qorvo <strong>不发股息</strong>，全靠回购，回购收益率 2.45%。剩下的钱去哪了？TTM 投资活动净流出只有 3,312 万——几乎不投资了。资本开支砍到只占营收 3.2%，对一家有自有晶圆厂的半导体公司来说这是极低的水平。<strong>这家公司实质上已经进入「收租 + 回购 + 缩表」模式。</strong></p>
+<p>这个 4.51 未来变大还是变小？</p>
+<ul>
+<li><strong>可能变大的理由</strong>：券商给的<strong>前瞻市盈率只有 12.41 倍</strong>，隐含未来一年 EPS 要涨 79%。逻辑是毛利率还在往上走（37.6% → 48.5%，管理层目标更高）、HPA 国防业务在两位数增长、股本每年缩 2.5%。</li>
+<li><strong>可能变小的理由，而且我认为权重更大</strong>：营收连续四年下滑（32.3 亿 → 36.5 亿的 TTM 只是相对企稳），最大客户苹果占了接近一半营收并且正在自研射频。<strong>这不是一个可以靠管理层努力解决的问题</strong>——你的最大客户同时也是你最强的潜在竞争对手。一旦苹果在某一代 iPhone 上把 Qorvo 的 socket 换掉一半，这家公司的收入表会在两个季度内塌掉 20%，而毛利率改善那点努力全部白费。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真的，风险的名字叫苹果。</strong></p>
+<p>13 倍自由现金流、13.5 倍 EV/EBIT、7.7% 的自由现金流收益率、净负债几乎为零（2.2 亿）、Piotroski 评分 8 分、连续四年真金白银回购到股本每年缩 2.5%——单看这些数字，Qorvo 在半导体里属于<strong>统计意义上明显偏便宜</strong>的那一档。国防射频（HPA）那 21% 的业务是真资产，二十年认证壁垒，谁也抢不走。</p>
+<p>但它便宜是有理由的，而且理由不止一条：<strong>营收四年掉了 22%、连续四年在做重组（累计 7.36 亿）、股权激励占掉净利润 32%、当期利润是三年最高点而三年平均口径下要 78 倍、现金流的漂亮靠的是「折旧远大于资本开支」这个吃老本的差额。</strong> 最上面还压着一件谁都改变不了的事：接近一半的收入来自一个正在学着自己做这件事的客户。</p>
+<p>这是那种「买对了赚一倍，买错了腰斩」的股票，不是那种可以放着不管的股票。如果你看好的是 HPA 国防那块，那你其实是在为 21% 的业务付 100% 的价钱，中间还捆着 67% 的下滑资产。</p>
+<p><strong>统计上便宜，商业上可疑。放在观察名单里可以，当成安全的低估值标的不行。</strong></p>
+</div></body></html>

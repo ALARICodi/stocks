@@ -1,0 +1,275 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IDA · IDACORP（爱达荷电力控股）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IDA</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">24倍买ROE压在监管下限9.4%的电力公司，自由现金流负9.9亿，每年增发3.9%稀释你</div><h1>IDA · IDACORP（爱达荷电力控股）</h1>
+<p>市值 $82.2 亿 | 股价 $142.04 | 行业：公用事业（受管制电力） | TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是一件。</strong> 财报把营收分成两块：Utility Operations（公用事业）17.99 亿美元，All Other（其他）345 万美元。第二块占比 0.2%，四舍五入等于零。所以这家公司就是一家电力公司——爱达荷电力（Idaho Power）——外面套了一层控股壳。</p>
+<h3>唯一的生意：在爱达荷州南部卖电</h3>
+<p>爱达荷电力给爱达荷州南部加上俄勒冈州东部一小块地方供电，服务约 65 万个电表，覆盖博伊西（Boise）这座全美增长最快的城市之一。</p>
+<p><strong>它是怎么赚钱的？这里必须先破除一个误会：受管制的电力公司不是靠"多卖电"赚钱的，它是靠"多买设备"赚钱的。</strong></p>
+<p>具体机制是这样：爱达荷州公用事业委员会（IPUC）每隔几年审一次电价。审的方法是先把爱达荷电力所有在用的资产——发电厂、变电站、输电铁塔、电表——加总成一个叫"费率基数"（rate base）的数字，然后允许公司收取的电费 = 运营成本 + 折旧 + 税 + 费率基数 × 一个批准的回报率。这个回报率目前大约是 9.4%–10%。</p>
+<p>所以一个具体例子：库纳（Kuna）新落一个数据中心，爱达荷电力必须给它建一座变电站加一段输电线，花 8000 万美元。这 8000 万进入费率基数。假设一半用债务融资（利息 5%）、一半用股东的钱，那么这 4000 万股东资金每年就被监管机构批准赚 9.4%，也就是每年约 376 万美元的税后利润——而且是写进电价里、由全体用户强制买单的，一直收到这座变电站折旧完为止。<strong>建得越多，赚得越多；不建，利润就不涨。</strong></p>
+<p><strong>它拿什么发电？</strong> 最值钱的是斯内克河（Snake River）上的 17 座水电站，核心是地狱峡谷（Hells Canyon）三座大坝——Brownlee、Oxbow、Hells Canyon。水电的边际成本接近于零，这是这家公司最硬的资产，几乎不可能被复制（今天没人能在美国新建这种规模的大坝）。缺点是靠雪，雪少的年份发电量掉、要去市场高价买电补，利润就波动。剩下的是燃煤（Jim Bridger、Valmy，正在改烧天然气）、燃气调峰机组，以及一堆外购的风电光伏合同。</p>
+<p><strong>为什么现在特别热闹？</strong> 因为爱达荷州这几年人口涌入，更要命的是美光（Micron）在博伊西的晶圆厂大扩产、加上 Meta 等公司在库纳建数据中心。这些是几百兆瓦级的新负荷，爱达荷电力必须为此新建电厂和输电线，包括跟俄勒冈连通的 Boardman-to-Hemingway 500 千伏线路。<strong>这就是为什么这家公司 TTM 资本开支 14.69 亿美元，比它 18.03 亿的全年营收只低一点点。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公用事业（爱达荷电力）</td>
+<td>17.99 亿</td>
+<td>−0.6%</td>
+<td>99.8%</td>
+<td>22.4%（整体口径）</td>
+<td>~4.03 亿</td>
+</tr>
+<tr>
+<td>其他（金融服务、小水电）</td>
+<td>0.03 亿</td>
+<td>+1.8%</td>
+<td>0.2%</td>
+<td>估算</td>
+<td>~0.01 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按分部披露利润，上表按整体经营利润率 22.41% 摊算，属<strong>估算</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：现金流量表未单列，说明金额小到不值得列（公用事业普遍在净利润的 3% 以内）。不构成问题。</p>
+<p><strong>一次性项目</strong>：现金流量表里"其他经营活动 −9537 万"是这一期最大的非常规科目，主要是递延所得税和监管递延账户的变动。<strong>单期口径无法判断这是否年年发生</strong>，但从历史看这一行每年都有、正负不定，属于受管制企业的常态噪音，不是可以加回的"一次性"。</p>
+<p><strong>税率——这一期最重要的东西</strong>：TTM 税前利润 3.5935 亿，所得税只交了 2007 万，<strong>有效税率 5.59%</strong>；实际付出的现金税更低，1794 万。一家正常美国企业的综合税率在 24% 左右。这 18 个百分点的差额来自三样东西：新建电厂的加速折旧、风光项目的生产税抵免（PTC），以及<strong>累计递延投资税抵免（ADITC）的摊销</strong>。</p>
+<p>第三样必须单独讲。爱达荷电力跟监管机构有一份沿用多年的和解协议：<strong>当它在爱达荷州辖区内的净资产收益率（ROE）低于 9.4% 时，可以额外摊销一笔 ADITC 把利润补上去。</strong>注意本期披露的 ROE 是 <strong>9.44%</strong>——正好压在那条线上。这说明什么？说明这家公司当期的真实盈利能力是不够 9.4% 的，是靠动用税务抵免的存量把账面 ROE 顶到了下限。<strong>这不是造假，这是监管设计出来的平滑机制；但它有一个致命属性——ADITC 是存量，用一笔少一笔。</strong></p>
+<p>按 21% 的联邦法定税率重算：3.5935 亿 × 79% = 2.839 亿净利润，比报出来的 3.386 亿少 16%。</p>
+<p><strong>资本化的支出</strong>：受管制电力公司会把在建工程期间的资金成本（AFUDC，含债务和权益两部分）计入当期利润，这部分是<strong>纯账面收益、当期不产生一分钱现金</strong>。以 14.69 亿的在建规模推算，这一项大概在 4000 万–6000 万量级（财报页未单列，属<strong>估算</strong>）。</p>
+<p><strong>回购与稀释——这是本篇最刺眼的一项</strong>：
+- TTM 回购金额 616 万美元。这不是回购，这是员工股票归属时代扣税的常规操作。
+- 同期<strong>发行新股融资 2.2408 亿美元</strong>。
+- 流通股数一年增加 <strong>+3.86%</strong>（57.84 亿股口径下从约 55.7M 增至 57.84M）。</p>
+<p>也就是说，公司一边发了 1.9306 亿的股息，一边从股东手里拿回 2.2408 亿的新股认购款。<strong>净流向：股东倒贴公司 3100 万美元。</strong>"2.48% 股息率"这个数字在扣掉稀释之后接近归零。</p>
+<p><strong>利润和现金流的差——逐项对账</strong>（单位：百万美元）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>338.60</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+271.65</td>
+</tr>
+<tr>
+<td>+ 权益投资损失</td>
+<td>+3.39</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−57.81</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>+21.15</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−7.92</td>
+</tr>
+<tr>
+<td>− 应交税金变动</td>
+<td>−5.60</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产变动</td>
+<td>+11.55</td>
+</tr>
+<tr>
+<td>− 其他经营活动（递延税/监管递延）</td>
+<td>−95.37</td>
+</tr>
+<tr>
+<td><strong>= 经营活动现金流</strong></td>
+<td><strong>479.65</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−1,469.23</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−989.58</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这一行就是全篇的核心事实：这家公司 TTM 自由现金流是负 9.9 亿美元。</strong>它赚的每一分钱、再加上 3.44 亿新增债务、2.24 亿新发股票、3.9 亿账上现金，全部投进了工地。账上现金从 2.157 亿掉到 8364 万，总债务从 36.7 亿涨到 40.08 亿，利息保障倍数只有 <strong>1.83 倍</strong>（经营利润仅够覆盖利息 1.83 次）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>82.15亿 ÷ 3.386亿</td>
+<td><strong>24.3 倍</strong></td>
+<td>$4.12</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>不披露调整口径，同 GAAP</td>
+<td>24.3 倍</td>
+<td>$4.12</td>
+</tr>
+<tr>
+<td><strong>剔除税率优惠后的真实市盈率</strong></td>
+<td>82.15亿 ÷ 2.839亿（按21%常规税率）</td>
+<td><strong>28.9 倍</strong></td>
+<td><strong>$3.46</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为负</td>
+<td>无意义</td>
+<td><strong>−$12.04</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>121.4亿 ÷ 4.041亿</td>
+<td>30.0 倍</td>
+<td>$3.33（全公司口径）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>82.15亿 ÷ 3.171亿</td>
+<td><strong>25.9 倍</strong></td>
+<td>$3.86</td>
+</tr>
+</tbody>
+</table></div>
+<p>（每股收益口径的 23.6 倍比市值口径的 24.3 倍低，是因为 EPS 用的是全年加权平均股数 5615 万，而现在实际有 5784 万股在外面——<strong>增发的股票还没来得及摊薄"每股"这个数字</strong>。以整体买下这家公司算，24.3 倍才是你实际付的价。）</p>
+<p><strong>说人话：你现在投 100 块进 IDACORP，按最保守的真实口径（税率正常化）算，公司一年替你赚 3 块 4 毛 6。</strong></p>
+<p>这 3 块 4 毛 6 里，有多少真正回到你口袋？表面上股息发了 1.93 亿、对应 2.48% 股息率，也就是 100 块拿回 2 块 4 毛 8。<strong>但同期公司又发新股向你要走了 2.24 亿。净额是负的——你一分钱没拿回来，还多掏了。</strong>剩下的全部、以及借来的钱，都进了费率基数。</p>
+<p><strong>这个 3 块 4 毛 6 未来会变大还是变小？大概率会变大，但速度取决于三件你控制不了的事：</strong>监管机构肯不肯批下一轮涨价、公司能以什么价格继续增发股票、以及 ADITC 存量还够顶几年。费率基数确实在以两位数增长，这是真实的增长引擎；但公司的投入资本回报率 <strong>ROIC 只有 3.40%，低于它自己 6.34% 的加权平均资本成本</strong>——公用事业的 ROIC 因为大量在建工程尚未进入费率基数而被系统性低估，可这个 3 个百分点的缺口太大了，它在告诉你：这几年砸下去的钱，还没有一分钱开始按 9.4% 计息。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门确定性极高的垄断生意，配了一个不便宜的价格和一张被税务抵免撑住的利润表。</strong>24 倍买一家 ROE 压在监管下限 9.4%、自由现金流负 9.9 亿、每年增发 3.9% 新股稀释你的电力公司，比同行 17–19 倍的常态贵了三成——你多付的这三成，买的是"美光和数据中心会让爱达荷的用电量长期高增长"这个故事。故事本身是真的，但它兑现的方式是公司不停向你要钱去建电网，而不是给你分钱。<strong>想买爱达荷的增长可以，但等它跌回 20 倍以下，或者等自由现金流转正的迹象出现，再买不迟。</strong></p>
+</div></body></html>

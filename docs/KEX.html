@@ -1,0 +1,430 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KEX · 柯比公司（Kirby Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KEX</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">琼斯法案护城河真、账极干净,但ROIC 8.33%对WACC 8.08%,超额价值约等于零</div><h1>KEX · 柯比公司（Kirby Corporation）</h1>
+<p><strong>市值</strong> 73.8 亿美元 ｜ <strong>股价</strong> 约 $139.7（5,280 万股） ｜ <strong>企业价值</strong> 85.7 亿美元
+<strong>行业</strong> 运输（内河/沿海液货驳船 + 工业动力设备分销服务） ｜ <strong>交易所</strong> NYSE
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动，即 2025年Q3 至 2026年Q2）
+<strong>全篇所有数字均为 TTM 口径</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Kirby 财报按两个分部披露，但底下拆成五条营收线。实质上是<strong>两门完全不同的生意</strong>，一门是"在水上开船收运费"，一门是"卖柴油发动机和给发动机修理"。</p>
+<h3>生意一：内河驳船运输（Inland Transportation）—— 全美最大的液货驳船船队</h3>
+<p>这是 Kirby 的老本行，也是整家公司的地基。</p>
+<p>具体是这么回事：美国墨西哥湾沿岸从德州休斯敦到路易斯安那，密密麻麻挤着几百家炼油厂和化工厂。埃克森在贝敦炼完油出来的丙烯，要送到 300 公里外的路易斯安那另一家工厂做塑料粒子。这批货有 3,000 吨。走卡车要 100 车，走铁路要一整列罐车，走管道——没有那条管道，因为这条线路一年只跑几十趟，修管道要几十亿，不划算。</p>
+<p>于是走水路。Kirby 派一条 30,000 桶容量的驳船（barge，一个没有动力的钢制大浮箱，长约 90 米），加一条推船（towboat，装着 2,000 匹马力柴油机的方头船），推船顶着一到三条驳船，沿着"内陆水道"（Gulf Intracoastal Waterway，一条从佛罗里达一路挖到德州的人工运河）慢慢推，时速 10 公里，走三天到。运费按"每桶每天"或者整船包月算，一条 30,000 桶的驳船在 2026 年的市场行情下，日租金大约 12,000–14,000 美元，一趟三天的活收 4 万美元左右。</p>
+<p>Kirby 手上有大约 <strong>1,000 条内河驳船</strong>，是全美最大的一家，占了整个美国内河液货驳船队的三分之一左右。第二名比它小一半。</p>
+<p><strong>为什么客户跑不掉、Kirby 又不容易被新对手挤掉，有三层原因：</strong></p>
+<ol>
+<li><strong>《琼斯法案》（Jones Act）</strong>。美国法律规定：在美国两个港口之间运货的船，必须是美国造、美国船东、美国船员。这一条直接把中国、韩国、日本的造船厂挡在门外。所以这个市场的船只能在美国船厂造，而美国造一条内河驳船要 400 万美元左右、排队等两年，中国造只要一百多万。这是一道法律砌的墙。</li>
+<li><strong>没人在造新船</strong>。美国内河驳船的平均船龄已经二十多年，每年报废的比新造的多。这十几年行业总运力是在缩的。运力缩、货量不缩，运价就往上走——这就是 Kirby 过去三年利润率从 7% 涨到 14.5% 的全部原因。</li>
+<li><strong>化工品运输是"锁死"的</strong>。运汽油谁都能运，但运丙烯、乙二醇、苯乙烯这类东西，驳船的罐体要做特殊涂层、要通过化工品运输认证、船员要有危化品资质。一家化工厂换承运人要重新做安全审核，麻烦到不值得为省 3% 运费去换。</li>
+</ol>
+<p>TTM 内河营收 15.85 亿美元，同比只涨 1.2%。<strong>这个"只涨 1.2%"值得说清楚</strong>：不是生意变差了，是船已经全租出去了——利用率接近满载，量涨不动，只能靠涨价。2026 上半年运价涨幅明显放缓，Q2 单季 4.32 亿是历史新高，但同比只有 +8.8%。<strong>内河这块的高增长期已经过去了，现在是"高位横着"。</strong></p>
+<h3>生意二：沿海驳船运输（Coastal Transportation）—— 走海上的大船</h3>
+<p>同一门生意的放大版：船更大（10 万桶级），走的是墨西哥湾到东岸、或者到夏威夷/波多黎各的海上航线。客户主要是炼油厂和成品油贸易商，把汽油柴油从墨西哥湾送到佛罗里达和东北部。</p>
+<p>沿海船队规模小得多（Kirby 大约 30 多条海洋驳船），但<strong>单船赚得多，而且这两年是全公司涨得最猛的一块</strong>。原因同上：琼斯法案船队老化，美国现存的成品油海洋驳船只有几十条，几乎全部签了长约，日租金从 2022 年的 3 万美元涨到现在的 5–6 万美元。</p>
+<p>TTM 营收 4.16 亿，同比 <strong>+16.8%</strong>，是五条线里第二快的。</p>
+<p><strong>内河 + 沿海 = Marine Transportation 分部，TTM 合计 20.0 亿，占总营收 57%，是利润的绝对主力。</strong></p>
+<h3>生意三：商业与工业（Commercial and Industrial）—— 修柴油机的</h3>
+<p>这块跟船没关系，是 Kirby 早年买来的分销服务生意。</p>
+<p>具体做什么：一家垃圾清运公司有 200 台垃圾车，车上装的是康明斯柴油机。发动机大修、变速箱换件、日常保养，交给 Kirby 在全美几十个服务点做。同样的活它还给消防车、拖车、船用发动机、矿山设备做。它同时是康明斯等品牌的授权经销商，卖原厂配件。</p>
+<p>收钱方式是工时费 + 配件加价，一次大修单价从几千到几十万美元不等。这门生意的护城河很薄——本质是"有牌照的修理厂网络"，靠密度和响应速度吃饭，谁都能进，只是没人愿意在这么低的毛利上再建一张网。</p>
+<p>TTM 营收 6.73 亿，同比 +3.9%，稳定但不增长。</p>
+<h3>生意四：发电设备（Power Generation）—— 这两年真正的惊喜</h3>
+<p>这是全公司增长最快的一块，<strong>同比 +37.2%</strong>，从三年前的 4.0 亿干到现在的 6.68 亿。</p>
+<p>它卖的是<strong>大型柴油/天然气发电机组和配电设备</strong>，从几百千瓦到几十兆瓦。买家分两类：一类是医院、数据中心、机场这种"停电一分钟就要出人命或者亏几百万"的地方，买备用电源；一类是电网公司买调峰机组，还有油田现场发电。</p>
+<p><strong>数据中心是这一波的主因。</strong> 一个 100 兆瓦级的 AI 数据中心，光备用柴油发电机就要装几十台 2–3 兆瓦的机组，加上配电柜、控制系统，一单能做到几千万美元。Kirby 做的是集成和后续维保——把机组、油罐、配电盘、自动切换开关组装成一个交钥匙的系统，装好之后每年还有维保合同。</p>
+<p>这块的问题是：<strong>它是靠别人的资本开支周期活着的</strong>。数据中心建设一旦降温，订单会断崖。所以这 6.68 亿的营收，质量不如驳船那 20 亿——驳船是运费，年年都要花；发电机是资本品，买完就不买了。</p>
+<h3>生意五：油气（Oil and Gas）—— 正在消失的一块</h3>
+<p>给页岩油田做压裂设备的制造和维修。TTM 营收 1.48 亿，<strong>同比 -32%</strong>，三年前还有 3.4 亿。美国页岩行业资本开支持续收缩，加上 Kirby 自己也在主动收缩这块。基本可以当成"正在关掉的业务"来看。</p>
+<p><strong>商业工业 + 发电 + 油气 = Distribution and Services 分部，TTM 合计 14.89 亿，占 43%。</strong></p>
+<h3>一张表看清楚</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>估算经营利润率</th>
+<th>估算贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内河驳船运输</td>
+<td>1,584.5</td>
+<td>+1.2%</td>
+<td>45.4%</td>
+<td>~20%</td>
+<td>~317</td>
+</tr>
+<tr>
+<td>沿海驳船运输</td>
+<td>416.2</td>
+<td>+16.8%</td>
+<td>11.9%</td>
+<td>~18%</td>
+<td>~75</td>
+</tr>
+<tr>
+<td><strong>小计：海运分部</strong></td>
+<td><strong>2,000.7</strong></td>
+<td><strong>+3.9%</strong></td>
+<td><strong>57.3%</strong></td>
+<td><strong>~19.5%</strong></td>
+<td><strong>~390</strong></td>
+</tr>
+<tr>
+<td>商业与工业</td>
+<td>673.1</td>
+<td>+3.9%</td>
+<td>19.3%</td>
+<td>~9%</td>
+<td>~61</td>
+</tr>
+<tr>
+<td>发电设备</td>
+<td>668.1</td>
+<td>+37.2%</td>
+<td>19.1%</td>
+<td>~11%</td>
+<td>~73</td>
+</tr>
+<tr>
+<td>油气</td>
+<td>147.6</td>
+<td>-32%</td>
+<td>4.2%</td>
+<td>~5%</td>
+<td>~7</td>
+</tr>
+<tr>
+<td><strong>小计：分销服务分部</strong></td>
+<td><strong>1,488.7</strong></td>
+<td><strong>+11.3%</strong></td>
+<td><strong>42.7%</strong></td>
+<td><strong>~9.5%</strong></td>
+<td><strong>~141</strong></td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~-26</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,489</strong></td>
+<td><strong>+6.6%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>14.5%</strong></td>
+<td><strong>505</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>利润率是估算。</strong> 本次取数的财报页只披露到分部营收，不披露分部利润。上表按公司整体 14.5% 的经营利润率、结合海运/分销两个分部历史上公开过的利润率结构倒推，误差可能有 2–3 个百分点。营收和总利润 505 百万是财报原始数字，准确。</p>
+</blockquote>
+<p><strong>结论：Kirby 名义上有五条线，实质上是「一门有法律护城河的水上运费生意（57% 营收、约 77% 利润）」+「一门沾了数据中心光的设备生意（43% 营收、约 28% 利润）」。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Kirby 这份报表<strong>异常干净</strong>。逐项看：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1,885 万美元，占净利润 5.3%。这是我在任务1里见过最低的比例之一——软件公司动辄 50%–100%。已在 GAAP 里扣掉，不加回，对估值影响可以忽略。<strong>没有问题。</strong></p>
+<p><strong>一次性项目</strong>：TTM 期内资产减值和重组费用为 <strong>0</strong>。唯一的非经常项是"出售资产收益" 479 万美元（卖旧驳船和旧设备的收益，税后约 362 万），金额小到不影响任何结论。历史上 2023 年有 5,630 万减值、2021 年有 3.4 亿的大额减值（那年净亏损 2.47 亿），但那些都过去了。<strong>当期没有需要剥的东西。</strong></p>
+<p><strong>资本化的支出</strong>：Kirby 不资本化软件或研发。它的资本开支全是实物——造新驳船、给推船换发动机、改造干散货船。TTM 资本开支 2.33 亿。<strong>没有藏利润的空间。</strong></p>
+<p><strong>回购与稀释——这是全篇最漂亮的一组数字</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股份</td>
+<td>3.406 亿美元</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>0.189 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>18.1 倍</strong></td>
+</tr>
+<tr>
+<td>股本实际变化（一年）</td>
+<td><strong>-5.05%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>标准是"大于 3 倍才算真回购"，Kirby 是 <strong>18 倍</strong>。而且股本一年实实在在少了 5.05%，不是"回购了但被员工发股抵消掉"。<strong>这是真金白银在退还给股东</strong>。Kirby 不发现金分红，全部现金回报都走回购这条路——对不需要现金流的长期股东来说，这比分红更省税。</p>
+<p><strong>利润和现金流的差</strong>：净利 3.55 亿，经营现金流 7.10 亿，自由现金流 4.77 亿。差 3.55 亿，翻一倍——需要逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>355.18</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+273.33</td>
+<td><strong>最大一项</strong>。驳船和推船是重资产，账面按 20–30 年折旧</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+27.22</td>
+<td>无形资产和递延费用摊销</td>
+</tr>
+<tr>
+<td>− 出售资产收益</td>
+<td>-4.79</td>
+<td>卖旧船的收益是投资活动，从经营里剥出去</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+18.85</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+3.50</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>+91.87</td>
+<td>主要是递延所得税</td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>+16.58</td>
+<td>收回了客户欠款</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>+3.89</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>-18.61</td>
+<td>提前付了供应商</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>-50.63</td>
+<td>补缴了以前年度递延的税</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>-6.78</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>709.66</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-232.63</td>
+<td>造新船、大修</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>477.03</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里唯一需要警惕的是折旧和资本开支的缺口：折旧摊销一共 3.01 亿（273.33 + 27.22），资本开支只有 2.33 亿——每年少花 0.68 亿。</strong></p>
+<p>这 0.68 亿的差额，直接变成了自由现金流。它是真的吗？两种解读：</p>
+<ul>
+<li><strong>好的解读</strong>：Kirby 的驳船账面折旧年限比实际能用的年限短。一条内河驳船账上按 20–25 年折完，实际维护得当能用 35–40 年。所以"折旧 &gt; 资本开支"是会计保守，不是在偷懒。</li>
+<li><strong>坏的解读</strong>：船队在变老。全行业都不造新船，Kirby 也不例外——它宁可花 3.4 亿回购股票也不花 3.4 亿造新船。这在运价高企的现在是对的（造船贵、回本慢），但船总有一天要换。</li>
+</ul>
+<p>我倾向于第一种解读为主、第二种为辅。但要意识到：<strong>Kirby 现在 4.77 亿的自由现金流里，有一部分是"暂时不换船"省出来的</strong>。如果哪天必须大规模更新船队，自由现金流会明显下滑。这不是造假，是时间差。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 73.78 亿美元，企业价值 85.70 亿美元（净负债 11.88 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>73.78亿 ÷ 3.5518亿 净利</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>$4.82</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>Kirby 基本不做大额调整，当期与 GAAP 无实质差异</td>
+<td>约 20.8 倍</td>
+<td>$4.82</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>73.78亿 ÷（3.5518 − 0.0362 出售资产收益）= 3.5156亿</td>
+<td><strong>21.0 倍</strong></td>
+<td><strong>$4.76</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>73.78亿 ÷ 4.7703亿 FCF</td>
+<td><strong>15.5 倍</strong></td>
+<td><strong>$6.46</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>85.70亿 ÷ 5.0505亿 经营利润</td>
+<td><strong>17.0 倍</strong></td>
+<td><strong>$5.89</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>73.78亿 ÷ [(3.5452+2.8667+2.2287)/3 = 2.8802亿]</td>
+<td><strong>25.6 倍</strong></td>
+<td><strong>$3.90</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>（"投100块年回报"= 1 ÷ 市盈率 × 100 元。三年平均取 FY2025、FY2024、FY2023 三个完整财年的净利润平均。）</strong></p>
+<h3>用大白话说清楚</h3>
+<p><strong>你现在投 100 块钱买 Kirby 的股票，按最保守的真实口径算，公司一年替你赚 4.76 块。</strong></p>
+<p>这 4.76 块钱的去向是这样的：Kirby <strong>不发一分钱现金分红</strong>，全部走回购。TTM 回购了 3.41 亿，相当于市值的 4.6%——也就是说，你那 100 块钱里，公司拿了大约 4.6 块去市场上买回自己的股票注销掉，让你手里剩下的股份变得更值钱一点。同时它花了 2.33 亿做资本开支（维护船队）、1.16 亿做收购（TTM 买了一家分销公司）、还了 0.80 亿的债。</p>
+<p><strong>注意一个矛盾</strong>：回购花的 3.41 亿 &gt; 净利润 3.55 亿的 96%，也 &gt; 自由现金流 4.77 亿的 71%。这个回购力度接近它现金流的上限，靠的是当前这个高利润率。如果运价回落，回购一定会先停。</p>
+<p><strong>那这 4.76 块钱，未来是变大还是变小？</strong></p>
+<p>先说会变大的理由：沿海运价还在涨（+16.8%）；发电设备沾了数据中心的光（+37.2%）；股本一年少 5%，同样的利润摊到更少的股票上，每股回报自动涨。</p>
+<p>再说会变小的理由，<strong>这几条更重要</strong>：</p>
+<ol>
+<li><strong>三年平均口径给出的 25.6 倍，比当期的 21.0 倍高了 22%</strong>。这句话翻译过来就是：<strong>Kirby 现在赚的钱明显高于它过去三年的平均水平。</strong> 三年前它经营利润率只有 10.8%，现在 14.5%。你付的价格是按现在这个好年景算的。</li>
+<li><strong>它已经在这个周期的高位了</strong>。内河业务只增长 1.2%——船全租出去了，量涨不动。运价能不能再涨，取决于美国化工品产量和驳船报废速度，不取决于 Kirby 自己。</li>
+<li><strong>ROIC 只有 8.33%，加权平均资本成本 8.08%。</strong> 这两个数字几乎一样。翻译一下：<strong>Kirby 每投一块钱进去，赚回来的钱只比它借这一块钱的成本高一点点。</strong> 这是一门"能赚钱但赚不了超额利润"的重资产生意——它的高利润率来自行业周期，不来自资本效率。</li>
+<li><strong>股价过去一年涨了 44.8%。</strong> 利润只涨了 6.6%（营收）/ 23.5%（EPS）。也就是说，<strong>这一年的股价涨幅里，一半以上是估值扩张，不是公司多赚了钱。</strong></li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Kirby 是一门被美国法律保护得很好的真生意——报表干净得几乎找不到东西可剥，回购是 SBC 的 18 倍，账上没有一笔可疑的一次性项目，是我在任务1里见过的最诚实的报表之一。</strong></p>
+<p>但它现在<strong>不便宜</strong>。你付的 21 倍是按周期高位的利润算的，用三年平均利润衡量就是 25.6 倍；ROIC 8.3% 跟资本成本 8.1% 只差 0.25 个百分点，说明这门生意本身并不创造超额价值，它这两年的好日子是驳船运价周期给的，不是它自己挣的；股价一年涨了 45%，而基本面只涨了个位数。</p>
+<p><strong>投 100 块，一年真实回报 4.76 块，而这 4.76 块建立在"运价维持在历史高位"这个假设上。</strong> 这不是好价格，这是一个把好消息已经算进去的价格。</p>
+<p>想买它的人应该等一个东西：<strong>内河运价出现回落、股价跟着跌 25%–30% 的时候</strong>。那时候你会以 15 倍左右买到同一家公司，而琼斯法案的墙还在原地。现在这个位置，好公司，价格偏贵。</p>
+</div></body></html>

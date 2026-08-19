@@ -1,0 +1,331 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HQY · HealthEquity（健康权益）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HQY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">近半利润是美联储送的利差，托管增速已从17%掉到2.8%</div><h1>HQY · HealthEquity（健康权益）</h1>
+<p>市值 85.93 亿美元 ｜ 股价 $102.79 ｜ 行业：金融（健康储蓄账户托管）｜ TTM 截止 2026 年 4 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>要看懂这家公司，先得看懂美国的"健康储蓄账户"（HSA, Health Savings Account）。</p>
+<p>美国医保贵。很多公司为了省保费，给员工买的是"高免赔额医保"（HDHP）——保费便宜，但看病要先自付比如 3,000 美元，超过部分保险才管。为了补偿这个自付缺口，美国税法允许买了这类医保的人开一个 HSA 账户，<strong>往里存钱免个人所得税、账户里的钱投资增值免税、拿出来看病也免税</strong>。这是全美国唯一一个"三重免税"的账户，比 401k 退休金账户还优惠。2026 年个人存入上限约 4,400 美元、家庭约 8,750 美元。</p>
+<p>于是问题来了：这笔钱谁替你管？法律规定 HSA 必须由持牌的托管机构（custodian）保管。HealthEquity 就是<strong>全美国最大的 HSA 托管机构</strong>，管着大约 1,000 万个账户、300 亿美元以上的资产。它的客户不是个人，是<strong>雇主</strong>——一家公司的 HR 部门跟 HealthEquity 签约，全公司几千名员工的 HSA 账户就都开在这里。</p>
+<p>它靠三件事赚钱，这三件事的性质完全不同：</p>
+<h3>生意一：Service（服务费）——收管理费的活儿</h3>
+<p>按账户按月收固定管理费。<strong>具体到一单是这样</strong>：一家五千人的制造企业跟 HealthEquity 签三年合同，HealthEquity 负责给这五千人开户、发卡、做报销审核（员工上传一张牙医账单，系统判断这笔支出符不符合税法规定的"合格医疗支出"）、做客服、出税表。收费是每个账户每月 2–3 美元，五千个账户一年就是 12–18 万美元，通常由雇主付。</p>
+<p>这门生意的实质就是<strong>外包的行政后台</strong>。TTM 收入 4.88 亿美元。</p>
+<p><strong>这条线的数字很难看</strong>：2022 财年 4.44 亿、2023 财年 4.52 亿、2024 财年 4.56 亿、2025 财年 4.78 亿、2026 财年 4.85 亿、TTM 4.88 亿。<strong>五年时间从 4.44 亿爬到 4.88 亿，年化增长不到 2%。</strong> 账户数在涨，说明<strong>单账户收费在降</strong>——这门生意根本没有定价权，雇主每次续约都压价，竞争对手（Fidelity、Optum Bank、Lively 这些）在用更低的价格甚至免费抢单。</p>
+<h3>生意二：Custodial（托管收益）——真正赚钱的那件事</h3>
+<p>这是全公司的利润引擎，而它本质上<strong>不是一家科技公司在干的活，是一家银行在干的活</strong>。</p>
+<p>员工存进 HSA 的钱，一部分被拿去投资（买基金），大部分以现金形式趴在账户里。这笔现金总额大约 160–170 亿美元。HealthEquity 自己不是银行，它把这笔钱<strong>存到合作银行去，或者买短期债券</strong>，赚取利息。然后<strong>给账户持有人一个很低的利率（通常 0.1%–0.5%），自己把中间的息差全部拿走</strong>。</p>
+<p><strong>举个具体的数</strong>：假设手上 160 亿现金，放出去拿到 4.0% 的收益，付给用户 0.3%，中间 3.7 个百分点就是它的收入，一年约 5.9 亿美元。而这笔钱的边际成本接近于零——多管 10 亿美元的现金，不用多雇一个人。</p>
+<p>TTM 收入 <strong>6.55 亿美元</strong>，占全公司营收的 49%。2022 财年才 1.86 亿，四年翻了 3.5 倍。<strong>这个 3.5 倍不是因为它多管了 3.5 倍的钱，主要是因为美联储把利率从 0 加到了 5%。</strong></p>
+<p>这一点必须说得再直白一点：<strong>HealthEquity 过去四年的利润爆发，一半以上是美联储送的。</strong> 它自己做的事情（把老的低息合同一份份换成新的高息合同）是有价值的执行，但底层的顺风是利率。</p>
+<h3>生意三：Interchange（刷卡分成）</h3>
+<p>每个 HSA 账户配一张借记卡。员工拿这张卡去药店买处方药、去医院付自付款，商户要向卡组织付一笔手续费（interchange fee，约 1%–2%），HealthEquity 从中分一块。</p>
+<p>TTM 收入 1.94 亿美元，增长 8–10%，跟账户数和消费额挂钩。这门生意稳定、边际成本也接近零，但天花板由医疗消费额决定。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>上年同期（FY2026，百万）</th>
+<th>增速</th>
+<th>占比</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Custodial 托管收益</td>
+<td>654.68</td>
+<td>636.80</td>
+<td>+2.8%</td>
+<td>49.0%</td>
+<td>利差，边际成本≈0</td>
+</tr>
+<tr>
+<td>Service 服务费</td>
+<td>488.17</td>
+<td>485.02</td>
+<td>+0.6%</td>
+<td>36.5%</td>
+<td>行政外包，无定价权</td>
+</tr>
+<tr>
+<td>Interchange 刷卡分成</td>
+<td>194.38</td>
+<td>191.61</td>
+<td>+1.4%</td>
+<td>14.5%</td>
+<td>跟随消费额</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,337</strong></td>
+<td><strong>1,313</strong></td>
+<td><strong>+1.8%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报不按分部披露利润。</strong> 但按常识可以估：托管收益和刷卡分成几乎是纯利润（毛利率接近 95%+），服务费这块要养 2,814 名员工做客服和审核，毛利率大概只有 30%–40%。<strong>估算</strong>下来，托管这一条线贡献了公司经营利润的六成以上。整体毛利率 70.68%、经营利润率 25.96%。</p>
+<p>注意上表的增速：<strong>跟上一个财年比，三条线全都只有个位数低段的增长，托管收益已经从 +17% 掉到 +2.8%。</strong> 利率红利吃完了。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 7,813 万美元，占净利润 2.307 亿的 <strong>33.9%</strong>。这是很高的比例——公司每赚 3 块钱，就有 1 块是以股票形式发给了员工。公司在自己的"调整后 EBITDA"里会把这 7,813 万全部加回去，让利润看起来漂亮得多。<strong>这里一分不加回。</strong> 好消息是股本实际在减少（下面说）。</p>
+<p><strong>一次性项目</strong>：TTM 没有明显的重组、减值、和解。数据页上"资产减值与重组"一栏 2022 财年之后全部是空的。这一点是干净的。</p>
+<p><strong>资本化的支出——这是数据页的一个陷阱</strong>：现金流量表里有一行"购买无形资产 −4,668 万美元"（TTM）。这是它资本化的软件开发费用（自己开发账户系统、App、报销审核引擎的人工成本）。这笔钱<strong>是真金白银花出去的</strong>，但数据页算自由现金流时<strong>没有扣它</strong>（只扣了 225 万的固定资产开支）。</p>
+<p>这不是小数：4,668 万 vs 225 万，<strong>它真正的年度资本支出是账面显示的 21 倍</strong>。而且这还是正常年份——2025 财年这一行是 <strong>−5.03 亿美元</strong>，那是它收购 BenefitWallet 的 HSA 账户组合（从纽约梅隆银行手里买下 63 万个账户）付的钱。<strong>这家公司的增长有相当一部分是买来的，不是长出来的。</strong></p>
+<p>所以真实自由现金流应该是 4.876 亿 − 4,668 万 = <strong>4.41 亿美元</strong>，而不是数据页显示的 4.876 亿。</p>
+<p><strong>回购与稀释——这一项是加分的</strong>：</p>
+<ul>
+<li>TTM 回购金额 3.635 亿美元 ÷ 同期 SBC 7,813 万 = <strong>4.65 倍</strong>。远超"大于 3 才算真回购"的门槛。</li>
+<li>股本一年<strong>减少 2.51%</strong>，季度环比再减 1.49%。是实打实的减少，不是纸面功夫。</li>
+<li>不分红。全部现金回报都走回购。股东总回报率 +2.51%（正的）。</li>
+</ul>
+<p>这跟同批的 IDCC 形成鲜明对比：IDCC 回购 3 倍 SBC 但股本涨 8%，HQY 回购 4.65 倍 SBC 且股本真降 2.5%。<strong>HQY 这一项做得是对的。</strong></p>
+<p><strong>利润和现金流的差</strong>：TTM 净利润 2.307 亿，经营现金流 4.899 亿，差了 2.59 亿，是净利润的 1.12 倍。这个差额很大，值得逐项拆开：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>230.70</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+154.13</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+1.09</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+78.13</td>
+</tr>
+<tr>
+<td>+ 其他经营活动（递延税等非现金项）</td>
+<td>+48.30</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−5.75</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−2.59</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变化</td>
+<td>−14.14</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>489.88</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2.25</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流（数据页口径）</strong></td>
+<td><strong>487.64</strong></td>
+</tr>
+<tr>
+<td>− 资本化的软件开发费</td>
+<td>−46.68</td>
+</tr>
+<tr>
+<td><strong>= 真实自由现金流</strong></td>
+<td><strong>440.96</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最关键的是"折旧与摊销 1.54 亿"这一行。</strong> 一家资本开支只有 225 万的公司，怎么会有 1.54 亿的折旧摊销？答案是：这几乎全部是<strong>收购形成的无形资产摊销</strong>——2019 年花 20 亿买 WageWorks、2024 年花 4.25 亿买 BenefitWallet 的账户组合，买来的"客户关系"被记成无形资产，然后按年摊销。</p>
+<p>会计上这是非现金支出，所以加回到现金流里没错。<strong>但经济上它是真成本</strong>：这些账户组合当年是花现金买的，只不过现金流出发生在收购那一年（2025 财年那 5.03 亿）。<strong>公司每年靠"加回 1.54 亿摊销"把现金流做得很漂亮，而买账户的钱早就付过了。</strong> 判断这家公司值不值钱时，不能只看"现金流 4.9 亿"就兴奋——要问：为了维持这个现金流，未来还得再买多少账户组合。</p>
+<p>投入资本回报率（ROIC）9.65%、净资产收益率（ROE）11.06%，就是这笔账的结果：<strong>赚钱能力看起来强，但把当年花出去买增长的钱算进分母，回报就只是平庸。</strong> 加权平均资本成本（WACC）5.41%，也就是说它创造的价值是 9.65% − 5.41% ≈ 4.2 个百分点，不难看，但离"伟大生意"差很远。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>8,593 ÷ 230.70</td>
+<td><strong>38.5 倍</strong></td>
+<td><strong>$2.60</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（加回 SBC + 收购摊销）</td>
+<td>8,593 ÷ ≈394</td>
+<td>21.8 倍</td>
+<td>$4.59</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 不加回、无一次性项</td>
+<td><strong>38.5 倍</strong></td>
+<td><strong>$2.60</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（数据页）</td>
+<td>8,593 ÷ 487.64</td>
+<td>17.6 倍</td>
+<td>$5.68</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣掉资本化软件）</td>
+<td>8,593 ÷ 440.96</td>
+<td>19.5 倍</td>
+<td>$5.13</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>9,313 ÷ 347.19</td>
+<td>26.8 倍</td>
+<td>$3.73</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>8,593 ÷（230.70+215.20+96.70）÷3</td>
+<td><strong>47.5 倍</strong></td>
+<td><strong>$2.11</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行的方向和 IDCC 正好相反。</strong> IDCC 三年平均比当期便宜（说明现在是利润低谷），HQY 三年平均 47.5 倍，比当期的 38.5 倍<strong>还贵 23%</strong>——<strong>说明现在这个利润是三年里最高的一年，而且是刚刚才涨上来的</strong>。2024 财年净利润只有 5,571 万，2025 财年 9,670 万，2026 财年 2.152 亿，TTM 2.307 亿。<strong>两年翻了四倍。</strong></p>
+<p>这四倍从哪来？营收同期只从 10.0 亿涨到 13.4 亿（+34%），但经营利润率从 12.8% 涨到 26.0%。<strong>利润的翻倍，几乎全部来自利润率扩张，而利润率扩张几乎全部来自那条边际成本为零的托管利差。</strong></p>
+<p><strong>说人话</strong>：你现在投 100 块进去，按最保守的真实口径（38.5 倍），公司一年替你赚 <strong>2.60 块</strong>。</p>
+<p>这 2.60 块里，<strong>一分钱现金分红都没有</strong>（公司不分红），全部留在公司。公司拿这些钱去做两件事：一是回购股票（TTM 3.64 亿，让你手里的股份占比每年增厚约 2.5%），二是还债（TTM 净还债 1.15 亿）和买账户组合。从投资活动现金流看，TTM 只花了 4,490 万，是近几年最少的一年——<strong>说明它今年没有大手笔收购，钱主要用来回购和还债了，这个用法对股东是好的。</strong></p>
+<p><strong>这个 2.60 块未来是变大还是变小？</strong> 这是全篇最关键的判断：</p>
+<ul>
+<li>
+<p><strong>变大的理由</strong>：HSA 账户数还在增长（美国高免赔额医保的渗透率还在往上走，这是雇主为了省保费的长期趋势）；账户里的资产越积越多（存进去的钱只能用于医疗，很多人存了不花，账户余额逐年滚大）；托管的现金池会随着账户数和余额自然膨胀，即使利率不变，利差收入也会跟着涨；服务费虽然不涨价，但边际成本很低，账户越多越赚；远期市盈率只有 21.07 倍，说明市场预期未来一年利润还要再涨 80%。</p>
+</li>
+<li>
+<p><strong>变小的理由，而且是很实在的理由</strong>：<strong>这门生意近一半的利润是利差，利差由美联储决定。</strong> 每降 100 个基点，按 160 亿现金池算，收入直接少约 1.6 亿美元——那是它 TTM 净利润的 70%。托管收入的增速已经从上一年的 +17% 掉到 TTM 的 +2.8%，这个信号很清楚：<strong>吃利率红利的阶段结束了。</strong> 另外，服务费这条线五年年化不到 2% 的增长，说明它在核心业务上没有定价权；账户组合要靠花钱买；账上还有 9.85 亿净负债。</p>
+</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家披着科技公司外衣的息差生意，用 38 倍的市盈率在卖。</strong></p>
+<p>它真正在做的事，是替一千万个美国人保管 160 多亿现金，付给他们 0.3% 的利息，自己拿走 4%。这门生意本身没问题——账户极其黏（HSA 里的钱只能用于医疗，换托管机构很麻烦，所以流失率低），规模第一，回购做得漂亮（股本真降 2.5%，回购是 SBC 的 4.65 倍，这一点比同批的 IDCC 干净得多）。</p>
+<p>但要看清三件事：</p>
+<p>一是<strong>它自己那门"科技/服务"的生意，五年年化增长不到 2%</strong>，说明这块根本没有定价权，是被当作赠品去换那笔存款的；</p>
+<p>二是<strong>过去两年利润翻四倍，主要是利率给的，不是公司做出来的</strong>，而这个红利已经见顶（托管收入增速从 17% 掉到 2.8%）；</p>
+<p>三是<strong>账面自由现金流 4.88 亿是虚高的</strong>，扣掉每年 4,700 万资本化的软件开发费才是 4.41 亿，而且它每隔几年就要花几亿美元去外面买账户组合来接续增长。</p>
+<p>38.5 倍的当期市盈率、47.5 倍的三年平均口径、26.8 倍的企业价值/经营利润——<strong>这个价格已经把"利率长期维持高位 + 账户持续高增长"两件事都算进去了</strong>，而这两件事同时成立的把握并不大。远期 21 倍看着便宜，但那是建立在分析师预期利润再涨 80% 的基础上。</p>
+<p><strong>结论：生意站得住，但算不上顶级；价格偏贵，没有安全边际。真要买，等一次降息把它砸下来。</strong></p>
+</div></body></html>

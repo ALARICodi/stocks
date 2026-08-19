@@ -1,0 +1,444 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ACM · AECOM（艾奕康）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ACM</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">单季砸出3.3亿项目亏损，三年平均19倍不算便宜；回购是SBC的16.5倍很硬</div><h1>ACM · AECOM（艾奕康）</h1>
+<p>市值 79.3 亿美元 ｜ 股价 $61.72（2026-08-18 收盘）｜ 行业：工业服务 / 基建工程咨询 ｜ TTM 截至 2026-06-30（财年 10 月–9 月）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AECOM 的分部只有三个，而且第三个已经名存实亡，所以实质上是<strong>一门生意做两个地区</strong>。</p>
+<h3>生意 A：美洲的基建设计与项目管理（FY2025 营收 125.26 亿美元，占 77.6%）</h3>
+<p><strong>这是一家卖工程师工时的公司，不是盖房子的公司。</strong></p>
+<p>具体怎么运作：某个州的交通厅要修一条 30 公里的轻轨。它自己没有养一支能画图的队伍，于是招标找 AECOM。AECOM 派几十上百个工程师进场，做的事情是：先做可行性研究（这条线该从哪走、地质行不行、拆迁多少钱、客流预测多少），然后做初步设计和施工图（桥怎么架、隧道怎么打、轨道怎么排、信号系统怎么配），再然后在整个施工期里替业主做<strong>项目管理</strong>——盯着承包商有没有按图施工、进度有没有拖、变更单该不该批、钱该不该付。</p>
+<p>收钱方式主要是两种：
+- <strong>成本加成（cost-plus）</strong>：AECOM 报出每个岗位的小时费率（比如资深结构工程师 $220/小时、绘图员 $95/小时），把实际投入的工时乘费率报账，业主按月付款，另加一层管理费。这类合同占大头，风险低——加班了就多收钱。
+- <strong>固定总价（fixed-price）</strong>：整个设计包一口价，比如"这段高架桥的全套施工图 4,800 万美元"。做超了自己承担。这类合同利润率高，但<strong>这次爆雷就出在这里</strong>（下面第二部分详述）。</p>
+<p>典型客户和单子长什么样：美国联邦机构（陆军工程兵团的军事基地设施、环保署的污染场地修复、FEMA 的飓风灾后重建管理）、州和市政府（交通厅、水务局、机场管理局）、以及大企业（半导体厂、数据中心、能源公司的厂区建设）。一个大型机场航站楼扩建的设计+管理合同，合同额可以是 3–8 亿美元、跨 5–7 年慢慢确认收入。</p>
+<p><strong>必须搞懂的一件事：AECOM 的"营收"里有一大半不是它自己的钱。</strong> 很多合同 AECOM 是总包方，要把岩土勘察、环境检测、专业软件这些分包出去，分包商的费用先走 AECOM 的账再付出去（业内叫 pass-through）。所以它报出来的 154 亿美元营收里，扣掉转付给分包商的部分，真正属于自己的"净服务收入"大概只有六成左右。这就是为什么它的毛利率只有 5.68%——<strong>不是生意差，是分母被灌水了</strong>。看这家公司的盈利能力，要看经营利润率对净服务收入的比值，或者干脆看 ROIC（12.4%，还可以）。</p>
+<p>客户为什么非用它不可：一是牌照和资质——大型公共工程要求设计方有对应州的执照工程师签字盖章，还要有类似项目的业绩记录，新公司进不来；二是<strong>责任承担</strong>——设计出错桥塌了要有人赔，业主要找一家赔得起的、买了巨额职业责任险的公司；三是政府项目的采购流程本身就是护城河，一个联邦长期采购合同（IDIQ）一签五到十年，期间的任务单直接派给已入围的几家。</p>
+<h3>生意 B：国际业务（FY2025 营收 36.13 亿美元，占 22.4%）</h3>
+<p>同样的生意，换到英国、中东、澳大利亚、加拿大、香港。典型项目是英国的高铁与水务升级、沙特和阿联酋的新城与场馆、澳大利亚的公路和铁路。国际这块 FY2025 基本零增长（36.13 亿 vs 36.18 亿），是拖后腿的一半。</p>
+<h3>生意 C：AECOM Capital（FY2025 营收 50 万美元）</h3>
+<p>这是过去做房地产开发跟投的自营投资平台，公司几年前就决定退出，现在只剩清算尾巴，营收 50 万美元，可以直接忽略。</p>
+<h3>各生意的钱（FY2025 全年，分部只披露到营收）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美洲</td>
+<td>12,526</td>
+<td>+0.3%</td>
+<td>77.6%</td>
+<td>主力，增速已经停滞</td>
+</tr>
+<tr>
+<td>国际</td>
+<td>3,613</td>
+<td>-0.1%</td>
+<td>22.4%</td>
+<td>零增长</td>
+</tr>
+<tr>
+<td>AECOM Capital</td>
+<td>0.5</td>
+<td>-64%</td>
+<td>0.0%</td>
+<td>清算中</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>16,140</td>
+<td>+0.2%</td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只按分部披露营收，不披露分部经营利润，所以上面没有利润列。按整体口径推算，FY2025 经营利润率 6.60%；TTM 掉到 4.70%——<strong>这 1.9 个百分点全是最近一个季度砸出来的</strong>。</p>
+<p>TTM 营收 153.93 亿美元，同比 <strong>-4.24%</strong>，是过去五年第一次负增长。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>一、最近一个季度出了大事——这是全篇最重要的一段</h3>
+<p>看这四个季度的毛利润（百万美元，从近到远）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>季度</th>
+<th>2026年6月</th>
+<th>2026年3月</th>
+<th>2025年12月</th>
+<th>2025年9月</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毛利润</td>
+<td><strong>-34.04</strong></td>
+<td>296.50</td>
+<td>280.99</td>
+<td>330.60</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td><strong>-66.11</strong></td>
+<td>254.70</td>
+<td>242.45</td>
+<td>293.13</td>
+</tr>
+<tr>
+<td>归母净利润</td>
+<td><strong>-86.71</strong></td>
+<td>179.86</td>
+<td>74.52</td>
+<td>120.37</td>
+</tr>
+<tr>
+<td>营收同比</td>
+<td>-14.18%</td>
+<td>+0.78%</td>
+<td>-4.57%</td>
+<td>+1.58%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2026 年 6 月这个季度，毛利润是负的。</strong> 一家服务公司做出负毛利，意味着这一期确认的成本超过了收入——按会计准则，固定总价合同一旦预计要亏，必须<strong>当期一次性把整个合同的预计亏损全部计提</strong>，不能分摊到以后。从正常季度约 +295 到 -34，落差约 3.3 亿美元，这就是那笔计提的规模。</p>
+<p>关键细节：<strong>这笔钱是计在"成本"里的，不在"重组费用"里</strong>（当季重组费用只有 1,208 万）。这个位置很要命——重组费用是公司自己主动做的动作，成本里的亏损计提是<strong>项目干砸了</strong>。同时营收同比 -14.18%，说明还伴随着项目停工或收入冲回。</p>
+<p>按分析口径的规矩：<strong>只看这一期，我判断不了这是"真一次性"还是"每隔几年就来一次"。</strong> 但下面第二条给了一个不太好的旁证。</p>
+<h3>二、连亏六年的"已终止经营"</h3>
+<p>AECOM 几年前把自营施工业务（Civil Construction、电力建设）划成"已终止经营"准备卖掉/关掉。看这一行的历史：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>已终止经营损益（百万）</td>
+<td>-121.5</td>
+<td>-78.5</td>
+<td>-58.75</td>
+<td>-103.66</td>
+<td>-76.49</td>
+<td><strong>-84.64</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连续六年、每年亏 6,000 万到 1.2 亿美元，一年不落。</strong> 这是教科书级的"年年都有的一次性"。公司在讲故事时会说"请看我们持续经营业务的调整后每股收益"，把这一行整个抹掉；但这是真金白银流出去的，六年累计亏了 5.2 亿美元。<strong>在算真实盈利能力时，这笔钱必须留在里面。</strong></p>
+<p>它同时也说明一件事：AECOM 处理陈年工程合同的历史记录并不干净。这让人对上面那笔 3.3 亿的项目计提是否"绝无仅有"打个问号。</p>
+<h3>三、少数股东每年拿走一块</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>FY2021</th>
+<th>FY2023</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>少数股东损益（百万）</td>
+<td>-25.11</td>
+<td>-43.26</td>
+<td>-73.29</td>
+<td><strong>-50.58</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>AECOM 很多大项目是和别人组合资联营体（joint venture）做的，合并报表时把联营体 100% 的利润并进来，再把不属于自己的部分扣掉。这一行也是年年都有、还在变大。它已经在 GAAP 净利润里扣掉了，没问题，但要知道：<strong>报表上的"经营利润 7.24 亿"里，有约 5,000 万从来就不是股东的。</strong></p>
+<h3>四、股权激励（SBC）</h3>
+<p>TTM 4,186 万美元，占 GAAP 净利润 288.04 万美元的 <strong>14.5%</strong>。这个比例在美股里算低的——AECOM 是家工程公司，主要成本是工程师工资，不是股票。SBC 已在 GAAP 里扣除，这里不加回。</p>
+<h3>五、回购与稀释——这一项是全篇最亮的</h3>
+<p>TTM 回购 <strong>6.919 亿美元</strong>，同期 SBC 只有 4,186 万。<strong>回购 / SBC = 16.5 倍。</strong></p>
+<p>按分析口径的标准：这个比值接近 1 说明回购只是在抵消员工发股（假回馈），大于 3 才算真回购。<strong>16.5 倍是真回购里的真回购。</strong> 印证：股本一年实际减少 2.14%（1.32 亿股 → 1.285 亿股），而且这是连续第五年缩股（FY2021 -7.20%、FY2022 -4.66%、FY2023 -1.81%、FY2024 -2.61%、FY2025 -2.30%）。五年下来股本从 1.47 亿股缩到 1.285 亿股，缩了 12.6%。</p>
+<p>另外 TTM 分红 1.499 亿美元，每股 1.19 美元，股息率约 1.9%，而且股息五年里每年提升 18–22%。</p>
+<p>回购+分红合计 8.42 亿美元，是同期自由现金流（2.03 亿）的 4.1 倍——<strong>这一年它是靠借钱和账上现金在回购</strong>（净新增债务 1.53 亿，现金减少 7.81 亿）。这在股价腰斩时买入是聪明的做法，但也说明这个力度不可持续。</p>
+<h3>六、资本化的支出</h3>
+<p>AECOM 是人力服务公司，没有软件资本化、没有内容制作费。资本开支 TTM 1.62 亿美元，只占营收 1.05%，基本是办公和 IT 设备。<strong>这一项：没有。</strong></p>
+<h3>七、利润和现金流的差——逐项对账</h3>
+<p>TTM 净利润 2.88 亿，经营现金流只有 3.65 亿，自由现金流 2.03 亿。而 FY2025 的自由现金流是 6.85 亿。<strong>现金流一年掉了 70%</strong>，钱去哪了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>归母净利润</td>
+<td>288.04</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 少数股东损益</td>
+<td>+50.58</td>
+<td>加回（现金流表从含少数股东的口径起算）</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+207.59</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+7.40</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 资产处置损失</td>
+<td>+64.55</td>
+<td>非现金损失，加回</td>
+</tr>
+<tr>
+<td>− 资产减值/重组冲回</td>
+<td>-22.07</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 权益投资损失</td>
+<td>+1.30</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+41.86</td>
+<td>非现金（但真实稀释）</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>+98.28</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>+12.82</td>
+<td>收回了一点钱</td>
+</tr>
+<tr>
+<td>− <strong>应付账款减少</strong></td>
+<td><strong>-110.29</strong></td>
+<td><strong>付给分包商的钱变多了</strong></td>
+</tr>
+<tr>
+<td>− <strong>预收账款减少</strong></td>
+<td><strong>-37.57</strong></td>
+<td><strong>客户预付的钱在消耗</strong></td>
+</tr>
+<tr>
+<td>− <strong>其他经营性资产变化</strong></td>
+<td><strong>-186.55</strong></td>
+<td><strong>主要是未开票的在建工程款堆积</strong></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>365.36</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-161.92</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>203.45</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>三个负数加起来 -3.34 亿，这就是现金流塌方的全部原因：<strong>营运资金反噬。</strong> 应付款下降+预收款下降+未收工程款上升，是"项目出问题"的典型现金流特征——活干完了钱收不回来（存在争议/索赔中），同时还得先把分包商的钱付掉。</p>
+<p>这三项都是营运资金的时间差，理论上会回补；但如果背后是应收账款在打官司，就可能永远回不来。<strong>FY2025 那 6.85 亿的自由现金流是这家公司的正常水平，TTM 的 2.03 亿是异常。</strong> 下面估值时两个数都会用。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 79.32 亿，企业价值 102.41 亿（净负债 23.09 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7,932 ÷ 288.04</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>3.63 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>剔除已终止经营、重组费用后约 4.64 亿</td>
+<td>17.1 倍</td>
+<td>5.85 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后·保守</strong></td>
+<td>把项目计提当经常性，已终止经营和少数股东照扣 = 288.04</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>3.63 元</strong></td>
+</tr>
+<tr>
+<td>剔除障眼法后·正常化</td>
+<td>加回本季项目计提税后约 2.64 亿 → 5.52 亿</td>
+<td>14.4 倍</td>
+<td>6.95 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（TTM 实际）</td>
+<td>7,932 ÷ 203.45</td>
+<td>39.0 倍</td>
+<td>2.56 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（正常年份 6.85 亿）</td>
+<td>7,932 ÷ 684.93</td>
+<td>11.6 倍</td>
+<td>8.63 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>10,241 ÷ 724.17</td>
+<td>14.1 倍</td>
+<td>7.07 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>7,932 ÷（288.04+561.77+402.27）/3</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>5.26 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（公司口径那一行是估算：以持续经营利润 4.23 亿为基础，扣少数股东 0.51 亿、加回税后重组费用约 0.92 亿。AECOM 官方调整口径的具体项目未逐项核对。）</p>
+<p><strong>说人话：</strong></p>
+<p>你现在投 100 块进 AECOM，会得到两个差得离谱的答案：</p>
+<ul>
+<li><strong>如果那 3.3 亿的项目亏损是真·一次性</strong>（这一年倒霉，明年回到正常）：公司一年替你赚 <strong>6.95 元到 8.63 元</strong>，相当于 12–14 倍市盈率。这在美股是明显便宜的价格，市场给的 forward PE 只有 10.08 倍也是这个意思——分析师普遍认为明年利润会翻回去。</li>
+<li><strong>如果这是常态</strong>（工程公司隔几年爆一次，六年连亏的已终止经营就是前科）：<strong>一年只赚 3.63 元</strong>，27.5 倍市盈率，一点不便宜。</li>
+</ul>
+<p><strong>三年平均口径给出的 5.26 元（19.0 倍）是最诚实的答案。</strong> 它把 FY2025 的好年景（5.62 亿）、FY2024 的普通年景（4.02 亿）和 TTM 的爆雷年（2.88 亿）平均起来，正好抹平了工程公司的项目周期。19 倍对一家营收零增长、毛利率 6%、ROIC 12.4% 的服务公司，是<strong>公道偏贵一点</strong>的价，谈不上捡便宜。</p>
+<p>这 5.26 元里有多少真回到你口袋？TTM 回购 6.92 亿 + 分红 1.50 亿 = 8.42 亿，占市值的 <strong>10.6%</strong>——账面上股东回报率极高。但这一年它是<strong>动用现金储备和借款</strong>在做（现金从 15.95 亿掉到 10.23 亿，净负债从 17.7 亿升到 23.1 亿）。可持续的水平应该看正常年份：FY2025 回购 3.88 亿 + 分红 1.34 亿 = 5.22 亿，对当时 172.8 亿的市值是 3.0%，对现在 79.3 亿的市值是 6.6%。<strong>按现价，正常年份的回购+分红能给你约 6.6% 的现金回报率</strong>，这个数字是站得住的。</p>
+<p>留在公司里再投资的部分：TTM 投资活动流出 4.27 亿，其中并购 2.10 亿、资本开支 1.62 亿。AECOM 在买小的专业设计公司做补强，规模不大。</p>
+<p>X（每年赚的钱）未来会变大还是变小？两股力量：往上的是基建需求本身——美国的桥梁、水厂、电网都在老化，各国政府的基建预算在增加，AECOM 手上的在手订单（backlog）是这类公司的护城河；往下的是营收已经连续两个季度负增长（-4.57%、-14.18%），说明订单转化在放缓，同时它 78% 的收入来自美洲、其中相当部分是联邦和州政府预算，<strong>政府支出一旦收紧，这门生意是直接挨刀的</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>股价跌 48% 是因为一个季度砸出了一笔约 3.3 亿的项目亏损计提，而这家公司过去六年已终止经营每年都在亏钱——所以"一次性"这个说法要打折听；按三年平均利润的 19 倍看，现在这个价是公道偏贵，不是便宜货，真正的赌注是"明年利润能不能弹回 5 亿以上"，赌对了 14 倍、赌错了 27 倍。</strong></p>
+<p>值得放进观察名单，但不是那种闭着眼睛买的价格：它的加分项是极其扎实的回购（16.5 倍于股权激励、连续五年缩股）和不高的债务，减分项是营收已经在负增长、毛利率本来就薄、以及那本翻不完的陈年项目烂账。等下一个季度确认利润率是否回到 6% 以上再动手，比现在猜要划算。</p>
+</div></body></html>

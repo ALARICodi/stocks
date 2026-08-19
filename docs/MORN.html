@@ -1,0 +1,369 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MORN · Morningstar（晨星）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MORN</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">七成订阅收入，利润率三年翻倍，回购是SBC的14.6倍、股本一年缩6.5%</div><h1>MORN · Morningstar（晨星）</h1>
+<p>市值 78.3 亿美元 ｜ 股价约 $208.7 ｜ 行业：商业服务 / 投资研究数据 ｜ TTM 截至 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>晨星在财报里不按业务板块拆利润，而是按<strong>"钱是怎么收进来的"</strong>分成三类。这个分法反而更有用，因为它直接告诉你哪部分收入靠得住、哪部分靠天吃饭。</p>
+<h3>生意 A：卖订阅和数据授权（TTM 营收 17.73 亿美元，占 69.1%）</h3>
+<p><strong>这是晨星的命根子，本质是"卖一个别人离不开的数据库席位"。</strong></p>
+<p>具体是什么东西：</p>
+<p><strong>Morningstar Direct</strong> —— 一个装在基金经理和投顾电脑上的专业终端。里面有全球几十万只基金、股票、债券的历史业绩、持仓明细、费率、风格分析。一个基金公司的产品部要做一份"我们这只基金 vs 同类 200 只基金过去十年的表现和回撤"的材料，在 Direct 上点几下就导出来了，自己做要两个人干一星期。按席位年费收钱，一个席位一年一两万美元，一家中型基金公司买十几到几十个席位。</p>
+<p><strong>PitchBook</strong> —— 晨星 2016 年买来的私募数据库，现在是增长最快的一块。做的事是把全世界的风投和并购交易扒出来编成库：某家 AI 公司 B 轮融了多少钱、估值多少、谁领投、上一轮谁进的、创始人是谁、董事会几个席位。买它的是 PE/VC 基金、投行的并购团队、企业的战投部。一个投行分析师接到"帮我列出过去三年北美所有 5,000 万美元以上的医疗器械并购"的任务，没有 PitchBook 就得手工翻新闻。同样按席位年费收，比 Direct 还贵。</p>
+<p><strong>Morningstar Data（数据源授权）</strong> —— 不给你软件，直接给你数据管道。你在券商 App 里看到某只基金旁边的"★★★★"、看到的基金分类和风险等级，多半是晨星按年费授权给券商的。客户是银行、券商、财富管理平台、财经门户。这类合同一签好几年，深度嵌进客户的系统里，换供应商要重做产品，粘性极强。</p>
+<p><strong>Advisor Workstation</strong> —— 卖给独立理财顾问的工作台，帮他们给客户做资产配置方案和合规文档。</p>
+<p><strong>Sustainalytics</strong> —— ESG 风险评级数据，卖给要做可持续投资的机构。</p>
+<p>这门生意为什么难被替代：一是<strong>数据积累的时间成本</strong>——晨星从 1984 年开始收集基金数据，四十年的连续历史序列没法追赶；二是<strong>星级评分变成了行业通用语言</strong>——晨星星级本身是免费公开的，但它让全行业都习惯用晨星的分类体系和口径说话，于是买数据自然买晨星；三是<strong>换供应商的成本</strong>——一家资管公司的报告模板、合规流程、客户材料全是按晨星字段搭的，换一家等于全部重做。</p>
+<h3>生意 B：按管理资产规模抽成（TTM 营收 3.668 亿美元，占 14.3%）</h3>
+<p>收费方式不是年费，而是<strong>按客户的钱的规模抽几个基点</strong>。三块：</p>
+<ul>
+<li><strong>Morningstar Wealth / 投资管理</strong>：晨星自己下场管钱，替理财顾问搭好一整套现成的组合（模型组合），顾问把客户的钱放进去，晨星按资产规模抽费。</li>
+<li><strong>Morningstar Retirement（退休账户托管）</strong>：美国人的 401k 里有个选项叫"托管账户"——你不想自己选基金，就交给晨星的算法按你的年龄、收入、风险偏好自动配置和再平衡，按账户余额抽年费（通常几十个基点）。这块的好处是钱会随着员工每月工资自动流进来。</li>
+<li><strong>Morningstar Indexes（指数授权）</strong>：编制指数授权给 ETF 发行方，ETF 规模越大晨星收得越多。</li>
+</ul>
+<p>这块的特点：<strong>股市涨它就涨，股市跌它就跌</strong>，弹性大但不由自己控制。FY2025 同比只涨 2.9%，是三块里最慢的。</p>
+<h3>生意 C：按笔收费（TTM 营收 4.269 亿美元，占 16.6%）</h3>
+<p>主要是 <strong>Morningstar Credit（原 DBRS Morningstar）</strong>，做债券评级。一家商业地产贷款打包机构要发一只 8 亿美元的 CMBS（商业地产抵押贷款证券），必须找评级机构给里面各档债券评 AAA/AA/A，投资者才敢买。晨星派分析师审底层的几百笔贷款，出评级报告，<strong>按这一单的发行规模收一笔费</strong>，一单可能几十万美元。评完还有年度跟踪费。</p>
+<p>外加 Morningstar.com 上的广告收入（散户看基金资料的那个免费网站）。</p>
+<p>这块的特点是<strong>跟着债券发行市场的冷热剧烈波动</strong>——利率高、没人发债的年份，收入直接掉。FY2025 同比 +21.0%，是三块里最猛的，因为结构化融资市场重新热起来了。<strong>但这也意味着它是三块里最不该按当前水平外推的。</strong></p>
+<h3>各生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>占比</th>
+<th>FY2025 全年同比</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅授权（License-Based）</td>
+<td>1,773</td>
+<td>69.1%</td>
+<td>+5.8%</td>
+<td>最稳，年费合同</td>
+</tr>
+<tr>
+<td>资产规模抽成（Asset-Based）</td>
+<td>366.8</td>
+<td>14.3%</td>
+<td>+2.9%</td>
+<td>跟股市走</td>
+</tr>
+<tr>
+<td>按笔收费（Transaction-Based）</td>
+<td>426.9</td>
+<td>16.6%</td>
+<td>+21.0%</td>
+<td>跟债市走，波动最大</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,567</strong></td>
+<td>100%</td>
+<td><strong>TTM 同比 +9.33%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到营收这一层，不按这三类拆利润</strong>，所以上面没有利润率列。整体 TTM 经营利润率 22.73%（FY2025 是 20.70%，FY2024 18.50%——<strong>连续三年在扩张</strong>）。按行业常识推测，订阅业务的边际利润率最高（数据一旦做好，多卖一个席位几乎零成本），按笔收费的评级业务要养分析师、利润率中等，但这是估算，财报没给。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>晨星是这批公司里账最干净的一家，逐项过一遍：</p>
+<h3>一、股权激励（SBC）</h3>
+<p>TTM 6,700 万美元，占 GAAP 净利润 4.216 亿的 <strong>15.9%</strong>。占营收 2.6%。对一家半只脚在软件行业的公司，这个比例相当克制（很多 SaaS 公司的 SBC 能吃掉全部利润）。已在 GAAP 里扣除，不加回。</p>
+<h3>二、一次性项目</h3>
+<p>TTM 有一笔<strong>资产处置收益 2,270 万美元</strong>（卖掉某项业务或资产赚的），这是往上美化利润的，下面估值时要扣掉。</p>
+<p>往前看一年，FY2024 有一笔更大的处置收益 <strong>1.093 亿美元</strong>（当年还伴随 5,240 万美元的业务出售现金流入）。<strong>两年里出现两笔处置收益，说明晨星在持续修剪业务组合</strong>——单看一期我判断不了这算"真一次性"还是"每隔一两年就有一次"，但两次都是卖资产、不是主营，估值时一律当成不该算的钱扣掉。</p>
+<p>无重组费用、无大额减值、无诉讼和解。</p>
+<h3>三、资本化的支出</h3>
+<p>资本开支 TTM 1.494 亿美元，占营收 5.8%。这里面有相当一部分是<strong>内部使用软件的开发成本资本化</strong>——晨星把工程师做产品的工资记成资产、分几年摊销，而不是当期费用。这会让当期利润看起来好一点。</p>
+<p>对账的办法是看摊销跑回来了没有：TTM 折旧摊销 9,660 万 + 其他摊销（主要是收购形成的无形资产）1.027 亿 = 1.993 亿，<strong>大于</strong>资本开支 1.494 亿。摊销大于新增投入，说明这不是靠不断加大资本化来虚增利润的套路，反而是过去的投入在正常摊销回来。这一项<strong>没问题</strong>。</p>
+<h3>四、回购与稀释——这一项非常硬</h3>
+<p>TTM 回购 <strong>9.812 亿美元</strong>，同期 SBC 6,700 万。<strong>回购 / SBC = 14.6 倍。</strong></p>
+<p>按标准（接近 1 是假回馈、大于 3 才算真回购），14.6 倍是真回购。印证：股本一年实际减少 <strong>6.52%</strong>（最近一个季度就减了 3.05%），从约 40.1 百万股缩到 37.51 百万股。这是真真正正在把股东的份额做厚。</p>
+<p>对比 FY2024（回购只有 4,070 万），<strong>晨星是在最近一年突然把回购力度放大了 24 倍</strong>。同期净新增债务 8.753 亿，总债务从 12.61 亿涨到 19.05 亿。<strong>这笔回购是借钱做的。</strong></p>
+<p>TTM 分红 7,700 万美元，股息率约 1.0%。</p>
+<p>回购+分红合计 10.58 亿，占市值 13.5%——但自由现金流只有 4.975 亿。<strong>差额是借来的，这个力度不可持续</strong>，可持续的水平是 FCF 的 6.35%。</p>
+<h3>五、这次借钱值不值——债务体检</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>当前</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总债务</td>
+<td>19.05 亿</td>
+<td>12.61 亿</td>
+</tr>
+<tr>
+<td>净债务</td>
+<td>13.81 亿</td>
+<td>7.32 亿</td>
+</tr>
+<tr>
+<td>净债务 / EBITDA</td>
+<td>2.03 倍</td>
+<td>1.44 倍</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td>10.51 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>7.65 倍</td>
+<td>6.41 倍</td>
+</tr>
+</tbody>
+</table></div>
+<p>净债务翻倍，但 2.03 倍 EBITDA 对一家现金流稳定的订阅公司完全安全，利息覆盖 10.5 倍也宽裕。同期还花了 <strong>3.595 亿做并购</strong>（FY2025 只花了 3,900 万）——所以这一年晨星做了两件大事：大手笔回购 + 一笔不小的收购，两件事一起用掉了约 13.4 亿，只能借钱。</p>
+<p>PB 7.65 倍看着高，但对轻资产的数据公司没什么意义——它的资产是数据库和客户关系，不在账上。</p>
+<h3>六、利润和现金流的差——对得上</h3>
+<p>TTM 净利润 4.216 亿，经营现金流 6.469 亿，自由现金流 4.975 亿。<strong>经营现金流比净利润高 2.25 亿，自由现金流仍高于净利润 18%。</strong> 这是健康信号，不需要做逐项对账表也能看明白：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>421.6</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+96.6</td>
+</tr>
+<tr>
+<td>+ 无形资产摊销</td>
+<td>+102.7</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+67.0</td>
+</tr>
+<tr>
+<td>− 资产处置收益（非现金）</td>
+<td>-22.7</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+5.1</td>
+</tr>
+<tr>
+<td>− 其他经营项</td>
+<td>-57.7</td>
+</tr>
+<tr>
+<td>+ 预收账款增加</td>
+<td>+12.2</td>
+</tr>
+<tr>
+<td>+ 税项及其他营运资金变化</td>
+<td>+21.6</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>646.9</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-149.4</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>497.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>预收账款是增加的（+1,220 万）</strong>——订阅生意的客户提前付钱，预收款增长说明续约和新签都在正常进行，没有靠放宽账期来做收入。</p>
+<p>现金交的税 1.722 亿 vs 报表税费 1.407 亿，<strong>实交的比记的多</strong>，说明没有靠递延所得税来粉饰利润。</p>
+<h3>七、一个必须知道的股权结构事实</h3>
+<p>内部人持股 <strong>49.63%</strong>，流通股只有 1,888 万股（占总股本的一半）。创始人及关联方握着约一半的公司。好处是管理层和股东利益一致、不会为季度数字做短期动作；坏处是<strong>外部股东永远无法影响公司决策</strong>，而且流通盘小意味着股价波动会被放大。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 78.30 亿，企业价值 92.10 亿（净负债 13.81 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7,830 ÷ 421.6</td>
+<td><strong>18.6 倍</strong></td>
+<td><strong>5.39 元</strong></td>
+</tr>
+<tr>
+<td>（按摊薄每股收益算的挂牌 PE）</td>
+<td>208.7 ÷ 10.50</td>
+<td>19.9 倍</td>
+<td>5.03 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回收购无形资产摊销税后约 7,700 万 → 4.986 亿</td>
+<td>15.7 倍</td>
+<td>6.37 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>扣掉资产处置收益税后 1,700 万 → 4.046 亿</td>
+<td><strong>19.4 倍</strong></td>
+<td><strong>5.17 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>7,830 ÷ 497.5</td>
+<td>15.7 倍</td>
+<td>6.35 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>9,210 ÷ 583.5</td>
+<td>15.8 倍</td>
+<td>6.34 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径（原始）</td>
+<td>7,830 ÷（421.6+374.2+369.9）/3</td>
+<td>20.2 倍</td>
+<td>4.96 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（剔除处置收益）</strong></td>
+<td>7,830 ÷（404.6+357.2+287.9）/3</td>
+<td><strong>22.4 倍</strong></td>
+<td><strong>4.47 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（Non-GAAP 那行是估算：晨星官方调整口径的具体项目未逐项核对，这里按行业惯例只加回收购形成的无形资产摊销。）</p>
+<p><strong>说人话：</strong></p>
+<p>你现在投 100 块进晨星，按最保守的真实口径（剔除卖资产的收益、SBC 照扣、按三年平均利润抹平波动），公司一年替你赚 <strong>4.47 元</strong>；按当期的真实利润算是 <strong>5.17 元</strong>；按自由现金流算是 <strong>6.35 元</strong>。</p>
+<p><strong>三个数字里，自由现金流那个 6.35 元最接近真相。</strong> 原因是晨星的会计利润被两件事压低了：一是收购 PitchBook、DBRS 形成的无形资产摊销（一年 1.03 亿），这笔钱早在多年前就已经花出去了，现在只是账上分期扣，不再消耗现金；二是内部软件的资本化摊销。所以 15.7 倍的自由现金流市盈率比 19.4 倍的会计市盈率更能反映实际拿到手的钱。</p>
+<p><strong>这里面有多少真回到你口袋？</strong> TTM 回购 9.81 亿 + 分红 0.77 亿 = 10.58 亿，是市值的 13.5%——但这一年动用了 8.75 亿借款，是<strong>透支的</strong>。可持续的口径是自由现金流 4.975 亿，占市值 <strong>6.35%</strong>，其中分红 1.0%、剩下 5.3% 通过回购变成你手里股份的增厚。加上 3.6 亿的并购支出，实际上晨星把自由现金流几乎全部还给了股东，再借钱做收购——<strong>这是一家不留现金的公司</strong>。</p>
+<p><strong>X 未来是变大还是变小？大概率变大，理由有三个：</strong>
+- 69% 的收入是订阅年费，续约率高、每年提价，本身就有 5–6% 的自然增长；
+- 经营利润率从 FY2023 的 11.31% 一路升到 TTM 的 22.73%，<strong>三年翻了一倍</strong>，说明成本已经摊薄、规模效应还在释放；
+- 股本每年缩 6.5%，就算利润一分不涨，每股收益也自动涨 6.5%。</p>
+<p>风险在另外 31%：按资产规模抽成的那块跟着股市走，按笔收费的评级业务跟着债券发行量走，<strong>这两块合计 31% 的收入在熊市里会同时缩水</strong>，而 FY2025 那 +21% 的评级收入正好是在债市火热的年份，不该按这个速度外推。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家七成收入是订阅年费、经营利润率三年翻倍、股本一年缩 6.5%、账干净得挑不出毛病的数据生意，现在 18.6 倍 GAAP、15.7 倍自由现金流——这个价不便宜也不贵，值这个钱。</strong></p>
+<p>它不是捡漏，是"用公道价买一门好生意"。真正让人放心的是那 14.6 倍于股权激励的回购和 6.52% 的实际缩股——绝大多数公司的所谓回购只是在给员工发股票擦屁股，晨星是真在减少股份。要挑刺的话有两条：一是这一年的大手笔回购是借钱做的、净债务翻倍，力度不可持续；二是三成收入捆在股市和债市的景气度上，一旦市场转冷，那个 9.33% 的增长会立刻变成个位数低端。股价过去一年已经跌了 19.3%，跌出来的这个位置是合理的买点，不是需要再等的价格。</p>
+</div></body></html>
