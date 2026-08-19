@@ -1,0 +1,337 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CXW · CoreCivic（美国矫正公司，私营监狱与移民拘留）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CXW</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">赌下一届政府继续遣返，还在历史高位借钱回购，ROIC≈资本成本</div><h1>CXW · CoreCivic（美国矫正公司，私营监狱与移民拘留）</h1>
+<p><strong>市值</strong> 31.6 亿美元 | <strong>股价</strong> $32.40 | <strong>企业价值</strong> 44.3 亿美元 | <strong>行业</strong> 商业服务 / 政府外包 | <strong>TTM 截止</strong> 2026 年 6 月 30 日 | <strong>交易所</strong> NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>CoreCivic 的生意可以用一句话讲完：<strong>美国政府把"关人"这件事外包给它，按人头按天付钱。</strong></p>
+<p>具体点。联邦移民与海关执法局（ICE）抓了一批非法入境者，要等法官判决遣返与否，这中间人得有地方待着。ICE 自己的拘留中心不够用，于是找 CoreCivic：你有一座能关 1,000 人的设施，我把人送过去，你管吃管住管看守管医疗，我按"每人每天多少钱"付给你——行业里叫 <strong>per diem（人日费率）</strong>，一个床位一天大概 70 到 110 美元不等，具体看设施类型和合同条款。一座 1,000 床、常年住满的设施，一年就是 2,500 万到 4,000 万美元的营收。</p>
+<p>同样的模式也卖给联邦法警局（USMS，关等待联邦审判的未决犯）、联邦监狱管理局（BOP）、以及十几个州的惩教厅（关已判刑的州犯）。</p>
+<p>它一共有三门生意：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>对比上一完整财年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>住宿型监管服务（Residential）</td>
+<td>22.86 亿</td>
+<td>+10.5%</td>
+<td><strong>92.0%</strong></td>
+<td>约 10%（估算）</td>
+<td>约 2.29 亿（估算）</td>
+</tr>
+<tr>
+<td>非住宿型服务（Services）</td>
+<td>1.992 亿</td>
+<td>+62.2%</td>
+<td>8.0%</td>
+<td>约 10%（估算）</td>
+<td>约 0.20 亿（估算）</td>
+</tr>
+<tr>
+<td>物业出租（Properties）</td>
+<td>0.188 亿</td>
+<td>+0.3%</td>
+<td>0.8%</td>
+<td>高（纯租金）</td>
+<td>约 0.10 亿（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>24.84 亿</strong></td>
+<td><strong>+24.35%</strong>（TTM 同比）</td>
+<td>100%</td>
+<td>10.02%</td>
+<td>2.489 亿</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部利润。上表的利润率是按整体经营利润率估算的，不是财报数字。物业出租那块的真实利润率一定远高于 10%（它只出租楼、不出人），但没有数据支撑。</p>
+</blockquote>
+<p><strong>第一门（92% 的收入）：自己运营的监狱和拘留中心。</strong> 它拥有或租下建筑，自己雇狱警、厨师、护士、心理咨询师，全套运营。TTM 营收 22.86 亿。这是绝对主体。</p>
+<p><strong>第二门：不关人的辅助服务。</strong> 电子脚镣监控、社区矫正中转房（刚出狱的人过渡居住）、押送运输、再就业培训。这块 TTM 从 1.23 亿跳到 1.99 亿，增长 62%——但<strong>这个增长是买来的，不是长出来的</strong>：TTM 内公司花了 2.163 亿美元现金做了一笔收购。</p>
+<p><strong>第三门：只当房东。</strong> 有些州政府想自己运营监狱，但没钱盖楼，CoreCivic 就把闲置的设施租给它们，自己一个人不派。TTM 营收只有 1,877 万，而且在长期萎缩（FY2021 还有 6,893 万）——因为闲置的楼这两年都被重新启用去自营了，租金没自营赚得多。</p>
+<p><strong>客户为什么非用它不可？</strong> 因为床位是<strong>物理稀缺品</strong>。政府要在六个月内多关五万人，不可能六个月盖好监狱——审批、选址、施工要好几年，还要过地方议会那一关。而 CoreCivic 手上有一批因为前几年合同流失而闲置的现成设施，通上水电、招齐狱警，两三个月就能开门。这就是它全部的定价权来源：<strong>在需求突然暴涨的时候，它是唯一能立刻交货的人。</strong></p>
+<p><strong>这也是它全部风险的来源。</strong> 需求由谁决定？由白宫决定。</p>
+<p>这不是抽象的风险，是这家公司刚刚经历过的事：2021 年 1 月，拜登政府签署行政令，禁止司法部（管着 BOP 和 USMS）与私营监狱续约。CoreCivic 那一年直接亏了 5,190 万美元，股价跌到 10 块钱。四年后，川普政府大规模扩张移民执法，ICE 拘留床位需求爆炸，CoreCivic 的营收 TTM 同比暴涨 24.35%（这是它十年来最快的一年，此前五年营收基本是零增长甚至负增长），股价从 10 块涨到 32 块。</p>
+<p><strong>营收从 18.6 亿（2021）到 24.8 亿（现在），中间没有任何一项是经营改善带来的。全是选举结果。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 2,625 万美元，占净利润 20.5%，占营收 1.1%。规模正常，已在 GAAP 里扣除，不加回。</p>
+<p><strong>一次性项目</strong>：TTM 期内很干净——资产减值与重组只有 148 万，资产处置收益只有 101 万，都小到可以忽略。<strong>但历史上不是这样</strong>：FY2022 有 8,773 万的资产处置收益、FY2021 有 3,877 万，也就是当年那 1.22 亿的净利润里有 72% 是卖楼卖出来的，不是关人关出来的。这一点在下面算"三年平均利润"时很重要——好在最近三年（TTM/FY2025/FY2024）没有大额处置收益，三年平均是干净的。</p>
+<p>现金流量表里还有一行 <strong>"其他经营性活动 +2,520 万"</strong> 没有披露明细，这个数字不算小（占净利润 20%），四页财报数据里看不到它的构成，只能标记为未解释项。</p>
+<p><strong>资本化的支出</strong>：没有软件或内容资本化。但要注意资本开支的结构变化——见下面。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>1.902 亿</strong>美元，SBC 2,625 万，<strong>回购/SBC = 7.2 倍</strong>。按这个比值看是"真回购"。股本一年减少 <strong>7.19%</strong>，减得很实在。几乎不分红（TTM 股息只有 12 万美元，可以当零）。</p>
+<p><strong>但这笔回购的钱是借来的。</strong> TTM 现金流的资金去向：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>+200.16</td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td>−142.85</td>
+</tr>
+<tr>
+<td>收购一家公司</td>
+<td>−216.32</td>
+</tr>
+<tr>
+<td>回购股票</td>
+<td>−190.24</td>
+</tr>
+<tr>
+<td><strong>以上合计缺口</strong></td>
+<td><strong>−349.25</strong></td>
+</tr>
+<tr>
+<td>净举债补上</td>
+<td><strong>+325.48</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>也就是说：<strong>公司在股价一年上涨 55.6%、创下多年新高的时候，借钱回购了 1.9 亿美元的自家股票。</strong> 这不是股东回报，这是在高位加杠杆。总债务从 FY2024 的 10.13 亿升到现在的 13.74 亿，净债务 12.65 亿，Debt/EBITDA 3.29，利息保障倍数只有 2.87（TTM 利息费用约 7,620 万，吃掉了经营利润的 31%）。</p>
+<p><strong>利润和现金流的差</strong>：这是全篇最重要的一张表。净利润 1.279 亿，自由现金流只有 5,732 万——<strong>只有净利润的 45%</strong>。钱去哪了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>127.90</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>136.43</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>4.57</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−1.01</td>
+</tr>
+<tr>
+<td>+ 减值与重组</td>
+<td>1.48</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>26.25</td>
+</tr>
+<tr>
+<td>+ 其他经营项（未披露明细）</td>
+<td>25.20</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−145.53</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>24.87</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>200.16</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−142.85</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>57.32</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两个失血点：</p>
+<p><strong>一、应收账款一年增加 1.455 亿。</strong> 同期营收增加约 4.86 亿，也就是说<strong>新增收入里有 30% 到现在还是一张欠条</strong>。政府客户（尤其是预算年度切换时的联邦机构）付款慢是常态，理论上这笔钱最后会收回来，但它把 FCF 从 FY2024 的 1.98 亿砍到了 5,732 万。</p>
+<p><strong>二、资本开支一年翻倍</strong>，从 FY2024 的 7,117 万涨到 1.429 亿。这笔钱主要花在重新启用闲置设施上——修围墙、换监控、升级消防和医疗区，才能通过 ICE 的验收。这属于<strong>扩张性支出</strong>而非维护性支出，所以严格来说不该全额从"真实自由现金流"里扣。如果按历史维护性资本开支约 7,000 万来算，调整后自由现金流约 1.30 亿，对应市值 24.3 倍——比表面上的 55.9 倍好看得多。这一点我要说公道话，不能只挑难看的数字讲。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 31.61 亿，企业价值 <strong>44.25 亿</strong>（净债务 12.65 亿）。<strong>市值和企业价值差 40%，所以看市盈率会严重低估这家公司的真实价格——这一点必须先说。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>31.61 亿 ÷ 1.279 亿净利润</td>
+<td><strong>24.7 倍</strong></td>
+<td><strong>4.05 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司公布 Adjusted EBITDA / Adjusted EPS，四页数据里拿不到具体值</td>
+<td>未获取</td>
+<td>—</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>一次性项目合计仅 47 万，调整后≈GAAP</td>
+<td><strong>24.7 倍</strong></td>
+<td><strong>4.05 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>31.61 亿 ÷ 0.573 亿 FCF</td>
+<td><strong>55.1 倍</strong></td>
+<td><strong>1.81 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（剔除扩张性资本开支）</td>
+<td>31.61 亿 ÷ 1.30 亿调整后 FCF（估算）</td>
+<td><strong>24.3 倍</strong></td>
+<td><strong>4.11 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>44.25 亿 ÷ 2.489 亿经营利润</td>
+<td><strong>17.8 倍</strong>（税前）</td>
+<td>5.62 元（税前，但这是全部资本的回报，股东要先还债主的利息）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>31.61 亿 ÷ 1.044 亿（TTM 1.279 / FY25 1.165 / FY24 0.689 的平均）</td>
+<td><strong>30.3 倍</strong></td>
+<td><strong>3.30 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行是全表最有信息量的一行。</strong> 三年平均利润 1.044 亿，只有 TTM 的 82%——说明<strong>现在这个利润明显高于它自己的近期常态</strong>。而且这三年还全都在移民执法扩张周期里，如果把窗口拉到 2021 年（亏 5,190 万），平均数会更难看。</p>
+<p><strong>说人话：你现在投 100 块进 CoreCivic，按最保守的现金口径算，公司一年替你赚 1 块 8；按三年平均的利润口径算，赚 3 块 3；按当期报表利润算，赚 4 块。</strong></p>
+<p>这 3 块 3 里，有多少回你口袋？<strong>几乎为零。</strong> 股息是零。回购看似有 1.9 亿（占市值 6%），但那是借来的钱——真实情况是：公司把经营赚的 2 亿现金全部投进了资本开支和收购，然后额外借了 3.25 亿去做收购和回购。<strong>它现在是净融资状态，不是净返还状态。</strong></p>
+<p>这个数未来会变大还是变小？取决于一件事，而且只取决于这一件事：<strong>下一届美国政府还想不想关这么多人。</strong> 床位供给端的紧缺是暂时的（一旦需求持续，各州和联邦自己也会扩建，而且竞争对手 GEO Group 也在加码），需求端则是纯政治变量。2029 年 1 月换届，如果重演 2021 年那一幕，这家公司账上 13.74 亿的债务和 2.87 倍的利息保障倍数，会立刻从"可控"变成"要命"。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>24.7 倍市盈率买到的不是一家公司，是一张赌"下一届美国政府继续大力遣返"的彩票，而这张彩票的持有人还刚刚在历史高位借了 3.25 亿去回购自己的股票。</strong></p>
+<p>把话说全一点：这门生意是真实的，床位的稀缺性是真实的，两三个月内能开门的能力也是真实的——这些让它有短期定价权。但把每一层都剥开之后剩下的东西是这样的：<strong>净债务是市值的 40%；ROIC 6.94% 只勉强追平 6.65% 的资本成本，也就是说这家公司过去一年的经营基本没有为股东创造任何超额价值；自由现金流哪怕按最宽容的口径也只到市值的 4%；三年平均利润告诉你现在这个数字是高点；股价一年涨了 55.6%，其中大部分是市盈率从 17 倍扩张到 26 倍扩出来的，不是利润涨出来的。</strong></p>
+<p>好的入场时点是 2021 年那种时候——政策打压、股价 10 块、市盈率个位数、市场认定它要完。现在是反过来的时点：政策最友好、利润最高、估值最贵、公司自己在加杠杆。<strong>不值。</strong></p>
+</div></body></html>

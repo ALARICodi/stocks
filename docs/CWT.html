@@ -1,0 +1,496 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CWT · 加州自来水集团（California Water Service Group）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CWT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">水是好资产，但六年没赚到准许ROE，利息保障只有2.83</div><h1>CWT · 加州自来水集团（California Water Service Group）</h1>
+<p>市值 $31.1 亿 ｜ 股价约 $50.0 ｜ 企业价值 $47.5 亿 ｜ 行业：受管制公用事业（供水）｜ TTM 截止 <strong>2026-06-30</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>它只做一件事：把水送到别人家的水龙头里，然后按吨收钱。</strong></p>
+<p>财报上连分部表都没有——整个公司报成一个经营分部。这在美股里很少见，也说明了它的纯粹：1,336 个员工，一年 10.5 亿美元营收，全部来自同一个动作。</p>
+<p>但"一件事"里面有几个层次，值得拆开讲。</p>
+<h3>主体：加州的供水特许经营权（营收的绝大部分）</h3>
+<p><strong>具体是什么</strong>：加州的一些城市自己不办自来水厂，把供水这件事整个外包给一家私营公司，由州政府发牌照、划片区。CWT 就是拿着这种牌照的公司，服务范围散布在旧金山湾区、萨克拉门托、贝克斯菲尔德、洛杉矶周边这些片区，大约覆盖两百万人口（这个人口数是行业公开的量级，不是从财报页取的）。</p>
+<p><strong>它实际干的活</strong>：
+- 从地下水井抽水，或者从加州的水利工程（州水项目、地方水库）买原水；
+- 送进自己的处理厂，加氯消毒、去除杂质、检测；
+- 通过自己埋在地下的几千英里管道送到每家每户；
+- 每两个月上门抄表（现在越来越多是智能水表自动回传），寄账单。</p>
+<p><strong>怎么收钱</strong>：一户加州普通家庭一个月水费大概 60–100 美元，账单同样分两块——固定的"服务费"（不管你用不用水，管道摆在那里就要付）和按用水量计费的部分。一个中等规模片区一年几千万美元。</p>
+<p><strong>价格谁定</strong>：<strong>不是它自己。是加州公共事业委员会（CPUC）。</strong> 每三年一次，CWT 要提交一份厚厚的"综合费率申请"，把未来三年打算花多少钱建管道、换水表、修水厂全部列出来，委员会逐项审核，批准之后才能按批准的额度涨水费。</p>
+<p><strong>这个三年一次的节奏，是理解这家公司全部财务表现的钥匙</strong>——后面第二、第三部分会反复回到它。</p>
+<p><strong>客户为什么跑不掉</strong>：水管是埋在地下的物理资产，你家接的是哪根管子就是哪根，没得选。而且水这个东西<strong>没有替代品、没有技术颠覆、需求几乎不随经济波动</strong>——经济再差人也要洗澡喝水。<strong>从生意本身的稳定性讲，供水是全世界最好的几门生意之一。</strong></p>
+<h3>州外扩张：华盛顿、新墨西哥、夏威夷、德州</h3>
+<p>CWT 在加州以外还买了几家小水司，规模都不大。<strong>战略意图很清楚：分散"全部押在加州一个监管机构身上"的风险。</strong> 但从体量看，这个分散目前还只是象征性的，加州仍然是绝对主体。</p>
+<h3>非管制业务：替别人管水厂</h3>
+<p>有一小块业务是接政府和军事基地的运营维护合同——市政府自己拥有水厂，但雇 CWT 派人去运行。这块不占用资本、利润率不错，但规模很小。</p>
+<h3>钱的分布</h3>
+<p><strong>财报只报一个分部，我不编分部利润。</strong> 全公司确定的口径：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（截至 2026-06-30）</th>
+<th>对比 FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>1,054</strong></td>
+<td>+5.4%（TTM 同比 +6.43%）</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>561.84（毛利率 53.3%）</td>
+<td></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td><strong>217.54</strong>（经营利润率 <strong>20.6%</strong>）</td>
+<td></td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>157.84</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>净利润</strong></td>
+<td><strong>133.21</strong>（净利率 12.63%）</td>
+<td>+3.9%</td>
+</tr>
+<tr>
+<td>每股收益</td>
+<td>$2.23</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意经营利润 217.54 到税前利润 157.84 之间掉了 59.7——那基本全是利息。</strong> 这家公司背着 16.78 亿美元的债，一年光利息就吃掉 27% 的经营利润。这一点后面要展开。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：小，但回购更小</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SBC</td>
+<td><strong>4.98</strong></td>
+<td>4.98</td>
+<td>3.75</td>
+</tr>
+<tr>
+<td>占净利润</td>
+<td><strong>3.7%</strong></td>
+<td>3.9%</td>
+<td>2.0%</td>
+</tr>
+<tr>
+<td>回购金额</td>
+<td><strong>1.17</strong></td>
+<td>1.43</td>
+<td>1.44</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.23</strong></td>
+<td>0.29</td>
+<td>0.38</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+0.79%</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>SBC 只占净利润 3.7%，<strong>这是好消息</strong>——管理层没在拿股票掏空你，跟那些 SBC 占净利润 30% 以上的科技公司完全是两个世界。</p>
+<p>回购 1.17 只有 SBC 的 0.23 倍，正常情况下这叫"连意思都没意思到"。但对这家公司要说清楚：<strong>它压根不是一家该回购的公司。</strong> 它同期增发了 9,828 万美元的新股来筹钱建水厂——一边发新股一边回购是自相矛盾的。那 117 万的"回购"多半只是替员工代扣税时收回的零头，不是股东回报。</p>
+<p><strong>结论：股本一年增加 0.79%，你被稀释了 0.79%，没有任何回购对冲。</strong></p>
+<h3>一次性项目</h3>
+<p><strong>几乎没有。</strong> 五年现金流量表上：FY2022 有 70 万的资产减值，FY2021 有 52 万——都是零头。没有重组费用、没有大额诉讼和解、没有并购费用（五年总共只花了 820 万做收购）。</p>
+<p><strong>报表干净，没有可剥的障眼法。这一点必须给它记一分。</strong></p>
+<h3>资本化的支出：这才是这家公司的全部故事</h3>
+<p>TTM 资本开支 <strong>563.91</strong>，折旧摊销只有 143.78——<strong>资本开支是折旧的 3.9 倍</strong>。看五年走势：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+<th>FY2021</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资本开支</td>
+<td><strong>563.91</strong></td>
+<td>516.99</td>
+<td>470.80</td>
+<td>386.56</td>
+<td>335.52</td>
+<td>293.19</td>
+</tr>
+<tr>
+<td>经营现金流</td>
+<td>328.18</td>
+<td>302.56</td>
+<td>290.87</td>
+<td>217.82</td>
+<td>243.77</td>
+<td>231.72</td>
+</tr>
+<tr>
+<td><strong>自由现金流</strong></td>
+<td><strong>-235.73</strong></td>
+<td>-214.43</td>
+<td>-179.93</td>
+<td>-168.75</td>
+<td>-91.75</td>
+<td>-61.48</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年资本开支翻了将近一倍，自由现金流的窟窿从 6,100 万扩大到 2.36 亿——翻了将近四倍，而且每一年都比上一年更负。</strong></p>
+<p>钱花在哪：换掉埋在地下几十年、开始漏水的老铸铁管；建新的处理设施应对加州越来越严的水质标准（尤其是 PFAS 这类"永久化学物"的处理要求，近年监管标准大幅收紧，全美水司都在被迫花钱）；装智能水表。</p>
+<p><strong>这些钱花得对不对？</strong> 跟前面分析过的 MGE 能源一样，答案取决于同一件事：<strong>监管机构准不准你把这笔钱放进"费率基数"、在上面赚回报。</strong> 这不是抽象风险，下面的数字会告诉你，在 CWT 身上，这件事<strong>已经出过问题</strong>。</p>
+<h3>回购与稀释、利润和现金流的对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td><strong>133.21</strong></td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+143.78</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+4.98</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>-24.79</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+5.29</td>
+</tr>
+<tr>
+<td>＋ 所得税项变化</td>
+<td>+0.67</td>
+</tr>
+<tr>
+<td>＋ 其他经营资产变化</td>
+<td>+39.62</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+25.43</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>328.18</strong></td>
+</tr>
+<tr>
+<td><strong>－ 资本开支</strong></td>
+<td><strong>-563.91</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>-235.73</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营现金流 328.18 是净利润 133.21 的 2.5 倍，这部分很健康</strong>——利润是真现金，多出来的主要是折旧这种不掏钱的费用。营运资金没有异常占用。</p>
+<p><strong>但是</strong>：资本开支 563.91 把它全吃掉还倒欠 2.36 亿。那么这一年公司还派了 <strong>7,817 万美元的股息</strong>，钱从哪来？</p>
+<p>看融资活动：<strong>净新增债务 1.44 亿 + 增发新股 9,828 万 = 2.42 亿的外部输血。</strong></p>
+<p><strong>所以：这一年公司发出去的每一分钱股息，都是借来的或者卖新股换来的，没有一分来自自己赚的自由现金。</strong></p>
+<p>我要把话说公道：<strong>成长中的受管制公用事业几乎都是这个样子</strong>（前面分析的 MGE 能源同样是 FCF 为负、靠发债发股派息）。这套模式本身成立——只要新投的资产能进入费率基数赚 10%，借钱建资产就是对的。</p>
+<p><strong>真正的问题不是"借钱派息"，而是"借钱建的东西，到底赚回了多少"。</strong> 这就要看下一个数字。</p>
+<h3>债务：这里跟 MGE 拉开了明显差距</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>CWT</th>
+<th>对比：MGE 能源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净负债</td>
+<td><strong>16.34 亿</strong></td>
+<td>9.18 亿</td>
+</tr>
+<tr>
+<td>Debt / EBITDA</td>
+<td><strong>4.58</strong></td>
+<td>3.24</td>
+</tr>
+<tr>
+<td><strong>利息保障倍数</strong></td>
+<td><strong>2.83</strong></td>
+<td>4.97</td>
+</tr>
+<tr>
+<td>流动比率</td>
+<td><strong>0.70</strong></td>
+<td>1.14</td>
+</tr>
+<tr>
+<td>营运资金</td>
+<td><strong>-1.73 亿</strong></td>
+<td>+0.25 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利息保障倍数 2.83 是这份分析里最需要盯住的数字。</strong> 意思是：公司一年赚的经营利润，只够付 2.83 倍的利息。行业里 3 倍以下就开始被评级机构关注。</p>
+<p>流动比率 0.70、营运资金为负 1.73 亿，意味着<strong>一年内到期的债务和应付款，超过了一年内能变现的资产</strong>——它必须持续滚动再融资。在利率低的年份这没问题，利率一高就是实打实的成本上升。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 3,114M，企业价值 4,748M，账面净资产 1,810M。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>3,114 ÷ 133.21</td>
+<td><strong>23.4 倍</strong></td>
+<td><strong>$4.28</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td><strong>基本不存在</strong>，它不靠调整后利润讲故事</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性、无资本化游戏，SBC 已按 GAAP 扣除<br><strong>等于 GAAP</strong></td>
+<td><strong>23.4 倍</strong></td>
+<td><strong>$4.28</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 -235.73，<strong>此口径不适用</strong></td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>经营现金流口径 P/OCF</td>
+<td>3,114 ÷ 328.18</td>
+<td>9.5 倍</td>
+<td>$10.53</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>4,748 ÷ 217.54</td>
+<td><strong>21.8 倍</strong></td>
+<td>$4.58（对应全部投入资本）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>3,114 ÷ [(133.21+128.21+190.81)/3 = 150.74]</td>
+<td><strong>20.7 倍</strong></td>
+<td><strong>$4.84</strong></td>
+</tr>
+<tr>
+<td>市净率 PB（公用事业关键）</td>
+<td>3,114 ÷ 1,810</td>
+<td><strong>1.71 倍</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>（网站显示 PE 22.39，我算 23.4。差别在于网站用「股价 ÷ 每股收益」，每股收益按加权平均 5,974 万股算，而现在实际有 6,184 万股。<strong>我用当前市值算，更保守。</strong>）</p>
+<h3>三年平均口径反而更便宜，这里藏着这家公司最重要的一件事</h3>
+<p>一般来说三年平均利润口径比当期贵，说明当期利润是高点。<strong>CWT 反过来：当期 23.4 倍，三年平均 20.7 倍——当期利润比三年平均还低。</strong></p>
+<p>原因看每股收益这条线就明白了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>每股收益</td>
+<td>1.96</td>
+<td>1.77</td>
+<td><strong>0.91</strong></td>
+<td><strong>3.25</strong></td>
+<td>2.15</td>
+<td>2.23</td>
+</tr>
+<tr>
+<td><strong>ROE</strong></td>
+<td>9.65%</td>
+<td>7.64%</td>
+<td><strong>3.73%</strong></td>
+<td><strong>12.39%</strong></td>
+<td>7.68%</td>
+<td><strong>7.68%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这是一条锯齿线，不是一条上升线。</strong> 2023 年跌到 0.91、ROE 只有 3.73%；2024 年突然跳到 3.25、ROE 12.39%；然后又掉回 2.15。</p>
+<p><strong>这不是经营波动，这是加州费率审批的节奏。</strong> 三年一次的费率申请，委员会的裁决常常拖到期满之后才下来，然后追溯补收——于是"迟到的那一年"利润被压扁，"补收的那一年"利润爆表。2023 是被压扁的那一年，2024 是补收的那一年。</p>
+<p><strong>看穿这个锯齿之后，真正该问的问题是：把六年拉平，它到底赚了多少？</strong></p>
+<p>六年 ROE 平均 <strong>8.13%</strong>。而加州公共事业委员会给水司核定的准许回报率，行业惯例在 <strong>9.5%–10%</strong> 这一带。</p>
+<p><strong>也就是说：CWT 六年里平均没有赚到监管准许它赚的钱，差了大约 1.5 个百分点。</strong> 六年里只有 2024 那个补收年超过了准许水平。</p>
+<p>这在美国受管制公用事业里有个专门的说法叫"欠赚"（under-earning），原因通常是几样叠加：申请的成本委员会不全认；核准之后实际花的钱超支，超支部分自己扛；加州的节水令让居民少用水、营收下滑而管道的固定成本一分不少。</p>
+<p>对比一下前面分析的 MGE 能源：ROE 六年 10.56 / 10.52 / 10.60 / 10.17 / 10.72 / 11.04，<strong>波动不到 1 个百分点，年年赚到准许水平。</strong> 同样是受管制公用事业，<strong>监管环境的差别就是这么大</strong>。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，公司一年替你赚 4 块 2 毛 8。</strong>（用三年平均口径算，是 4 块 8 毛 4，差别不大——这家公司利润没有虚高。）</p>
+<p>这 4 块 2 里，怎么分配：</p>
+<ul>
+<li><strong>分红拿走 2 块 6 毛 9</strong>：股息率 2.69%，派息率 60%。<strong>分红记录很硬</strong>——每股从 2021 年的 0.92 涨到现在的 1.34，五年年均涨 7.8%，而且 CWT 是美国"股息之王"名单上的老面孔（连续涨了半个多世纪）。</li>
+<li><strong>稀释吐回去 0.79%</strong>：增发新股筹钱，没有回购对冲。<strong>这一笔是负的</strong>，倒扣你 7 毛 9。</li>
+<li><strong>剩下约 1 块 4 留在公司里</strong>：全进了那 5.64 亿的资本开支。</li>
+</ul>
+<p><strong>你实际拿到手的现金回报大约每 100 块 1 块 9（2.69% 分红减 0.79% 稀释）。</strong> 剩下的钱去建水管了，能不能变成未来的利润，看加州委员会的脸色。</p>
+<h3>这个 4 块 2 未来会变大还是变小？</h3>
+<p><strong>大概率缓慢变大，但过程会继续颠簸。</strong></p>
+<p>变大的理由，而且这是这家公司唯一真正有意思的地方：<strong>它现在只赚到 7.68% 的 ROE，而准许是 9.5%–10%。如果哪一天它真能赚到准许水平，利润就会一次性跳升 24%–30%，什么都不用干。</strong> 这是一个实实在在的、有制度保障的向上空间。加上费率基数每年因为资本开支扩大而增厚，长期"分红 2.7% + 利润年增 5%–6%"是个合理的期待，也就是<strong>长期年化 8% 左右</strong>。</p>
+<p>变小/走不动的理由，同样具体：
+- <strong>它已经六年没能赚到准许回报了。</strong> 一次是运气，六年是结构性问题。凭什么相信第七年会变？
+- <strong>利息保障 2.83、Debt/EBITDA 4.58、流动比率 0.70</strong>——资本开支还在逐年加码，而这三个数都在往差的方向走。加州的成本（人工、PFAS 处理、抗震改造）不便宜。
+- <strong>加州这个监管环境本身就是那个赌注</strong>。2023 年 ROE 3.73% 是活生生的例子，说明委员会的裁决时点和口径可以把一整年的利润打掉三分之二。</p>
+<p><strong>再看估值的历史位置</strong>：市净率五年是 3.23 → 2.51 → 2.09 → 1.65 → 1.53 → 现在 <strong>1.71</strong>，处在五年低位区间。市盈率 37.4 → 34.6 → 57.7 → 14.1 → 20.1 → <strong>22.4</strong>（那几个 50 倍、57 倍的年份就是利润被压扁的锯齿谷底，不代表当时贵）。过去 52 周股价涨了 9.27%，EPS 从 2.15 涨到 2.23（+3.7%）——<strong>涨幅有一半以上是估值扩张，不是利润推动的。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好资产，价格不便宜，而且它有一个六年都没解决的老毛病。</strong></p>
+<p>供水本身是全世界最难被摧毁的生意之一——没有替代品、没有技术颠覆、经济再差也要用水、地下的管子就是它的护城河。CWT 的报表也干净：SBC 只占净利润 3.7%，没有 Non-GAAP 修饰，没有一次性项目，经营现金流是净利润的 2.5 倍。<strong>这些都是真的好。</strong></p>
+<p>但你付 23.4 倍市盈率买到的，是一家<strong>六年平均 ROE 只有 8.13%、始终没赚到监管准许的 9.5%–10%</strong> 的公司；它的利息保障倍数只有 2.83，流动比率 0.70，自由现金流连续五年为负且窟窿逐年扩大，派出去的每一分股息都来自新借的债和新发的股。同样是受管制公用事业，前面那家 MGE 能源年年稳稳赚到 11% 的 ROE、杠杆低一大截，估值 20.7 倍——<strong>CWT 贵了，还更脆。</strong></p>
+<p><strong>它值得放进"跌下来就买"的名单，但不值得现在追。</strong> 真正的买点是两个之一：<strong>要么股价跌到市净率 1.4 倍以下</strong>，要么<strong>加州委员会给出一份让它真能赚到准许回报的裁决</strong>——后者才是这只股票唯一的重估催化剂，而它已经等了六年。</p>
+</div></body></html>

@@ -1,0 +1,299 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VCYT · Veracyte（维雅赛特）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VCYT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">护城河是真的，但29倍是免税价，补税36倍、三年平均63倍</div><h1>VCYT · Veracyte（维雅赛特）</h1>
+<p>市值 33.3 亿美元 · 股价约 41.4 美元 · 基因诊断 · TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Veracyte 只有 755 名员工，一年做 5.62 亿美元营收——<strong>人均 74.4 万美元</strong>。这不是一家生物制药公司，它不做药；它做的是<strong>基因检测服务</strong>，本质上是"帮医生做一个原本做不了的判断"，然后向保险公司收钱。</p>
+<p>财报只按美国/国际披露分部，不按检测品种披露营收。但它实际上做四件事，其中头两件几乎就是全部：</p>
+<h3>生意一：Afirma —— 让人少挨一刀（甲状腺）</h3>
+<p>具体是什么：美国每年约五十多万人因为脖子上的甲状腺结节去做细针穿刺（用细针从结节里抽一点细胞出来）。病理医生在显微镜下看，其中大约 20% 的样本<strong>看不清</strong>——既不能判良性也不能判恶性（术语叫 Bethesda III/IV 类）。</p>
+<p>在 Afirma 出现之前，医生的标准做法是：切。切掉半个或整个甲状腺，送去化验。结果是 <strong>70%–80% 的人切完发现是良性</strong>——白挨一刀，其中不少人还要终身吃甲状腺素替代药，还有几个百分点的概率损伤声带神经或甲状旁腺。</p>
+<p>Afirma 做的事：不用再扎一针，从<strong>同一份已经抽出来的穿刺样本</strong>里提取 RNA，测一万多个基因的表达量，用机器学习模型给出"良性/可疑"的判断。判成良性的，阴性预测值超过 95%，医生就可以不动刀、改成定期超声复查。一次检测向保险公司或 Medicare 收 3000–3600 美元。</p>
+<p>客户为什么非买不可：一台甲状腺手术连住院大概 1.5 万到 3 万美元，加上终身用药和并发症风险。保险公司算得清——花 3500 块，省掉 70% 的手术。所以 Medicare 和几乎所有商业保险都给报销。</p>
+<p><strong>Veracyte 的护城河就藏在这句话里</strong>：不是算法难仿（今天谁都能训一个分类器），而是"十几年的前瞻性临床验证数据 + 保险公司的报销代码 + 写进诊疗指南"这三样绑死在一起。一个新进入者就算模型更准，也要重走一遍临床试验、再去跟 Medicare 一家一家谈报销，五到八年起步。</p>
+<h3>生意二：Decipher —— 让人少挨一刀（前列腺），增长引擎</h3>
+<p>具体是什么：美国每年约 30 万人新确诊前列腺癌。麻烦在于绝大多数前列腺癌长得极慢，很多人到死也不会因它出事；但有一小撮很凶。而穿刺活检的传统病理分级（Gleason 评分）分不清这两种。分不清的后果是：要么过度治疗（放疗+激素治疗，代价是性功能障碍和尿失禁），要么漏掉真凶的。</p>
+<p>Decipher 从活检或手术切下的肿瘤组织里读 22 个基因的表达量，给出一个 0 到 1 的分数：分数低 → 可以"主动监测"，先不治，定期查；分数高 → 该上放疗甚至加激素。一次约 3000–5000 美元。</p>
+<p><strong>它已经写进了 NCCN 指南</strong>（美国国立综合癌症网络的诊疗规范）。这一点的商业含义比技术含义大得多——写进指南之后，医生<strong>不做</strong>这个检测反而要承担责任。这把"可选项"变成了"标准动作"，是 Veracyte 增长最快的一块。</p>
+<h3>生意三：Prosigna 和其他小品种</h3>
+<p>Prosigna 是乳腺癌的 PAM50 分型，判断早期乳腺癌患者要不要化疗。<strong>商业模式跟前两个不一样</strong>：它是把试剂盒卖给医院实验室自己跑，不是把样本寄到 Veracyte 的实验室——所以是产品收入不是服务收入，主要在欧洲。另外还有 Percepta（肺结节）、Envisia（肺纤维化）等小品种，规模都不大。</p>
+<h3>生意四：给药厂做临床试验的检测</h3>
+<p>药厂做前列腺癌新药的三期临床，需要给几千名入组病人做基因分型来分层入组、做终点判读。Veracyte 收检测费加数据服务费。规模小，但战略上有用——顺手把自己的检测写进新药的临床数据里，将来这个药获批，检测就跟着进标签。</p>
+<h3>钱在哪儿（按财报披露的地区口径）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>2025 全年营收（百万美元）</th>
+<th>占比</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>496.6</td>
+<td>96.0%</td>
+<td>+17.2%</td>
+</tr>
+<tr>
+<td>国际</td>
+<td>20.55</td>
+<td>4.0%</td>
+<td>−7.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>517.15</strong></td>
+<td>100%</td>
+<td>+16.0%</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 营收 5.619 亿，同比 +17.27%。财报不按检测品牌披露营收，但从业务性质看，Afirma 和 Decipher 两个加起来就是这家公司的绝大部分。<strong>国际业务在萎缩，这生意实质上是一门纯美国生意</strong>——因为它的护城河（Medicare 报销 + 美国指南）本身就是美国特有的，出了美国那套东西不通用。</p>
+<p>全公司经营利润率 16.50%，毛利率 73.76%。财报不按分部披露利润。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>4851 万美元</strong>，占营收的 8.6%、占净利润 1.145 亿的 <strong>42.4%</strong>。755 名员工，人均一年发 6.4 万美元的股票。这是真实成本，GAAP 里已经扣了，不要加回来——公司自己吹的"调整后 EBITDA 1.135 亿"就是把这 4851 万加回去算出来的，那是骗人的。</p>
+<p><strong>税——这是本篇最大的一处</strong>：TTM 交税只有 <strong>154 万美元，实际税率 1.32%</strong>，实付现金税 360 万。原因是 2021–2023 年连亏三年累积下来的净经营亏损（NOL）现在正在抵税，加上递延所得税估值备抵的转回。<strong>这是一次性红利，不是可持续的经营能力。</strong> 一家正常盈利的美国公司税率在 22%–25%，正常化以后每年要多交 2600 多万美元。看市盈率时不修正这一点，等于在拿一个免税公司的利润去跟收税公司的估值比。</p>
+<p><strong>一次性项目</strong>：TTM 有 708 万美元的资产处置损失。历史上这一行跳得很厉害——2025 财年有 2051 万的资产减值与重组，2023 财年有 6835 万（那年关掉了 nCounter 仪器业务）。TTM 这一期减值为零。<strong>单看一期无法判断这类减值是不是每隔一两年就来一次</strong>，从五年记录看，来得挺勤。</p>
+<p><strong>资本化的支出</strong>：没有。资本开支只有 1239 万，占营收 2.2%，没有把研发或软件开发费资本化的迹象。这是一门干净的轻资产生意。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 2013 万美元，SBC 4851 万，<strong>回购 ÷ SBC = 0.41</strong>。而且同期还发行了 2047 万美元的新股（员工行权和员工购股计划）。净效果：<strong>股本一年增加 2.11%，最近一个季度增加 0.92%。</strong> 也就是说你什么都不做，手上的股份一年被摊薄 2%。所谓的"回购"只是在减缓稀释，一点都没回馈股东。</p>
+<p><strong>利润和现金流的差</strong>：净利润 1.145 亿，自由现金流 1.66 亿，差 4500 万。对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>114.48</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销（不花钱）</td>
+<td>20.83</td>
+</tr>
+<tr>
+<td>+ 股权激励（不花钱，但稀释你）</td>
+<td>48.51</td>
+</tr>
+<tr>
+<td>+ 资产处置损失（不花钱）</td>
+<td>7.08</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−2.68</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>−9.77</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−6.15</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−2.11</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−0.39</td>
+</tr>
+<tr>
+<td>+ 其他营运资金</td>
+<td>+8.59</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>178.38</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−12.39</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>165.99</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说的是：<strong>1.66 亿"自由现金流"里，有 4851 万纯粹是因为公司发股票不发工资，还有约 2600 万是因为在用历史亏损抵税。</strong> 两样加起来 7400 多万，占自由现金流的 45%。真正意义上的股东可支配现金，大约只有 9100 万。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 33.3 亿，净现金 4.45 亿（现金 4.85 亿，债 0.4 亿），企业价值 28.9 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3330 ÷ 114.48</td>
+<td>29.1 倍</td>
+<td>3.44 元</td>
+</tr>
+<tr>
+<td>公司口径（加回 SBC 和摊销，我不认可）</td>
+<td>3330 ÷ 183.8</td>
+<td>18.1 倍</td>
+<td>5.52 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>3330 ÷ 93.6（税前利润加回一次性处置损失，按 24% 正常税率征税）</td>
+<td><strong>35.6 倍</strong></td>
+<td><strong>2.81 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>3330 ÷ 165.99</td>
+<td>20.1 倍</td>
+<td>4.99 元</td>
+</tr>
+<tr>
+<td>自由现金流（扣掉 SBC 和正常化补税）</td>
+<td>3330 ÷ 91.2</td>
+<td>36.5 倍</td>
+<td>2.74 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2890 ÷ 92.68</td>
+<td>31.2 倍</td>
+<td>3.21 元</td>
+</tr>
+<tr>
+<td>三年平均真实利润口径</td>
+<td>3330 ÷ 53.1</td>
+<td><strong>62.7 倍</strong></td>
+<td>1.59 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均 = TTM 8820 万、2025 年 5180 万、2024 年 1930 万三期"按 24% 正常税率征税后"的净利润平均值。）</p>
+<p><strong>说人话：29 倍是个被两层东西美化过的数字。</strong></p>
+<p>第一层是税。这家公司现在几乎不交税，因为它前几年亏了很多钱。把税补上，29 倍立刻变成 <strong>35.6 倍</strong>。</p>
+<p>第二层是时间点。它的利润是 2024 年才刚刚由负转正的：2023 年还亏 7440 万，2024 年赚 2414 万，2025 年赚 6635 万，TTM 赚 1.145 亿。用三年平均一算，市盈率是 <strong>62.7 倍</strong>。这个数字的含义不是"贵三倍"，而是"<strong>你现在看到的这个利润是这家公司历史上从没有过的最高点</strong>"——它是真的在快速改善，但你付的价格是按"这个改善会一直延续下去"定的。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 2 块 7 到 2 块 8。</strong></p>
+<p>这 2 块 8 有多少回到你口袋？<strong>一分没有，而且是负的。</strong> 不分红，回购只有 SBC 的 41%，股本一年还净增 2.11%。留在公司里的钱去哪了？TTM 投资活动流出 9867 万，其中 8181 万是<strong>买证券</strong>——也就是说赚来的钱主要是存起来吃利息，净现金从 3.73 亿涨到 4.45 亿。这解释了一件事：<strong>净利润 1.145 亿比经营利润 9268 万还高</strong>，差额就是这 4.85 亿现金一年产生的两千万利息收入。</p>
+<p>这个数字未来会变大还是变小？</p>
+<p>变大的理由：Decipher 写进了 NCCN 指南，渗透率还远没到头；营收还在 17% 增长，而经营杠杆很陡（毛利 73.8%，多做一单检测的边际成本很低）——过去两年营收涨 26%，经营利润从 2168 万涨到 9268 万，涨了 3.3 倍。这台机器还有力。</p>
+<p>变小的理由：一是税，NOL 用完就得按 24% 交，这一下就吃掉四分之一；二是<strong>报销价格</strong>——它的收入几乎全部来自 Medicare 和商业保险，而这两方的唯一目标就是把单价压下去，Medicare 每年重新定价，一次下调 10% 就是 5000 多万营收凭空消失，直接砸在利润上；三是集中度，两个检测项目撑起几乎全部收入，任何一个被竞品或新指南动摇都是大事。</p>
+<p>还有一个数字值得看：投入资本回报率 9.69%，而网站测算的加权资本成本是 14.74%。<strong>按这个口径，这家公司投进去的每一块钱，回报还赶不上它的资本成本</strong>——主要拜 2021 年那笔 7.37 亿美元收购 Decipher 所砸出来的商誉所赐（净资产 13.9 亿，有形净资产只有约 5.5 亿，市净率 2.35 倍但有形市净率 6.07 倍）。这不代表增量业务不赚钱，只是说明它为增长付过一次很贵的门票。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好生意，坏价格——29 倍是免税状态下的 29 倍，补上税是 36 倍，按三年平均是 63 倍。</strong></p>
+<p>Veracyte 是这批里生意质量最好的一家：73.8% 的毛利、29.5% 的自由现金流率、4.45 亿净现金、零债务压力、755 个人做出 5.6 亿营收，而且护城河是真的——不是"技术领先"这种虚的，是"临床数据 + 保险报销代码 + 诊疗指南"这三层十年才垒得起来的东西。它做的两件事（让甲状腺结节的人少挨一刀、让前列腺癌的人不被过度治疗）在医学上有真实价值，保险公司愿意付钱是因为算得清账，这种需求不会消失。</p>
+<p>问题全在价格上。股价一年涨了 34.6%，涨的正是"利润刚刚由负转正"这段最刺激的曲线；而这段曲线里有两根拐杖——<strong>免税和股权激励</strong>——加起来撑住了 45% 的自由现金流，两根都会随时间抽掉。真实回报率是每年 2.8%，比国债还低，你买的是"未来五年利润还能翻倍"这个假设本身。</p>
+<p>这个假设不算离谱（渗透率、指南、经营杠杆都支持它），但<strong>在这个价位上你没有任何犯错的余地</strong>：Medicare 一次降价、或者增长从 17% 掉到 10%，这个估值就撑不住。是一家值得放进名单里等的公司，不是现在这个价买的公司。</p>
+</div></body></html>

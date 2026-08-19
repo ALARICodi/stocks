@@ -1,0 +1,317 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SPSC · SPS Commerce（零售供应链数据网）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SPSC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">跌三分之一后21倍真实FCF算公道，但增速从18%腰斩到10%</div><h1>SPSC · SPS Commerce（零售供应链数据网）</h1>
+<p>市值 29.09 亿美元 / 股价 77.38 美元 / 行业：科技服务（供应链 SaaS）/ TTM 截止 2026-06-30（数据更新至 2026-07-30 财报）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>SPS Commerce 干的事一句话说不清，但只要举个例子就秒懂。</p>
+<p>假设你在浙江做拖鞋，好不容易谈下沃尔玛的订单。沃尔玛不会给你发邮件说"我要 3000 双 41 码蓝色"。沃尔玛的采购系统会吐出一份叫 <strong>EDI 850（采购订单）</strong> 的电子文件，格式是 1980 年代定下来的一串结构化代码；你必须在 24 小时内回一份 <strong>EDI 855（订单确认）</strong>，发货时回 <strong>EDI 856（发货通知，里面要写清楚每个箱子里装了什么、每个托盘上码了几个箱子、条码是什么）</strong>，开票时回 <strong>EDI 810（发票）</strong>。任何一份格式错了、晚了、字段少了，沃尔玛的系统会自动罚你钱——一次几百到几千美元不等，这叫 chargeback。</p>
+<p>问题是：你同时还在给塔吉特、Costco、亚马逊、家得宝供货，<strong>每一家的 EDI 方言都不一样</strong>。沃尔玛要的箱码规则和塔吉特不同，Costco 的托盘标签又是另一套。你要么雇 3 个人天天手工填，要么自己养一个 IT 团队维护 20 套接口。</p>
+<p>SPS 就是站在中间的那根管子。你把货品和订单信息按 SPS 的一套格式扔给它，SPS 负责翻译成每个零售商各自的方言，负责传输、重传、格式校验、版本升级。零售商那头改了规则，SPS 改，不用你管。</p>
+<p><strong>收钱方式</strong>：按月订阅，一家中小供应商大概每月 300–1,500 美元，取决于接了几个零售商、跑多少单据量。合同一般一年起,自动续约。SPS 有约 <strong>12–13 万家</strong>这样的付费客户,平均单客户年费大约 5,000–6,000 美元——所以它是一门<strong>极度分散</strong>的生意,没有任何一个客户占比超过 1%。</p>
+<p><strong>它为什么难被换掉</strong>:这不是你一个人的决定。你换掉 SPS,意味着要跟沃尔玛、塔吉特、Costco 逐一重新做接口测试认证,每家两到六周,期间任何一单出错就是真金白银的罚款。而 SPS 一个月只收你几百块。<strong>"省下的钱不够赔一次错"</strong>——这就是护城河的全部内容。更狠的是,零售商自己会推:很多零售商在《供应商手册》里直接写明推荐用 SPS 对接,新供应商开户时就被引导过来了。这是<strong>双边网络效应</strong>——零售商越多,供应商越必须来;供应商越多,零售商越懒得自己搭。</p>
+<p>四条营收线(TTM 截止 2026-06-30,单位:百万美元):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>同比(估算)</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fulfillment 履约</td>
+<td>660.31</td>
+<td>85.5%</td>
+<td>约 +12%</td>
+<td>上面说的核心管道，订阅制</td>
+</tr>
+<tr>
+<td>Analytics 分析</td>
+<td>56.64</td>
+<td>7.3%</td>
+<td>约 +1%</td>
+<td>把管道里流过的数据卖回去</td>
+</tr>
+<tr>
+<td>Other Recurring 其他订阅</td>
+<td>24.51</td>
+<td>3.2%</td>
+<td>约 +9%</td>
+<td>Carbon6 / SupplyPike 等新收购的工具</td>
+</tr>
+<tr>
+<td>One-Time 一次性</td>
+<td>31.03</td>
+<td>4.0%</td>
+<td>约 −13%</td>
+<td>新客户上线的实施费</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>772.49</strong></td>
+<td>100%</td>
+<td><strong>+9.8%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>同比是估算：SPS 只披露分部的年度数字，上年同期 TTM 由 FY2024 和 FY2025 插值倒推，用来看方向，不要当精确数。</p>
+</blockquote>
+<p><strong>Analytics 是什么</strong>：管道里每天流过几百万条订单和发货单，SPS 顺手把这些数据洗干净卖回去。一个卖狗粮的品牌可以买到"我在塔吉特全美 1,900 家店里，哪 300 家上周断货了"——因为塔吉特的库存回传单据（EDI 852）就从 SPS 的管子里过。这门生意毛利极高，但<strong>几乎不涨了：TTM 5,664 万，比 FY2024 的 5,572 万只多了不到 2%</strong>。这是全篇第一个警报。</p>
+<p><strong>Other Recurring 是买来的</strong>：2024 年底花 1.48 亿收 Carbon6（帮亚马逊第三方卖家自动申诉、追回被亚马逊扣掉的费用），2025 年花 1.43 亿收 SupplyPike（帮供应商自动申诉沃尔玛的 chargeback 罚款）。逻辑是通的——SPS 已经握着单据流，知道你哪一单被罚了，顺手替你申诉，按追回金额抽成。但目前只有 2,451 万，占 3.2%，撑不起大局。</p>
+<p><strong>财报只披露到营收，不披露分部利润</strong>。整体经营利润率 15.83%，Fulfillment 作为主业大概率高于这个数，Analytics 和收购来的业务因为无形资产摊销拖累会低不少——但这是<strong>估算</strong>，没有精确数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励 SBC：6,163 万美元，是 GAAP 净利润 7,800 万的 79%。</strong></p>
+<p>这个比例非常吓人。SPS 一年发给员工的股票，价值相当于它给股东赚的钱的八成。GAAP 报表里已经扣掉了（所以 7,800 万是扣完的数），但公司自己吹的"调整后 EPS"和券商用的"前瞻市盈率 15.36 倍"<strong>全都把这 6,163 万加回去了</strong>。加回去等于假装员工白干活。本文一律不加回。</p>
+<p><strong>一次性项目：这里有个说不清的窟窿，必须点名。</strong></p>
+<p>经营利润 1.223 亿，税前利润只有 1.048 亿，<strong>中间少了 1,750 万</strong>。但 SPS 手里有 1.73 亿净现金、几乎没有债务（总负债才 631 万），利息应该是<strong>净收入</strong>（按 4% 算约 +600 万）。也就是说，有大约 <strong>2,300 万美元</strong>的"其他支出"塞在经营利润和税前利润之间，财报摘要页看不到明细。</p>
+<p>最可能的来源是并购的<strong>或有对价（earn-out）公允价值变动</strong>或投资减值——SPS 两年花了近 3 亿收购，earn-out 重估走非经营科目是常规做法。但<strong>只看 TTM 单期无法判断这是真一次性还是年年都有</strong>，我不下结论，只标出来：<strong>这 2,300 万如果是一次性的，税后约 1,700 万，GAAP 净利润应该是 9,500 万而不是 7,800 万；如果年年都有，那 37 倍市盈率就是真的。</strong></p>
+<p><strong>资本化支出：SPS 不资本化软件开发费</strong>（研发全部费用化），这一项是干净的。</p>
+<p><strong>回购与稀释：TTM 回购 1.531 亿 ÷ SBC 6,163 万 = 2.48 倍。</strong> 高于 1（不只是抵消发股），但没到 3。实际结果：股本从 36.62M 降到 36.00M，<strong>一年只减了 1.68%</strong>——因为公司同时还通过员工持股计划发出去 1,080 万美元的新股。花 1.53 亿真金白银，净减 1.68% 股本，效率一般。</p>
+<p><strong>利润和现金流的差：差得非常大，必须对账。</strong></p>
+<p>净利润 7,800 万，经营现金流 2.281 亿，<strong>差了 1.5 亿，接近 3 倍</strong>。逐项拆开（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>78.00</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>+60.90</td>
+<td>大头是收购来的无形资产摊销，不花钱</td>
+</tr>
+<tr>
+<td>＋股权激励 SBC</td>
+<td>+61.63</td>
+<td><strong>不花现金但真实稀释你，别当白捡</strong></td>
+</tr>
+<tr>
+<td>＋坏账计提</td>
+<td>+10.43</td>
+<td>中小供应商倒闭收不回的钱</td>
+</tr>
+<tr>
+<td>＋其他经营项</td>
+<td>+17.61</td>
+<td>含上面那笔说不清的非经营支出回加</td>
+</tr>
+<tr>
+<td>−应收账款增加</td>
+<td>−8.72</td>
+<td>生意涨了，客户欠得多</td>
+</tr>
+<tr>
+<td>−预收/应付等变动</td>
+<td>+0.69</td>
+<td>基本持平</td>
+</tr>
+<tr>
+<td>−其他净经营资产</td>
+<td>−15.84</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>228.14</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>−资本开支</td>
+<td>−29.45</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>198.70</strong></td>
+<td>FCF 利润率 25.7%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的结论</strong>：1.5 亿的差额里，<strong>1.22 亿是折旧摊销＋股权激励这两笔"不花钱"的</strong>。折旧摊销 6,090 万确实基本是纸面数字（收购无形资产摊销，不需要真花钱去补）；但股权激励 6,163 万<strong>不是</strong>——它是你的股份被稀释掉的部分。所以 SPS 真正属于股东的自由现金流是 <strong>198.70 − 61.63 = 1.371 亿</strong>，不是 1.987 亿。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 29.09 亿，企业价值 27.42 亿（因为有 1.67 亿净现金，EV 比市值小）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2,909 ÷ 78.00</td>
+<td><strong>37.3 倍</strong></td>
+<td><strong>2.68 元</strong></td>
+</tr>
+<tr>
+<td>公司/券商口径（加回 SBC 和摊销，估算）</td>
+<td>2,909 ÷ 约 170</td>
+<td>约 17 倍</td>
+<td>约 5.9 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2,909 ÷ 92.6（把那 2,300 万当一次性加回，SBC 不加回）</td>
+<td><strong>31.4 倍</strong></td>
+<td><strong>3.18 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2,909 ÷ 198.70</td>
+<td>14.6 倍</td>
+<td>6.84 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流扣掉股权激励</strong></td>
+<td>2,909 ÷ 137.07</td>
+<td><strong>21.2 倍</strong></td>
+<td><strong>4.71 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,742 ÷ 122.30</td>
+<td>22.4 倍</td>
+<td>4.46 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2,909 ÷ 82.80（TTM+FY25+FY24 平均）</td>
+<td><strong>35.1 倍</strong></td>
+<td><strong>2.85 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先说三年平均这一行，因为它这次说的是好消息。</strong> 三年平均 35.1 倍，比当期 37.3 倍还<strong>低</strong>——意思是<strong>现在的利润不是高点，反而是三年里最差的一年</strong>（净利润 7,800 万 vs 去年 9,334 万，倒退了 16%）。倒退的原因是无形资产摊销（收购）和那笔 2,300 万非经营支出，不是生意崩了：营收还在涨 9.8%，自由现金流反而涨了 40%。所以这里不存在"用高点利润算出低市盈率"的陷阱，反而是反过来。</p>
+<p><strong>那 15.36 倍的"前瞻市盈率"是怎么来的？</strong> 它把 6,163 万 SBC 和约 4,000 万无形资产摊销全加回去，凑出一个约 1.8 亿的"调整后利润"。摊销加回去我认可（那确实不花钱），<strong>SBC 加回去我不认可</strong>。所以别信 15 倍。</p>
+<p><strong>说人话：你现在投 100 块进 SPS Commerce。</strong></p>
+<p>按最保守的口径（自由现金流扣掉股权激励，也就是真正属于你的那部分现金），公司一年替你赚 <strong>4.71 元</strong>。</p>
+<p>这 4.71 元里：
+- <strong>约 5.3 元</strong>（按市值算的回购收益率 1.53 亿 ÷ 29.09 亿 = 5.3%）名义上以回购形式回到你口袋，但其中约 2.1 元被员工新发的股票吃掉了，<strong>净到你手上大概 1.7 元</strong>（对应股本实际减少 1.68%）。
+- 不分红，一分钱都不分。
+- 剩下的钱留在公司：TTM 没有新收购（现金收购 = 0），投资活动只花了 2,068 万，说明<strong>并购刹车了</strong>，现金在账上堆着（净现金从 1.44 亿涨到 1.67 亿）。</p>
+<p><strong>这 4.71 元未来会变大还是变小？大概率变大，但变大的速度在肉眼可见地慢下来。</strong> 营收增速从 23% → 17% → 19% → 19% → 18% → <strong>9.8%</strong>，而且这 9.8% 里有相当一部分是 Carbon6 和 SupplyPike 两笔收购贡献的（合计花了 2.9 亿），<strong>有机增速可能只有 6–7%</strong>。FCF 利润率 25.7% 已经是历史最高，靠利润率继续扩张来提速的空间不大。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门真正有护城河的好生意，跌了三分之一之后第一次算得上公道价——但你买的是"增速能稳在 10%"这个假设，而不是便宜。</strong></p>
+<p>好的地方是真好：12 万客户没有一个占比超过 1%，零售商替它拉新客，换掉它的代价远高于它收的钱，70% 毛利、26% 自由现金流利润率、1.67 亿净现金零负债、ROIC 11.5% 高出资本成本 6.9% 一大截。21 倍的"真实自由现金流"配 10% 的增长，不算贵。</p>
+<p>不好的地方也不含糊：增速从 18% 腰斩到 10%，Analytics 这门本该最性感的数据生意<strong>一年只涨 1%</strong>，一次性实施费收入在下滑（意味着新客户上线在减速），股权激励等于净利润的 79%，花 1.53 亿回购只买回 1.68% 的股本，GAAP 口径 37 倍并且利润在倒退。8% 的做空比例说明市场里有一群人认为 EDI 这门 1980 年代的生意会被 API 和 AI 直接绕过去。</p>
+<p>我的判断：<strong>公道价，不是便宜价。</strong> 值得放进观察名单，但它需要的不是"再跌 20%"，而是"下个季度证明有机增速没有继续往 6% 掉"。如果 Fulfillment 增速跌破 8%，21 倍就立刻变成偏贵。</p>
+</div></body></html>

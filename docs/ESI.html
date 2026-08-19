@@ -1,0 +1,436 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ESI · 元素解决方案（Element Solutions Inc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ESI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">涨49%利润跌26%，ROIC5.5%打不过9.5%资本成本</div><h1>ESI · 元素解决方案（Element Solutions Inc）</h1>
+<p>市值 $88.7 亿 ｜ 股价 $36.41（2026-08-19 盘中）｜ 企业价值 $108.0 亿 ｜ 行业：特种化学品（电子材料）｜ TTM 截止 <strong>2026-06-30</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司名字听着像咨询公司，其实是<strong>卖化学品的</strong>——而且是那种一瓶几百美元、你一辈子不会见到、但你手上每一部手机里都有的化学品。它 1785 年就有了前身（MacDermid），2019 年才改成现在这个名字。</p>
+<p>财报上报两个大段（MacDermid Alpha 电子解决方案、Element 特种品），底下拆成五门具体生意。按 TTM 营收从大到小：</p>
+<h3>生意一：焊膏和封装材料（Assembly Solutions）—— 全公司最大的一门，也是最容易被误读的一门</h3>
+<p><strong>这是什么</strong>：你打开任何一块电路板，上面那些芯片、电阻、电容是怎么固定在板子上的？靠焊锡。工厂的做法是先用钢网把一层灰色的膏体（焊膏）刮到电路板的焊盘上，再把元件贴上去，整块板送进回流焊炉，膏体一熔化就把元件焊死了。这个灰色膏体就是 ESI 卖的东西——锡粉 + 助焊剂调成的浆。</p>
+<p><strong>怎么收钱</strong>：按公斤卖，一桶 500 克装的焊膏大概 30–80 美元，高端的（低温焊膏、给汽车电子用的高可靠性焊膏）能到几百美元一公斤。一家像富士康那样的代工厂，一条 SMT 产线一天能刷掉几十公斤焊膏，一个大厂一年买几千万美元很正常。</p>
+<p><strong>客户为什么非买不可</strong>：因为<strong>换供应商要重新做认证</strong>。焊膏的配方直接决定焊点会不会有空洞、会不会在汽车引擎盖底下震三年后开裂。一家做车规电子的厂子，把某个牌号的焊膏塞进产线，要跑几个月的可靠性测试（热循环、盐雾、振动），拿到 IATF 16949 的过程认证。为了每公斤省 5 美元去换供应商，赌的是整批车召回。所以一旦进去，黏性极强。</p>
+<p><strong>同时也做导热材料</strong>：CPU 和散热片之间那层灰色的膏、功率半导体底下的银烧结材料——AI 服务器功耗越高，这块越值钱，这是 ESI 现在最想让市场看到的故事。</p>
+<p><strong>⚠️ 这门生意的营收有一半是"过路钱"</strong>：焊膏里 90% 的重量是锡。锡价涨，ESI 的售价就照抬，营收跟着涨，但<strong>赚的钱一分没多</strong>——锡是按市价转嫁给客户的。TTM 这门生意营收从 907 涨到 1,187（+31%），<strong>其中相当一部分就是锡价和收购带进来的，不是它多卖了多少膏</strong>。看营收增速会被骗，这一点后面还要提。</p>
+<h3>生意二：电路板金属化（Circuitry Solutions）</h3>
+<p><strong>这是什么</strong>：一块多层电路板，层与层之间要用一个个小孔（过孔）导通。孔是钻出来的，孔壁是绝缘的环氧树脂，怎么让它导电？把板子泡进一缸化学药水里，让铜从溶液里析出来、均匀镀满孔壁——这缸药水就是 ESI 卖的。还有板子最外层那圈金色的镀层（沉金/OSP），防止铜氧化。</p>
+<p><strong>怎么收钱</strong>：卖化学药剂 + 卖"缸子的管理服务"。典型模式是 ESI 派工程师常驻客户工厂，负责监控药水浓度、定期补加、处理镀层不良的工艺问题，客户按消耗量付费。一个中型 PCB 厂一年花几百万美元，一个大厂（比如给英伟达做 AI 加速卡基板的那几家）能花上千万。</p>
+<p><strong>为什么黏</strong>：镀液是活的化学系统，浓度、温度、电流密度全部要调，换一家供应商等于把整条产线的良率重新赌一遍。AI 服务器用的高层数板（20 层以上）对孔壁镀铜的均匀性要求极高，能做的供应商全球就那么几家。TTM 576.5，+9.2%。</p>
+<h3>生意三：半导体封装材料（Semiconductor Solutions）</h3>
+<p><strong>这是什么</strong>：芯片从晶圆上切下来之后要"封装"——把它接到能焊到电路板上的引脚上。现在先进封装（把好几颗芯片叠在一起、用微凸块连接）用的电镀液、光刻胶剥离液、晶圆级封装材料，就是这块。<strong>HBM 内存堆叠、CoWoS 这些 AI 芯片的封装工艺都要用</strong>。</p>
+<p><strong>怎么收钱</strong>：卖到台积电、日月光、安靠这类封装厂，也直接卖给存储厂。单价比前两门高，量小。TTM 396.6，+12.9%——<strong>这是全公司最有价值的一门，但它只占 12.6%</strong>。</p>
+<h3>生意四：工业镀层（Industrial Solutions）—— 老本行，也是拖后腿的那门</h3>
+<p><strong>这是什么</strong>：给金属零件镀一层保护膜。最典型的是<strong>化学镀镍</strong>：一个汽车刹车卡钳、一根液压杆，泡进药水里就自动镀上一层均匀的镍磷合金，不用通电、不管形状多复杂角落都镀得到，防锈耐磨。汽车厂、建筑五金、航空零件都用。</p>
+<p><strong>怎么收钱</strong>：论桶卖药水，一桶几百到上千美元，配套卖前处理清洗剂。客户是汽车零部件厂、五金厂。</p>
+<p><strong>问题</strong>：这门生意跟全球汽车产量和工业开工率绑死，五年前 599.7，现在 668.4，<strong>五年只涨了 11%</strong>，基本原地踏步。TTM 同比 +2.6%，就是通胀而已。</p>
+<h3>生意五：海上钻井液（Energy Solutions）—— 94.1，占 3%，可以忽略</h3>
+<p>给海上油气钻井用的完井液（一种高密度盐水，用来压住井底压力）。TTM 94.1，+5.3%。规模太小，不影响判断。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比 FY2025</th>
+<th>占比</th>
+<th>经营利润率（<strong>估算</strong>）</th>
+<th>贡献利润（<strong>估算</strong>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>焊膏与封装（Assembly）</td>
+<td>1,187</td>
+<td>+30.9%</td>
+<td>37.7%</td>
+<td>~13%</td>
+<td>~154</td>
+</tr>
+<tr>
+<td>电路板金属化（Circuitry）</td>
+<td>576.5</td>
+<td>+9.2%</td>
+<td>18.3%</td>
+<td>~22%</td>
+<td>~127</td>
+</tr>
+<tr>
+<td>半导体封装（Semiconductor）</td>
+<td>396.6</td>
+<td>+12.9%</td>
+<td>12.6%</td>
+<td>~24%</td>
+<td>~95</td>
+</tr>
+<tr>
+<td>工业镀层（Industrial）</td>
+<td>668.4</td>
+<td>+2.6%</td>
+<td>21.2%</td>
+<td>~19%</td>
+<td>~127</td>
+</tr>
+<tr>
+<td>海上钻井液（Energy）</td>
+<td>94.1</td>
+<td>+5.3%</td>
+<td>3.0%</td>
+<td>~15%</td>
+<td>~14</td>
+</tr>
+<tr>
+<td>图像制版（Graphics，<strong>已卖掉</strong>）</td>
+<td>0</td>
+<td>24.2 → 0</td>
+<td>0%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>分部未列出的部分</strong></td>
+<td><strong>227.4</strong></td>
+<td>新增</td>
+<td><strong>7.2%</strong></td>
+<td>?</td>
+<td>?</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,150</strong></td>
+<td>+26.6%（TTM 同比）</td>
+<td>100%</td>
+<td>12.73%（<strong>实际</strong>）</td>
+<td><strong>401</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三点必须说清楚：</p>
+<ol>
+<li><strong>利润率是我估的，不是财报数字。</strong> ESI 只按分部披露营收，不披露分部利润。我按各条线的产品结构和行业惯例倒推，误差不小，<strong>别拿这几个数去做精确计算</strong>。唯一确定的是全公司经营利润 401M、经营利润率 12.73%。</li>
+<li><strong>227.4M 对不上。</strong> 五门生意加起来 2,922.6，总营收 3,150，差 227.4M（占 7.2%）。FY2025 是能对上的（2,551.2 vs 2,551）。这 227.4M 极可能是 TTM 期内那笔 <strong>8.66 亿美元现金收购</strong>买回来的业务，还没归进现有分部。财报页没写标的名字，我不编。</li>
+<li><strong>焊膏那 +30.9% 含金量存疑</strong>——锡价上涨的转嫁 + 收购并表，两样都不代表它多卖了货。</li>
+</ol>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：一年之内翻了 4.6 倍，这是最刺眼的一项</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SBC</td>
+<td><strong>68.5</strong></td>
+<td>59.1</td>
+<td>14.8</td>
+<td>9.4</td>
+</tr>
+<tr>
+<td>占净利润</td>
+<td><strong>38.4%</strong></td>
+<td>31.0%</td>
+<td>6.1%</td>
+<td>8.0%</td>
+</tr>
+</tbody>
+</table></div>
+<p>FY2024 还只有 1,480 万，TTM 变成 6,850 万——<strong>两年涨了 6.3 倍，而同期净利润是往下走的</strong>。这不是"业务扩张带来的正常增长"，这是管理层给自己和员工发股票的力度突然加大。</p>
+<p><strong>我一律把它当真金白银的成本扣掉</strong>，因为它确实稀释你的股份。GAAP 里已经扣了（净利润 178.6 是扣完的），所以下面第三部分的"真实市盈率"里我不会把它加回来。ESI 自己报的调整后利润是加回去的——那是骗人的。</p>
+<h3>一次性项目</h3>
+<ul>
+<li>TTM 有一笔 <strong>资产处置损失 7.6M</strong>（FY2025 是 +59M 的收益，来自卖掉 Graphics 制版业务，那笔 3.212 亿的处置款也在 FY2025 的投资现金流里）。金额不大。</li>
+<li><strong>单期口径无法判断"收购相关费用"这一项是不是年年发生</strong>——但从历史看，ESI 是个连环收购者（FY2021 花 5.365 亿、FY2023 花 2.148 亿、TTM 花 8.658 亿），<strong>所谓"一次性的并购费用"对这家公司来说基本是每年都有的固定开销</strong>，不该当一次性剔除。</li>
+<li><strong>收购形成的无形资产摊销我也不加回。</strong> ESI 的折旧摊销 163M 里有相当一部分是历年收购留下的客户关系、技术摊销。华尔街习惯把它加回去算"调整后利润"，理由是"非现金"。对一家刚又花 8.66 亿买公司的连环收购者来说，这个理由不成立——<strong>买公司的钱是真花出去的现金，只是记账时被摊到了后面几年</strong>。加回去等于假装收购不花钱。</li>
+</ul>
+<h3>资本化的支出</h3>
+<p>没有。ESI 不资本化软件或内容，研发费用化。资本开支 86.5M，占营收 2.7%，是典型的化学品行业水平（建反应釜、扩产线）。</p>
+<h3>回购与稀释：<strong>这一项直接判死刑</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>5.6</strong></td>
+</tr>
+<tr>
+<td>SBC</td>
+<td><strong>68.5</strong></td>
+</tr>
+<tr>
+<td>回购 ÷ SBC</td>
+<td><strong>0.08</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+0.14%（不减反增）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购只相当于 SBC 的 8%。</strong> 也就是说：公司一年发给员工 6,850 万美元的股票，只花 560 万买回来一点点，剩下 6,290 万的稀释<strong>全部由你这个股东承担</strong>。股本还净增加了 0.14%。</p>
+<p>这个比值大于 3 才叫真回购，接近 1 叫"原地踏步"，0.08 叫<strong>"员工在分你的公司，你连意思一下的对冲都没有"</strong>。同期公司却花了 7,850 万分红——<strong>分红 78.5M vs 回购 5.6M</strong>，一个正常的资本配置不该长这样：分红是要交税的现金流出，回购是免税的每股价值提升，在股价没有明显高估时优先回购才对。当然，也可能管理层自己知道 50 倍市盈率买不下手。</p>
+<h3>利润和现金流的差：<strong>这是全篇最重要的一张表</strong></h3>
+<p>净利润 178.6，经营现金流只有 224.2，自由现金流跌到 <strong>137.7</strong>（上一年 295.2，<strong>腰斩</strong>）。钱去哪了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td><strong>178.6</strong></td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+163.0</td>
+<td>不花钱的账面费用，加回</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+68.5</td>
+<td>发股票不花现金，加回（但它稀释你）</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>+7.6</td>
+<td>一次性</td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>+17.8</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>－ 应收账款增加</strong></td>
+<td><strong>-131.5</strong></td>
+<td><strong>货发出去了，钱还没收回来</strong></td>
+</tr>
+<tr>
+<td><strong>－ 存货增加</strong></td>
+<td><strong>-102.3</strong></td>
+<td><strong>原材料和成品压在仓库里</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+27.3</td>
+<td>欠供应商的钱多了，等于占用别人资金</td>
+</tr>
+<tr>
+<td>－ 其他经营资产变化</td>
+<td>-4.8</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>224.2</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-86.5</td>
+<td>建产线</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>137.7</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看那两行加粗的：应收 -131.5、存货 -102.3，两项合计 2.34 亿美元被营运资金吸走了。</strong> 这跟前面说的锡价是同一件事的两面——锡贵了，同样多的焊膏要占更多的存货金额，卖出去后应收账款金额也更大。<strong>营收账面上涨 26.6% 看着热闹，实际是把 2.34 亿现金押进了库存和账期里。</strong></p>
+<p>结果：自由现金流利润率从 12.02%（FY2024）掉到 <strong>4.37%</strong>。这是一家把"增长"做成了"占用现金"的公司。</p>
+<p>分红 78.5M ÷ FCF 137.7M = <strong>57%</strong>。还盖得住，但空间不大了；如果 FCF 再掉一截，分红就要靠借钱。</p>
+<h3>债务</h3>
+<p>净负债从 FY2025 的 10.96 亿涨到 <strong>19.27 亿</strong>——那笔 8.66 亿的收购基本是借钱买的（TTM 新发债 4.994 亿 + 烧掉 4.33 亿现金）。净负债/EBITDA 从 2.22 跳到 <strong>3.42</strong>，Debt/EBITDA 3.76。利息保障倍数 5.59，还没到危险区，但<strong>杠杆在明显加码，而收购的回报还没兑现</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 8,872M，企业价值 10,798M（含净负债 1,927M）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>8,872 ÷ 178.6</td>
+<td><strong>49.7 倍</strong></td>
+<td><strong>$2.01</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（<strong>估算</strong>）</td>
+<td>加回无形摊销 + 一次性，约 292M</td>
+<td>~30.4 倍</td>
+<td>~$3.29</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>8,872 ÷（178.6 + 7.6×0.647 = 183.5）<br>SBC 已按 GAAP 扣除，不加回；摊销不加回</td>
+<td><strong>48.3 倍</strong></td>
+<td><strong>$2.07</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>8,872 ÷ 137.7</td>
+<td><strong>64.4 倍</strong></td>
+<td><strong>$1.55</strong></td>
+</tr>
+<tr>
+<td>自由现金流（用 FY2025 的正常年份 227.6）</td>
+<td>8,872 ÷ 227.6</td>
+<td>39.0 倍</td>
+<td>$2.56</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>10,798 ÷ 401</td>
+<td><strong>26.9 倍</strong></td>
+<td>$3.72（对应全部投入资本）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>8,872 ÷ [(178.6+190.8+244.2)/3 = 204.5]</td>
+<td><strong>43.4 倍</strong></td>
+<td><strong>$2.30</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（Non-GAAP 那一行标了估算：ESI 只公布调整后 EBITDA 和调整后 EPS，财报页拿不到精确的调整后净利润，我按"加回约 1.1 亿无形资产摊销 + 一次性项目、按正常税率还原"倒推，<strong>别当精确数字用</strong>。有效税率 TTM 高达 35.29%，本身也偏高。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的真实口径（剔除障眼法后的 48.3 倍）算，公司一年替你赚 2 块 7 毛……不对，是 2 块 0 毛 7。</strong> 用自由现金流算更惨，只有 1 块 5。</p>
+<p>这 2 块钱里，有多少真回到你口袋？</p>
+<ul>
+<li><strong>分红</strong>：股息率 0.86%，也就是每 100 块给你 <strong>8 毛 6</strong>。</li>
+<li><strong>回购</strong>：TTM 回购 560 万，占市值 0.06%，股本还净增加了 0.14%——<strong>回购贡献是负的，倒扣你 1 毛 4</strong>。</li>
+<li><strong>留在公司里再投资</strong>：剩下的一块多，加上新借的 5 亿债，全砸进了那笔 8.66 亿的收购。</li>
+</ul>
+<p>也就是说，<strong>你拿到手的现金回报大约每 100 块 7 毛 2（8 毛 6 分红减掉 1 毛 4 稀释）</strong>，剩下的钱管理层拿去买别的公司了。这笔买卖划不划算，取决于你信不信管理层的收购眼光。</p>
+<p><strong>看看历史成绩单</strong>：ESI 的投入资本回报率（ROIC）五年分别是 6.45%、5.43%、5.97%、7.33%、6.37%，TTM <strong>5.47%</strong>。而它的加权平均资本成本（WACC）是 <strong>9.52%</strong>。</p>
+<p><strong>这是全篇最要命的一个数字对比：这家公司每投一块钱进去，赚回来 5.5 分，而这一块钱本身的成本是 9.5 分。它每做一笔收购、每扩一条产线，都在毁灭价值。</strong> 连续五年，一年没例外。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong></p>
+<p>变大的理由：半导体封装那门生意（占 12.6%）确实踩在 AI 先进封装的风口上，导热材料也是；新收购的业务如果整合顺利，227M 营收会转化成利润；forward PE 19.35 说明卖方普遍预期未来 12 个月利润要翻一倍多。</p>
+<p>变小的理由：占 37.7% 的焊膏生意的增长有相当部分是锡价转嫁，锡价一回落营收就掉；占 21.2% 的工业镀层五年没长；SBC 两年涨 6.3 倍还在往上走；杠杆刚从 2.2 倍加到 3.4 倍；营运资金还在吸血；<strong>而 ROIC 低于 WACC 已经连续五年</strong>。</p>
+<p><strong>过去 52 周股价涨了 49.5%，而同期 EPS 从 1.01 跌到 0.74（-26%）。市盈率从 31.7 倍涨到 50.65 倍——这一年的涨幅，100% 是估值扩张，一分钱不是利润涨出来的。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>贵得没道理。</strong> 一家 ROIC 5.5% 打不过 9.5% 资本成本、连续五年在毁灭价值的化学品公司，营收增长里掺着锡价水分，自由现金流一年腰斩，员工每年拿走 6,850 万股票而公司只回购 560 万，股本不减反增——这些事实配的不是 50 倍市盈率，配的是 15 倍。</p>
+<p>市场付的是"AI 先进封装材料"的估值，买到的是"37% 焊膏 + 21% 汽车镀镍 + 12.6% 真正的半导体材料"的业务组合。<strong>要么等那 12.6% 长到 40%，要么等股价跌一半，现在这个价格是替别人的乐观买单。</strong></p>
+</div></body></html>

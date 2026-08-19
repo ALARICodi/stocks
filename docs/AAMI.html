@@ -1,0 +1,317 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AAMI · 阿卡迪亚资产管理</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AAMI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">SBC吃85%利润、回购只抵1/4，32倍是股价翻倍涨出来的</div><h1>AAMI · 阿卡迪亚资产管理</h1>
+<p><strong>市值</strong> 32.44 亿美元 | <strong>股价</strong> 91.83 美元（35.49 百万股） | <strong>行业</strong> 资产管理（NYSE） | <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>先说一句口径</strong>：AAMI 在筛选器里归在「金融」，但它不是银行也不是保险——它不放贷、不承保、资产负债表上没有信贷风险，赚的是替别人管钱的管理费。所以下面照常用市盈率，不用市净率。事实上它的市净率是 <strong>35.4 倍</strong>，因为多年回购把账面股东权益打到只剩约 9200 万美元，这个数字已经失去意义了，不要看。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是一件，只有一件。</strong></p>
+<p>这家公司 2025 年之前叫 BrightSphere Investment Group（代号 BSIG），再往前叫 Old Mutual Asset Management——是英国保险巨头 Old Mutual 拆出来的一个「精品资管收纳盒」，旗下同时装着七八家独立的资产管理公司：做木材林地投资的 Campbell Global、做基础设施的 ICM、做二级市场私募份额的 Landmark、做价值股的 Barrow Hanley 和 TSW。从 2019 年开始，管理层把这些一家一家全卖了（这就是为什么 2021 财年净利润会出现 8.28 亿美元这种离谱数字——那是卖公司的一次性收益，不是经营赚的），只留下最后一家：<strong>Acadian</strong>。2025 年公司干脆改名叫 Acadian Asset Management，代号换成 AAMI。</p>
+<p>所以今天你买的 AAMI，就是买一家波士顿的量化资产管理公司。财报的分部披露也印证了这点：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quant &amp; Solutions（量化与解决方案）</td>
+<td>6.542 亿</td>
+<td>97.9%</td>
+<td>就是 Acadian 本身</td>
+</tr>
+<tr>
+<td>合并基金的营收剔除项</td>
+<td>0.143 亿</td>
+<td>2.1%</td>
+<td>会计并表噪音，不是生意</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>6.685 亿</strong></td>
+<td>100%</td>
+<td>上一财年 5.637 亿，<strong>+24.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这门生意具体怎么做、怎么收钱：</strong></p>
+<p>Acadian 是「系统化主动股票投资」。用大白话说：它不请一群基金经理去调研上市公司，而是养一个模型和一群写模型的人（全公司只有 <strong>396 名员工</strong>），让电脑每天把全球几千上万只股票按几十个维度打分——估值贵不贵、盈利质量好不好、最近涨势如何、分析师在上调还是下调预期、财报文本里的措辞变化——然后按分数组一个持有几百只股票的组合，同时用风险模型控制它跟基准指数的偏离度。</p>
+<p>它的客户不是散户，是机构。举一个具体的场景：某个州的公立教师退休金账上有 20 亿美元要配到新兴市场股票上。这笔钱自己管不了——新兴市场有几千只股票，分散在二十几个国家、十几种货币和会计准则里，自己养团队研究不划算。于是它发标，Acadian 中标，钱交给 Acadian 管。Acadian 按管理规模收年费，机构量化股票的典型费率是 <strong>30–45 个基点</strong>（0.30%–0.45%），20 亿美元一年就是 600 万到 900 万美元，按季度从资产里直接扣，不需要客户另外掏钱，也不需要销售天天上门催收——<strong>这是资管生意最舒服的地方：钱不动，费自动来</strong>。</p>
+<p>第二类产品更赚钱：<strong>多空对冲策略</strong>。同样一套打分模型，除了买高分股票，还做空低分股票，做成一个跟大盘涨跌无关的绝对收益产品。这类产品的收费结构完全不同——管理费 1%–1.5%，外加<strong>超过约定门槛的收益抽走 15%–20% 作为业绩提成</strong>。一个 10 亿美元的多空组合，如果一年做出 12% 的绝对收益，管理费 1200 万，业绩提成大约 2 亿收益的 20% 即 2400 万，一年从这一个客户身上收 3600 万美元。</p>
+<p><strong>这正是理解这份 TTM 报表的钥匙。</strong> 营收一年涨 24.2%（上一财年只涨 11.5%），主要不是因为管理规模涨了 24%，而是因为<strong>业绩提成爆发了</strong>。量化多空策略在 2025–2026 这段行情里跑得好，提成就多收；行情一变，这笔钱可以在一年内消失大半。财报页不披露管理规模（AUM），按 30–45 个基点的费率反推，Acadian 管理的钱大致在 <strong>1300 亿到 1900 亿美元</strong>这个区间——<strong>这是估算，不是财报数字</strong>。</p>
+<p><strong>利润率：</strong> 财报只按分部披露到营收，不披露分部利润。但既然 97.9% 的营收都来自同一门生意，整体利润率就等于这门生意的利润率：TTM 毛利率 40.9%、<strong>经营利润率 23.7%</strong>（1.581 亿 ÷ 6.685 亿）。人均创收 169 万美元、人均创利 25.6 万美元——396 个人撑起 32 亿市值，轻到不能再轻。投入资本回报率 ROIC <strong>35.4%</strong>，这是好生意的底子，毫无疑问。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：这是全篇最大的雷</h3>
+<p>TTM 股权激励 <strong>8630 万美元</strong>，而 TTM 净利润只有 <strong>1.014 亿</strong>。<strong>SBC 相当于净利润的 85%。</strong></p>
+<p>更要命的是它的走势：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SBC（百万美元）</td>
+<td><strong>−30.3</strong></td>
+<td>7.4</td>
+<td>30.5</td>
+<td>53.8</td>
+<td><strong>86.3</strong></td>
+</tr>
+<tr>
+<td>同期股价变动</td>
+<td>−26.4%</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td><strong>+93.9%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看到 FY2022 那个<strong>负 3030 万</strong>了吗？股权激励费用居然是负的——这在正常公司里不可能出现。它说明 Acadian 相当大一部分员工激励是<strong>负债分类的</strong>：奖励的价值挂钩公司股价（或挂钩 Acadian 子公司的估值），每个季度按最新市价重新估值，价格涨了就补提费用，价格跌了就转回收益。</p>
+<p>于是就有了这个循环：<strong>股价一年涨 93.9% → 员工手里那堆挂钩权益重估暴涨 → 公司必须补提 8630 万费用 → 净利润被压到 1.014 亿 → 市盈率看起来高达 32 倍 → 但市场知道这笔费用是股价涨出来的，所以给出 15.35 倍的前瞻市盈率。</strong></p>
+<p>这里必须说清楚一件事：<strong>这笔 8630 万是真实成本，不能加回。</strong> 它不是纸面游戏——员工手里那些权益最终要么用公司的现金买回来（负债分类的通常是现金结算），要么变成股份稀释你。GAAP 已经替你扣掉了，正确的做法是让它留在那里。真正的问题在于：<strong>这个成本没有稳定的水平线</strong>。股价再涨一倍，它可能变成 1.5 亿；股价跌回去，它可能又变成负数、把利润推高。你没法用任何一年的数字去推下一年。</p>
+<h3>回购与稀释：员工在稀释你，公司没在回馈你</h3>
+<ul>
+<li>TTM 回购 <strong>2130 万美元</strong></li>
+<li>TTM 股权激励 <strong>8630 万美元</strong></li>
+<li><strong>回购 ÷ SBC = 0.25</strong></li>
+</ul>
+<p>这个比值是判断「回购是不是真回馈」的核心指标：接近 1 说明回购只够抵消员工发股，大于 3 才叫真回购。<strong>0.25 意味着回购连员工发股的四分之一都抵不上。</strong></p>
+<p>看上去矛盾的是，股本一年还减少了 3.75%。原因是回购发生在股价还便宜的时候（大部分买在 46 美元附近甚至更低），而 SBC 的费用是按今天 91.83 美元的价格重估出来的——花 2130 万在低位买回的股数，确实比高位重估出的费用对应的股数多。但这条路走不下去：股价越高，同样一块钱回购买回的股份越少，而 SBC 费用越大。</p>
+<p>股息 TTM 只发了 790 万，股息率 0.43%，可以忽略。</p>
+<h3>一次性项目</h3>
+<p>TTM 有一笔 <strong>2880 万美元的投资处置收益</strong>（Loss/Gain From Sale of Investments −28.8）。这笔算真一次性收益，下面算真实市盈率时要扣掉。另外注意：FY2025 也有 3440 万同类收益、FY2024 有 1210 万——<strong>只看 TTM 一期无法判断这是「年年都有的一次性」还是真偶发</strong>，从三年都有来看，倾向于它是常态的一部分，但金额不稳定。没有诉讼和解、没有重组费用、没有资产减值。</p>
+<h3>资本化的支出：没有。资本开支 TTM 只有 1600 万，占营收 2.4%，就是办公和 IT。</h3>
+<h3>利润和现金流的差：一张必须看的对账表</h3>
+<p><strong>TTM 经营现金流是 −3410 万美元，自由现金流是 −5010 万美元。一家净利润 1 亿的公司，经营现金流是负的。</strong> 这必须解释清楚：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+101.4</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+15.5</td>
+</tr>
+<tr>
+<td>加：其他摊销</td>
+<td>+5.4</td>
+</tr>
+<tr>
+<td>加：股权激励（非现金部分）</td>
+<td>+86.3</td>
+</tr>
+<tr>
+<td>减：投资处置收益（非经营）</td>
+<td>−28.8</td>
+</tr>
+<tr>
+<td><strong>减：其他经营活动</strong></td>
+<td><strong>−284.4</strong></td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−89.4</td>
+</tr>
+<tr>
+<td>加：应付账款增加</td>
+<td>+37.4</td>
+</tr>
+<tr>
+<td>加：其他净经营资产变动</td>
+<td>+122.5</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>−34.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>黑洞在那一行 <strong>−2.844 亿的「其他经营活动」</strong>。这不是公司把钱亏掉了——<strong>这是并表基金（consolidated funds）的账。</strong> Acadian 用自有资金给新策略投种子钱（seed capital），持股比例高到一定程度会计上就要把整只基金并进报表。基金买卖证券的现金流被归进「经营活动」，于是基金一买入股票，母公司的经营现金流就变成负的，尽管那根本不是 Acadian 自己的经营。对应地，融资活动里那笔 <strong>+1.564 亿的「其他融资活动」</strong>就是第三方投资人往这些基金里投的钱。</p>
+<p>所以：<strong>AAMI 的自由现金流为负这件事，不代表它不赚钱，只代表报表被并表基金污染了。</strong> 但反过来说，这也意味着<strong>你没法用现金流验证它的利润</strong>——这是资管股共同的毛病，也是必须扣分的地方。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 32.44 亿，净负债 1.929 亿（现金 0.646 亿、总债务 2.575 亿），企业价值 34.37 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>32.44 亿 ÷ 1.014 亿</td>
+<td><strong>32.0 倍</strong></td>
+<td><strong>3.13 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页不披露；从前瞻市盈率 15.35 倍反推，市场预期的下一年利润约 2.11 亿，是 TTM GAAP 的 2.08 倍</td>
+<td><em>15.4 倍（预期）</em></td>
+<td><em>6.51 元（预期）</em></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>32.44 亿 ÷（1.014 亿 − 投资处置收益 0.288 亿 × 0.717 税后 = 0.807 亿）；SBC 按 GAAP 已扣，不加回</td>
+<td><strong>40.2 倍</strong></td>
+<td><strong>2.49 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 −0.501 亿，<strong>此口径失效</strong>（并表基金污染）。用「净利润+折旧摊销−资本开支」粗估现金利润 1.063 亿</td>
+<td><em>30.5 倍（估算）</em></td>
+<td><em>3.28 元（估算）</em></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>34.37 亿 ÷ 1.581 亿</td>
+<td><strong>21.8 倍</strong></td>
+<td>4.58 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>32.44 亿 ÷ 三年平均净利润 0.888 亿（TTM 1.014、FY2025 0.80、FY2024 0.85）</td>
+<td><strong>36.5 倍</strong></td>
+<td><strong>2.74 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，按最保守的真实口径算（剔掉那笔投资处置收益的 40.2 倍），公司一年替你赚 2 块 5 毛。</strong> 按最宽松的三年平均口径也只有 2 块 7。</p>
+<p>这 2 块 5 里，<strong>真正回到你口袋的部分少得可怜</strong>：股息只有 0.43%（4 毛 3），回购 2130 万折合市值的 0.66%（6 毛 6），加起来约 <strong>1 块 1</strong>。剩下的 1 块 4 留在公司里，但它没有变成新的产能或研发——TTM 资本开支只有 1600 万——<strong>它主要用来还债（净偿还 9610 万）和给新基金投种子钱</strong>。</p>
+<p>这个 2 块 5 未来会变大还是变小？<strong>这是一个二选一的赌局，没有中间地带：</strong></p>
+<ul>
+<li><strong>变大的情形</strong>：量化多空策略继续跑赢，业绩提成继续爆发，同时股价停止上涨（SBC 重估压力消失）。这时利润可以轻松翻倍到 2 亿以上，对应 15 倍左右——就是市场给出的 15.35 倍前瞻市盈率所押注的东西。</li>
+<li><strong>变小的情形</strong>：量化策略回归平庸。<strong>业绩提成是全金融业最不稳定的收入，没有之一</strong>——它不是「今年少收点」，而是「今年一分钱没有」。一旦提成归零，营收可能从 6.7 亿掉回 5 亿出头，而成本（396 个高薪量化研究员）几乎砍不动，经营利润可能从 1.58 亿掉到 0.9 亿以下。那时按今天的市值，市盈率是 50 倍以上。</li>
+</ul>
+<p><strong>三年平均口径的 36.5 倍高于当期的 32 倍，这句话本身就是警告</strong>：意思是今天这个利润已经比过去三年的常态高了，你付的价格是按高点利润算出来的，而分母还有 36.5 倍那么厚。</p>
+<p>还有一个数字必须摆出来：<strong>股价一年涨了 93.9%，同期市盈率从 20.98 倍涨到 32.68 倍。</strong> 也就是说这一年股价翻倍里，有相当大一块不是公司多赚了钱，而是市场愿意为同样的利润多付钱了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>很贵，而且贵得不踏实。</strong></p>
+<p>生意本身是好的——396 个人、35% 的 ROIC、几乎不需要资本开支，钱一旦管进来就自动收费，这是资管业最优质的形态。但今天这个价格里塞了三件互相叠加的坏事：<strong>一是利润的增量主要来自业绩提成，那是明年可能整个消失的东西；二是股权激励吃掉了 85% 的净利润，而回购只有它的四分之一，员工分走的比股东多得多；三是 32 倍是股价一年翻倍涨出来的，三年平均口径要 36.5 倍，最保守口径 40 倍——投 100 块一年只赚 2 块 5，真正到手的还不到 1 块 1。</strong></p>
+<p>市场给的 15.35 倍前瞻市盈率等于在说「明年利润要翻一倍」。这话可能对，但那要求量化策略连续第三年跑赢、提成再爆发一次，同时股价还得别再涨（不然 SBC 又会把利润吃回去）。这是一个漂亮的生意配上了一个只有在最好情形下才说得通的价格。等业绩提成退潮那一年再看它，会便宜得多。</p>
+</div></body></html>

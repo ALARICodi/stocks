@@ -1,0 +1,356 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BCC · 博伊西瀑布（Boise Cascade Company）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BCC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">27倍是周期底部利润，三年平均只14倍，账干净回购真</div><h1>BCC · 博伊西瀑布（Boise Cascade Company）</h1>
+<p><strong>市值</strong> 28.9 亿美元 | <strong>股价</strong> $80.18 | <strong>企业价值 EV</strong> 31.3 亿美元
+<strong>行业</strong> 建材制造 + 建材批发分销（Distribution Services）
+<strong>TTM 截止</strong> 2026-06-30（最近四个季度滚动）
+<strong>流通股</strong> 3,489 万股（同比 <strong>−5.22%</strong>）| <strong>员工</strong> 7,740 人</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>美国盖一栋独栋住宅，要用掉大约 1.6 万板英尺木材、6,000 平方英尺的胶合板/定向刨花板、几十根托梁和过梁。Boise Cascade 在这条链上占了两个位置：<strong>自己造一部分木制品，然后把全行业的建材批发给建材商店。</strong> 这两件事的经济性完全不同，必须分开看。</p>
+<h3>一、木制品制造（Wood Products）—— TTM 营收 16.08 亿</h3>
+<p><strong>这件事具体是什么：</strong> 他们在美国东南部和西北部开了十几家工厂，主要造两类东西：</p>
+<p><strong>① 工程木制品（EWP，Engineered Wood Products）——这是皇冠上的珠宝。</strong>
+传统做法是拿一根实心木梁架房子，跨度大了就得加柱子。EWP 是把木头旋切成薄片（单板），涂胶、加压、层层叠成一根梁——叫 <strong>LVL（层压单板胶合木）</strong>；或者做成工字形的截面——叫 <strong>I 型托梁（I-joist）</strong>。好处很实在：一根 LVL 大梁可以跨过 30 英尺的开放式客厅不用中间立柱，而且不会像实木那样翘曲开裂，误差在毫米级。现在美国新建独栋住宅的楼板系统里，I 型托梁基本是标配。</p>
+<p><strong>怎么收钱：</strong> 卖给建材分销商和大型住宅建筑商，按线英尺或立方英尺定价。一栋 2,500 平方英尺的房子大概要用 3,000–5,000 美元的 EWP。<strong>关键在于这门生意有定价权</strong>——EWP 不是大宗商品，它有品牌、有工程认证、建筑师在图纸上会直接写型号，换供应商要重新做结构计算。北美 EWP 市场基本是 Weyerhaeuser 和 Boise Cascade 两家说了算。</p>
+<p><strong>② 胶合板和木材（Plywood &amp; Lumber）——这个就是纯大宗商品。</strong>
+把原木旋切、胶合、压制成 4×8 英尺的板子，卖给谁都一样，价格随芝加哥期货和随机长度木材报价走。今天每千平方英尺 380 美元，明年可能 280，公司完全说了不算。<strong>这块是利润波动的主要来源。</strong></p>
+<p><strong>内部循环：</strong> 木制品部门 TTM 的 16.08 亿营收里，有 <strong>11.56 亿是卖给自家的分销部门</strong>（合并报表时被抵消掉），只有约 4.5 亿是直接卖给外部客户的。这意味着这两个部门是真的绑在一起的——自家工厂的产量有一个稳定的内部出海口。</p>
+<h3>二、建材分销（Building Materials Distribution, BMD）—— TTM 营收 60.06 亿</h3>
+<p><strong>这件事具体是什么：</strong> 全美 40 多个配送中心，每个都是几十万平方英尺的仓库加一支卡车队。客户是<strong>建材零售商、专业木材场、Home Depot 和 Lowe's 这样的家装连锁、以及大型住宅建筑商</strong>。</p>
+<p>举个具体例子：俄亥俄州一家做了三十年的木材场，客户是本地几十个包工头。它不可能跟 200 家厂商分别开户、分别下单、分别管库存。它只跟 Boise Cascade 一家打交道：<strong>今天下单 20 种货——自家的 LVL、别家的屋面板、门窗、外墙板、复合地板材、五金件——明天早上一辆卡车全送到。</strong> 一单可能 3 万到 15 万美元，毛利率大概 15%，扣掉仓储、卡车、司机、销售提成之后，<strong>经营利润率只有 2%–4%</strong>。</p>
+<p><strong>为什么客户非用它不可：</strong> 不是因为便宜，是因为<strong>一车送齐 + 隔日达</strong>。木材场自己囤 200 种货要占用几百万美元的资金和一个大仓库；让 Boise Cascade 囤，它只需要保持两三天的周转量。这是典型的分销规模生意——薄利，但只要规模够大、密度够高，别人进不来。TTM 每个员工创造 83.4 万美元收入，就是这门生意的写照。</p>
+<p><strong>注意 BMD 卖的东西里只有一小部分是自家造的。</strong> 它是全品类分销商，代理别人的品牌占大头。所以这块基本没有定价权，赚的是<strong>周转和物流效率的钱</strong>，不是产品的钱。</p>
+<h3>TTM 收入与利润拆解</h3>
+<p>财报按分部披露营收，但<strong>不披露分部经营利润</strong>，下表利润列为估算（按历史分部利润率和当期整体利润推算）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比（对 FY2025）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>建材分销 BMD</td>
+<td>60.06 亿</td>
+<td>+1.1%</td>
+<td>93.0%</td>
+<td>估 ~3.0%</td>
+<td>估 ~1.85 亿</td>
+</tr>
+<tr>
+<td>木制品制造</td>
+<td>16.08 亿</td>
+<td>−0.3%</td>
+<td>24.9%</td>
+<td>估 ~1.0%</td>
+<td>估 ~0.15 亿</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>−11.56 亿</td>
+<td>—</td>
+<td>−17.9%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>总部与其他</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>估 −0.45 亿</td>
+</tr>
+<tr>
+<td><strong>合计（真实数）</strong></td>
+<td><strong>64.58 亿</strong></td>
+<td><strong>−1.52%</strong></td>
+<td>100%</td>
+<td><strong>2.42%</strong></td>
+<td><strong>1.563 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>只有最后一行是财报原数。<strong>看这张表最重要的一件事：整体经营利润率只有 2.42%。</strong> 对比一下自己的历史：FY2021 是 12.26%、FY2022 是 13.80%、FY2023 是 9.13%、FY2024 是 7.32%、FY2025 是 2.80%。<strong>利润率被压掉了五分之四。</strong></p>
+<p>原因是两头夹击：新屋开工低迷让分销量走不动（营收从 FY2022 的 83.87 亿掉到 64.58 亿，−23%），同时胶合板和木材价格跌到成本线附近，木制品部门从印钞机变成了勉强打平。<strong>这不是公司出了问题，这是周期到了底部。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节可以写得很短，因为这家公司的账几乎没什么可剥的。</strong></p>
+<h3>股权激励（SBC）：<strong>1,195 万美元，占净利润 11.3%</strong></h3>
+<p>按 GAAP 已经扣除，本文不加回。1,195 万对一家 65 亿收入的公司来说几乎是零头——<strong>这是本批三家里最干净的一项</strong>。对比 NMRK 的 SBC 是净利润的 192%，差了十七倍。</p>
+<h3>一次性项目：<strong>没有</strong></h3>
+<p>TTM 期间没有资产减值、没有重组费用、没有诉讼和解、没有投资处置损益。往前看 FY2024 有 220 万的减值，FY2025 有 93 万的投资处置损失，都是零头。<strong>这家公司的利润表就是它看起来的样子。</strong></p>
+<h3>资本化的支出：<strong>没有可疑之处</strong></h3>
+<p>没有软件开发费或内容制作费资本化的空间——它造木头和送木头。资本开支 1.725 亿全是厂房设备（新建 EWP 产线、扩建配送中心），和折旧摊销 1.655 亿基本相当，说明<strong>没有靠少提折旧来虚增利润</strong>。实际上资本开支略高于折旧，是在扩产能。</p>
+<h3>回购与稀释：<strong>回购 ÷ SBC = 17.7 —— 这是真回购</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>2.116 亿美元</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>0.120 亿美元</td>
+</tr>
+<tr>
+<td><strong>比值</strong></td>
+<td><strong>17.7 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>0.343 亿美元</td>
+</tr>
+<tr>
+<td>股本同比变化</td>
+<td><strong>−5.22%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按本文的标准，比值接近 1 说明回购只是在抵消员工发股，大于 3 才算真回馈股东。<strong>17.7 倍是压倒性的。</strong> 2.116 亿的回购相当于市值的 <strong>7.3%</strong>，加上分红 1.2%，<strong>股东实际拿到手的现金回报率约 8.5%</strong>——而且股本是真的在缩，一年少了 5.2%。</p>
+<p><strong>在利润最难看的时候大手笔回购自家股票，这个信号本身很值钱。</strong> 对比 NMRK 的 0.54 倍，两家公司对股东的态度是两个物种。</p>
+<h3>利润和现金流的差：<strong>这张表完美对上，一分钱不差</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>105.69</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>165.46</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>3.59</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>11.95</td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>22.28</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−40.13</td>
+</tr>
+<tr>
+<td>− 存货变化</td>
+<td>−0.03</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>7.12</td>
+</tr>
+<tr>
+<td>− 其他经营性净资产</td>
+<td>−0.14</td>
+</tr>
+<tr>
+<td><strong>= 合计</strong></td>
+<td><strong>275.79</strong></td>
+</tr>
+<tr>
+<td><strong>实际报告的经营现金流</strong></td>
+<td><strong>275.80</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>误差 1 万美元，纯属四舍五入。</strong> 每一分钱都能解释，没有藏在暗处的项目。这和 NMRK 那张差 3.7 亿对不上的表、以及 HOG 那张差 1.3 亿的表形成了鲜明对比。</p>
+<p><strong>唯一需要解释的是自由现金流为什么只有 1.03 亿：</strong> 经营现金流 2.758 亿 − 资本开支 1.725 亿 = 1.033 亿。资本开支里有很大一块是<strong>扩产的钱不是维持的钱</strong>——他们在路易斯安那和阿拉巴马新建 EWP 产能、扩建配送中心。折旧是 1.655 亿，如果只按维持性资本开支估（大约 0.8–1.0 亿），"主人盈余"应该在 1.8–2.0 亿左右，而不是 1.03 亿。<strong>所以 27 倍的 P/FCF 高估了真实的贵。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>28.87 亿 ÷ 1.057 亿</td>
+<td><strong>27.3 倍</strong></td>
+<td><strong>$3.66</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不做大幅调整，与 GAAP 基本一致</td>
+<td>~27 倍</td>
+<td>$3.70</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，SBC 按 GAAP 扣除不加回</td>
+<td><strong>27.3 倍</strong></td>
+<td><strong>$3.66</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>28.87 亿 ÷ 1.033 亿</td>
+<td>27.9 倍</td>
+<td>$3.58（含扩产资本开支，偏保守）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>31.32 亿 ÷ 1.563 亿（税前）</td>
+<td><strong>20.0 倍</strong></td>
+<td>$5.00（税前）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>28.87 亿 ÷ 三年均值 2.050 亿</td>
+<td><strong>14.1 倍</strong></td>
+<td><strong>$7.09</strong></td>
+</tr>
+<tr>
+<td>市场预期口径（前瞻 PE）</td>
+<td>分析师给的明年利润</td>
+<td>18.1 倍</td>
+<td>$5.53</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均净利润：FY2024 3.764 亿、FY2025 1.328 亿、TTM 1.057 亿，均值 <strong>2.050 亿</strong>。（如果把 FY2022 的 8.577 亿也算进来，四年均值是 3.68 亿，对应市盈率只有 7.8 倍——但那是木材泡沫年，不该当基准。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按当期真实利润算，公司一年替你赚 3.66 元；按三年平均利润算，是 7.09 元。</strong></p>
+<p><strong>这是全篇最关键的一句话，而且它的方向和大多数公司相反：三年平均口径比当期口径便宜一倍。</strong> 大部分公司是当期利润在高点、三年平均把它拉回现实（比如 NVDA 当期 34 倍、三年平均 73.5 倍）。Boise Cascade 是反过来的——<strong>当期 27.3 倍、三年平均 14.1 倍，说明你现在看到的这个利润是周期底部的利润，不是常态。</strong></p>
+<p>ROE 的轨迹把这件事讲得更直白：FY2021 <strong>64.67%</strong> → FY2022 <strong>50.29%</strong> → FY2023 22.74% → FY2024 17.32% → FY2025 6.29% → TTM <strong>5.06%</strong>。ROIC 从 69.06% 掉到 4.96%。这不是一家生意变坏的公司，这是一家<strong>周期从天堂掉到地板</strong>的公司。（当然，2021–2022 那个 60%+ 的 ROE 也是泡沫，不该当基准。中周期大概在 15%–20%。）</p>
+<p>这 3.66 元里有多少回到你口袋？TTM 分红 0.343 亿 + 回购 2.116 亿 = <strong>2.459 亿</strong>，比当期净利润 1.057 亿还多 1.3 倍——<strong>他们在动用账上的现金回购</strong>（现金从 FY2024 的 7.13 亿降到现在的 3.05 亿）。这在周期底部是聪明的做法：用便宜的价格买回自己的股票，等周期回来，剩下的股东每人分到的更多。风险是如果底部拖得更久，弹药会打光。</p>
+<p><strong>这个 3.66 元未来是变大还是变小？大概率变大，而且弹性很高。</strong> 理由：
+1. 收入只需要恢复到 FY2023 的水平（68.38 亿，比现在高 6%），按当时 9.13% 的经营利润率，经营利润就是 6.24 亿——是现在 1.563 亿的 <strong>4 倍</strong>。这门生意的经营杠杆极高，因为分销的固定成本（仓库、卡车、人）已经摆在那儿了。
+2. 股本每年缩 5%，同样的利润分给更少的人。
+3. 新建的 EWP 产能会在需求回来时才开始贡献。</p>
+<p><strong>风险也很实在：</strong> 美国新屋开工受制于按揭利率和房价可负担性，什么时候回来没人知道；周期底部可能拖三年。而且大宗商品那半边（胶合板、木材）<strong>永远没有定价权</strong>——2021 年那种利润是价格泡沫送的，不会常态化。前瞻市盈率 18.1 倍说明市场已经在给一部分复苏定价了，你不是第一个想到这件事的人。</p>
+<p>净负债只有 2.44 亿（Net Debt/EBITDA 仅 <strong>0.76 倍</strong>），流动比率 2.71，<strong>资产负债表足够撑过一个漫长的底部</strong>。这是判断周期股最重要的一件事，这家公司过关了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>周期底部的干净公司，付的是底部利润的 27 倍、中周期利润的 14 倍——不算便宜，但也不算亏。</strong></p>
+<p>账本干净得罕见：现金流对账一分不差、没有一次性项目、SBC 只占净利润 11%、回购是 SBC 的 17.7 倍且股本真的在一年缩 5.2%。净负债只有 0.76 倍 EBITDA，撑得住底部再拖两三年。生意本身也站得住：EWP 有真定价权，分销靠规模和隔日达锁住几千家木材场。</p>
+<p>问题只有一个，而且不是公司的问题：<strong>你买的是一张对美国新屋开工回暖的门票，而这张票市场已经开始定价了</strong>（前瞻 18 倍）。如果按揭利率明年降下来、开工数回到常态，经营杠杆会让利润翻几倍；如果再拖三年，你在 27 倍的位置上要干等很久。</p>
+<p><strong>不是白捡的便宜，但在周期底部买一家账干净、还在猛回购、扛得住的公司，价格是公道的。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截止 2026-06-30。分部经营利润为估算，财报只披露到分部营收。分析日期 2026-08-19。</em></p>
+</div></body></html>

@@ -1,0 +1,460 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HOG · 哈雷戴维森（Harley-Davidson, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HOG</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">14倍是走掉的利润，明年20倍；回购的钱来自卖贷款簿</div><h1>HOG · 哈雷戴维森（Harley-Davidson, Inc.）</h1>
+<p><strong>市值</strong> 28.7 亿美元 | <strong>股价</strong> $27.23 | <strong>企业价值 EV</strong> 38.7 亿美元
+<strong>行业</strong> 耐用消费品（重型摩托车制造 + 消费信贷）
+<strong>TTM 截止</strong> 2026-06-30（最近四个季度滚动）
+<strong>流通股</strong> 1.041 亿股（同比 <strong>−9.96%</strong>）| <strong>员工</strong> 5,500 人
+<strong>市净率 0.91 倍 · 有形账面市净率 0.93 倍 · 空头占流通股 17.53%</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>哈雷是一家<strong>摩托车公司 + 一家小型消费金融公司</strong>的组合，而且这个组合正在被拆掉。这件事是理解这家公司当下所有数字的钥匙。</p>
+<h3>一、摩托车整车（Motorcycles）—— TTM 营收 27.00 亿，占 63.7%</h3>
+<p><strong>这件事具体是什么：</strong> 造大排量巡航摩托车，卖给北美经销商。核心产品是 Softail、Touring 两个系列——一台 Road Glide 售价 2.6 万美元起，顶配 Ultra Limited 超过 3 万美元；入门的 Nightster 大约 1.2 万美元。<strong>买哈雷的人不是为了通勤</strong>，是为了周末骑出去、为了那个 V 型双缸的排气声、为了车身上的那个盾牌标志。这是一个<strong>身份认同产品</strong>，不是交通工具。</p>
+<p><strong>怎么收钱：</strong> 哈雷不直接卖给消费者。它把车批发给全球约 1,300 家授权经销商（北美约 550 家），经销商加价卖给骑手。所以哈雷报表上的"营收"是批发价，大约是零售价的 75%–80%。一台零售 2.6 万美元的 Road Glide，哈雷可能确认 2.0 万美元收入，成本 1.4 万，毛利 6 千。</p>
+<p><strong>这块的问题，一句话说完：营收从 FY2023 的 37.99 亿掉到 TTM 的 27.00 亿，三年少了 29%。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>摩托车营收（亿美元）</td>
+<td><strong>27.00</strong></td>
+<td>26.58</td>
+<td>31.37</td>
+<td>37.99</td>
+</tr>
+</tbody>
+</table></div>
+<p>原因不神秘：<strong>哈雷的核心买家在变老</strong>。北美重型摩托车的典型买家年龄从 1990 年代的 35 岁涨到现在的 50 多岁，而年轻人既不学骑手动挡摩托车，也不觉得那个牌子代表自由。哈雷试过入门车型、试过电动、试过运动车，都没能把年龄曲线掰回来。加上美国高利率环境让一台两万多美元的"玩具"变成很容易推迟的消费。</p>
+<h3>二、零配件、服装、授权（P&amp;A / Apparel / Licensing）—— TTM 营收 9.13 亿，占 21.5%</h3>
+<p><strong>这件事具体是什么：</strong> 骑手买了车之后还会不停花钱。<strong>零配件</strong>（TTM 6.03 亿）：改排气管、换把手、装行李箱、买机油和刹车片，一个哈雷车主一年在配件上花几百到几千美元；<strong>服装</strong>（TTM 2.17 亿）：皮夹克、头盔、T 恤，很多是不骑车的人买的；<strong>品牌授权</strong>（TTM 0.25 亿）：把盾牌标志授权给别人做玩具、酒杯、打火机，纯收版税，几乎零成本。</p>
+<p><strong>这是全公司最好的一块生意</strong>——毛利率远高于整车，而且不需要建工厂。问题是它<strong>完全跟随保有量走</strong>：配件收入从 FY2023 的 6.98 亿降到 6.03 亿，服装从 2.44 亿降到 2.17 亿。<strong>车卖不动，配件和服装就跟着跌，只是慢一拍。</strong></p>
+<h3>三、哈雷金融服务 HDFS —— TTM 营收 5.96 亿，占 14.1%</h3>
+<p><strong>这件事具体是什么：</strong> 你去经销商买一台 2.6 万美元的 Road Glide，掏不出全款，就在店里现场办分期。放贷的不是银行，是哈雷自己的财务公司 HDFS：60 到 84 个月、年利率通常 8%–15%（次级客户更高）。哈雷自己发债借钱（成本 4%–5%），转手放给骑手（8%–15%），<strong>赚中间的利差</strong>；同时还卖延保和保险，赚手续费。</p>
+<p><strong>过去这是哈雷的隐形利润中心。</strong> 摩托车业务毛利再薄，HDFS 每年稳定贡献两三亿美元的经营利润。</p>
+<p><strong>但现在这块正在被拆掉。</strong> 看资产负债表就一清二楚：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM (Jun'26)</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>金融部门长期贷款（亿美元）</td>
+<td><strong>10.05</strong></td>
+<td>7.19</td>
+<td><strong>52.57</strong></td>
+<td>53.85</td>
+</tr>
+<tr>
+<td>总资产（亿美元）</td>
+<td><strong>72.46</strong></td>
+<td>80.45</td>
+<td>118.82</td>
+<td>121.41</td>
+</tr>
+<tr>
+<td>总负债（有息，亿美元）</td>
+<td><strong>23.07</strong></td>
+<td>30.54</td>
+<td><strong>70.26</strong></td>
+<td>71.96</td>
+</tr>
+<tr>
+<td>利息收入（亿美元）</td>
+<td><strong>3.55</strong></td>
+<td>6.68</td>
+<td><strong>8.91</strong></td>
+<td>8.02</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一年之内，长期贷款簿从 52.6 亿缩到 7.2 亿，总资产砍掉 40%，有息负债从 70 亿降到 23 亿。</strong> 现金流量表上对应的是：投资活动净流入 <strong>+36.02 亿</strong>（收回贷款/出售贷款簿），融资活动净流出 <strong>−34.53 亿</strong>（净还债 29.93 亿 + 回购 4.01 亿 + 分红 0.83 亿）。</p>
+<p><strong>翻译成人话：哈雷把自己的信贷部门卖了/转成了轻资产模式，把回收的三十多亿现金拿去还债和回购股票。</strong> 好处是资产负债表一下子干净了；代价是<strong>每年三亿美元级别的利息收入正在消失</strong>——利息收入从 8.91 亿掉到 3.55 亿，还在往下走。</p>
+<h3>四、LiveWire（电动摩托车）—— TTM 营收 0.31 亿，占 0.7%</h3>
+<p>单独上市的电动摩托车子公司，哈雷持大股。TTM 卖了 3,115 万美元的车——<strong>大约一千台</strong>。这块常年亏损，是个纯粹的现金黑洞。营收还在缩（FY2023 是 3,830 万）。放在这里主要是提醒：<strong>这不是增长故事，是止血对象。</strong></p>
+<h3>TTM 收入拆解</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>对 FY2024 变化</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>摩托车整车</td>
+<td>27.00</td>
+<td>−13.9%</td>
+<td>63.7%</td>
+<td>估 ~1%–3%</td>
+<td>估 ~0.5 亿</td>
+</tr>
+<tr>
+<td>零配件 P&amp;A</td>
+<td>6.03</td>
+<td>−7.5%</td>
+<td>14.2%</td>
+<td>估 ~25%</td>
+<td>估 ~1.5 亿</td>
+</tr>
+<tr>
+<td>服装</td>
+<td>2.17</td>
+<td>−8.7%</td>
+<td>5.1%</td>
+<td>估 ~10%</td>
+<td>估 ~0.2 亿</td>
+</tr>
+<tr>
+<td>授权 + 其他 HDMC</td>
+<td>0.93</td>
+<td>−2.5%</td>
+<td>2.2%</td>
+<td>估 ~60%</td>
+<td>估 ~0.55 亿</td>
+</tr>
+<tr>
+<td><strong>HDFS 金融</strong></td>
+<td><strong>5.96</strong></td>
+<td><strong>−42.6%</strong></td>
+<td>14.1%</td>
+<td>估 ~30%</td>
+<td>估 ~1.8 亿</td>
+</tr>
+<tr>
+<td>LiveWire 电动</td>
+<td>0.31</td>
+<td>+18.2%</td>
+<td>0.7%</td>
+<td>严重亏损</td>
+<td>估 −0.6 亿</td>
+</tr>
+<tr>
+<td>总部/抵消</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>估 −1.2 亿</td>
+</tr>
+<tr>
+<td><strong>合计（真实数）</strong></td>
+<td><strong>42.40</strong></td>
+<td><strong>−18.3%</strong></td>
+<td>100%</td>
+<td><strong>6.37%</strong></td>
+<td><strong>2.703 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>只有最后一行是财报原数。分部利润未披露，上表为估算。<strong>但即使按最宽松的估算，也能看出一件事：全公司 2.70 亿的经营利润里，接近三分之二来自"零配件 + 授权 + 金融"，摩托车主业本身几乎不赚钱。</strong> 而这三块里，金融正在被卖掉，配件跟着车走。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：<strong>3,238 万美元，占净利润 16.0%</strong></h3>
+<p>TTM 3,238 万，比 FY2023 的 8,290 万降了六成。占净利润 16%，<strong>不算重</strong>。按 GAAP 已扣除，本文不加回。这一项干净。</p>
+<h3>回购与稀释：<strong>回购 ÷ SBC = 12.4 —— 这是真回购，而且很猛</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>4.005 亿美元</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>0.324 亿美元</td>
+</tr>
+<tr>
+<td><strong>比值</strong></td>
+<td><strong>12.4 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>0.828 亿美元</td>
+</tr>
+<tr>
+<td>股本同比变化</td>
+<td><strong>−9.96%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>4.005 亿的回购相当于市值的 <strong>13.9%</strong>，加上分红 2.9%，<strong>账面上的股东回报率接近 17%</strong>。股本一年缩掉 10%（从 1.1185 亿股到 1.0407 亿股），过去五年从 1.5388 亿股缩到 1.0407 亿股，<strong>少了三分之一</strong>。</p>
+<p><strong>但必须说清楚这笔钱是从哪来的：不是主业赚的，是卖贷款簿套出来的。</strong> TTM 经营现金流是 <strong>−26 万美元</strong>（约等于零），自由现金流 <strong>−1.331 亿</strong>。回购和分红加起来 4.83 亿，全部来自那 36 亿的投资活动流入。<strong>这是一次性的弹药，打完就没了。</strong></p>
+<h3>一次性项目：<strong>利润表里没有大额一次性项目</strong></h3>
+<p>TTM 税前利润 2.879 亿 vs 经营利润 2.703 亿，非经营净额只有 +1,763 万。<strong>这说明卖贷款簿并没有产生一笔巨大的会计利得</strong>——基本是按账面价值处置的。往好处说，利润表没有被一次性收益虚胖；往坏处说，那 36 亿现金流入<strong>没有一分钱变成利润</strong>，它只是资产变现。</p>
+<p>不过现金流量表里有两个需要盯的项目：<strong>坏账计提 −2.637 亿</strong>（负数，即拨备转回）和<strong>其他经营项目 −4.998 亿</strong>。前者是贷款簿缩水后原先计提的信用损失准备被冲回；后者页面未展开，量级上和处置有关。<strong>单期口径无法判断这两项在明年会不会重复出现</strong>——但从资产端看贷款簿已经缩到 10 亿，<strong>这种规模的调整不可能再来一次</strong>。</p>
+<h3>资本化的支出：没有可疑之处</h3>
+<p>资本开支 1.328 亿，折旧摊销 1.770 亿，<strong>资本开支低于折旧</strong>。制造业里这意味着两件事：一是没有靠少提折旧美化利润，二是<strong>产能在净收缩</strong>——他们没在为增长花钱。</p>
+<h3>利润和现金流的差：<strong>净利润 2.03 亿，经营现金流约等于零</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>202.64</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>176.95</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>26.89</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>32.38</td>
+</tr>
+<tr>
+<td><strong>− 坏账拨备转回</strong></td>
+<td><strong>−263.67</strong></td>
+</tr>
+<tr>
+<td><strong>− 其他经营项目</strong></td>
+<td><strong>−499.76</strong></td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>18.28</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>126.38</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−5.18</td>
+</tr>
+<tr>
+<td>+ 其他经营性净资产</td>
+<td>55.21</td>
+</tr>
+<tr>
+<td><strong>= 小计</strong></td>
+<td><strong>−129.88</strong></td>
+</tr>
+<tr>
+<td><strong>实际报告的经营现金流</strong></td>
+<td><strong>−0.26</strong></td>
+</tr>
+<tr>
+<td>差额（页面未单列的项目）</td>
+<td>+129.62</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的两个负号加起来 −7.63 亿，是全表的主角，而它们都不是主业的经营结果，是金融部门收缩的会计尾迹。</strong></p>
+<p><strong>所以怎么看这个 −1.33 亿的自由现金流？</strong> 它既不代表哈雷的摩托车业务在烧钱，也不代表公司经营出了问题——它是"把一家小银行装在一家摩托车公司里"的分类后果。<strong>但反过来说，也别拿"这是会计噪音"当安慰</strong>：正因为过去这块噪音年年贡献真金白银的利息收入（FY2024 是 8.91 亿），现在它没了，是真的没了。</p>
+<p><strong>一个值得注意的细节：存货减少 1.264 亿。</strong> 这是好事——经销商和工厂在去库存，说明管理层在主动收缩产量匹配需求，而不是硬塞给经销商。但它也意味着<strong>未来没有存货可以再释放了</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>28.74 亿 ÷ 2.026 亿</td>
+<td><strong>14.2 倍</strong></td>
+<td><strong>$7.05</strong></td>
+</tr>
+<tr>
+<td>市面常引用的 PE</td>
+<td>股价 $27.23 ÷ 稀释 EPS $1.78</td>
+<td>15.3 倍</td>
+<td>$6.54</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司无大幅调整口径</td>
+<td>~14 倍</td>
+<td>~$7.0</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无大额真一次性项目，SBC 不加回</td>
+<td><strong>14.2 倍</strong></td>
+<td><strong>$7.05</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 −1.33 亿</td>
+<td><strong>无意义</strong></td>
+<td>⚠️ 见上文解释</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>38.65 亿 ÷ 2.703 亿（税前）</td>
+<td>14.3 倍</td>
+<td>$7.00（税前）⚠️ EV 含金融部门债务，口径不纯</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>28.74 亿 ÷ 三年均值 3.322 亿</td>
+<td><strong>8.7 倍</strong></td>
+<td><strong>$11.56</strong> ⚠️ 见下</td>
+</tr>
+<tr>
+<td><strong>市场预期口径（前瞻 PE）</strong></td>
+<td>分析师给的明年利润</td>
+<td><strong>20.6 倍</strong></td>
+<td><strong>$4.86</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均净利润：FY2024 4.554 亿、FY2025 3.387 亿、TTM 2.026 亿，均值 <strong>3.322 亿</strong>。
+市净率 <strong>0.91 倍</strong>、有形账面市净率 <strong>0.93 倍</strong>——<strong>股价低于清算式的账面净值。</strong></p>
+<h3>说人话（这一段是全篇最重要的）</h3>
+<p><strong>你现在投 100 块进去，按当期真实利润算，公司一年替你赚 7.05 元。看起来相当便宜。</strong></p>
+<p><strong>但这张表里最诚实的一行不是"三年平均"，而是"前瞻市盈率 20.6 倍"。</strong></p>
+<p>先说三年平均口径为什么这次会骗人。本文一贯用三年平均来识别"当期利润是不是高点"。对 Boise Cascade 那种<strong>周期股</strong>，三年平均比当期便宜（14 倍 vs 27 倍）是好消息——说明现在是谷底、会回来。但哈雷的三年序列是 <strong>4.55 亿 → 3.39 亿 → 2.03 亿，一条单向下滑的直线</strong>，不是围绕中枢的波动。<strong>对一条单调下降的曲线取平均，得到的不是"常态利润"，而是"过去的利润"。</strong> 8.7 倍是用已经消失的利润算出来的，不能当买入理由。</p>
+<p><strong>真正说明问题的是：前瞻市盈率 20.6 倍 &gt; 当期 14.2 倍 &gt; 三年平均 8.7 倍。</strong></p>
+<p>这三个数字排成这个顺序，只能有一个解释——<strong>市场预期利润还要继续掉</strong>。分析师给明年的每股收益大约 $1.32（$27.23 ÷ 20.55），比 TTM 的 $1.78 再降 26%。而且这还是在股本每年缩 10% 的情况下算出来的每股数——<strong>意味着他们预期的利润总额下滑幅度比 26% 更大</strong>。</p>
+<p>这 7.05 元里有多少回到你口袋？TTM 分红 0.83 亿 + 回购 4.01 亿 = <strong>4.84 亿</strong>，是当期净利润的 2.4 倍。<strong>这不是可持续的分配，这是清算式的分配</strong>——钱来自贷款簿变现的 36 亿，那笔钱已经用掉 30 亿还债、4.8 亿还给股东。<strong>这个游戏还能玩一两年，玩完就要靠摩托车本身赚钱了。</strong></p>
+<p>还有两个硬指标：<strong>ROIC 4.41%，WACC 6.59%。投入资本回报低于资金成本 2.2 个百分点。</strong> ROE 从 FY2021 的 30.40% 一路掉到 6.09%。</p>
+<p><strong>这个 7.05 元未来会变大还是变小？除非骑手回来，否则大概率变小。</strong> 摩托车营收三年 −29%、配件三年 −14%、金融利息收入一年 −47%，三条腿同时在缩。管理层做的事是对的（去库存、砍成本、卖掉资本密集的金融部门、在低于账面价的价格回购），但<strong>这些都是让下滑变得体面的动作，不是让下滑停止的动作</strong>。</p>
+<p><strong>多头的说法值得公平对待，它不是没道理：</strong> 股价 0.91 倍市净率、0.93 倍有形账面价值，公司在用真金白银每年买回 10% 的股份，账上现金 12.83 亿、有息负债降到 23.07 亿。如果摩托车销量在某个位置企稳（哪怕只是不再跌），一家能稳定赚 2 亿美元、每年注销 10% 股份的公司，在 28.7 亿的市值上不是个坏交易。<strong>空头占流通股 17.53%</strong>，说明这个赌局两边的钱都很大。</p>
+<p>但要押这一注，你赌的是"<strong>一个客户群体正在自然老去的品牌，能停止萎缩</strong>"。这不是估值问题，是需求问题，而估值便宜救不了需求。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>14 倍买的是已经走掉的利润，明年是 20 倍——便宜是折价，折价有它的理由。</strong></p>
+<p>三条腿同时在缩：摩托车三年 −29%、配件三年 −14%、金融利息收入一年 −47%。撑起当期 2.7 亿经营利润的，主要是配件、品牌授权和那个正在被卖掉的金融部门，<strong>摩托车主业本身几乎不赚钱</strong>。ROIC 4.41% 低于资金成本 6.59%，ROE 从 30% 掉到 6%。</p>
+<p>管理层的动作没有可指摘的——去库存、砍产能、把资本密集的贷款簿变现、拿钱在 0.91 倍市净率的位置每年注销 10% 的股份。账也干净：SBC 只占净利润 16%，回购是 SBC 的 12.4 倍，利润表里没有一次性收益虚胖。<strong>但这 4.8 亿的股东回报来自卖资产的一次性弹药，不是主业赚的现金</strong>（经营现金流约等于零），弹药打完就得靠摩托车本身。</p>
+<p>前瞻市盈率 20.6 倍高于当期 14.2 倍，这个倒挂就是市场的判决书：<strong>它认为利润还要再掉四分之一以上。</strong></p>
+<p><strong>这是一个在低于账面价的位置慢慢缩小的品牌。想买它，你赌的不是估值便宜，是"老龄化的客户群能被止住"——而那件事，报表上还看不到任何迹象。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截止 2026-06-30。分部经营利润为估算，财报只披露到分部营收。分析日期 2026-08-19。</em></p>
+</div></body></html>

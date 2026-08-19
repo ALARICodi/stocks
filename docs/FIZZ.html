@@ -1,0 +1,290 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FIZZ · 国民饮料公司（National Beverage Corp.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FIZZ</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账干净到SBC只有44万，16倍公道；但营收开始萎缩，75%股权在创始人手里</div><h1>FIZZ · 国民饮料公司（National Beverage Corp.）</h1>
+<p>市值 30.0 亿美元 | 当前股价 $31.48 | 行业：非耐用消费品（饮料） | TTM 截止日期：2026 年 5 月 2 日（即公司 FY2026 全年）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上，National Beverage 只披露<strong>一个报告分部</strong>——它就是个卖罐装饮料的公司，不分部门。但如果按「钱从哪来、客户为什么买」来分，它实质上是两门生意，而且这两门生意的性质完全不同。</p>
+<p><strong>下面的营收拆分是估算</strong>：公司在年报里只说「Power+ Brands 占销售额约四分之三」，没有给逐品牌的数字。我按这个口径拆，并明确标注这是估算，不是财报原文。</p>
+<h3>生意一：Power+ 品牌群（估算约占营收 75%，约 8.9 亿美元）</h3>
+<p>这一块的核心是 <strong>LaCroix 气泡水</strong>——就是那个包装花花绿绿、写着西柚/青柠/椰子口味的细高罐子。</p>
+<p>它到底是个什么东西？就是<strong>碳酸水加天然香精，零糖、零卡、零甜味剂、零钠</strong>。成本结构简单到可怕：一罐 12 盎司的 LaCroix，铝罐 + 水 + 二氧化碳 + 一点点天然香精，制造成本大概 20 美分出头；FIZZ 卖给超市和分销商大约 40 美分一罐，超市摆上货架卖 60-70 美分（一箱 12 罐零售价 5-6 美元）。所以这门生意的毛利率能做到 37%，而它几乎不需要什么资产——公司 1677 个员工，人均创收 70 万美元。</p>
+<p><strong>客户为什么非买不可？</strong> 说白了不是非买不可，是「习惯 + 认牌子」。LaCroix 在 2015-2018 年吃到了一波巨大的红利：美国人不喝可乐了但又想喝点有气的东西，LaCroix 那个复古配色的罐子在 Instagram 上莫名其妙火了，营收四年翻了一倍多。它的护城河是<strong>品牌记忆和货架位置</strong>——沃尔玛、Costco、Target 每家店的气泡水货架就那么长，LaCroix 占着最好的两三个 facing，新品牌想挤进去要付上架费、要给零售商更高的毛利。</p>
+<p>但这条护城河<strong>正在被两边夹击</strong>：一边是零售商自有品牌（Costco 的 Kirkland、沃尔玛的 Clear American、Kroger 的自有气泡水），同样是碳酸水加香精，卖一半的价钱，配方上没有任何秘密；另一边是「功能性汽水」新物种——Poppi、Olipop 这类加了益生元的汽水，2025 年百事把 Poppi 买走了，等于给了这条赛道一台分销发动机。</p>
+<p>这一块里还有两个小兄弟：
+- <strong>Rip It 能量饮料</strong>：一美元一罐的廉价能量饮料，主战场是 Dollar General 这类一元店，另一个出名的渠道是<strong>美军</strong>——伊拉克/阿富汗时期它是军队小卖部的标配。它是典型的「价格锚」生意：Monster 卖 2.5 美元，Rip It 卖 1 美元，抢的是价格敏感人群。
+- <strong>Everfresh / Mr. Pure 果汁</strong>：玻璃瓶/塑料瓶装果汁，走便利店和折扣渠道。</p>
+<h3>生意二：传统碳酸汽水（估算约占营收 25%，约 3 亿美元）</h3>
+<p><strong>Shasta</strong> 和 <strong>Faygo</strong> 这两个牌子。这是彻头彻尾的<strong>价值型生意</strong>：Faygo 是底特律的百年老汽水（红葡萄味、Rock &amp; Rye），Shasta 是西海岸的廉价可乐替代品。一箱 12 罐零售 3.5-4 美元，比可口可乐便宜一半。</p>
+<p>这门生意怎么赚钱？<strong>靠区域垄断式的老客户 + 极低的营销支出</strong>。FIZZ 基本不给 Shasta 和 Faygo 打广告，就靠货架和几十年的地区情结卖。经济不好的时候这块反而好卖——2022-2023 年通胀最凶的时候，消费者从可乐降级到 Shasta。</p>
+<p>这块的问题是<strong>它在结构性萎缩</strong>：美国人整体在少喝含糖汽水，年复合下滑个位数。FIZZ 靠涨价和成本控制把它的利润维持住，但量是往下走的。</p>
+<h3>两门生意合起来的账（TTM，截至 2026 年 5 月 2 日）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Power+ 品牌群（估算）</td>
+<td>~8.9 亿</td>
+<td>约 -1%（估算）</td>
+<td>~75%</td>
+<td>~22%（估算）</td>
+<td>~1.95 亿</td>
+</tr>
+<tr>
+<td>传统碳酸（估算）</td>
+<td>~3.0 亿</td>
+<td>约 -4%（估算）</td>
+<td>~25%</td>
+<td>~12%（估算）</td>
+<td>~0.35 亿</td>
+</tr>
+<tr>
+<td><strong>合计（财报实数）</strong></td>
+<td><strong>11.81 亿</strong></td>
+<td><strong>-1.73%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>19.49%</strong></td>
+<td><strong>2.30 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>只有最后一行是财报原文数字，上面两行的分拆和利润率都是估算</strong>——公司不按分部披露利润，我按整体利润率和产品结构倒推，请当作量级参考而不是精确数字。</p>
+<p>一句话：<strong>这是一家营收 11.8 亿、经营利润 2.3 亿、正在缓慢萎缩但极其赚钱的品牌公司。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一家的报表干净得不像话，我逐项过一遍：</p>
+<p><strong>股权激励（SBC）：几乎不存在。</strong> TTM 股权激励只有 <strong>44 万美元</strong>，占净利润 1.836 亿的 <strong>0.24%</strong>。做个对比：科技公司这个比例通常是 20%-50%。FIZZ 的管理层基本不发股票给自己。股本一年变动 <strong>-0.01%</strong>，等于纹丝不动。这一项<strong>完全没有障眼法</strong>，是我在这个任务里见过最干净的。</p>
+<p><strong>一次性项目：没有。</strong> TTM 没有重组、没有减值、没有诉讼和解、没有并购费用。投资活动现金流一整年只有 -2512 万，全部是买设备，一分钱收购都没有。</p>
+<p><strong>资本化的支出：没有。</strong> 不做软件资本化，不做内容资本化。资本开支 2514 万，占营收 2.1%，就是买灌装线和卡车。</p>
+<p><strong>回购与稀释：形式上有，实质上没有。</strong> TTM 回购 67 万美元，SBC 44 万，比值 1.5——但两个数字都小到可以忽略。FIZZ 不靠回购回馈股东，它用的是<strong>特别股息</strong>（下面单独说）。</p>
+<p><strong>利润和现金流的差：非常小，但需要一张表看清楚。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>183.65</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+22.68</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+0.44</td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>+20.43</td>
+</tr>
+<tr>
+<td>− 营运资金变化（存货 -10.41、其他净经营资产 -39.14、应收 -0.14、应付 +3.76）</td>
+<td>−45.94</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>181.25</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−25.14</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>156.11</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>净利润 1.837 亿，经营现金流 1.813 亿，两者只差 2%——<strong>利润是真的，不是账面数字</strong>。自由现金流 1.561 亿比净利润低 15%，差额就是 2514 万资本开支超出折旧的部分和营运资金占用，都是正常的。</p>
+<p><strong>真正需要说清楚的障眼法在这里：手上那 3.5 亿现金已经不在了。</strong></p>
+<p>财报显示 2026 年 5 月 2 日账上有现金及投资 <strong>3.495 亿</strong>，负债只有 5894 万，净现金 <strong>2.906 亿</strong>。所以各家网站算出来的企业价值 EV 是 27.1 亿（市值 30.0 亿减净现金）。</p>
+<p><strong>但是</strong>：公司在 <strong>2026 年 7 月 13 日除息</strong>，每股派了 <strong>3.25 美元的特别股息</strong>，按 9361 万股算，一次性掏出去约 <strong>3.04 亿美元</strong>。这笔钱是在 TTM 报告期结束之后付的，所以还没反映在上面那张资产负债表里。</p>
+<p>按现在的真实情况：现金约剩 4500 万，负债 5894 万，<strong>净现金实际上已经变成了净负债 1400 万左右</strong>。真实企业价值不是 27.1 亿，而是<strong>约 30.2 亿</strong>。所有基于 EV 的估值都要相应上调约 11%。这一条是本篇最重要的一个修正。</p>
+<p>补充一句：这不是坏事，是 FIZZ 一贯的做法。翻一下历史——FY2025（截至 2025 年 5 月）融资活动现金流是 <strong>-3.036 亿</strong>，也是一笔一模一样的 3.25 美元特别股息；FY2026 一分钱没派，攒了一年；2026 年 7 月又派一次。所以它的模式是<strong>攒两年、一次性分掉</strong>，平摊下来每年约 1.5 亿，和自由现金流 1.56 亿几乎完全吻合。<strong>它把赚到的钱基本全还给股东了</strong>，只是节奏很不规律。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值取 30.04 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>30.04 亿 ÷ 1.837 亿</td>
+<td><strong>16.4 倍</strong></td>
+<td><strong>6.11 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不发布调整后利润</td>
+<td>同上 16.4 倍</td>
+<td>6.11 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔，SBC 已按 GAAP 扣除</td>
+<td><strong>16.4 倍</strong></td>
+<td><strong>6.11 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>30.04 亿 ÷ 1.561 亿</td>
+<td>19.2 倍</td>
+<td>5.20 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT（<strong>已扣掉 7 月那笔股息</strong>）</td>
+<td>30.18 亿 ÷ 2.301 亿</td>
+<td><strong>13.1 倍</strong></td>
+<td>7.63 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>30.04 亿 ÷ 1.824 亿（FY26/25/24 平均 183.65 / 186.82 / 176.73）</td>
+<td><strong>16.5 倍</strong></td>
+<td>6.07 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行是全表最有价值的一行</strong>：三年平均口径 16.5 倍，和当期 16.4 倍<strong>几乎完全一样</strong>。这说明 FIZZ 现在的利润<strong>不是周期高点，也不是低点</strong>，就是它的常态水平。三年净利润分别是 1.767 亿、1.868 亿、1.837 亿，波动不到 6%。这种稳定度在美股里很罕见——你付的 16 倍买的是一个真实、可重复的利润，而不是某一年的运气。</p>
+<p>（网站上标的市盈率是 16.06 倍，那是用「股价 ÷ 每股收益」算的；我这里用「市值 ÷ 净利润」，两者差 2%，不影响结论。）</p>
+<p><strong>说人话：你现在投 100 块进去，按最保守的真实口径，公司一年替你赚 6.1 元。</strong></p>
+<p>这 6.1 元里，有多少真正回到你口袋？<strong>几乎全部。</strong> 公司不做收购（投资活动现金流一年只有 -2512 万，全是买设备），不搞多元化，赚的钱扣掉设备更新之后基本都攒着，攒够两年就一次性派特别股息。按每两年派 3.04 亿摊算，年化约 1.5 亿，对应市值 30 亿就是 <strong>5% 的年化现金到手率</strong>。剩下那 1 块多的差额留在公司里，主要是营运资金的自然占用。</p>
+<p>这个 6.1 元未来大概率<strong>慢慢变小</strong>，原因很直接：营收在往下走（TTM -1.73%，是多年来第一次下滑），每股收益也在往下走（-1.51%）。气泡水这个品类已经被零售商自有品牌打成了半个大宗商品，而 Poppi、Olipop 这批益生元汽水正在把年轻消费者拉走——百事 2025 年买下 Poppi 之后，这个威胁从「网红品牌」升级成了「有全国分销的对手」。FIZZ 的毛利率还稳在 37%，说明它目前还能守住定价，但<strong>量在流失</strong>。</p>
+<p>不过也别把萎缩想得太狠：分析师给的未来三年营收增速预期是 <strong>+1.80%</strong>，每股收益 +3.57%，也就是市场认为它会横着走而不是塌方。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>16 倍买一家零负债、投入资本回报率 51%、股权激励只有 44 万、赚的钱基本全分给股东的品牌公司，价格是公道的——但它的生意在缓慢缩水，而且 75% 的股权攥在创始人一个人手里，没有一个分析师覆盖它。</strong></p>
+<p>值得单独点出来的三件事：</p>
+<ol>
+<li>
+<p><strong>账干净得离谱。</strong> SBC 占净利润 0.24%，净利润和经营现金流只差 2%，三年利润波动不到 6%，没有任何一次性项目。这种公司在美股里不到 5%。投入资本回报率 51.3%、净资产收益率 34%、流动比率 4.4、Altman Z 值 13.87（越高越安全，3 以上就算稳健），财务上没有任何风险点。</p>
+</li>
+<li>
+<p><strong>它是一只「孤儿股」。</strong> 流通股只有 2368 万股，占总股本 25%——另外 75% 在创始人 Caporella 家族的控股公司手里。分析师覆盖数量：<strong>0</strong>。做空比例占流通股 <strong>18.29%</strong>。这意味着两件事：股价会因为很小的资金进出而剧烈波动（过去 52 周跌了 29.7%，其中约 9 个百分点是那笔特别股息造成的技术性下跌）；以及<strong>你作为小股东对公司没有任何影响力</strong>，特别股息什么时候派、派多少，完全看控股股东的心情。</p>
+</li>
+<li>
+<p><strong>别被 10.32% 的股息率骗了。</strong> 那是特别股息，两年才派一次，不是每年都有。真实的年化股东回报率大约是 5%，不是 10%。同时记住那笔 3.04 亿已经流出去了，公司现在已经没有净现金了。</p>
+</li>
+</ol>
+<p>买它的理由是：一个稳定、干净、高回报的现金机器，价格不贵。不买它的理由是：这个机器每年在小幅缩水，而且你没有方向盘。</p>
+</div></body></html>

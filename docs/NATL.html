@@ -1,0 +1,563 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NATL · NCR Atleos(阿特里奥斯)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NATL</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">借25亿赌现金不死,利息吃掉46%经营利润,自由现金流三年腰斩</div><h1>NATL · NCR Atleos(阿特里奥斯)</h1>
+<p><strong>市值</strong> $34.4 亿 · <strong>股价</strong> $46.52 · <strong>行业</strong> ATM 机制造、运维与自有取款网络 · <strong>TTM 截止</strong> 2026 年 6 月 30 日 · <strong>员工</strong> 20,000 人 · <strong>净负债</strong> $25.1 亿</p>
+<blockquote>
+<p>这家公司 2023 年 10 月才从老牌收银机厂商 NCR 拆分出来。NCR 一分为二:<strong>NCR Voyix</strong> 拿走零售/餐饮的收银系统,<strong>NCR Atleos</strong> 拿走 ATM 取款机这一整摊,同时<strong>背走了绝大部分债务</strong>。这个出身决定了下面所有的故事。</p>
+</blockquote>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>一句话:<strong>全世界的 ATM 取款机,要么是它造的、它修的,要么干脆就是它自己的。</strong></p>
+<p>财报分四个分部,但真正有意义的是前两个。</p>
+<h3>生意一:自助银行(Self-Service Banking)—— 卖机器 + 修机器,占 67%</h3>
+<p>TTM 收入 <strong>$29.64 亿</strong>。客户是银行和信用社。这门生意有四层收入,层层递进:</p>
+<p><strong>(a) 卖硬件</strong></p>
+<p>美国中西部一家有 300 家分行的区域银行,机器用了 12 年该换了。它找 Atleos 下单:
+- 基础款<strong>取款机</strong>(只能吐钱、查余额)一台约 <strong>$25,000</strong>;
+- 带存款功能的<strong>存取一体机</strong>(能识别支票、点钞、当场入账)约 <strong>$40,000</strong>;
+- 顶配的<strong>互动柜员机 ITM</strong>(带摄像头和话筒,客户按一下就能视频连线到几百公里外总部的真人柜员,办开户、贷款咨询这些原本必须进网点的业务)约 <strong>$60,000–70,000</strong>。</p>
+<p>这家银行换 300 台,一张订单就是 <strong>$1,200 万</strong>左右。ITM 是这几年最重要的产品——因为它是银行<strong>关掉实体网点</strong>的替代方案。一个实体网点一年的人力和租金要 $80–120 万,换成 6 台 ITM,一次性投入 $40 万,之后每年只要维护费。银行关网点的动力有多强,ITM 的销量就有多好。</p>
+<p><strong>(b) 卖软件</strong></p>
+<p>机器上跑的操作系统、交易处理软件,还有一个更值钱的东西:<strong>多厂商软件</strong>(multi-vendor software)。一家银行的机房里往往同时有 Diebold、Hitachi、Atleos 三家的机器,每家一套后台,运维是噩梦。Atleos 卖一套软件,让三家的机器在同一个界面上管。<strong>按机器台数每年收授权费</strong>,一台每年几百美元。这块黏得死死的——换掉它要重新做全网的兼容测试和监管认证。</p>
+<p><strong>(c) 修机器(这块最大也最稳)</strong></p>
+<p>凌晨两点,堪萨斯州某超市门口的 ATM 卡钞了。Atleos 的现场工程师开车过去,拆开、清理、复位、补钞。全球 20,000 名员工里,很大一部分就是这支<strong>上门维修队伍</strong>——这是它最重的成本,也是最难被复制的资产:你可以设计出更好的 ATM,但你没法在两年内建起一支能在全美任何一个县城两小时内到场的队伍。</p>
+<p>收费方式:<strong>按台按年签合同</strong>,根据响应时间承诺(4 小时到场 vs 次日到场),一台一年 <strong>$1,500–4,000</strong>。</p>
+<p><strong>(d) ATM 即服务(ATM-as-a-Service)—— 公司押注的方向</strong></p>
+<p>这是把上面三层打包成订阅:银行<strong>不再买机器</strong>。Atleos 出钱买机器、放在银行门口、负责装钞、负责维修、负责合规审计、负责网络安全,<strong>银行每月按台付一笔固定费用</strong>(约 $1,200–2,000/台/月)。</p>
+<p>对银行:资本开支变经营开支,不用养 ATM 团队,不用操心监管。
+对 Atleos:一次性的硬件收入变成十年期的经常性收入,利润率更高、更稳。</p>
+<p><strong>但代价是——机器的钱由 Atleos 先垫。</strong> 这一条,是后面第二部分那个巨大窟窿的源头。</p>
+<h3>生意二:自有网络(Network)—— 占 29%,利润最厚的一块</h3>
+<p>TTM 收入 <strong>$12.64 亿</strong>。这块是 2021 年花 <strong>$23.46 亿现金</strong>收购 Cardtronics 买来的(现金流量表上"现金收购 −2,346"那一行就是它)。</p>
+<p>Atleos <strong>自己拥有并运营大约 8 万台 ATM</strong>,不放在银行门口,放在便利店、药店(CVS、Walgreens)、加油站、超市里。它靠两种方式收钱:</p>
+<p><strong>(a) 向取款人直接收手续费(surcharge)</strong></p>
+<p>一个人手里拿的是某家小银行的卡,走到 7-Eleven 里的 Atleos 机器前取 60 美元。屏幕弹出:"本机收取 $3.50 手续费,是否继续?" 他按了确认。这 $3.50 里,Atleos 拿大头,便利店老板分一小份(店主愿意放这台机器,是因为取了钱的人有 30% 概率会在店里买点东西)。</p>
+<p><strong>(b) 向银行和金融科技公司收"免费网络"接入费(Allpoint 网络)</strong></p>
+<p>这才是真正精妙的一块。想象 Chime、Varo 这类<strong>一家实体网点都没有的手机银行</strong>,或者一家只有 4 个网点的小信用社。它们的客户也要取现金。于是它们和 Atleos 签约,加入 <strong>Allpoint 网络</strong>——客户在全美任何一台 Allpoint 机器上取款,<strong>屏幕上不收手续费</strong>,而是由这家银行按每笔交易付给 Atleos 大约 <strong>$1.00–1.50</strong>。</p>
+<p>对一家手机银行来说,这是它能给出"全美 8 万台 ATM 免费取现"承诺的唯一办法,成本远低于自建。对 Atleos 来说,这是<strong>纯软件式的收入</strong>——机器已经在那儿了,多跑一笔交易的边际成本接近零。</p>
+<p><strong>这门生意的经济特征是全公司最好的:资产已经沉没,每多一笔交易几乎全是利润。</strong></p>
+<p><strong>但它有一个致命的结构问题,数字说得很清楚:</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>Network 分部收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021(Cardtronics 只并表半年)</td>
+<td>$6.00 亿</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>$11.98 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$12.66 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$12.84 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$12.65 亿</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$12.64 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年了,一动不动。</strong> 2023 年见顶之后就横在那里,甚至微跌。原因不用猜:<strong>人们用现金越来越少。</strong> 手机支付、刷卡、Zelle、Venmo 每替代一次现金交易,就少一次取款,少一笔 $3.50。Atleos 靠涨手续费和拉更多金融科技客户勉强对冲住了交易量的下滑——<strong>打成了平手,没打赢。</strong></p>
+<h3>生意三 &amp; 四:T&amp;T 与其他 —— 占 4.3%,在关停中</h3>
+<p><strong>T&amp;T(电信与技术服务)</strong>:从老 NCR 继承的遗产业务,替别人维护别人的设备。$2.53 亿(FY21)→ $2.19 亿 → $1.96 亿 → $1.94 亿 → $1.68 亿 → <strong>TTM $1.65 亿</strong>,年年缩。</p>
+<p><strong>其他</strong>:$1.18 亿 → … → FY2025 $0.40 亿 → <strong>TTM $0.26 亿</strong>,基本卖光了。</p>
+<p>这两块加起来不到 5%,方向是清晰的:<strong>收缩,把资源集中到前两块。</strong> 这是对的决定。</p>
+<h3>钱的分布(TTM,截止 2026-06-30,单位:百万美元)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比(vs FY2025)</th>
+<th>占比</th>
+<th>经营利润率(估算)</th>
+<th>贡献利润(估算)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自助银行</td>
+<td>2,964</td>
+<td><strong>+2.9%</strong></td>
+<td>67.1%</td>
+<td>约 12%</td>
+<td>约 356</td>
+</tr>
+<tr>
+<td>自有网络</td>
+<td>1,264</td>
+<td><strong>−0.1%</strong></td>
+<td>28.6%</td>
+<td>约 22%</td>
+<td>约 278</td>
+</tr>
+<tr>
+<td>T&amp;T</td>
+<td>165</td>
+<td>−1.8%</td>
+<td>3.7%</td>
+<td>约 5%</td>
+<td>约 8</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>26</td>
+<td>−35%</td>
+<td>0.6%</td>
+<td>约 0%</td>
+<td>约 0</td>
+</tr>
+<tr>
+<td>未分摊的公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −60</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,419</strong></td>
+<td><strong>+3.7%</strong></td>
+<td>100%</td>
+<td><strong>13.17%(实际)</strong></td>
+<td><strong>582(实际)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>分部利润是估算。</strong> 财报只按分部披露营收。上表按两块业务的资产密集度和行业惯例推算,并使各项之和吻合实际经营利润 $5.82 亿。</p>
+</blockquote>
+<p><strong>整体毛利率在缓慢改善:22.2%(FY22)→ 22.2% → 23.7% → 24.4% → 25.35%(TTM)。经营利润率从 5.0% 爬到 13.17%。</strong> 这是真实的进步——拆分之后砍掉了老 NCR 摊下来的成本,关掉了低毛利的边角业务。<strong>营业层面,这家公司是在变好的。</strong> 问题不在这里,在下面。</p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<h3>股权激励(SBC):$3,400 万,占净利润 17.3%</h3>
+<p>TTM $3,400 万,而净利润只有 $1.96 亿——<strong>占 17.3%</strong>,不算离谱但也不小。好消息是这个数字在<strong>下降</strong>:FY2021 是 $8,200 万、FY2022 $6,600 万、FY2023 $6,800 万,拆分后降到 $3,800 万、$3,400 万。按 GAAP 已经如实扣在利润里了,我不加回。</p>
+<h3>一次性项目:TTM 干净,但历史上很脏</h3>
+<p>TTM 只有一笔 <strong>$700 万的资产处置收益</strong>(是个收益,要减掉,不是加回)和 $300 万的股权投资亏损。</p>
+<p>但看看拆分那一年:<strong>FY2023 净亏损 $1.50 亿</strong>,经营利润 $2.41 亿却亏成这样,中间是几亿美元的拆分费用、债务重组成本和减值。FY2024 净利润才 $0.80 亿。<strong>这家公司的报表要到 FY2025 才开始"正常"。</strong></p>
+<p><strong>单看 TTM 这一期无法判断的问题是:$700 万的资产处置收益和 FY2025 的 $3,200 万,算不算"年年都有的一次性"?</strong> 从 FY2024 起连续三年都有卖资产的收益(2、−32、−7,负号在现金流里表示收益),说明公司在持续变卖非核心资产补现金。<strong>这不是一次性,是一项正在进行的处置计划。</strong></p>
+<h3>资本化的支出:两处</h3>
+<ul>
+<li><strong>资本开支 $1.20 亿</strong>(FY2025 $1.17 亿)</li>
+<li><strong>购买无形资产 $3,400 万</strong>(基本是资本化的软件开发)</li>
+</ul>
+<p>关键比值:<strong>资本开支 + 无形资产 = $1.54 亿,而折旧摊销高达 $2.78 亿,只有 0.55 倍。</strong></p>
+<p>正常公司这个比值应该接近 1。0.55 倍有两种可能:一是<strong>在吃老本、少投入以美化现金流</strong>;二是<strong>折旧摊销里有一大块是收购 Cardtronics 时形成的无形资产摊销</strong>,那部分本来就不需要用现金去"重置"。</p>
+<p>这里主要是第二种。但要小心它带来的后果:<strong>正因为如此,公司报出来的"调整后 EBITDA $8.60 亿"看起来非常漂亮,而实际自由现金流只有 $1.59 亿——两者差了 5.4 倍。</strong> 下面就来拆这个差。</p>
+<h3>回购与稀释:回购了 $6,200 万,股本反而涨了 1.07%</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>$6,200 万</td>
+</tr>
+<tr>
+<td>股权激励(SBC)</td>
+<td>$3,400 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>1.8 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化(同比)</td>
+<td><strong>+1.07%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>规格里说"接近 1 说明回购只是在抵消员工发股,大于 3 才是真回购"。<strong>Atleos 是 1.8 倍,而且做完之后股本还是净增加了 1.07%。</strong></p>
+<p>也就是说,那 $6,200 万现金<strong>一分钱也没有落到老股东的每股价值上</strong>,全部用来填员工行权造成的稀释,还没填满。这不是回馈股东,这是<strong>发工资的一种形式</strong>。</p>
+<p>对一家净负债 $25.1 亿、利息覆盖倍数只有 2.25 的公司来说,拿 $6,200 万去做这种回购,而不是去还债,是可以质疑的资本配置。</p>
+<h3>利润和现金流的差:这是全篇最重要的一张表</h3>
+<p><strong>净利润 $1.96 亿,经营现金流 $2.79 亿,自由现金流只剩 $1.59 亿。</strong> 逐项对账(单位:百万美元):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>196</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+278</td>
+</tr>
+<tr>
+<td>+ 股权激励(非现金)</td>
+<td>+34</td>
+</tr>
+<tr>
+<td>− 资产处置收益(非现金收益,减掉)</td>
+<td>−7</td>
+</tr>
+<tr>
+<td>+ 股权投资亏损</td>
+<td>+3</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>−18</td>
+</tr>
+<tr>
+<td><strong>小计:非现金调整后的"经营性利润"</strong></td>
+<td><strong>486</strong></td>
+</tr>
+<tr>
+<td><strong>营运资金变动:</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应收账款减少(收回了账款)</td>
+<td>+45</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−25</td>
+</tr>
+<tr>
+<td>+ 应付账款增加(晚付供应商)</td>
+<td>+10</td>
+</tr>
+<tr>
+<td>+ 预收账款增加</td>
+<td>+15</td>
+</tr>
+<tr>
+<td><strong>− 其他经营性净资产增加</strong></td>
+<td><strong>−253</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营活动现金流</strong></td>
+<td><strong>279</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−120</td>
+</tr>
+<tr>
+<td><strong>= 报表口径自由现金流</strong></td>
+<td><strong>159</strong></td>
+</tr>
+<tr>
+<td>− 购买无形资产(资本化软件)</td>
+<td>−34</td>
+</tr>
+<tr>
+<td><strong>= 真正剩下的现金</strong></td>
+<td><strong>125</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>那笔 −$2.53 亿的"其他经营性净资产增加",是这份报表里最需要盯的一个数字。</strong> 它一个人就吃掉了本该有的一半现金流。</p>
+<p>它是什么?财报页不细分,但结合业务能推断出方向:<strong>ATM 即服务(AaaS)的转型要求 Atleos 自己出钱把机器买下来放到客户门口</strong>,同时<strong>自有的 8 万台 ATM 里要压着大量的"库存现金"</strong>(机器里必须随时有钱可取,这笔钱在会计上是公司的资产,但你一分也动不了)。网络铺得越开、AaaS 客户签得越多,压着的钱就越多。</p>
+<p><strong>关键判断:这到底是一次性的铺设投入,还是这门生意的长期资本要求?</strong> 看趋势:营运资金变动 FY2023 是 +$1.04 亿(释放现金)、FY2024 −$0.67 亿、FY2025 −$0.86 亿、<strong>TTM −$2.08 亿</strong>——<strong>连续三年恶化,而且在加速。</strong> 这不像一次性,更像 AaaS 商业模式本身在吞钱。</p>
+<p>结果就是自由现金流的这条曲线:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自由现金流(百万)</td>
+<td>369</td>
+<td>216</td>
+<td>247</td>
+<td>257</td>
+<td>239</td>
+<td><strong>159</strong></td>
+</tr>
+<tr>
+<td>自由现金流利润率</td>
+<td>10.40%</td>
+<td>5.23%</td>
+<td>5.90%</td>
+<td>5.97%</td>
+<td>5.49%</td>
+<td><strong>3.60%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营业利润在稳步改善(经营利润率 5.0% → 13.2%),现金流却在稳步恶化。</strong> 这两条线朝相反方向走,是财报里最值得警惕的信号之一。</p>
+<h3>还有一个刺眼的细节:实际交的税是账上税的 2.4 倍</h3>
+<ul>
+<li>利润表上的<strong>所得税费用:$3,500 万</strong>(有效税率 15.02%)</li>
+<li>现金流量表上<strong>实际交出去的税:$8,300 万</strong></li>
+</ul>
+<p><strong>实缴是账面的 2.4 倍。</strong> 这说明报表上那个 15% 的低税率,是靠递延所得税资产、税务亏损结转这类<strong>账面调整</strong>做出来的,不是真的少交了钱。换句话说,<strong>$1.96 亿的净利润里,有一部分是税务会计变出来的,不是赚出来的。</strong> 用真实现金税率重算,净利润要低大约 $4,800 万,变成 $1.48 亿——<strong>真实市盈率要从 17.5 倍变成 23.2 倍。</strong></p>
+<h3>债:这是理解这只股票的钥匙</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总债务</td>
+<td><strong>$29.43 亿</strong></td>
+</tr>
+<tr>
+<td>现金</td>
+<td>$4.29 亿</td>
+</tr>
+<tr>
+<td><strong>净债务</strong></td>
+<td><strong>$25.14 亿</strong></td>
+</tr>
+<tr>
+<td>净债务 / 市值</td>
+<td><strong>73%</strong></td>
+</tr>
+<tr>
+<td>债务 / EBITDA</td>
+<td>3.18 倍</td>
+</tr>
+<tr>
+<td><strong>利息覆盖倍数</strong></td>
+<td><strong>2.25 倍</strong></td>
+</tr>
+<tr>
+<td><strong>TTM 实付利息</strong></td>
+<td><strong>$2.68 亿</strong></td>
+</tr>
+<tr>
+<td>净资产(账面)</td>
+<td>仅 $4.64 亿</td>
+</tr>
+<tr>
+<td>债务 / 净资产</td>
+<td><strong>6.34 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这 $29 亿债务是拆分时"分家"分给它的</strong>——老 NCR 把 ATM 业务和大部分债务一起打包扔了出来。</p>
+<p><strong>$2.68 亿的年利息,吃掉了 $5.82 亿经营利润的 46%。</strong> 也就是说,这家公司<strong>每赚 100 块经营利润,先给债主 46 块,再给税务局一点,剩下的才轮到股东。</strong></p>
+<p>TTM 净还债 $1.23 亿。按这个速度,$25.14 亿净债务要还 <strong>20 年</strong>。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<p>企业价值 EV = 市值 $34.38 亿 + 净债务 $25.14 亿 = <strong>$59.52 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>$34.38 亿 ÷ $1.96 亿</td>
+<td><strong>17.5 倍</strong></td>
+<td><strong>$5.71</strong></td>
+</tr>
+<tr>
+<td>公司/分析师的前瞻口径</td>
+<td>前瞻市盈率(多为调整后 EPS)</td>
+<td><strong>9.3 倍</strong></td>
+<td>$10.72</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>减去 $700 万处置收益(税后约 $600 万),SBC 按 GAAP 已扣不加回</td>
+<td><strong>18.1 倍</strong></td>
+<td>$5.52</td>
+</tr>
+<tr>
+<td><strong>按实缴现金税率重算的市盈率</strong></td>
+<td>$34.38 亿 ÷ $1.48 亿(用 $8,300 万实缴税替代 $3,500 万账面税)</td>
+<td><strong>23.2 倍</strong></td>
+<td><strong>$4.31</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径</strong></td>
+<td>$34.38 亿 ÷ $1.59 亿</td>
+<td><strong>21.6 倍</strong></td>
+<td>$4.63</td>
+</tr>
+<tr>
+<td><strong>扣掉资本化软件后的现金口径</strong></td>
+<td>$34.38 亿 ÷ $1.25 亿</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>$3.64</strong></td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td>$59.52 亿 ÷ $5.82 亿</td>
+<td><strong>10.2 倍</strong></td>
+<td>$9.78</td>
+</tr>
+<tr>
+<td><strong>企业价值 / EBITDA</strong></td>
+<td>$59.52 亿 ÷ $8.60 亿</td>
+<td><strong>6.9 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>$34.38 亿 ÷(TTM $1.96 + FY25 $1.62 + FY24 $0.80)÷3 = $1.46 亿</td>
+<td><strong>23.5 倍</strong></td>
+<td><strong>$4.25</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>这张表里藏着整只股票的全部矛盾</h3>
+<p><strong>看左半边,这是全市场最便宜的股票之一:</strong> 前瞻市盈率 9.3 倍、EV/EBITDA 6.9 倍、市销率 0.77 倍、EV/EBIT 10.2 倍。任何一个用筛选器找便宜货的人,都会被它跳出来。</p>
+<p><strong>看右半边,它一点都不便宜:</strong> 按实际交的税重算是 23.2 倍;按真正剩下的现金算是 27.5 倍;按三年平均利润算是 23.5 倍。</p>
+<p><strong>这两个半边的差额,几乎全部来自三件事:</strong></p>
+<p><strong>1. EV/EBIT 10.2 倍看着便宜,但那 10.2 倍是买给"整个企业"的,而你只是股东。</strong> 企业价值 $59.52 亿里,债主的部分是 $25.14 亿(42%),你买的股票只对应剩下的 58%。EBIT $5.82 亿里,债主先拿走 $2.68 亿。<strong>你实际上是在买一个杠杆后的残值。</strong></p>
+<p>杠杆有多危险,一算就明白:<strong>如果经营利润跌 20%(从 $5.82 亿到 $4.66 亿),利息还是雷打不动的 $2.68 亿,那么税前利润就从 $3.14 亿掉到 $1.98 亿——跌 37%。</strong> 经营端跌两成,股东端跌近四成。反过来也成立,涨的时候也是放大的。<strong>这只股票的波动性天然是它经营波动的 1.8 倍。</strong></p>
+<p><strong>2. 那个 9.3 倍的前瞻市盈率,建立在"现金流回到 $2.5 亿以上"这个假设上。</strong> 而 TTM 的实际自由现金流是 $1.59 亿,还在往下掉。分析师只有 4 个人在跟,共识评级是"持有",目标价 $50.27,只比现价高 9%——<strong>连他们自己都不太信那个 9.3 倍。</strong></p>
+<p><strong>3. EBITDA $8.60 亿 → 真正剩下的现金 $1.25 亿,中间蒸发了 $7.35 亿。</strong> 去向清清楚楚:利息 $2.68 亿、实缴税 $8,300 万、资本开支 $1.20 亿、资本化软件 $3,400 万、营运资金 $2.08 亿。<strong>"调整后 EBITDA"在这家公司身上是一个具有误导性的指标,不要用它来估值。</strong></p>
+<h3>你投 100 块,一年到底赚多少?</h3>
+<p><strong>按最保守的真实口径(扣掉全部投入后真正剩下的现金),$100 一年给你 $3.64。</strong></p>
+<p>这 $3.64 去了哪?</p>
+<ul>
+<li><strong>股息:$0</strong>(公司不分红)</li>
+<li><strong>回购:名义上 $1.80,但股本还是涨了 1.07%,所以对你每股价值的贡献是 $0</strong></li>
+<li><strong>还债:$3.58</strong>(TTM 净还债 $1.23 亿 ÷ 市值)</li>
+<li><strong>剩下的:留在公司里</strong></li>
+</ul>
+<p><strong>换句话说,你现在赚到的每一分钱,基本上都在替债主还钱,一分没进你口袋。</strong> 这不必然是坏事——每还掉 1 块钱债,股东权益就多 1 块钱,是一种"延迟发放的回报"。但你要清楚:<strong>这个过程要走十几年,期间你拿不到任何现金,而且一旦利率环境或经营出岔子,先受伤的是你不是债主。</strong></p>
+<h3>这个数字未来会变大还是变小?</h3>
+<p><strong>变大的理由:</strong> 拆分后的成本瘦身还在见效(经营利润率四年从 5.0% 爬到 13.2%,这是实打实的);ATM 即服务的合同在累积,一旦铺设期过去、不再需要垫资买机器,现金流会显著跳升;每还掉一笔债,利息负担就轻一点,同样的经营利润下净利润会自动增长;银行关网点的趋势没有停,ITM 的需求是真实的。</p>
+<p><strong>变小的理由:</strong> 占 29% 且利润最厚的自有网络业务<strong>已经四年零增长</strong>,而全球现金使用量的下降是结构性的、不可逆的;营运资金<strong>连续三年恶化且在加速</strong>,如果这不是一次性铺设而是 AaaS 模式的常态,那自由现金流永远回不到 $2.5 亿;$29 亿债务在到期时要按当时的利率重新借,<strong>这是一颗定时的再融资风险</strong>;实缴税率是账面税率的 2.4 倍,意味着账面利润里的水分未来会逐渐挤出来。</p>
+<p><strong>我的判断:短期(1–2 年)大概率变大</strong>——一次性的铺设投入总会结束,债务在下降,成本还在优化;<strong>长期(5 年以上)取决于一件事:现金什么时候死。</strong> 这不是一个能靠管理层努力改变的变量。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>统计上它便宜得刺眼(前瞻市盈率 9.3 倍、EV/EBITDA 6.9 倍),但那是因为你买的其实是一个背着 25 亿美元债务、利息吃掉 46% 经营利润的杠杆残值——按实际交的税和真正剩下的现金重算,它是 23–27 倍,一点不便宜;而它最赚钱的那块自有取款网络已经四年零增长,营运资金连续三年吸血且在加速,自由现金流从 $3.69 亿一路掉到 $1.59 亿。</strong> 拆分后的成本瘦身是真进步,ITM 替代实体网点的逻辑也成立,但这只股票的本质是<strong>借了 25 亿去赌"现金还能撑很多年"</strong>——赌赢了,还债的十几年里股东权益慢慢长回来;赌输了,债主的钱先走,你的先没。价格谈不上贵,但这门生意有硬伤,不属于可以放心留着观察的那一类。</p>
+</div></body></html>

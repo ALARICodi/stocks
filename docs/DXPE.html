@@ -1,0 +1,355 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DXPE · DXP Enterprises（DXP 企业）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DXPE</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">股价一年涨69%利润只涨5%,经营利润33.7%交给银行</div><h1>DXPE · DXP Enterprises（DXP 企业）</h1>
+<p><strong>市值</strong> 31.0 亿美元 · <strong>股价</strong> 约 200 美元 · <strong>行业</strong> 分销服务（工业 MRO 分销 + 泵系统制造） · <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>DXP 做<strong>三门生意</strong>：一门是开工业零件店（占 66%），一门是造成套泵系统（占 22%），一门是替客户管仓库（占 12%）。三门都围着同一件事转——<strong>让工厂里那些会转、会漏、会磨损的东西继续转下去。</strong></p>
+<p>这家公司的总部在休斯顿，3286 个员工，一年做 21.4 亿美元营收。<strong>它的增长模式不是"内生长大"，是"一家一家买回来"</strong>——这一点后面第二、第三部分会反复提到，因为它决定了这家公司的估值该怎么看。</p>
+<h3>生意一：Service Centers（服务中心）—— 工业零件的 7-Eleven</h3>
+<p><strong>这就是在全美和加拿大开了 200 多家实体门店兼仓库，卖工厂用的消耗件和维修件。</strong></p>
+<p>卖的东西具体是：轴承、机械密封、传动皮带和链条、液压件和气动件、软管和接头、电机和减速机、切削刀具、紧固件，加上安全用品（手套、护目镜、安全带、气体检测仪）。品类加起来几十万个 SKU。</p>
+<p><strong>客户是谁：</strong> 炼油厂、化工厂、食品加工厂、矿山、油田服务公司、水处理厂、造纸厂、发电厂——所有那种"厂房里有一堆机器在转"的地方。</p>
+<p><strong>具体怎么赚钱，讲一个真实场景：</strong></p>
+<p>墨西哥湾一家炼油厂，凌晨三点，一台给催化裂化装置输送渣油的离心泵机械密封漏了。这台泵停了，整条产线就得降负荷，<strong>一小时的损失是几十万美元。</strong> 值班的维修主管打电话给二十公里外的 DXP 服务中心（DXP 的门店很多就是专门贴着工业区开的），DXP 的人半夜从仓库把对应型号的机械密封拿出来——那是一个约翰克兰的碳化硅端面密封，目录价 800 美元，DXP 从厂家进价 500——两小时之内送到厂门口。</p>
+<p>DXP 在这一单上赚了 300 美元。<strong>而炼油厂完全不在乎这 300 美元</strong>，它在乎的是天亮之前泵能不能转起来。这就是这门生意的全部逻辑：<strong>客户买的不是零件，是"现在就能拿到"和"你们的人知道我该用哪一个"。</strong></p>
+<p>所以这门生意的护城河有三条腿：<strong>库存深度</strong>（几十万个 SKU 压在仓库里，这是要占用大量资金的）、<strong>送达速度</strong>（网点密度决定的）、<strong>技术人员会选型</strong>（一个泵密封选错了，装上去两周又漏，客户宁可多付钱让懂的人给建议）。毛利率大约 30%。</p>
+<p><strong>这门生意的增长怎么来的：买。</strong> 美国的工业分销行业极度分散——一个州可能有几十家做了三四十年的家族分销商，老板七十岁了想退休，儿子不想接。DXP 一年买两三家这样的公司，把它们的门店挂上 DXP 的牌子，接进 DXP 的采购体系（规模大了从厂家拿货便宜几个点，这就是并购的价值来源）。<strong>TTM 这一年，DXP 花了 1.608 亿美元现金做收购。</strong> 营收从 FY2021 的 8.17 亿涨到现在的 14.12 亿，其中一大半是买来的。</p>
+<h3>生意二：Innovative Pumping Solutions（IPS）—— 造整套泵撬</h3>
+<p><strong>这一块不是分销，是制造。</strong></p>
+<p>客户要的不是一台泵，是<strong>一整个"撬装模块"（skid）</strong>：一个钢结构底座上，泵、电机、变频器、管路、阀门、仪表、控制柜全部装好、配好线、试运行完毕，用卡车运到现场，吊装、接电、接管，就能开机。</p>
+<p><strong>具体例子：</strong> 一家中游管道公司要在二叠纪盆地新建一条原油外输管线，沿线需要六座增压站，每座要一套 3000 马力的输送泵撬。DXP 接下这个单子，在休斯顿的车间里做水力计算、选型、采购主要部件（泵可能是外购 Flowserve 或 Sulzer 的，电机是 WEG 的）、焊接底座、组装管路、装配电控、做工厂验收测试。<strong>一套卖 200 万到 500 万美元，六套就是一两千万，交付周期 6 到 12 个月。</strong></p>
+<p>除了油气，也做水处理厂的加药撬、化工厂的工艺泵组、消防泵房。</p>
+<p><strong>这块的特点是波动最大、跟油价直接挂钩。</strong> 看营收轨迹：1.396 亿（FY2021）→ 1.989 亿 → 2.036 亿 → 3.089 亿 → 3.903 亿 → <strong>4.72 亿（TTM）</strong>，五年涨了 2.4 倍。这是因为过去几年美国页岩油和天然气基础设施投资在回暖。<strong>反过来，油价一跌，这块能在一年之内掉三成——FY2021 就是这样的年份。</strong></p>
+<p>毛利率比 Service Centers 低（项目制生意，钢材和外购设备占成本大头），但项目金额大、能锁定一年多的产能。</p>
+<h3>生意三：Supply Chain Services（SCS）—— 驻厂替客户管仓库</h3>
+<p><strong>这门生意是：DXP 派自己的员工，常年住在客户的工厂里，把客户的整个 MRO 仓库接管过来。</strong></p>
+<p>采购、验收、上架、发料给维修工、盘点、跟几十家供应商谈价格和账期——全部由 DXP 的驻厂团队做。客户工厂里那个挂着"备件库"牌子的房间，里面站着的人穿的是 DXP 的工服。</p>
+<p><strong>客户为什么愿意：</strong> 一家大型食品加工厂可能有 3 万个备件 SKU、七八十个供应商、三个专职采购员。外包给 DXP 之后：只跟 DXP 一家结算（省掉几十套发票流程）、三个采购员可以裁掉或转岗、库存周转率能提高（DXP 见过几百家工厂，知道哪些件其实不用备那么多）、缺料停机的次数下降。</p>
+<p><strong>怎么收钱：</strong> 一个中型工厂的年度合同大概是 <strong>500 万美元的货品流水 + 30 万美元左右的管理费</strong>。货品这部分 DXP 按成本加一个约定的百分比（通常个位数）卖给客户，管理费是纯服务收入。</p>
+<p><strong>这块最稳定，但也最不增长</strong>：1.578 亿（FY2021）→ 2.405 亿 → 2.604 亿 → 2.564 亿 → 2.529 亿 → <strong>2.551 亿（TTM）</strong>。四年原地踏步。原因很直白——<strong>新签一个驻厂合同的销售周期是一到两年，客户换供应商的动力也很小，所以这块只能慢慢磨。</strong> 好处是收入极其可预测，坏处是它扛不起整个公司的增长。</p>
+<h3>三门生意的钱（TTM，截止 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比上一财年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Service Centers</td>
+<td>1,412</td>
+<td>+2.8%</td>
+<td>66.0%</td>
+<td>约 11%（估算）</td>
+<td>约 155</td>
+</tr>
+<tr>
+<td>Innovative Pumping Solutions</td>
+<td>471.97</td>
+<td>+20.9%</td>
+<td>22.1%</td>
+<td>约 9%（估算）</td>
+<td>约 42</td>
+</tr>
+<tr>
+<td>Supply Chain Services</td>
+<td>255.06</td>
+<td>+0.8%</td>
+<td>11.9%</td>
+<td>约 5%（估算）</td>
+<td>约 13</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,139</strong></td>
+<td><strong>+6.1%</strong></td>
+<td><strong>100%</strong></td>
+<td>8.95%（实际，扣总部费用后）</td>
+<td><strong>191.44</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（整体营收 TTM 同比 +11.47%。<strong>财报只按分部披露到营收，不披露分部经营利润</strong>，上表分部利润率是按整体 31.8% 的毛利率和三块业务的商业模式估算的，不是精确数字；三块加起来的 210 减去公司总部费用约 19，才等于实际的经营利润 191.44。）</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 618 万美元，占净利润 6.6%。</strong> 比例很低，健康。<strong>已按 GAAP 当成本扣掉，不加回。</strong> 这是一家老派的实体公司，不是靠发股票请人的科技公司。</p>
+<p><strong>一次性项目：TTM 基本没有。</strong> 资产处置损失只有 8 万美元，没有重组费用、没有减值、没有诉讼和解。<strong>但有一项 1531 万美元的"其他经营活动"非现金调整需要说明</strong>——这个金额占了净利润的 16.5%，在现金流量表里被加回，说明它是一笔计入利润表但不动现金的费用（大概率是递延所得税和收购相关的或有对价重估）。单看 TTM 一期，无法判断这是不是年年都会有；从三年的数据看（FY2024 是 −998 万，FY2023 是 −394 万，都是负的），<strong>这一项的符号年年在变，是波动项而不是趋势项。</strong></p>
+<p><strong>并购相关的无形资产摊销：TTM 437 万（"其他摊销"一行）。</strong> 卖方分析师通常会把这一项加回去，理由是"这是收购的会计影子，不是真成本"。<strong>这里不加回。</strong> 理由很直白：<strong>DXP 的增长模式就是不停地买公司，摊销的正是那些买来的客户关系在逐年消耗。</strong> 如果把摊销加回却不同时扣掉持续并购的现金支出，那是双重记账——既算了买来的收入，又不算买的成本。</p>
+<p><strong>资本化支出：没有明显问题。</strong></p>
+<p><strong>回购与稀释：TTM 回购 2397 万，SBC 618 万，比值 3.88。</strong> 这是个真回购的比值。但实际效果有限：<strong>股本一年只减少了 0.80%。</strong> 因为股价过去一年涨了 69%，同样的 2397 万能买回的股数就少了。不分红（只有 9 万美元的优先股息，可以忽略）。</p>
+<p><strong>利润和现金流的差：经营现金流比净利润高 44%，但这个"高"是被资产负债表撑出来的。</strong> 逐项对账（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>93.07</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>44.48</td>
+</tr>
+<tr>
+<td>＋ 并购无形资产摊销</td>
+<td>4.37</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>6.18</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>0.08</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>1.37</td>
+</tr>
+<tr>
+<td>＋ 其他非现金调整</td>
+<td>15.31</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−44.04</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−5.33</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>14.39</td>
+</tr>
+<tr>
+<td>− 预收账款减少</td>
+<td>−7.00</td>
+</tr>
+<tr>
+<td>＋ 应交税金变化</td>
+<td>0.89</td>
+</tr>
+<tr>
+<td>＋ 其他经营资产变化</td>
+<td>10.74</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>134.60</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−15.94</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>118.66</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>应收账款增加 4404 万，是最大的一笔流出。但这一笔<strong>不需要担心</strong>：TTM 营收增加了约 2.2 亿美元，应收账款占营收的比例本来就在 20% 左右（分销业务的账期通常 45–60 天），增量应收 4404 万 ÷ 增量营收 2.2 亿 = 20%，<strong>跟存量比例完全一致，属于正常的规模扩张占款。</strong></p>
+<p><strong>真正需要打问号的是资本开支这一行。</strong></p>
+<p>TTM 的资本开支只有 <strong>1594 万</strong>，而上一财年（FY2025）是 <strong>4029 万</strong>，前一年是 2507 万。<strong>一年之内砍掉 60%。</strong> 这直接把自由现金流从 FY2025 的 5398 万推到了 TTM 的 1.187 亿——<strong>看上去翻了一倍多，但其中有一半是"这一年少花了钱"，不是"多赚了钱"。</strong></p>
+<p>如果按 FY2025 那个正常水平的资本开支（4029 万）来算，TTM 的真实自由现金流是 <strong>9431 万</strong>，不是 1.187 亿。<strong>下面第三部分的自由现金流口径会用这个还原后的数字，因为用 1.187 亿会把这家公司看得太便宜。</strong></p>
+<p><strong>还有一笔现金流量表上最大的支出，它不在自由现金流的计算里，但它是这家公司的真实成本：TTM 花了 1.608 亿美元现金做收购。</strong> 同期净新增借款 1.896 亿。<strong>也就是说，这一年 DXP 是靠借钱在买增长。</strong> 把这 1.608 亿算进去，DXP 这一年的真实净现金流是<strong>负的 4200 万</strong>。</p>
+<p>这不一定是坏事——如果买来的公司便宜、整合得好，借钱并购是分销行业最经典的增值路径（Fastenal、Grainger、Watsco 都这么长大的）。<strong>但它意味着你看到的那个 1.187 亿自由现金流，一分钱也到不了股东手里，全部而且更多地流向了下一笔收购。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>这家公司必须看企业价值口径，因为它的债不小：市值 31.0 亿，但企业价值 37.7 亿——净负债 6.72 亿，占市值的 21.7%。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>31.0 亿 ÷ 9307 万</td>
+<td><strong>34.8 倍</strong></td>
+<td><strong>2.87 元</strong></td>
+</tr>
+<tr>
+<td>加回 SBC 与并购摊销的"调整后"</td>
+<td>31.0 亿 ÷（9307 万 + 税后 SBC 454 万 + 税后摊销 321 万）</td>
+<td>30.5 倍</td>
+<td>3.28 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>31.0 亿 ÷ 9307 万（TTM 无重大一次性项目，不加回摊销）</td>
+<td><strong>34.8 倍</strong></td>
+<td><strong>2.87 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表数）</td>
+<td>31.0 亿 ÷ 1.187 亿</td>
+<td>25.8 倍</td>
+<td>3.87 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（还原正常资本开支）</strong></td>
+<td>31.0 亿 ÷ 9431 万</td>
+<td><strong>32.9 倍</strong></td>
+<td><strong>3.04 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>37.7 亿 ÷ 1.914 亿</td>
+<td><strong>19.5 倍</strong></td>
+<td>5.12 元（税前、含债口径）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>31.0 亿 ÷ 三年平均净利 8402 万</td>
+<td><strong>36.9 倍</strong></td>
+<td><strong>2.71 元</strong></td>
+</tr>
+<tr>
+<td>（参考）五年平均利润口径</td>
+<td>31.0 亿 ÷ 五年平均净利 7377 万</td>
+<td>42.0 倍</td>
+<td>2.38 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行：TTM 9307 万、FY2025 8859 万、FY2024 7040 万，平均 8402 万。</p>
+<p><strong>多加了一行"五年平均"，因为这家公司三年平均看不出周期。</strong> 把 FY2022 的 4807 万和 FY2023 的 6872 万也算进来，五年平均只有 7377 万，对应 42 倍。<strong>再往前一年，FY2021 的净利润只有 1641 万——是现在的六分之一。</strong> 这才是这门生意的真面目：它的客户是炼油厂、油田服务商和矿山，<strong>上一轮油气资本开支周期见底的时候，DXP 的利润几乎归零。</strong></p>
+<p><strong>EV/EBIT 19.5 倍和 PE 34.8 倍差这么远，差的就是那 6.72 亿净负债和它的利息。</strong> 算给你看：TTM 经营利润 1.914 亿，实际交税 3364 万、有效税率 26.53%，反推税前利润是 1.268 亿。<strong>1.914 亿减 1.268 亿 = 6460 万，全是利息支出。</strong></p>
+<p><strong>这家公司经营层面赚的每 100 块钱里，有 33.7 块直接交给了银行。</strong> 利息保障倍数只有 2.97 倍（经营利润是利息的 2.97 倍），债务/EBITDA 是 3.46 倍，债务/股东权益 1.66 倍。<strong>这个杠杆水平在景气年份完全撑得住，但如果经营利润跌三成（对这种周期性客户结构来说，一次油气资本开支下行就够了），利息保障倍数会掉到 2 倍出头，那时候银行契约条款就要开始说话了。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块钱进 DXP，按最保守的真实口径算，公司一年替你赚 2 块 8 毛 7。按还原了正常资本开支的自由现金流算，是 3 块。按过去三年的平均利润算，2 块 7 毛 1；按五年平均（把上一轮周期的低谷算进去），只有 2 块 3 毛 8。</strong></p>
+<p><strong>这 2 块 8 里，有多少真回到你口袋？几乎没有。</strong></p>
+<p>不分红。TTM 回购只花了 2397 万，占净利润的 26%、占自由现金流（还原后）的 25%。<strong>剩下的钱去哪了？1.608 亿去买公司了，而且自己的钱不够，还借了 1.896 亿。</strong> 也就是说：你的这 2 块 8，<strong>只有 7 毛左右以回购的形式回到你手里，剩下 2 块 1 全部投进了下一轮并购</strong>，而且公司还在这个基础上又加了两倍的杠杆去投。</p>
+<p><strong>这个模式成不成立，全看买回来的东西划不划算。</strong> 检验它的指标是资本回报率：<strong>DXP 的 ROIC 是 11.65%，而它自己的加权资本成本（WACC）是 8.77%。差 2.88 个百分点。</strong> 这是正的，说明并购整体上还在创造价值——但这个价差<strong>薄</strong>。作为对比，同行业里做得最好的 Fastenal 和 Watsco，ROIC 常年在 25% 以上。<strong>DXP 每买一家公司创造的超额回报只有不到 3 个点，一旦买贵了一家、或者整合出了问题，就会变成负的。</strong></p>
+<p><strong>这个 2 块 8 未来会变大还是变小？</strong> 短期看是<strong>变大</strong>——市场一致预期的前瞻市盈率是 <strong>27.5 倍</strong>（低于当前的 34.8 倍），意味着分析师预期明年利润还要涨 27%。逻辑上说得通：IPS 那块的在手订单在涨，新买的公司明年会并表满一整年。</p>
+<p><strong>但要变大就得继续借钱买公司，而债务/EBITDA 已经 3.46 倍了。</strong> 这条路走到某个点会走不动——要么增发股票稀释你，要么放慢并购让增长掉下来。<strong>长期看，这个 2 块 8 的真正风险不是增长慢，是周期：FY2021 那一年公司净利润只剩 1641 万，同样的股价对应 189 倍市盈率。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门真实的、有价值的、但很平庸的生意，现在被按照一门优秀生意的价格在卖。</strong></p>
+<p>工业 MRO 分销本身是好行业——客户离不开、订单碎、竞争者散、整合有规模效应。DXP 也确实把它做起来了：营收五年翻了近一倍，利润五年翻了五倍多，三块业务互相有协同（服务中心的客户会买 IPS 的泵撬，SCS 驻厂之后所有备件都从服务中心走），管理层自己持股 17.16%，利益是绑在一起的。</p>
+<p><strong>但价格上没有任何余地可言：</strong></p>
+<ul>
+<li><strong>34.8 倍市盈率</strong>买一家<strong>ROIC 只有 11.65%、只比自己资本成本高 2.9 个点</strong>的公司；</li>
+<li>经营利润的 <strong>33.7% 交给了银行</strong>，债务/EBITDA 3.46 倍；</li>
+<li>赚到的钱<strong>几乎一分不还给股东</strong>，全部加杠杆投进下一轮收购；</li>
+<li>客户是炼油厂、油田和矿山，<strong>上一轮周期底部（FY2021）它的利润只有现在的六分之一</strong>；</li>
+<li>而<strong>过去 52 周股价涨了 68.96%，同期利润只从 8859 万涨到 9307 万——涨了 5%。</strong></li>
+</ul>
+<p>最后这一条是全篇的要害：<strong>这一年股价涨的 69%，几乎全部是估值扩张，不是公司挣出来的。</strong> 市场把一家杠杆型的周期性分销商，重新定价成了一家高质量的复利机器。</p>
+<p>19.5 倍的 EV/EBIT 是全表里唯一看起来还算讲道理的数字，但那是税前、含债的口径——<strong>在债务本身就是主要风险的公司身上，用一个把债务算进分子的倍数来说"不贵"，逻辑上是自相矛盾的。</strong></p>
+<p><strong>很贵。生意站得住，但这个价格是在赌下一轮周期不会来。</strong></p>
+</div></body></html>

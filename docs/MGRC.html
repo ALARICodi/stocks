@@ -1,0 +1,369 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MGRC · McGrath RentCorp（麦格拉思租赁）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MGRC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔除分手费后三年平均19.2倍=当期19倍，账最干净，但主业零增长</div><h1>MGRC · McGrath RentCorp（麦格拉思租赁）</h1>
+<p>市值 29.00 亿美元 / 股价约 118.7 美元 / 行业：设备租赁（TradingView 归类为 Finance，但它是实体租赁公司，不是金融机构，下面照常用市盈率口径）/ TTM 截止 2026-06-30（数据更新至 2026-07-29 财报）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>麦格拉思是一家<strong>把实物租出去、按月收租</strong>的公司。四门生意，各自租的东西完全不同。</p>
+<h3>一、Mobile Modular 移动模块化建筑（TTM 6.42 亿，占 69%）</h3>
+<p><strong>具体是什么</strong>：加州某个学区通过了一笔 8,000 万美元的债券，要把一所建于 1962 年的小学推倒重建。施工要两年，但 600 个孩子这两年得有教室上课。学区不会去盖临时校舍——他们打电话给麦格拉思。</p>
+<p>麦格拉思用平板车运来 12 间<strong>模块化教室</strong>（每间约 90 平米，工厂预制好的钢框架箱体），吊到临时地基上，接上电、水、暖通空调，装好无障碍坡道、消防喷淋、独立卫生间，两三周就能开学。合同一签两三年。</p>
+<p><strong>怎么收钱</strong>——这是关键，很多人只看到租金：
+- <strong>月租金</strong>：每间教室大约 600–1,000 美元/月。
+- <strong>一次性运输安装费</strong>：进场时收，一间教室大约 1.5 万–4 万美元（吊装、地基、坡道、接管线、消防验收）。
+- <strong>退场拆除费</strong>：出场时再收一次，金额相当。</p>
+<p><strong>这两头的"运输安装"费占了这个分部相当大的一块收入，而且毛利很高，因为它是硬性工程，客户没得选。</strong> 财报里麦格拉思把它单列为"租赁相关服务收入"。</p>
+<p><strong>为什么这门生意好</strong>：一间模块化教室的建造成本大约 6–9 万美元，年租金加安装费在满租时能收回成本的 20–25%，<strong>而这个箱体能用 20 年以上，中间反复出租给不同客户</strong>。用旧了卖二手还能卖出高于账面净值的价格（下一节会讲这笔钱有多大）。客户是学区、市政府、医院、施工总包——<strong>信用极好，几乎不赖账</strong>。</p>
+<p><strong>护城河是地理密度</strong>：模块化建筑体积巨大，从加州拉到德州运费能吃掉半年租金。所以这门生意是"一个都会区一个都会区打"的：你在旧金山湾区有 3 个堆场和 2,000 个箱体，别人进来要先烧几年钱建同样的密度才能跟你比响应速度。麦格拉思在加州学区这个细分市场经营了几十年，跟学区的采购流程和验收标准长在一起。</p>
+<p><strong>但它现在不长了：TTM 6.42 亿，比上年同期只多 0.3%。</strong></p>
+<h3>二、Portable Storage 便携仓储（TTM 9,365 万，占 10%）</h3>
+<p><strong>具体是什么</strong>：一家家得宝门店进了圣诞季货，仓库堆不下，租 3 个 40 尺钢制集装箱放在停车场当临时仓库，每个每月 120–200 美元。或者一个建筑工地租 2 个放工具和材料，防盗防雨。</p>
+<p>这是四门生意里最简单的：一个集装箱采购成本几千美元，几乎不用维护，租出去就是纯利润，寿命 25 年以上。<strong>但也是壁垒最低的</strong>——门槛就是有钱买箱子和有地方堆。这一块的直接对手是行业老大 WillScot Mobile Mini（市值远大于麦格拉思），竞争充分。</p>
+<p><strong>TTM 9,365 万，同比零增长。</strong></p>
+<h3>三、TRS-RenTelco 电子测试仪器租赁（TTM 1.587 亿，占 17%）</h3>
+<p><strong>具体是什么</strong>：一家做卫星通信的公司要验证新研发的射频模块，需要一台 Keysight 的频谱分析仪，新买要 9 万美元，但这个项目只做 4 个月，做完这台机器就闲置了。他们从 TRS 租，每月约 3,000 美元，4 个月 1.2 万，用完还回去。</p>
+<p>TRS 库里有几万台示波器、频谱分析仪、网络分析仪、电源、误码仪。客户是航空航天与国防承包商、通信设备商、半导体公司、电池和电动车实验室、大学。<strong>这些仪器都要定期校准</strong>，TRS 自己有校准实验室——这是壁垒的一部分，租来的仪器附带有效校准证书，客户直接能用于合规测试。</p>
+<p><strong>这是四门生意里唯一在增长的：TTM 1.587 亿，同比约 +11.7%。</strong> 增长来源大概率是 AI 数据中心的高速互联测试、国防订单、以及电池/电动车实验室扩产——这些领域的研发项目周期短、设备贵、更新快，天然适合租。</p>
+<h3>四、Enviroplex（TTM 3,844 万，占 4%）</h3>
+<p><strong>这一门不是租，是造和卖。</strong> 麦格拉思旗下的一家工厂，专门给加州学区<strong>制造并出售</strong>（不是出租）符合加州抗震和教育设施规范的模块化教室。学区拿到债券资金后有时候选择直接买断而不是租。</p>
+<p><strong>订单驱动、极度不平滑：FY2023 2,019 万 → FY2024 4,583 万 → FY2025 5,740 万 → TTM 3,844 万（同比约 −25%）。</strong> 这一块的波动几乎全部取决于加州教育债券的发行节奏。</p>
+<h3>四门生意汇总（TTM 截止 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>同比(估算)</th>
+<th>模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mobile Modular 模块化建筑</td>
+<td>642.05</td>
+<td>68.8%</td>
+<td>+0.3%</td>
+<td>租 + 安装服务费</td>
+</tr>
+<tr>
+<td>TRS-RenTelco 测试仪器</td>
+<td>158.72</td>
+<td>17.0%</td>
+<td><strong>+11.7%</strong></td>
+<td>租</td>
+</tr>
+<tr>
+<td>Portable Storage 便携仓储</td>
+<td>93.65</td>
+<td>10.0%</td>
+<td>0.0%</td>
+<td>租</td>
+</tr>
+<tr>
+<td>Enviroplex</td>
+<td>38.44</td>
+<td>4.1%</td>
+<td><strong>−25.5%</strong></td>
+<td>制造销售</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>932.86</strong></td>
+<td>100%</td>
+<td><strong>−0.92%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>同比是估算（用 FY2024/FY2025 插值倒推上年同期 TTM），看方向用，不是精确数。</p>
+</blockquote>
+<p>财报只披露到分部营收，<strong>不披露完整的分部净利润</strong>。整体毛利率 48.52%、经营利润率 25.27%；按行业常识，Portable Storage 的利润率最高（几乎没有维护成本），Enviroplex 作为制造业务最低（个位数），这是<strong>估算</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>麦格拉思的账在这批三家里是最干净的，但有一个必须点名的结构性问题。</p>
+<p><strong>股权激励 SBC：1,158 万美元，占 GAAP 净利润 1.528 亿的 7.6%。</strong> 非常克制。GAAP 已扣，不加回。</p>
+<p><strong>一次性项目：TTM 干净，但去年那一期极不干净，必须说清楚，否则你会被"三年平均"骗到。</strong></p>
+<p>看 FY2024：净利润 <strong>2.317 亿</strong>，净利率 25.44%，税前利润率 34.43%——而经营利润率只有 25.80%。<strong>税前利润比经营利润高出 7,860 万</strong>，可正常年份利息支出会让税前比经营<strong>低</strong>约 3,000 万。这中间约 <strong>1.1–1.2 亿美元的非经营性收益</strong>是哪来的？</p>
+<p>来自一桩黄掉的收购。2024 年 1 月，行业老大 WillScot Mobile Mini 宣布以每股 123 美元现金收购麦格拉思，总价约 38 亿美元。2024 年 9 月，交易因反垄断审查受阻被终止，<strong>WillScot 按协议向麦格拉思支付了 1.8 亿美元分手费</strong>。扣掉麦格拉思自己付出的交易顾问费和相关成本后，净额落在利润表里大约就是这 1.1–1.2 亿（<strong>净额是估算，公司未单独披露扣费后金额</strong>）。</p>
+<p><strong>这笔钱是彻头彻尾的一次性收入，且是天上掉的。</strong> 所以 FY2024 的 2.317 亿净利润里，大约 8,800 万（税后估算）不是这门生意赚的。下面算三年平均时我会把它剔掉。</p>
+<p><strong>TTM 这一期没有任何大额一次性项目</strong>——净利润 1.528 亿，税前 2.092 亿，经营利润 2.358 亿，差额 2,655 万正好对得上利息支出（债务 5.899 亿，利息覆盖倍数 8.34）。干净。</p>
+<p><strong>资本化支出：没有软件/研发资本化的问题。</strong> 但有一个租赁公司特有的会计特点，见下。</p>
+<p><strong>回购与稀释：TTM 回购 3,350 万 ÷ SBC 1,158 万 = 2.89 倍。</strong> 接近"真回购"的门槛，而且是明显加速的（FY2025 全年才回购 569 万，TTM 直接跳到 3,350 万）。但股本口径上<strong>一年还增加了 0.06%</strong>——因为回购集中在最近两个季度（环比 −0.69%），年度口径还没体现出来。分红 4,854 万，<strong>麦格拉思连续三十多年每年提高股息</strong>，这是它最硬的一块招牌。</p>
+<p><strong>利润和现金流的差：差得很大，但方向和原因跟前两家都不同，必须逐项对账。</strong></p>
+<p>净利润 1.528 亿，经营现金流 2.517 亿，自由现金流只有 <strong>7,622 万</strong>。中间发生了什么（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>152.83</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋折旧（自有资产）</td>
+<td>+20.66</td>
+<td>厂房、车辆、IT</td>
+</tr>
+<tr>
+<td><strong>＋租赁设备折旧</strong></td>
+<td><strong>+90.12</strong></td>
+<td><strong>箱体和仪器的折旧，走成本科目</strong></td>
+</tr>
+<tr>
+<td><strong>−卖旧设备的收益</strong></td>
+<td><strong>−47.37</strong></td>
+<td><strong>这是重点，下面单独讲</strong></td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>+11.58</td>
+<td></td>
+</tr>
+<tr>
+<td>＋坏账计提</td>
+<td>+1.47</td>
+<td></td>
+</tr>
+<tr>
+<td>＋其他经营项（含递延税）</td>
+<td>+27.56</td>
+<td></td>
+</tr>
+<tr>
+<td>−应收账款增加</td>
+<td>−7.54</td>
+<td></td>
+</tr>
+<tr>
+<td>＋预收租金增加</td>
+<td>+14.93</td>
+<td>客户预付的租金，好事</td>
+</tr>
+<tr>
+<td>＋应付账款增加</td>
+<td>+8.04</td>
+<td></td>
+</tr>
+<tr>
+<td>−存货及其他</td>
+<td>−20.59</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>251.68</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>−资本开支</td>
+<td>−175.47</td>
+<td><strong>绝大部分是买新的出租设备</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>76.22</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这里有两件事必须说清楚，否则数字会骗人。</strong></p>
+<p><strong>第一件：这家公司的"自由现金流"这个指标本身就是失真的，P/FCF 38 倍不能当真。</strong></p>
+<p>租赁公司的资本开支分两种：<strong>买新箱体扩大车队（增长性投入）</strong>和<strong>更换报废设备（维持性投入）</strong>。财报把它们合并在 1.755 亿的资本开支里。参照物是折旧：自有资产折旧 2,066 万 ＋ 租赁设备折旧 9,012 万 = <strong>1.108 亿</strong>。也就是说，如果这家公司只维持车队规模不扩张，一年只需要花约 1.108 亿，剩下的<strong>约 6,500 万是扩张性投入</strong>——那是为了明年多收租而主动花的钱，不是被迫的成本。</p>
+<p>按"只维持不扩张"口径，麦格拉思的真实自由现金流约为 <strong>2.517 亿 − 1.108 亿 = 1.409 亿</strong>，再扣掉股权激励 1,158 万，<strong>约 1.293 亿</strong>。这个数才是有意义的。</p>
+<p><strong>第二件：4,737 万的"卖旧设备收益"占了净利润的 31%，这是真钱，但它是一根拐杖。</strong></p>
+<p>麦格拉思每年会把用了十几年的模块化教室和淘汰的测试仪器卖掉，<strong>卖价高于账面净值的部分计入利润</strong>。历年金额（百万美元）：FY2021 25.44 → FY2022 37.98 → FY2023 35.26 → FY2024 44.37 → FY2025 44.19 → TTM 47.37。</p>
+<p><strong>这不是一次性收入，它年年都有而且在稳定增长</strong>，本质是"公司按会计规则计提的折旧，比这些资产真实的贬值速度更快"——多提的折旧在卖出那一刻还回来。所以它是真实的、可持续的，我不把它当障眼法剔除。</p>
+<p><strong>但它是一个风险敞口。</strong> 二手模块化建筑的价格取决于市场上有没有人在抛货。如果行业老大 WillScot 因为需求下滑开始大规模处置车队，二手价格塌下来，这 4,737 万可以在一两年内缩掉一半，<strong>直接砍掉麦格拉思净利润的 15%</strong>，而营收表上看不出任何异常。这是本篇最值得记住的一个隐藏杠杆。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 29.00 亿，<strong>净负债 5.855 亿</strong>（现金 438 万，债务 5.899 亿），企业价值 34.90 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2,900 ÷ 152.83</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>5.27 元</strong></td>
+</tr>
+<tr>
+<td>公司口径（无重大调整，与 GAAP 基本一致）</td>
+<td>2,900 ÷ 152.83</td>
+<td>19.0 倍</td>
+<td>5.27 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（TTM 无一次性项目，SBC 已扣）</td>
+<td>2,900 ÷ 152.83</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>5.27 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（会计口径，失真）</td>
+<td>2,900 ÷ 76.22</td>
+<td>38.0 倍</td>
+<td>2.63 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流（只维持车队、扣 SBC）</strong></td>
+<td>2,900 ÷ 129.3</td>
+<td><strong>22.4 倍</strong></td>
+<td><strong>4.46 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3,490 ÷ 235.76</td>
+<td><strong>14.8 倍</strong></td>
+<td>6.76 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径（GAAP 原样，被分手费污染）</td>
+<td>2,900 ÷ 180.29</td>
+<td>16.1 倍</td>
+<td>6.22 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（剔除 WillScot 分手费）</strong></td>
+<td>2,900 ÷ 约 151</td>
+<td><strong>19.2 倍</strong></td>
+<td><strong>5.21 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均这一行，这次给出的是全篇最有价值的一句话。</strong></p>
+<p>GAAP 原样的三年平均是 16.1 倍，看起来比当期 19.0 倍还便宜——<strong>但那是假的</strong>，因为 FY2024 的净利润里塞了 WillScot 那笔约 8,800 万（税后估算）的分手费。把它剔掉之后，三年平均真实净利润约 1.51 亿，对应 <strong>19.2 倍</strong>。</p>
+<p>而当期是 <strong>19.0 倍</strong>。</p>
+<p><strong>两者几乎完全一致</strong>，意味着：<strong>麦格拉思现在的利润既不是周期高点，也不是低点，它就是这门生意的正常水平。你看到的 19 倍，是一个可以相信的 19 倍。</strong> 这在这批三家公司里是唯一一家做到这一点的——SPSC 当期是三年低点（利润在倒退），KWR 当期是三年高点（去年被减值砸成亏损）。</p>
+<p><strong>说人话：你现在投 100 块进麦格拉思。</strong></p>
+<p>按最保守的真实口径，公司一年替你赚 <strong>4.46–5.27 元</strong>（取决于你按"只维持车队"的现金口径还是按会计净利润口径；两者相差不大，这本身就是账干净的证据）。</p>
+<p>这 4.46–5.27 元里：
+- <strong>1.67 元</strong>以现金分红回到你口袋（TTM 分红 4,854 万，股息率 1.67%），而且这个数<strong>已经连续三十多年每年都在提高</strong>。
+- <strong>1.16 元</strong>以回购回到你口袋（TTM 回购 3,350 万），且明显在加速。
+- 合计约 <strong>2.8 元真正回到你手上</strong>，派息＋回购覆盖率约占真实利润的 55%。
+- <strong>剩下约 2 元留在公司里</strong>，去向很清楚：TTM 花了 1.755 亿资本开支买新设备，其中约 6,500 万是扩大车队；另外花了 1,122 万做小额收购。这些钱<strong>投在了 ROIC 9.54%、高于 WACC 6.19% 的地方</strong>——每投一块钱创造约 3.4 分的价值，跟上一家 KWR 正好相反。</p>
+<p><strong>这 4.46–5.27 元未来会变大还是变小？</strong></p>
+<p><strong>向上的力量</strong>：TRS 测试仪器 +11.7% 且趋势明确（AI 数据中心、国防、电池实验室对高端测试设备的短期租赁需求真实存在）；回购在加速；如果利率下行，5.9 亿债务的利息成本会降，2,655 万利息支出里能省出一部分直接掉进净利润。</p>
+<p><strong>向下的力量</strong>：占 69% 的模块化建筑<strong>零增长</strong>，这门生意跟建筑开工和州政府教育预算绑死；Enviroplex 一年掉 25%；二手设备处置收益（占净利润 31%）的可持续性取决于行业车队的供需。</p>
+<p>我的判断是<strong>基本走平、略偏向上</strong>——这不是一门会给你惊喜的生意，但它也不会崩。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门乏味、干净、真实赚钱的实体租赁生意，19 倍买它不便宜也不贵，是公道价。</strong></p>
+<p>这家公司几乎没有可以被挑剔的会计问题：TTM 没有一次性项目，股权激励只占净利润 7.6%，回购是 SBC 的 2.89 倍，剔除去年那笔天上掉的分手费之后，三年平均市盈率 19.2 倍和当期 19.0 倍严丝合缝——<strong>这意味着你看到的利润就是它真实的赚钱能力，没有被周期或会计手法放大</strong>。ROIC 9.54% 高于资本成本 6.19%，它留下来再投资的每一块钱都在创造价值。连续三十多年提高股息，Debt/EBITDA 只有 2.22 倍，利息覆盖 8.34 倍，资产负债表稳当。EV/EBIT 14.8 倍对一家实体租赁公司算合理偏低。</p>
+<p>它的问题也一样直白：<strong>营收在缩（−0.92%），占七成的主业零增长，Enviroplex 一年掉 25%</strong>。你买它买不到成长，你买到的是一堆分布在全美各地堆场里的钢箱子和示波器，以及一个稳定往外吐现金、每年给你加一点股息的机器。</p>
+<p>还有两件事值得放在心上：第一，2024 年 WillScot 出价 <strong>123 美元/股现金</strong>要买下整家公司，最后被反垄断挡住——<strong>今天的股价 118.7 美元还低于那个被否决的收购价</strong>，说明一个最懂这门生意的产业买家两年前就认为它至少值这个数；第二，那 4,737 万的二手设备处置收益占了净利润的 31%，如果二手市场变冷，这一块会安静地缩水，而营收表上什么都看不出来。</p>
+<p>我的判断：<strong>值这个价，可以留着观察。</strong> 它不会让你赚快钱，但 19 倍买一个账面干净、回报高于资本成本、股息连涨三十年的现金机器，是笔说得过去的买卖。真正要盯的是模块化建筑分部——<strong>如果它从零增长变成负增长，19 倍就不再是公道价了。</strong></p>
+</div></body></html>

@@ -1,0 +1,523 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SHOO · 史蒂夫马登（Steven Madden, Ltd.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SHOO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">主品牌5年零增长全靠收购，营收+47%利润-25%，还要24倍</div><h1>SHOO · 史蒂夫马登（Steven Madden, Ltd.）</h1>
+<p>市值 34.5 亿美元 / 股价约 47 美元 / 行业：鞋类与配饰设计销售 / TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报分四个部门，实质上是<strong>两门完全不同的生意</strong>：一门是"快时尚批发"（把鞋卖给百货公司），一门是"自己开店零售"（Kurt Geiger 和自营店）。第三门"授权"小到可以忽略但白赚钱。</p>
+<h3>生意一：批发鞋类 —— 10.38 亿美元（37.9%），公司的老本行</h3>
+<p><strong>先说清楚这家公司真正的本事是什么：不是设计，不是制造，是速度。</strong></p>
+<p>Steve Madden 本人 1990 年在纽约皇后区用 1,100 美元起家。三十多年下来这家公司<strong>一间工厂都不拥有，也基本不做原创设计</strong>。它的整套打法是这样的：</p>
+<p><strong>第一步，抄。</strong> 设计团队在纽约长岛市，每天盯三样东西：巴黎米兰的秀场、TikTok 上正在爆的短视频、以及苏荷区和首尔街头真人穿什么。看到 Prada 秀场上一双厚底乐福鞋要卖 900 美元、或者某个博主穿的一双方头长靴一夜之间点赞过百万，他们几天之内就画出一双"看起来是那个意思"的版本，定价九十几美元。</p>
+<p><strong>第二步，找代工厂做。</strong> 历史上九成产能在中国，这几轮关税之后大幅转到柬埔寨、越南、巴西、墨西哥。他们不投一分钱建厂，下单就走。</p>
+<p><strong>第三步，也是全部竞争力所在：从画图到摆上货架，6 到 10 周。</strong> 传统鞋品牌是提前 9 到 12 个月定死一整季的款和量，二月开会决定十月卖什么。Steve Madden 不需要——他们可以在这一季<strong>中途</strong>插进去。</p>
+<p><strong>这就是百货公司非买不可的理由。</strong> 举个具体的：DSW（美国最大的鞋类连锁）的采购员二月订货时押了尖头细跟鞋，四月发现完全卖不动，货架上全是死库存，而所有人都在买厚底玛丽珍。这时候他打给传统品牌，对方说"最快十月给你"；他打给 Steve Madden，六月货就到店了。<strong>他买的不是鞋，是"猜错了还能改"的保险。</strong></p>
+<p><strong>具体一单的钱</strong>：一个百货采购员下单 4 万双某款靴子，批发价约 38 美元一双（零售挂 99 美元），Steve Madden 的到岸成本大概 22–24 美元，这一单营收 152 万美元，毛利约 60 万，毛利率 38%–40%。这一块 SG&amp;A 极轻——没有店租、没有店员，一个销售对接一整家百货集团。</p>
+<p>旗下的牌子：Steve Madden（主力）、Dolce Vita、Betsey Johnson、Blondo、Greats，另外还给 Anne Klein 和 DKNY 代工设计鞋子（授权生产）。</p>
+<p><strong>但这块生意五年一动不动</strong>，见下面的表——这是全篇最重要的一个事实。</p>
+<h3>生意二：批发配饰与服装 —— 6.893 亿美元（25.1%）</h3>
+<p>包子、腰带、冬季配饰，挂 Steve Madden 和 Betsey Johnson 的牌子，另外做授权手袋。</p>
+<p>这块从 2021 年的 3.437 亿翻到现在的 6.893 亿，<strong>翻倍的主要原因是 2023 年底收购了 Almost Famous</strong>——一家做女装的<strong>贴牌代工商</strong>，给别人的品牌做衣服。</p>
+<p>必须说清楚这件事的性质：<strong>贴牌代工是一门明显更差的生意</strong>。没有品牌溢价，毛利率薄，客户随时可以拿你的报价去压另一家工厂。用收购把营收做大，但把生意的质量做低了。</p>
+<h3>生意三：直营零售（DTC）—— 9.995 亿美元（36.5%），现在最大的一块</h3>
+<p>两部分：</p>
+<p><strong>（a）自营的 Steve Madden 门店和官网</strong>：全美约 250 家正价店和奥特莱斯店，加上 stevemadden.com。</p>
+<p><strong>（b）Kurt Geiger —— 2025 年花约 3.72 亿美元现金买下来的英国品牌。</strong> 这是理解这家公司这两年所有数字的钥匙。</p>
+<p>Kurt Geiger 是英国的鞋履和手袋品牌，约 70 家独立门店，外加在 Harrods、Selfridges、John Lewis 这些英国顶级百货里的店中店专柜。它最出名的产品是"Kensington"手袋——就是那款镶满水晶、正面一个彩虹鹰头的包，在英国街头能见度极高，售价 229 英镑。<strong>它的定位比 Steve Madden 高一档</strong>：Steve Madden 的包卖 98 美元，Kensington 卖 229 英镑（约 290 美元）。</p>
+<p>买它的逻辑是：Steve Madden 主品牌在美国已经封顶了，得往上走、往欧洲走。</p>
+<p><strong>效果是营收立刻变大：DTC 从 FY2024 的 5.502 亿 → FY2025 的 8.457 亿 → 现在的 9.995 亿，两年多出 4.49 亿，基本全是 Kurt Geiger 带来的。</strong></p>
+<p><strong>直营的账跟批发完全不一样</strong>：你不用给百货公司分那一刀，毛利率大概 62%，但你要付伦敦和纽约的店租、付店员工资、付装修折旧。<strong>毛利率高但经营利润率低</strong>——这正是下面第二部分要讲的、公司整体利润率塌掉的原因。</p>
+<h3>生意四：品牌授权 —— 1,392 万美元（0.5%），白捡的钱</h3>
+<p>把 Steve Madden 这个名字租出去：眼镜、手表、童鞋、行李箱、袜子，别人生产别人卖，按销售额给他抽成。<strong>成本接近于零，毛利率接近 100%。</strong> 五年从 989 万涨到 1,392 万，慢慢涨。金额太小改变不了大局，但这是全公司质量最高的一块钱。</p>
+<h3>四门生意的钱</h3>
+<p>（百万美元。TTM = 2025年7月–2026年6月。同时列出五年前的 FY2021 是为了看清一件事，见下。）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>vs FY2025</th>
+<th>FY2021</th>
+<th><strong>五年变化</strong></th>
+<th>TTM 占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>批发鞋类</td>
+<td>1,038</td>
+<td>1,035</td>
+<td>+0.3%</td>
+<td>1,022</td>
+<td><strong>+1.6%</strong></td>
+<td>37.9%</td>
+</tr>
+<tr>
+<td>批发配饰/服装</td>
+<td>689.28</td>
+<td>640.66</td>
+<td>+7.6%</td>
+<td>343.68</td>
+<td>+100.6%</td>
+<td>25.1%</td>
+</tr>
+<tr>
+<td>直营零售 DTC</td>
+<td>999.52</td>
+<td>845.67</td>
+<td><strong>+18.2%</strong></td>
+<td>487.91</td>
+<td>+104.9%</td>
+<td>36.5%</td>
+</tr>
+<tr>
+<td>品牌授权</td>
+<td>13.92</td>
+<td>12.59</td>
+<td>+10.6%</td>
+<td>9.89</td>
+<td>+40.7%</td>
+<td>0.5%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,741</strong></td>
+<td><strong>2,534</strong></td>
+<td>+8.2%</td>
+<td>1,866</td>
+<td><strong>+46.9%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润：财报只披露到分部营收，不披露分部利润，下面按整体口径估算。</strong> 全公司毛利率 46.9%、经营利润率 8.87%。估算的分部结构是：批发两块毛利率约 38%–40%、SG&amp;A 很轻，经营利润率大概在 12%–14%；DTC 毛利率约 62%，但店租店员吃掉大半，经营利润率大概只有 5%–7%；授权接近 100%。</p>
+<h3>把上面这张表读出来，就是这家公司的全部问题</h3>
+<p><strong>看第一行和最后一行：</strong></p>
+<blockquote>
+<p><strong>五年里营收涨了 46.9%（18.66 亿 → 27.41 亿），但同期净利润从 1.907 亿跌到 1.433 亿，跌了 25%。</strong></p>
+</blockquote>
+<p><strong>核心的批发鞋类生意，五年里从 10.22 亿变成 10.38 亿——纹丝不动。</strong> 中间 2022 年冲到过 11.95 亿，然后掉回来。<strong>这门"看趋势、6 周上架"的看家本领，五年零增长。</strong></p>
+<p>那 46.9% 的营收增长是买来的：Almost Famous（2023，贴牌服装）、Kurt Geiger（2025，3.72 亿美元）。<strong>他们花了将近 4.5 亿美元现金买了 8.75 亿美元的营收，结果利润比五年前还少 25%。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：3,069 万美元，占净利润的 21.4%。</strong> 比例不低。这笔钱 GAAP 里已经扣了，不加回来。</p>
+<p><strong>回购与稀释——这一项是全篇最刺眼的信号。</strong></p>
+<p>TTM 回购 <strong>1,368 万美元</strong> ÷ SBC 3,069 万 = <strong>0.45 倍</strong>。</p>
+<p>按标准判法：接近 1 说明回购只是在抵消员工发股，大于 3 才是真回馈股东。<strong>0.45 倍意味着连抵消都做不到</strong>——公司买回来的股票还不到发给员工的一半。股本一年实际<strong>增加</strong> 0.66%。</p>
+<p><strong>更要命的是对比历史：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>回购金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>123.16</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>148.88</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>142.35</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>98.43</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td><strong>13.52</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td><strong>13.68</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购从一年 1.4 亿断崖式掉到 1,370 万，砍掉了 90%。</strong> Steve Madden 曾经是一家非常慷慨的回购公司——2021 到 2024 四年买回了 5.12 亿美元的股票。现在停了。</p>
+<p>为什么停：钱去买 Kurt Geiger 了（3.72 亿现金），同时借了 4.675 亿的债，现在要还债。<strong>这不是一个中性的变化，这是一家公司把"把钱还给你"换成了"把钱拿去买增长"，而且买回来的增长不赚钱。</strong></p>
+<p><strong>分红 6,117 万美元，股息率 1.77%。</strong> 分红倒是稳的，五年一直在 5,000–6,600 万之间。<strong>分红 6,117 万 + 回购 1,368 万 − SBC 3,069 万 = 净还给股东 4,416 万，占市值 1.28%。</strong> 这个数字很难看。</p>
+<p><strong>一次性项目：资产减值与重组 630 万美元。</strong> 注意 FY2025 全年也是 630 万，说明这笔发生在 2025 年下半年、落在重叠区。金额很小，不影响判断。收购现金 TTM 只有 133 万，Kurt Geiger 那笔 3.7155 亿已经在 FY2025 花完了。</p>
+<p><strong>一笔说不清的 3,750 万美元非经营损失——而且它去年更大。</strong></p>
+<p>从经营利润走到税前利润，蒸发了 5,175 万：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润</td>
+<td>243.10</td>
+</tr>
+<tr>
+<td>− 利息支出（利息保障 17.07 倍推算；现金实付利息 17.46）</td>
+<td>≈ −14.2</td>
+</tr>
+<tr>
+<td>− <strong>其余非经营损失（说不清）</strong></td>
+<td>≈ <strong>−37.5</strong></td>
+</tr>
+<tr>
+<td>＝ 税前利润</td>
+<td>191.35</td>
+</tr>
+<tr>
+<td>− 所得税（有效税率 23.68%）</td>
+<td>−45.31</td>
+</tr>
+<tr>
+<td>− 少数股东权益等</td>
+<td>≈ −2.8</td>
+</tr>
+<tr>
+<td>＝ 归属净利润</td>
+<td><strong>143.26</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>那 3,750 万是什么，<strong>从这四张财报页上看不出来</strong>。合理的候选是三个：Kurt Geiger 的<strong>对赌/或有对价重估</strong>（收购常见）、<strong>英镑汇兑损失</strong>（Kurt Geiger 的收入是英镑，账要折回美元）、以及合营公司的权益法亏损。我不去翻 10-K 猜，只说清楚它有多大。</p>
+<p><strong>但有一件事必须点出来：这个"非经营损失"去年比今年大得多。</strong> FY2025 经营利润 1.759 亿，最后净利润只有 4,466 万——就算按同样 23.68% 的税率倒推，中间也蒸发了约 1.17 亿。<strong>连续两年、经营利润线以下持续大额漏血，这就不能叫"一次性"了。</strong> 单期口径拆不开构成，但"它年年发生"这个判断是站得住的。</p>
+<p><strong>资本化与摊销：折旧摊销一年翻倍，从 1,684 万（FY2024）跳到 3,439 万（TTM）。</strong> 这是 Kurt Geiger 收购产生的<strong>无形资产摊销</strong>——收购时把付出去的价钱分摊到"品牌名""客户关系"这些科目上，然后每年摊销。</p>
+<p>公司做 Non-GAAP 时一定会把这笔加回来，理由是"非现金"。<strong>我不加回。</strong> 理由：Kurt Geiger 这个牌子的价值不是永久的，你得年年花钱做营销、开店、维护，才能让它值那个钱；把摊销加回去等于假装这个品牌是白来的。另外一个佐证：<strong>市净率 3.64、但有形账面价市净率高达 8.38</strong>——两者之间的巨大差距全是收购堆出来的商誉和无形资产。你付的价钱里有一大块买的是"空气"，那就得让它按年摊掉。</p>
+<p><strong>利润和现金流的差：净利润 1.433 亿 → 经营现金流 2.638 亿 → 自由现金流 2.243 亿。逐项对账（百万美元）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>143.26</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>34.39</td>
+<td>一半以上是 Kurt Geiger 的无形资产摊销</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>5.14</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−0.02</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 资产减值/重组</td>
+<td>6.30</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>30.69</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>28.12</td>
+<td>主要是递延税和上面那笔非经营损失的非现金部分</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−9.38</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+7.86</td>
+<td>库存管得不错，没有积压</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+4.24</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>+13.23</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>263.83</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−39.55</td>
+<td>开店装修，是真花掉的钱</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>224.27</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表是干净的。</strong> 净利润和经营现金流的 1.2 亿差额，基本全是非现金项（折旧摊销 3,953 万 + SBC 3,069 万 + 减值 630 万 + 其他 2,812 万），营运资金变动几乎为零——存货甚至还降了 786 万，说明货没积压。<strong>这一点值得肯定：这家公司的营运资金管理是扎实的，卖的是真货，收的是真钱。</strong></p>
+<p><strong>资产负债表的方向不好。</strong> 净现金/净负债五年的走向：</p>
+<blockquote>
+<p>FY2021: +1.527 亿 → FY2022: +1.812 亿 → FY2023: +0.809 亿 → FY2024: +0.504 亿 → FY2025: <strong>−3.737 亿</strong> → 现在: <strong>−2.824 亿</strong></p>
+</blockquote>
+<p><strong>从一家手握 1.8 亿净现金的公司，变成一家背 2.82 亿净负债的公司。</strong> 好消息是 TTM 里净还了 1.70 亿的债，正在往回走；坏消息是账上现金只剩 9,474 万，是十年最低。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 34.5 亿美元，企业价值 37.3 亿（含净负债 2.82 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3,450 ÷ 143.26</td>
+<td><strong>24.1×</strong></td>
+<td><strong>4.15 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回收购无形摊销约 1,800 万 + 减值 630 万（税后约 1,854 万），估算</td>
+<td>21.3×</td>
+<td>4.69 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>3,450 ÷ (143.26 + 4.81)；只加回减值，无形摊销不加回，SBC 已扣</td>
+<td><strong>23.3×</strong></td>
+<td><strong>4.29 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>3,450 ÷ 224.27</td>
+<td><strong>15.4×</strong></td>
+<td><strong>6.50 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3,730 ÷ 243.10</td>
+<td>15.3×</td>
+<td>6.52 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>3,450 ÷ [(143.26+44.66+169.39)÷3 = 119.10]</td>
+<td><strong>29.0×</strong></td>
+<td><strong>3.45 元</strong></td>
+</tr>
+<tr>
+<td>三年平均自由现金流口径</td>
+<td>3,450 ÷ [(224.27+119.54+172.19)÷3 = 172.00]</td>
+<td>20.1×</td>
+<td>4.99 元</td>
+</tr>
+<tr>
+<td>市净率 / 有形账面价市净率</td>
+<td>—</td>
+<td>3.64× / <strong>8.38×</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三年平均那一行：当期利润是被垫高的，不是被压低的</h3>
+<p>三年平均市盈率 <strong>29.0 倍高于当期的 24.1 倍</strong>，表面上看是"当期利润偏高"。但这是因为 FY2025 只赚了 4,466 万——那一年是关税加 Kurt Geiger 整合费用的双重灾难年，不能代表常态。</p>
+<p><strong>把五年的净利润和经营利润率放一起看，才是真相（百万美元）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>营收</th>
+<th>经营利润率</th>
+<th>净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>1,866</td>
+<td>12.84%</td>
+<td>190.68</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>2,122</td>
+<td><strong>13.55%</strong></td>
+<td><strong>216.06</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>1,982</td>
+<td>11.09%</td>
+<td>171.55</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>2,283</td>
+<td>11.01%</td>
+<td>169.39</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>2,534</td>
+<td>6.94%</td>
+<td>44.66</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>2,741</strong></td>
+<td><strong>8.87%</strong></td>
+<td><strong>143.26</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营收从 18.66 亿涨到 27.41 亿（+47%），经营利润率从 13.55% 掉到 8.87%（−468 个基点），净利润从 2.16 亿掉到 1.43 亿（−34%）。</strong></p>
+<p>为什么利润率塌了？两个原因叠在一起：</p>
+<ol>
+<li><strong>业务结构变差。</strong> 直营零售从占 26% 变成占 36.5%。零售的毛利率虽然高（62% vs 批发的 38%），但要背伦敦和纽约的店租、店员工资、装修折旧。<strong>所以你看到毛利率反而从 41% 升到 46.9%，经营利润率却掉了 468 个基点</strong>——这个"毛利率上升、经营利润率下降"的组合就是零售化的典型指纹。</li>
+<li><strong>关税。</strong> 供应链从中国往柬埔寨越南转，转移本身有成本，而且新产地一样在被加税。</li>
+</ol>
+<p><strong>所以 TTM 的 1.433 亿不是低点，是"关税灾难年之后回到的新常态"，而这个新常态比五年前低了三分之一。</strong></p>
+<h3>你现在投 100 块，公司一年替你赚多少</h3>
+<p><strong>最保守的合理口径是剔除障眼法后的 23.3 倍，也就是投 100 块一年赚 4.29 元。</strong></p>
+<p>自由现金流口径给出 6.50 元，但那个分母有明确的水分：<strong>3,439 万的折旧摊销里，一半以上是 Kurt Geiger 收购留下的无形资产摊销</strong>。把它当"非现金所以不算钱"是错的——为了维持这个品牌值那个钱，你每年得真金白银地开店、投广告，这笔钱藏在 SG&amp;A 里已经花掉了。所以我取 <strong>4.3 到 5 元</strong>这个区间。</p>
+<p><strong>这 4.3 元里，有多少真回到你口袋？</strong> TTM 分红 6,117 万 + 回购 1,368 万 = <strong>7,485 万，占净利润的 52%</strong>。剩下的一半去了两个地方：资本开支 3,955 万（开店装修）、净还债 1.70 亿。</p>
+<p><strong>但要扣掉 SBC 那 3,069 万——公司回购的钱还不到发给员工股票的一半，你的持股比例每年被稀释 0.66%。真正落到你手里的，是 4,416 万，占市值的 1.28%。</strong></p>
+<p><strong>这个 4.3 元未来会变大还是变小？我认为变小的概率更大：</strong></p>
+<p>往下的力量：
+- <strong>核心的批发鞋类五年零增长</strong>（10.22 亿 → 10.38 亿）。这是主品牌的基本盘，它不长，说明"6 周抄款上架"这个本事已经到顶了——美国百货渠道本身在萎缩，这个池子越来越小。
+- <strong>关税还没完。</strong> 供应链在柬埔寨、越南、巴西，这几个地方都在关税名单上，成本是往上的，而鞋子这个品类涨价空间极小（消费者对 99 美元和 109 美元的靴子非常敏感）。
+- <strong>要继续增长就得继续收购，但弹药没了。</strong> 五年前手握 1.8 亿净现金，现在背 2.82 亿净负债，账上现金只剩 9,474 万。再买一个 Kurt Geiger 级别的标的，只能靠加杠杆。
+- <strong>回购停了。</strong> 过去支撑每股收益的一大块动力消失了。</p>
+<p>往上的力量（要说也有）：
+- Kurt Geiger 才并进来一年多，欧洲扩店和进美国市场还有空间，如果它能跑通，DTC 这块的经营利润率能从 5%–7% 往上抬；
+- 品牌授权那块虽小，但是纯利润，还在慢慢涨；
+- 存货管理扎实，没有积压，一旦需求回来利润弹性不小；
+- 前瞻市盈率 19.62 暗示市场预期明年利润还能涨两成。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不值 24 倍。股价一年涨了 73%，买的是一个五年里"营收 +47%、利润 −25%"的故事。</strong></p>
+<p>把这家公司的五年浓缩成一句话：<strong>它花了将近 4.5 亿美元现金去买 8.75 亿美元的营收，把毛利率买高了、把经营利润率买低了 468 个基点、把 1.8 亿的净现金买成了 2.82 亿的净负债、并且为了付账停掉了每年 1.4 亿的回购。核心的批发鞋类生意，五年一动没动。</strong></p>
+<p>看家本领是真的——"看到趋势 6 周上架"，让百货采购员在猜错之后还有一次纠错机会，这个本事别人学不来。品牌授权那 1,392 万也是干干净净的白拿钱。存货管理扎实，现金流表是干净的，不存在造假嫌疑。</p>
+<p>但这个本事已经<strong>触到天花板</strong>了：它服务的美国百货渠道本身在缩，所以主品牌五年零增长；管理层的应对是去买别人的营收，买回来的（Almost Famous 的贴牌服装、Kurt Geiger 的实体店）<strong>都是比原来那门生意更差的生意</strong>——一个没有品牌，一个要背店租。</p>
+<p>再加上一个不能忽略的细节：<strong>经营利润线以下连续两年大额漏血</strong>（今年约 3,750 万，去年约 1.17 亿），四张财报页上拆不开，但它不是一次性的。</p>
+<p>结论：<strong>主品牌五年零增长、全靠收购堆营收、利润率塌了 468 个基点、回购砍掉九成，还要 24 倍——好公司，坏价格，涨了 73% 之后没有理由现在追。</strong></p>
+</div></body></html>

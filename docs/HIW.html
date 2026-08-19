@@ -1,0 +1,438 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HIW · Highwoods Properties（高地房产）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HIW</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">报表20倍是假的：七成利润来自卖楼，利息覆盖仅1.35倍</div><h1>HIW · Highwoods Properties（高地房产）</h1>
+<p>市值 35.2 亿美元 | 股价约 $31.34（11,232 万股） | 行业：写字楼 REIT（美国东南部） | TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家房地产信托（REIT），下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong>
+原因是：REIT 的会计利润里，最大的一笔支出是"房屋折旧"——税法规定写字楼要按 39 年摊完，每年从利润里扣掉一大块。但现实中一栋维护良好的写字楼并不会每年贬值 2.5%，这笔折旧是纸面上的。所以全行业用 FFO（Funds From Operations，把折旧加回去、把卖楼的一次性收益减掉）来衡量真实赚钱能力。HIW 报出来的市盈率 20.7 倍<strong>是一个没有意义的数字</strong>，理由见下文——它一年的会计利润里有七成来自卖楼。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是一件事，做在七个城市。</strong></p>
+<p>Highwoods 只干一桩生意：<strong>在美国东南部的几个二线城市，持有并出租甲级写字楼</strong>。它不做住宅、不做商场、不做仓库、不做数据中心。截至 TTM，它 100% 的营收来自办公楼租金和相关服务费。</p>
+<p>具体这生意是怎么运转的：</p>
+<p>它在罗利（Raleigh）、纳什维尔、亚特兰大、夏洛特、坦帕、奥兰多、里士满这几个城市的市中心或高端郊区商务园，各持有十几到几十栋写字楼。比如纳什维尔的 Virginia Springs、罗利的 Bank of America Tower。它把这些楼一层一层、有时一整栋地租给企业——一家做医疗保险理赔的公司要 3 万平方英尺，签 8 年合同，每平方英尺每年 35 美元，那就是一年 105 万美元的租金收入。租约里通常还写明：每年租金自动涨 2.5%–3%；物业管理费、保安、电梯维护、公共区域清洁的成本按面积分摊回租户头上（这部分在报表里也计入营收）。</p>
+<p>关键在于<strong>租户搬走的成本</strong>。写字楼不是标准商品——租户进场时要按自己的需求装修（会议室怎么隔、机房放哪、多少工位），这笔装修钱在美国的行业惯例里是<strong>房东出</strong>，叫 TI（Tenant Improvement，租户装修补贴），一个 3 万平方英尺的办公室装修补贴常在 150 万–250 万美元；再加上招租中介的佣金（Leasing Commission，通常是整个租期租金的 4%–6%，8 年的话又是 30 多万）。所以房东每签一个新租户，先要垫出去两三百万，靠后面八年的租金慢慢赚回来。这就是为什么 REIT 的"真实自由现金流"远低于账面利润——<strong>这笔钱在会计上被资本化成资产，不进利润表，但它是实打实流出去的现金。</strong></p>
+<p>七个城市的 TTM 表现：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>城市（分部）</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>罗利 Raleigh</td>
+<td>195.56</td>
+<td>+8.2%</td>
+<td>23.3%</td>
+</tr>
+<tr>
+<td>纳什维尔 Nashville</td>
+<td>152.60</td>
+<td>−2.6%</td>
+<td>18.2%</td>
+</tr>
+<tr>
+<td>亚特兰大 Atlanta</td>
+<td>145.98</td>
+<td>+0.7%</td>
+<td>17.4%</td>
+</tr>
+<tr>
+<td>夏洛特 Charlotte</td>
+<td>106.32</td>
+<td>+13.8%</td>
+<td>12.7%</td>
+</tr>
+<tr>
+<td>坦帕 Tampa</td>
+<td>90.28</td>
+<td>+2.5%</td>
+<td>10.8%</td>
+</tr>
+<tr>
+<td>奥兰多 Orlando</td>
+<td>57.49</td>
+<td>+0.6%</td>
+<td>6.9%</td>
+</tr>
+<tr>
+<td>里士满 Richmond</td>
+<td>32.34</td>
+<td>−10.6%</td>
+<td>3.9%</td>
+</tr>
+<tr>
+<td>其他 + 合资企业权益</td>
+<td>52.28</td>
+<td>−0.2%</td>
+<td>6.2%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>838.86</strong></td>
+<td><strong>+2.95%</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到城市级别的营收，不披露城市级别的经营利润，所以上表没有利润列。整体口径下：TTM 毛利 5.649 亿、经营利润 2.186 亿（经营利润率 26.1%）。</p>
+<p><strong>表面上看这是一张"东南部人口流入、租金上涨"的成长故事牌。但下面这个数字把故事戳破了。</strong></p>
+<p>从 2021 年底到现在，HIW 累计花在买楼上的现金是 <strong>24.28 亿美元</strong>，同期卖楼收回 <strong>8.83 亿</strong>，净投入 <strong>15.45 亿美元</strong>买进新资产。而营收从 2021 年的 7.70 亿只涨到 8.39 亿，五年一共多了 <strong>6,891 万</strong>。</p>
+<p>按写字楼行业 7% 的资本化率算，15.45 亿的净买入本应带来<strong>一年 1 亿美元以上</strong>的新增营收。实际只多了不到 7,000 万。<strong>这意味着它原有的那批楼，营收是在往下掉的</strong>——新买的楼贡献的增量，有相当一部分被老楼的空置和降租吃掉了。收入表看起来"稳"，是因为一直在拿新楼往里填。</p>
+<p>这就是当前美国写字楼的真实处境，Sunbelt（阳光地带）也不例外：远程办公之后，企业续约时普遍砍面积 20%–30%，房东只能靠更长的免租期和更高的装修补贴留人——账面租金没跌，实际到手的钱跌了。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 933 万美元，占净利润 5.6%。REIT 里这算很克制的，绝对金额也小。当成真实成本扣掉，不影响任何结论。</p>
+<p><strong>最大的障眼法：卖楼收益被算进了净利润。</strong> TTM 净利润 1.664 亿里，有 <strong>1.209 亿是"出售资产收益"</strong>——就是把几栋楼卖掉，卖价高于折旧后的账面值，差额直接进利润表。再扣掉 880 万的资产减值，<strong>剔除卖楼因素后，HIW 的真实经营利润只有约 5,400 万美元</strong>。</p>
+<p>这一笔就解释了报表市盈率为什么是假的：</p>
+<ul>
+<li>报表净利润 1.664 亿 → 市盈率 21.2 倍（看起来便宜）</li>
+<li>剔除卖楼后 5,425 万 → 市盈率 <strong>64.9 倍</strong>（看起来离谱）</li>
+<li>两个都不对——正确的口径是 FFO，见第三部分</li>
+</ul>
+<p>而且这不是偶发的。看历史：FY2021 卖楼收益 1.741 亿（当年净利润 3.108 亿），FY2024 只有 4,682 万（当年净利润掉到 9,976 万）。<strong>净利润的大起大落，几乎完全由"今年卖了几栋楼"决定，跟出租生意本身没什么关系。</strong></p>
+<p><strong>一次性项目</strong>：TTM 有 880 万资产减值、470 万投资出售亏损。金额都不大。但要注意资产减值这几年年年都有（FY2024 为 2,460 万、FY2022 为 3,652 万）——<strong>在写字楼行业，"减值"不是一次性事件，是常态</strong>，只是每年减哪几栋不一样。</p>
+<p><strong>资本化支出</strong>：报表上看不到软件或内容资本化，但前面说的<strong>租户装修补贴和中介佣金被资本化了</strong>，这是 REIT 最重要的一笔"藏起来的成本"。从 TTM 经营现金流 3.844 亿和有杠杆自由现金流 2.708 亿之间的 1.137 亿差额，可以看出这类维持性投入一年就是<strong>一亿美元出头</strong>——占经营现金流的 30%。</p>
+<p><strong>回购与稀释：这一项非常难看。</strong>
+- TTM 回购股票：<strong>189 万美元</strong>（几乎等于零）
+- TTM 发行股票：<strong>6,149 万美元</strong>
+- 净结果：<strong>股东被稀释了</strong>，股本一年增加 <strong>2.26%</strong></p>
+<p>也就是说，HIW 不但没回购，还在持续增发新股来筹钱买楼。<strong>你每持有一股，一年下来自动被摊薄 2.26%。</strong> 这是 REIT 的常态融资方式（法律要求把 90% 的应税收入分掉，留不下钱，只能靠增发和借债扩张），但对股东来说这是实打实的成本，必须从回报里扣掉。</p>
+<p><strong>利润和现金流的差 —— 逐项对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>166.37</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>264.10</td>
+<td>房屋折旧，纸面上的</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>50.52</td>
+<td>递延融资费、租赁激励摊销</td>
+</tr>
+<tr>
+<td>− 卖楼收益</td>
+<td>−120.92</td>
+<td>真金白银，但一次性</td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>8.80</td>
+<td>纸面</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>9.33</td>
+<td>纸面（但稀释你的股份）</td>
+</tr>
+<tr>
+<td>＋ 投资出售亏损</td>
+<td>4.70</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 合资企业权益调整</td>
+<td>3.97</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−25.43</td>
+<td>租户欠款变多了</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>8.22</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他营运资金及杂项</td>
+<td>14.17</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>384.43</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 维持性资本开支（推算）</td>
+<td>−113.66</td>
+<td>租户装修补贴、中介佣金</td>
+</tr>
+<tr>
+<td><strong>= 有杠杆自由现金流</strong></td>
+<td><strong>270.77</strong></td>
+<td>真正可自由支配的钱</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：账面利润 1.66 亿，真正能自由支配的现金 2.71 亿。</strong> 这两个数字对不上不是造假，正是 REIT 的正常状态——折旧是假的（+2.64 亿），卖楼收益是真的但不可持续（−1.21 亿），两者大致抵消。</p>
+<p><strong>但更关键的一步在后面：这 2.71 亿要怎么花？</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>TTM 金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有杠杆自由现金流</td>
+<td>+270.77</td>
+</tr>
+<tr>
+<td>普通股分红</td>
+<td>−219.10</td>
+</tr>
+<tr>
+<td>优先股分红</td>
+<td>−2.30</td>
+</tr>
+<tr>
+<td><strong>剩余</strong></td>
+<td><strong>+49.37</strong></td>
+</tr>
+<tr>
+<td>净买楼支出</td>
+<td><strong>−492.36</strong></td>
+</tr>
+<tr>
+<td><strong>缺口</strong></td>
+<td><strong>−442.99</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>缺口 4.43 亿美元，靠什么补上的？</strong> 净新增借款 1.83 亿 + 增发股票 0.61 亿 + 其他融资 1.80 亿 + 动用现金储备。</p>
+<p>一句话：<strong>HIW 现在的分红是靠经营现金流付的（勉强付得起），但它的扩张 100% 靠借钱和增发。</strong> 这不违法也不罕见，但意味着股东的每一分红利，都伴随着债务和股本的同步膨胀。</p>
+<hr />
+<h2>第三部分：FFO / AFFO 口径估值</h2>
+<p>先算 FFO。行业标准（NAREIT）定义：净利润 + 房产折旧 − 卖房收益 + 减值。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>166.37</td>
+</tr>
+<tr>
+<td>− 优先股股息</td>
+<td>−2.30</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>264.10</td>
+</tr>
+<tr>
+<td>− 卖楼收益</td>
+<td>−120.92</td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>8.80</td>
+</tr>
+<tr>
+<td><strong>= 严格口径 FFO</strong></td>
+<td><strong>316.05</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按 11,232 万股算，<strong>严格 FFO = 每股 $2.81</strong>，对应 <strong>P/FFO 11.1 倍</strong>。</p>
+<p>市场数据商（含 stockanalysis）显示的 Price/FFO 是 <strong>8.83 倍</strong>，对应每股 FFO 约 $3.55、总额约 3.99 亿——差额 8,300 万来自把"其他摊销"（5,052 万）和合资企业折旧份额等也加了回去。这是行业惯例做法，但口径更松。<strong>下表两个都列，用严格口径下结论。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>35.2 亿 ÷ 1.664 亿净利</td>
+<td>21.2 倍</td>
+<td>$4.72（<strong>这个数字没意义</strong>）</td>
+</tr>
+<tr>
+<td>剔除卖楼后的真实市盈率</td>
+<td>35.2 亿 ÷ 5,425 万经营利润</td>
+<td><strong>64.9 倍</strong></td>
+<td>$1.54</td>
+</tr>
+<tr>
+<td>公司/市场口径 FFO</td>
+<td>35.2 亿 ÷ 3.99 亿</td>
+<td>8.83 倍</td>
+<td>$11.33</td>
+</tr>
+<tr>
+<td><strong>严格 NAREIT 口径 FFO</strong></td>
+<td>35.2 亿 ÷ 3.161 亿</td>
+<td><strong>11.1 倍</strong></td>
+<td><strong>$9.00</strong></td>
+</tr>
+<tr>
+<td>AFFO（自由现金流口径）</td>
+<td>35.2 亿 ÷ 2.708 亿</td>
+<td>13.0 倍</td>
+<td>$7.69</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>68.9 亿 ÷ 2.186 亿</td>
+<td>31.3 倍</td>
+<td>$3.19</td>
+</tr>
+<tr>
+<td>三年平均 FFO 口径</td>
+<td>35.2 亿 ÷ 3.210 亿三年均值</td>
+<td><strong>11.0 倍</strong></td>
+<td>$9.09</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行是全表信息量最大的：</strong>FFO 三年分别是 3.161 亿（TTM）、3.142 亿（FY25）、3.326 亿（FY24），<strong>平得像一块板</strong>。同期净利润却在 9,976 万到 1.664 亿之间上下翻倍——再次印证：净利润的波动全是卖楼节奏，出租生意本身五年没有增长。</p>
+<p><strong>所以，你现在投 100 块进去，一年公司替你赚多少？</strong></p>
+<p>按最保守的严格 FFO 口径，<strong>一年 9 块</strong>。这 9 块的去向：</p>
+<ul>
+<li><strong>约 6.2 块以现金分红的形式回到你口袋</strong>（年分红每股 $1.95，股息率 6.2%）</li>
+<li><strong>约 2.8 块留在公司里</strong>，但——这 2.8 块远远不够，公司实际还要另外借 4.4 亿去买楼</li>
+<li><strong>再扣掉股本稀释 2.26%</strong>，你实际到手的经济回报是 <strong>9 − 约 0.7 = 8.3 块左右</strong></li>
+</ul>
+<p><strong>这 9 块未来会变大还是变小？</strong> 三个理由指向变小：</p>
+<ol>
+<li><strong>利息覆盖倍数只有 1.35 倍。</strong> 意思是：一年的经营利润只够付 1.35 倍的利息。TTM 现金利息支出 1.443 亿，已经从 2021 年的 7,947 万涨了 82%。债务 35.16 亿、Debt/EBITDA 7.25 倍。往后每一笔到期债务再融资，都是把旧的低息债换成新的高息债——利息还会继续往上啃 FFO。</li>
+<li><strong>原有组合的营收在萎缩</strong>（见第一部分那笔 15.45 亿净买入只换来 6,891 万营收）。</li>
+<li><strong>分红占严格 FFO 的 69%、占自由现金流的 81%。</strong> 空间很薄。如果 FFO 再掉 15%，分红就得动。</li>
+</ol>
+<p>唯一的正面因素：它的楼在罗利、纳什维尔、夏洛特这些人口净流入的城市，夏洛特 TTM 营收 +13.8%、罗利 +8.2%，确实是全美写字楼里最好的一档市场。但"矮子里的高个"不等于好。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一只被杠杆撑着、靠卖楼美化利润表的写字楼 REIT，11 倍 FFO、6.2% 股息率是它该有的价格，不是便宜。</strong></p>
+<p>它的报表市盈率 20.7 倍是彻底的误导——七成利润来自卖楼，剔除后是 65 倍。真正该看的 FFO 三年纹丝不动，而同期它净买入了 15.45 亿美元的资产，说明存量楼在缩水。利息覆盖 1.35 倍、Debt/EBITDA 7.25 倍、分红吃掉八成自由现金流、股本一年还稀释 2.26%——这三件事同时发生时，6.2% 的股息率不是"高股息机会"，是市场对风险的定价。</p>
+<p>买它等于赌两件事：东南部人口流入最终能扭转写字楼的空置率，以及利率下行让它的再融资不那么疼。这两件事可能都会发生，但它们发生之前，你拿的是一份只够勉强覆盖的分红和一张会持续稀释的股票。</p>
+</div></body></html>

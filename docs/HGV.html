@@ -1,0 +1,520 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HGV · Hilton Grand Vacations（希尔顿分时度假）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HGV</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">四年营收+38%股本-31%，每股收益却跌39%，全被利息吃掉</div><h1>HGV · Hilton Grand Vacations（希尔顿分时度假）</h1>
+<p>市值 34.1 亿美元 | 股价约 $43.88（7,772 万股） | 行业：分时度假（timeshare）| TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>三件，而且这三件是环环相扣的一台机器：先把度假产权卖给你，再借钱给你买，然后收你一辈子的管理费。</strong></p>
+<h3>生意一：卖度假产权（TTM 营收 26.03 亿，占 49.3%）</h3>
+<p>这是所有人以为的那个"分时度假"。</p>
+<p>具体是怎么做的：希尔顿在奥兰多、拉斯维加斯、夏威夷、纽约、佛罗里达海岸有一堆度假公寓。它不整套卖给你，而是把一套公寓切成 52 份（每份一周），或者换算成"积分"卖给你。典型一单是<strong>每年一周的产权，售价 3 万–4 万美元</strong>，一次性付清或者分期付。买了之后，这份产权是永久的、可继承的、能转让的。</p>
+<p>销售是怎么发生的？<strong>这是全行业最独特也最被诟病的一环。</strong> 你在奥兰多度假，路边有人递给你一张券："免费送你两晚酒店 + 迪士尼门票，只要你来听 90 分钟的介绍会。" 这张券在报表里叫 <strong>Package Sales（体验套餐销售）</strong>。你去了，被安排在一个小房间里，销售员讲两小时，讲的核心是一笔账：</p>
+<blockquote>
+<p>"你们家一年出去玩一次，住四星酒店一周，现在一晚 400 美元，一周 2,800。二十年后通胀翻倍，一周就是 5,600。二十年一共要付你 8 万多。现在你花 3.5 万买断，以后每年只付 1,800 的维护费，二十年总共 7.1 万，还给孩子留下一份可以继承的产权。"</p>
+</blockquote>
+<p>这套话术的转化率行业平均在 10%–15%。<strong>销售成本极高</strong>——获客（送房送票）、场地、销售团队提成，行业里一单 3.5 万的销售，销售和市场费用常常占到 45%–55%。这也是为什么 HGV 的毛利率只有 24.6%（TTM 毛利 11.58 亿 ÷ 营收 47.04 亿）。</p>
+<p>营收里还有一块叫 <strong>Fee-for-Service（代销佣金，TTM 6.76 亿）</strong>：有些度假村不是 HGV 自己的，是别的开发商建的，HGV 只负责挂希尔顿的牌子帮忙卖，抽佣金。这块不占资本、利润率高，是好东西。</p>
+<h3>生意二：借钱给买家（TTM 营收 5.44 亿，占 10.3%）</h3>
+<p><strong>这是外界最容易忽略、也是风险最集中的一块——HGV 实质上是一家次级消费贷款公司。</strong></p>
+<p>买家里有相当比例掏不出 3.5 万现金。HGV 当场给你办分期：首付 10%–20%，剩下的分 10 年还，<strong>年利率通常在 12%–15%</strong>。这笔贷款留在 HGV 自己账上——<strong>资产负债表上的"金融业务贷款"高达 35.91 亿美元</strong>，比它 34.1 亿的市值还大。</p>
+<p>为什么利率这么高？因为<strong>这笔贷款几乎没有抵押价值</strong>。房贷违约了银行能收房子拍卖；分时度假违约了，HGV 收回来的是"某人在奥兰多某周的使用权"——二手市场上这东西几乎卖不动（网上大把人 1 美元甩卖分时度假产权，只求别再交维护费）。所以贷款定价必须按无抵押消费贷来定。</p>
+<p>违约率有多高？看这个：TTM 经营现金流量表里，<strong>披露出来的各项加起来只有约 −1,000 万美元，而实际经营现金流是 4.63 亿——中间有约 4.73 亿的缺口</strong>，这个缺口在 stockanalysis 的简表里没有单列，按行业惯例主要是<strong>"分时度假贷款损失拨备"加上递延所得税</strong>。也就是说，HGV 每年要预提<strong>四亿美元量级</strong>的坏账准备——相当于它 19.27 亿产权销售额的两成。</p>
+<p><strong>翻译成人话：它卖出去的产权里，大约每五单就有一单，客户最后会还不上钱。</strong> 这不是意外，是商业模式的一部分——定价时已经把这个损失率算进去了（12%–15% 的利率就是补偿这个）。但这意味着 HGV 的利润对经济环境极其敏感：失业率上升 2 个百分点，最先不还的就是这类贷款。</p>
+<h3>生意三：管理费（TTM 营收 21.29 亿，占 40.4%）</h3>
+<p><strong>这是三件里质量最高的一件，也是买它的人真正在买的东西。</strong></p>
+<p>一旦你买了产权，你就永远绑定了：</p>
+<ul>
+<li><strong>每年的维护费</strong>：一份产权年缴 1,500–2,500 美元，涵盖清洁、维修、保险、地税。HGV 作为管理方向业主协会收管理费。<strong>这笔钱跟房价涨跌、跟经济好坏都没关系，只要你还持有产权就得交，不交就被取消使用权。</strong>（Resort Management，TTM 4.65 亿）</li>
+<li><strong>俱乐部会费</strong>：想把你在奥兰多的那一周换成夏威夷那一周？得加入 Hilton Grand Vacations Club，年费几百美元。（Club Management，TTM 3.21 亿）</li>
+<li><strong>闲置房转租</strong>：业主今年不去了，房子空着，HGV 拿去当普通酒店房卖给游客，收入归 HGV。（Rental，TTM 7.15 亿）</li>
+<li><strong>成本报销</strong>（TTM 5.72 亿）：代业主协会垫付的成本原样收回，进出相抵，不产生利润，但会撑大营收数字。</li>
+</ul>
+<p>这块业务的性质是<strong>永续年金</strong>：客户数只增不减（产权是永久的、可继承的），费用每年随通胀上调，几乎不需要新增资本。<strong>如果 HGV 只有这块业务，它会是一家极好的公司。</strong></p>
+<h3>三块合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>业务线（分部）</th>
+<th>TTM 营收（百万）</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产权销售 VOI</td>
+<td>1,927</td>
+<td>+6.3%</td>
+<td>36.5%</td>
+</tr>
+<tr>
+<td>代销佣金 / 体验套餐</td>
+<td>676</td>
+<td>+1.8%</td>
+<td>12.8%</td>
+</tr>
+<tr>
+<td>利息收入</td>
+<td>502</td>
+<td>+6.1%</td>
+<td>9.5%</td>
+</tr>
+<tr>
+<td>其他金融收入</td>
+<td>42</td>
+<td>+5.0%</td>
+<td>0.8%</td>
+</tr>
+<tr>
+<td>度假村管理</td>
+<td>465</td>
+<td>+1.8%</td>
+<td>8.8%</td>
+</tr>
+<tr>
+<td>俱乐部管理</td>
+<td>321</td>
+<td>0.0%</td>
+<td>6.1%</td>
+</tr>
+<tr>
+<td>闲置房转租</td>
+<td>715</td>
+<td>+3.3%</td>
+<td>13.6%</td>
+</tr>
+<tr>
+<td>附属服务</td>
+<td>56</td>
+<td>+3.7%</td>
+<td>1.1%</td>
+</tr>
+<tr>
+<td>成本报销（不产生利润）</td>
+<td>572</td>
+<td>+7.1%</td>
+<td>10.8%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,276</strong></td>
+<td><strong>+4.5%</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>注：报表口径的"营业收入"是 47.04 亿，等于上表 52.76 亿减去 5.72 亿成本报销。下文所有利润率按 47.04 亿计算。</em></p>
+<p>财报只披露到营收层面，不按上述条线披露利润。按行业结构估算（<em>估算</em>）：管理费和转租那三块的经营利润率在 30%–40%，金融业务扣掉拨备后约 15%–25%，产权销售在扣完 50% 销售费用后只剩个位数——<strong>也就是说，产权销售贡献了近一半营收，却贡献不了多少利润；真正赚钱的是管理费和利息。产权销售的作用是"制造客户"，让后面两台机器有料可吃。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 6,500 万美元，占净利润 <strong>43%</strong>——这个比例不低。但见下面，回购规模远超它，所以没有造成稀释。当成真实成本按 GAAP 扣除，不加回。</p>
+<p><strong>回购与稀释：这一项是全篇最亮眼的。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>6.19 亿美元</strong></td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>0.65 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>9.5 倍</strong></td>
+</tr>
+<tr>
+<td>股本一年变化</td>
+<td><strong>−13.04%</strong></td>
+</tr>
+<tr>
+<td>股本五年变化</td>
+<td>11,993 万股 → 7,772 万股，<strong>−35.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>9.5 倍远超"真回购"的 3 倍门槛。</strong> 五年里它把三分之一以上的股票买没了，流通股（float）只剩 4,773 万股。这是实打实的股东回报，不是做样子。</p>
+<p>但代价写在资产负债表上：<strong>留存收益已经变成 −1.01 亿美元（负数）</strong>。意思是公司自上市以来赚的钱，全部加起来还不够它回购花掉的。</p>
+<p><strong>最大的一处需要看清的东西：有形净资产是负 24.76 亿美元。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通股股东权益</td>
+<td>1,102</td>
+</tr>
+<tr>
+<td>− 商誉</td>
+<td>−1,986</td>
+</tr>
+<tr>
+<td>− 其他无形资产</td>
+<td>−1,592</td>
+</tr>
+<tr>
+<td><strong>= 有形净资产</strong></td>
+<td><strong>−2,476</strong></td>
+</tr>
+<tr>
+<td><strong>每股有形净资产</strong></td>
+<td><strong>−$31.74</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这 35.78 亿的商誉和无形资产来自两笔巨额收购：<strong>2021 年 14 亿美元买 Diamond Resorts，2024 年 15 亿美元买 Bluegreen Vacations</strong>，全部用债务支付。买完之后账上多了 35.78 亿的"商誉+客户关系+品牌"，这些东西在清算时一文不值。</p>
+<p><strong>换句话说：你花 43.88 美元买一股，账面上摸得着的东西是 −31.74 美元。</strong> 你买的是一份纯粹的杠杆权益——公司的全部有形资产（度假村存货 25.46 亿、贷款 35.91 亿、房产 9.62 亿）加起来还不够还 78.51 亿的债，差额靠"商誉"这个会计科目填平。</p>
+<p><strong>债务：五年翻了一倍。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>当前</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总债务</td>
+<td>43.28 亿</td>
+<td><strong>78.51 亿</strong></td>
+</tr>
+<tr>
+<td>净债务</td>
+<td>38.94 亿</td>
+<td><strong>75.61 亿</strong></td>
+</tr>
+<tr>
+<td>Debt/EBITDA</td>
+<td>—</td>
+<td><strong>8.04 倍</strong></td>
+</tr>
+<tr>
+<td>利息覆盖倍数</td>
+<td>—</td>
+<td><strong>2.15 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>但这 78.51 亿不能全按公司债看。</strong> 其中相当一部分是<strong>无追索权的证券化债务</strong>——HGV 把客户的分期贷款打包成债券卖给投资人，投资人的钱只能从这批贷款的还款里收回，客户违约了债券投资人自己认亏，追不到 HGV 身上。按行业惯例（贷款余额的 80%–85% 作为发行额），对应 35.91 亿贷款的证券化债务约 <strong>29 亿美元</strong>（<em>估算，财报页未拆分</em>）。</p>
+<p>剔除后的"真实公司债"约 78.51 − 29 = <strong>49.5 亿</strong>，净公司债约 46.6 亿。<strong>这才是股东该操心的那部分</strong>，对应 Debt/EBITDA 约 5.3 倍——仍然高，但没有 8 倍那么吓人。</p>
+<p><strong>利润和现金流的差 —— 对账表（TTM，百万美元），以及一个必须说清楚的缺口</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>151</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>289</td>
+</tr>
+<tr>
+<td>＋ 其他摊销（收购无形资产）</td>
+<td>67</td>
+</tr>
+<tr>
+<td>＋ 资产处置亏损</td>
+<td>52</td>
+</tr>
+<tr>
+<td>＋ 减值与重组</td>
+<td>2</td>
+</tr>
+<tr>
+<td>＋ 权益投资亏损</td>
+<td>15</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>65</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>−47</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>152</td>
+</tr>
+<tr>
+<td>＋ 存货增加</td>
+<td>−138</td>
+</tr>
+<tr>
+<td>＋ 应付账款减少</td>
+<td>−95</td>
+</tr>
+<tr>
+<td>＋ <strong>递延收入增加</strong></td>
+<td><strong>+305</strong></td>
+</tr>
+<tr>
+<td>＋ <strong>其他经营性资产净变化</strong></td>
+<td><strong>−828</strong></td>
+</tr>
+<tr>
+<td><strong>披露项目小计</strong></td>
+<td><strong>−10</strong></td>
+</tr>
+<tr>
+<td><strong>实际经营现金流</strong></td>
+<td><strong>463</strong></td>
+</tr>
+<tr>
+<td><strong>未拆分的缺口</strong></td>
+<td><strong>+473</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这个 4.73 亿的缺口必须说清楚：</strong> 财报页的简表没有单列"分时度假贷款损失拨备"和"递延所得税"这两行，缺口基本就是它们。这意味着——<strong>HGV 的 4.63 亿经营现金流里，有约 4.7 亿是靠一笔非现金的坏账拨备加回来的。</strong> 与此同时，−8.28 亿的"其他经营性资产净变化"正是它当年新放出去的贷款（真金白银流出）。</p>
+<p><strong>两件事要记住：</strong></p>
+<ol>
+<li><strong>递延收入 +3.05 亿是真现金，但它是"预收"。</strong> 客户签了合同、付了钱，但因为有法定反悔期、或者度假村还没建好，收入还不能确认。这笔钱进了口袋，也进了负债（长期递延收入从 9.17 亿涨到 11.43 亿）。<strong>只要销售不停，它就持续为正；销售一旦掉头，它会瞬间变成负数并双倍打击现金流。</strong></li>
+<li><strong>自由现金流 4.13 亿（P/FCF 8.26 倍）看着极其便宜，但它的成色依赖上面两笔。</strong> 把 +3.05 亿递延收入和 +1.52 亿应收账款释放这两笔顺周期的东西剔掉，自由现金流是 <strong>−0.44 亿</strong>。真相在中间：只要销售继续增长，8.26 倍是真的；一旦销售停滞，这个倍数会翻好几倍。</li>
+</ol>
+<p><strong>资产处置亏损 5,200 万</strong>：TTM 有一笔，去年是 +700 万收益。单看一期无法判断是否年年发生，但从五年序列（14 / 3 / −2 / 11 / −7 / 52）看，往年都在个位数，<strong>这一笔 5,200 万是异常的大</strong>，剔除时按一次性处理。</p>
+<p><strong>存货</strong>：25.46 亿美元的"存货"就是还没卖出去的度假产权。它不走资本开支（TTM 资本开支只有 5,000 万，看起来轻资产得不真实），而是走经营活动里的"存货变化"（TTM −1.38 亿，FY25 −2.16 亿）。<strong>别被 5,000 万的资本开支骗了，它真实的年度资产投入是两亿量级。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>34.1 亿 ÷ 1.51 亿净利</td>
+<td><strong>24.4 倍</strong></td>
+<td>$4.10</td>
+</tr>
+<tr>
+<td>公司口径（调整后 EBITDA 基础）</td>
+<td>公司只发布调整后 EBITDA，不发布调整后 EPS；EBITDA 9.31 亿</td>
+<td>EV/EBITDA 11.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>加回收购无形资产摊销后</td>
+<td>净利 1.51 亿 + 约 1.50 亿摊销 × 0.75 税后 = 2.63 亿（<em>估算，按无形资产半年减少 7,800 万倒推年化</em>）</td>
+<td>13.0 倍</td>
+<td>$7.69</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>净利 1.51 亿 ＋ 资产处置亏损 5,200 万税后 3,700 万 = 1.88 亿（SBC 已按 GAAP 扣除不加回）</td>
+<td><strong>18.1 倍</strong></td>
+<td><strong>$5.52</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>34.1 亿 ÷ 4.13 亿</td>
+<td>8.26 倍</td>
+<td>$12.10（<strong>成色见上文</strong>）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT（全部债务）</td>
+<td>109.7 亿 ÷ 6.42 亿</td>
+<td>17.1 倍</td>
+<td>$5.85</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT（剔除证券化债务）</td>
+<td>约 80.7 亿 ÷ 6.42 亿</td>
+<td><strong>12.6 倍</strong></td>
+<td>$7.94</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>34.1 亿 ÷ 0.93 亿（1.51/0.81/0.47 三年均值）</td>
+<td><strong>36.7 倍</strong></td>
+<td>$2.72</td>
+</tr>
+<tr>
+<td>市场预期的前瞻市盈率</td>
+<td>券商一致预期</td>
+<td><strong>9.21 倍</strong></td>
+<td>$10.86</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行这次要反着读。</strong> 一般来说三年均值远差于当期，说明"当前是利润高点"。但 HGV 的 FY2024（净利 4,700 万）和 FY2025（8,100 万）是被 Bluegreen 收购的整合费用、购买法会计的存货重估和一次性成本砸出来的坑，<strong>不是正常经营水平</strong>。所以 36.7 倍这个数字夸大了问题。</p>
+<p><strong>但真正该看的历史对比在更前面，而且这一条是全篇最要命的：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2022</th>
+<th>TTM（2026年6月）</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（含成本报销）</td>
+<td>38.35 亿</td>
+<td>52.76 亿</td>
+<td><strong>+37.6%</strong></td>
+</tr>
+<tr>
+<td>股本</td>
+<td>11,218 万股</td>
+<td>7,772 万股</td>
+<td><strong>−30.7%</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>3.52 亿</strong></td>
+<td><strong>1.51 亿</strong></td>
+<td><strong>−57.1%</strong></td>
+</tr>
+<tr>
+<td>每股收益</td>
+<td><strong>$2.93</strong></td>
+<td><strong>$1.78</strong></td>
+<td><strong>−39.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营收涨了 38%，股票买回去 31%，每股收益却掉了 39%。</strong></p>
+<p>钱去哪了？债务从 38.47 亿涨到 78.51 亿，多出来的 40 亿全部转化成了<strong>利息支出</strong>——TTM 经营利润 6.42 亿，税前利润只剩 2.35 亿，<strong>中间 4.07 亿全被利息吃掉了</strong>。再加上收购带来的每年一亿五左右的无形资产摊销。</p>
+<p><strong>这就是过去四年发生的事的完整版本：借 40 亿买了 Bluegreen 和 Diamond，又借钱回购了三分之一的股票，结果规模变大了、股数变少了，股东每股拿到的钱反而少了四成。</strong></p>
+<p><strong>所以，你现在投 100 块进去，一年公司替你赚多少？</strong></p>
+<p><strong>按最保守的真实口径（18.1 倍），一年 5.52 块。</strong></p>
+<p>这 5.52 块的去向：</p>
+<ul>
+<li><strong>不分红，一分钱现金都不给你</strong>（无股息）</li>
+<li><strong>全部通过回购回到你手里</strong>——TTM 回购 6.19 亿，占 34.1 亿市值的 <strong>18.2%</strong>。回购金额远超它一年赚的钱（净利只有 1.51 亿），差额靠自由现金流和新增借款补</li>
+<li>剩下的钱投在存货（新度假村）和新增贷款上</li>
+</ul>
+<p>注意这个矛盾：<strong>它一年赚 1.51 亿，却花 6.19 亿回购。</strong> 这只有在自由现金流远高于会计利润时才成立——而上文已经说明，那 4.13 亿自由现金流有一半是顺周期的递延收入和应收释放。<strong>这个回购力度是不可持续的</strong>，除非销售持续增长。</p>
+<p><strong>这 5.52 块未来会变大还是变小？</strong> 判断是<strong>大概率变大，但风险不对称。</strong></p>
+<p>变大的理由：Bluegreen 的整合成本正在退潮（FY24 净利 0.47 亿 → FY25 0.81 亿 → TTM 1.51 亿，两年翻了三倍），券商给出 9.21 倍的前瞻市盈率就是在赌这条曲线延续；管理费和转租那 21 亿营收是稳定的年金；股本还在以每年 13% 的速度消失，只要净利润不掉，每股收益就自动往上走。</p>
+<p>变小的风险：<strong>Debt/EBITDA 8 倍、利息覆盖 2.15 倍、有形净资产 −24.76 亿、外加一个 35.91 亿的次级消费贷款账本。</strong> 分时度假是消费里最典型的"可以不买"的东西——经济一转坏，销售会先掉两成，同时贷款违约率会跳升，同时递延收入会从 +3 亿变成负数。<strong>这三件事会同时发生</strong>，而 2.15 倍的利息覆盖没有余量去承受。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一台运转良好但把自己捆在 75 亿净债务上的机器，公道价，不是便宜货——前瞻 9 倍市盈率的诱惑背后，是负 24.76 亿的有形净资产和一本 36 亿的次级贷款。</strong></p>
+<p>生意本身有真东西：40% 的营收来自客户永远得交的管理费，这是一份不需要资本的年金；回购是真回购（9.5 倍于股权激励，五年买掉 35% 的股本）；Bluegreen 的整合坑正在填平，利润两年翻了三倍。这些都不是包装。</p>
+<p>但账上写着一句更硬的事实：<strong>四年里营收涨 38%、股本减 31%，每股收益反而跌了 39%</strong>。原因只有一个——为了做大和回购，它把债务从 38 亿加到 78 亿，一年的利息 4.07 亿吃掉了 6.42 亿经营利润的六成三。留存收益已经是负数，有形净资产是负 24.76 亿，你买的是一片盖在 75 亿债务之上的薄薄权益。</p>
+<p>它值不值 24 倍 GAAP / 18 倍剔除后 / 9.2 倍前瞻？<strong>在经济好的时候，值，甚至偏便宜。</strong> 但把一家可选消费公司、一个次级贷款账本、8 倍杠杆、2.15 倍利息覆盖这四样东西摆在一起时，你买的不是"便宜的好公司"，是"一个赌宏观不出事的期权"。这个期权定价合理，但它不该被当成价值股拿着不看。</p>
+</div></body></html>

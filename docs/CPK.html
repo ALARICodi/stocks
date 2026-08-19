@@ -1,0 +1,342 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CPK · Chesapeake Utilities（切萨皮克公用事业）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CPK</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">1.97倍净资产买一个法定只能赚10%的生意，实际回报压到4.8%</div><h1>CPK · Chesapeake Utilities（切萨皮克公用事业）</h1>
+<p>市值 33.1 亿美元 | 股价约 $137 | 行业：公用事业（天然气配送 + 管道 + 丙烷） | TTM 截止 2026-06-30</p>
+<p>一家 1859 年成立、总部在特拉华州多佛的小型公用事业公司。只有 <strong>1300 名员工</strong>、<strong>2411 万股</strong>流通股——股数少得像一家私人公司，所以每股 137 美元这个价格看着吓人，其实市值只有 33 亿。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>在讲具体业务之前，必须先讲清楚<strong>受监管公用事业是怎么赚钱的</strong>，否则后面所有数字都会看错。</p>
+<p>州政府不允许两家公司在同一条街上各埋一根燃气管，所以给了 CPK 法定垄断权。作为交换，它不能自己定价。定价流程是：公司向州公用事业委员会（特拉华 PSC、佛罗里达 PSC、马里兰 PSC）报告「我这些管道、表计、电线的账面净值是 X 亿」——这叫<strong>费率基数（rate base）</strong>；委员会批准一个<strong>允许回报率</strong>（目前一般在 9.75%–10.75%）；然后倒推出居民每一立方英尺天然气该付多少钱。</p>
+<p><strong>结论是：这家公司想让利润增长，唯一的办法是多埋管子。</strong> 埋管子要花钱，花的钱变成费率基数，费率基数乘以允许回报率就是明年的利润。所以它的自由现金流<strong>永远是负的</strong>，而且这不是病，这就是商业模式本身。看到「自由现金流 −1.94 亿」不要吓到，这一条对公用事业不适用——下面第三部分会换口径。</p>
+<h3>生意一：天然气与电力配送（Energy Distribution）——占七成营收，主体</h3>
+<p>具体是三块地盘：</p>
+<p><strong>特拉华、马里兰的天然气配送。</strong> 老本行，从 1859 年做到现在。给德玛瓦半岛的居民和工商户送管道天然气，一户人家每月账单里包含一笔固定的「基本费」（不管用不用气都要付，大约每月 $15–20）加上按用量计价的部分。</p>
+<p><strong>佛罗里达的天然气配送。</strong> 这是过去十年的增长引擎，包括 Florida Public Utilities，以及 <strong>2023 年 11 月花 9.23 亿美元从 NextEra 手里买下的 Florida City Gas</strong>（现金流量表 FY2023 那笔 −9.25 亿收购就是它），一次性拿到迈阿密-戴德和布里瓦德县约 12 万户客户。买这个是这家公司近十年最大的动作，也是营收从 FY2023 的 6.7 亿跳到现在 9.9 亿的主要原因。</p>
+<p><strong>佛罗里达东北部的电力配送。</strong> 约 3.4 万户，在 Marianna、Fernandina Beach 这些小城。规模很小但同样是受监管的垄断。</p>
+<p>这块为什么在增长：<strong>佛罗里达人口在涌入，新建的住宅小区需要接燃气管</strong>；另外公司在做一件很赚钱的事——把原来烧罐装丙烷的客户，随着管网延伸转成管道天然气客户。转过来之后这个客户就从「不受监管、要竞争」变成「受监管、有保底回报」，同一个客户的价值直接升级。</p>
+<h3>生意二：能源输送管道（Energy Transmission）——占两成，利润率最高</h3>
+<p>两条管道：<strong>Eastern Shore Natural Gas</strong>，一条受联邦 FERC 监管的州际管道，纵贯德玛瓦半岛，是把宾州页岩气送到特拉华、马里兰的唯一通道；<strong>Peninsula Pipeline</strong>，佛罗里达州内管道。</p>
+<p>怎么收钱：<strong>跟托运方签长期「容量预订」合同——你不管用不用，只要预订了每天 1 万夸脱的输送能力，就得按月付固定费用。</strong> 这是公用事业里最好的一种收入：跟天气无关、跟天然气价格无关、跟客户实际用量无关。这也是 TTM 增速最快的一块（约 +23%），因为佛罗里达那边一直在扩建支线。</p>
+<h3>生意三：丙烷（Propane Operations）——占一成七，不受监管的那部分</h3>
+<p>Sharp Energy 品牌。德玛瓦半岛和佛罗里达那些管网到不了的乡下人家，院子里立一个 500 加仑的白色罐子，卡车定期上门加注。<strong>这块生意跟冬天有多冷直接挂钩</strong>，暖冬就少卖。价格不受监管，要跟别的丙烷经销商竞争，利润率明显低于受监管业务。而且如前所述，公司自己在慢慢把这些客户转成管道天然气客户——<strong>这块业务某种意义上是被自家管道蚕食的</strong>。</p>
+<h3>生意四：压缩天然气 / 生物天然气（CNG/RNG Services）——占 3%，故事最多</h3>
+<p>两件事。<strong>Marlin Gas Services</strong> 做的是「虚拟管道」——用重卡拉着装满压缩天然气的高压罐，开到管道停工检修的地方、或者根本没铺管道的工厂，临时供气。一家工厂管道检修停三天，Marlin 开五辆车过去接上，收几万美元的服务费。</p>
+<p><strong>RNG（可再生天然气）</strong>：跟奶牛场、垃圾填埋场合作，把粪便和垃圾发酵产生的甲烷收集起来、提纯到可以进管网的标准，再卖掉。除了卖气，还能拿环保积分（RIN）另外卖钱。这块基数小但增速快（约 +24%）。</p>
+<h3>钱在哪里（TTM，截至 2026-06-30，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比增速（估算）</th>
+<th>占比</th>
+<th>特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>天然气与电力配送</td>
+<td>694.6</td>
+<td>约 +19%</td>
+<td>69.9%</td>
+<td>受监管、保底回报</td>
+</tr>
+<tr>
+<td>能源输送管道</td>
+<td>211.8</td>
+<td>约 +23%</td>
+<td>21.3%</td>
+<td>长期容量合同、最稳</td>
+</tr>
+<tr>
+<td>丙烷</td>
+<td>170.0</td>
+<td>约 +3%</td>
+<td>17.1%</td>
+<td>不受监管、看天吃饭</td>
+</tr>
+<tr>
+<td>CNG / RNG 服务</td>
+<td>30.7</td>
+<td>约 +24%</td>
+<td>3.1%</td>
+<td>小而快</td>
+</tr>
+<tr>
+<td>发电</td>
+<td>19.7</td>
+<td>约 +9%</td>
+<td>2.0%</td>
+<td>极小</td>
+</tr>
+<tr>
+<td>内部抵销与其他</td>
+<td>−133.3</td>
+<td>—</td>
+<td>−13.4%</td>
+<td>各分部之间互相卖气的抵销</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>993.5</strong></td>
+<td><strong>+14.6%</strong></td>
+<td>100%</td>
+<td>经营利润率 <strong>27.3%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>分部增速是我用 FY2024、FY2025 插值倒推的<strong>估算</strong>——财报页不给上年同期 TTM 分部数。<strong>分部利润财报不披露，不编。</strong> 但可以定性地说：受监管的配送和管道贡献了公司约 85% 的利润，丙烷和 CNG/RNG 加起来只占一小块。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这是本批三家里账<strong>最干净</strong>的一家。公用事业的会计受监管机构盯着，动手脚的空间很小。</p>
+<p><strong>① 股权激励（SBC）：810 万美元，占净利润 5.4%。</strong> 微不足道，而且五年来一直稳定在 600–850 万之间，没有靠发股票粉饰成本的迹象。按规矩当现金成本扣掉，扣掉后对结论毫无影响。</p>
+<p><strong>② 一次性项目：两笔小额收益，合计 1340 万。</strong>
+- 资产出售收益 1060 万（卖掉一些不用的地产和设备）
+- 投资出售收益 280 万</p>
+<p>这两笔是虚增利润的，应该扣掉。但看历史，资产出售收益 FY2021 到 FY2025 分别是 903 万、750 万、80 万、440 万、1060 万——<strong>年年都有，只是今年偏大</strong>。属于「年年发生的一次性」。我在下面的调整口径里全额扣掉，扣完净利润从 1.502 亿降到 1.405 亿，倍数从 22.1 倍升到 23.6 倍。差别不大，不影响判断。</p>
+<p><strong>没有大额减值、没有重组费用、没有并购一次性成本。</strong> 这一点跟前面的 GPK 形成鲜明对比。</p>
+<p><strong>③ 资本化支出：这是本篇唯一需要盯的项目，但它是合法且必要的。</strong></p>
+<p>TTM 资本开支 <strong>5.016 亿美元</strong>，而折旧摊销只有 <strong>1.082 亿</strong>——资本开支是折旧的 <strong>4.6 倍</strong>。放在别的行业这是危险信号（要么在疯狂扩张，要么在把费用藏进资产），但在公用事业这里正好相反：<strong>资本开支就是这家公司的增长本身</strong>。埋进地里的每一根管子，明年都会以「费率基数 × 允许回报率」的形式变成利润。</p>
+<p>要警惕的是另一件事：<strong>这些钱有没有真的进了费率基数、监管机构认不认。</strong> 如果委员会认为某笔投资「不审慎」，可以拒绝纳入费率基数，那笔钱就永远收不回来。CPK 的记录是干净的，earned ROE 9.47% vs 允许 ROE 约 10.25%，只有轻微的「监管滞后」（新建资产从投产到进费率有时间差），没有被否决的迹象。</p>
+<p><strong>④ 回购与稀释：这一项是负分，而且是这家公司结构性的负分。</strong></p>
+<p><strong>TTM 回购只有 200 万（基本等于零），而股本同比增加 4.14%。</strong> 现金流量表里「发行普通股 +7860 万」——公司在持续卖新股给市场。加上净新增债务 1.662 亿，一年从外部拿了 2.45 亿新资金。</p>
+<p>这稀释了老股东吗？表面上是。但要看效果：<strong>股本增加 4.14% 的同时，每股收益增长了 11.91%。</strong> 说明用新股换来的资金投出去的回报，高于稀释的成本。这个循环只要允许回报率还在 10% 上下、而增发股票的市净率是 1.97 倍（等于用 $197 换来 $100 的账面权益，账面上一开始就赚 $97），就是划算的。<strong>公用事业增发股票不一定是坏事，前提是股价高于净资产——CPK 恰好满足。</strong></p>
+<p>派息 6410 万，每股约 <strong>$2.66，股息率 1.94%</strong>，派息率 42.7%。这家公司连续 20 多年提高股息、连续 60 多年支付股息，是那种「买了不用管」的分红股——<strong>但 1.94% 的股息率在公用事业里偏低</strong>（同行普遍 3%–4%），因为市场给它的估值高。</p>
+<p><strong>⑤ 利润和现金流的差——逐项对账（百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>150.2</td>
+</tr>
+<tr>
+<td><strong>+ 折旧摊销</strong></td>
+<td><strong>108.2</strong></td>
+</tr>
+<tr>
+<td>− 资产出售收益（非经营）</td>
+<td>−10.6</td>
+</tr>
+<tr>
+<td>− 投资出售收益</td>
+<td>−2.8</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>8.1</td>
+</tr>
+<tr>
+<td>+ 其他经营活动（主要是递延所得税）</td>
+<td>42.4</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−11.8</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>6.0</td>
+</tr>
+<tr>
+<td>+ 所得税相关变动</td>
+<td>11.9</td>
+</tr>
+<tr>
+<td>+ 其他经营资产变动</td>
+<td>4.5</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>308.1</strong></td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−501.6</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−193.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的重点是最后两行。</strong> 净利润 1.5 亿，加回折旧和递延税后经营现金流 3.08 亿，但资本开支 5.02 亿——<strong>缺口 1.94 亿</strong>。这 1.94 亿加上 0.64 亿的分红，合计 2.58 亿，靠新增债务 1.66 亿和增发股票 0.79 亿补上。</p>
+<p><strong>说白了：这家公司每年发的股息，本质上是借钱和卖股票发的。</strong> 这在公用事业行业是标准做法（因为埋进去的管子会以受监管回报的形式慢慢还回来），但你要清楚这个事实——<strong>它不是一家「赚了钱分给你」的公司，是一家「不断向你要钱、承诺以后连本带利还」的公司</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>CPK 是公用事业但不是 REIT、不是银行，市盈率口径依然适用（不适用的只有自由现金流那一栏）。</p>
+<p>市值 33.1 亿，净负债 16.9 亿，企业价值 <strong>50.1 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>33.1 亿 ÷ 1.502 亿</td>
+<td><strong>22.1 倍</strong></td>
+<td>$4.53</td>
+</tr>
+<tr>
+<td>公司调整口径</td>
+<td>CPK 的调整项极小，与 GAAP 基本一致</td>
+<td>约 21.8 倍</td>
+<td>约 $4.59</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>33.1 亿 ÷（1.502 亿 − 一次性收益 0.097 亿）</td>
+<td><strong>23.6 倍</strong></td>
+<td><strong>$4.24</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>−1.94 亿</strong></td>
+<td><strong>不适用</strong></td>
+<td>负数</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>50.1 亿 ÷ 2.715 亿</td>
+<td>18.4 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>50.1 亿 ÷ 3.797 亿</td>
+<td>13.1 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>33.1 亿 ÷ 三年平均 1.364 亿</td>
+<td><strong>24.3 倍</strong></td>
+<td>$4.12</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均（TTM 1.502 + FY2025 1.403 + FY2024 1.186，平均 1.364 亿）算出 24.3 倍，比当期的 22.1 倍略高——<strong>这说明当前利润没有虚高，而是平稳向上的</strong>。没有周期高点的问题，这是它跟 GPK 最大的区别。</p>
+<p><strong>还有一个对公用事业更诚实的口径：净资产回报率 ÷ 市净率。</strong></p>
+<p>CPK 的净资产回报率（ROE）是 <strong>9.47%</strong>，市净率（PB）是 <strong>1.97 倍</strong>。翻译成人话：<strong>这家公司账上每 100 块钱的资产，一年能赚 9.47 块；但你要花 197 块才能买到这 100 块资产。所以你的实际回报是 9.47 ÷ 1.97 = 4.8%。</strong></p>
+<p>这个 4.8% 跟市盈率倒数算出来的 4.53% 是同一件事的两种说法，但后一种说法把「溢价」暴露得更清楚：<strong>你付的是账面价值的两倍，而这家公司的赚钱能力被监管机构锁死在 10% 上下——你花两倍的钱，买一个法律规定不能赚更多的生意。</strong></p>
+<p><strong>还有一个刺眼的数字：投入资本回报率（ROIC）5.30%，而加权平均资本成本（WACC）6.36%。</strong> 表面看是在毁灭价值——每投一块钱进去，回报低于资金成本。但要打个折扣看：公用事业的在建工程（正在挖的沟、正在铺的管）在投产前不产生任何收入，却已经算进了投入资本的分母里。CPK 现在正处在历史上资本开支最猛的阶段（5 亿对 1.08 亿折旧），所以 ROIC 被在建工程严重压低。<strong>等这批管子投产进入费率基数，ROIC 会回升——但回升的天花板也就是监管允许的那 10%。</strong></p>
+<p><strong>说人话：你现在投 100 块进去，按最保守的真实口径（剔掉一次性资产出售收益），公司一年替你赚 4.24 块。</strong></p>
+<p>这 4.24 块里回到你口袋的是 <strong>1.94 块股息</strong>，剩下 2.3 块留在公司里买管子——而且公司还要另外向你（和债主）再要钱。这个 4.24 块未来大概率<strong>慢慢变大</strong>：管子越埋越多、费率基数越滚越大、佛罗里达人口继续涌入、丙烷客户继续转化成天然气客户。管理层的长期指引是每股收益年增约 8%，历史上做到了（TTM 每股收益 +11.9%，FY2025 +13.5%，FY2024 +11.2%）。</p>
+<p>风险在哪：<strong>一是利率</strong>——公用事业本质是债券替代品，长期利率上行时它的估值会被压；而且 16.9 亿负债、负债/EBITDA 4.46 倍，再融资成本直接吃利润（TTM 光利息就付了 7320 万现金）。<strong>二是监管</strong>——委员会不批费率上调，或者不认某笔投资，增长逻辑就断一截。<strong>三是长期的燃料替代</strong>——这是一家卖天然气的公司，二十年尺度上电气化是个真实威胁，虽然佛罗里达和德玛瓦不是加州，压力小得多。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这门生意本身没什么可挑剔的——州政府发的法定垄断牌照、监管保底约 10% 的回报、连续 60 年分红、佛罗里达人口红利实打实、账干净到几乎无处可剥、每股收益连续三年两位数增长；问题全在价格：22 倍市盈率、1.97 倍净资产，意味着你花 197 块买一个法律规定只能赚 10% 的生意，实际回报率被压到 4.8%，股息率只有 1.94%（同行普遍 3%–4%），而且这点股息还是靠借钱和增发新股在发。这是一家好公司挂了个不便宜的价签——想买的等它跌回 18 倍以下、股息率 2.5% 以上再说，现在这个价买进去，未来五年的回报大概率就是「每年 8% 的盈利增长扣掉估值缓慢回归」，跑不赢也亏不了大钱，但没有便宜可占。</strong></p>
+</div></body></html>
