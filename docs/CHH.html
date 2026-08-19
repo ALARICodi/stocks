@@ -1,0 +1,213 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CHH · Choice Hotels(精选国际酒店)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CHH</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">表面15倍实际FCF口径42倍,净负债20亿,增长停滞</div><h1>CHH · Choice Hotels(精选国际酒店)</h1>
+<p>市值 $47.8亿 / 股价约 $107 / 行业:酒店特许经营(美国经济型为主) / TTM 截止 2026-06-30</p>
+<h2>第一部分:它到底做几件事</h2>
+<p>Choice Hotels 名下有 22 个酒店品牌、全球约 7500 家店,但你在路上看到的 Comfort Inn、Quality Inn、Econo Lodge、Sleep Inn 都是它的——<strong>主打美国州际公路边上一晚 80-120 美元的经济型酒店</strong>。2022 年花 6.75 亿美元买下 Radisson 美洲业务后,也有了一些中端和高端牌子。拆开账本,它实质上只做<strong>一件事,外加半件</strong>。</p>
+<h3>生意一:出租招牌和订房系统(特许经营,占利润 95% 以上)</h3>
+<p>跟亚朵的逻辑一样但更纯粹:Choice <strong>一家酒店都不想自己开</strong>。全美国几千个小业主——很多是家族经营的夫妻店,买下或盖起一栋 60-80 间房的路边酒店,挂上 Comfort Inn 的招牌。业主自己雇人、自己扛成本,Choice 收三笔钱:</p>
+<ol>
+<li><strong>持续特许费</strong>:房费流水的约 5%。一家年流水 200 万美元的店,每年交 10 万美元左右;</li>
+<li><strong>订房和营销系统费</strong>(约 6%):客人从 choicehotels.com、APP 或全球订房系统订的房,费用统一进这个池子,Choice 拿去打广告、养 IT 系统——按合同这部分"取之于加盟商用之于加盟商",长期不赚钱也不亏钱,属于<strong>过手资金</strong>;</li>
+<li><strong>首次加盟费和延期费</strong>:签约一次性收几万美元。</li>
+</ol>
+<p>业主为什么交这个钱?因为路边酒店没有品牌就没有客源——美国商旅客和自驾游客认招牌、用积分(Choice Privileges 会员约 7000 万),挂牌后入住率能高出 10-15 个百分点,足够覆盖特许费。这门生意的好处是极端轻资产:7500 家店、1754 名员工,人均创收 57 万美元;坏处是<strong>它的客群是美国最底层的旅行消费</strong>,经济一疲软,路边汽车旅馆最先感觉到。TTM 特许经营口径收入(剔除过手资金)约 10 亿美元,增速只有 5.5%,美国国内 RevPAR 这两年基本是零增长,靠涨特许费率和海外开店往前挪。</p>
+<h3>半件生意:自己下场垫钱开店(Corporate &amp; Other)</h3>
+<p>为了让新品牌起量,Choice 会自己出钱盖样板店、或者借钱给业主开店(账上有几亿美元的应收票据和"key money"——付给业主的签约激励金),成熟后再卖掉。TTM 这块收入 1.4 亿美元,基本不赚钱,但<strong>持续吃现金</strong>——这是后面现金流难看的原因之一。</p>
+<h3>钱(TTM,剔除过手资金口径)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>特许经营(含系统费,分部口径)</td>
+<td>$14.9亿</td>
+<td>+1.2%</td>
+<td>92%</td>
+<td>分部利润率约40%(估算)</td>
+</tr>
+<tr>
+<td>自营开发等 Corporate</td>
+<td>$1.4亿</td>
+<td>+4%</td>
+<td>8%</td>
+<td>约亏平</td>
+</tr>
+<tr>
+<td><strong>净营收口径合计</strong></td>
+<td><strong>$10.1亿</strong></td>
+<td><strong>+5.5%</strong></td>
+<td>100%</td>
+<td>经营利润 $4.1亿</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p>这家公司<strong>表面 15 倍的市盈率是三层妆化出来的</strong>,每层都要剥。</p>
+<ul>
+<li><strong>股权激励(SBC)</strong>:TTM $0.32 亿,占净利润 10%,不算重;回购是 SBC 的 4.2 倍,股本一年缩 2.3%,这一项本身是干净的。</li>
+<li><strong>一次性项目</strong>:<strong>TTM 净利润里有 $0.73 亿"股权投资收益"</strong>——主要是把此前投资的酒店/合资项目重估或出售的账面收益,不是开酒店赚来的,也不会年年有。剔掉税后约 $0.6 亿,真实利润立刻从 3.27 亿掉到 2.7 亿左右。</li>
+<li><strong>利润和现金流的差(问题核心)</strong>:净利润 $3.27 亿,经营现金流只有 $2.22 亿,<strong>利润比现金流多出三分之一,而且经营现金流连续三年下滑</strong>(3.19 亿→2.70 亿→2.22 亿,同期净利润却在涨)。对账:净利润 3.28 + 折旧摊销 1.22 + SBC 0.32 - 股权投资非现金收益 0.73 - "其他经营项目" 0.96(主要是<strong>付给业主的签约激励金 key money 和垫资</strong>,是真金白银流出去买增长)- 营运资金占用 0.91 = 2.22 亿。翻译:<strong>它账面每赚 1 美元,就有约 0.3 美元要再塞给业主当签约红包,才能让门店数不缩水。</strong> 这笔钱在利润表上被摊销成很多年,但现金是当年就出去的。</li>
+<li><strong>资本开支</strong>:TTM $1.07 亿,再扣掉后自由现金流只剩 <strong>$1.15 亿</strong>——市值是它的 <strong>42 倍</strong>。</li>
+<li><strong>杠杆</strong>:净负债 <strong>$20.6 亿</strong>,是 EBITDA 的 4.3 倍,利息保障倍数只有 4.3。股东权益基本为零(回购把净资产买穿了),所以 ROE 566% 是个笑话数字。TTM 还在净增借债 $1 亿,<strong>回购的钱一部分是借来的</strong>。空头盯上了这一点:流通盘的 17.8% 被卖空,在整个任务1里都是罕见的高位。</li>
+</ul>
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>47.8亿 ÷ 3.27亿</td>
+<td>15.1</td>
+<td>6.6 元</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回摊销等,约</td>
+<td>~14</td>
+<td>7.1 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔除股权投资收益税后约0.6亿</td>
+<td><strong>17.9</strong></td>
+<td><strong>5.6 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>47.8亿 ÷ 1.15亿</td>
+<td><strong>41.7</strong></td>
+<td><strong>2.4 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(47.8+20.6)÷ 4.14亿</td>
+<td>16.5</td>
+<td>6.1 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>47.8亿 ÷ 3.08亿</td>
+<td>15.5</td>
+<td>6.4 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>你投 100 块进去,账面上公司一年替你赚 6.6 块,剔掉一次性投资收益剩 5.6 块;但按当年真正落袋的自由现金,只有 2.4 块。</strong> 差出来的 3 块多,一部分变成了付给业主的签约红包、一部分垫进了自营开发项目。公司声称这些垫出去的钱以后会变成更多特许费——也许是真的,但过去三年这个"以后"一直没来:门店增速约 2-3%,RevPAR 不涨,经营现金流反而一年比一年少。而且别忘了它头上还有 20.6 亿净负债,把企业价值算全,EV/FCF 接近 60 倍。</p>
+<p>同一天做的亚朵是个残忍的对照:同样收特许费,亚朵增速 35%、净现金、FCF 比利润还多;Choice 增速 5%、负债 4.3 倍 EBITDA、FCF 只有利润的三分之一。</p>
+<h2>第四部分:一句话结论</h2>
+<p>15 倍是化了妆的——剔掉一次性收益是 18 倍,按真实现金流是 40 多倍,还压着 20 亿净负债在一门不增长的生意上,<strong>不值这个价</strong>;特许经营的商业模式本身是好的,但这家把模式的红利提前透支给了回购,留给新股东的是杠杆和停滞。</p>
+</div></body></html>

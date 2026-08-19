@@ -1,0 +1,235 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SHC · Sotera Health（索特拉健康）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SHC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">灭菌双寡头真护城河，但19亿债+致癌官司，FCF口径47倍</div><h1>SHC · Sotera Health（索特拉健康）</h1>
+<p>市值 $52.8亿 / 股价约 $18.5 / 行业：医疗器械灭菌与检测服务 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>三门生意，都围着一件事转：<strong>医疗产品出厂前必须无菌，而灭菌这活儿药械厂自己不想干、也干不了</strong>。</p>
+<h3>1. Sterigenics——全球最大的外包灭菌工厂</h3>
+<p>你在医院用的一次性注射器、手术包、心脏支架、人工关节，出厂前都必须彻底灭菌。灭菌用三种手段：环氧乙烷毒气熏（EtO，能钻进包装缝隙，一半以上的医疗器械只能用这招）、钴-60 伽马射线照、电子束打。这些设施要么是毒气车间要么是核辐照室，医疗器械厂自己建不起也不敢建，于是整车整车把货拉到 Sterigenics 的工厂：熏两天、检测合格、拉走上市。全球约 50 座工厂，和 Steris 构成双寡头。</p>
+<p>客户为什么跑不掉？<strong>FDA 批文里写死了灭菌工序在哪家工厂做</strong>。想换供应商，得重新做验证、改注册文件，折腾一年半载还要冒断供风险——没人为省几个点的价钱干这事。所以 Sterigenics 每年能理直气壮提价 4–6%，客户照单全收。一单生意大概是：一家导管厂一年送 500 批货，每批灭菌费几千到几万美元，年付几百万。</p>
+<p>但这门生意有个魔鬼：<strong>环氧乙烷是致癌物</strong>。工厂周边居民集体诉讼，2022 年伊利诺伊州 Willowbrook 一案赔了 4.08 亿美元和解（当年公司净利润 -2.34 亿就是这么来的），佐治亚、加州还有案子排着队。这是悬在头上的刀。</p>
+<ul>
+<li>TTM 营收 <strong>$7.89亿</strong>（上年同期约 $7.27亿，+8.6%），占总营收 65%。分部披露的利润口径下利润率约 50%（<strong>估算</strong>），全公司利润基本靠它。</li>
+</ul>
+<h3>2. Nordion——卖放射源的"军火商"</h3>
+<p>伽马灭菌要用钴-60 放射源，全世界能稳定供货的几乎只有 Nordion 一家：从加拿大等地的核反应堆里"收割"辐照过的钴棒，加工成密封源棒，卖给全球的伽马灭菌厂（包括自家 Sterigenics）和医院的伽马刀。<strong>上游是核反应堆排产，卖方说了算</strong>；出货按反应堆检修周期走，季度间波动大，但常年供不应求。</p>
+<ul>
+<li>TTM 营收 <strong>$2.04亿</strong>（上年同期约 $1.81亿，+13%），占 17%。利润率<strong>估算</strong> 50% 上下，小而暴利。</li>
+</ul>
+<h3>3. Nelson Labs——检测实验室</h3>
+<p>给药械厂做微生物检测、生物相容性测试（新器械贴着人体用会不会有毒），出报告给 FDA 看。必需但门槛一般，同行众多。</p>
+<ul>
+<li>TTM 营收 <strong>$2.23亿</strong>（上年同期约 $2.25亿，基本零增长），占 18%。利润率<strong>估算</strong> 15% 上下，三门里最平庸。</li>
+</ul>
+<p><strong>合计 TTM 营收 $12.16亿（+8.2%），经营利润 $4.49亿，经营利润率 36.9%——生意本身是印钞机级别的。</strong> 问题出在下面。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>债是第一大真相</strong>：这是私募股权（Warburg Pincus、GTCR）杠杆收购后上市的公司，带着 <strong>$22.7亿总债、$19.1亿净债</strong>上市。TTM 光现金利息就付了 <strong>$1.46亿</strong>——经营利润 $4.49亿里三分之一喂了债主。EBIT 利息覆盖只有 3.1 倍。经营利润率 37% 到了净利润率只剩 13.4%，钱去哪了：利息 + 38.1% 的高实际税率。</li>
+<li><strong>股权激励（SBC）</strong>：TTM $3710万，占净利润 <strong>23%</strong>——不轻。当真实成本扣。</li>
+<li><strong>一次性项目</strong>：TTM 税前利润率 21.7%，比 2025 全年的 12.7% 高出一大截，说明 2026 上半年利润跳涨（官司费用退坡＋利息下降）。单期口径无法判断这个跳涨里有没有不可持续的成分；反过来，2023–2025 三年的利润又被官司费用压低了。两头都不干净。</li>
+<li><strong>资本化的支出</strong>：无软件资本化问题，但资本开支 $1.79亿（占营收 14.8%），远超折旧 $1.28亿——在扩建产能＋给 EtO 工厂加装排放控制，FCF 因此被压扁。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $1200万 ÷ SBC $3710万 = <strong>0.32</strong>，股本一年反而<strong>增加 1.36%</strong>——不但没回馈股东，还在稀释。不分红。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $1.63亿 vs 经营现金流 $2.92亿 vs 自由现金流只有 <strong>$1.13亿</strong>。对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流</th>
+<th>金额（百万$）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>163</td>
+</tr>
+<tr>
+<td>＋折旧摊销（含无形摊销）</td>
+<td>134</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>37</td>
+</tr>
+<tr>
+<td>＋其他非现金调整</td>
+<td>25</td>
+</tr>
+<tr>
+<td>－营运资金增加</td>
+<td>-67</td>
+</tr>
+<tr>
+<td>＝经营现金流</td>
+<td>292</td>
+</tr>
+<tr>
+<td>－资本开支</td>
+<td>-179</td>
+</tr>
+<tr>
+<td>＝自由现金流</td>
+<td><strong>113</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>现金流本身是真的，但重资本开支把它吃掉一多半。另外记住 2023 年经营现金流是 <strong>-$1.48亿</strong>——那年付掉了 4 亿多的官司和解款。官司在这家公司不是脚注，是会周期性掏空现金流的实体成本。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $52.8亿，企业价值 $71.9亿（净债 $19.1亿，占市值 36%）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>52.8亿 ÷ 1.63亿</td>
+<td><strong>32.3</strong></td>
+<td>3.1元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（前瞻）</td>
+<td>加回无形摊销、SBC、官司费</td>
+<td>18.1</td>
+<td>5.5元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 已含真实成本，约</td>
+<td><strong>32.3</strong></td>
+<td>3.1元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>52.8亿 ÷ 1.13亿</td>
+<td><strong>46.9</strong></td>
+<td>2.1元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>71.9亿 ÷ 4.49亿</td>
+<td>16.0</td>
+<td>6.2元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>52.8亿 ÷ 三年平均净利润 0.58亿*</td>
+<td><strong>91.3</strong></td>
+<td>1.1元</td>
+</tr>
+</tbody>
+</table></div>
+<p>*2023 年 $0.51亿、2024 年 $0.44亿、2025 年 $0.78亿——被官司费用压低的三年，此口径偏严苛，但它如实反映了"官司是常态成本"。</p>
+<p>公司 Non-GAAP 那个 18 倍要打个大问号：它把 LBO 留下的无形资产摊销、SBC、官司费用全加回去了——<strong>官司费用在这家公司哪是一次性的</strong>。</p>
+<p>大白话：<strong>你现在投 100 块进去，按 GAAP 算公司一年替你赚 3.1 块，按真拿到手的自由现金流算只有 2.1 块。</strong> 而且这 2–3 块一分钱都不回你口袋（不分红，回购不抵稀释），全部留在公司里还债、扩产、应付官司。EV/EBIT 16 倍显示<strong>生意本身</strong>定价不算离谱——但你买的不是生意本身，是背着 19 亿债、拖着致癌官司的股权。这个 3.1 块未来会不会变大？会（提价权是真的，利息在降），但 47 倍的自由现金流倍数已经把变大预支得差不多了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>生意是顶级的——FDA 批文锁客、双寡头、年年提价，Nordion 还近乎垄断；但股权投资者拿到的是残羹：利息吃三分之一，重资本开支吃一半现金流，官司周期性来收割，还在净稀释。<strong>32 倍 GAAP、47 倍自由现金流，为一门"好生意坏资本结构"的公司付成长股的价——偏贵</strong>。等它把债降下来、佐治亚官司了结，才轮到股东吃肉。</p>
+</div></body></html>

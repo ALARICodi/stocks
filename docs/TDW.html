@@ -1,0 +1,232 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TDW · Tidewater（泰德沃特海洋支援船）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TDW</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">PE19是税收魔术，真实约39倍，周期顶部股价已涨68%</div><h1>TDW · Tidewater（泰德沃特海洋支援船）</h1>
+<p>市值 $46.8 亿 / 股价约 $94 / 行业：海洋油气支援运输 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>Tidewater 只做一门生意：把船租给海上油田干杂活，按天收钱。</strong> 它是全球最大的海洋支援船（OSV）船东，手里两百来条船，客户是壳牌、雪佛龙、道达尔、沙特阿美、巴西国油这些在海上采油的巨头。</p>
+<p>这门生意具体是怎么回事：海上钻井平台立在离岸几十到几百公里的海面上，平台上几百号人天天要吃饭、钻井要用的泥浆和钢管一根都不能少、平台本身还得靠锚链固定——这些活平台自己干不了，全靠专用船跑腿。Tidewater 的船分两类主力：</p>
+<ul>
+<li><strong>PSV（平台补给船）</strong>：相当于海上的重型卡车。一条 80 多米长的船，甲板拉着钢管和集装箱，船舱里装着钻井泥浆、水泥、燃油和淡水，往返于岸上基地和平台之间。一个中型海上油田开发项目，往往要 2–4 条 PSV 常年伺候。</li>
+<li><strong>AHTS（三用工作船）</strong>：相当于海上的拖车+吊车。钻井平台要挪位置时，它负责把几吨重的锚从海底起出来、拖着平台走、到新位置再把锚布下去。马力越大的船越值钱。</li>
+</ul>
+<p><strong>收钱方式是日租金（day rate）</strong>：一条大型 PSV 现在的市场租金大约每天 3 万美元上下，签几个月到几年的合同。举个具体例子：道达尔在苏里南开发一个深水油田，租 3 条 Tidewater 的 PSV 伺候钻井船，租期两年，光这一单一年就是 3000 多万美元收入。船上的船员、燃油（多数由客户出）、保险、维修是 Tidewater 的成本，租出去一天赚一天，闲着一天亏一天。</p>
+<p>按地区看 TTM 营收（船就是资产，分部按海域划）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>海域</th>
+<th>TTM 营收（百万$）</th>
+<th>上年（FY2025）</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>欧洲/地中海（北海为主）</td>
+<td>365.2</td>
+<td>343.6</td>
+<td>27%</td>
+</tr>
+<tr>
+<td>西非（尼日利亚、安哥拉）</td>
+<td>336.8</td>
+<td>362.8</td>
+<td>25%</td>
+</tr>
+<tr>
+<td>美洲（墨西哥湾、巴西、圭亚那）</td>
+<td>259.1</td>
+<td>270.2</td>
+<td>19%</td>
+</tr>
+<tr>
+<td>亚太（澳大利亚、东南亚）</td>
+<td>190.3</td>
+<td>189.8</td>
+<td>14%</td>
+</tr>
+<tr>
+<td>中东（沙特、卡塔尔）</td>
+<td>183.1</td>
+<td>172.6</td>
+<td>14%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>11.9</td>
+<td>13.9</td>
+<td>1%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,346</strong></td>
+<td><strong>1,353</strong></td>
+<td><strong>-1.0%（TTM同比）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>注意最上面那行总数：<strong>TTM 营收比上一财年缩了 1%</strong>。2022–2024 年营收从 6.5 亿冲到 13.5 亿、翻了一倍，靠的是日租金暴涨（行业 2015–2020 年惨到 Tidewater 自己都在 2017 年破产重整过一次，之后几乎没人造新船，船荒推高租金）。现在租金涨到头了，营收进入平台期。经营利润率 18.4%，财报不按海域披露利润，各海域利润按整体利润率估算即可，差别主要在西非回款慢、北海成本高。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这家公司 TTM 报表里藏着一个大号障眼法，直接把市盈率砍了一半，必须先说：</strong></p>
+<ul>
+<li><strong>税收收益把净利润吹大了 85%</strong>。TTM 税前利润只有 1.61 亿美元，净利润却报了 2.47 亿——因为所得税那一栏是 <strong>负 8494 万</strong>（收益而不是费用）。这是公司把破产年代攒下的亏损抵税额（递延所得税资产）重新确认入账，是一笔<strong>不掏一分钱现金、也不会年年有的会计动作</strong>。把它剥掉、按 25% 正常税率给税前利润交税，真实净利润约 <strong>1.2 亿</strong>，是报表数字的一半不到。上一财年（FY2025）净利润 3.35 亿高于经营利润 2.77 亿，同样有税收收益的影子。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 1370 万，占真实净利润约 11%，规模不大，GAAP 已扣，照扣不加回。</li>
+<li><strong>一次性项目</strong>：TTM 卖船赚了 890 万（利得，剔除）。无重组、无减值。</li>
+<li><strong>资本化的支出</strong>：无软件/内容资本化问题。但注意「其他摊销」1.14 亿——这是干坞费摊销（船每五年强制进坞大修，费用先挂账再摊）,是这门生意真实的、年年都有的成本，不是障眼法。</li>
+<li><strong>回购与稀释</strong>：TTM 回购仅 690 万，对 SBC 1370 万的比值 0.5——但这是节奏问题：FY2024 回购 1.19 亿、FY2025 回购 9800 万，股本一年实际减少 3.8%。回购是真的，只是最近两个季度停了手。</li>
+<li><strong>利润和现金流的差</strong>：经营现金流 3.11 亿 &gt; 真实净利润 1.2 亿，差额主要是折旧 1.51 亿 + 干坞摊销 1.14 亿两项非现金成本加回，再减去补营运资金的钱。现金流是真的、是干净的。资本开支只有 4000 万（不造新船，只维护），自由现金流 <strong>2.71 亿</strong>——这门生意现在最漂亮的就是这个数。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>46.8亿 ÷ 2.47亿</td>
+<td>19.0</td>
+<td>5.3元</td>
+</tr>
+<tr>
+<td>公司口径（无大额Non-GAAP粉饰）</td>
+<td>≈GAAP</td>
+<td>~19</td>
+<td>~5.3元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>46.8亿 ÷ 1.2亿（税前利润按25%正常交税、剔卖船利得）</td>
+<td><strong>约39</strong></td>
+<td><strong>2.6元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>46.8亿 ÷ 2.71亿</td>
+<td>17.3</td>
+<td>5.8元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>47.2亿 ÷ 2.47亿</td>
+<td>19.1</td>
+<td>5.2元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>46.8亿 ÷ 2.04亿（FY23–25均值，FY25本身也含税收收益）</td>
+<td>22.9</td>
+<td>4.4元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按剔掉税收魔术的真实利润算，公司一年替你赚 2 块 6；按自由现金流算能到 5 块 8。</strong> 两个口径差这么多，是因为折旧按造船的历史成本提，而这些船十年没换过、账面折旧远高于当期维护性开支——只要不造新船，现金流口径更接近真实。真实回报大概在两者之间，姑且算 4 块钱。这 4 块里，公司过去两年确实拿出大头回购了股票（两年回购 2.2 亿、股本减 3.8%），不分红；剩下的攒在账上（净负债只剩 4000 万，几乎无债一身轻）。</p>
+<p>但关键问题是这个数<strong>未来是变大还是变小</strong>：日租金已经停止上涨（营收 -1%），这是典型的周期见顶信号；股价却在过去 52 周涨了 68%。船队会老、五年一次的干坞成本会越来越重，而一旦油价下行、海上勘探缩减，日租金掉三成，利润和现金流会跌掉一半以上——2015–2020 那轮它是破过产的。唯一的安全垫是行业十年没造新船，供给短缺短期内是真的。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意本身当下很赚钱、现金流干净、几乎没负债、真回购，但 19 倍的表面市盈率是税收魔术变出来的，真实口径接近 39 倍——为一家营收已经停涨、上一轮周期破过产的周期股，在股价一年涨了 68% 之后付 39 倍利润（或 17 倍周期顶部的现金流），没有便宜可占。想要它，等油价下一次砸出坑再来。</p>
+</div></body></html>

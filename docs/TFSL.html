@@ -1,0 +1,208 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TFSL · TFS Financial（第三联邦储蓄）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TFSL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">2.5倍PB买5.3%ROE,6.4%股息全靠大股东每年弃领续命</div><h1>TFSL · TFS Financial（第三联邦储蓄）</h1>
+<p>市值 $49.0 亿 / 股价约 $17.6 / 行业：储蓄银行（thrift）/ TTM 截止 2026-06-30（财年 9 月底止）/ 全榜第 635 名（分析当日）</p>
+<p><strong>这是金融企业，下面用市净率 PB / ROE / 股息口径而不是市盈率，原因是：银行的「营收」和「利润」都是利差和拨备算出来的，市盈率没有可比性；银行赚不赚钱看它用股东的钱（净资产）一年滚出多少回报（ROE），股价贵不贵看你为每 1 块净资产付了几块钱（PB）。</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>生意只有一门，简单到一句话能说完：<strong>高息揽储、低价放房贷，赚中间的利差</strong>。但这家公司真正需要搞懂的是它的<strong>股权结构</strong>——那才是股价的全部秘密。先讲生意，再讲结构。</p>
+<h3>生意：全美国「最厚道」的房贷银行</h3>
+<p>Third Federal Savings &amp; Loan，1938 年成立于克利夫兰的老式储蓄银行，网点集中在俄亥俄和佛罗里达。两边都做「价格屠夫」：</p>
+<ul>
+<li><strong>存款端</strong>：卖大额存单（CD）和储蓄账户，利率常年排在全美最高一档。退休老人把 10 万美元养老钱存进来，图的就是比大银行高出一截的利息。</li>
+<li><strong>贷款端</strong>：只做住房贷款——首套房按揭和房屋净值贷款（HELOC，就是「拿房子已还清的部分再抵押出来一笔随取随用的额度」），利率常年比同行低。不做信用卡、不做企业贷、不做车贷，八十多年只干这一件事。</li>
+<li><strong>成本端</strong>：全公司只有 958 名员工，管理着约 173 亿美元资产——人均管 1800 万美元，是银行业里极端精简的运营。两头让利还能赚钱，靠的就是把费用压到极致。</li>
+</ul>
+<p>代价是<strong>利差薄得像纸</strong>：净营收 3.47 亿 ÷ 总资产 173 亿 ≈ 2.0%（<strong>估算口径</strong>，同行普遍 3% 上下）。放的都是优质客户的足额抵押房贷，坏账几十年都极低——这是一家极度保守、极度安全、但<strong>注定赚不了大钱</strong>的银行：ROE 只有 5.31%，同行平庸水平是 10%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净营收</td>
+<td>$3.47 亿</td>
+<td>$3.19 亿</td>
+<td>+12.5%</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>$1.01 亿</td>
+<td>$0.90 亿</td>
+<td>+24%</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>5.31%</td>
+<td>约4.6%</td>
+<td>回升中</td>
+</tr>
+</tbody>
+</table></div>
+<p>（前两年被加息打惨——存款成本先涨、房贷收益后涨，利差被夹扁；现在存单陆续重定价，利润正在爬回来。）</p>
+<h3>结构：81% 的股份「不领分红」，小股东吃 6.4% 股息</h3>
+<p>2007 年上市时用的是互助控股（MHC）结构：<strong>母体 Third Federal MHC 持有约 81% 股份，公众只持有约 19%（流通盘仅 5,000 万股）</strong>。关键在于：MHC 每年经会员投票和监管批准，<strong>主动放弃领取分红</strong>。于是每股 $1.13 的年分红实际只付给 19% 的公众股——账面上派息率高达 314%（分红总额 ÷ 净利润），看着像庞氏；实际现金出门约 $5,700 万，只占净利润的 57%，完全付得起。</p>
+<p>翻译成人话：<strong>大股东把自己那份利润让给了小股东吃</strong>。你按 $17.6 买入，每年实收 $1.13，股息率 6.4%——而这家银行的真实盈利能力根本支撑不起这个数（下一部分算给你看）。这是一只靠结构性补贴产生高息的「类债券」，而不是一门高回报生意。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉（银行版）</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：金额很小，占净利润比例可忽略，不构成失真。</li>
+<li><strong>一次性项目</strong>：TTM 无重大一次性损益，利润是干净的利差收入。</li>
+<li><strong>拨备与信用质量</strong>：历史坏账率极低（只放优质足额抵押房贷），拨备对利润没有粉饰空间。</li>
+<li><strong>资本充足</strong>：净资产 $19.6 亿 ÷ 总资产约 $173 亿 ≈ <strong>11.3% 的资本比例</strong>（按资产负债表计算），对一家储蓄银行来说非常厚实，安全性无可挑剔。</li>
+<li><strong>回购与稀释</strong>：TTM 没有回购（股本 +0.1%），股东回报全走分红。</li>
+<li><strong>真正的「障眼法」不在会计，在结构</strong>：① 报表市值 $49 亿是按全部 2.79 亿股算的，但其中 81% 在 MHC 手里永不流通，真实公众盘只值约 $9 亿——这只股票比市值显示的小得多、也脆弱得多（空头占流通盘 15%）；② 6.4% 的股息率<strong>每年都要靠 MHC 会员投票 + 监管点头续期「弃领」才存在</strong>。这个批准已经连续续了十几年,但它本质是一纸许可,不是合同权利。哪天弃领停了,每股分红立刻摊薄到所有股份上,股息故事当场终结。</li>
+</ul>
+<hr />
+<h2>第三部分：贵不贵？（PB / ROE 口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>解读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB（=有形口径 P/TBV）</td>
+<td><strong>2.50 倍</strong></td>
+<td>每 1 块净资产你付 2.5 块</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td><strong>5.31%</strong></td>
+<td>净资产一年只滚出 5.3%</td>
+</tr>
+<tr>
+<td>市盈率（仅供参照）</td>
+<td>48.75 倍</td>
+<td>全榜最贵档</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>54.8 倍（市值÷FY24/25/TTM平均$0.89亿）</td>
+<td>当期利润已是回升后的偏高位</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>6.44%</td>
+<td>靠 MHC 弃领维持</td>
+</tr>
+<tr>
+<td>资本比例（净资产/总资产）</td>
+<td>约 11.3%</td>
+<td>非常安全</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>投 100 块的年回报 = ROE × (1/PB) = 5.31% × (1/2.5) ≈ 2.1 块。</strong> 这是全部真实盈利能力——你花 2.5 倍的价钱买一份年化 5.3% 的生意，摊到你头上只剩 2.1%。同样 5% ROE 的银行，市场通常只肯给 0.7–0.9 倍 PB；TFSL 能卖 2.5 倍,唯一的原因就是那 6.4% 的结构性股息（外加一个讲了快二十年没兑现的「二次转制」故事：MHC 若把 81% 股份公开发售，募到的钱会灌进净资产，理论上一夜变便宜。2007 年上市至今没发生过）。</p>
+<p>还要记住银行的通病：这 2.1 块建立在约 9 倍杠杆之上（资产 173 亿 / 净资产 19.6 亿），经济下行时利差和坏账两头挤，回报会剧烈缩水——虽然这家的资产质量属于全行业最保守的一档。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一只银行股，是一张年息 6.4% 的「许可证债券」——而且按生意本身的成色算，贵得没道理。</strong> 2.5 倍净资产买 5.3% 的 ROE，投 100 块真实年回报 2.1 块，全榜垫底水平；你多收的每一分股息都来自大股东「自愿不领」这个每年续期的许可，而不是公司多能赚。想吃这 6.4% 的人要清楚自己赌的是什么：赌弃领年年续（大概率，但不是权利）、赌利率别再倒挂、顺便赌一个十九年没来的二次转制。银行本身干净、保守、安全，可是安全的抵押品配上离谱的价格依然是坏投资。不碰。</p>
+</div></body></html>

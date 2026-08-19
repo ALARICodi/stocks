@@ -1,0 +1,226 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WAY · Waystar（医疗账单清算软件）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WAY</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">扣SBC后24倍FCF换15%增长，粘性强但年稀释8.5%</div><h1>WAY · Waystar（医疗账单清算软件）</h1>
+<p>市值 $46.6 亿 / 股价约 $24 / 行业：医疗信息技术 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>Waystar 实质上做一门生意：帮美国的医院和诊所向保险公司要钱，从每一笔账单里抽成。</strong> 财报按收费方式分成「订阅」和「按量」两块，但底层是同一个平台。2025 年 10 月又花约 12.5 亿美元（6.3 亿现金+增发股票）买下了 Iodine Software，加了一个 AI 病历编码的新模块。</p>
+<p>先把这门生意讲透，因为它离普通人的直觉很远。美国看病，病人只付一小部分，大头要医院自己去找保险公司报销。这个讨钱流程烂得出名：一家 300 床的医院，每年要向几十家保险公司提交几十万张账单（claim），每家保险公司的格式、规则、审批要求都不一样；填错一个代码，账单被拒付，医院要么派人打电话扯皮几个月，要么认栽。全美医院每年因为账单被拒和流程损耗白白蒸发上千亿美元。<strong>Waystar 卖的就是处理这件事的云软件</strong>：</p>
+<ul>
+<li><strong>交账单前</strong>：软件先查「这个病人的保险还有效吗、这项手术保险公司肯不肯报」（资格核验、事前授权），再用规则引擎把账单洗一遍，格式、代码、附件自动对齐每家保险公司的要求，然后电子递交。行业里干净账单一次通过率大约八成，Waystar 客户能做到 98% 以上——对医院来说，早一个月拿到钱、少雇十个专门扯皮的文员，都是真金白银。</li>
+<li><strong>被拒之后</strong>：AI 自动分析拒付原因、生成申诉材料重新提交。</li>
+<li><strong>对病人</strong>：生成账单、发短信提醒、线上支付、分期。</li>
+<li><strong>Iodine（新买的）</strong>：AI 读住院病历，提醒医生「你实际做的治疗比你写的代码值钱，改过来」——直接帮医院多要到报销。这块和讨钱主业是天然搭配。</li>
+</ul>
+<p>客户约 3 万家：大医院系统、连锁诊所、检验所、牙科、康复机构。举个例子：一家年收入 5 亿美元的地区医院系统用 Waystar 全家桶，每年付它一百多万美元订阅费，外加按账单笔数计的处理费——相对于它挽回的拒付损失，这笔钱不值一提，所以<strong>续约率极高、极难被换掉</strong>（换掉它等于把全院的现金流管道重新接一遍）。全美每年约 1.8 万亿美元的医疗报销从它平台上过。</p>
+<p>两种收钱方式的 TTM 数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 营收（百万$）</th>
+<th>上年（FY2025）</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅（按月/按床位收固定费）</td>
+<td>650.7</td>
+<td>558.4</td>
+<td>54%</td>
+<td>含 Iodine 并入</td>
+</tr>
+<tr>
+<td>按量（按账单笔数/回款比例抽成）</td>
+<td>548.2</td>
+<td>534.8</td>
+<td>45%</td>
+<td>跟就诊量挂钩</td>
+</tr>
+<tr>
+<td>服务及其他</td>
+<td>6.9</td>
+<td>6.1</td>
+<td>1%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,206</strong></td>
+<td><strong>1,099</strong></td>
+<td><strong>+19.2%</strong></td>
+<td>剔除并购贡献，内生增速约 10–12%（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按板块拆利润。整体毛利率 69%、经营利润率 24.1%（经营利润 2.90 亿），软件生意的正常水平。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 4900 万，<strong>占净利润 36%</strong>——不小。GAAP 已扣除，不加回。</li>
+<li><strong>一次性项目</strong>：TTM 只有 200 万重组费，干净。但要记住它 2024 年 6 月才 IPO：FY2023/2024 的账面亏损主要是私募股权时代 22 亿美元债务的利息压的，IPO 募了 10 亿还债后利润才转正——<strong>现在的利润历史只有两年，别拿三年前的亏损直接说它「不赚钱」，也别忘了它是刚从杠杆堆里爬出来的</strong>。</li>
+<li><strong>资本化的支出</strong>：资本开支 TTM 4670 万，其中大部分是资本化的软件开发费（FY2025 才 2650 万，并入 Iodine 后翻了近倍）。规模占营收 4%，不算过分。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 1270 万 ÷ SBC 4900 万 = <strong>0.26，回购连员工发股都盖不住</strong>；更大头是收购 Iodine 增发的股票，<strong>股本一年膨胀了 8.5%</strong>。你持有它，每年被稀释是常态。</li>
+<li><strong>利润和现金流的差</strong>：净利润 1.35 亿 vs 经营现金流 2.93 亿，差额对账：净利润 1.35 亿 → 加折旧摊销 1.44 亿（<strong>其中大头是收购来的客户关系、技术的无形资产摊销</strong>——私募时代和 Iodine 的收购溢价在利润表里慢慢消化，这是账面成本不是现金成本）→ 加 SBC 0.49 亿 → 减营运资金占用等 0.35 亿 → 经营现金流 2.93 亿。减资本开支 0.47 亿，<strong>自由现金流 2.46 亿</strong>，含金量高于账面利润。</li>
+<li>净负债 12.9 亿（Debt/EBITDA 3.4 倍），利息保障 3.6 倍——买 Iodine 又把杠杆加回来了，不危险但不轻。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>46.6亿 ÷ 1.35亿</td>
+<td>34.5</td>
+<td>2.9元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（加回摊销+SBC，即前瞻PE的口径）</td>
+<td>约 46.6亿 ÷ 3.3亿</td>
+<td>~14（前瞻）</td>
+<td>~7.1元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（无大额一次性，SBC照扣；无形摊销是非现金但真实收购代价，不加回）</td>
+<td>≈GAAP</td>
+<td><strong>34.5</strong></td>
+<td><strong>2.9元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>46.6亿 ÷ 2.46亿</td>
+<td>18.9</td>
+<td>5.3元</td>
+</tr>
+<tr>
+<td>自由现金流再扣SBC</td>
+<td>46.6亿 ÷ 1.97亿</td>
+<td>23.6</td>
+<td>4.2元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>59.5亿 ÷ 2.90亿</td>
+<td>20.5</td>
+<td>4.9元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>46.6亿 ÷ 0.14亿（FY23−0.5亿/FY24−0.2亿/FY25+1.1亿）</td>
+<td>~336</td>
+<td>0.3元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那行看着吓人，但失真：前两年的亏损是私募杠杆的利息造成的，那笔债 IPO 时已经还掉大半，不代表现在的赚钱能力。<strong>最靠谱的口径是「自由现金流再扣 SBC」：投 100 块，一年替你赚 4 块 2</strong>，而且这个数正以每年 15% 上下的速度变大（内生增长 10–12% + Iodine 并表 + 经营杠杆）。这 4 块 2 目前一分钱不分给你——不分红、回购聊胜于无，钱全部拿去还债和继续收购，你赚的是公司值钱了的钱，还要先忍受每年 8% 级别的并购稀释。华尔街给的前瞻 PE 14 倍是把摊销和 SBC 全加回的口径，别当真。</p>
+<p>股价过去一年跌了 33%（IPO 后炒高又杀估值），现在的价格对应的预期已经不高。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意本身是好生意——医院的现金流管道，粘性极强、69% 毛利、真金白银的现金流、还在以 15% 增长；但账不干净：SBC 吃掉三分之一利润、并购驱动、一年稀释 8.5%、杠杆 3.4 倍。现价按扣完 SBC 的现金流算 24 倍，换 15% 的增长，<strong>是个公道价，不是便宜价</strong>——值得放进观察名单，等它消化完 Iodine、证明稀释会停，或者股价再给个坑。</p>
+</div></body></html>

@@ -6,6 +6,10 @@ $ErrorActionPreference = "Stop"
 $repo = $PSScriptRoot
 
 git -C $repo add -A
+if ($LASTEXITCODE -ne 0) {
+    Write-Output "ADD_FAILED -- git add errored (see above), nothing staged. Fix the offending file and rerun."
+    exit 1
+}
 $changed = git -C $repo status --porcelain
 if (-not $changed) {
     Write-Output "NOTHING_TO_PUSH -- permanent site is already up to date."
@@ -16,6 +20,10 @@ if (-not $changed) {
 $n = ($changed | Measure-Object).Count
 $msg = "update site " + (Get-Date -Format "yyyy-MM-dd HH:mm")
 git -C $repo commit -q -m $msg
+if ($LASTEXITCODE -ne 0) {
+    Write-Output "COMMIT_FAILED -- see message above."
+    exit 1
+}
 
 git -C $repo push origin main --quiet
 if ($LASTEXITCODE -ne 0) {

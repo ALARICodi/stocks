@@ -1,0 +1,251 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KLIC · 库力索法（Kulicke and Soffa）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KLIC</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">42倍买周期股，三年平均利润约等于零</div><h1>KLIC · 库力索法（Kulicke and Soffa）</h1>
+<p>市值 $48.2 亿 / 股价约 $92 / 半导体封装设备 / TTM 截止 2026-07-04</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>这家公司做的是芯片生产最后一道工序的机器：芯片本身造好之后，得把它跟外面的电路板"接上线"、封进壳里，这一步叫封装。KLIC 卖的就是封装线上的核心设备，按财报分部拆成四门半生意。</p>
+<h3>1. 球焊机（Ball Bonding）—— 老本行，全球老大</h3>
+<p>芯片上的接点和封装基板之间，要用比头发丝还细好几倍的金线或铜线一根根连起来，一颗普通芯片几十到几百根线。球焊机就是干这个的全自动机器：先在线头上打个小球，压焊到芯片焊盘上，拉线、再焊到基板，每秒能打十几根，一台机器一天焊几百万根线。一台球焊机卖十几万美元，客户是日月光、安靠、长电科技这类封测代工厂和三星、SK 海力士这类自己封装的大厂——它们扩产时一次就下几百台的单。KLIC 在球焊机这个细分市场是全球份额第一（对手主要是新加坡 ASMPT），这门生意的脾气是<strong>极端周期性</strong>：封测厂产能吃紧时爆买,行业下行时订单直接归零，机器又不坏，没人买新的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>球焊机</th>
+<th>TTM</th>
+<th>上一财年(FY2025)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$5.88 亿（+101%）</td>
+<td>$2.93 亿</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>61.8%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>翻倍的原因：存储芯片（NAND/DRAM）和通用半导体在 AI 带动下重新扩产,球焊机需求从两年萧条里猛醒。</p>
+<h3>2. 楔焊机（Wedge Bonding）—— 焊粗线的，管功率器件</h3>
+<p>跟球焊同理但用粗得多的铝线或铝带，焊的不是逻辑芯片而是功率器件：电动车的逆变器模块、光伏逆变器、工业电源里那些要过大电流的芯片。客户是英飞凌、安森美这类功率半导体厂。TTM 营收 $0.80 亿（占 8.4%），比上financial年的 $1.11 亿<strong>跌了 28%</strong>——电动车增速放缓，功率半导体在去库存。</p>
+<h3>3. 先进方案（Advanced Solutions）—— 赌 AI 的那张票</h3>
+<p>AI 芯片不用细线连了，改成把芯片像盖楼一样直接摞起来（HBM 内存堆叠、chiplet 拼装），用的设备叫热压键合机（TCB），精度要求高一个数量级，一台卖上百万美元。KLIC 的 TCB 已经进了主要 HBM 厂商的产线。TTM 营收 $0.87 亿（占 9.2%），同比 +20%。规模还小，但这是股价一年涨 155% 的故事主角。</p>
+<h3>4. 后市场（APS）—— 卖耗材和维修，最稳的一块</h3>
+<p>焊线时的"针头"（瓷嘴）是消耗品，几个星期就磨损要换，还有备件、维修、翻新服务。只要客户的机器在转就得持续掏钱，类似打印机卖墨盒。TTM 营收 $1.53 亿（占 16.1%），基本不随周期大起大落（同比 -2%）。</p>
+<p>另有杂项业务 $0.43 亿（4.5%）。<strong>财报只披露到分部营收，不披露分部利润</strong>；公司整体 TTM 毛利率 52.6%、经营利润率 18.5%,按产品结构估算，球焊机和耗材是利润主力，先进方案还在投入期赚得少。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $2717 万，占净利润 $1.157 亿的 <strong>23.5%</strong>——比例不低，当真实成本扣。</li>
+<li><strong>一次性项目</strong>：TTM 这一期干净（无减值）。但注意 FY2025 计提了 $3982 万、FY2024 计提了 $4447 万的资产减值和重组费（砍掉了做显示屏和电动车项目的"Project W"等业务）——连续两年都有大额"一次性"，说明这家公司下行期习惯性洗澡，看历史利润时要记得这点。</li>
+<li><strong>资本化支出</strong>：没有明显的开发费资本化，研发全费用化，这点干净。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $2590 万 ÷ SBC $2717 万 = <strong>0.95</strong>——回购刚好抵消给员工发的股票，一分钱没真正回馈股东。股本一年只减 0.76%。倒是分红实在：TTM 派了 $4285 万（股息率约 0.9%）。</li>
+<li><strong>利润 vs 现金流——这是本篇最大的坑</strong>：净利润 $1.157 亿，经营现金流只有 $5512 万，自由现金流 $4113 万。对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+115.7</td>
+</tr>
+<tr>
+<td>加回折旧摊销</td>
+<td>+16.0</td>
+</tr>
+<tr>
+<td>加回股权激励</td>
+<td>+27.2</td>
+</tr>
+<tr>
+<td>其他经营项目</td>
+<td>+13.4</td>
+</tr>
+<tr>
+<td><strong>应收账款暴增</strong></td>
+<td><strong>−155.9</strong></td>
+</tr>
+<tr>
+<td><strong>存货增加</strong></td>
+<td><strong>−80.6</strong></td>
+</tr>
+<tr>
+<td>应付账款增加</td>
+<td>+118.6</td>
+</tr>
+<tr>
+<td>税项及其他</td>
+<td>+0.7</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>55.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>翻译成人话：账上赚的 1.16 亿里，有 1.56 亿变成了"客户还没付的账单"，8 千万压成了仓库里的存货——典型的周期上行期抢发货，利润先记账、钱还没到手。只要客户最后都付钱，这不算造假，但<strong>当下这份利润的现金含量只有一半不到</strong>。</p>
+<p>净现金 $4.78 亿（占市值 10%），几乎无有息负债，账本身很结实。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>48.2亿 ÷ 1.157亿</td>
+<td><strong>42.1</strong></td>
+<td>2.4 元</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP（估算：加回SBC等）</td>
+<td>48.2亿 ÷ ~1.43亿</td>
+<td>~34</td>
+<td>2.9 元</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>TTM 本身无一次性项目，SBC 已扣</td>
+<td><strong>42.1</strong></td>
+<td>2.4 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>48.2亿 ÷ 0.41亿</td>
+<td><strong>117</strong></td>
+<td>0.85 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>43.4亿 ÷ 1.76亿</td>
+<td>24.7</td>
+<td>4.1 元*</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>48.2亿 ÷ 平均(−0.69, 0.02, 1.16)亿</td>
+<td><strong>≈308</strong></td>
+<td>0.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>*EV 口径扣掉了 4.8 亿净现金，所以显得便宜些。</p>
+<p><strong>全表最扎眼的是最后一行</strong>：FY2024 亏 $6900 万、FY2025 赚 $21 万（约等于零）、TTM 赚 $1.16 亿——过去三年平均年利润只有 $1565 万，三年平均口径市盈率 300 多倍。眼下这个"42 倍"是踩在刚反弹的利润上算的；上一轮巅峰 FY2022 赚过 $4.34 亿，随后两年利润直接蒸发。这就是重周期设备股的真面目。</p>
+<p>大白话：<strong>你现在投 100 块进去，按 TTM 账面利润公司一年替你赚 2.4 块；按真金白银的自由现金流只有 8 毛5；按熨平周期的三年平均只有 3 毛。</strong> 这 2.4 块里真回到你口袋的只有分红约 0.9 块，回购是假的（刚够抵消发股）。市场给的远期市盈率 15.8 倍，意思是华尔街赌 EPS 两年内从 $2.19 涨到近 $6——赌的是 AI 封装（TCB）+ 存储扩产这轮周期冲顶。赌对了现价不贵，赌错了（周期股常态）就是站在 300 倍的三年平均口径上接盘。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>生意本身站得住：球焊机全球老大、耗材后市场稳定、净现金 10% 市值、账干净——但它骨子里是暴涨暴跌的周期设备商，三年平均利润约等于零，现在 42 倍 GAAP、117 倍自由现金流、股价一年翻 1.5 倍，等于把下一轮周期顶点的利润提前全价买断。好公司,坏价格,这钱让赌性大的人去赚。</p>
+</div></body></html>
