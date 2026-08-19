@@ -1,0 +1,206 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CFR · Cullen/Frost Bankers（弗罗斯特银行）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CFR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">德州最干净的银行,涨35%后2.33倍净资产没便宜可占</div><h1>CFR · Cullen/Frost Bankers（弗罗斯特银行）</h1>
+<p>市值 $104.4 亿 / 股价约 $168 / 行业：地区银行（德克萨斯州）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是金融企业，下面用市净率 PB + ROE 口径而不是市盈率</strong>，原因是：银行的"营收"是利息差，利润高度依赖杠杆（拿储户的钱放贷），市盈率会把杠杆撑出来的利润当成本事，PB×ROE 才能看清它到底用多少本钱、赚了多少回报。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>按财报分部，这家公司实质上就做两门生意，全部只在德克萨斯一个州做。</p>
+<h3>生意一：银行（Banking）—— TTM 营收 $20.87 亿，占 92%</h3>
+<p>这是最古典的那种银行生意，而且是全美国做得最"老派"的之一。总部在圣安东尼奥，1868 年开业，一百五十多年只在德州经营，牌子叫 Frost Bank。</p>
+<p>它怎么赚钱：德州的中小企业主——比如一家在休斯顿做油田设备租赁的公司——把日常经营账户开在 Frost，账上常年趴着几百万美元活期存款，<strong>这些钱 Frost 几乎不用付利息</strong>（Frost 的存款里有大约三分之一是完全不计息的企业活期账户，这是全美银行业里数一数二的比例）。然后 Frost 把这些近乎零成本的钱，一部分放贷给别的德州企业做商业贷款、商业地产贷款（利率 6%–8%），一部分买成美国国债和市政债（收 4%–5%）。一进一出，利差就是利润。</p>
+<p>为什么客户非用它不可：Frost 卖的不是利率，是服务——它是德州中小企业界的"关系银行"，客户经理二十年不换人，企业主打电话能直接找到人拍板。2008 年金融危机它是全美少数<strong>公开拒绝接受政府救助（TARP）</strong>的银行之一，八十年代德州石油崩盘、2023 年硅谷银行倒闭潮它都毫发无损，德州企业主就认这个"不会出事"的名声。近几年它在休斯顿、达拉斯、奥斯汀自建网点扩张（不搞并购，全部自己开店），新网点带来的存款和贷款是营收增长的主要来源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期(FY2024)</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>银行分部营收</td>
+<td>$20.87 亿</td>
+<td>$18.75 亿</td>
+<td>92%</td>
+<td>增速约 +11%（对比 FY2024 年度）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：财富管理（Frost Wealth Advisors）—— TTM 营收 $2.25 亿，占 10%</h3>
+<p>给德州的有钱家族和企业管钱：信托、遗产管理、投资组合管理、企业 401(k) 退休计划托管。按管理资产规模抽年费（通常 0.5%–1%）。这门生意不占用资本、现金流稳定，客户粘性极高——一个家族信托一签就是几十年。规模不大但年年稳定增长（FY2023 $1.87 亿 → TTM $2.25 亿）。</p>
+<p>另有一块"Non-Banks"分部 TTM 营收 -$0.12 亿，是控股公司层面的内部抵消项，不是真生意，忽略。</p>
+<p><strong>合计：TTM 总营收 $22.64 亿（+8.9%），净利润 $6.69 亿，净利率约 30%。</strong></p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表里没有单列 SBC 行，说明金额小到不需要单独披露（银行业 SBC 普遍占利润 2%–4%）。股本一年<strong>净减少 1.46%</strong>，员工发股没有稀释股东。这项没有障眼法。</li>
+<li><strong>一次性项目</strong>：TTM 有 $0.24 亿投资出售收益，占利润 3.5%，可忽略。没有重组、减值、诉讼等大额一次性项目。账很干净。</li>
+<li><strong>信贷拨备</strong>：TTM 计提坏账准备 $0.35 亿，只占营收 1.5%、占净利润 5%——这是银行的"真实成本"而不是障眼法，但要注意这个数字低得反常（FY2024 计提 $0.65 亿）。<strong>单期口径无法判断当前的低拨备是德州经济真好，还是暂时少计了</strong>。以 Frost 的历史风格（2020 疫情时一次性重手计提），倾向于前者，但这是银行股利润最容易被调节的地方，记着它。</li>
+<li><strong>资本化的支出</strong>：无。银行没有这个科目的操作空间。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $3.18 亿 + 分红 $2.64 亿 = <strong>$5.82 亿真金白银还给股东，占市值 5.6%</strong>。SBC 没单列没法算比值，但股本实打实降了 1.46%，这是真回购不是抵消式回购。</li>
+<li><strong>利润和现金流的差</strong>：TTM 净利润 $6.69 亿 vs 经营现金流 $7.20 亿，基本一致。银行的现金流波动主要来自存贷款时点变化，不构成疑点。</li>
+</ul>
+<p><strong>结论：这是本任务做到现在账最干净的公司之一。没有 Non-GAAP 把戏（公司连调整后利润都懒得算），没有 SBC 稀释，拨备是唯一需要盯的科目。</strong></p>
+<h2>第三部分：估值——银行口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>市值 ÷ 净资产</td>
+<td>2.33 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>市值 ÷ 有形净资产</td>
+<td>2.33 倍（商誉可忽略）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>净利润 ÷ 净资产</td>
+<td>15.5%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（真实回报）</strong></td>
+<td>你花 2.33 块买 1 块净资产，这 1 块每年赚 0.155 块</td>
+<td>—</td>
+<td><strong>6.7 块</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（参考）</td>
+<td>市值 ÷ TTM 净利润</td>
+<td>15.9 倍</td>
+<td>6.3 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ 三年平均净利润（$5.97 亿）</td>
+<td>17.5 倍</td>
+<td>5.7 块</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>净利润 ÷ 总资产</td>
+<td>1.30%</td>
+<td>（行业优秀线是 1%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，公司一年替你赚 6 块 3 到 6 块 7。</strong> 其中约 5 块 6 是以分红加回购的形式<strong>当年就真回到你口袋</strong>的（分红收益率约 2.5% + 回购约 3%），剩下的留在公司里支撑贷款规模继续长。三年平均口径（5.7 块）和当期口径（6.7 块）差距不大，说明当前利润不是周期高点上的虚火——但要记住这几年是高利率环境，<strong>如果美联储大幅降息，它零成本存款的优势会被压缩</strong>（存款不付息的好处，在利率 5% 时是大金矿，在利率 1% 时几乎不值钱），利润会随之下台阶。这是这门生意唯一的大变量。</p>
+<p><strong>必须说明的是</strong>：这个回报建立在银行天然的高杠杆之上（总资产约为净资产的 12 倍），经济严重下行时坏账会成倍放大、利润会剧烈缩水。Frost 的历史记录（80 年代德州地产崩盘、2008、2023 三次危机全身而退）说明它是同行里最抗揍的，但杠杆的物理属性不会因为历史优秀而消失。</p>
+<h2>第四部分：一句话结论</h2>
+<p>这是一家真正意义上的好银行——零成本存款护城河真实存在、账干净得连 Non-GAAP 都不屑于编、管理层拿股东的钱当自己的钱用。但市场完全知道它好：2.33 倍净资产的定价在全美地区银行里排在最贵的一档，股价一年涨了 35% 之后，15.9 倍市盈率买 6% 出头的年回报，<strong>价格公道偏贵，没有便宜可占</strong>。想买德州经济的人可以把它放在观察名单第一排，等下一次银行业恐慌（2023 年 3 月那种时刻它跌到过 1.7 倍净资产）再出手，那才是买它的时候。</p>
+</div></body></html>

@@ -1,0 +1,237 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BWA · 博格华纳（BorgWarner）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BWA</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账面35倍是减值化的妆，真实现金力11-14倍</div><h1>BWA · 博格华纳（BorgWarner）</h1>
+<p>市值 $142 亿 / 股价 $69.90 / 行业：汽车零部件 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>博格华纳是全球最大的涡轮增压器制造商，给几乎所有你叫得出名字的车厂供货。它现在实质上做四门生意：两门燃油车时代的印钞机，一门正在起量的电动车新业务，一门正在收摊止血的失败押注。</p>
+<h3>生意一：涡轮增压与热管理（TTM 营收 $57.1 亿，占 40%）</h3>
+<p>涡轮增压器是个巴掌大的部件，装在发动机排气管上，用废气推动叶轮把更多空气压进气缸——让 1.5L 的小发动机干出 2.5L 的活，省油又有劲。全球每三台带涡轮的车里大约有一台用博格华纳的。具体怎么做生意：大众开发新一代 EA211 发动机时，博格华纳的工程师提前两三年就进驻联合开发，拿到「定点」后这款发动机生命周期内（通常 5–8 年）的涡轮基本就锁定它家了，一台涡轮卖车厂 100–300 美元，一个平台年供货几十万台。<strong>客户换供应商要重新做整机标定和耐久测试，成本高到没人愿意换</strong>——这就是护城河。热管理（水泵、风扇离合器、EGR 阀）同理。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>涡轮与热管理</td>
+<td>$57.1 亿</td>
+<td>-1.0%</td>
+<td>39.8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>营收在缓慢阴跌——燃油车全球产量见顶了。但油车没死透之前，这就是台印钞机：分部利润率约 15%（财报只披露分部营收，利润率按公司披露的分部经营利润口径估算）。</p>
+<h3>生意二：传动系统与 Morse 链条（TTM 营收 $57.4 亿，占 40%）</h3>
+<p>变速箱链条（Morse 是百年品牌，正时链条和 CVT 链条的代名词）、离合器模块、四驱分动器、扭矩管理器。丰田的混动变速箱、宝马的 xDrive 四驱里都有它的部件。收钱方式和涡轮一样：绑定平台、锁定周期、按件计价。混动车（HEV/PHEV）反而是利好——混动既要发动机件又要电驱件，单车价值量比纯油车高。这块 TTM 还在微增（+1.5%）。</p>
+<h3>生意三：电驱系统 PowerDrive（TTM 营收 $24.6 亿，占 17%）</h3>
+<p>电动车的「三合一」电驱总成：电机、逆变器、减速器打包卖，还有 800V 碳化硅逆变器这种高端件。客户包括现代、沃尔沃卡车、国内一批新势力。FY2025 增长 27%，TTM 同比 +4.7%——在起量，但<strong>利润率大概率还在盈亏线附近</strong>（估算：行业电驱业务普遍亏损或微利，公司未单独披露）。这是公司押的未来。</p>
+<h3>生意四：电池与充电系统（TTM 营收 $4.8 亿，占 3%）——失败的押注，正在收摊</h3>
+<p>2020–21 年高价买了德国电池包厂 Akasol 和充电桩业务，赶上电动车资本开支退潮，营收从 FY2024 的 7.3 亿萎缩到 TTM 的 4.8 亿（-18%），公司已宣布退出充电桩业务、收缩电池包。<strong>这门生意留下的账单就是下面第二部分那笔年年出现的巨额减值。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 5900 万，占净利润 14%——比例看着高是因为净利润被减值打薄了，占 FCF 仅 5%。不算过分。</li>
+<li><strong>一次性项目（全篇关键）</strong>：TTM 计提了 <strong>6.84 亿美元</strong>的资产减值和重组费。注意：FY2025 是 7.82 亿，FY2024 是 7.02 亿——<strong>连续三年、每年约 7 亿</strong>。这不是「一次性」，这是电池/充电押注失败的分期账单，外加燃油业务的持续瘦身费。正因为这笔钱，10 亿级的经营利润（14.4 亿）到净利润只剩 4.15 亿。好消息是减值是非现金的（钱在 2021 年买 Akasol 时就已经花了），坏消息是它揭示管理层曾经在周期顶点花 10 亿美元买了个接近归零的东西。</li>
+<li><strong>资本化的支出</strong>：无异常，研发费用化。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 6.55 亿 ÷ SBC 0.59 亿 = <strong>11 倍，真回购</strong>。股本一年实打实减少 4.05%。分红 1.4 亿，股息率约 1%。回购+分红合计约 8 亿，占 FCF 的 66%。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 4.15 亿 vs 经营现金流 17.25 亿 vs 自由现金流 12.13 亿——差距巨大，对账如下：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4.15</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>6.01</td>
+</tr>
+<tr>
+<td>+ 减值与重组（非现金）</td>
+<td>6.84</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>0.59</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>-0.67</td>
+</tr>
+<tr>
+<td>+ 营运资金净变化</td>
+<td>0.33</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>17.25</td>
+</tr>
+</tbody>
+</table></div>
+<p>现金流是真的、健康的。净负债仅 16.2 亿，是 EBITDA 的 0.8 倍，利息保障 14.8 倍——资产负债表干净。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>142.4亿 ÷ 4.15亿</td>
+<td>35.7x</td>
+<td>¥2.8</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP（加回减值重组）</td>
+<td>142.4亿 ÷ ~10.1亿</td>
+<td>~14.1x</td>
+<td>~¥7.1</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后</strong></td>
+<td>见下方说明</td>
+<td><strong>~14–17x</strong></td>
+<td><strong>~¥6–7</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>142.4亿 ÷ 12.13亿</td>
+<td>11.7x</td>
+<td>¥8.5</td>
+</tr>
+<tr>
+<td>EV/EBIT</td>
+<td>158.5亿 ÷ 14.35亿</td>
+<td>11.1x</td>
+<td>¥9.1</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>142.4亿 ÷ 4.13亿（2023–25均值）</td>
+<td>34.4x</td>
+<td>¥2.9</td>
+</tr>
+</tbody>
+</table></div>
+<p>「剔除障眼法后」这行要多说两句：教科书做法是把 6.84 亿减值当一次性损失加回，得到约 14 倍。但它连续三年每年计提 7 亿，<strong>单从数字上它就是年年发生的</strong>。折中的判断：电池业务的大减值确实在收尾（业务都快关完了），但汽车零部件行业「年年有点重组费」是常态，真实盈利能力算 9–10 亿一年比较诚实，即 14–17 倍之间。自由现金流口径的 11.7 倍是最硬的锚——那 12 亿是真金白银，减值减不掉它。</p>
+<p><strong>大白话：你投 100 块进去，账面上公司一年只替你赚 2.8 块（被减值打惨了），但按真实现金能力算是 8 块多。</strong> 其中约 1 块分红发给你，5 块多用来回购注销股份（去年股本真的少了 4%），剩下留着投电驱产线。这个回报未来变大还是变小？看两头：燃油件（占 80%）缓慢阴跌，电驱（占 17%）快速上量但不怎么赚钱——<strong>未来几年大概率是「营收平、利润率看重组何时停」的拉锯</strong>，华尔街给的 forward PE 12.9 倍就是在赌明年不再计提。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这是一家被自己的减值费用「化了妆的便宜货」：账面 35.7 倍吓人，真实现金能力 11–14 倍，资产负债表干净，回购是真的（一年注销 4% 股本），涡轮和链条的护城河在燃油车死透之前都是印钞机。代价是你得接受三个事实——主业天花板向下、电动化转型不保证成功、管理层上一次大手笔收购亏掉了大几亿。股价一年涨了 69%，最便宜的时候过去了，但按真实口径 12 倍左右买一个 ROIC 12.9%、FCF 收益率 8.5% 的行业龙头，<strong>这个价是公道的，不贵</strong>。愿意承受汽车行业周期的人，可以留着观察。</p>
+</div></body></html>

@@ -1,0 +1,280 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WMS · Advanced Drainage Systems(先进排水系统)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WMS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">三年利润原地踏步，25倍在赌塑料替代混凝土</div><h1>WMS · Advanced Drainage Systems(先进排水系统)</h1>
+<p>市值 109 亿美元 / 股价约 145 美元 / 行业:建材·排水管道 / TTM 截止 2026-06-30(财年 3 月底结账)</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>按分部披露,这家公司做<strong>两门生意</strong>:雨水管理(约 79% 营收)和化粪池系统(约 21% 营收)。两门生意的底层逻辑是同一句话:<strong>用塑料管替代混凝土管和钢管</strong>。</p>
+<h3>生意一:雨水管理(Stormwater)——卖塑料排水管给工地</h3>
+<p>美国每建一个仓库、一片停车场、一条公路、一个住宅小区,都要解决同一个问题:下大雨时水往哪流。传统做法是埋混凝土管。ADS 的产品是<strong>高密度聚乙烯(HDPE)波纹管</strong>——就是你在美国工地边上看到的那种黑色大口径螺纹塑料管,主打产品叫 N-12,口径从 10 厘米到 1.5 米都有。</p>
+<p>具体一单长这样:一个开发商要建一座亚马逊式的物流仓库,周围 10 万平米停车场的雨水必须收集、暂存、缓慢排走(环保法规强制要求)。承包商从 ADS 的经销商那里买几公里 N-12 管道,再在停车场地下埋一片 StormTech 拱形蓄水腔——像一排排倒扣的塑料半圆筒,雨水先存在里面再慢慢渗走。一个中型商业项目,管道加蓄水腔加各种接头井盖,采购额几十万美元。</p>
+<p>为什么承包商愿意买塑料的?<strong>混凝土管一根几吨重,要吊车装、大卡车一次拉不了几根;塑料管一个工人扛得动,一辆卡车拉一整个项目的量,安装快一倍,而且永不锈蚀</strong>。塑料管在美国排水管市场的份额几十年来一直在从混凝土手里抢地盘,ADS 是这个品类的老大。</p>
+<p>它的护城河有两条。第一,<strong>管子是"运空气"的生意</strong>——体积大、价值密度低,运输半径超过 300 公里就不经济,所以 ADS 在全美铺了 60 多家工厂和自有车队,后来者想复制这张网要烧十年钱。第二,<strong>它是北美最大的塑料回收商之一</strong>:每年收购几亿磅废旧牛奶瓶、洗衣液瓶(HDPE 材质),粉碎后直接做成管子,原料成本比用原生树脂的对手低一截。</p>
+<p>2025 年 10 月前后,公司又花了约 10 亿美元现金收购 <strong>NDS</strong>——做的是住宅庭院排水:家得宝、劳氏货架上卖的那种庭院排水沟、雨水篦子、小口径排水件,卖给房主和园艺承包商。这笔收购把 ADS 从"工地生意"延伸到了"零售货架生意"。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>雨水管理</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2026 营收(截止 2026-03)</td>
+<td>23.97 亿美元</td>
+</tr>
+<tr>
+<td>同比增速</td>
+<td>+3.1%(上年 23.26 亿)</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>约 79%</td>
+</tr>
+<tr>
+<td>分部经营利润</td>
+<td>财报只披露到营收,按整体口径估算利润率约 20% 出头(估算)</td>
+</tr>
+</tbody>
+</table></div>
+<p>(分部 TTM 列官方暂缺,此处用最近完整财年 FY2026。)</p>
+<h3>生意二:化粪池系统(Wastewater / Infiltrator)——卖塑料化粪池给不通下水道的美国家庭</h3>
+<p>美国大约五分之一的住宅不通市政下水道,污水全靠自家院子里的化粪池系统。传统方案是混凝土化粪池加碎石渗滤沟。ADS 旗下的 Infiltrator(2019 年收购)用<strong>注塑塑料化粪池和塑料渗滤拱腔</strong>替代:塑料池两个工人抬得动,不用吊车,一天装完;塑料渗滤腔不用拉几卡车碎石,挖沟量少一半。</p>
+<p>具体一单:乡下新建一栋房子,安装承包商买一个 Infiltrator 塑料化粪池加一套渗滤腔,材料费几千美元,比混凝土方案省下的主要是吊车费和工时。房主不关心用什么材质,承包商说了算——而承包商一旦用惯塑料就回不去了,这是这门生意的粘性所在。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>化粪池系统</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2026 营收</td>
+<td>6.53 亿美元</td>
+</tr>
+<tr>
+<td>同比增速</td>
+<td>+13.0%(上年 5.78 亿)</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>约 21%</td>
+</tr>
+<tr>
+<td>分部经营利润</td>
+<td>未单独披露,历史上该分部利润率高于公司整体(估算 25% 上下)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>公司整体 TTM</strong>:营收 32.22 亿(+10.4%),经营利润 7.39 亿(经营利润率 22.9%),净利润 4.51 亿。注意:这 10.4% 的增速里有 NDS 并表的功劳,有机增速远低于此。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC)</strong>:TTM 3,722 万美元,只占净利润的 8.3%,在美股里算很克制。GAAP 里已扣,不用再动。</p>
+<p><strong>一次性项目</strong>:TTM 花了 9.71 亿现金收购 NDS,随之而来的交易费用、库存重估摊进了利润表——现金流量表里"其他经营活动"从往年的几百万跳到 7,719 万,大概率主要是并购相关。另有 1,481 万资产处置损失。单期口径分不清哪些会年年出现,只能说:<strong>当期利润被并购杂费压低了一些,真实盈利能力略好于报表</strong>。</p>
+<p><strong>资本化的支出</strong>:制造业,没有软件/内容资本化的把戏。没有。</p>
+<p><strong>回购与稀释</strong>:TTM 回购 3.36 亿,是 SBC 的 <strong>9 倍</strong>——这是真回购,不是抵消员工发股的表演。股本一年降 0.05%、最近一个季度降 1.86%(回购集中在最近一个季度发力)。另派息 5,745 万。回购加分红合计约 3.9 亿,相当于市值的 3.6% 回到股东口袋。</p>
+<p><strong>利润和现金流的差</strong>:净利润 4.51 亿,经营现金流 8.04 亿,自由现金流 5.50 亿——<strong>现金流比利润还厚实</strong>,对账如下:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额(百万美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>451</td>
+</tr>
+<tr>
+<td>+ 折旧摊销(含无形摊销)</td>
+<td>231</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>37</td>
+</tr>
+<tr>
+<td>+ 资产处置损失等</td>
+<td>10</td>
+</tr>
+<tr>
+<td>+ 其他经营项(并购杂费为主)</td>
+<td>77</td>
+</tr>
+<tr>
+<td>± 营运资金变化</td>
+<td>≈ +1</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>804</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−254</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>550</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>每一分利润都变成了现金,还多出来一截折旧——而资本开支(2.54 亿)比折旧(2.31 亿)略高,说明还在扩产,这 5.5 亿 FCF 没有靠饿着工厂挤出来。账很干净。</p>
+<p><strong>唯一要留意的</strong>:为买 NDS,总债务从 14.9 亿升到 17.7 亿,账上现金从 4.6 亿降到 1.6 亿,净债务 16 亿。以它 9.3 亿的 EBITDA,杠杆不到 2 倍,不危险,但回购火力短期会受牵制。</p>
+<hr />
+<h2>三、市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>145 美元股价 ÷ 5.77 EPS</td>
+<td>25.1</td>
+<td>4.0 元</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>公司主推 Adjusted EBITDA(约 9.3 亿);折成调整后净利约 21 倍(估算)</td>
+<td>≈21</td>
+<td>4.8 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>市值 ÷(GAAP 净利 + 并购杂费中的一次性部分,SBC 不加回);并购费单期分不清,保守仍按 4.51 亿</td>
+<td>≈24</td>
+<td>4.2 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ 5.50 亿 FCF</td>
+<td>20.3</td>
+<td>4.9 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>125 亿 EV ÷ 7.39 亿经营利润</td>
+<td>17.3</td>
+<td>5.8 元(对全部出资人)</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ 三年平均净利 4.62 亿(5.10/4.50/4.26)</td>
+<td>23.6</td>
+<td>4.2 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>你现在投 100 块进去,按最保守的真实口径,公司一年替你赚 4 块 2 左右</strong>;按现金流口径能到 4 块 9。这 4 块多里,大约 1 块 5(回购+分红那 3.6%)是真金白银回到你口袋的,剩下的留在公司里扩厂和还并购的债。</p>
+<p>关键在"这个数未来变大还是变小":<strong>三年平均 23.6 倍和当期 24 倍几乎一样——意味着利润三年原地踏步</strong>(FY2024 净利 5.10 亿,如今 TTM 4.51 亿,还低了一成)。美国建筑周期 2023 年见顶后,它的利润就没再创过新高。现在 25 倍的定价,买的不是眼前的利润,是"塑料继续替代混凝土 + NDS 并表 + 降息重启建筑周期"这三个故事。故事都合理,但都已收进票价。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>这是一门<strong>真正的好生意</strong>——运输半径垒出的工厂网络、回收料的成本优势、塑料替代混凝土的长坡厚雪,账目干净,现金流比利润还足,回购是真回购。但 25 倍市盈率对应的是<strong>三年不涨的利润</strong>:2023 年建筑景气顶上赚 5.1 亿,今天赚 4.5 亿。好公司,价格没便宜可占——值得放进观察名单,等建筑周期低谷或市场恐慌给个 18 倍以下的价,那时候才是击球区。</p>
+</div></body></html>

@@ -1,0 +1,236 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NVMI · Nova Ltd.（以色列半导体量测设备商）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NVMI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">量测细分全球第一账干净,但价格把十年顺风预支了大半</div><h1>NVMI · Nova Ltd.（以色列半导体量测设备商）</h1>
+<p>市值 $123.7 亿 / 股价约 $389 / 半导体设备（量测/计量） / TTM 截止 2026-06-30</p>
+<h2>一、它到底做几件事</h2>
+<p>Nova 是以色列雷霍沃特的一家半导体设备公司，1,612 名员工，人均创收 58 万美元。它不造芯片，也不造光刻机——它造的是<strong>芯片生产线上的「游标卡尺」</strong>：晶圆在几百道工序里跑，每一道都可能做歪几个原子，Nova 的机器负责当场量出来。财报是单一分部，但按产品线实际是三门生意：</p>
+<h3>1. 尺寸量测（主力）——嵌在产线里的在线「卡尺」</h3>
+<p><strong>具体怎么运作</strong>：台积电造 2 纳米芯片，晶体管是「环绕栅极」结构，一根纳米片的厚度差 0.2 纳米（大约一个原子层）良率就崩。传统做法是把晶圆抽检拿到独立量测机上测，费时；Nova 的独门生意是<strong>「集成量测」——把光学测量头直接装进刻蚀机、抛光机内部</strong>，晶圆刚加工完不出腔体就量完，数据实时回传调整下一片的工艺参数。应用材料、泛林这些工艺设备巨头直接把 Nova 的测量头集成进自家机器卖。一台量测设备百万美元级，一座先进晶圆厂要买几十台。客户就是全球那几家：台积电、三星、SK 海力士、英特尔、美光，以及中国的中芯国际等。<strong>这个「集成量测」细分市场 Nova 是全球老大</strong>（独立量测的老大是比它大十倍的 KLA，两者错位竞争）。</p>
+<h3>2. 材料量测——不光量尺寸，还要验「成分」</h3>
+<p><strong>具体例子</strong>：HBM 高带宽内存要把十几层 DRAM 堆起来，层与层之间的金属互连材料配比错一点，整颗报废。Nova 的 VeraFlex 系列用 X 射线光电子能谱（XPS）在产线上直接分析薄膜的<strong>化学成分</strong>——这台机器全球没几家能做，在先进逻辑和 HBM 产线上接近垄断（估算）。AI 芯片越堆越高、材料越用越怪，这门生意是 Nova 增速最快的引擎。</p>
+<h3>3. 化学量测与新扩张——2022 年买 ancosys（在线分析电镀液化学成分，铜互连和先进封装必需），2025 年又花 $5,600 万收购 Sentronics（晶圆几何量测），都是往「量测平台公司」拼图。</h3>
+<p><strong>钱的全貌</strong>（财报不按产品线拆利润，下表为整体；地区结构用 FY2025 年度数）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>对比 FY2025 全年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$9.38 亿（+16%）</td>
+<td>$8.81 亿（+31%）</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>57.1%</td>
+<td>57.4%</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>29.1%</td>
+<td>28.9%</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>$2.70 亿</td>
+<td>$2.59 亿</td>
+</tr>
+</tbody>
+</table></div>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区（FY2025）</th>
+<th>营收</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>中国</strong></td>
+<td>$2.91 亿</td>
+<td><strong>33%</strong></td>
+</tr>
+<tr>
+<td>台湾</td>
+<td>$2.55 亿</td>
+<td>29%</td>
+</tr>
+<tr>
+<td>韩国</td>
+<td>$1.41 亿</td>
+<td>16%</td>
+</tr>
+<tr>
+<td>美国</td>
+<td>$0.79 亿</td>
+<td>9%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>中国占三分之一</strong>是全文最重要的风险数字：美国管制把 KLA 挡在中国成熟制程门外，以色列的 Nova 趁机吃了不少中芯系订单——这块收入吃的是「管制套利」的饭，哪天管制收紧到盟友或者中国国产替代（精测电子等）追上来，就是直接砍营收。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $2,770 万，占净利润 10.2%——半导体行业里算克制的（对比：很多美国同行 30%+）。</li>
+<li><strong>一次性项目</strong>：TTM 只有 $550 万投资出售收益，可忽略。账面异常干净。</li>
+<li><strong>资本化的支出</strong>：无重大资本化研发，CapEx 仅 $2,270 万（营收的 2.4%）——设备公司自己反而不需要重资产。</li>
+<li><strong>回购与稀释</strong>：TTM 回购只有 $1,500 万，是 SBC 的 0.54 倍，<strong>回购连发股的一半都没抵消，股本一年净增 6.2%</strong>（含 2025 年发 $7.5 亿可转债的关联稀释）。你持有的份额在被稀释，这是这份干净账本上最不体面的一行。</li>
+<li><strong>利润 vs 现金流</strong>：TTM 净利润 $2.70 亿，经营现金流只有 $2.12 亿，自由现金流 $1.90 亿——<strong>利润只有七成变成了现金</strong>。对账：净利润 270 + 折旧摊销 27 + SBC 28，但应收账款吃掉 73（客户押着货款，随高增长扩张）、预收款减少 19。不是造假，是「增长要垫资」的正常形态，但意味着 P/FCF 比 PE 难看得多。另外：净利润里有约 $4,700 万是 $17 亿现金理财赚的利息（税前利润 3.19 亿 vs 经营利润 2.72 亿之差），<strong>这部分不是卖设备赚的</strong>。</li>
+<li><strong>财务状况</strong>：现金及投资 $17.1 亿、总债 $8.0 亿（主要是那笔可转债）、<strong>净现金 $9.0 亿</strong>（每股 $28）。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>123.7 亿 ÷ 2.70 亿</td>
+<td>48.6</td>
+<td>¥2.1</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>与 GAAP 几乎无差（一次性项目可忽略）</td>
+<td>≈48.4</td>
+<td>¥2.1</td>
+</tr>
+<tr>
+<td>剔除利息收入的主业口径</td>
+<td>EV 114.7 亿 ÷ 税后经营利润约 2.31 亿（估算）</td>
+<td>49.7</td>
+<td>¥2.0</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>123.7 亿 ÷ 1.90 亿</td>
+<td>70.5</td>
+<td>¥1.4</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>114.7 亿 ÷ 2.72 亿</td>
+<td>42.2</td>
+<td>¥2.4</td>
+</tr>
+<tr>
+<td>三年平均利润口径（FY2023–25 平均 $1.93 亿）</td>
+<td>123.7 亿 ÷ 1.93 亿</td>
+<td>64.1</td>
+<td>¥1.6</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话</strong>：你现在投 100 块进去，按最保守的现金流口径，公司一年替你赚 <strong>1.4 块</strong>；按利润口径也就 2 块出头。<strong>没有分红，回购聊胜于无</strong>，赚的钱几乎全留在公司里滚（买 Sentronics、堆理财）。所以买它赚的不是「收租」，是赌这个 2 块会快速长大——支撑的逻辑是真实的：芯片结构越立体（GAA、HBM、先进封装），每片晶圆需要的测量次数就越多，量测占设备开支的比例在结构性上升，Nova 过去两年营收年均 +30%。但反过来，三年平均口径 64 倍告诉你：<strong>现在的利润本身就站在历史最高点上</strong>，而它 33% 的收入还悬在中美管制的剪刀口下。</p>
+<h2>四、一句话结论</h2>
+<p>这是本批三家里唯一的「真·好生意」：细分市场全球第一、毛利 57%、ROIC 19.8%、净现金 $9 亿、账本干净得挑不出大毛病，行业逻辑（芯片越复杂→量测越多）是十年级别的顺风。问题只有一个——<strong>价格把十年顺风预支了一大半</strong>：真实口径 48 倍、现金流口径 70 倍、三年平均口径 64 倍，还叠着「中国占三成营收」这把随时可能落下的刀，且股价一年已涨 53%。<strong>好公司，坏价格。不值得现在买，非常值得放进「等它跌」的名单——半导体设备是周期股，下一次行业下行砸到 25 倍以下时，这就是那种要抢的货。</strong></p>
+</div></body></html>

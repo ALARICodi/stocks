@@ -1,0 +1,203 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ONON · On Holding（昂跑）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ONON</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">奢侈品级毛利+净现金，被增长焦虑砍出的公道价</div><h1>ONON · On Holding（昂跑）</h1>
+<p>市值 $104.9 亿 / 股价约 $31 / 行业：运动鞋服 / TTM 截止 2026-06-30
+（注意：财报用瑞士法郎 CHF 计价，市值是美元；按当前汇率市值约合 CHF 84 亿，下面算倍数时已统一成同一货币。）</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>它只做一件事：设计和卖 On（昂跑）牌高价运动鞋，外加少量运动服。财报按<strong>渠道</strong>分成两个分部，本质是同一门生意的两条出货路径。</p>
+<h3>这门生意本身：卖"瑞士工程感"的贵价跑鞋</h3>
+<p>On 是 2010 年在苏黎世创立的跑鞋品牌，创始人之一 Olivier Bernhard 是前铁人三项世界冠军，网球巨星费德勒 2019 年入股并深度参与设计（Roger 系列网球鞋就是他的名字）。产品的辨识度来自鞋底那排镂空的"云朵"模块（CloudTec 专利缓震结构），一眼就能认出来。</p>
+<p>它怎么赚钱：一双 Cloudmonster 跑鞋在美国卖 170 美元，比耐克主力跑鞋贵三到五成，跟 Hoka 一起把"高价跑鞋"这个档位做成了潮流。关键是<strong>它几乎不打折</strong>——TTM 毛利率 64.8%，这是什么概念：耐克毛利率约 44%，阿迪约 50%，服装鞋类里 65% 的毛利率已经到了奢侈品的门口。做到这一点靠的是严格控制铺货（不进折扣店、限制批发商促销）和一半左右的货直接自己卖。生产全部外包给越南、印尼的代工厂，自己只握设计、专利和品牌。目前它已经是全球增长最快的头部跑鞋品牌，正从跑步圈往网球、训练、日常穿搭扩，服装业务刚起步。中国区是增长最快的市场之一，上海、北京的旗舰店开在奢侈品牌隔壁。</p>
+<h3>分部一：批发（Wholesale）—— TTM 营收 CHF 18.34 亿，占 57%</h3>
+<p>卖给跑步专业店、百货和运动连锁（美国的 Dick's、REI、Foot Locker，欧洲的跑步专门店）。批发价大约是零售价的 5–6 折，毛利低一些，但一次出一柜子货、资金周转快。On 对批发渠道极其挑剔，宁可少铺也不让品牌出现在打折堆里——这是它跟没落运动品牌最大的区别。</p>
+<h3>分部二：直营（Direct-to-Consumer）—— TTM 营收 CHF 13.86 亿，占 43%</h3>
+<p>自家官网 + 全球几十家自营店。零售全价进自己口袋，毛利率高得多，还直接拿到消费者数据。DTC 占比从 2021 年的 38% 一路升到 43%，这是毛利率年年上台阶的主因。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上年(FY2025)</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>批发</td>
+<td>CHF 18.34 亿</td>
+<td>17.53 亿</td>
+<td>57%</td>
+<td>约 +12%（对比年度口径）</td>
+</tr>
+<tr>
+<td>直营</td>
+<td>CHF 13.86 亿</td>
+<td>12.61 亿</td>
+<td>43%</td>
+<td>约 +18%，占比持续提升</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合计：TTM 营收 CHF 32.20 亿（+18.5%），经营利润 CHF 4.44 亿（利润率 13.8%），净利润 CHF 3.96 亿。</strong> 财报只按渠道披露营收，分部利润未披露；按毛利结构估算 DTC 贡献的毛利与批发相当。增速从 2023 年的 +47%、2025 财年的 +30% 降到 TTM 的 +18.5%——还在高增长，但明显在换挡。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM CHF 0.72 亿，占净利润 18%——不小。GAAP 里已扣，但看自由现金流时要记得这块是"用股份付的工资"。股本一年增加 0.95%，稀释存在但温和。</li>
+<li><strong>一次性项目 / 净利润里的水分</strong>：这家的净利润被两样东西搅得很花：一是<strong>汇率</strong>——它收美元、报瑞郎，瑞郎一升值，账上美元资产就产生汇兑损失（FY2025 净利润 2.04 亿反而比 FY2024 的 2.42 亿低，营收明明涨了 30%，就是汇兑亏损砸的；TTM 又转回来了）。二是<strong>税率只有 7.95%</strong>——瑞士的特殊税收安排，明显低于正常水平，这种好事不会永远持续（OECD 全球最低税 15% 正在落地）。<strong>单期口径无法判断汇兑损益方向，但低税率大概率会均值回归</strong>：若按 19% 正常税率重算，TTM 净利润约为 CHF 3.5 亿而不是 3.96 亿。</li>
+<li><strong>资本化的支出</strong>：无花招。资本开支 CHF 0.88 亿（主要是开店和仓库），只占营收 2.7%，轻资产得很。</li>
+<li><strong>回购与稀释</strong>：<strong>零回购、零分红</strong>。赚的钱全留在账上——净现金已堆到 CHF 6.77 亿。创始人和内部人还持股 26%（双层股权结构，投票权在创始团队手里），这是一家还在"全力长个子"阶段的公司，股东回报暂时不在议程上。</li>
+<li><strong>利润和现金流的差</strong>：TTM 净利润 3.96 亿 vs 经营现金流 5.25 亿，差额 = 折旧摊销 1.39 亿 + SBC 0.72 亿加回，再减去压进存货和应收的 0.9 亿（存货 +1.02 亿是为增长备货，服装鞋类的正常代价，但也是最值得盯的科目——运动品牌翻车都是从存货堆积开始的）。自由现金流 CHF 4.38 亿，比净利润还多，含金量够。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>CHF 84 亿 ÷ CHF 3.96 亿</td>
+<td>21.4 倍</td>
+<td>4.7 块</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP 口径</td>
+<td>公司爱讲"调整后 EBITDA"，加回 SBC，虚</td>
+<td>≈17 倍</td>
+<td>（不采信）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>按 19% 正常税率重算净利润 CHF 3.5 亿（估算）</td>
+<td><strong>24 倍</strong></td>
+<td><strong>4.2 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>CHF 84 亿 ÷ CHF 4.38 亿</td>
+<td>19.4 倍</td>
+<td>5.2 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（市值 − 净现金）÷ 经营利润</td>
+<td>17.5 倍</td>
+<td>5.7 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>CHF 84 亿 ÷ 三年平均 CHF 1.75 亿</td>
+<td><strong>47.9 倍</strong></td>
+<td><strong>2.1 块</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，按剔除低税率水分的口径算，公司一年替你赚 4 块 2。</strong> 这 4 块 2 一分钱都不会回到你口袋（不分红不回购），全部留在公司里——好在它的再投资极其高效（ROIC 32%，每留下 1 块钱能创造 3 毛多的新利润），而且账上净现金 6.77 亿瑞郎、几乎没负债，钱没有被乱花。</p>
+<p>三年平均口径 48 倍和当期 21 倍的巨大差距，这次的读法和别家不同：不是"当期利润站在周期高点"，而是<strong>这家公司三年前根本还没怎么赚过钱</strong>——利润是随着规模跨过盈亏平衡点后刚刚释放出来的，理论上还在爬坡半途。你买它赌的是增速换挡后仍能维持 15%+ 很多年。风险也明摆着：股价一年跌了 31%，市场担心的就是增速从 47%→30%→18% 这条下坡曲线的尽头在哪，外加美国关税（产能几乎全在越南）和强瑞郎两把悬着的刀。跑鞋是时尚生意，Hoka 的增速已经先一步失速——但 65% 的毛利率和不打折的价盘说明 On 的品牌力目前毫发无损。</p>
+<h2>第四部分：一句话结论</h2>
+<p>这是本批质地最好的生意：奢侈品级的毛利率、32% 的再投资回报、净现金资产负债表、创始人还握着方向盘，而且股价刚被"增长焦虑"砍了三分之一——<strong>21 倍市盈率、17 倍 EV/EBIT 买一家还在 18% 增长的顶级品牌，这个价是公道的，甚至隐隐有点便宜</strong>。它不是没有风险（时尚退潮、关税、瑞郎），但这是那种"价格终于配得上质地"的时刻，值得放进观察名单认真盯。</p>
+</div></body></html>

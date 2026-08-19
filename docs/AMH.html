@@ -1,0 +1,223 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AMH · American Homes 4 Rent（独栋租房 REIT）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AMH</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">FFO19倍股息3.6%买6万套房不折不溢，收租股别指望快</div><h1>AMH · American Homes 4 Rent（独栋租房 REIT）</h1>
+<p>市值 $138 亿（含运营合伙单位）/ 股价约 $33.7 / 住宅 REIT / TTM 截止 2026-06-30</p>
+<p><strong>这是地产企业（REIT），下面用 FFO/AFFO 口径而不是市盈率</strong>——原因：REIT 的净利润被房产折旧严重压低（会计上房子每年"变旧扣钱"，但现实中地价和房价长期是涨的），同时又被卖房收益推高，市盈率完全失真。FFO（营运资金流）= 净利润 + 房产折旧 − 卖房收益，才是租房主业的真实赚钱能力。</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p><strong>实质上就一门生意：当全美最大的"独栋房房东"之一</strong>，外加一个给自己供货的建房部门。</p>
+<h3>生意A：买房、建房，租给美国家庭</h3>
+<p>AMH 在阳光地带（亚特兰大、达拉斯、夏洛特、凤凰城、纳什维尔这些人口流入城市）的郊区持有约 6 万套独栋住宅（套数为公司披露口径，估算），典型场景是：一个带两个孩子的家庭，买不起 40 万美元的房子（首付+按揭利率都太高），但想住带院子的学区房，于是租 AMH 的房子，月租约 $2,300（按 TTM 营收 ÷ 房源数估算），一年付给 AMH 约 2.8 万美元。AMH 负责维修、园艺标准、统一 App 报修——把原本散落在个人房东手里的生意做成了连锁酒店式的标准化运营。</p>
+<p>它和同行最大的不同是<strong>自建房源</strong>：别人靠在二手市场抢房，AMH 有自己的开发部门（AMH Development），自己拿地自己盖，每年新建约两千多套直接转入出租池——盖一套的成本比市价买一套便宜 10-20%，等于批发价进货。</p>
+<p>收钱方式：月租 + 各种费用（宠物费、迟交费），出租率约 96%（公司披露口径，估算）。同时它每年<strong>卖掉几百上千套老旧房源回收资本</strong>：TTM 卖房回款 $7.53 亿，账面赚了 $2.55 亿——房子持有十年翻了倍，卖掉换新房。</p>
+<ul>
+<li>TTM 营收 <strong>$18.8 亿</strong>（上年同期约 $18.0 亿，同比 +4.3%），占总营收 100%</li>
+<li>经营利润率 25.0%（GAAP，含大额折旧），经营现金流利润率 46%——后者才反映房租生意的真实现金创造力</li>
+</ul>
+<p>增速在放缓：营收增速从 2021 年的 11% 一路降到 4.3%，因为阳光地带这两年新建了大量"建来出租"的房子，供给上来了，租金涨幅从疫情期的两位数回落到 3-4%。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $2510 万，占净利润 5%，不高。</li>
+<li><strong>一次性项目 / 卖房收益</strong>：<strong>这是全篇最重要的一条</strong>——TTM 净利润 $4.64 亿里，$2.55 亿来自卖房收益。这不算骗人（REIT 资本循环是正常操作），但它不是"房租赚来的钱"，而且规模逐年在涨（三年前 $1.36 亿）。<strong>只看租房主业，GAAP 利润其实只有约 $2.1 亿</strong>。</li>
+<li><strong>资本化支出</strong>：买房+建房 TTM 花了 $8.54 亿，全部资本化——这对房东是正常的，但要知道 stockanalysis 页面上"FCF=经营现金流"是把买房支出全当成"投资"不扣，真实的自由现金流没那么好看。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $3.98 亿 ÷ SBC $2510 万 ≈ <strong>16 倍</strong>，是动真格的回购（约占市值 3%），同时增发几乎停了（$470 万）。REIT 里少见的"不伸手要钱反而回购"，加分。</li>
+<li><strong>利润 vs 现金流对账</strong>（单位：百万美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>464</td>
+</tr>
+<tr>
+<td>+ 房产折旧摊销</td>
+<td>504</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>13</td>
+</tr>
+<tr>
+<td>− 卖房收益（非现金）</td>
+<td>−255</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>25</td>
+</tr>
+<tr>
+<td>+ 其他非现金及营运资金</td>
+<td>114</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>865</td>
+</tr>
+</tbody>
+</table></div>
+<p>折旧 $5.04 亿比净利润还大——这就是 REIT 用市盈率必然失真的原因。</p>
+<ul>
+<li><strong>债务</strong>：总债务 $51.5 亿，TTM 现金利息 $1.86 亿，<strong>平均利率仅 3.6%</strong>（锁的是低利率时代的长债），利息保障倍数 2.45，Debt/EBITDA 5.25——REIT 里属于中规中矩的投资级杠杆，不危险但也没余粮大举扩张。</li>
+</ul>
+<hr />
+<h2>三、估值：FFO/AFFO 口径</h2>
+<p>市值 $138 亿，企业价值 $189 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数/数值</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率（仅供对照，失真）</td>
+<td>市值 ÷ 净利润</td>
+<td>26.6</td>
+<td>¥3.8（虚）</td>
+</tr>
+<tr>
+<td>剔除卖房收益的租房主业市盈率</td>
+<td>市值 ÷ 2.1亿</td>
+<td>~66</td>
+<td>¥1.5（同样失真，折旧压着）</td>
+</tr>
+<tr>
+<td><strong>FFO 口径</strong></td>
+<td>净利润+折旧−卖房收益 = $7.12亿</td>
+<td><strong>19.4 倍</strong></td>
+<td><strong>¥5.2</strong></td>
+</tr>
+<tr>
+<td>AFFO 口径（扣维修性资本开支，估算）</td>
+<td>约 $6.0 亿</td>
+<td>约 23 倍</td>
+<td>¥4.3</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>每股年派 $1.20</td>
+<td>—</td>
+<td>¥3.6（真金白银到手）</td>
+</tr>
+<tr>
+<td>每套房隐含价值</td>
+<td>EV ÷ 约6万套（估算）</td>
+<td>约 $31 万/套</td>
+<td>约等于市价，没折价</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，租房主业一年真实替你赚 4 到 5 块（AFFO 口径），其中 3 块 6 当年就以分红发到你手上</strong>，派息占 AFFO 约八成，覆盖是稳的；剩下的钱加上卖旧房回收的资本，用来建新房和回购自家股票。这个 4-5 块未来大概率每年涨 3-5%——房子不够住、年轻家庭买不起房只能租，这个大逻辑十年内不会变；但短期阳光地带供给过剩压着租金，增速上不去。</p>
+<p>按每套房算，你现在买 AMH 等于按市场价整批买了 6 万套房——<strong>没占到折价，但也没多付</strong>，附赠一个批发价建房的团队和 3.6% 的锁定低利率债务结构（这在利率 6% 的今天其实是隐形资产）。</p>
+<h2>四、一句话结论</h2>
+<p>生意成立但平庸：出租率 96%、分红踏实、回购动真格、低息长债是隐形福利，可增长只有个位数、回报率被利率和新房供给压着——<strong>按 FFO 19 倍、股息 3.6% 的价格，值这个价，不便宜也不贵，适合当收租股放着观察，别指望它涨快</strong>。</p>
+</div></body></html>

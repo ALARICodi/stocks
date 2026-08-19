@@ -1,0 +1,263 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DTM · DT Midstream（DT中游能源）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DTM</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">收费站生意，但30倍预收了五年增长</div><h1>DTM · DT Midstream（DT中游能源）</h1>
+<p>市值 $137.7 亿 / 股价约 $135 / 行业：天然气管道（工业服务） / TTM 截止 2026-06-30 / 全榜第 379 名（分析当日）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>DT Midstream 是 2021 年从底特律的公用事业公司 DTE Energy 拆出来的天然气"收费站"，全公司只有 588 名员工，人均创收 223 万美元——这不是人干出来的生意，是埋在地下的钢管干出来的。它做两门生意，本质都是<strong>替别人运天然气、按运力收租</strong>：</p>
+<h3>生意一：长输管道（Pipeline 分部，占 54%，增长引擎）</h3>
+<p>州际大口径管道加地下储气库。核心资产三块：</p>
+<ul>
+<li><strong>LEAP 管道</strong>：从路易斯安那 Haynesville 气田直通墨西哥湾 LNG 出口走廊的大动脉。美国液化天然气出口终端（Plaquemines、Golden Pass 这批 2025–27 年陆续投产的项目）要吃海量的气，Haynesville 是离出口码头最近的大气田，LEAP 就是中间那根吸管，过去几年一路扩容。</li>
+<li><strong>三条中西部管道</strong>（Guardian、Midwestern、Viking）：2024 年底花 12 亿美元现金从 ONEOK 手里买的，受联邦能源委员会（FERC）监管，给威斯康星、伊利诺伊的公用事业公司和发电厂送气。这笔并购是 2025 年营收暴涨的主因。</li>
+<li><strong>合资管道股权</strong>：NEXUS（与加拿大 Enbridge 各占 50%，俄亥俄→密歇根）、Vector、Millennium 等。这些不并表，按权益法每年贡献约 1.5 亿美元利润，另外实打实分回现金。</li>
+</ul>
+<p>收钱方式是这门生意的精髓：<strong>照付不议（take-or-pay）</strong>。一家 LNG 出口商在 LEAP 上预订每天 10 亿立方英尺的运力、签 10 年合同，那么不管它实际运不运气，每个月的"运力租金"照付。所以 DTM 的营收跟气价几乎无关——气价暴跌它照收租，这就是为什么疫情、气价腰斩它的经营利润率始终钉在 50% 左右。</p>
+<h3>生意二：集输网络（Gathering 分部，占 46%）</h3>
+<p>如果长输管道是高速公路，集输就是气田里的毛细血管：在 Haynesville（路易斯安那）和阿巴拉契亚（宾州 Marcellus、俄亥俄 Utica）的气田里铺几百英里小管子，把每口井喷出来的原料气收集、脱水脱杂、增压，再喂进长输管道。按实际输送量收费（每百万英热单位几毛钱），但合同里带<strong>保底量条款</strong>——产气商就算减产，也要按承诺的最低量付钱。</p>
+<p>要点名的风险：<strong>客户高度集中</strong>。最大客户 Expand Energy（原 Chesapeake 和 Southwestern 合并而成，美国最大产气商）历史上贡献了四成上下的收入。Expand 自己财务健康，但一家客户咳嗽 DTM 就要感冒的结构摆在那里。</p>
+<h3>钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上年（FY2025）</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>长输管道</td>
+<td>$7.1 亿</td>
+<td>$6.9 亿</td>
+<td>+3%（FY25 因并购曾 +55%）</td>
+<td>54%</td>
+<td>约 55%（估算）</td>
+<td>约 $3.9 亿</td>
+</tr>
+<tr>
+<td>集输</td>
+<td>$6.1 亿</td>
+<td>$5.6 亿</td>
+<td>+10%</td>
+<td>46%</td>
+<td>约 43%（估算）</td>
+<td>约 $2.6 亿</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>$13.1 亿</td>
+<td>$12.4 亿</td>
+<td>+18.1%</td>
+<td>100%</td>
+<td>49.7%</td>
+<td>$6.5 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只按分部披露营收，利润率按整体 49.7% 经营利润率和两类资产的行业常态拆分估算。TTM 总增速 18% 里一大半是买 ONEOK 三条管道买来的，内生增速大约 5–8%。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $2,600 万，占净利润 5.6%。没问题。</li>
+<li><strong>一次性项目</strong>：TTM 没有减值、重组或诉讼。干净。</li>
+<li><strong>资本化的支出</strong>：管道公司的资本开支（TTM $4.57 亿）本来就全部资本化进管道资产，这是行业正常做法，不是障眼法；要警惕的是它把"维护性"和"增长性"开支混在一起报，维护性大约只需 1 亿上下（估算），其余是主动扩建。</li>
+<li><strong>回购与稀释</strong>：<strong>零回购</strong>，股本一年反而增发 1.84%（2024 年为并购发了 4 亿美元新股）。分红是它唯一的回馈方式。</li>
+<li><strong>利润和现金流的差</strong>：净利润 4.68 亿 vs 经营现金流 9.37 亿，差了整整一倍，值得拆开看：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>对账</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4.68</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+2.85</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+0.26</td>
+</tr>
+<tr>
+<td>− 合资管道的权益法利润（记利润但不进现金）</td>
+<td>−1.47</td>
+</tr>
+<tr>
+<td>+ 递延所得税、合资管道分回现金等（估算构成）</td>
+<td>+3.23</td>
+</tr>
+<tr>
+<td>− 营运资金变化</td>
+<td>−0.18</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>9.37</td>
+</tr>
+</tbody>
+</table></div>
+<p>两个信号：一是<strong>账面交 25% 的税、现金上大头递延了</strong>（管道折旧抵税），真金白银的税负远低于利润表显示；二是合资管道的 1.47 亿利润虽是权益法记账，但每年确实有分红回流,不是纸面富贵。现金流质量没问题，<strong>问题是现金流的去向</strong>：9.37 亿经营现金流，4.57 亿砸回管道扩建，3.38 亿付股息，股东拿到手的就是那 2.6% 的股息率，剩下的全在"再投资换未来增长"。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>137.7 亿 ÷ 4.68 亿</td>
+<td>29.4</td>
+<td>¥3.4</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>公司主推"调整后EBITDA"约 11 亿（含合资份额，估算），对应 EV/调整后EBITDA</td>
+<td>约 15.5</td>
+<td>—（不可比）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，权益法利润是年年有的真利润，= GAAP</td>
+<td><strong>29.4</strong></td>
+<td><strong>¥3.4</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>137.7 亿 ÷ 4.80 亿</td>
+<td>28.7</td>
+<td>¥3.5</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(137.7 + 32.0) ÷ 6.51 亿</td>
+<td>26.1</td>
+<td>¥3.8</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>137.7 亿 ÷ 3.93 亿（FY23–25 平均）</td>
+<td>35.0</td>
+<td>¥2.9</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你投 100 块进去，按真实口径公司一年替你赚 3.4 块，其中约 2.4 块以股息发给你，1 块留在公司修新管道。</strong> 三年平均口径 35 倍比当期 29 倍还高，说明当前利润已经是并购加 LNG 扩容抬上来的<strong>阶段性高位</strong>，不是低谷。这个 3.4 未来会不会变大？会——LNG 出口和数据中心用电是真需求，公司在手的扩建项目能让利润每年涨个 5–8%；但注意它的 ROIC 只有 6.0%，还低于自己 7.3% 的资金成本——<strong>每新投 1 块钱资本赚回来的钱勉强够本</strong>，增长是有的，给股东创造的超额价值很薄。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>不值 30 倍。</strong> 这是门踏实的收费站生意——照付不议合同、气价免疫、账目干净——但市场为"LNG + 数据中心"的故事把它抬到了全管道行业最贵的一档：29 倍市盈率、2.6% 股息率，而同样质地的大同行只要 15–20 倍、股息 3.5–4.5%。一门 ROIC 6%、零回购、还在增发股票的资本密集生意，30 倍的价格已经把未来五年的增长全部预收了。股价 52 周涨了 30%，涨的是故事不是利润。想要管道的稳定现金流，同行里有更便宜的选择；这家等它跌回 20 倍出头再看。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global），TTM 截止 2026-06-30，分析日期 2026-08-18</em></p>
+</div></body></html>

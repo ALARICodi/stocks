@@ -1,0 +1,264 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WTRG · Essential Utilities（水务+燃气公用事业）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WTRG</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">垄断供水极稳，但FCF常年为负，分红靠借债+增发</div><h1>WTRG · Essential Utilities（水务+燃气公用事业）</h1>
+<p>市值 $114.9 亿 / 股价约 $40.5 / 公用事业 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>这家公司实质上做两门生意，都是"政府发牌照的垄断收费站"。</p>
+<h3>生意一：卖自来水（Aqua 水务）—— 占营收 53%</h3>
+<p>前身叫 Aqua America，是全美第二大上市水务公司（第一是 American Water）。它在宾夕法尼亚、俄亥俄、德州、北卡等 8 个州拥有水厂和地下水管网，给大约 500 万人口供水和处理污水。</p>
+<p>这门生意具体是这样运转的：你家住在宾州郊区，水管是 Aqua 的,你没得选——供水是天然垄断，不可能有第二家公司再挖一遍马路铺一套管子。你每个月交 60–80 美元水费，其中包含基础费加用水量费。价格不是 Aqua 想定多少定多少，而是州公用事业委员会批的。</p>
+<p>赚钱的公式是"费率基数模式"：Aqua 每年花十几亿美元换老旧水管、修水厂，这些投资进入"费率基数"（rate base），监管机构允许它在这个基数上赚大约 10% 的股本回报率——花得越多，将来允许收的水费越高。所以这家公司的增长方式很反直觉：<strong>拼命花钱就是拼命增长</strong>。它还有个副业玩法：专门收购市政府嫌麻烦的小自来水公司（比如一个镇 8000 户的小水厂），收进来并入自己的费率基数，这些年靠这个滚了几十单。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>规管水务</td>
+<td>$13.74 亿</td>
+<td>53.5%</td>
+<td>FY2025 比 FY2024 增 8.6%，靠涨价+收购</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报分部只披露到营收，分部利润按公司披露口径估算：水务利润率明显高于燃气（水务大约六成经营利润率，是利润主力）。</p>
+<h3>生意二：卖天然气（Peoples 燃气）—— 占营收 45%</h3>
+<p>2020 年花 43.6 亿美元买来的 Peoples Natural Gas，给匹兹堡一带约 74 万户人家输送取暖用的天然气。商业模式和水务一模一样：垄断管网 + 监管定价 + 换管子扩费率基数。区别有两个：一是<strong>极度看天吃饭</strong>——收入集中在冬天，暖冬就少赚；二是天然气本身的成本是直接转嫁给用户的（气价涨跌它不赚不赔），它赚的只是"过路费"。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>规管燃气</td>
+<td>$11.68 亿</td>
+<td>45.5%</td>
+<td>FY2025 比 FY2024 大增 33%（冷冬+费率上调），波动大</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>$0.26 亿</td>
+<td>1%</td>
+<td>给市政供水做代运营等杂项</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合计 TTM 营收 $25.69 亿，同比 +9.9%；TTM 净利润 $5.55 亿，但比 FY2025 全年的 $6.16 亿是往下走的</strong>（暖冬 + 费用端），TTM 每股收益同比 -16%。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $1,316 万，占净利润 2.4%。公用事业不靠发股票留人，这项干净，没问题。</li>
+<li><strong>一次性项目</strong>：TTM 里只有 $177 万的资产出售收益，可忽略。（FY2024 有一笔 $9,222 万的出售收益垫高过当年利润，但不在本期。）本期干净。</li>
+<li><strong>税率低得反常</strong>：TTM 有效税率只有 <strong>5%</strong>（税前 $5.84 亿、所得税 $2,925 万）。这不是造假，是宾州允许把管道维修支出在税上一次性扣除的合法玩法，而且年年如此——但要明白，正常公司交 21%，它的净利润里有约 15 个百分点是税务优惠撑着的，政策若变利润直接掉一块。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $299 万 ÷ SBC $1,316 万 = <strong>0.23，不但没有真回购，方向反了</strong>——它同时增发了 $1.21 亿新股，股本一年膨胀 2.46%。你持有它，每年被稀释 2.5%。</li>
+<li><strong>利润和现金流的差（核心问题在这）</strong>：净利润 $5.55 亿，经营现金流 $10.28 亿，<strong>自由现金流 -$4.52 亿</strong>。对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>554.9</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>438.6</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>13.2</td>
+</tr>
+<tr>
+<td>＋递延税等其他</td>
+<td>47.1</td>
+</tr>
+<tr>
+<td>－应收款增加</td>
+<td>-40.2</td>
+</tr>
+<tr>
+<td>－应付款减少等</td>
+<td>-7.0</td>
+</tr>
+<tr>
+<td>≈ 经营现金流</td>
+<td>1,028</td>
+</tr>
+<tr>
+<td><strong>－资本开支</strong></td>
+<td><strong>-1,480</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>-452</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流全部砸进换管子还差 4.5 亿,然后<strong>还要再付 3.87 亿股息</strong>。窟窿怎么补？TTM 净增借债 $7.41 亿 + 增发股票 $1.21 亿。<strong>你收到的股息，实质是公司借来的钱和新股东的钱。</strong> 这是费率基数模式的标配（花钱才有增长），不算骗局，但意味着：负债只会越滚越大（现已 $85.4 亿，Debt/EBITDA 高达 6.25 倍，利息保障只有 2.67 倍），且永远伸手向资本市场要钱。</p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>114.9亿 ÷ 5.55亿</td>
+<td>20.7</td>
+<td>¥4.8</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>基本不吹调整口径，≈GAAP</td>
+<td>~20.7</td>
+<td>¥4.8</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>一次性项目可忽略，SBC 已扣</td>
+<td><strong>20.8</strong></td>
+<td><strong>¥4.8</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为负</td>
+<td>不适用</td>
+<td><strong>-¥3.9（倒贴）</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(114.9亿+85.3亿净债) ÷ 9.18亿</td>
+<td>21.8</td>
+<td>¥4.6</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>114.9亿 ÷ 5.70亿</td>
+<td>20.2</td>
+<td>¥5.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，公司账面一年替你赚 4.8 块</strong>，其中约 3.6 块以股息形式发给你——但上一部分说清楚了，这 3.6 块不是公司赚出来的现金，是它借债和增发筹来的，公司自己的自由现金流是<strong>负的</strong>。剩下的钱连同借来的钱全部埋进了地下管道，换取监管机构允许未来多收水费。这个 4.8 块未来大概率温和变大（费率基数每年涨 6-8%），但每年 2.5% 的股本稀释会吃掉你一部分份额，而且 ROIC 只有 3.8%、低于它自己 6% 的资金成本——花 1 块钱投资只创造 8 毛钱价值,增长本身在给债主和监管打工。</p>
+<h2>四、一句话结论</h2>
+<p>垄断供水是天底下最稳的生意之一，倒闭风险约等于零，这是它值 20 倍的底气；但 20.7 倍买的是一家 ROIC 3.8%、自由现金流常年为负、每年稀释你 2.5%、靠借新钱发股息的公司，比同行 American Water 的 25 倍便宜是真的，可它自己并不便宜——想要"稳"可以理解，想要"赚"没有便宜可占，这个价位偏贵，等回调到 17-18 倍以下再看。</p>
+</div></body></html>

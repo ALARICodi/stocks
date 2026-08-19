@@ -1,0 +1,240 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DRS · Leonardo DRS（美国军工电子）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DRS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">核潜艇电推独家+红外卡位几十年，38倍已付满军备景气</div><h1>DRS · Leonardo DRS（美国军工电子）</h1>
+<p>市值 $121 亿 / 股价约 $45 / 电子科技—国防电子 / TTM 截止 2026-06-30</p>
+<p>母公司是意大利国防巨头 Leonardo（持股约 72%），2022 年底与以色列雷达公司 RADA 合并后在纳斯达克上市。客户几乎全是美国国防部。</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报分两个分部，实质就是两门生意：<strong>给美军装"眼睛和神经"</strong>，和<strong>给军舰军车装"心脏和盾牌"</strong>。</p>
+<h3>生意A：先进传感与计算（ASC）——给美军装眼睛</h3>
+<p>美军的坦克、步兵、军舰要在黑夜和沙尘里看见敌人，靠的是红外热成像仪。DRS 是美国陆军第三代前视红外（FLIR）系统的核心供应商——举个具体例子：陆军要升级 Abrams 主战坦克的瞄准系统，DRS 拿下的合同是把新一代红外传感器装进每辆坦克的炮长瞄准镜里，单套设备几十万美元，一个升级批次几百上千辆车，一签就是几亿美元的多年期合同。同类产品还装在 Bradley 步兵战车、武装直升机和单兵夜视设备上。</p>
+<p>这门生意还包括舰载雷达和计算系统（军舰上处理雷达信号的"服务器机房"，要抗冲击、抗电磁干扰，普通戴尔服务器根本不能用）、电子战设备（干扰对方雷达）等。收钱方式是典型军工模式：跟着武器平台的采购和升级周期走长期合同，交付一批收一批钱，很多还有政府预付款。</p>
+<p>客户为什么非买不可：这些传感器是"设计进"武器平台的，换供应商等于重新设计+重新测试整个火控系统，周期以年计，所以一旦在某个平台上占住位置，能吃这个平台整个生命周期（几十年）的采购和维修升级。</p>
+<ul>
+<li>TTM 营收 <strong>$24.5 亿</strong>（FY2025 全年为 $23.6 亿，同比增速约 11%），占总营收 65%</li>
+<li>财报只披露到分部营收，利润按整体口径估算：分部经营利润率约 11%（估算），贡献经营利润约 $2.7 亿（估算）</li>
+</ul>
+<h3>生意B：综合任务系统（IMS）——给军舰装心脏、给部队装盾牌</h3>
+<p>最值钱的一块：<strong>哥伦比亚级战略核潜艇的电力推进系统</strong>。美国海军下一代核潜艇不再用机械传动，改用电驱——DRS 是这套电推系统的独家供应商。一艘潜艇的电推设备就是几亿美元的生意，哥伦比亚级计划造 12 艘，建造周期排到 2040 年代，这是一条排了十几年队的独木桥生意。</p>
+<p>第二块是"盾牌"：反无人机系统和近程防空。乌克兰战争之后，打小型无人机成了各国陆军最急的需求，DRS（合并 RADA 得来的小型战术雷达）给陆军的 Stryker 装甲车装短程防空任务包——车上装雷达+光电传感器+火控，一套上百万美元。</p>
+<ul>
+<li>TTM 营收 <strong>$13.5 亿</strong>（FY2025 全年为 $13.1 亿，同比增速约 15%），占总营收 36%</li>
+<li>分部利润同样未单独披露，估算经营利润率略低于 ASC（电推研发投入大），约 9-10%（估算）</li>
+</ul>
+<p>公司整体 TTM 经营利润率 10.6%，比 FY2023 的 8.6% 提升了两个点——军工电子的规模效应在兑现。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $2900 万，占净利润 $3.22 亿的 9%。比例不高，GAAP 已扣，不用额外操心。</li>
+<li><strong>一次性项目</strong>：TTM 这一期没有大额一次性项目，账很干净。历史上 FY2022 有一笔 $3.54 亿的资产出售收益（卖掉了全球企业解决方案业务），把当年净利润推到 $4.05 亿——看历史数字时要剔掉，但不影响本期。</li>
+<li><strong>资本化支出</strong>：军工合同研发大多由客户（政府）买单，自担研发资本化不显著。没有值得警惕的。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $6200 万 ÷ SBC $2900 万 ≈ <strong>2.1 倍</strong>，再加 $9600 万分红。回购刚够抵消员工发股再略有富余，股本基本持平（季环比 +0.07%）。算"不稀释你"，但谈不上大手笔回馈。</li>
+<li><strong>利润 vs 现金流</strong>：经营现金流 $5.01 亿远大于净利润 $3.22 亿，对账如下（单位：百万美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>322</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>97</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>29</td>
+</tr>
+<tr>
+<td>+ 其他非现金</td>
+<td>27</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−41</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>17</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−82</td>
+</tr>
+<tr>
+<td>+ <strong>预收款增加</strong></td>
+<td><strong>+162</strong></td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−30</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>501</td>
+</tr>
+</tbody>
+</table></div>
+<p>关键在 <strong>+1.62 亿的预收款</strong>：政府客户按合同进度打预付款，钱先到账、活还没干完。这是真现金、也是订单火爆的证据（合同排得越满预收越多），但它属于"借来的利润"——哪天订单增速放缓，这一项会反过来吃现金流。剔掉它，现金流和利润基本匹配，质量没问题。</p>
+<p>资产负债表：现金 $2.7 亿 ≈ 总债务 $2.67 亿，<strong>净现金持平</strong>，TTM 还清了 $1.98 亿债务。军工股里少见的干净杠杆。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<p>市值 $121 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>121亿 ÷ 3.22亿</td>
+<td><strong>37.6</strong></td>
+<td>¥2.7</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回无形资产摊销等（估算）</td>
+<td>约33</td>
+<td>¥3.0</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，= GAAP</td>
+<td><strong>37.6</strong></td>
+<td><strong>¥2.7</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>121亿 ÷ 3.63亿</td>
+<td>33.3</td>
+<td>¥3.0</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>121亿 ÷ 4.0亿（净现金≈0）</td>
+<td>30.3</td>
+<td>¥3.3</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>121亿 ÷ 2.2亿（FY23-25均值）</td>
+<td><strong>55</strong></td>
+<td>¥1.8</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 2 块 7</strong>。其中约 1 块 3 以分红+回购形式回到你口袋（TTM 合计 $1.58 亿，占 FCF 44%），其余留在公司里扩产能（资本开支翻了一倍多到 $1.38 亿，都是为哥伦比亚级和传感器产线扩建）和还债。</p>
+<p>这个 2 块 7 未来大概率变大：营收增速 10-13%、利润率还在爬坡、净利润过去两年每年增 26%+，订单能见度极高（战略核潜艇排到 2040 年代）。但三年平均口径 55 倍在提醒你：<strong>当前利润已经比三年前翻了近一倍，你付的价钱里已经预支了军备周期的景气</strong>。</p>
+<h2>四、一句话结论</h2>
+<p>生意本身是真材实料的好生意——独家卡位核潜艇电推、红外传感器"设计进"平台就吃几十年、账上净现金、现金流比利润还厚；但 38 倍市盈率、三年平均口径 55 倍，市场已经把军备扩张的故事付满了钱，<strong>好公司，不便宜，现在买没有便宜可占，值得放进观察名单等回调</strong>。</p>
+</div></body></html>

@@ -1,0 +1,288 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DAR · 达林原料（Darling Ingredients）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DAR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">12倍FCF不贵,但利润被45Z补贴牵着走,还背40亿净债</div><h1>DAR · 达林原料（Darling Ingredients）</h1>
+<p>市值 $106.8 亿 / 股价 $67.67 / 行业：食品原料·可再生能源 / TTM 截止 2026-07-04</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>达林是全球最大的"动物副产品回收商"。一句话讲透它的生意：<strong>屠宰场杀一头牛，人吃的部分只占六成，剩下四成的骨头、油脂、内脏、血，总得有人拉走处理——达林就是那个拉走的人，而且它能把这堆"废料"全部变成钱</strong>。它在全球五大洲有 260 多个工厂，按分部拆成三门生意。</p>
+<h3>生意一：饲料原料（Feed Ingredients）——把屠宰场废料炼成蛋白粉和油脂</h3>
+<p>具体怎么运转：一家中西部的牛肉屠宰厂每天产生几百吨下脚料，达林的卡车队按合同每天上门收走（视行情有时收处理费、有时反过来付钱买料），拉回自己的炼制厂高温蒸煮、压榨、烘干，产出三样东西：<strong>肉骨粉</strong>（卖给宠物食品厂和养殖场做蛋白饲料）、<strong>动物油脂</strong>（卖给饲料厂，近年更值钱的去向是当可再生柴油的原料）、<strong>血粉血浆蛋白</strong>（卖给猪饲料厂，小猪断奶料里必须加）。它还经营全美最大的<strong>废食用油回收网络</strong>（DAR 旗下 DGD 原料的重要来源）——快餐店后厨那桶炸过薯条的废油，达林上门收走，炼成脂肪酸再卖掉。这门生意的护城河是<strong>收集网络本身</strong>：处理动物尸体和废油需要环保许可、冷链车队、和屠宰场的长期合同，一个城市通常只养得活一两家回收商，后来者拿不到料源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM 数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$42.92 亿（FY2025 全年为 $39.90 亿）</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>65.5%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>财报只披露到营收，利润未按分部披露；按公司整体 9.2% 经营利润率和该分部体量估算约 $3.5–4 亿（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：食品原料（Food Ingredients)——全球最大的明胶和胶原蛋白厂</h3>
+<p>旗下 <strong>Rousselot 是全球第一大明胶生产商</strong>。原料还是那批屠宰废料里的猪皮、牛皮、骨头：提炼出的明胶卖给糖果厂（软糖的弹性全靠它）、药厂（全世界的药用胶囊壳大半是明胶做的）、以及这几年爆火的<strong>胶原蛋白肽</strong>保健品品牌——你在直播间买的"胶原蛋白饮"，粉料很可能就是 Rousselot 供的。同一分部里还有食用油脂、肠衣（灌香肠用的天然肠衣）、以及从猪小肠黏膜里提取的<strong>肝素粗品</strong>（抗凝血药的原料，医药级定价）。这门生意客户粘性高：药厂换胶囊供应商要重走药监验证，轻易不换。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM 数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$16.23 亿（FY2025 全年为 $15.45 亿）</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>24.8%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>未按分部披露，按估算利润率约 $1.5–2 亿（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：燃料原料（Fuel Ingredients）——把油脂变成柴油，公司的命运赌注</h3>
+<p>报表内的 6.33 亿营收主要是欧洲业务：比利时的 Ecoson 把废料做成沼气发电，Rendac 处理欧洲的病死畜禽（政府强制、收费处理）。但这个分部真正的主角<strong>不在报表营收里</strong>——达林和炼油巨头 Valero 各持 50% 的合资公司 <strong>Diamond Green Diesel（DGD）</strong>，美国最大的可再生柴油厂，年产能约 12 亿加仑，还在扩产可持续航空燃料（SAF）。DGD 用达林收来的动物脂肪和废食用油炼柴油，化学成分和石化柴油一样但碳排放低八成，加州等地强制掺混、联邦给税收抵免。因为只占 50%，DGD 按权益法入账：它的利润按一半直接加进达林的利润表，不进营收。<strong>达林过去三年的利润过山车，几乎全是 DGD 造成的</strong>：2024 年联邦补贴从 BTC（混合税抵免）切换到 45Z（清洁燃料生产抵免），新规则一度让 DGD 无利可图，达林 FY2025 净利润暴跌到 $0.63 亿；2026 年 45Z 落地执行后 DGD 利润回来了，TTM 净利润又弹回 $5.98 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM 数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（报表内，不含 DGD）</td>
+<td>$6.33 亿</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>9.7%</td>
+</tr>
+<tr>
+<td>DGD 贡献</td>
+<td>走权益法进利润表。TTM 税前利润 $7.43 亿比经营利润 $6.02 亿还高（利息支出约 $1.9 亿之后仍高出 $1.4 亿），意味着约 $3 亿量级的非经营收益，大头即 DGD 权益法利润的回升（估算，单期口径无法精确拆分）</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM $3,665 万，占净利润 6.1%。金额不大，这家公司发股票不算手松。</p>
+<p><strong>一次性项目</strong>：TTM 有 $6,209 万资产减值与重组费用；FY2025 更有 $4.08 亿权益投资损失（DGD 相关的减值/亏损），TTM 里还挂着 $7,679 万。这类"减值"在这家公司<strong>不是第一次出现</strong>——单期口径无法判断是否年年发生，但过去五年里三年都有类似科目，看作经常性成本更稳妥。</p>
+<p><strong>资本化的支出</strong>：无软件/内容资本化问题。资本开支 TTM $4.70 亿，低于折旧摊销 $5.25 亿——资产基础成熟，没靠资本化美化利润。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 $9,455 万 ÷ SBC $3,665 万 = 2.6 倍，表面及格。<strong>但股本一年还是涨了 1.02%</strong>——买回来的不如发出去的多，回购没能真正缩股。股东回报口径（回购+分红－稀释）实际是 <strong>-1.02%</strong>，且不派息。</p>
+<p><strong>利润和现金流的差</strong>：净利润 $5.98 亿 vs 经营现金流 $13.51 亿，差了一倍多，逐项对上：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>597.9</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>529.9</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>36.7</td>
+</tr>
+<tr>
+<td>＋资产减值重组</td>
+<td>62.1</td>
+</tr>
+<tr>
+<td>＋权益投资损失（非现金）</td>
+<td>76.8</td>
+</tr>
+<tr>
+<td>＋其他经营项目</td>
+<td>71.3</td>
+</tr>
+<tr>
+<td>－资产出售收益</td>
+<td>-1.3</td>
+</tr>
+<tr>
+<td>±营运资金变化</td>
+<td>-22.0</td>
+</tr>
+<tr>
+<td>＝经营现金流</td>
+<td>1,351</td>
+</tr>
+</tbody>
+</table></div>
+<p>现金流是真的、而且比利润厚实：折旧 $5.3 亿远超维持性开支需求，减值和 DGD 的账面波动都不出现金。<strong>自由现金流 $8.81 亿，比净利润高 47%</strong>——这家公司赚现金的能力比利润表好看。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>106.8亿 ÷ 5.98亿</td>
+<td>17.9</td>
+<td>¥5.6</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>公司主推"合并调整后EBITDA"（含DGD份额），不直接给调整后净利，无法换算</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>加回6.2千万减值、扣掉DGD单期波动后与GAAP大体相抵（单期无法精确拆分）</td>
+<td>~18</td>
+<td>~¥5.6</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>106.8亿 ÷ 8.81亿</td>
+<td>12.1</td>
+<td>¥8.3</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>146.9亿 ÷ 6.02亿</td>
+<td>24.4</td>
+<td>¥4.1</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>106.8亿 ÷ 三年平均3.30亿（FY23/24/25）</td>
+<td>32.4</td>
+<td>¥3.1</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去,按现金流口径公司一年替你赚 8 块 3,按利润口径赚 5 块 6,但按熨平政策过山车的三年平均口径只有 3 块 1。</strong> 这三个数差这么远,就是这家公司的全部故事:现金流机器是真的,但利润被华盛顿的补贴政策牵着走。赚到的钱眼下一分不分红,回购聊胜于无,大头拿去还债(净债 $40 亿)和扩产 SAF。未来这个数变大还是变小,一半取决于炼废油的手艺,一半取决于 45Z 补贴延不延续——2027 年后的政策没人保证。</p>
+<p>另一个不能装看不见的数：<strong>净债 $40 亿是市值的 37%，Debt/EBITDA 3.4 倍，Altman Z 值 2.17（进入警戒区），ROIC 5.3% 低于 8.3% 的资金成本</strong>。过去一年股价涨了 117%，便宜的部分已经被买走了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>垃圾变钱的收集网络是条真护城河，现金流也真实厚道（12 倍 FCF 不算贵），但利润的方向盘握在补贴政策手里、身上还背着 40 亿净债——股价一年翻倍之后，这个价算公道，别指望捡便宜，把它当"政策周期股"而不是"稳定收租股"看。</p>
+</div></body></html>

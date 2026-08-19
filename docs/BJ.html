@@ -1,0 +1,234 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BJ · BJ's Wholesale Club（仓储会员超市）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BJ</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">会员费=62%利润的真护城河，21.6倍素颜价，Costco要50倍</div><h1>BJ · BJ's Wholesale Club（仓储会员超市）</h1>
+<p>市值 $120 亿 / 股价约 $94 / 零售—仓储会员店 / TTM 截止 2026-05-02</p>
+<p>美国东海岸版的"小 Costco"，约 260 家仓储会员店，会员约 800 万（门店数与会员数为公司披露口径，估算）。</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报分两块收入：卖货 + 会员费。<strong>实质是一门生意的两个零件：先收门票，再用接近成本价的货把你锁住。</strong></p>
+<h3>生意A：卖货（含加油站）——故意不怎么赚钱</h3>
+<p>场景是这样：新泽西一个四口之家，每两周开车去 BJ's，一次买 $200 的东西——整箱的鸡胸肉、大包装纸巾、汽油顺路加满。BJ's 的货价比普通超市便宜 10-25%，靠的是三招：每家店只放约 7000 个精选单品（普通超市 4 万个，单品越少、单个供应商拿到的订单越大、砍价越狠）、店就是仓库（货架即库存，省人工）、以及<strong>故意只赚极薄的毛利</strong>。TTM 卖货收入 $214.5 亿，但整个公司经营利润率只有 3.7%——卖货这部分几乎是平进平出，低价本身就是获客工具。加油站更是标配引流品：油价比市场低几美分，会员为了加油每周都来，顺手进店买菜。</p>
+<p>和 Costco 的区别：BJ's 更偏"超市化"——生鲜占比更高、店更小、集中在东海岸（新英格兰到佛罗里达），这几年刚开始往德州等新市场扩张，每年新开 10 家上下，这是它资本开支连年暴涨的原因（三年翻了近一倍到 $7.4 亿）。</p>
+<ul>
+<li>TTM 卖货收入 <strong>$214.5 亿</strong>（上年同期约 $202.5 亿，同比 +5.9%），占总营收 97.7%</li>
+<li>财报不单独披露卖货利润；按"总经营利润 − 会员费"估算，卖货部分经营利润约 $3.1 亿，利润率仅 1.5%（估算）</li>
+</ul>
+<h3>生意B：会员费——利润真正的来源</h3>
+<p>想进店买东西必须先花 $60/年 办卡（高档卡 Club+ $120/年，多给 2% 返现和更大的加油折扣）。TTM 会员费收入 <strong>$5.12 亿</strong>（上年同期约 $4.87 亿，同比 +5%），占总营收只有 2.3%，但<strong>几乎零成本、纯利润——它一项就相当于全公司经营利润 $8.23 亿的 62%</strong>。</p>
+<p>会员为什么年年续费：一年省下的货钱和油钱远超 $60（一家人一年买 $5000 的货，按便宜 15% 算省 $750），所以续费率常年在 90% 上下。这就是仓储会员店模式的护城河：<strong>你赚的不是差价，是 800 万个家庭每年自动续的"购物年费"</strong>，经济衰退时反而更多人办卡省钱，2025 年初还完成了七年来第一次涨价（$55→$60），几乎没流失会员。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $4980 万，占净利润 8.7%，不算高，GAAP 已扣。</li>
+<li><strong>一次性项目</strong>：TTM 没有大额一次性项目，账干净。</li>
+<li><strong>资本化支出</strong>：没有软件/内容资本化把戏；资本开支 $7.44 亿全是真金白银的开店和翻新，属于看得见的扩张投入。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $4.71 亿 ÷ SBC $4980 万 ≈ <strong>9.5 倍</strong>——真回购，不是遮羞布。股本一年实缩 1.5%，不派息，股东回报全走回购。</li>
+<li><strong>利润 vs 现金流</strong>：经营现金流 $9.62 亿 vs 净利润 $5.71 亿，对账（单位：百万美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>571</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>296</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>50</td>
+</tr>
+<tr>
+<td>+ 其他非现金</td>
+<td>17</td>
+</tr>
+<tr>
+<td>− 应收增加</td>
+<td>−66</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−101</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+183</td>
+</tr>
+<tr>
+<td>+ 其他</td>
+<td>+12</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>962</td>
+</tr>
+</tbody>
+</table></div>
+<p>应付 +183 对存货 −101：货还没付钱就摆上架卖掉了，供应商在替它垫资金——零售强势方的标志，不是雷。</p>
+<ul>
+<li><strong>注意 FCF 很薄</strong>：$9.62 亿经营现金流减 $7.44 亿资本开支，自由现金流只剩约 $2.2 亿（P/FCF 55 倍）。但这是<strong>扩张性开支吃掉的</strong>（往德州开新店），不是生意不产钱——ROIC 12.3% 说明新店的钱投得值。扩张一停，FCF 立刻回到 $5 亿+。</li>
+<li><strong>净债务 $28.3 亿</strong>，Debt/EBITDA 1.9，利息保障 18.8 倍，杠杆健康。</li>
+<li>一个值得知道的数：<strong>空头占流通盘 7.5%</strong>，市场上有不少人在赌它跑不赢 Costco/山姆的挤压。</li>
+</ul>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<p>市值 $120 亿，企业价值 $148 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>120亿 ÷ 5.71亿</td>
+<td><strong>21.6</strong></td>
+<td>¥4.6</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回少量调整（估算）</td>
+<td>约21</td>
+<td>¥4.8</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，= GAAP</td>
+<td><strong>21.6</strong></td>
+<td><strong>¥4.6</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>120亿 ÷ 2.2亿（扩张期失真）</td>
+<td>55</td>
+<td>¥1.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>148亿 ÷ 8.23亿</td>
+<td>18.1</td>
+<td>¥5.5</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>120亿 ÷ 5.46亿</td>
+<td>22.0</td>
+<td>¥4.5</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 22.0 倍和当期 21.6 倍几乎一样——<strong>利润不在周期高点，这个 21.6 倍是"素颜"的</strong>，跟 NVDA 那种当期便宜三年贵一倍的情况正相反。</p>
+<p>大白话：<strong>你投 100 块进去，公司一年替你真实赚 4 块 6</strong>。这 4 块 6 眼下大头拿去开新店了（当年真正可分配的约 1 块 8），但通过回购每年注销 1.5% 的股本还是回到了你手上；等德州扩张铺完，可分配的钱会明显变厚。这个 4 块 6 未来大概率温和变大：会员费收入每年涨 5-7%（人数增长+2025年涨价的翘尾），新店爬坡贡献营收——但别指望暴涨，TTM 每股收益增速已放缓到 1%，毛利被生鲜占比和促销压着。</p>
+<h2>四、一句话结论</h2>
+<p>会员费锁客的生意模式是真护城河、账干净、现金流比利润厚、回购动真格，唯一的短板是增长平缓且要一直花钱开店；21.6 倍买它——同模式的 Costco 要 50 倍——<strong>这价钱公道，不是捡便宜但绝对没多付，值得放进观察名单，等它扩张期结束利润释放</strong>。</p>
+</div></body></html>

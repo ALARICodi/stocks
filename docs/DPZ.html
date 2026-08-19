@@ -1,0 +1,219 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DPZ · Domino's Pizza（达美乐披萨）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DPZ</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">不动砖的抽成机器ROIC 62%，19倍是十年低位，唯债重</div><h1>DPZ · Domino's Pizza（达美乐披萨）</h1>
+<p>市值 $112.6 亿 / 股价约 $340（52周跌了24%）/ 消费服务 / TTM 截止 2026-06-14</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>先破除一个误解：达美乐自己几乎不开披萨店。全球 21,000 多家店里，美国 6,900 家店只有不到 300 家是自营，其余全是加盟商的。它真正的身份是<strong>"向加盟商收租的平台 + 给加盟商供货的批发商"</strong>，五条收入线拆开是三门生意。</p>
+<h3>生意一：卖面团和食材（供应链）—— 占营收 61%，是营收大头但不是利润大头</h3>
+<p>达美乐在北美自建了 20 多个面团厂和配送中心。美国加盟商开店有一条硬规矩：<strong>面团、芝士、酱料、包装盒必须从公司买</strong>——理由是口味一致性，效果是公司把加盟店的"进货"变成了自己的生意。一家典型加盟店年营业额 $130 万，其中约 $40 万花在向公司进货上。卡车每周两次送到店，连运费一起赚。</p>
+<p>这门生意毛利薄（利润率约 11%，按公司披露口径估算），而且有个特别设计：<strong>供应链税前利润的 50% 会以返利形式分回给加盟商</strong>——故意让加盟商赚钱，加盟商赚钱才拼命开新店，新店又回来买更多面团。这是全系统的润滑剂。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>供应链（食材批发+配送）</td>
+<td>$30.63 亿</td>
+<td>60.9%，FY2025 同比 +5.1%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：收加盟费（美国+国际特许经营）—— 占营收 21%，利润的真正来源</h3>
+<p>美国加盟商每卖 100 块，交 5.5 块特许权使用费；国际市场靠"区域总代理"模式——澳大利亚、日本、印度、墨西哥各有一个上市的大加盟商（比如印度的 Jubilant FoodWorks 运营着 2,000 家店），总代理向达美乐交约 3% 的流水。这门生意的美妙之处：<strong>开店的钱、装修的钱、雇人的钱全是加盟商出的，达美乐坐着抽成</strong>，几乎零成本、利润率接近 100%，这就是它 ROIC 高达 62% 的原因。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国特许权使用费</td>
+<td>$6.92 亿</td>
+<td>13.8%，FY2025 同比 +6.1%</td>
+</tr>
+<tr>
+<td>国际特许权使用费</td>
+<td>$3.49 亿</td>
+<td>6.9%，FY2025 同比 +6.3%</td>
+</tr>
+<tr>
+<td>自营店（美国约290家，当试验田用）</td>
+<td>$3.55 亿</td>
+<td>7.1%，逐年缩</td>
+</tr>
+</tbody>
+</table></div>
+<h3>"生意三"：广告基金 —— 占营收 11%，是假营收</h3>
+<p>美国加盟商另交流水的 6% 进广告基金（TTM $5.69 亿），这笔钱按约定必须全部花在打广告上，公司一分不留。会计上它同时计进收入和费用，<strong>把营收虚增了 11%，但对利润的贡献是零</strong>。看这家公司别用市销率，就是这个原因。</p>
+<p><strong>合计 TTM 营收 $50.3 亿（+5.2%），净利润 $5.97 亿。</strong> 增长引擎是"全球每年净开 500–800 家店 + 美国同店低个位数增长"。股价一年跌 24%，因为两台引擎都在放慢：美国消费者捂紧钱包，国际上几个大总代理（尤其澳洲的 DPE）自己陷入亏损、开店计划缩水。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $4,443 万，占净利润 7.4%，中等偏低，不构成问题。</li>
+<li><strong>一次性项目</strong>：TTM 有一笔 <strong>$2,895 万的投资出售损失</strong>（主要是处置持有的中国达美乐 DPC Dash 等股权投资的浮亏过账），另有 $604 万资产出售收益。两项相抵约压低了税前利润 $2,300 万——<strong>这笔是真一次性，剔掉后真实利润比 GAAP 报的还高一点</strong>。</li>
+<li><strong>资本化的支出</strong>：无软件/内容资本化问题，资本开支只有 $1.24 亿（占营收 2.5%），面团厂都建完了，是台印钞机。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $4.05 亿 ÷ SBC $4,443 万 = <strong>9.1 倍，真回购</strong>。股本一年实缩 2.45%，外加分红 $2.45 亿（股息率 2.2%）。</li>
+<li><strong>负资产负债表要说清楚</strong>：账面净资产是<strong>负 39.8 亿</strong>——不是资不抵债快倒了，而是它常年把借来的钱全部回购送还股东（和麦当劳、百胜同款玩法）。代价是净债务 $49.6 亿、Debt/EBITDA 4.57 倍、一年利息 $1.85 亿。生意本身现金流极稳所以扛得住，但这意味着<strong>估值里已经内嵌了高杠杆</strong>，利率长期高企会持续咬掉利润。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $5.97 亿 vs 经营现金流 $7.78 亿，差额不大且方向健康（折旧摊销 $0.95 亿 + SBC + 应付款增加），无需逐项对账。自由现金流 $6.53 亿 &gt; 净利润，<strong>利润全是真现金</strong>。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>112.6亿 ÷ 5.97亿</td>
+<td>19.3</td>
+<td>¥5.2</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>加回投资损失等</td>
+<td>~18</td>
+<td>¥5.5</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>112.6亿 ÷（5.97亿＋2300万真一次性损失）</td>
+<td><strong>18.2</strong></td>
+<td><strong>¥5.5</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>112.6亿 ÷ 6.53亿</td>
+<td>17.2</td>
+<td>¥5.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(112.6亿+49.6亿净债) ÷ 9.69亿</td>
+<td>16.8</td>
+<td>¥6.0</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>112.6亿 ÷ 5.68亿</td>
+<td>19.8</td>
+<td>¥5.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>当期和三年平均几乎一样——现在不是利润高点，就是正常水位。</p>
+<p>大白话：<strong>你投 100 块进去，按真实口径公司一年替你赚 5.5 块</strong>，其中约 2.2 块分红、3.6 块回购，合计约 5.8 块回到你口袋——比它赚的还多，差额是借的（净债务基本不还，只滚动）。这个 5.5 块未来变大的路径清晰：全球店数每年 +3%、同店 +2%、股本 -2.5%，叠出每股利润高个位数增长；风险是美国披萨市场已经饱和、国际总代理正在减速，如果开店引擎熄火，高杠杆会把失望放大。</p>
+<h2>四、一句话结论</h2>
+<p>这是一台被市场冷落的抽成机器——不动一块砖、ROIC 62%、利润全是现金、赚多少还多少，19 倍（真实口径 18 倍）是它十年来最便宜的一档（过去常年 25–35 倍），股价跌 24% 跌出来的这个价，为增长放缓和 5 倍杠杆打过折之后依然算得过账：按公道价买好生意，比 SCI 多一分成长性、也多一分债务和竞争风险，值得放进观察名单。</p>
+</div></body></html>

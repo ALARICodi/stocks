@@ -1,0 +1,255 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AM · Antero Midstream（安特罗中游）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AM</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">现金流真实但命拴AR一家，4%股息被当蓝筹定价，等跌</div><h1>AM · Antero Midstream（安特罗中游）</h1>
+<p>市值 $106.9 亿 / 股价约 $22.5 / 天然气中游管道 / TTM 截止 2026-06-30</p>
+<h2>一、它到底做几件事</h2>
+<p>先说清这家公司的出身，这是理解它的钥匙：它是天然气开采商 <strong>Antero Resources（AR）</strong> 在 2014 年把自家管道资产拆出来上市的「亲儿子」，到今天<strong>几乎 100% 的收入仍然来自 AR 这一个客户</strong>。AR 在西弗吉尼亚和俄亥俄的阿巴拉契亚页岩区打井采气，AM 负责把气和水运进运出，按量收费。AR 至今还持有 AM 约三成股份。所以买 AM 本质上是买「AR 的采气量会不会一直在」。它做两件事。</p>
+<h3>生意 A：集气与增压（Gathering &amp; Processing）——营收占约 69%</h3>
+<p>大白话：页岩气井打好后，气从井口出来压力低、还混着杂质，没法直接进全国性的长输管道。AM 在 AR 的几百个井场之间铺了几千公里的<strong>低压集气管</strong>，把各个井口的气汇集到自己的增压站加压，再送进与 MPLX 合资的处理厂分离出可卖钱的乙烷丙烷。收费方式是<strong>照量计费</strong>：AR 每送一千立方英尺气过来，就按合同价付一笔固定费用，合同一签十几年、费率每年随通胀上调，<strong>气价涨跌跟 AM 的收入没关系</strong>——这是它 80% 毛利率、56% 经营利润率的来源：管道铺好后每多过一方气，几乎全是利润。AR 为什么非用它不可？因为井场就物理地连在 AM 的管子上，换别家等于把管网重铺一遍。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>集气增压</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>$8.45 亿</td>
+<td>+5%</td>
+<td>约 69%</td>
+<td>约 60%（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 B：供水与污水处理（Water Handling）——营收占约 20%</h3>
+<p>大白话：压裂一口页岩气井要灌进几百万加仑的水。AM 建了从河道取水的<strong>淡水管网</strong>直通井场，AR 打一口井就按桶付水费；压裂完返排出来的污水，AM 再负责收集、掺混、处理。这门生意跟 AR 的<strong>打新井节奏</strong>直接挂钩——不打新井就不用水，所以它比集气业务波动大（集气是存量井都在贡献，供水只有新井贡献）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>供水</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>$2.42 亿</td>
+<td>+2%</td>
+<td>约 20%</td>
+<td>约 45%（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<p>其余约 11% 营收是处理厂等其他收入。财报分部只披露到营收，利润率按整体 56% 经营利润率和两个业务的资产强度拆分估算。</p>
+<p><strong>TTM 里有一笔值得盯的动作</strong>：现金流量表显示这一年花了 <strong>11 亿美元现金做收购</strong>、同时卖掉 3.8 亿资产（账面亏了 8,400 万），净举债 5.5 亿——单期报表看不出买了什么，但这是它上市以来最大的一笔资产腾挪，等于把公司往「不只服务 AR」的方向挪了一步。买完后总债务从 32 亿升到 36 亿。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $4,360 万，占净利润 <strong>11%</strong>，当真实成本扣（GAAP 已扣）。</li>
+<li><strong>一次性项目</strong>：卖资产账面亏损 $8,400 万计入了 TTM 利润表——这是真一次性损失，把它加回后真实盈利比表面高。</li>
+<li><strong>资本化支出</strong>：无软件/内容资本化问题。注意资本开支只有 $1.86 亿、不到折旧 2.2 亿——管网已建成，处于「收割期」，这正是 FCF 远大于净利润的原因。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $1.49 亿 ÷ SBC $0.44 亿 = <strong>3.4 倍</strong>，真回购，股本一年降 1.1%。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 4.0 亿 vs 经营现金流 9.6 亿，差得多，对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+4.00 亿</td>
+</tr>
+<tr>
+<td>折旧摊销</td>
+<td>+2.25 亿</td>
+</tr>
+<tr>
+<td>卖资产账面亏损（非现金）</td>
+<td>+0.84 亿</td>
+</tr>
+<tr>
+<td>合资处理厂权益调整</td>
+<td>+0.27 亿</td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>+0.44 亿</td>
+</tr>
+<tr>
+<td>其他经营项目（每年都有 1.4–1.6 亿，属经常性）</td>
+<td>+1.53 亿</td>
+</tr>
+<tr>
+<td>营运资金变化</td>
+<td>+0.29 亿</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>9.61 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>现金流是真的，而且比利润稳：五年里经营现金流从 7.1 亿爬到 9.6 亿，一年没掉过队。</p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>106.9 亿 ÷ 3.99 亿</td>
+<td>26.8 倍</td>
+<td>¥3.7</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP（加回卖资产亏损+SBC，估算）</td>
+<td>106.9 亿 ÷ 约 5.1 亿</td>
+<td>约 21 倍</td>
+<td>¥4.8</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（只加回卖资产一次性亏损的税后额，SBC 不加回）</td>
+<td>106.9 亿 ÷ 约 4.6 亿</td>
+<td><strong>约 23 倍</strong></td>
+<td><strong>¥4.3</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>106.9 亿 ÷ 7.76 亿</td>
+<td>13.8 倍</td>
+<td>¥7.3</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>143.0 亿 ÷ 7.36 亿</td>
+<td>19.4 倍</td>
+<td>¥5.1</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>106.9 亿 ÷ 4.04 亿</td>
+<td>26.5 倍</td>
+<td>¥3.8</td>
+</tr>
+</tbody>
+</table></div>
+<p>管道公司看现金流比看市盈率靠谱（折旧年限和管道实际寿命差得远），所以 FCF 那行最接近真相。大白话：<strong>你投 100 块进去，公司一年真金白银赚回 7 块 3。</strong> 其中 <strong>4 块 1 直接以季度股息打到你账上</strong>（年股息 $0.90/股，TTM 派了 4.36 亿——比净利润还多，但只占 FCF 的 56%，派得起），再加约 1 块 4 的回购，合计每年 5 块 5 回口袋，剩下的拿去还债和做上面那笔收购。这个 7 块 3 未来会不会变大？温和会：阿巴拉契亚的气正被新建的 AI 数据中心和液化天然气出口终端抢着要，AR 的采气量在爬坡，费率每年随通胀上调——但天花板也明确，AM 的管子出不了 AR 的井区，增长上限就是 AR 的开采上限。风险同样明确：<strong>单一客户</strong>。AR 要是遇上气价长期低迷砍资本开支，AM 的水业务立刻缩，集气增速归零；36 亿债（EBITDA 的 3.8 倍）在那种年景里会变得扎眼。</p>
+<h2>四、一句话结论</h2>
+<p>生意模式本身很舒服——照量收费的收割期管网，现金流真实且稳——但两个数让人下不去手：命脉 100% 拴在 AR 一家身上，以及股价一年涨了 26% 之后股息率只剩 4%、EV/EBITDA 到了 15 倍，这是把一家单一客户的集气商当成多元化管道蓝筹在定价。同行里 6-8% 股息率的选择有的是，这个价格没有便宜可占——想要它的现金流，等它跌回 18 美元以下再说。</p>
+</div></body></html>

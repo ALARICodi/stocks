@@ -1,0 +1,268 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DOCU · DocuSign（电子签名）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DOCU</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">10倍FCF是SBC撑的幻觉，真实口径37倍</div><h1>DOCU · DocuSign（电子签名）</h1>
+<p>市值 $117.1 亿 / 股价 $59.82 / 行业：技术服务（SaaS 软件）/ TTM 截止 2026-04-30（财年止于每年 1 月底）</p>
+<p><strong>先说背景</strong>：疫情期间这只股票炒到过 $310、市值 460 亿；现在 $60、市值 117 亿，从山顶跌掉四分之三。它是本篇要拆的典型案例：<strong>一家用"自由现金流很便宜"讲故事、但真实成本藏在股权激励里的 SaaS 公司</strong>。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上分两个分部，实际上是<strong>一门生意加一个赠品</strong>。</p>
+<h3>生意一：电子签名订阅（Subscription）——占营收 98%</h3>
+<p>产品是什么：把"签字"这个动作从纸上搬到网上，并且让它<strong>有法律效力</strong>。美国 2000 年的 ESIGN 法案确立了电子签名和手写签名同等有效，DocuSign 就是把这件事做成了基础设施。</p>
+<p>具体到一单是什么样：一个房产经纪要成交一套房，购房合同 40 页、要买卖双方加银行共 5 个人签 23 处。过去是打印、快递、追着人跑一星期；现在他把 PDF 拖进 DocuSign，标好谁签哪里，发出去——买家在手机上点两下就签完了，系统自动记录谁在几点几分从哪个 IP 签的、文件哈希值是多少，打官司时这份"审计轨迹"就是证据。经纪付的钱：个人版一年几百美元；地产公司、保险公司、银行这种大客户按"信封数"（发出去的待签文件数）计费，一年几万到几百万美元不等。全球约 170 万付费客户，从个人户到世界五百强。</p>
+<p>为什么客户离不开：不是技术多难（做个签名框不难），而是<strong>它已经长在别人的流程里</strong>——和 Salesforce、SAP、Workday、微软全家桶都打通了，销售在 CRM 里点一下就发合同；再加上"DocuSign"在美国已经成了动词（"把文件 DocuSign 给我"），法务部门认这个牌子。</p>
+<p><strong>但增长的疲态藏不住</strong>：营收增速从疫情时的 45% 掉到现在的 <strong>8.4%</strong>。电子签名本身已经是大路货——Adobe 有 Acrobat Sign，Dropbox 有 Sign，一堆小厂打价格战。公司的自救故事叫 <strong>IAM（智能协议管理）</strong>：不只帮你签合同，还用 AI 帮你管合同——把公司里几万份历史合同扫进去，AI 自动提取"哪些条款明年到期、哪些有自动续约陷阱、哪些赔偿条款超标"，想把一次性的签名工具升级成年年续费的合同数据库。这个故事能不能撑起第二增长曲线，现在还在证明期。</p>
+<h3>赠品：实施服务（Professional Services）——占营收 2%</h3>
+<p>帮大客户做系统对接和培训，TTM 收入 7051 万美元，常年不赚钱，是卖订阅的搭头。</p>
+<h3>各分部的钱（TTM，截止 2026-04-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上一财年(FY2026)</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅</td>
+<td>$32.16亿</td>
+<td>$31.51亿</td>
+<td>+8.6%(FY26同比)</td>
+<td>97.9%</td>
+</tr>
+<tr>
+<td>实施服务</td>
+<td>$0.71亿</td>
+<td>$0.69亿</td>
+<td>-8.6%(FY26同比)</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$32.86亿</strong></td>
+<td><strong>$32.20亿</strong></td>
+<td><strong>TTM同比 +8.4%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按分部拆利润；整体毛利率 79.5%、GAAP 经营利润率 10.6%——这个利润率对一家 SaaS 是偏低的，原因见下一部分。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是全篇重点，DocuSign 是"Non-GAAP 化妆术"的教科书案例。</p>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM <strong>6.18 亿美元，是净利润（3.15 亿）的 196%，占营收的 18.8%</strong>。这是什么概念：公司每收 100 块钱，就有约 19 块以股票形式发给了员工。GAAP 利润已经扣了它（所以 GAAP 只赚 3.15 亿），但公司对外宣传的 Non-GAAP 利润把它全加回去，吹成赚 9 亿多——那是把稀释你股份的真实成本当不存在。<strong>本篇一律按扣除后算。</strong></li>
+<li><strong>一次性项目</strong>：TTM 内没有大额一次性项目，税率 19.5% 正常。但要点破一笔旧账：<strong>FY2025（2025年1月止）净利润 10.7 亿是假象</strong>——那年把历史亏损攒下的递延税资产一次性确认，纸面多出约 8 亿"利润"，一分钱现金都没有。看到"去年赚 10 亿今年只赚 3 亿"不要慌，去年是虚的，今年才是常态。</li>
+<li><strong>资本化的支出</strong>：资本开支 1.15 亿（占营收 3.5%），其中含资本化的内部软件开发，规模不大，不构成把戏。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 <strong>12.5 亿美元</strong>，是 SBC 的 2.0 倍——按我们的标准刚过"不是纯遮羞布"的线，但远够不上真回馈：花了 12.5 亿真金白银，股本只减少 2.9%，<strong>约一半的回购只是在对冲员工发股</strong>。</li>
+<li><strong>利润和现金流的差</strong>：净利润 3.15 亿 vs 经营现金流 12.35 亿，差了近 3 倍，必须对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>对账(TTM，亿美元)</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3.15</td>
+</tr>
+<tr>
+<td>＋折旧摊销（含无形资产摊销）</td>
+<td>3.91</td>
+</tr>
+<tr>
+<td>＋股权激励（非现金）</td>
+<td>6.18</td>
+</tr>
+<tr>
+<td>＋预收收入增加</td>
+<td>1.46</td>
+</tr>
+<tr>
+<td>＋其他非现金及营运资金</td>
+<td>-2.35</td>
+</tr>
+<tr>
+<td><strong>＝经营现金流</strong></td>
+<td><strong>12.35</strong></td>
+</tr>
+<tr>
+<td>－资本开支</td>
+<td>-1.15</td>
+</tr>
+<tr>
+<td><strong>＝自由现金流</strong></td>
+<td><strong>11.20</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚了：<strong>12.35 亿经营现金流里，有 6.18 亿是"把工资用股票发"省出来的</strong>。SBC 不用付现金，所以现金流表上是加回项——但股东为它付出的是股份被稀释。把 SBC 当真实成本扣掉，<strong>货真价实的自由现金流约 5 亿美元</strong>，不是宣传的 11.2 亿。34% 的"FCF 利润率"里有 19 个点是这么来的。</p>
+<ul>
+<li><strong>家底</strong>：净现金 6.31 亿（现金 8.14 亿，债务 1.83 亿且基本是租赁），没有债务风险。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>117.1亿 ÷ 3.15亿</td>
+<td>37.1 倍</td>
+<td>2.7 块</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>把6.18亿SBC全加回（<strong>估算</strong>）</td>
+<td>~12 倍</td>
+<td>~8.1 块</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM无一次性项目，SBC照扣＝GAAP</td>
+<td><strong>37.1 倍</strong></td>
+<td><strong>2.7 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>117.1亿 ÷ 11.2亿（<strong>内含SBC水分</strong>）</td>
+<td>10.5 倍</td>
+<td>9.6 块</td>
+</tr>
+<tr>
+<td>扣掉SBC的真·自由现金流</td>
+<td>117.1亿 ÷（11.2−6.18）亿</td>
+<td>23.3 倍</td>
+<td>4.3 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>110.8亿 ÷ 3.50亿</td>
+<td>31.7 倍</td>
+<td>3.2 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>117.1亿 ÷ 2.14亿（FY24/25/26，剔除FY25税务一次性）</td>
+<td>54.8 倍</td>
+<td>1.8 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>说人话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 2.7 块；就算宽容一点用"扣掉 SBC 的真现金流"口径，也只有 4.3 块</strong>。表格里那个诱人的"FCF 口径 9.6 块"是幻觉，一半以上是拿你的股份稀释换来的。赚到的钱公司全拿去回购了（没有分红），但如上所述，回购的一半在填 SBC 的坑。</p>
+<p>这个 2.7 块会不会变大？有一条真实的路径：GAAP 经营利润率三年从 -2% 爬到了 10.6%，还在爬。如果爬到成熟 SaaS 的 25-30%，利润能翻两三倍，现在的价格就说得通——华尔街前瞻市盈率 12.9 倍讲的就是这个故事（不过那是 Non-GAAP 口径，水分照旧）。三年平均口径 55 倍则提醒你：这家公司<strong>稳定赚真钱的历史一共只有两年</strong>，利润率能不能继续爬、8% 的增速会不会先掉到零，都还没有答案。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>生意本身是成立的：品牌成了动词、净现金 6.3 亿、客户续着费，利润率也确实在改善。但价格没有便宜可占——真实市盈率 37 倍对应 8% 的增速，宣传里的"10 倍自由现金流"有一半是把员工工资折成你的股份稀释变出来的戏法。买它等于赌利润率能从 10% 爬到 25% 且 AI 合同管理的新故事成真，这两个赌注现在都没有证据。<strong>偏贵，等它用 GAAP 利润证明自己，或者等一个更狠的价格。</strong></p>
+</div></body></html>
