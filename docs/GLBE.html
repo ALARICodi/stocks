@@ -1,0 +1,408 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GLBE · Global-E Online（环球易）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GLBE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">回购1.99亿股本还涨5.92%；扭亏一半是Shopify权证摊销摊完了</div><h1>GLBE · Global-E Online（环球易）</h1>
+<p>市值 69.4 亿美元 ｜ 股价约 41.3 美元 ｜ 行业：跨境电商基础设施（NASDAQ）｜ TTM 截至 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>两件，而且这两件的生意性质完全不同——一件是软件，一件是转售物流。财报把它们分得很清楚，但很多人把它们混着看，于是得出错误结论。</strong></p>
+<h3>生意一：服务费（Service Fees）— TTM 5.246 亿美元，占 47.3%</h3>
+<p><strong>这是一套"跨境结账系统"，装在别人的网站上。</strong></p>
+<p>举个具体的：英国有个做羊绒衫的牌子，官网卖货，一件 180 英镑。一个住在圣保罗的巴西人搜到了这个牌子，点进官网——如果没有 Global-E，他会看到英文页面、英镑价格、只能刷 Visa、运费未知、关税未知。他大概率关掉页面走人。跨境购物车放弃率高达 70% 以上，绝大部分死在这一步。</p>
+<p>装了 Global-E 之后，同一个巴西人点进这个英国网站，看到的是：</p>
+<ul>
+<li>页面自动变成<strong>葡萄牙语</strong></li>
+<li>价格自动变成<strong>巴西雷亚尔</strong>，而且是按 Global-E 自己实时算的汇率（里面含一点点汇兑加价，这也是收入来源之一）</li>
+<li><strong>关税和进口税已经算进去了，显示的就是最终到手价</strong>——这是最值钱的一环。巴西的进口税规则复杂到英国商家根本搞不清，而如果不预付，包裹到了圣保罗海关，快递员会打电话要求补交 200 雷亚尔，一半的人当场拒收，商家血本无归</li>
+<li>付款方式变成巴西人习惯的 <strong>Boleto</strong>（一种银行单据付款，巴西一大半线上交易用它）或本地分期</li>
+<li>显示"预计 7–9 个工作日送达"，并给出退货地址（Global-E 在当地有退货集散点）</li>
+</ul>
+<p>商家为这套东西付什么？<strong>按成交金额（GMV）抽成，通常在 3%–5% 之间。</strong> 这家羊绒衫牌子一年通过 Global-E 卖出 800 万英镑的海外订单，就付大概 30 万英镑的服务费。</p>
+<p>商家为什么非买不可？因为自己做这件事的成本高得离谱——你得研究 150 个国家的关税规则、接 30 种本地支付、雇人处理各国退货、还要承担汇率和合规风险。Global-E 把这些成本摊到几千个商家身上，单个商家自建根本不划算。<strong>这一块是纯软件生意，毛利率我估算在 75%–80%（财报未按分部披露利润，见下方说明）。</strong></p>
+<h3>生意二：履约服务（Fulfillment Services）— TTM 5.839 亿美元，占 52.6%</h3>
+<p><strong>这一块说白了就是转卖运费和清关服务。</strong></p>
+<p>同一个订单，羊绒衫要从英国的仓库真的运到圣保罗那个人手里。Global-E 跟 DHL、UPS、FedEx 以及各国本地快递谈了打包价——因为它一年攒了几十亿美元的跨境包裹量，拿到的价格比单个商家自己去谈便宜得多。它把这个折扣价加一点点差价，卖给商家（或直接向消费者收运费）。同时包办报关文件、税费代缴、以及退货逆向物流。</p>
+<p><strong>这块生意的本质是量贩批发差价，毛利很薄，我估算在 15%–20%。</strong> 它对利润的贡献远小于对营收的贡献，但它是必需品——没有履约，前面那套结账系统就是空的。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>占 TTM 营收</th>
+<th>毛利率（估算）</th>
+<th>贡献毛利（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务费（软件）</td>
+<td>524.62</td>
+<td>451.21</td>
+<td>350.31</td>
+<td>47.3%</td>
+<td>约 78%</td>
+<td>约 409</td>
+</tr>
+<tr>
+<td>履约服务（物流）</td>
+<td>583.91</td>
+<td>510.99</td>
+<td>402.45</td>
+<td>52.6%</td>
+<td>约 16%</td>
+<td>约 92</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,109</strong></td>
+<td><strong>962.2</strong></td>
+<td><strong>752.76</strong></td>
+<td>100%</td>
+<td><strong>45.22%（实际披露）</strong></td>
+<td><strong>501.25（实际披露）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只披露到分部营收，没有披露分部利润。</strong> 上表的分部毛利率是我按整体毛利率 45.22% 和两块生意的行业常规结构倒推的估算，不是财报数字。倒推方法：假设软件类服务费毛利 78%，则履约毛利 =（501.25 − 409.2）÷ 583.91 = 15.8%，落在物流转售的合理区间，说明假设自洽。</p>
+</blockquote>
+<p>TTM 整体营收同比 <strong>+31.40%</strong>。两块生意增速接近（FY2024→FY2025，服务费 +28.8%，履约 +27.0%），说明<strong>每单的收费结构稳定，增长来自单量而不是提价</strong>。</p>
+<h3>一个必须点名的事：它跟 Shopify 绑在一起</h3>
+<p>Global-E 是 Shopify 官方跨境方案（Markets Pro）背后的引擎。Shopify 上几百万个商家，想卖到国外，点几下就接入 Global-E。<strong>这是它最大的获客渠道，也是它最大的单点风险</strong>——Shopify 完全有能力自己做这件事。作为交换，Shopify 当年拿到了 Global-E 的大量认股权证。<strong>这笔认股权证是理解这家公司财报的钥匙，下一部分整节都在讲它。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>障眼法第一条（最重要）：利润暴涨，一多半不是生意变好，是一笔摊销摊完了</h3>
+<p>看这三行数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>折旧摊销</td>
+<td>169.54</td>
+<td>86.98</td>
+<td><strong>40.83</strong></td>
+</tr>
+<tr>
+<td>营业利润</td>
+<td><strong>−67.93</strong></td>
+<td><strong>+72.21</strong></td>
+<td><strong>+158.53</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>−75.55</td>
+<td>+68.27</td>
+<td>+153.71</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营业利润从 −6,793 万变成 +1.585 亿，改善了 2.265 亿。同期折旧摊销从 1.695 亿降到 4,083 万，减少了 1.287 亿。</strong></p>
+<p><strong>也就是说，这 2.265 亿的改善里，1.287 亿（57%）纯粹是因为一笔费用摊销完了，跟生意做得好不好没有关系。</strong></p>
+<p>那笔费用是什么？就是给 Shopify 的认股权证。当年 Global-E 为了拿到 Shopify 这个渠道，给了 Shopify 一大笔可以低价买股票的权利，会计上要按公允价值确认为费用，分几年摊销。摊完了，费用就没了，利润数字自然跳起来。</p>
+<p><strong>这里必须想清楚一件事：费用消失不等于成本消失。这笔渠道费已经付掉了，付的形式是你手上股份的比例被稀释。</strong> 摊销结束只是"账做完了"，钱早就出去了。</p>
+<p>剩下那 43%（约 9,780 万）是真实的经营改善——毛利从 3.394 亿涨到 5.013 亿，而营业开支涨得比毛利慢，这是实打实的规模效应。<strong>所以正确的说法是：一半是账面变干净，一半是生意真变好了。</strong> 单看"扭亏为盈"这四个字会严重高估这家公司今年发生的变化。</p>
+<h3>障眼法第二条：股权激励占净利润 27%</h3>
+<p>TTM 股权激励 <strong>4,148 万美元</strong>，占净利润 1.537 亿的 <strong>27.0%</strong>，占营收 3.7%。</p>
+<p><strong>这是真实的现金成本，GAAP 里已经扣了，不加回。</strong> 公司在 Non-GAAP 里会把它加回去，那是骗人的——员工拿走的股份是从你的份额里割出来的。</p>
+<h3>障眼法第三条：回购花了 1.99 亿，股本反而涨了 5.92%</h3>
+<p>这一条是全篇最值得盯住的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>1.9916 亿美元</strong></td>
+</tr>
+<tr>
+<td>发行股票（现金收到）</td>
+<td>116 万美元</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+5.92%</strong></td>
+</tr>
+<tr>
+<td>回购 ÷ 股权激励</td>
+<td><strong>4.8 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按常规标准，"回购÷股权激励 = 4.8 倍" 是"真回购"（大于 3 倍才算），应该是个大大的加分项。<strong>但这个指标在这里彻底骗人。</strong></p>
+<p>算笔账：现在 1.6797 亿股，同比 +5.92%，说明一年前约 1.586 亿股，<strong>净增加了约 940 万股</strong>。同期回购 1.9916 亿美元，按这一年约 38 美元的均价算，注销了约 520 万股。</p>
+<p><strong>净增 940 万 ＋ 注销 520 万 = 一年里毛发行了约 1,460 万股。</strong></p>
+<p>而股权激励 4,148 万美元按 38 美元只对应约 110 万股。<strong>剩下约 1,350 万股是从哪来的？只能是认股权证行权</strong>——也就是 Shopify（以及其他早期权证持有人）把当年拿到的权利变成了真股票。</p>
+<p><strong>结论：公司掏了 1.99 亿真金白银回购，仍然没能挡住股本一年膨胀 5.92%。你作为股东，今年手上的每股权益被摊薄了将近 6%。</strong> 那 1.99 亿回购不是在回馈你，是在填认股权证行权挖出来的坑，而且没填满。</p>
+<p>另外，报表里 TTM 每股收益 0.86 美元，净利润 1.537 亿，倒算出摊薄股数约 1.787 亿股，比在外流通的 1.6797 亿多出约 1,070 万股——<strong>还有这么多期权和限制性股票在外面等着变成真股票，全部算进来，下面所有的估值倍数还要再加约 6%。</strong></p>
+<h3>障眼法第四条：税率 2.24%</h3>
+<p>TTM 税前利润 1.5723 亿，实际交税 <strong>352 万美元，有效税率 2.24%</strong>。这是以色列给科技企业的优惠税制（"优先技术企业"待遇）带来的。</p>
+<p><strong>这不是造假，是真实的税率，但它不可持续也不该被当成常态。</strong> 如果哪天按一个正常的 15% 交税，净利润会从 1.537 亿掉到 1.336 亿，市盈率从 45 倍变成 52 倍。<strong>这家公司账面净利润里，大约 2,000 万是税务优惠给的，不是生意赚的。</strong></p>
+<h3>障眼法第五条：现金流里有多少是"别人的钱在过夜"</h3>
+<p>经营现金流 2.920 亿，净利润 1.537 亿，差 1.38 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>153.71</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+40.83</td>
+<td>认股权证摊销的尾巴，非现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+41.48</td>
+<td>发的是股票不是现金</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−6.18</td>
+<td>零星</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−48.29</td>
+<td>商家欠的钱变多了</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+27.86</td>
+<td>欠承运商的钱变多了</td>
+</tr>
+<tr>
+<td>＋ 其他经营性净负债</td>
+<td>+82.99</td>
+<td><strong>代收待付的钱变多了</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>291.96</strong></td>
+<td>对账完全吻合（差 0.44 为四舍五入）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1.92</td>
+<td>几乎不需要买设备</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>290.03</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关键在最后三行的营运资金：−48.29 ＋ 27.86 ＋ 82.99 = ＋6,256 万。</strong></p>
+<p>这笔钱是怎么来的？<strong>Global-E 在结账那一刻从消费者手里收走全款，但要过一段时间才把货款结给商家、把运费结给 DHL。</strong> 这中间的时间差，就是躺在它账上的一大笔"代收待付"的钱。GMV 每涨一块钱，这笔浮存金就跟着涨。</p>
+<p><strong>这不是利润，这是别人的钱在你账上过夜。</strong> 好处是它免费、无息、随生意规模自动增长；坏处是<strong>增长一停就反转</strong>——GMV 不涨了，浮存金不增了，现金流会突然比利润难看。</p>
+<p><strong>掐掉浮存金后的真实自由现金流 = 2.900 亿 − 0.626 亿 = 约 2.28 亿美元。</strong></p>
+<h3>一次性项目 / 资产负债表</h3>
+<p>TTM 没有大额一次性项目。资产负债表是三家里最好的：<strong>现金 5.304 亿，债务只有 2,540 万，净现金 5.05 亿。</strong> 资本开支一年才 192 万美元——这是个几乎不需要资本投入的生意，ROIC 高达 39.67%。这一条是实打实的加分。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>69.4 亿 ÷ 1.537 亿</td>
+<td>45.2 倍</td>
+<td>2.21 元</td>
+</tr>
+<tr>
+<td><strong>完全摊薄后的 GAAP 市盈率</strong></td>
+<td>用摊薄股数 1.787 亿</td>
+<td><strong>47.9 倍</strong></td>
+<td><strong>2.09 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回股权激励 0.415 亿 ＋ 摊销 0.408 亿 → 2.360 亿</td>
+<td>29.4 倍</td>
+<td>3.40 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（税率按 15% 正常化，股权激励不加回）</td>
+<td>69.4 亿 ÷ 1.336 亿</td>
+<td><strong>51.9 倍</strong></td>
+<td><strong>1.93 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>69.4 亿 ÷ 2.900 亿</td>
+<td>23.9 倍</td>
+<td>4.18 元</td>
+</tr>
+<tr>
+<td><strong>掐掉浮存金的真实自由现金流</strong></td>
+<td>69.4 亿 ÷ 2.279 亿</td>
+<td><strong>30.5 倍</strong></td>
+<td><strong>3.28 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>64.4 亿（已扣净现金 5.05 亿）÷ 1.585 亿</td>
+<td>40.6 倍</td>
+<td>2.46 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>FY23 −1.338 亿、FY24 −0.756 亿、FY25 ＋0.683 亿，平均 <strong>−0.470 亿</strong></td>
+<td><strong>无意义（负数）</strong></td>
+<td><strong>负</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>三年平均那一行说明了什么</h3>
+<p><strong>它算不出来，因为过去三年这家公司平均是亏钱的。</strong></p>
+<p>这是一个非常重要的信息，方向跟大多数公司相反。用三年平均利润检验"当期利润是不是高点"，在别的公司身上得到的答案通常是"是高点，小心"（比如很多周期股当期 20 倍、三年平均 50 倍）。<strong>在 Global-E 身上，答案是"当期不是高点，是起点"——但代价是你完全没有历史盈利记录可以参照。</strong></p>
+<p>FY2025 是它第一个 GAAP 盈利的完整年度，TTM 是第二年。<strong>你在给一家只有一年多盈利历史的公司付 45–52 倍市盈率。</strong></p>
+<h3>说人话：你投 100 块，一年赚多少</h3>
+<p><strong>按最保守的口径（税率正常化 ＋ 掐掉浮存金），公司一年替你赚约 2–3 元。</strong></p>
+<p>这 2–3 元里，<strong>有多少回到你口袋？一分钱都没有。</strong></p>
+<ul>
+<li>不分红，历史上从没分过</li>
+<li>回购了 1.99 亿——但同期股本反而涨了 5.92%，回购的钱全被认股权证行权抵消掉了，<strong>净效果是你的份额变小了，不是变大了</strong></li>
+<li>资本开支只有 192 万，钱也没花在买设备上</li>
+<li>那钱去哪了？躺在账上——现金从 4.744 亿（FY2024）涨到 5.304 亿。<strong>它在攒钱，攒了 5 亿多净现金</strong></li>
+</ul>
+<p>所以你买这只股票，买的完全是<strong>"未来的收入还能不能每年涨 30%"</strong> 这一个假设，跟当期的现金回报没有任何关系。</p>
+<p>这个 X 未来会变大还是变小？<strong>大概率变大，但有一个大得没法忽略的对手风险。</strong></p>
+<ul>
+<li>变大的理由：这门生意的杠杆非常高——多做一个国家的订单，边际成本几乎为零，毛利率已经从 FY2021 的 37.28% 稳步爬到 45.22%，营业利润率从 −26.77% 爬到 ＋14.30%。收入还在 31% 增速，前瞻市盈率只有 29.9 倍，对应的是市场预期利润增速远快于收入增速。ROIC 39.67% 说明这门生意的资本效率极高。</li>
+<li>变小的理由：<strong>它最大的渠道（Shopify）同时是它最大的潜在竞争对手。</strong> Shopify 完全有能力把跨境结账做进自己的产品里，届时 Global-E 会瞬间失去增量来源。另外，各国近年都在收紧跨境小包的免税额度（比如美国取消 de minimis 豁免），这既可能是利好（关税越复杂，商家越需要 Global-E）也可能是利空（关税太高直接压死跨境需求）。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是真好，价格是全价，账不脏但也谈不上干净——这是那种"公司没问题，问题在于你付了多少"的典型。</strong></p>
+<p>好在哪：ROIC 39.67%、几乎不需要资本开支、5 亿净现金零负债、31% 的收入增速还在跑、毛利率连涨五年、真实的网络效应（越多商家用，跟 DHL 谈的价越低、本地支付覆盖越广、又吸引更多商家）。这是一门结构性优秀的生意。</p>
+<p>问题在哪：<strong>你付的是 45–52 倍当期市盈率，买的是一家只有一年多盈利历史的公司。</strong> 而且这个"扭亏为盈"的故事有一半是假的——2.265 亿的利润改善里，1.287 亿只是一笔给 Shopify 的认股权证摊销摊完了，不是生意变好。净利润还被 2.24% 的税率额外美化了约 2,000 万。自由现金流里 6,256 万是代收待付的浮存金，不是赚的。<strong>最刺眼的一条：公司花了 1.99 亿回购，股本还是涨了 5.92%——你今年被稀释了近 6%。</strong></p>
+<p>前瞻市盈率 29.9 倍配 31% 的收入增速，纯从数字上说不算离谱。但这个价格里没有留任何余地：<strong>增速从 31% 掉到 20%，或者 Shopify 宣布自己做，这只股票会立刻被重新定价。</strong> 现在买不是买便宜货，是买一个必须继续高速增长才不亏的赌注。等增速的证据再多一年，或者等价格回到 20 倍前瞻市盈率，性价比会好得多。</p>
+</div></body></html>

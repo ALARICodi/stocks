@@ -1,0 +1,318 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DUOL · Duolingo（多邻国）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DUOL</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">15.9倍是假的，2.1亿税务返还灌的水，真实41.5倍</div><h1>DUOL · Duolingo（多邻国）</h1>
+<p>市值 65.3 亿美元 | 股价 139.6 美元 | 行业：科技服务（在线教育） | TTM 截止 2026 年 6 月 30 日 | 全榜第 551 名</p>
+<blockquote>
+<p><strong>先说最重要的一句话：屏幕上那个 15.9 倍的市盈率是假的。</strong> 这家公司最近 12 个月的「净利润」4.11 亿美元里，有 2.09 亿是一笔<strong>税务返还</strong>——不是卖课赚的，是会计上把过去攒下的亏损额度确认成资产的一次性动作，明年不会再有。剔掉之后真实市盈率是 41.5 倍。这是全篇最重要的一个数字，下面所有内容都围着它转。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>多邻国是一个手机上学外语的 App。一只绿色的猫头鹰督促你每天做五分钟练习，连续做就攒「连胜天数」，断一天就前功尽弃。全球一亿多人在用，绝大多数一分钱不花。它做四门生意，其中一门赚走了几乎全部的钱。</p>
+<h3>生意一：订阅（占营收 85.6%，这就是全部）</h3>
+<p>免费用户会遇到三件烦人的事：每做错五道题就没了「红心」，要等几小时才能继续；每节课之间插一段广告；想复习错题得一道道翻。</p>
+<p><strong>Super Duolingo</strong> 就是花钱把这三件事买掉：红心无限、去广告、错题自动整理成一节复习课。定价大约每月 12.99 美元，年付打折到 84 美元左右。更贵的 <strong>Duolingo Max</strong> 一年约 168 美元，多给两个 AI 功能：一个是「跟 AI 角色对话」——你对着手机说西班牙语，AI 扮演咖啡店服务员跟你聊，说错了当场纠正；另一个是「解释我的答案」——做错一道题，AI 用大白话告诉你为什么错，而不是只显示一个红叉。</p>
+<p>用 9.807 亿的订阅收入除以每人每年约 90 美元，<strong>大致对应 1,100 万左右的付费用户（这是我用营收倒推的估算，不是财报披露数）</strong>。相对一亿多的月活，付费转化率不到 10%——这个数字本身就是这门生意的全部逻辑：<strong>它的成本几乎全是固定的</strong>（900 名员工，人均创收 127 万美元），多一个免费用户几乎不增加成本，而转化率每提高一个百分点，多出来的钱几乎全部落到利润上。</p>
+<p>它凭什么让人续费？不是因为教得比别人好——<strong>是因为连胜天数</strong>。一个连了 800 天的用户，退订等于亲手毁掉两年多的记录。这是行为设计做出来的转换成本，很土，但在消费订阅里非常有效。</p>
+<h3>生意二：广告（占 7.2%）</h3>
+<p>给不付费的那九成用户看的。你做完一课，屏幕上弹一个 30 秒的手游广告或者电商广告。营收 8,291 万，按一亿多月活摊下来，<strong>平均一个免费用户一年只贡献不到 1 美元</strong>。这块业务的真正作用不是赚钱，是<strong>给订阅业务当反衬</strong>——广告越烦人，买 Super 的动力越强。</p>
+<h3>生意三：多邻国英语测试（占 3.6%，正在萎缩）</h3>
+<p>一场 65 美元左右的线上英语水平考试，全程一小时，在自己家用笔记本考，摄像头全程录像防作弊，成绩被数千所大学接受，用来替代托福雅思。对一个想申请美国大学的中国或印度学生来说，托福要预约考场、跑一趟考点、花 200 多美元，多邻国在家考、当天出分、价格三分之一。</p>
+<p><strong>但这块在缩水</strong>：FY2024 是 4,564 万，FY2025 降到 4,201 万，TTM 是 4,136 万。留学申请人数、各国签证政策、以及托福自己也推出了居家版，都在挤压它。</p>
+<h3>生意四：单次内购（占 3.2%，也在萎缩）</h3>
+<p>不想订阅但又不想等红心恢复的人，可以单买一包「宝石」换红心，或者买一个「连胜冻结」保住连胜记录。TTM 3,710 万，低于 2025 全年的 4,048 万——<strong>这是订阅业务在吃它的份额</strong>，属于内部左右手互搏，不算坏事。</p>
+<h3>钱的分布（TTM，截至 2026 年 6 月 30 日，单位：百万美元）</h3>
+<p>下表「对比 2025 全年」两个区间有半年重叠，只能看方向；总营收的真实同比增速是 <strong>+29.4%</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比 2025 全年</th>
+<th>占比</th>
+<th>方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅</td>
+<td>980.72</td>
+<td>+12.3%</td>
+<td>85.6%</td>
+<td>增长，全部利润来源</td>
+</tr>
+<tr>
+<td>广告</td>
+<td>82.91</td>
+<td>+4.0%</td>
+<td>7.2%</td>
+<td>微增</td>
+</tr>
+<tr>
+<td>英语测试</td>
+<td>41.36</td>
+<td>−1.5%</td>
+<td>3.6%</td>
+<td><strong>萎缩</strong></td>
+</tr>
+<tr>
+<td>单次内购</td>
+<td>37.10</td>
+<td>−8.3%</td>
+<td>3.2%</td>
+<td><strong>萎缩</strong></td>
+</tr>
+<tr>
+<td>其他</td>
+<td>2.92</td>
+<td>—</td>
+<td>0.3%</td>
+<td>忽略</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,145</strong></td>
+<td><strong>+29.4%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>毛利率 72.7%，经营利润率只有 <strong>14.3%</strong>（经营利润 1.632 亿）。<strong>财报不按业务线披露利润</strong>，但结构很清楚：订阅贡献了全部毛利，被整个公司的市场费用、研发和股权激励吃掉了大半。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>一次性项目 —— 这是本篇的核心</strong>：TTM 所得税项是 <strong>−2.089 亿美元</strong>，注意是负号，意味着税不但没交，还倒进来一笔利润。原因是公司过去连年亏损攒下了大量可抵扣亏损，会计上一直因为「不确定将来能不能用上」而不确认为资产；现在公司稳定盈利了，就一次性把它确认成资产，直接计入当期利润。<strong>这是一次性的账面动作，一分钱现金都没进公司，而且明年不会再有。</strong> 剔掉它，税前利润 2.019 亿，按 22% 正常税率交税，真实净利润只有 <strong>1.575 亿</strong>，不是 4.108 亿。
+  另外注意：2025 全年也干了同样的事（税前 1.824 亿，所得税 −2.317 亿）。所以<strong>连续两年的 GAAP 净利润都被同一笔东西灌了水</strong>，做三年平均的时候必须一起剔掉，否则三年平均照样是假的。</p>
+</li>
+<li>
+<p><strong>股权激励（SBC）—— 第二个核心</strong>：TTM 计提 <strong>1.447 亿美元</strong>。对照一下：经营利润才 1.632 亿。<strong>SBC 相当于经营利润的 89%。</strong> 换句话说，这家公司一年赚的经营利润里，差不多九成的等值金额是发给员工的股票。900 名员工，人均 SBC 16 万美元。公司自己的「调整后 EBITDA」会把这 1.45 亿完整加回来，变成一个 3.24 亿、利润率 28% 的漂亮数字——<strong>那个数字是把员工工资当成不存在算出来的</strong>，本文一律不加回。</p>
+</li>
+<li>
+<p><strong>资本化支出</strong>：几乎没有。TTM 资本开支只有 2,262 万，买无形资产 1,043 万，合计不到营收的 3%。软件开发费没有大规模资本化。这一点很干净——<strong>它的成本诚实地全额进了当期损益</strong>，没有把研发藏进资产负债表。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：TTM 回购 1.300 亿，SBC 1.447 亿，<strong>回购 ÷ SBC = 0.90</strong>。回购连抵消员工发股都不够，<strong>流通股数一年还是增加了 2.60%</strong>。所以这不是「回馈股东」的回购，是「稍微少稀释一点」的回购。你持有的每一股，占公司的比例每年还在变小。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：TTM 净利润 4.108 亿，经营现金流 4.306 亿，自由现金流 4.079 亿——三个数字看起来很接近，但接近是巧合，中间两笔大额项目正好抵消：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>410.77</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>15.80</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>144.68</td>
+</tr>
+<tr>
+<td><strong>－ 其他经营项（剔除递延所得税等非现金收益）</strong></td>
+<td><strong>−203.89</strong></td>
+</tr>
+<tr>
+<td>＋ 递延收入（预收的年费）增加</td>
+<td>73.93</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>−18.06</td>
+</tr>
+<tr>
+<td>＋ 应付账款等</td>
+<td>8.22</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>430.55</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>−22.62</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>407.93</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看懂这张表：<strong>加回来的 1.447 亿 SBC，和减掉的 2.039 亿一次性税务收益，几乎互相抵消了</strong>。所以自由现金流 4.08 亿看起来跟净利润 4.11 亿一样，纯属数字上的偶合。真正的现金创造能力应该是 <strong>4.079 亿减去 1.447 亿的 SBC = 2.632 亿</strong>，而且这 2.632 亿还是<strong>几乎没交过税的</strong>（公司用亏损额度抵掉了现金税），等抵扣额度用完，同样的生意会少赚两成多。</p>
+<p>还有一笔容易被忽略的好处：<strong>递延收入一年增加 7,393 万</strong>。用户年付 84 美元，钱当场收到，收入分 12 个月确认——公司相当于免费拿着一笔用户的钱在用。这是真实的、好的商业模式特征，但它<strong>只在用户数增长时才增加</strong>；哪天订阅增长停了，这项直接归零。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 65.33 亿，企业价值 53.10 亿（净现金 12.28 亿，占市值 19%，这是它唯一实打实的安全垫）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,533 ÷ 410.77</td>
+<td>15.9 倍</td>
+<td>6.29 元</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（加回 SBC、不扣税）</td>
+<td>6,533 ÷ 346.55</td>
+<td>18.9 倍</td>
+<td>5.30 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 201.87 × 78% ＝ 157.5</td>
+<td><strong>41.5 倍</strong></td>
+<td><strong>2.41 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（原始）</td>
+<td>6,533 ÷ 407.93</td>
+<td>16.0 倍</td>
+<td>6.25 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣掉 SBC）</td>
+<td>6,533 ÷ 263.25</td>
+<td>24.8 倍</td>
+<td>4.03 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>5,310 ÷ 163.23</td>
+<td>32.5 倍</td>
+<td>3.08 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（同样正常化税率）</strong></td>
+<td>6,533 ÷ 126.5</td>
+<td><strong>51.6 倍</strong></td>
+<td><strong>1.94 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均的算法：TTM 正常化 1.575 亿、FY2025 正常化 1.423 亿、FY2024 正常化 0.798 亿，取平均 1.265 亿。）</p>
+<p><strong>这张表从上到下差了三倍多，差距全部来自两件事：一次性税务返还，和 SBC 算不算成本。</strong></p>
+<p>有一个不需要我算的旁证：<strong>公司自己的远期市盈率是 52.65 倍。</strong> 也就是说，卖方分析师对明年利润的预测，和我剔掉一次性税收后算出来的 41.5 倍是一个量级的——<strong>市场并没有真的相信那个 15.9 倍</strong>。屏幕上那个数字只骗看筛选器的人。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径（三年平均、正常纳税、SBC 当成本），公司一年替你赚 1.94 元。按当期口径也只有 2.41 元。</strong></p>
+<p>这 2.41 元里，回到你口袋的是<strong>负数</strong>——公司不分红，回购只够抵消 90% 的员工发股，股本还在每年增加 2.6%。钱去哪了？基本留在公司里：投资活动净流出 1.03 亿，其中 3,310 万买了一家小公司、3,718 万买了证券。账上净现金 12.28 亿基本原地趴着。</p>
+<p>这个数字未来会变大还是变小？<strong>大概率变大，但速度是关键</strong>：营收还在以 29% 增长，成本几乎固定，多出来的收入会以很高的比例落到利润上——经营利润率从 FY2023 的 −2.5% 一路走到现在的 14.3%，这条曲线是真实的。<strong>但有三个明确的减项</strong>：一是亏损抵扣用完后要开始交真金白银的税（少两成多利润）；二是英语测试和单次内购这两块已经在萎缩；三是股价一年跌了 57%、15.5% 的流通股被做空，市场担心的是同一件事——<strong>免费的 AI 聊天机器人可以陪你练任何语言，而且不用交 84 美元年费</strong>。多邻国的护城河不是教学质量，是连胜天数和游戏化习惯；这个护城河对「我懒得换 App」有效，对「我干脆不学了，直接跟 AI 聊」无效。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>筛选器上 15.9 倍的多邻国是个幻觉——那 4.1 亿净利润里有 2.1 亿是不会再来的税务返还，剔掉之后是 41.5 倍、三年平均 51.6 倍，投 100 块一年只赚 2 块钱；生意本身是好生意（72% 毛利、固定成本、递延收入、无债务、净现金占市值 19%、营收还在涨 29%），但你要为它付的价格已经把未来好几年的增长提前买单了，跌了 57% 之后依然不便宜。</p>
+</div></body></html>

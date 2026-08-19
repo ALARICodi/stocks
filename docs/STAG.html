@@ -1,0 +1,374 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STAG · 斯塔格工业地产信托</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">STAG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">14.3倍FFO跟私下买楼一个价，账最干净；4.24%股息扣稀释净到手1.76%</div><h1>STAG · 斯塔格工业地产信托</h1>
+<p>市值 71.0 亿美元 ｜ 股价约 36.6 美元 ｜ 行业：工业地产 REIT（NYSE）｜ TTM 截至 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家房地产信托（REIT），下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong>
+原因是：REIT 的净利润被折旧压得失真。会计规则要求把楼每年折旧一大笔（STAG 一年折旧 3.12 亿美元），但一栋 2015 年建的仓库到 2026 年并没有变得不值钱，很多时候还更值钱了。所以 REIT 的净利润天生偏低，用市盈率算出来的 28 倍是个假数字。行业通用的口径是 FFO（把折旧加回来、把卖楼的一次性收益减掉），以及更严格的 AFFO（在 FFO 基础上再扣掉纸面租金和维持性开支）。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是一件事：买仓库，租出去，收租。</strong></p>
+<p>财报里那个 "Revenue by Segment"（分部营收）会给人一种它有五门生意的错觉——固定租金、可变租金、直线租金、市场租约摊销、其他服务收入。<strong>这不是五门生意，这是同一笔租金被会计切成的五片。</strong> 下面会拆开说，但先把生意本身讲清楚。</p>
+<h3>这件事具体是怎么做的</h3>
+<p>想象美国南卡罗来纳州格林维尔的郊外，高速路口旁边一栋 30 万平方英尺（约 2.8 万平方米）的单层铁皮仓库，层高 32 英尺，一排 40 个卸货月台。一家做汽车配件分销的公司需要它——他们要把从亚洲进口的刹车片存在这儿，再发往东南部各州的修理厂。</p>
+<p>STAG 做的事就是：<strong>花 2,400 万美元把这栋楼买下来，然后跟这家汽配公司签一份 7 年的租约，一年收 165 万美元租金，每年租金自动涨 3%。</strong> 楼是这家汽配公司一家在用，没有第二个租户——这叫"单一租户"（single-tenant）。</p>
+<p>关键在租约怎么写。STAG 签的是接近"三净租赁"（triple net）的合同：<strong>房产税、火险、屋顶维修、停车场划线、除雪，全部由租户自己掏钱。</strong> STAG 只负责收钱。这就是为什么这家管着 8.8 亿美元年租金的公司，<strong>全公司只有 93 名员工</strong>（财报明确披露的数字），人均创收 947 万美元。它不是个物业公司，它是个收租的账房。</p>
+<p>STAG 跟同行最大的区别是<strong>它专挑二三线城市</strong>。同行 Prologis 买的是洛杉矶港口边、纽约新泽西边上的仓库，租金高、地贵、买入回报率低（大概 4.5%）。STAG 买的是印第安纳波利斯、哥伦布、格林维尔这些地方的仓库，租金低但地便宜，买入回报率能到 6.5%–7%。代价是：这些地方的楼将来涨价空间小，租户跑了不太好找下家。</p>
+<h3>钱是怎么进来的：把那"五个分部"拆开</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入构成</th>
+<th>TTM 金额（百万美元）</th>
+<th>占比</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>固定租金</td>
+<td>668.01</td>
+<td>75.9%</td>
+<td>合同上写死的基础租金，真金白银</td>
+</tr>
+<tr>
+<td>可变租金</td>
+<td>183.50</td>
+<td>20.8%</td>
+<td>租户报销的房产税、保险、公共维护费</td>
+</tr>
+<tr>
+<td>直线租金</td>
+<td>23.95</td>
+<td>2.7%</td>
+<td><strong>纯会计数字，没有一分钱现金</strong></td>
+</tr>
+<tr>
+<td>市场租约摊销</td>
+<td>2.13</td>
+<td>0.2%</td>
+<td><strong>也是纯会计数字</strong></td>
+</tr>
+<tr>
+<td>其他服务收入</td>
+<td>3.01</td>
+<td>0.3%</td>
+<td>零星服务费</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>880.59</strong></td>
+<td><strong>100%</strong></td>
+<td>TTM 同比 +9.63%</td>
+</tr>
+</tbody>
+</table></div>
+<p>三件事必须说清楚：</p>
+<p><strong>第一，那 1.835 亿的"可变租金"基本是空转。</strong> 它是租户把房产税、保险、维护费报销给 STAG，STAG 再转手付出去。查一下利润表：TTM 的物业运营开支是 1.801 亿。<strong>收进来 1.835 亿，付出去 1.801 亿，几乎完全对冲。</strong> 所以这 20.8% 的收入既不带来利润，也不带来风险，它只是把营收数字撑大了 26%。真正属于 STAG 的收入是那 6.68 亿固定租金。</p>
+<p><strong>第二，"直线租金" 2,395 万是纯纸面数字。</strong> 会计规则规定：如果租约是第一年 100 万、第七年 123 万（每年涨 3%），不能按实收记账，得把七年总租金平摊到每年记成 111 万。头几年记的比实收多，后几年记的比实收少。多出来的那部分就叫直线租金——<strong>它在利润表里是收入，但银行账户里没这笔钱。</strong> 加上市场租约摊销的 213 万，一共 2,608 万的收入没有现金支撑，占净利润的 10.6%。</p>
+<p><strong>第三，增长是买出来的，不是涨出来的。</strong> TTM 营收增长 9.63%，但同期 STAG 花了 8.56 亿美元买新楼（现金流量表 "Acquisition of Real Estate Assets" 一栏）。这 9.63% 里绝大部分来自"楼变多了"，而不是"每栋楼的租金涨了"。</p>
+<p>分部利润率财报没有披露（只有一门生意，也无从披露）。整体口径：营收 8.806 亿 − 物业运营开支 1.801 亿 = 净营业收入（NOI）7.005 亿，NOI 利润率 79.5%。再扣掉折旧 3.121 亿和总部管理费约 5,745 万（倒算出来的），剩经营利润 3.309 亿。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM 1,327 万美元，占净利润 5.4%，占营收 1.5%。<strong>放在 93 个员工身上人均 14 万美元，但绝对金额在整个报表里微不足道。</strong> GAAP 已经扣了，不加回。这是本篇三家公司里唯一一家股权激励小到可以忽略的——REIT 这门生意不需要抢工程师。</p>
+<h3>一次性项目：这一条不小</h3>
+<p><strong>TTM 净利润 2.469 亿里，有 6,159 万（占 25%）是卖楼赚的差价，不是收租赚的。</strong></p>
+<p>现金流量表里 "Gain on Sale of Assets −61.59"（在经营现金流里被减掉，说明它在净利润里是一笔收益）。翻一下历史：FY2025 是 9,375 万、FY2024 是 3,227 万、FY2023 是 5,410 万、FY2022 是 5,749 万、FY2021 是 9,798 万。</p>
+<p><strong>所以这不是"一次性"，这是年年都有的项目。</strong> STAG 的经营方式本来就包含"每年卖掉一批楼，换更好的楼"——TTM 卖楼收回 1.431 亿现金，同时买入 8.558 亿。这是真实的商业活动，也是真实的现金，但它<strong>不是租金</strong>，而且卖楼的价格取决于当年的地产市场行情，年份好坏能差一倍（从 3,227 万到 9,798 万）。用净利润衡量这家公司，等于把一个波动剧烈的项目混进了一个非常稳定的收租生意里。这正是 FFO 口径要把它剔除的原因。</p>
+<h3>资本化的支出</h3>
+<p>REIT 的会计里，买楼、扩建、翻新全都资本化（记成资产而不是费用）。TTM 资本开支 8.57 亿。<strong>问题是 STAG 在这几页财报里没有把"维持性开支"（老租户续约时要重刷地坪、改隔断、付中介佣金）和"扩张性开支"（买新楼）分开列。</strong> 这是个真实的信息缺口，下面算 AFFO 时我只能估算，会明确标注。</p>
+<h3>回购与稀释：这是全篇最重要的一条</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>64 万美元</strong>（约等于零）</td>
+</tr>
+<tr>
+<td>发行新股</td>
+<td><strong>2.162 亿美元</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+2.50%</strong></td>
+</tr>
+<tr>
+<td>回购收益率</td>
+<td><strong>−2.50%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购 ÷ 股权激励 = 64 万 ÷ 1,327 万 = <strong>0.05 倍</strong>。按常规标准这叫"完全没有回购"。</p>
+<p>但 REIT 本来就不该回购——它按法律必须把 90% 的应税收入分掉，手里留不下钱，所以扩张只能靠发新股和借债。STAG 的做法很典型：<strong>一年发 2.16 亿新股 + 净增 3.98 亿债务 = 6.14 亿新资本，去买 8.56 亿的楼。</strong></p>
+<p>关键问题不是"该不该发股"，而是<strong>"发股的成本"和"买楼的回报"哪个高</strong>：</p>
+<ul>
+<li>发股的成本 ≈ 你现在买这只股票能拿到的 AFFO 收益率 ≈ <strong>5.85%</strong>（下面会算）</li>
+<li>买楼的回报 ≈ STAG 在二线市场的收购资本化率 ≈ <strong>6.5%–7%</strong></li>
+</ul>
+<p><strong>差价大概 0.7–1.2 个百分点。赚，但只赚这么一点点利差。</strong> 而且这个利差随时会被抹平——如果股价跌 20%，AFFO 收益率涨到 7.3%，发股买楼立刻变成亏本买卖，扩张就得停。这就是 REIT 这门生意的命门：<strong>它的增长能力取决于自己的股价，股价一跌，增长引擎自动熄火。</strong></p>
+<h3>利润和现金流的差：逐项对账</h3>
+<p>净利润 2.469 亿，经营现金流 4.764 亿，差了 2.29 亿。钱从哪来的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>246.87</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+312.12</td>
+<td>楼在账上折旧，但没花现金</td>
+</tr>
+<tr>
+<td>− 卖楼收益</td>
+<td>−61.59</td>
+<td>挪到投资活动里去了</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+13.27</td>
+<td>发的是股票不是现金</td>
+</tr>
+<tr>
+<td>＋ 应收账款</td>
+<td>+0.17</td>
+<td>忽略不计</td>
+</tr>
+<tr>
+<td>＋ 应付账款</td>
+<td>+7.66</td>
+<td>忽略不计</td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−34.58</td>
+<td>主要是直线租金和递延租赁佣金</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−13.04</td>
+<td>零星项目</td>
+</tr>
+<tr>
+<td>＋ 未列明的零星项目</td>
+<td>+5.48</td>
+<td>轧差</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>476.36</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表非常干净。</strong> 2.29 亿的差额里，3.12 亿来自折旧加回（这是 REIT 的正常状态，也正是 FFO 存在的理由），减掉的都是合理项目。没有靠拉长账期挤现金，没有靠营运资金变戏法——应收应付两项加起来只有 783 万，在 8.8 亿营收面前等于零。<strong>这门生意的现金流质量是本篇三家里最高的。</strong></p>
+<h3>债务</h3>
+<p>总债务 34.79 亿，现金 8,508 万，净债务 33.93 亿。TTM 实际付出现金利息 1.341 亿，<strong>利息保障倍数只有 2.37 倍</strong>（经营利润 3.309 亿 ÷ 利息费用）。债务 / EBITDA = 5.37 倍。</p>
+<p>这在 REIT 里属于行业常态但不算保守。2.37 倍的意思是：如果租金收入掉 40%，利息就付不出来了。工业仓库的出租率历史上很少大跌，所以这个风险不高，但它是真实存在的杠杆。另外注意 ROIC 只有 3.00%，而加权平均资本成本（WACC）是 7.46%——<strong>从纯资本回报的数学看，这家公司在毁灭价值。</strong> 不过 REIT 的 ROIC 被折旧严重低估（分母是没折旧的历史成本，分子是扣了折旧的利润），这个指标对 REIT 参考价值有限，不能当判决书。</p>
+<hr />
+<h2>第三部分：REIT 口径估值（FFO / AFFO）</h2>
+<h3>先把 FFO 算出来</h3>
+<p>FFO = 净利润 2.4687 亿 ＋ 折旧摊销 3.1212 亿 − 卖楼收益 0.6159 亿 = <strong>4.974 亿美元</strong>
+每股 FFO = 4.974 亿 ÷ 1.9422 亿股 = <strong>2.56 美元</strong></p>
+<h3>再算 AFFO（更严格）</h3>
+<p>AFFO = FFO − 直线租金 2,395 万 − 市场租约摊销 213 万 − 维持性开支
+= 4.974 − 0.2395 − 0.0213 − <strong>约 0.60（估算）</strong> = <strong>约 4.15 亿美元</strong></p>
+<blockquote>
+<p><strong>维持性开支这 6,000 万是估算的</strong>，因为 STAG 在这几页财报里没有单独披露。依据是：一个这种规模的工业地产组合，每年老租户续约时的地坪翻新、隔断改造、租赁中介佣金，业内通常在净营业收入的 8%–10%，对应 5,600 万–7,000 万。取中值 6,000 万。<strong>这个数字如果错了 2,000 万，下面的 P/AFFO 会差约 0.8 倍</strong>，不影响结论方向。</p>
+</blockquote>
+<h3>多口径估值表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率（<strong>失真，仅供参考</strong>）</td>
+<td>71.0 亿 ÷ 2.469 亿</td>
+<td>28.8 倍</td>
+<td>3.47 元</td>
+</tr>
+<tr>
+<td><strong>P/FFO（行业主口径）</strong></td>
+<td>71.0 亿 ÷ 4.974 亿</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>7.01 元</strong></td>
+</tr>
+<tr>
+<td><strong>P/AFFO（最严格，含估算）</strong></td>
+<td>71.0 亿 ÷ 约 4.15 亿</td>
+<td><strong>约 17.1 倍</strong></td>
+<td><strong>约 5.85 元</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径</td>
+<td>71.0 亿 ÷ 4.764 亿</td>
+<td>14.9 倍</td>
+<td>6.71 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>105.0 亿 ÷ 3.309 亿</td>
+<td>31.7 倍</td>
+<td>3.15 元</td>
+</tr>
+<tr>
+<td><strong>隐含现金资本化率</strong></td>
+<td>（7.005 亿 − 0.261 亿纸面租金）÷ 105.0 亿</td>
+<td>—</td>
+<td><strong>6.42%</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均 FFO 口径</strong></td>
+<td>71.0 亿 ÷ 4.500 亿</td>
+<td><strong>15.8 倍</strong></td>
+<td><strong>6.34 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 FFO 的算法（这是全表唯一的历史口径）：
+- FY2023：1.9263 + 2.7756 − 0.5410 = 4.161 亿
+- FY2024：1.8904 + 2.9248 − 0.3227 + 0.0497（资产减值加回）= 4.542 亿
+- FY2025：2.7335 + 2.9926 − 0.9375 + 0.0089 = 4.798 亿
+- 三年平均 = <strong>4.500 亿</strong></p>
+<p><strong>这一行说明当期 FFO 不是高点。</strong> 当期 14.3 倍 vs 三年平均 15.8 倍，只差 1.5 倍——说明 FFO 一直在稳步爬，没有暴涨暴跌。这跟很多周期股形成鲜明对比。但也要看清楚：三年 FFO 从 4.16 亿涨到 4.97 亿，涨了 19.5%，而同期股本从约 1.83 亿股涨到 1.94 亿股，涨了 6%。<strong>扣掉发股稀释，每股 FFO 三年只涨了约 12.7%，年化约 4%。</strong></p>
+<h3>那个"隐含现金资本化率 6.42%"是什么意思</h3>
+<p>这是 REIT 最直白的估值方式：<strong>你现在按市价买下整个 STAG（包括替它还清所有债），花 105 亿美元，买到的是一批一年能收 6.74 亿现金净租金的仓库，回报率 6.42%。</strong></p>
+<p>对比一下：2026 年美国二线市场的单一租户工业仓库，私下交易的资本化率大致在 6%–7%。<strong>所以市场给 STAG 的定价，跟直接去市场上买楼的价格基本一致——既没有折价，也没有溢价。</strong></p>
+<h3>说人话：你投 100 块，一年赚多少</h3>
+<p><strong>按最保守的 AFFO 口径，公司一年替你赚 5.85 元。</strong></p>
+<p>这 5.85 元的去向：</p>
+<ul>
+<li><strong>4.24 元以现金股息发到你手里</strong>（年股息 1.56 美元 / 股，按月改季度发放，2026 年 3 月起改为每季 0.3875 美元）。这个股息 STAG 已经连续 14 年增长。</li>
+<li>剩下的约 1.6 元留在公司里，加上新借的债和新发的股，一起拿去买更多仓库。</li>
+</ul>
+<p><strong>但这里有个陷阱：你拿到 4.24% 的股息，同时你手上的股份每年被稀释 2.50%。</strong> 财报里 "Buyback Yield −2.50%"、"Shareholder Yield 1.76%" 就是在说这件事——<strong>扣掉稀释，净到手只有 1.76%。</strong></p>
+<p>不过前面已经说过，这个稀释不是纯损失：新发的股拿去买了资本化率 6.5%–7% 的楼，而发股成本是 5.85%，所以稀释换来了每股 FFO 的成长（年化约 4%）。<strong>把两边合起来看，一个诚实的预期年回报是：4.24% 股息 ＋ 约 3%–4% 的每股 FFO 成长 ≈ 7%–8%，前提是估值倍数不变、利率不大涨。</strong></p>
+<p>这个 X 未来会变大还是变小？<strong>大概率温和变大，但很脆弱。</strong> 支撑它的是：租约每年自动涨 3%，到期续租时市场租金通常还高于合同租金（这叫"租金差"，是 STAG 最实在的内生增长来源）。压制它的是：一、扩张完全依赖股价，股价跌 20% 增长就熄火；二、利息保障只有 2.37 倍，利率再上一个台阶会直接吃掉 FFO；三、二线市场的仓库在租户流失时议价能力弱。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，但你要清楚自己买的是什么：一张 4.2% 的息票，加上每年 3%–4% 的温和增长，仅此而已。</strong></p>
+<p>14.3 倍 FFO、6.42% 的隐含现金资本化率，跟私下买楼的市场价基本一致——不便宜，也没被高估。账是本篇三家里最干净的：股权激励小到可以忽略、现金流对账表毫无水分、没有靠营运资金变戏法。</p>
+<p>但它有两个必须认清的天花板。<strong>第一，这家公司的增长引擎是它自己的股价</strong>——靠发新股买楼赚 0.7–1.2 个百分点的利差，股价一跌利差就没了，扩张就得停，这是个自我强化也自我毁灭的循环。<strong>第二，那 4.24% 的股息，扣掉每年 2.5% 的稀释，净到手是 1.76%。</strong> 财报自己把这个数印在了 "Shareholder Yield" 那一行，很多人不看。</p>
+<p>如果你要的是一份稳定、能睡着觉、账目干净的租金收入，它合格。如果你指望它跑赢大盘，7%–8% 的预期年回报做不到这件事。</p>
+</div></body></html>

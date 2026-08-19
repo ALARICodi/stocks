@@ -1,0 +1,365 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GTES · Gates Industrial（盖茨工业）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GTES</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">19倍是税务科目变出来的，还原后26倍；五年零增长、ROIC刚好等于资本成本</div><h1>GTES · Gates Industrial（盖茨工业）</h1>
+<p>市值 68.7 亿美元 | 股价约 $27.1 | 行业：生产制造 | TTM 截止 2026-06-27 | 全榜第 539 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Gates 做的东西土得掉渣：<strong>皮带和软管</strong>。一百年前它就做这个，今天还做这个。但这门生意有个漂亮的地方——<strong>它卖的绝大部分不是装在新机器上的原厂件，而是坏了之后换的备件</strong>。约三分之二的营收来自"换件"，这决定了它的抗周期能力和利润率。</p>
+<p>公司只分两个部门。</p>
+<h3>生意 A：Power Transmission（动力传动）—— 皮带</h3>
+<p><strong>这件事具体是什么。</strong> 你打开一辆福特 F-150 的引擎盖，会看到一条黑色的橡胶带绕着好几个轮子转——它一头连着曲轴，另一头带动发电机、水泵、空调压缩机、助力泵。这条叫"多楔带"（serpentine belt）。它是消耗品，橡胶会老化开裂，大约每 10 万公里必须换一次，不换就会某天在高速上突然断掉，然后你的车同时失去发电、冷却和转向助力。</p>
+<p>Gates 做的就是这条带子，以及配套的涨紧轮、惰轮、正时套件。钱怎么收，分两条路：</p>
+<ul>
+<li><strong>卖给福特装新车（原厂 OEM）</strong>：量大、单价被压得很死、毛利率低，大概只有二十几个点。Gates 接这个活主要是为了"占位"——车厂选定了 Gates 的规格，未来十几年这个车型的换件市场就默认是 Gates 的尺寸。</li>
+<li><strong>卖给 AutoZone、NAPA、O'Reilly 这些汽配连锁（售后 aftermarket）</strong>：这才是赚钱的地方。一条 Gates Micro-V 皮带在货架上零售 35 美元，Gates 卖给经销商约 18 美元，自己造出来的成本约 7 美元。修车师傅不会为了省 8 美元去换个没听过的牌子——因为如果这条带子两年后断了，客户会回来骂他，不会去骂皮带厂。<strong>这就是护城河：责任归属让中间的技工天然偏好知名品牌。</strong></li>
+</ul>
+<p>工业那半边同理但更分散：一个粮仓的输送带、一台工厂空调的风机传动、一台联合收割机的割台驱动，用的是 Gates 的 Poly Chain 同步带，坏了停产，所以工厂宁可备着原厂件。</p>
+<p><strong>这块占营收约 62%，是两块里更大也更赚钱的一块。</strong></p>
+<p><strong>它头上有把刀：电动车。</strong> 一台电动车没有曲轴、没有水泵皮带、没有空调压缩机皮带——多楔带这个品类在纯电车上基本消失。Gates 的对冲是往两个方向挪：电动自行车和摩托的皮带传动（比链条安静、免上油），以及工业和农业设备（这些不会电动化那么快）。但坦白说，<strong>汽车售后皮带这个现金牛，未来 15 年是要慢慢干涸的</strong>，只是速度慢到每年看不出来。</p>
+<h3>生意 B：Fluid Power（流体动力）—— 液压软管</h3>
+<p><strong>这件事具体是什么。</strong> 一台卡特彼勒 320 挖掘机的大臂上盘着几十根黑色高压软管，里面是 350 个大气压的液压油，靠它推动大臂、铲斗、履带。这些管子在阳光、砂石、反复弯折下会老化，几千小时后会爆——爆一次现场喷一地油、机器立刻停工。</p>
+<p>工地的算术很简单：一根软管总成两三百美元，一台挖掘机停一天损失几千美元。所以没人会为了省 50 美元等三天从网上买便宜货。<strong>Gates 的生意就是"就近、有货、马上能压好接头"。</strong></p>
+<p>销售路径不是直销，是靠一张网：Motion Industries、Applied Industrial 这类工业分销商，加上全美两万多家能现场压接头的小店。你把爆掉的管子拿去，店员量好长度、剪一段 Gates 胶管、压上 Gates 接头，二十分钟拿走。<strong>Gates 卖的其实是"胶管 + 接头"这套配对系统</strong>——接头和胶管必须同品牌配对才保压，这是个巧妙的锁定：用了它的接头，就得用它的管。</p>
+<p>这块占营收约 38%，跟工程机械、农机、能源开采的资本开支周期绑得更紧，波动比皮带那边大。</p>
+<h3>两门生意的钱（TTM 截止 2026-06-27，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估）</th>
+<th>上年同期（估）</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率（估）</th>
+<th>贡献利润（估）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Power Transmission 皮带</td>
+<td>~2,187</td>
+<td>~2,110</td>
+<td>+3.6%</td>
+<td>62.4%</td>
+<td>~16%</td>
+<td>~350</td>
+</tr>
+<tr>
+<td>Fluid Power 液压软管</td>
+<td>~1,318</td>
+<td>~1,282</td>
+<td>+2.8%</td>
+<td>37.6%</td>
+<td>~13%</td>
+<td>~171</td>
+</tr>
+<tr>
+<td><strong>合计（财报原始）</strong></td>
+<td><strong>3,505</strong></td>
+<td><strong>3,392</strong></td>
+<td><strong>+3.3%</strong></td>
+<td>100%</td>
+<td><strong>14.80%</strong></td>
+<td><strong>518.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>⚠️ 财报按地区×分部披露营收，TTM 有多个地区未更新，上表分部营收按 FY2025 的比例推到 TTM，分部利润按公司公布的分部 EBITDA 率估算——都是估算值。</strong> 只有最后一行 3,505 和 518.7 是财报原始数字。</p>
+<p><strong>必须看的一个数：这家公司五年没长过。</strong> FY2021 营收 3,474 → FY2022 3,554 → FY2023 3,570 → FY2024 3,408 → FY2025 3,443 → TTM 3,505。五年累计增长 0.9%，连通胀都没跑赢。TTM 那个 +3.3% 是从 2024 年的坑里爬回来，不是新高。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>⚠️ 先说最大的一个：净利润比税前利润还高</h3>
+<p>这是本篇最重要的一行数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>科目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td>344.3</td>
+</tr>
+<tr>
+<td>所得税</td>
+<td><strong>−45.4（是收益，不是费用）</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>363.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一家正常公司，税前赚 344 应该交掉八九十的税，剩两百五十几。Gates 不但没交税，税务科目还倒贴了 4,540 万进净利润。</strong> 于是账面净利润 3.635 亿，比税前的 3.443 亿还高。</p>
+<p>这不是造假，是会计规则允许的：多半是递延所得税资产的估值备抵转回（公司之前认为某些税务亏损用不掉、计提了备抵，现在认为用得掉了，就把备抵冲回，一次性变成利润）。但它<strong>是一次性的、非现金的</strong>。</p>
+<p><strong>两个交叉验证证明它是假的现金：</strong>
+1. 同期<strong>实际交出去的现金税是 9,610 万美元</strong>（Cash Income Tax Paid）。账面 −4,540 万 vs 实付 +9,610 万，差 1.415 亿。
+2. 现金流量表里"其他经营调整"这一项 TTM 是 <strong>−1.422 亿</strong>——几乎精确等于上面那个差额。会计师自己把这笔非现金收益从经营现金流里减掉了。</p>
+<p><strong>所以：TTM 每股收益 1.41 美元里，大约 0.42 美元（30%）不是真赚来的。</strong> 按正常 24% 税率，税前 344.3 对应的真实净利润应该是 <strong>约 2.62 亿</strong>，而不是 3.635 亿。后面所有"真实市盈率"用这个数。</p>
+<p>也正因为这个，你会看到网站上写着"EPS 增长 81%"——那是税务科目变出来的，不是生意变好了。</p>
+<h3>其余各项</h3>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM 2,720 万，占真实净利润 2.62 亿的 10.4%。规模温和，按 GAAP 已扣除，不加回。</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：除上面那笔税务收益外，还有 270 万的资产减值和重组费用（很小）。<strong>注意：只看 TTM 一期，我无法判断这笔税务收益是"真一次性"还是公司年年都有类似的税务腾挪</strong>——FY2024 的所得税同样偏低。这一点必须挂着不下结论。</p>
+</li>
+<li>
+<p><strong>资本化支出</strong>：<strong>这项要单独看。</strong> 除了 7,130 万的正常资本开支，Gates 每年还花钱买无形资产（Sale/Purchase of Intangibles）：TTM −2,720 万，FY2025 −4,070 万，FY2024 −2,360 万。这是<strong>年年都发生的实打实现金流出</strong>，但它不在"资本开支"里，所以网站算的自由现金流 4.053 亿把它漏掉了。<strong>真实自由现金流应该是 4.053 − 0.272 = 3.781 亿。</strong></p>
+</li>
+<li>
+<p><strong>折旧摊销远大于资本开支</strong>：D&amp;A 高达 <strong>2.211 亿</strong>，是资本开支 7,130 万的 3.1 倍，占营收 6.3%——对一家制造业这是异常高的。原因是历史：2014 年黑石把 Gates 私有化做 LBO，收购时把商誉和无形资产（客户关系、品牌）大幅写高，之后每年摊销。<strong>这部分摊销是纸面的、不需要真金白银补回来</strong>，所以 Gates 的现金流会长期显著好于账面利润。这一条是<strong>对公司有利</strong>的调整，跟上面那个税务收益正好相反。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：TTM 回购 1.578 亿，SBC 2,720 万，<strong>回购/SBC = 5.8 倍</strong>，是真回购不是擦屁股。但股本只减少了 <strong>1.32%</strong>——比 Chemed 的 7.3% 差远了，因为回购额只占市值的 2.3%。<strong>不分红。</strong></p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：净利润 3.635 亿 → 经营现金流 4.766 亿（百万美元）：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润（含 4,540 万假税收益）</td>
+<td>363.5</td>
+</tr>
+<tr>
+<td>+ 折旧摊销（含 LBO 无形资产摊销）</td>
+<td>+221.1</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+27.2</td>
+</tr>
+<tr>
+<td>+ 资产减值重组</td>
+<td>+2.7</td>
+</tr>
+<tr>
+<td>+ 处置损失</td>
+<td>+0.3</td>
+</tr>
+<tr>
+<td><strong>− 其他经营调整（主要是冲掉那笔非现金税务收益）</strong></td>
+<td><strong>−142.2</strong></td>
+</tr>
+<tr>
+<td>± 营运资金（应收 −79.7／存货 −15.6／应付 +71.9／税 −12.5／其他 +39.9）</td>
+<td>+4.0</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>476.6</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−71.3</td>
+</tr>
+<tr>
+<td>− 购买无形资产（网站没扣，我扣）</td>
+<td>−27.2</td>
+</tr>
+<tr>
+<td><strong>= 真实自由现金流</strong></td>
+<td><strong>378.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说清了两件事：<strong>那 1.42 亿的假利润被现金流量表如实剔掉了</strong>（说明现金流数字可信）；同时 <strong>2.21 亿的 LBO 摊销是纸面的</strong>（说明现金流比利润好是真实的，不是操纵）。两个方向抵消之后，真实现金创造能力大约在 3.8 亿。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 68.7 亿，企业价值 84.1 亿（净负债 15.4 亿），TTM 账面净利润 3.635 亿，<strong>真实税后利润约 2.62 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,870 ÷ 363.5</td>
+<td><strong>18.9 倍</strong></td>
+<td><strong>5.29 元</strong></td>
+</tr>
+<tr>
+<td>按每股收益算（网站显示值）</td>
+<td>股价 27.1 ÷ EPS 1.41</td>
+<td>19.3 倍</td>
+<td>5.19 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估）</td>
+<td>6,870 ÷ ~375（加回无形摊销和 SBC 后再按正常税率）</td>
+<td>~18.3 倍</td>
+<td>5.46 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>6,870 ÷ 261.7（税前 344.3 × 76% 正常税率）</td>
+<td><strong>26.2 倍</strong></td>
+<td><strong>3.81 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（网站算法）</td>
+<td>6,870 ÷ 405.3</td>
+<td>17.0 倍</td>
+<td>5.90 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉买无形资产）</strong></td>
+<td>6,870 ÷ 378.1</td>
+<td><strong>18.2 倍</strong></td>
+<td><strong>5.50 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（再扣 SBC）</td>
+<td>6,870 ÷ 350.9</td>
+<td>19.6 倍</td>
+<td>5.11 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>8,410 ÷ 518.7</td>
+<td>16.2 倍</td>
+<td>6.17 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>6,870 ÷ 269.9（TTM/FY25/FY24 平均）</td>
+<td><strong>25.4 倍</strong></td>
+<td><strong>3.93 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的全部意义在于两行数字的对撞。</strong></p>
+<p>网站首页写着 <strong>18.9 倍</strong>——在市盈率 15–50 倍的筛选里，这属于偏便宜那一档，会吸引人点进来。</p>
+<p>但把那笔非现金税务收益按正常税率还原，真实市盈率是 <strong>26.2 倍</strong>。而三年平均利润口径给出的是 <strong>25.4 倍</strong>——<strong>两个完全独立的方法，一个是税率归一化、一个是三年平均，结果几乎一样</strong>。这是很强的交叉验证：<strong>Gates 真实的估值水平是 25–26 倍，不是 19 倍。那 19 倍是税务科目变出来的。</strong></p>
+<p>唯一能给它辩护的是现金流口径：<strong>18.2 倍</strong>（5.5% 的现金收益率）。这个便宜是真的，来源是 2.21 亿 LBO 无形摊销不用花现金。所以对 Gates，<strong>现金流口径比利润口径更接近真相</strong>——但即使按最宽容的 EV/EBIT 16.2 倍，对一家五年零增长的工业件公司也称不上白菜价。</p>
+<h3>说人话：你投 100 块，一年拿回多少</h3>
+<p><strong>按最保守的真实口径（26.2 倍），公司一年替你赚 3.81 元；按更贴合它现金特性的口径（18.2 倍），一年赚 5.50 元。取中间，大约 4.5–5 元。</strong></p>
+<p>这些钱回到你口袋多少？<strong>Gates 不分红。</strong> TTM 拿出 1.578 亿做回购（占市值 2.3%），另外还了 1.187 亿净债务。剩下的 1 亿多留在公司账上（现金从 7.2 亿涨到 8.3 亿）。<strong>也就是说：你赚的这 4.5–5 块里，只有约 2.3 元是通过回购真正变成你的，其余在还债和攒钱。</strong> 对一家净负债 15.4 亿、Debt/EBITDA 3.0 倍的公司，还债不能算浪费，但它确实不是给你的。</p>
+<p><strong>未来变大还是变小？</strong></p>
+<ul>
+<li>短期偏正面：前瞻市盈率 14.9 倍，说明市场预计明年利润还要涨。工程机械和农机在 2024 年砍了一轮库存，2026 年开始补库，Fluid Power 有周期回补空间。</li>
+<li>中期是硬伤：<strong>五年零增长不是运气不好，是这门生意本身没有增长源。</strong> 皮带和软管的换件需求跟机器保有量挂钩，保有量不增长，收入就不增长。而 ROIC 只有 <strong>9.66%</strong>，公司自己的加权资本成本 WACC 是 <strong>9.48%</strong>——<strong>赚的钱刚好等于占用资本的成本，创造的经济价值约等于零。</strong> 这是判断"平庸生意"最干净的一把尺子。</li>
+<li>长期是那把刀：电动车让汽车皮带品类慢慢消失。这事十年内不会致命，但它意味着这家公司永远不该给成长股的估值。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>表面 19 倍的便宜是税务科目变出来的幻觉，还原后是 26 倍——买一家五年零增长、ROIC 刚好等于资本成本、还背着 3 倍杠杆的皮带厂，这个价格不成立。</strong></p>
+<p>Gates 的生意本身没毛病：售后件占三分之二、品牌在修理工那里有真实溢价、毛利率 40%、现金流比账面利润好且理由正当（LBO 摊销是纸面的）。如果它标价 13–15 倍真实利润，是笔不错的买卖。</p>
+<p>问题是筛选器把它排在"便宜"那一档，而这个 19 倍里有 30% 的利润不是赚来的。<strong>两个独立算法都指向 25–26 倍</strong>，同时公司五年没增长、赚的钱刚够抵资本成本、不分红、回购只缩了 1.3% 的股本。</p>
+<p><strong>你付的是成长股的倍数，买的是一门连通胀都没跑赢的生意。等它跌到真实 15 倍附近（股价约 16 美元）再看。</strong></p>
+</div></body></html>
