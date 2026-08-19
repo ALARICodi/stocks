@@ -1,0 +1,211 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CNK · Cinemark(西尼马克影院)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CNK</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">13.5倍FCF真回购真还债,但天花板在好莱坞手里</div><h1>CNK · Cinemark(西尼马克影院)</h1>
+<p>市值 42.1 亿美元 / 股价 36.70 美元 / 行业:电影院线 / TTM 截止 2026-06-30</p>
+<h2>第一部分:它到底做几件事</h2>
+<p>财报分部只按地区分(美国 80.7%、拉美 19.7%),但按赚钱方式看,它实际做的是<strong>两门半生意:卖电影票、卖爆米花,外加半门卖广告位</strong>。</p>
+<p>先说公司底子:Cinemark 是美国第三大院线(前两名 AMC 和 Regal),全球约 500 家影院、5600 多块银幕,美国大本营在德州和南部各州;同时是<strong>拉丁美洲最大的院线</strong>,在巴西、墨西哥、阿根廷、智利、哥伦比亚开了约 180 家影院。疫情把整个行业打进 ICU:老二 Regal 的母公司直接破产重组,老大 AMC 靠不停增发新股续命把老股东摊薄到骨头里,<strong>只有 Cinemark 一家没破产也没大规模增发,靠着行业里最好的成本控制硬扛了过来</strong>——这是理解这家公司的关键背景。</p>
+<p><strong>生意一:卖电影票(约占收入 53%,估算)</strong></p>
+<p>《阿凡达 3》上映,一家四口周六晚去 Cinemark 看 IMAX 级别的 XD 厅,票价合计约 60 美元。这 60 美元里,<strong>大约一半要分给迪士尼</strong>——好莱坞片方按票房分成,首映头几周大片能抽走 55% 甚至更多,越往后抽成越低。所以卖票本身是门苦生意:座位、租金、放映员是固定成本,收入的一半还得先给片方。院线真正的命门在这里:<strong>放什么片、片好不好卖,完全由好莱坞决定,Cinemark 自己一点办法都没有</strong>。片单强的年份(TTM 里正好赶上 2025 年 12 月《阿凡达:火与烬》这种巨无霸)全行业吃肉,片单弱的年份(比如 2024 上半年编剧罢工后遗症)全行业挨饿。</p>
+<p><strong>生意二:卖爆米花和可乐(约占收入 37%,估算)——真正的利润引擎</strong></p>
+<p>同样这家四口,进场前买两大桶爆米花加四杯饮料,又花 35 美元。这 35 美元<strong>几乎全留在 Cinemark 口袋里</strong>:爆米花玉米粒、糖浆和纸杯的成本大概只有 5 美元,毛利率 80% 以上,而且一分钱不用分给迪士尼。行业里有句老话:院线不是电影公司,是开在电影院里的高价小卖部。Cinemark 这几年人均卖品收入连创新高,还搞了个订阅制会员 Movie Club(每月约 12 美元含一张票加卖品折扣,超过 100 万会员),目的就一个:把人骗进门,进门就会买吃的。</p>
+<p><strong>半门生意:卖广告和其他(约占收入 9%,估算)</strong></p>
+<p>开场前那十几分钟广告,通过它参股的 National CineMedia 卖给广告主;再加上礼品卡、场地出租(游戏比赛、演唱会转播)之类。躺着收钱但盘子不大。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部(财报口径)</th>
+<th>TTM 营收</th>
+<th>对比 FY2025 全年*</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>27.1 亿</td>
+<td>25.1 亿</td>
+<td>80.7%</td>
+<td>财报只按地区披露到营收</td>
+</tr>
+<tr>
+<td>拉美(国际)</td>
+<td>6.6 亿</td>
+<td>6.1 亿</td>
+<td>19.7%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>33.6 亿</strong></td>
+<td>同比 +4.5%</td>
+<td>100%</td>
+<td>整体经营利润率 13.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p>*分部只有年度口径,TTM 与 FY2025 重叠两个季度,仅供方向参考。票/卖品/广告的拆分为估算(财报分部不按产品分),比例参考行业常态和公司历史披露。</p>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励(SBC)</strong>:TTM 3830 万,占净利润 18%,在正常范围。GAAP 已扣。</li>
+<li><strong>一次性项目</strong>:TTM 资产减值与重组 490 万、卖资产亏损 1170 万、投资亏损 460 万,合计约 2100 万税前,对 2.6 亿税前利润影响不大。这个行业年年关差影院、年年有减值,属于"年年都有的一次性",不给它加分。</li>
+<li><strong>低税率是个定时炸弹</strong>:TTM 有效税率只有 16.3%(现金实缴更低,3120 万),因为疫情巨亏攒下的亏损抵扣还没用完。<strong>用完之后税率会回到 25% 上下,同样的税前利润,净利润要缩水约一成</strong>。</li>
+<li><strong>资本化的支出</strong>:没有特别的——资本开支 2.66 亿全是实打实的影院翻新(躺椅、XD 厅、餐吧),折旧 2.06 亿反而比资本开支小。</li>
+<li><strong>回购与稀释(这家的亮点)</strong>:TTM 回购 1.22 亿,对 SBC 3830 万,<strong>比值 3.2,是真回购</strong>。更狠的是股数:<strong>一年少了 26%</strong>(1.55 亿股 → 1.15 亿股)。大头是那笔疫情时发的 4.5% 可转债 2025 年 8 月到期,公司用现金还本,原先挂在股数里的三千多万股潜在稀释直接归零(具体结算细节属推断);小头是 FY2025 以来合计 4 亿多美元的真金白银回购。老股东的每股权益一年被动变厚四分之一,这就是 TTM 每股收益比净利润跌得少的原因。</li>
+<li><strong>利润和现金流的差</strong>:净利润 2.14 亿,经营现金流 5.79 亿,差额方向是现金流更好:加回折旧摊销 2.12 亿、SBC 0.38 亿、各类减值和处置损失 0.21 亿、营运资金贡献 0.48 亿、递延税等其他 0.43 亿,严丝合缝。<strong>利润是真的,而且现金含量很高</strong>——影院是先收钱后放片的生意,没有应收账款问题。</li>
+<li><strong>一处历史水分要提</strong>:FY2024 净利润 3.04 亿明显高于前后两年,当年现金流表里有 −1.38 亿的非现金调整(大概率是递延税资产确认这类账面利好),单期口径无法判断细节,但看三年平均时要知道那年被抬高过。</li>
+<li><strong>杠杆</strong>:总债务 29.7 亿(含租赁负债)、账面现金 5.1 亿,净债务 24.6 亿,TTM 现金利息付了 1.27 亿,吃掉经营利润的 28%。疫情前借的债还没消化完,但方向在还:TTM 净还债 4.8 亿。</li>
+</ul>
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>42.1 亿 ÷ 2.14 亿</td>
+<td>19.9</td>
+<td>5.0 元</td>
+</tr>
+<tr>
+<td>公司自己的 Non-GAAP</td>
+<td>加回减值重组等(估算)</td>
+<td>约 19</td>
+<td>5.3 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>加回 2100 万一次性损失、税率按 25% 正常化</td>
+<td><strong>20.0</strong></td>
+<td><strong>5.0 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>42.1 亿 ÷ 3.13 亿</td>
+<td><strong>13.5</strong></td>
+<td>7.4 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>66.7 亿(含 24.6 亿净债)÷ 4.52 亿</td>
+<td>14.8</td>
+<td>6.8 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>42.1 亿 ÷ FY23–25 平均 2.09 亿</td>
+<td>20.2</td>
+<td>5.0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>你投 100 块进去,按真实利润口径公司一年替你赚 5 块,按现金流口径赚 7 块 4</strong>(现金口径更高是因为折旧比翻新开支大、税还没开始真交)。这 7 块 4 里,现在约 1 块以分红发给你(股息率 1%)、约 2 块 9 用来回购(TTM 回购占市值 2.9%),合计约 4 块真正回到股东口袋,剩下的拿去还债和翻新影院。未来这个数变大还是变小?短期看片单:2026 年底有《复仇者联盟 5》,2027 年有《阿凡达 4》前瞻,两年内片单不弱;长期看人心:<strong>美国人均进影院次数回不到 2019 年,流媒体窗口期缩到 45 天,这门生意的天花板是肉眼可见地往下压的</strong>。它在一个缓慢缩小的池子里当最好的游泳选手。</p>
+<h2>第四部分:一句话结论</h2>
+<p>行业里唯一没把股东卖了的幸存者,13.5 倍自由现金流、股数一年缩 26%、真回购真还债,这个价格对得起这门生意——公道;但买它等于赌好莱坞每年都能交出片单,它永远成不了长大的公司,赚的是"别人破产我活着"的钱,当现金奶牛看可以,当成长股看会失望。</p>
+</div></body></html>

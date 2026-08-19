@@ -1,0 +1,209 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ACLS · Axcelis（离子注入设备）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ACLS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">一年涨68%全是估值，45倍买周期谷底，复苏已全价预售</div><h1>ACLS · Axcelis（离子注入设备）</h1>
+<p>市值 $41.8 亿 / 股价 $135.39 / 半导体设备 / TTM 截止 2026-06-30 / 全榜第 686 名（分析日 2026-08-19）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Axcelis 只做一件事，但这件事全世界基本只有两家公司会做：<strong>离子注入机</strong>。芯片的本质是在硅片上造几十亿个微型开关（晶体管），而造开关的关键一步，是把硼、磷、砷这些杂质原子精确地「打」进硅片里——打多深、打多少颗、打在哪，直接决定这个开关灵不灵。离子注入机就是干这个的：把杂质原子电离、用电场加速到极高速度、像机关枪一样按设定的剂量和深度射进硅片。一台机器卖 300 万–700 万美元，一座新建的芯片厂根据工艺要买几台到几十台。</p>
+<p>这个领域全球就两个玩家：应用材料（AMAT，综合市占率第一）和 Axcelis（第二，但在「高能注入」这个细分里是老大）。第三名是家很小的中国公司。为什么没有新玩家？因为一台注入机是三十年物理学积累，客户买的不是机器而是「良率保证」——芯片厂不敢拿几十亿美元的产线赌一台没验证过的新设备。</p>
+<h3>生意一：卖设备（Purion 系列，占 94%）</h3>
+<p>按财报口径 TTM 产品收入 $8.14 亿（含备件、升级、二手机翻新——数据商把这些都归进产品线）。Axcelis 最赚钱的位置在<strong>功率半导体</strong>，尤其是碳化硅（SiC）——电动车的逆变器、充电桩用的那种耐高压芯片，制造时需要在极高能量下做注入，这正是 Axcelis 高能机（Purion XE 系列）的独门强项。2022–2023 年中国碳化硅建厂潮把它的营收从 $6.6 亿推到 $11.3 亿的历史顶点，也留下一个隐患：<strong>中国客户一度占其收入的一半上下，出口管制每收紧一次它都要抖一抖</strong>。2024–2025 年电动车资本开支退潮，营收连跌两年到 $8.39 亿；最新 Q2 财报超预期，管理层把 2026 全年指引上调到中个位数增长，功率、存储芯片、CS&amp;I 三条线都在回暖，复苏确实在发生。</p>
+<h3>生意二：服务合同（占 6%）</h3>
+<p>TTM $5,176 万，装机后的维保合同和客户培训，年增 10%+。装出去的机器越多这块越厚，是周期波动里的小稳定器，但体量太小撑不起大局。</p>
+<p><strong>各门生意的钱：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备及备件升级</td>
+<td>$8.14 亿</td>
+<td>-4.4%</td>
+<td>94%</td>
+<td>约 10–11%（估算）</td>
+</tr>
+<tr>
+<td>服务合同</td>
+<td>$0.52 亿</td>
+<td>+14%</td>
+<td>6%</td>
+<td>估算低于设备</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$8.66 亿</strong></td>
+<td><strong>-3.4%</strong></td>
+<td>100%</td>
+<td>10.3%（真实数）</td>
+</tr>
+</tbody>
+</table></div>
+<p>要点：营收还在周期底部徘徊（比 2023 顶点低 23%），经营利润率从顶峰的 23.5% 压缩到 10.3%——设备公司的经营杠杆是双刃剑，量一缩利润率跟着塌。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $2,177 万，占净利润 23%，偏高但 GAAP 已扣，不加回。</li>
+<li><strong>一次性项目</strong>：TTM 没有大额减值、和解或重组。卖投资赚了 $293 万，忽略不计。有效税率 12.6% 偏低（研发抵免等），若还原到 15–21% 净利润会再少 3–10%，方向上让真实市盈率更贵而不是更便宜。</li>
+<li><strong>资本化的支出</strong>：没有明显资本化问题，资本开支仅 $974 万（占营收 1.1%），组装型轻资产。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $5,781 万 ÷ SBC $2,177 万 = <strong>2.7 倍，够格算真回购</strong>；股本一年净减 3.6%。加一句公道话：2025 年股价在 $70–80 趴着时管理层砸了 $1.21 亿回购，买在了低点，这次资本配置做得漂亮。账上净现金 $3.32 亿，几乎无债。</li>
+<li><strong>利润和现金流的差</strong>：这是本篇最大的扣分项。TTM 净利润 $9,279 万，经营现金流只有 $7,530 万，自由现金流 $6,555 万。对账：净利润 0.93 + 折旧摊销 0.18 + SBC 0.22 − 存货增加 0.42 − 应收款增加 0.18 − 预收款减少 0.09 + 其他 0.11 ≈ 0.75 亿。翻译成人话：<strong>为迎接复苏在囤存货、赊出去的货款还没收回来，赚的是账面利润、垫的是真现金</strong>。周期上行期这算正常备货，但它意味着现在 64 倍的市现率不是数据错误，是真的。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>41.8亿 ÷ 0.93亿</td>
+<td>45.1</td>
+<td>¥2.2</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（加回SBC+摊销，估算）</td>
+<td>41.8亿 ÷ 约1.17亿</td>
+<td>~36</td>
+<td>¥2.8（虚）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性，同GAAP</td>
+<td><strong>45.1</strong></td>
+<td><strong>¥2.2</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>41.8亿 ÷ 0.66亿</td>
+<td>63.8</td>
+<td>¥1.6</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT（扣净现金后）</td>
+<td>38.5亿 ÷ 0.89亿</td>
+<td>43.0</td>
+<td>¥2.3</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>41.8亿 ÷ 1.89亿（25/24/23平均）</td>
+<td>22.1</td>
+<td>¥4.5</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表要倒着读。NVDA 那次是三年平均比当期贵一倍（利润在山顶）；ACLS 正好相反：<strong>三年平均口径 22 倍比当期 45 倍便宜一半，说明现在的利润是周期谷底</strong>，按周期平均实力算它没有 45 倍那么吓人。但便宜一半之后依然是 22 倍——对一家营收比三年前顶点还低 23%、利润率随周期上下翻倍的设备公司，22 倍周期平均利润谈不上便宜。再换个算法：就算利润完全回到 2023 年历史最好水平（EPS $7.43），现在的股价也相当于 18 倍<strong>顶峰</strong>利润——买周期股的老规矩是在别人绝望时按顶峰利润打折买，而不是在股价一年涨了 68% 之后按顶峰利润全价买。</p>
+<p>大白话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 2 块 2</strong>；其中约 1.4 块以回购形式回到你口袋，没有分红，剩下的钱在垫存货等复苏。这个 2 块 2 未来大概率会变大——管理层指引今年中个位数增长、2027 年继续向上，功率和存储的注入需求是真的——但从 2 块 2 涨回 5 块（即利润翻倍回到周期中枢）这件事，市场已经提前收了你的钱：52 周股价 +68% 全部是估值扩张，同期利润是往下走的。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意本身没毛病——全球两家会做的设备、净现金、低点敢真金白银回购——但这张票眼下是「复苏已全价预售」：45 倍买在利润谷底，forward 28 倍、三年平均 22 倍、顶峰利润 18 倍，怎么算都没有便宜可占，<strong>偏贵，劝等</strong>。它值得放进观察清单的价格在很下面：下次半导体周期恐慌、股价回到对应 12–15 倍周期平均利润的位置时，这是好猎物；现在进场是替过去一年抬轿的人接力。</p>
+</div></body></html>

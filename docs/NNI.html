@@ -1,0 +1,176 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NNI · Nelnet（内尔内特）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NNI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">1.2倍账面买FACTS珍珠+融化冰山,家族不分钱</div><h1>NNI · Nelnet（内尔内特）</h1>
+<p>市值 $45.0亿 / 股价约 $126 / 金融·教育金融集团 / TTM 截止 2026-06-30</p>
+<p><strong>这是金融企业，下面用市净率 PB + ROE 口径而不是市盈率</strong>，原因是：它的资产负债表上躺着 70 亿美元的贷款和配套债务，利润里一大块是利差和资产买卖损益，市盈率那套在这种生意上会严重失真。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>内布拉斯加州林肯市的一家家族控制的教育金融集团（创始人 Dunlap 家族通过每股 10 票的 B 类股掌握绝对投票权，内部人持股 15%+）。财报分五个分部，实质上是<strong>五门生意：两门服务、一门在清算的老本、一家小银行、一堆投资</strong>。</p>
+<h3>生意一：替美国政府收学生贷款（Loan Servicing，TTM 营收 $5.51亿，占 36%）</h3>
+<p>美国联邦学生贷款总盘子 1.6 万亿美元，政府自己不干收账的活，外包给几家服务商。Nelnet 是最大的之一，替教育部管着上千万借款人的账户：发月度账单、收款、处理延期/减免申请、接客服电话。<strong>按借款人头数收费</strong>——每个账户每月收政府一两美元多，账户状态越复杂（拖欠、减免申请中）单价越高。这是门苦生意：单价是政府定的，合同几年一招标，利润率常年只有个位数到 10% 上下，而且量在萎缩（拜登时代的减免、借款人还清）。它的价值不在利润在<strong>现金流稳定</strong>：政府永远付款，坏账为零。</p>
+<h3>生意二：私立学校的收学费系统 FACTS（教育科技与支付，TTM 营收 $5.42亿，占 36%）</h3>
+<p><strong>这是全公司最好的一门生意。</strong> 产品叫 FACTS：美国上万所私立 K-12 学校（大量天主教学校）用它来收学费——家长把 2 万美元年学费拆成 12 期月付，钱走 FACTS 的通道，学校拿到管理后台（分期管理、逾期提醒、助学金评审、学籍系统）。收费两头挣：家长付分期手续费，学校付软件订阅费。大学那边叫 Campus Commerce，做校园缴费通道，同样按交易量抽成。<strong>客户为什么跑不掉</strong>：换收费系统等于让全校家长重新绑卡、财务处重学软件，没有校长愿意折腾——续约率极高，营收从 2021 年的 3.39 亿一路涨到 5.42 亿，年化 +10%，几乎不占资本。财报只披露到营收，利润率按历史披露约 25–30% 经营利润率（估算），大约贡献全公司一半的真实经营利润。</p>
+<h3>生意三：一坨在慢慢清算的旧贷款（资产生成与管理，TTM 营收 $1.78亿，占 12%）</h3>
+<p>2010 年以前美国有个 FFELP 计划：私人机构放学生贷、政府担保 97% 以上本金。该计划 2010 年废止，Nelnet 手里攒下的组合就成了一座<strong>在融化的冰山</strong>：贷款约 60–70 亿美元，用资产证券化债务（就是账上那 70 亿总债务的大头，<strong>不追索到母公司</strong>）funding，赚中间约 1 个点的利差。每年借款人还本付息，冰山缩一圈，释放出来的现金归 Nelnet 自由支配。营收从 2021 年的 4.72 亿缩到 TTM 1.78 亿——<strong>这门生意的终点是清零，但清零之前每年往外吐真金白银</strong>。近年还在整批出售贷款加速变现（见第二部分）。</p>
+<h3>生意四：一家小银行（Nelnet Bank，TTM 营收 $0.65亿，占 4%）</h3>
+<p>犹他州牌照的工业银行，2020 年开业，主做私立学生贷款再融资，营收从 600 万涨到 6,500 万，还在烧规模阶段，对整体利润贡献可忽略。</p>
+<h3>生意五：一堆杂项投资（其他 + 公司账户，TTM 合计约 $1.94亿）</h3>
+<p>太阳能税务股权投资（Nelnet Renewable Energy）、光纤宽带 ALLO 的股权、体育录像软件 Hudl 的股权、房地产。特点是<strong>利润极度颠簸</strong>：2025 财年这块确认了大笔投资出售收益，把当年净利推到 4.28 亿；TTM 里它反而贡献了亏损。看 Nelnet 单年利润基本是在看这块的脸色。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $1,560万，占净利润 5.2%，小，不构成问题。</li>
+<li><strong>「一次性」收益年年有</strong>：TTM 净利 3.02 亿里，<strong>卖贷款收益就有 1.48 亿（税前）</strong>——2024 财年 0.52 亿、2025 财年 1.06 亿、TTM 1.48 亿，一年比一年大。这是在把冰山提前变现，是真钱，但<strong>不是可持续的经营利润</strong>：贷款卖一笔少一笔。同期投资出售是亏损 1,380 万，信贷拨备大增到 1.29 亿（上年 0.68 亿）。粗算把卖贷款收益剔掉，<strong>持续经营口径的税后利润约 1.9 亿，对应「经营 PE」约 23 倍</strong>，比表面的 15 倍难看得多。</li>
+<li><strong>资本化支出</strong>：无值得说的。</li>
+<li><strong>回购与稀释</strong>：股本一年只缩 0.92%，回购聊胜于无；分红率约 1%。Dunlap 家族没兴趣大举回馈外部股东，钱留在集团里滚。</li>
+<li><strong>利润 vs 现金流</strong>：经营现金流 4.01 亿 &gt; 净利 3.02 亿，但对贷款驱动的金融集团这条参考意义不大，不展开。</li>
+</ul>
+<hr />
+<h2>第三部分：估值——PB / ROE 口径</h2>
+<p>市值 $44.96亿。账面净资产 $36.4亿，每股账面价值 $105.4。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td><strong>1.19 倍</strong></td>
+<td>溢价 19% 买账面</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>1.30 倍</td>
+<td>剔掉收购商誉</td>
+</tr>
+<tr>
+<td>ROE（TTM）</td>
+<td><strong>6.8%</strong></td>
+<td>含卖贷款收益；剔掉后约 4–5%</td>
+</tr>
+<tr>
+<td>三年平均净利</td>
+<td>$2.34亿</td>
+<td>对应三年平均 ROE 约 7%、平均口径 PE 19.2</td>
+</tr>
+<tr>
+<td>市盈率（对照用）</td>
+<td>15.0 倍</td>
+<td>其中约 1/3 利润来自卖资产</td>
+</tr>
+<tr>
+<td>投 100 块年回报</td>
+<td><strong>ROE ÷ PB = 6.8 ÷ 1.19 ≈ ¥5.7</strong></td>
+<td>剔卖贷款收益后约 ¥3.5–4</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按账面回报算一年约 5.7 块，其中真正落到你口袋的（分红+微量回购）只有 1 块多，剩下全留在集团里再投资</strong>——投向是 FACTS 扩张、小银行放贷、太阳能和光纤股权。这个 5.7 块建立在杠杆之上（70 亿债务对 36 亿净资产），但要说句公道话：那 70 亿的大头是不追索的证券化债务，配对着政府担保 97% 的贷款，风险远小于普通银行的杠杆。</p>
+<p>值多少钱的正确问法是拆开算（估算口径）：FFELP 冰山按清算价值算约值十几亿；FACTS 这门生意若单独上市，按软件/支付公司给 20 倍利润轻松值 25 亿以上；servicing 和银行给个零头。<strong>账面 36 亿大概率是低估的</strong>，长期看它每股账面价值确实以年化约 10% 在涨。问题是这些价值锁在一个家族控制、没兴趣分钱、单年利润看投资损益脸色的集团结构里，市场给它折价是有道理的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>15 倍市盈率是幻觉——三分之一的利润是卖家底换来的；真实图景是 <strong>1.19 倍账面价值，买一门萎缩的政府代办、一座在融化但还在吐现金的 FFELP 冰山、一颗真珍珠（FACTS）和一堆看不清的投资</strong>，由一个不太理会小股东的家族掌舵。账面在涨、珍珠在长大，这个价不贵，算公道；但催化剂遥遥无期，买它等于陪 Dunlap 家族慢慢滚雪球。可以观察，不用急。</p>
+</div></body></html>

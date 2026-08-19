@@ -1,0 +1,231 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EE · Excelerate Energy（浮动LNG接收站船东）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">长约租船生意真，25倍买ROIC不及资金成本</div><h1>EE · Excelerate Energy（浮动LNG接收站船东）</h1>
+<p>市值 $42.2亿 ｜ 股价 ~$37.2 ｜ 能源基础设施（LNG 进口终端） ｜ TTM 截止 2026-06-30 ｜ 分析日 2026-08-19（全榜第 683 名）</p>
+<blockquote>
+<p><strong>先说一个结构警告</strong>：这是一家 up-C 双层结构公司。俄克拉荷马油气富豪 George Kaiser 家族通过 B 类股控制约 72% 的经济权益，公开流通的 A 类股只有约 3,100 万股（总股本 1.134 亿股）。你买的是小股东里的小股东，大股东说了算。下文所有每股口径已按此对齐，但"公司赚的钱"和"归你的钱"差着一层，读的时候留意。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>Excelerate 做<strong>三门生意</strong>，围绕同一件事：帮没有天然气基础设施的国家进口液化天然气（LNG）。</p>
+<h3>生意一：出租浮动 LNG 接收站（FSRU），营收占比 38%，利润的绝对主力</h3>
+<p><strong>这件事是什么</strong>：LNG 在产地（美国、卡塔尔）被冷冻到 -162°C 变成液体、装上运输船漂洋过海，到了目的地必须先储存、再加热气化，才能进管道送到电厂和千家万户。传统做法是在岸上建接收站——30 亿美元起步、建 4-5 年。Excelerate 卖的是快捷方案：<strong>一艘特种船（FSRU），开到你的港口一停，就是一座浮动接收站</strong>——LNG 运输船靠上来卸货，它储存、气化、通过海底管道直送电网。从签约到通气最快几个月。</p>
+<p><strong>怎么收钱</strong>：国家级客户签 5-20 年的<strong>照付不议（take-or-pay）租约</strong>——不管用不用气，日租金照付。一艘 FSRU 日租金 15-20 万美元（估算），一年就是 5,000-7,000 万美元稳定进账。Excelerate 是这个细分领域全球最大的船东，约 11 艘船分布在：<strong>孟加拉</strong>（两艘，撑起该国约 15% 的天然气供应）、<strong>巴西</strong>（租给国家石油公司 Petrobras）、<strong>阿根廷、巴基斯坦、阿联酋、芬兰、德国</strong>——后两个是 2022 年俄罗斯断气后欧洲的应急租约，能源安全危机是这门生意最大的推销员。TTM 租约收入 $5.62 亿，稳定微增。</p>
+<h3>生意二：再气化及运营服务，占比 4%</h3>
+<p>帮别人的终端做运营维护、船对船过驳。小生意，$5,600 万，顺手赚的。</p>
+<h3>生意三：卖气卖电（LNG, Gas &amp; Power），占比 58%，营收大利润薄</h3>
+<p>自己采购 LNG 现货和长约货，运到自己有终端的市场加价卖气、卖电。<strong>这块 2025 年起了质变</strong>：当年 5 月花约 $10.6 亿从 New Fortress Energy 手里买下<strong>牙买加全套能源资产</strong>——Montego Bay、Old Harbour 两个 LNG 终端加一座 150MW 的 Clarendon 电厂。Excelerate 从"租船的"变成了"牙买加的煤气公司+发电厂"，直接面对终端用户。TTM 这块收入 $8.53 亿（上财年 $6.32 亿），<strong>营收暴涨 49% 的主因就是牙买加并表</strong>。注意：这块是大进大出的贸易+公用事业收入，毛利率远低于租船，看营收增速会高估这家公司的成长。</p>
+<h3>钱的全貌（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>参考增速</th>
+<th>占比</th>
+<th>利润贡献（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FSRU 租约</td>
+<td>562.4</td>
+<td>vs FY2025 +4%</td>
+<td>38%</td>
+<td>主力，租船利润率高（估算 50% 上下）</td>
+</tr>
+<tr>
+<td>再气化服务</td>
+<td>55.7</td>
+<td>平稳</td>
+<td>4%</td>
+<td>少量</td>
+</tr>
+<tr>
+<td>卖气卖电（含牙买加）</td>
+<td>853.2</td>
+<td>并表拉动大增</td>
+<td>58%</td>
+<td>薄利，个位数％（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,471</strong></td>
+<td><strong>+49.0%</strong></td>
+<td>100%</td>
+<td>整体经营利润率 22.0%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只按分部披露营收，利润贡献按整体利润率和业务性质估算。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>先把最容易看错的一层说透——少数股东</strong>：TTM 全公司税前利润 $2.26 亿、缴税 $3,200 万，<strong>全公司经济净利润约 $1.94 亿（估算）</strong>；但利润表最下面"归属净利润"只有 $4,748 万——差额归 Kaiser 家族的 B 类权益。好在每股口径是自洽的：股价 $37.2 ÷ EPS $1.45 = 25.7 倍，跟按全公司算（$42.2 亿 ÷ $1.94 亿 ≈ 21.8 倍）差距不大，差在两层税负不同。<strong>但看"经营现金流近 $4 亿"时务必记住：那是全公司的，不都是你的。</strong></p>
+<p><strong>股权激励（SBC）</strong>：TTM $1,328 万——占归属净利润 28% 看着吓人，占全公司经济净利润约 7%，属正常水平。</p>
+<p><strong>一次性项目</strong>：没有发现大额一次性损益。有效税率 14% 偏低是 up-C 结构下少数股东份额不在公司层面交税的结构性结果，不是一次性优惠。</p>
+<p><strong>资本化的支出</strong>：TTM 资本开支 $3.69 亿，接近经营现金流（$3.94 亿）的全部——大头是订造新 FSRU 的船款和牙买加整合，属于扩张性开支；维持性资本开支估算每年 $6,000-8,000 万（船坞检修等）。所以 FCF 只剩 $2,400 万、P/FCF 175 倍——这个吓人的数字是"利润全拿去买船"的结果，不是利润造假。</p>
+<p><strong>回购与稀释</strong>：没有回购；<strong>股本一年膨胀 20.3%</strong>——为收购牙买加增发。稀释是真的，而且管理层的资本配置倾向明确：赚了钱继续买资产，不还股东。股息每年 $0.36，股息率约 1%，聊胜于无。</p>
+<p><strong>利润和现金流的差</strong>：归属净利 $4,748 万 vs 经营现金流 $3.94 亿，差额两个来源：折旧摊销 $1.62 亿（船是真磨损的，这个折旧不是幻觉）+ 少数股东利润 ~$1.47 亿（现金流全并表但利润大头不归 A 类股东）+ 营运资金波动。对账干净，没有藏东西。</p>
+<p><strong>真正要盯的数</strong>：总债务 $13.9 亿（收购牙买加从 $7 亿翻上来的），<strong>利息覆盖 2.92 倍</strong>；<strong>ROIC 5.54%，低于它自己约 10% 的资金成本</strong>——这门生意过去投下去的每一块钱，赚回来的低于借这块钱的成本。重资产+高杠杆+回报率不及门槛，是这家公司最深的裂纹。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<p>市值 $42.2 亿，企业价值 $52.7 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>股价 ÷ EPS $1.45</td>
+<td>25.7</td>
+<td>¥3.9</td>
+</tr>
+<tr>
+<td>全公司经济口径（估算）</td>
+<td>市值 ÷ 经济净利 ~$1.94 亿</td>
+<td>~21.8</td>
+<td>¥4.6</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性，同 GAAP</td>
+<td><strong>25.7</strong></td>
+<td><strong>¥3.9</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ $2,400 万</td>
+<td>175</td>
+<td>¥0.6</td>
+</tr>
+<tr>
+<td>维持性 FCF 口径（估算）</td>
+<td>市值 ÷（OCF − 维持 capex ≈ $3.2 亿）</td>
+<td>~13</td>
+<td>¥7.6*</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$52.7 亿 ÷ $3.23 亿</td>
+<td>16.3</td>
+<td>¥6.1</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>股价 ÷ 三年平均 EPS $1.22</td>
+<td>30.5</td>
+<td>¥3.3</td>
+</tr>
+</tbody>
+</table></div>
+<p>*前提是它停止扩张只收租——现实中它不会停。</p>
+<p><strong>大白话</strong>：你投 100 块进去，按真实口径公司一年替你赚 <strong>3.9 块</strong>；其中不到 1 块以股息发给你，剩下的全留在公司<strong>造新船、还牙买加的收购债</strong>。而它留存再投资的历史成绩单是 ROIC 5.5%——低于资金成本，等于留 100 块只创造九十几块的价值。这个 3.9 未来会不会变大？会：牙买加满年并表+新船交付，forward PE 19 倍，两年内利润看得见地涨。但代价是三个变数：<strong>孟加拉、巴基斯坦、阿根廷这些客户会不会赖账</strong>（照付不议合同的成色取决于对方付得起）、气价波动打穿贸易段、以及 Kaiser 家族想干什么你拦不住。股价 52 周已涨 55.6%，能源安全的故事早已在价格里。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p><strong>长约租船是门真生意，能源安全是真风口，但 25.7 倍买一家 ROE 8.8%、ROIC 不及资金成本、股本一年膨胀 20%、股息只有 1% 的重资产公司，涨了 55% 之后没有便宜可占</strong>——它值得放进"看着"的名单，等它跌回或者证明牙买加的赌注赚钱，现在这个价没有为你留安全边际。归入：<strong>偏贵 + 一般</strong>。</p>
+</div></body></html>

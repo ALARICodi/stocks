@@ -1,0 +1,256 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BOX · Box 云内容管理</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BOX</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">表面FCF12倍是SBC戏法,真实口径约56倍</div><h1>BOX · Box 云内容管理</h1>
+<p>市值 $44.9亿 / 股价 $32.44 / 行业:企业软件 SaaS / TTM 截止 2026-04-30(其 2027 财年 Q1 末)</p>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p><strong>只有一门生意:把企业的文件全部搬进云里,按人头收年费。</strong></p>
+<p>大白话讲这件事:任何一家上点规模的公司,最乱的东西就是文件。合同散在邮件附件里、临床试验记录躺在某台服务器上、设计稿在离职员工的电脑里。Box 卖的就是一个「全公司文件的统一保险柜」:所有文件放进去,谁能看、谁能改、谁下载过、什么时候看的,全部留痕,可以设到「这份文件只有法务部两个人能打开,打开也不能下载」这种粒度。</p>
+<p>举个具体例子:一家药企做新药临床试验,几万份受试者记录、试验方案、监管往来函件,FDA 审计时要求「证明这份文件从创建到现在没被篡改过、每次访问都有记录」。用普通网盘做不到,自建系统要几百万美元,Box 的合规版(带 HIPAA、FedRAMP 政府认证)直接内置这套留痕,一个人头一年几百美元。再比如律所:上千份并购合同要跟客户、对方律所来回传,发邮件附件等于裸奔,Box 给每份文件一个受控链接,到期自动失效。</p>
+<p><strong>怎么收钱</strong>:按席位订阅。商业版约 $20/人/月,大企业签 Enterprise Plus 套餐(带 AI 问答、电子签、无限存储),一家 5000 人的公司一年付 Box 大几十万到数百万美元。客户为什么跑不掉:几亿份文件和整套权限体系迁走的代价远高于续费,所以续费率长期在 100% 上下。</p>
+<p><strong>最特别的一点:日本是 Box 的第二母国。</strong> 日本营收 TTM 3.08 亿美元,占总营收 25.5%,增速 +17.4%,远快于美国本土的 +4.6%。丰田、全日空、日本政府机构都是客户——日本企业对「文件规矩」的执念跟 Box 的产品气质一拍即合。美国增长熄火后,日本是唯一还在使劲的引擎。</p>
+<p><strong>软肋也一句话说清:微软和谷歌把同类功能捆在办公套件里白送。</strong> OneDrive/SharePoint 随 Office 附赠,Google Drive 随 Workspace 附赠。Box 只能卖给「文件管理要求高到白送货不够用」的客户,这个池子是有边的——这就是它增速只有 9% 的根本原因。现在的新故事是 Box AI(对着自己的合同库直接提问),能不能把增速拉起来还没有证据。</p>
+<h3>钱(公司只按地理披露,无产品分部)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>增速(FY26 vs FY25)</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>$7.49亿</td>
+<td>+4.6%</td>
+<td>62.0%</td>
+</tr>
+<tr>
+<td>日本</td>
+<td>$3.08亿</td>
+<td><strong>+17.4%</strong></td>
+<td>25.5%</td>
+</tr>
+<tr>
+<td>其他海外</td>
+<td>$1.51亿</td>
+<td>+8.0%</td>
+<td>12.5%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$12.07亿</strong></td>
+<td><strong>+9.6%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>毛利率 79.6%,GAAP 经营利润率 9.4%——典型 SaaS 毛利,但赚钱能力被下面要讲的东西吃掉了。</p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC):这是全篇的核心问题。</strong> TTM 发了 <strong>$2.35亿</strong> 股票工资,等于营收的 19.5%、<strong>GAAP 净利润($9,545万)的 2.5 倍</strong>。公司每赚 1 块钱,就往员工口袋里发 2.5 块钱的股票。Non-GAAP 报表把这笔加回去,宣称自己利润丰厚——那是把「用你的股份付工资」当成不要钱。一律当真实成本扣。</p>
+<p><strong>一次性项目:TTM 本期干净,但上一财年有个大的要提防。</strong> FY2025(2025年1月止)净利润 $2.02亿,远高于当年经营利润 $7,963万——差额主要是递延税资产确认(约上亿美元的会计收益,一分钱现金没进来)。做三年平均时那一年是虚胖的。</p>
+<p><strong>资本化的支出:有,而且在快速变大。</strong> 内部软件开发资本化 TTM $3,660万,四年前只有 $579万,翻了六倍。这笔真金白银的开发支出不进网站口径的「自由现金流」,算真实现金要扣回来。</p>
+<p><strong>回购与稀释:回购 $4.38亿 ÷ SBC $2.35亿 = 1.86 倍。</strong> 及格线以上、真回购线(3倍)以下:一半多的回购在给股东,剩下在填发股的坑。股本一年净减 1.39%(最近一个季度加速到 -4.3%)。另外每年付 KKR 优先股股息 $1,500万。</p>
+<p><strong>利润和现金流的差:差额巨大,逐项对账。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>$0.95亿</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+$0.89亿</td>
+</tr>
+<tr>
+<td>+ 股权激励(SBC)</td>
+<td><strong>+$2.35亿</strong></td>
+</tr>
+<tr>
+<td>+ 递延收入增加(客户预付)</td>
+<td>+$0.48亿</td>
+</tr>
+<tr>
+<td>− 应收增加及其他营运资金</td>
+<td>−$1.02亿</td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td>+$0.05亿</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>$3.70亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看明白了:表面「30% 自由现金流利润率」里,<strong>六成以上是把股票工资当不要钱记出来的</strong>。把 SBC 当真成本、把资本化软件扣回来、把优先股息付掉,股东真实可分配现金 = 3.70亿 − 0.07亿(capex) − 0.37亿(资本化软件) − 2.35亿(SBC) − 0.15亿(优先股息) ≈ <strong>$0.76亿</strong>——跟 GAAP 净利润差不多,GAAP 在这家公司没撒谎,撒谎的是 FCF。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>44.9亿 ÷ 0.95亿</td>
+<td>47 倍</td>
+<td>¥2.1</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 和摊销(估算)</td>
+<td>~13 倍</td>
+<td>¥7.7(假的)</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 照扣,扣优先股息后归普通股东 ≈ 0.80亿</td>
+<td><strong>~56 倍</strong></td>
+<td><strong>¥1.8</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径(网站)</td>
+<td>44.9亿 ÷ 3.63亿</td>
+<td>12.4 倍</td>
+<td>¥8.1(虚,含SBC)</td>
+</tr>
+<tr>
+<td>股东真实现金口径</td>
+<td>44.9亿 ÷ 0.76亿(扣SBC/资本化软件/优先股息)</td>
+<td>~59 倍</td>
+<td>¥1.7</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>45.8亿 ÷ 1.13亿</td>
+<td>40.4 倍</td>
+<td>¥2.5</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>44.9亿 ÷ 1.29亿(且FY25虚胖)</td>
+<td>34.8 倍</td>
+<td>¥2.9</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话:你现在投 100 块进去,按最保守的真实口径算,公司一年替你赚不到 2 块钱。</strong> 华尔街屏幕上「P/FCF 只有 12 倍、Forward PE 20 倍」的便宜,全部建立在「发给员工的 2.35 亿股票不算钱」这个前提上。真回到你口袋的部分倒是不少——净回购(回购减发行)约 $4.1亿,占市值 9%——但这是在花掉账上现金(现金一年从 7.2亿降到 4.8亿,还净还了 2亿债),这个力度撑不了几年。这个「2 块钱」未来会不会变大:营收 +9.6%、经营利润率在改善(从 -1.4% 一路爬到 9.4%),方向是对的,但只要 SBC 维持在营收的 19% 这个量级,股东就始终在被稀释着陪跑。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p>生意本身站得住——客户锁定真实、日本引擎还在转、账上没有大雷——但 9% 的增速配上剔除股票工资后 50 多倍的真实市盈率,这个价格把未来十年的顺利全都预支了;表面 12 倍 FCF 的「便宜」是 SBC 变出来的戏法,不便宜,等它把发股的手收一收再看。</p>
+</div></body></html>

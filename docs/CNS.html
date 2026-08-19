@@ -1,0 +1,272 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CNS · Cohen & Steers(科恩-斯蒂尔斯)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CNS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">利润比五年前少20%,25倍只剩3.2%分红可拿</div><h1>CNS · Cohen &amp; Steers(科恩-斯蒂尔斯)</h1>
+<p>市值 42.6 亿美元 / 股价 82.80 美元 / 行业:资产管理(房地产与实物资产基金) / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>它归在"金融"行业,但不是银行——不放贷、不扛坏账,是纯收管理费的轻资产生意,所以下面照常用市盈率口径,不用市净率那套。</p>
+</blockquote>
+<h2>第一部分:它到底做几件事</h2>
+<p>本质上只做<strong>一件事:替别人管钱,按管理资产规模抽费</strong>。只是同一门手艺装进了三种不同的"容器"卖,费率和客户黏性差别很大,所以分开讲。</p>
+<p>CNS 是 1986 年由 Martin Cohen 和 Robert Steers 两人创办的"专科"资管公司——<strong>全美第一家专门做上市房地产股票(REITs)的基金公司</strong>。别家什么都投,它四十年只磕几样:REITs、优先股、上市基础设施(收费公路、电塔、管道这类)、自然资源股。你可以把它理解成"实物资产界的专科医院":养老金想配置房地产但又不想直接买楼,就把钱交给它买 REITs 股票组合。按 TTM 收入和它历史上约 0.55%–0.6% 的平均费率反推,现在管理的资产大约 900 亿–1000 亿美元(估算)。</p>
+<p><strong>容器一:开放式共同基金(Open-End Funds)——收入的 55%</strong></p>
+<p>面向散户和理财顾问渠道的基金,随时可申购赎回。旗舰产品如 Cohen &amp; Steers Realty Shares(REITs 基金)、Preferred Securities and Income Fund(优先股基金)。收钱方式:按基金资产每年抽约 0.75%–0.9% 的管理费——你在美国券商账户里买 10 万美元它家 REITs 基金,一年被扣约 850 美元,不管赚亏都扣。这块还包括给日本大和证券等做"子顾问"(替别人牌子的基金管钱),费率低一截但规模大。散户的钱是三种容器里最善变的:REITs 行情好就涌进来,加息一跌就赎回,所以这块收入波动最大。</p>
+<p><strong>容器二:机构专户(Institutional Accounts)——收入的 23.6%</strong></p>
+<p>养老金、主权基金、保险公司单独开户,定制一个 REITs 或基础设施组合。举例:某州养老金拨 5 亿美元让它管一个全球上市地产组合,费率约 0.4%–0.5%,一年付它 200 多万美元。单笔费率最低,但客户一签好几年,换管理人要走漫长的招标流程,黏性最高。</p>
+<p><strong>容器三:封闭式基金(Closed-End Funds)——收入的 18.6%</strong></p>
+<p>在纽交所挂牌的基金,发行时把钱一次性锁进来,投资者想退出只能在二级市场把基金份额卖给别人,<strong>钱永远不会从 CNS 手里流走</strong>——这是资管行业里最值钱的"永久资本"。而且封闭式基金普遍加杠杆(借钱放大仓位),管理费按放大后的总资产抽,实际费率往往接近 1%。这块是全公司质量最高的收入。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>容器</th>
+<th>TTM 营收</th>
+<th>对比 FY2025 全年*</th>
+<th>占比</th>
+<th>经营利润(估算)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开放式基金</td>
+<td>3.21 亿</td>
+<td>3.20 亿(持平)</td>
+<td>55.0%</td>
+<td>财报只披露到营收</td>
+</tr>
+<tr>
+<td>机构专户</td>
+<td>1.38 亿</td>
+<td>1.33 亿(+4%)</td>
+<td>23.6%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>封闭式基金</td>
+<td>1.08 亿</td>
+<td>1.03 亿(+5%)</td>
+<td>18.6%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>分销及其他</td>
+<td>0.16 亿</td>
+<td>—</td>
+<td>2.7%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5.84 亿</strong></td>
+<td>同比 +7.4%</td>
+<td>100%</td>
+<td>整体经营利润率 32.9%</td>
+</tr>
+</tbody>
+</table></div>
+<p>*注:分部只有年度口径,TTM 与 FY2025 重叠两个季度,增速仅供方向参考;整体 +7.4% 是标准 TTM 同比。分部利润未披露,按整体 32.9% 经营利润率摊,封闭式基金实际利润率大概率高于平均(估算)。</p>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励(SBC)</strong>:TTM 4450 万美元,相当于净利润的 <strong>26%</strong>——资管公司靠人,发股票留人是刚性成本。GAAP 已扣,不加回。</li>
+<li><strong>一次性项目</strong>:TTM 有 1354 万美元投资处置收益(卖自营种子投资赚的)。这类损益跟着市场走、年年有方向不定,单期口径无法判断持续性,算真实利润时剔掉。</li>
+<li><strong>资本化的支出</strong>:没有。软件和内容资本化在这家公司上不存在。</li>
+<li><strong>回购与稀释</strong>:TTM 回购 1913 万,对 SBC 4450 万,<strong>比值 0.43</strong>——回购连员工发股都抵不掉(且这些"回购"多半是代员工缴税的股份回收),股本一年反而<strong>增加 0.31%</strong>。这家公司不回馈股东靠回购,全靠分红。</li>
+<li><strong>利润和现金流的差(重点)</strong>:净利润 1.68 亿,经营现金流却只有 0.72 亿。对账:</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额(百万美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>168.3</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>12.3</td>
+</tr>
+<tr>
+<td>− 投资处置收益(非现金)</td>
+<td>−13.5</td>
+</tr>
+<tr>
+<td>+ SBC</td>
+<td>44.5</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>9.7</td>
+</tr>
+<tr>
+<td>− 应收款增加</td>
+<td>−11.5</td>
+</tr>
+<tr>
+<td>+ 税项变动</td>
+<td>2.9</td>
+</tr>
+<tr>
+<td>− <strong>其他净经营资产增加</strong></td>
+<td><strong>−140.5</strong></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>72.2</td>
+</tr>
+</tbody>
+</table></div>
+<p>那笔 −1.4 亿是关键:CNS 发新基金时自己先掏钱当"种子资金",这些种子基金并表后,<strong>基金里买证券的钱在会计上算"经营活动流出"</strong>。FY2025 这项一口气流出 3.2 亿,把全年经营现金流干成负数。这不是利润掺水——是公司拿真金白银去孵化新产品。剔掉种子投资的口径下自由现金流约 1.57 亿,跟净利润对得上。<strong>结论:利润是真的,但现金流表看起来很难看,原因是钱被拿去养新基金了。</strong></p>
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>42.58 亿 ÷ 1.683 亿</td>
+<td>25.3</td>
+<td>4.0 元</td>
+</tr>
+<tr>
+<td>公司自己的 Non-GAAP</td>
+<td>剔除种子投资损益等(估算)</td>
+<td>约 26</td>
+<td>3.8 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔 1350 万投资收益(税后约 1010 万)</td>
+<td><strong>26.9</strong></td>
+<td><strong>3.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>报表 FCF 0.68 亿(被种子投资压低);还原后约 1.57 亿</td>
+<td>名义 62 / 还原后 27.1</td>
+<td>1.6 / 3.7 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(42.58 − 1.5 净现金)亿 ÷ 1.92 亿</td>
+<td>21.4</td>
+<td>4.7 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>42.58 亿 ÷ FY23–25 平均 1.445 亿</td>
+<td><strong>29.5</strong></td>
+<td>3.4 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>你投 100 块进去,按真实口径公司一年替你赚 3.7 块。</strong>其中约 3.1 块以分红形式真正回到你口袋(股息率 3.2%,派息率 82%),回购是负贡献,剩下几毛钱留在公司里养种子基金。这个 3.7 块未来变大还是变小?看两件事:REITs 行情(决定散户申赎和管理规模)和利率(REITs 是利率敏感资产)。要命的对比是:<strong>2021 年它净利润 2.11 亿,现在 1.68 亿,五年过去利润缩了 20%</strong>——规模型收费生意没了增长,就只剩分红。ROE 27%、账上净现金 1.5 亿、创始人和内部人还持股 46%,公司本身很健康,但健康不等于会长大。</p>
+<h2>第四部分:一句话结论</h2>
+<p>一家账目干净、创始人还在掌舵的专科资管店,但 25–27 倍买的是"利润比五年前还少 20%、增长全看 REITs 行情脸色"的生意,你能稳稳拿到的只有 3.2% 的分红,这个价格没有便宜可占——偏贵,等 REITs 熊市砸出 15 倍以下再看。</p>
+</div></body></html>

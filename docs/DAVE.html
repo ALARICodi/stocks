@@ -1,0 +1,274 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DAVE · Dave（美国"救急钱"数字银行）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DAVE</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">增长凶猛回购是真的，赚的是月光族救急钱</div><h1>DAVE · Dave（美国"救急钱"数字银行）</h1>
+<p>市值 $42.5亿 ｜ 股价 ~$333 ｜ 金融科技（消费信贷+数字银行） ｜ TTM 截止 2026-06-30 ｜ 分析日 2026-08-19（全榜第 681 名）</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>Dave 本质上做<strong>两门生意</strong>，都装在一个手机 App 里，客户是同一群人：<strong>发薪日之前手头会紧的美国人</strong>。美国有上亿人过着 paycheck-to-paycheck（月光）的日子，银行账户余额经常在发薪前几天见底。传统银行怎么对付他们？透支一次罚 $35。Dave 就是冲着这 $35 来的。</p>
+<h3>生意一：ExtraCash 救急垫款（营收占比 85%，绝对主业）</h3>
+<p><strong>这件事是什么</strong>：你周五发工资，但今天是周二，房租今天要交，账户里只剩 $40。你打开 Dave，申请一笔 $200 的垫款——不查征信、不算利息、没有滞纳金。Dave 的风控系统（他们叫 CashAI）直接读你银行账户过去几个月的流水：工资是不是每两周准时进账、金额稳不稳定、有没有别家垫款在扣款。几秒钟批准，钱立刻到你的 Dave 卡里。下周五你工资一到账，Dave 自动把 $200 加一笔手续费扣回去。余额不够就等你下次进账，不滚利息。</p>
+<p><strong>怎么收钱</strong>：单笔收一个百分比手续费（5% 上下，有最低收费，秒到账另有加急属性）。一笔 $200 的垫款，用户全程大约付 $10 出头。听着不多？换算成年化利率是三位数——但用户的对照物不是房贷利率，是银行的 $35 透支费和发薪日贷款店 400% 的年化。在这个残酷的市场里，Dave 确实是相对便宜的那个。</p>
+<p><strong>规模感</strong>（估算）：TTM 垫款处理费收入 5.48 亿美元，按 ~5% 费率倒推，一年垫出去的钱在百亿美元量级、单笔平均一百多块，纯靠机器审批——全公司只有 <strong>280 个员工</strong>，人均创收 230 万美元，人均利润 79.5 万美元，比大多数软件公司还高。</p>
+<p><strong>代价</strong>：坏账。TTM 计提坏账 <strong>1.11 亿美元，吃掉营收的 17%</strong>。这是这门生意的原材料成本——垫给月光族的钱，注定有一部分收不回来。目前这个比例可控，但<strong>这家公司 2023 年还在亏损，从来没经历过一次真正的衰退</strong>。客户是全美国抗风险能力最差的人群，失业潮一来，坏账率和垫款需求会同时恶化。</p>
+<p><strong>还有一把悬顶之剑</strong>：2024 年底 FTC/司法部起诉 Dave 的老收费模式（默认勾选的"小费"、模糊的加急费、宣传"最高 $500"但多数人拿不到）。Dave 2025 年初把收费全面改成了现在这套明码标价的模式——老模式里的"小费"收入从 2024 财年的 $6,756 万降到 TTM 的<strong>零</strong>，转型干净利落，营收不降反升 49%。但监管这条线以后随时可能再收紧。</p>
+<h3>生意二：Dave Banking 数字银行（营收占比 15%）</h3>
+<p>给同一群用户开支票账户+发借记卡：会员订阅费（TTM $5,137 万）、用户刷卡时从商户手续费里分一杯羹（interchange，$2,470 万）、ATM 和其他（约 $1,900 万）。这门生意本身不太赚钱，真正的作用是<strong>留住用户、拿到工资直存的流水数据</strong>——工资直存进 Dave 的用户，垫款风控更准、扣款更稳。它是主业的护城河，不是利润引擎。</p>
+<h3>钱的全貌（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>参考增速*</th>
+<th>占比</th>
+<th>利润贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ExtraCash 垫款处理费</td>
+<td>548.5</td>
+<td>FY25 全年 +113%</td>
+<td>85.2%</td>
+<td>绝对主力</td>
+</tr>
+<tr>
+<td>订阅费</td>
+<td>51.4</td>
+<td>FY25 +51%</td>
+<td>8.0%</td>
+<td>辅助</td>
+</tr>
+<tr>
+<td>Interchange+ATM+其他</td>
+<td>43.8</td>
+<td>平稳</td>
+<td>6.8%</td>
+<td>辅助</td>
+</tr>
+<tr>
+<td>小费（老模式，已废除）</td>
+<td>0</td>
+<td>归零</td>
+<td>0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>643.7</strong></td>
+<td><strong>+48.6%</strong></td>
+<td>100%</td>
+<td>经营利润率 36.0%</td>
+</tr>
+</tbody>
+</table></div>
+<p>*财报未披露分部 TTM 同比，增速列用 FY2025 年报对 FY2024 近似。分部利润未披露，按公司整体口径呈现。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM $3,755 万，占净利润 17%。当真实成本扣，不算夸张但不能忽略。</p>
+<p><strong>一次性项目（重要）</strong>：TTM <strong>净利润 $2.226 亿 &gt; 税前利润 $2.075 亿</strong>——公司交的不是税，是收了 $1,515 万"税收收益"，大概率是前些年亏损攒下的递延税资产确认（纸面收益，不是经营赚来的）。这笔要剔掉，并且以后 Dave 开始正常交税（21-25%），同样的税前利润会直接少掉四分之一的净利润。单期口径无法判断税收确认还有多少余量，但方向确定：<strong>当前净利润被税务处理垫高了</strong>。</p>
+<p><strong>资本化的支出</strong>：软件开发资本化 TTM $735 万，规模小，不构成粉饰。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>$2.51 亿</strong>，是 SBC 的 <strong>6.7 倍</strong>——按我们的标准是"真回购"。但两个折扣：一是同期<strong>发了 $1.93 亿可转债</strong>，回购的钱一半是借来的；二是股本一年只降了 0.57%（回购集中在最近一个季度，单季 -5%），部分回购在对冲历史稀释。方向是对的，力度打个七折看。</p>
+<p><strong>利润和现金流的差</strong>：净利润 $2.23 亿 vs 经营现金流 $3.27 亿，对账如下（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>222.6</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>7.1</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>37.6</td>
+</tr>
+<tr>
+<td>+ 坏账拨备</td>
+<td>110.6</td>
+</tr>
+<tr>
+<td>+ 减值及其他</td>
+<td>-23.3</td>
+</tr>
+<tr>
+<td>− 营运资金变化等</td>
+<td>-27.6</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>327.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里藏着本篇最重要的一个坑</strong>：坏账拨备 $1.11 亿加回来了，但垫出去的款本身记在<strong>投资活动</strong>里（TTM 净流出 $9,430 万）。也就是说 $3.27 亿的"经营现金流"没算借出去的本金。把垫款净增额和资本化软件扣回来，<strong>真实的自由现金流约 $2.25 亿</strong>，不是表面的 $3.27 亿。仍然很健康（净利润基本都是真钱），但别被 13 倍 P/FCF 的表象骗了。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<p>市值 $42.5 亿，净债务约为零（现金 $2.54 亿 vs 债务 $2.68 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>股价 ÷ 摊薄 EPS $15.62</td>
+<td>21.3</td>
+<td>¥4.7</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（加回 SBC，估算）</td>
+<td>市值 ÷ ~$2.45 亿</td>
+<td>~17</td>
+<td>¥5.8</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 $2.07 亿按 24% 正常税率 → ~$1.58 亿</td>
+<td><strong>~27</strong></td>
+<td><strong>¥3.7</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>市值 ÷ $3.27 亿</td>
+<td>13.0</td>
+<td>¥7.7</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣垫款增量，估算）</td>
+<td>市值 ÷ ~$2.25 亿</td>
+<td>~19</td>
+<td>¥5.3</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$42.6 亿 ÷ $2.32 亿</td>
+<td>18.4</td>
+<td>¥5.4</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ 三年平均净利 $6,840 万</td>
+<td><strong>62</strong></td>
+<td>¥1.6</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你现在投 100 块进去，按最保守的真实口径（税率正常化后），公司一年替你赚 <strong>3.7 块</strong>。这 3.7 块里没有分红；回购看着凶（一年买回市值的 6%），但一半靠发债、且被期权稀释对冲掉大半，真正回到你口袋的很少——大头留在公司里垫更多的款、堆更多的现金。</p>
+<p><strong>三年平均 62 倍是全表最扎眼的数字</strong>：这家公司 2023 年还亏 $4,850 万，现在的利润只有两年历史，没经过任何一次经济下行的检验。62 倍的意思是：如果利润被打回三年平均水平，你买贵了三倍。</p>
+<p>但也要说公平话：营收 +49%、经营利润率 36%、forward PE 18.4——如果增速哪怕保住一半，两年后真实口径市盈率会自己掉到 15 倍以下。这是一门<strong>罕见地既高增长又高利润率、还几乎不用资本</strong>的生意（ROE 105%）。股价三年从 $8.38 涨到 $333（40 倍），空头仓位占流通盘 25%，Beta 3.86——市场对它的分歧和波动都是极端的。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p><strong>按 49% 的增速，21 倍（真实口径 27 倍）不算贵，价格公道</strong>；但你买的是一门赚月光族救急钱、坏账没经历过衰退检验、头顶悬着监管之剑的生意——愿意同时承担这三个风险，它是这个价位上成长性最好的标的之一；不愿意，就别碰。归入：<strong>公道 + 一般</strong>。</p>
+</div></body></html>

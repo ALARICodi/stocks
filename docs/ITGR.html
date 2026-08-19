@@ -1,0 +1,219 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ITGR · Integer Holdings(英特格医疗)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ITGR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">ROIC刚够资金成本的代工厂,38倍FCF付成长股价钱</div><h1>ITGR · Integer Holdings(英特格医疗)</h1>
+<p>市值 42.5 亿美元 / 股价 125.09 美元 / 行业:医疗器械代工制造 / TTM 截止 2026-07-03</p>
+<h2>第一部分:它到底做几件事</h2>
+<p>一句话定位:<strong>医疗器械行业的富士康</strong>——美敦力、雅培、波士顿科学这些大牌医疗器械公司,自己不生产核心零部件甚至整机,外包给它做。Integer 是全球最大的医疗器械外包制造商(行业黑话叫 MDO/CDMO),前身是发明了心脏起搏器锂电池的 Greatbatch 公司(创始人 Wilson Greatbatch 就是起搏器电池之父),2015 年并购 Lake Region Medical 后改名 Integer。财报分两个半分部:</p>
+<p><strong>生意一:心血管与外周血管器械(Cardio &amp; Vascular)——收入的 60%</strong></p>
+<p>做的是心脏和血管手术里那些一次性精密耗材:导丝、导管、球囊、鞘管。举个具体的:波士顿科学卖一套治疗房颤的脉冲电场消融(PFA)系统,里面那根伸进心脏的消融导管,很可能就是 Integer 按波士顿科学的图纸造的——导管尖端的电极、编织管身、手柄,Integer 出厂价可能一根几百美元,波士顿科学贴牌后卖给医院几千美元。客户为什么非用它不可?<strong>因为这根导管的制造工艺已经写进了 FDA 的注册文件,换一家供应商等于重新走一遍验证和审批,耗时一两年、花几百万美元,还要冒审批不过的风险</strong>。所以一旦设计进了它的产线,客户十几年都跑不掉。这块也是增长引擎——这几年电生理、结构性心脏病手术量猛增,TTM 收入 11 亿美元,是五年前的近两倍。</p>
+<p><strong>生意二:心律管理与神经调控(CRM &amp; Neuromodulation)——收入的 37%</strong></p>
+<p>祖传手艺:心脏起搏器和除颤器里的电池、密封件、钛外壳、电极导线。全球每台起搏器里价值几百美元的核心部件,大概率有 Integer 的份。这块的客户集中度极高(美敦力、雅培级别的巨头),产品生命周期长、增长慢(TTM +1% 左右),但现金流稳定。神经调控是新枝:脊髓电刺激止痛器、脑深部电刺激(帕金森治疗)这类新兴植入设备,很多创业公司没有工厂,从设计到量产全包给 Integer。</p>
+<p><strong>半门生意:其他市场(Other Markets)——收入的 3%,正在甩卖</strong></p>
+<p>非医疗的特种电池(油气井下设备用),公司已在剥离,收入从两年前的 1 亿萎缩到 6200 万,不用花时间看。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>对比 FY2025 全年*</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>心血管与外周</td>
+<td>11.0 亿</td>
+<td>11.1 亿(持平)</td>
+<td>59.8%</td>
+<td>财报只披露到营收</td>
+</tr>
+<tr>
+<td>心律管理与神经调控</td>
+<td>6.8 亿</td>
+<td>6.7 亿(+1%)</td>
+<td>36.8%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>其他市场(剥离中)</td>
+<td>0.6 亿</td>
+<td>0.8 亿(萎缩)</td>
+<td>3.3%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>18.4 亿</strong></td>
+<td>同比 +2.7%</td>
+<td>100%</td>
+<td>整体经营利润率 11.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p>*分部只有年度口径,TTM 与 FY2025 重叠两个季度,仅供方向参考。分部利润按整体 11.4% 经营利润率估算,心血管类大概率高于平均。</p>
+<p><strong>这门生意的死穴要先说清楚</strong>:客户黏性是真的,但客户全是比它大十倍的巨头,议价权在人家手里。所以毛利率只有 26%、经营利润率 11%——对比一下,它服务的美敦力毛利率 65%。辛苦钱。而且增长有一半是买来的:过去五年花在收购上的现金年均约 1.4 亿美元,超过同期年均自由现金流(约 8200 万),差额靠借债,净债务从 8.9 亿涨到 13.4 亿。</p>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励(SBC)</strong>:TTM 2270 万,占净利润 18%,正常。GAAP 已扣。</li>
+<li><strong>低税率撑起来的净利润(最大的障眼法)</strong>:TTM 有效税率只有 <strong>5.9%</strong>(税前 1.36 亿,所得税仅 800 万),靠研发抵免和海外架构。这不可持续——它自己历史年份的税率在 13%–17%。按 16% 正常化,净利润要从 1.28 亿缩到约 1.15 亿。<strong>TTM 每股收益大涨 60% 里,有相当一部分是税率从去年异常项里恢复+今年异常低共同造出来的,不是生意突然变好了。</strong></li>
+<li><strong>一次性项目</strong>:TTM 减值重组 590 万,小。但 FY2025 有一笔 5360 万的非现金费用(现金流表"其他经营调整"),大概率与当年 12.85 亿新债置换 11 亿旧债的再融资/可转债处理有关(单期口径无法完全判断),把 FY2025 净利润压低了——看三年平均时要知道那年被压低过,正如 TTM 被低税率抬高过。</li>
+<li><strong>资本化的支出</strong>:没有明显的——资本开支 9300 万,低于折旧摊销 1.38 亿,重资产但投入在放缓。</li>
+<li><strong>回购与稀释</strong>:TTM 回购 1.1 亿,对 SBC 2270 万,<strong>比值 4.9,是真回购</strong>,股数一年降 3.1%。这是新动作(以前的钱全拿去收购了),方向是好的。</li>
+<li><strong>利润和现金流的差</strong>:净利润 1.28 亿,经营现金流 2.05 亿:加回折旧摊销 1.45 亿、SBC 0.23 亿,减去应收账款增加 0.49 亿、存货增加 0.25 亿等营运资金占用,对得上,没有藏东西。自由现金流 1.12 亿,略低于净利润——<strong>这家公司的净利润看着比现金流"实",其实是低税率的功劳,现金流才是本来面目</strong>。</li>
+<li><strong>杠杆</strong>:净债务 13.4 亿 = 3.9 倍 EBITDA,利息保障倍数 5.4。不致命,但在利率不低的年代,这个杠杆配 6% 的资本回报率很难看(见下)。</li>
+<li><strong>最扎心的一个数</strong>:ROIC 6.43%,加权资金成本(WACC)6.42%——<strong>投入资本的回报率刚好等于资金成本,一分钱超额收益都没有</strong>。借钱收购堆出来的规模,给股东创造的价值约等于零,这就是"平庸的辛苦钱生意"的数学表达。</li>
+</ul>
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>42.5 亿 ÷ 1.28 亿</td>
+<td>34.0</td>
+<td>2.9 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回并购摊销、重组、SBC 等,调整后 EPS 约 6 美元(估算)</td>
+<td>约 21</td>
+<td>4.8 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税率按 16% 正常化后净利约 1.15 亿</td>
+<td><strong>37.1</strong></td>
+<td><strong>2.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>42.5 亿 ÷ 1.12 亿</td>
+<td><strong>38.0</strong></td>
+<td>2.6 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>56.0 亿(含 13.4 亿净债)÷ 2.10 亿</td>
+<td>26.7</td>
+<td>3.7 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>42.5 亿 ÷ FY23–25 平均 1.04 亿</td>
+<td>40.7</td>
+<td>2.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>公司 Non-GAAP 那行看看就好:它加回的"并购无形资产摊销"来自真金白银的收购价,SBC 更是真成本,21 倍是化了妆的数字。</p>
+<p>大白话:<strong>你投 100 块进去,按真实口径公司一年替你赚 2 块 6 到 2 块 7</strong>——还不如买美国国债。这 2 块 7 里,分红为零(它不派息),约 2 块 6 拿去回购,其余利润账面留存但实际上历年都被收购吃掉。华尔街给它 18.7 倍的远期市盈率,赌的是调整后利润高增长兑现+继续降杠杆;但按你真掏钱、它真赚钱的口径,现在是 38 倍现金流在买一门 ROIC 刚够本的代工生意。顺带一提:股价 200 日均线上方 44%,RSI 82(严重超买),流通盘 11% 被做空——多空都很拥挤。</p>
+<h2>第四部分:一句话结论</h2>
+<p>生意有真黏性(部件写进 FDA 文件,客户十几年跑不掉),但那是巨头客户手下的辛苦钱:毛利 26%、ROIC 刚好等于资金成本、增长靠借钱收购拼出来,如今 34 倍 GAAP、38 倍自由现金流、三年平均口径 41 倍——为一门不创造超额回报的生意付成长股的价钱,很贵,别碰,等它跌回 20 倍现金流以下再说。</p>
+</div></body></html>
