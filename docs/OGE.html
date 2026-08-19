@@ -1,0 +1,272 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OGE · OGE能源（俄克拉荷马燃气电力）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OGE</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">垄断但回报被政府封顶，分红一部分是借来的</div><h1>OGE · OGE能源（俄克拉荷马燃气电力）</h1>
+<p>市值 97.2 亿美元 / 股价约 47 美元 / 公用事业（受监管电力）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>拆开看，OGE 实质上只做<strong>一门生意</strong>：在俄克拉荷马州和阿肯色州西部，独家卖电。</p>
+<h3>唯一的生意：受监管的电力垄断（OG&amp;E）</h3>
+<p>OGE Energy 是个壳，底下真正干活的是子公司 OG&amp;E（Oklahoma Gas &amp; Electric），一家有 120 多年历史的电力公司，给俄克拉荷马城及周边约 90 万户家庭和企业供电。</p>
+<p>这门生意的玩法和普通公司完全不同，值得讲透：</p>
+<p><strong>它是政府发牌照的合法垄断。</strong> 在它的服务区里，你家想用电只能找它，没有第二家。作为交换，它不能随便定价——电价由俄克拉荷马州公用事业委员会（OCC）批准。定价逻辑是：公司把发电厂、电线杆、变压器这些资产的总账本（行话叫"费率基数"，rate base）报给政府，政府允许它在这个基数上赚一个固定回报率（目前批的大约是 9%~9.5% 的股本回报）。<strong>也就是说，它赚多少钱不取决于卖电多努力，而取决于它拥有多少资产。</strong></p>
+<p>这就解释了它的行为模式：<strong>拼命花钱建东西</strong>。每年砸 10 亿美元以上盖变电站、换电网、装智能电表——不是浪费，而是"账本越大、政府批准赚的钱越多"。这是全世界受监管公用事业共同的商业模式。</p>
+<p><strong>具体怎么收钱</strong>：俄克拉荷马一户普通家庭夏天开空调，一个月电费大约 120~150 美元，其中包含发电燃料费（天然气、煤、风电，成本直接转嫁给用户，公司不赚这个差价）和输配电费（公司真正赚钱的部分）。工业客户和油田客户（俄克拉荷马是产油州，油井抽油机是用电大户）按更大的量、更低的单价买电。</p>
+<p><strong>客户构成</strong>（TTM 营收 32.35 亿美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>客户类型</th>
+<th>TTM 营收（百万＄）</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>居民</td>
+<td>1,179</td>
+<td>+3%</td>
+<td>36%</td>
+</tr>
+<tr>
+<td>商业</td>
+<td>971</td>
+<td>+16%</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>工业</td>
+<td>260</td>
+<td>+2%</td>
+<td>8%</td>
+</tr>
+<tr>
+<td>油田</td>
+<td>238</td>
+<td>+5%</td>
+<td>7%</td>
+</tr>
+<tr>
+<td>政府/路灯</td>
+<td>275</td>
+<td>+5%</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>输电 + 电力市场 + 其他</td>
+<td>312</td>
+<td>约+8%</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table></div>
+<p>值得注意的是<strong>商业客户营收同比涨了 16%</strong>——俄克拉荷马近两年在抢数据中心项目（地价便宜、电价低、州政府给税收优惠），这是这家慢公司难得的增长故事。</p>
+<p><strong>赚钱能力</strong>：财报只按客户类型拆营收，不拆利润。整体看，TTM 经营利润约 7.7 亿美元（按 EV/EBIT 倒推，标注：估算），经营利润率约 24%，净利润 4.67 亿、净利率 14.4%——对公用事业是正常水平。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 1510 万美元，占净利润 3%。可以忽略，公用事业不玩这个。</li>
+<li><strong>一次性项目</strong>：TTM 这一期没有大额一次性项目。但要提历史：2021-2022 年报表里净利润 6.6~7.4 亿远高于现在，那是因为当年卖掉了持有的天然气管道公司股份（Enable Midstream 并入 Energy Transfer 后清仓），一次性赚了两三亿。<strong>那段"高利润"是卖资产卖出来的，不是主业</strong>，现在的 4.67 亿才是这家公司的真实盈利水平。</li>
+<li><strong>资本化的支出</strong>：没有软件/内容资本化问题。公用事业的资本化是明牌——每年 10 亿资本开支全进资产负债表，这正是它的商业模式本身。</li>
+<li><strong>回购与稀释</strong>：<strong>零回购，反向操作</strong>——TTM 增发了 2.1 亿美元新股，股本一年膨胀 1.71%。你的持股每年被稀释近 2%。</li>
+<li><strong>利润和现金流的差</strong>：这是全篇最要紧的一张账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万＄）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>467</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>556</td>
+</tr>
+<tr>
+<td>+ SBC 及其他</td>
+<td>30</td>
+</tr>
+<tr>
+<td>+ 营运资金变化等</td>
+<td>241</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>1,294</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,020</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>274</strong></td>
+</tr>
+<tr>
+<td>− 分红</td>
+<td>−347</td>
+</tr>
+<tr>
+<td>= <strong>缺口</strong></td>
+<td><strong>−73</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚这个结构：<strong>赚的现金不够同时搞建设和发分红</strong>，缺口靠增发新股（+2.1 亿）和维持 58 亿美元的债务来填。这不是 OGE 独有的毛病，几乎所有处于建设期的公用事业都这样——但你要明白，<strong>你收到的分红有一部分实质上是公司借来的/增发来的</strong>。利息保障倍数只有 2.8 倍，利率每涨一点，利润就被啃一口。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>97.2亿 ÷ 4.67亿</td>
+<td>20.8</td>
+<td>4.8 元</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>基本不调整，同 GAAP</td>
+<td>≈20.8</td>
+<td>4.8 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无大额一次性，同 GAAP</td>
+<td><strong>20.8</strong></td>
+<td><strong>4.8 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>97.2亿 ÷ 2.74亿</td>
+<td>35.5</td>
+<td>2.8 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(97.2亿+58.4亿) ÷ 7.7亿</td>
+<td>20.1</td>
+<td>5.0 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>97.2亿 ÷ 4.43亿</td>
+<td>21.9</td>
+<td>4.6 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均（21.9 倍）和当期（20.8 倍）几乎一样——<strong>现在的利润不是高点也不是低点，就是它的正常水平</strong>，这点比很多周期股干净。</p>
+<p><strong>大白话</strong>：你投 100 块进去，公司一年替你赚约 4.8 块。其中约 3.6 块以分红形式真金白银发到你手上（股息率 3.6%，公司连续几十年发分红），剩下的留在公司里扩电网——而且如前所述，扩建花的钱比留存的多，还要额外增发借债。这个 4.8 块未来大概率<strong>每年涨 5%~6%</strong>：监管批的费率基数在涨，数据中心搬进俄克拉荷马也添了真需求；但天花板同样是监管——政府不会让它暴利，涨快了下次听证会就压你电价。</p>
+<h2>第四部分：一句话结论</h2>
+<p>一门批准过的、稳定但被封顶的垄断生意：3.6% 股息 + 5~6% 的利润增长，合计一年 9% 左右的回报预期，20.8 倍的价格对公用事业来说不便宜也不贵，<strong>值这个价，但别指望惊喜</strong>——它赚多少是政府批的，分红有一部分是借来的，股本还在慢慢稀释你。想要稳稳收息可以看，想要便宜可占这里没有。</p>
+</div></body></html>

@@ -1,0 +1,214 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FCFS · FirstCash Holdings（第一现金控股）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FCFS</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">当铺抗周期账干净,24倍公道但掺金价红利</div><h1>FCFS · FirstCash Holdings（第一现金控股）</h1>
+<p>市值 $92.3 亿 / 股价约 $213 / 行业：专业消费金融（当铺连锁）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p>它是放贷公司但不是银行：收入近一半来自卖货（零售），贷款全部有实物抵押、周转极快，资产负债表不像银行那样靠十几倍杠杆吃息差，所以下面照常用市盈率口径，只在杠杆处多看一眼。</p>
+</blockquote>
+<h2>一、它到底做几件事</h2>
+<p>FirstCash 是全球最大的当铺连锁，在美国约 1,000 家店、墨西哥等拉美国家约 2,000 家店，2025 年又收购了英国最大的当铺连锁 H&amp;T（约 280 家店，约数）。一个门店同时做下面前两门生意，后两门是衍生出来的。</p>
+<h3>生意 1：当铺放贷（TTM 收入 9.96 亿，占 24%）</h3>
+<p>这是整个模式的发动机。一个墨西哥工人手头紧，拿一条金链子进店，店员当场估价，借给他约 80 美元（美国单笔平均约 260 美元），东西押在店里。每月收约 12%–15% 的服务费——年化超过 150%，听着吓人，但单笔金额小、期限一两个月，借款人付的绝对金额就十几美元，比信用卡逾期费便宜，而且<strong>不查征信、不上征信、五分钟拿钱</strong>，这是银行完全不服务的人群。约七成的人会回来赎当；三成不赎，店里也<strong>没有一分钱坏账</strong>——因为放款额只有抵押品转售价值的一半左右，东西直接进柜台变成商品。这门生意两百年没变过，经济越差生意越好（失业的人更需要小额应急钱），是天然的抗周期资产。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025 全年</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收入</td>
+<td>9.96 亿</td>
+<td>8.54 亿</td>
+<td>TTM 比上个完整年度还多 17%，靠同店增长 + 英国 H&amp;T 并表</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 2：当铺零售（TTM 收入 18.48 亿，占 45%）</h3>
+<p>没被赎回的抵押品和顾客直接卖断的二手货，摆上柜台卖。一台顾客当了 100 美元没赎回的 PS5，标价 180 美元卖出——进货价就是当初的放款额，毛利厚且<strong>零库存风险</strong>（收多少货由放贷端自动决定）。这是收入占比最大的一块，但要明白它是放贷生意的下半场，不是独立的零售商：没有当铺放贷就没有这些便宜货源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025 全年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收入</td>
+<td>18.48 亿</td>
+<td>16.68 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 3：AFF 先租后买 / 消费分期（TTM 收入 8.18 亿，占 20%，萎缩中）</h3>
+<p>2021 年花约 12 亿美元买来的 American First Finance。模式：一个信用分很差的人去合作家具店买 1,500 美元的沙发，AFF 替他把沙发买下来租给他，每月付租金，租满 12–24 个月沙发归他——折算年化利率常超过 100%。收入分两块：租赁商品收入（TTM 5.08 亿，从 FY2024 的 7.66 亿一路下滑）+ 分期应收款利息（TTM 3.10 亿）。<strong>这块在主动收缩</strong>——公司收紧了放贷标准，宁可少做也不吃坏账。和当铺不同，这里是真的无抵押次贷，有实打实的核销，是全公司风险最高的部位。</p>
+<h3>生意 4：废旧黄金批发（TTM 收入 4.45 亿，占 11%）</h3>
+<p>没赎回的金饰攒起来熔成金块卖给冶炼厂。TTM 收入 4.45 亿，而 FY2025 全年才 2.63 亿——<strong>暴涨七成，纯粹是金价创历史新高的顺风</strong>。这门生意毛利很薄（批发价卖原料），它的真正作用是给当铺的黄金抵押品提供一个永远存在的退出通道。金价高企同时还抬高了单件金饰的放款额和零售价，所以当前利润里有一块<strong>金价红利，不是经营能力的进步</strong>。</p>
+<p>分部经营利润财报未单独披露，按整体口径：TTM 总收入 41.2 亿（同比 +21.6%），经营利润 6.64 亿（利润率 16.1%），净利润 3.88 亿。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2,195 万，只占净利润 5.7%。在美股里算非常克制，扣不扣不影响结论。</li>
+<li><strong>一次性项目</strong>：TTM 没有减值或重组费。但公司常年在做收购（TTM 现金收购花了 4.53 亿，主要是英国 H&amp;T），并购费用年年有——这属于"年年都有的一次性"，公司自己的 Non-GAAP 会把它和收购摊销加回去，我不加回。</li>
+<li><strong>资本化的支出</strong>：没有软件/内容资本化的把戏，资本开支就是开店和装修（TTM 6,690 万），另有买店铺物业 7,400 万。干净。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 1.84 亿 ÷ SBC 2,195 万 = <strong>8.4 倍，是真回购</strong>。股本一年实际减少 1.28%，另派息 7,390 万（股息率约 0.8%）。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 3.88 亿，经营现金流 6.73 亿，自由现金流 6.06 亿——<strong>现金流比利润还厚</strong>。对账：净利润 3.88 → 加折旧摊销 1.24 → 加租赁商品摊销等 3.09 → 加 SBC 0.22 → 加其他 0.67 → 减营运资产增长 4.09（主要是新放出去的当铺贷款和新购租赁商品，这是生意扩张吃掉的钱，不是利润造假）→ 经营现金流 6.73 亿。每一分对得上，利润是真现金。</li>
+<li><strong>杠杆一眼</strong>：总债务 27 亿，净债务 25.3 亿，Debt/EBITDA 2.79 倍，利息覆盖 4.8 倍——对一家放贷公司来说温和。但注意 P/TBV 高达 101 倍：账面净资产几乎全是历年收购攒下的商誉，你买的是生意网络，不是硬资产。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<p>市值 $92.3 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>92.3 ÷ 3.88</td>
+<td>24.3</td>
+<td>¥4.1</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回收购摊销和并购费（估算调整后净利约 4.3 亿）</td>
+<td>约 21.5（估算）</td>
+<td>¥4.7</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无重大真一次性项目，≈GAAP</td>
+<td><strong>24.3</strong></td>
+<td><strong>¥4.1</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>92.3 ÷ 6.06</td>
+<td>15.2</td>
+<td>¥6.6</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(92.3+25.3) ÷ 6.64</td>
+<td>17.7</td>
+<td>¥5.6</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>92.3 ÷ 平均(3.88, 3.30, 2.59)</td>
+<td>28.3</td>
+<td>¥3.5</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚约 4.1 块</strong>；按现金流口径能到 6.6 块。这 4 块里，去年通过回购+分红真正回到股东口袋的约 2.8 块，剩下的留在公司里继续开店、放贷、买同行——过去五年这些再投资换来了利润年均近 20% 的增长，钱没有乱花。要泼的冷水是三年平均口径 28.3 倍：当前利润站在金价历史新高的顺风上，废金批发收入一年翻了七成，这部分红利不该按永久持续去估。</p>
+<h2>四、一句话结论</h2>
+<p>这是一门两百年没变过、经济越差越赚钱的抵押小贷生意，账干净、现金比利润厚、回购是真的，24 倍的标价对这种质地算公道——但股价一年已涨 56%，当前利润里掺着金价红利，现在买是付合理价钱买好生意，占不到便宜；金价若回落或拉美汇率折腾，就是更好的上车点。</p>
+</div></body></html>

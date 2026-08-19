@@ -1,0 +1,227 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ESTC · Elastic（ES 搜索引擎公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ESTC</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">24.8倍是一次性税收魔术，税前亏损，扣SBC后年赚仅两千万</div><h1>ESTC · Elastic（ES 搜索引擎公司）</h1>
+<p>市值 $88.4亿 / 股价约 $85 / 软件·搜索与数据分析 / TTM 截止 2026-04-30（即 2026 财年全年）</p>
+<h2>一、它到底做几件事</h2>
+<p>Elastic 是开源搜索引擎 <strong>Elasticsearch</strong> 背后的公司。这个软件是全世界"搜索框"和"日志检索"的事实标准——你在电商网站搜"蓝色运动鞋"瞬间出结果、Uber 给你匹配附近司机、程序员在几十亿条服务器日志里两秒定位一条报错，底层跑的很多就是它。软件本体开源免费，公司靠三种方式把免费用户变成付费客户：</p>
+<h3>1. Elastic Cloud（云托管版）—— 占 48%，增长引擎</h3>
+<p>客户不想自己买服务器、装软件、半夜起来救火，就按月付钱让 Elastic 托管。具体例子：一家在线旅游网站要做机票搜索加日志监控，自建集群得雇两个专职工程师（一年 40 万美元人力）还经常宕机；改用 Elastic Cloud，按数据量和算力付费，一年付 20–50 万美元，升级、扩容、安全补丁全是 Elastic 的事。近年最大的新卖点是 <strong>AI 向量搜索</strong>：企业做"跟自己文档聊天"的 AI 应用，需要一个能按语义找资料的数据库（RAG 检索），Elasticsearch 加了向量功能后正好卡在这个位子上。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Elastic Cloud</td>
+<td>$8.37亿</td>
+<td>+21.8%</td>
+<td>48%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. 自管订阅（Other Subscription）—— 占 46%，老本行</h3>
+<p>大银行、政府、军工这类不肯把数据放别人云上的客户，自己的机房里跑 Elasticsearch，但要付订阅费买企业版功能（权限管控、机器学习告警、官方技术支持）。一家中型银行的反欺诈和日志系统，一年订阅费几十万美元。为什么非买不可：免费版没有细粒度权限和 SLA 支持，审计过不了关、出事没人兜底。这块增长慢于云（客户在逐步搬向云托管），但极其粘——搜索和日志系统嵌进业务后换掉的代价巨大。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自管订阅</td>
+<td>$7.97亿</td>
+<td>+14.4%</td>
+<td>46%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3. 专业服务 —— 占 6%，搭头</h3>
+<p>派顾问帮客户搭集群、调优、培训，按项目收费。不赚什么钱，为了让订阅卖得动。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>专业服务</td>
+<td>$1.05亿</td>
+<td>+6.2%</td>
+<td>6%</td>
+</tr>
+</tbody>
+</table></div>
+<p>订阅收入合计占 94%，毛利率 76%，收入质量本身不错。<strong>财报不拆分部利润</strong>；按整体看，这三门生意加起来经营利润是<strong>负的</strong>（见下文），云和订阅毛利高但全被销售和研发费用吃光。</p>
+<h2>二、把会计障眼法剥掉 —— 本篇重点，这家的"利润"是变出来的</h2>
+<ul>
+<li><strong>最大的障眼法：一次性税收收益撑起全部净利润。</strong> TTM 利润表是这样的：经营利润 <strong>−3170万</strong>（亏的），税前利润 <strong>−230万</strong>（还是亏的），但净利润却是 <strong>+3.68亿</strong>。魔术在"所得税"一栏：<strong>−3.70亿</strong>，即税务上倒赚了 3.7 亿。这是释放递延税资产（以前年份攒的亏损抵税额度，会计上一次性确认成利润），<strong>纯账面动作，一分钱现金都没进来</strong>。现金流量表里自己就招了：净利润 3.68 亿往经营现金流对账时,"其他经营项目"一栏 <strong>−3.89亿</strong> 把它几乎全冲掉了。单期口径按理说分不清一次性是否年年有,但这个能分清:亏损抵税额度释放一次就没了,<strong>明年不会再有 3.7 亿税收礼包</strong>。所以筛选器显示的"24.8 倍市盈率"分母是幻影。</li>
+<li><strong>股权激励（SBC）</strong>：TTM <strong>$2.98亿，占营收 17%</strong>——比经营亏损大 9 倍。也就是说公司不发股票就没法运转，员工薪酬的很大一块是印股票印出来的。股本一年<strong>增发稀释 3.43%</strong>，回购为零，回购÷SBC = <strong>0</strong>。你持股每年被无声地摊薄 3% 以上。</li>
+<li><strong>资本化支出</strong>：几乎没有（资本开支一年仅 $500万），这点干净。</li>
+<li><strong>利润 vs 现金流对账</strong>（单位百万美元）：净利润 368 → 加折旧摊销 124 → 加 SBC 298 → <strong>减一次性税收等非现金项 389</strong> → 减应收增加 87 → 加预收款增加 169 → 减其他营运资金 153 → = 经营现金流 327。看明白了：现金流里真正的正贡献是 SBC（发股票不花现金）和预收款（客户预付明年的订阅费），<strong>把 SBC 当真实成本扣掉，自由现金流 3.22亿 − 2.98亿 = 只剩约 2300万</strong>。一家 88 亿美元市值的公司，替股东真正赚的现金一年两千来万。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<p>市值 $88.4亿，净现金 $7.79亿（这点是真的，账上现金充裕）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>88.4亿 ÷ 3.68亿（含税务魔术）</td>
+<td>24.8</td>
+<td>¥4.0（虚的）</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>加回SBC和摊销后约3.1亿净利（估算）</td>
+<td>~28</td>
+<td>¥3.5（把发股票当免费）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前利润−230万，剔除3.7亿一次性税收后<strong>没有利润</strong></td>
+<td><strong>不存在</strong></td>
+<td><strong>≈¥0</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>88.4亿 ÷ 3.22亿；若再扣SBC则 88.4亿 ÷ 0.23亿</td>
+<td>27.5 / <strong>384</strong></td>
+<td>¥3.6 / <strong>¥0.26</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>EBIT 为负</td>
+<td>不适用</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>88.4亿 ÷ 1.07亿（FY24–26均值，且被税收收益抬高）</td>
+<td>82.5</td>
+<td>¥1.2</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按真实口径这家公司一年替你赚约 0 块</strong>——收进来的钱全花在销售、研发和给员工发股票上了，还要每年稀释你 3% 的股份。它真正的估值逻辑不是市盈率，是"5 倍营收买一个年增 17%、毛利 76% 的软件平台，赌它某天把利润挤出来"。这个赌未必输：营收在涨、亏损在收窄（经营利润率从 −19% 一路爬到 −2%）、AI 向量搜索是真风口。但那是成长股的赌法，跟"投 100 块每年拿回几块钱"的算法是两个世界。</p>
+<h2>四、一句话结论</h2>
+<p>产品是真硬——全球搜索和日志的事实标准，AI 检索又添一把火，账上还有 8 亿净现金；但成立十四年至今没有真实利润，24.8 倍市盈率是一次性税务收益画出来的海市蜃楼，扣掉发股票的真实成本后一年只替股东赚两千万，<strong>按利润口径它不是 24 倍，是根本没有分母</strong>——这不是便宜股，是披着低市盈率外衣混进筛选器的成长股，现在这个价买它买的全是未来的故事。</p>
+</div></body></html>

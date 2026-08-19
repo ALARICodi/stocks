@@ -1,0 +1,246 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PNR · 滨特尔（Pentair plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PNR</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">股价跌四成利润没跌，16倍近乎全额回馈股东</div><h1>PNR · 滨特尔（Pentair plc）</h1>
+<p>市值 $101 亿 / 股价 $63.55 / 行业：水处理与流体设备制造 / TTM 截止 2026-06-30</p>
+<p>先说一件事：这只股票过去 52 周跌了 39%，而同期利润几乎没动（TTM 净利 6.51 亿 vs 上一财年 6.54 亿）。市盈率从 26 倍被动压缩到 15.6 倍。全篇就是在回答一个问题：这是便宜，还是价值陷阱。</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报分三个分部：Flow（流体）、Water Solutions（水处理）、Pool（泳池）。数据页只单列了 Pool 的营收，Flow 和 Water Solutions 两块合计约 26.3 亿美元，下面按 2024 年报的分部比例拆分，<strong>标注为估算</strong>。</p>
+<h3>1. Pool 泳池设备 —— 公司的招牌和利润奶牛</h3>
+<p>美国有大约 540 万个住宅后院泳池，每个泳池的机房里都有一套设备：水泵（让水循环）、过滤器（把水滤干净）、加热器（春秋天也能游）、自动化控制盒（手机上开关灯和喷泉）、水下灯。滨特尔就是这套设备最大的牌子之一（和 Hayward、Fluidra 三分天下）。</p>
+<p>具体怎么收钱：一个亚利桑那州的房主发现泳池水泵嗡嗡响不上水了，打电话叫泳池服务商，服务商上门说"换台滨特尔 IntelliFlo 变速泵吧，省电，一年电费能省几百刀"，设备加安装收房主约 1,500–2,000 美元，服务商从经销商拿货有返点。<strong>关键在于：泳池建好了就不能不维护</strong>——水泵寿命 8–10 年、加热器 10 年上下，这个分部约七成收入来自存量泳池的维修替换，只有小部分靠新建泳池。新建随地产周期涨落，但存量替换是刚性的底盘。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Pool</th>
+<th>TTM 营收</th>
+<th>对比 FY2025 全年</th>
+<th>占总营收</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>$13.8 亿</td>
+<td>$15.6 亿（TTM 明显回落）</td>
+<td>34%</td>
+<td>~31%</td>
+<td>~$4.3 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 比 2025 财年全年少了近 1.8 亿，这就是股价跌四成的直接原因：地产低迷传导到新建泳池和高价改造，最赚钱的分部在收缩。</p>
+<h3>2. Flow 流体 —— 各种"把水从 A 抽到 B"的泵</h3>
+<p>美国独栋房子的地下室普遍装"污水坑泵"（sump pump），暴雨时把渗进地基的水抽走，坏了地下室就淹——房主叫水管工，水管工从五金批发商进一台滨特尔旗下 Myers 或 Hydromatic 牌的泵，一台三五百美元，坏了必须当天换，没人在地下室进水时比价。农村自家水井用的井泵（Sta-Rite 牌）、农用拖拉机喷洒农药系统里的泵和喷嘴（Hypro 牌）、商业楼宇的供水增压泵，都在这个分部。</p>
+<p>生意的本质是：单价不高、非买不可、渠道和牌子几十年没变，水管工只认熟悉的牌子。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Flow（估算拆分）</th>
+<th>TTM 营收</th>
+<th>占总营收</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>~$15.2 亿</td>
+<td>~38%</td>
+<td>~20%</td>
+<td>~$3.0 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3. Water Solutions 水处理 —— 滤芯耗材 + 制冰机</h3>
+<p>两块拼起来的分部。其一是 Everpure 商用滤水：麦当劳、星巴克这类连锁的每家门店，饮料机和咖啡机前面都接着滤水系统，总部签全国协议，滤芯每年必须换（不换影响口味和设备寿命），一家门店一年几百美元，乘以几万家门店——典型的耗材生意，客户换牌子的动力约等于零。其二是 Manitowoc 制冰机：2022 年花 16 亿美元买来的，酒店和快餐店后厨那台不停吐冰块的机器，一台几千到上万美元，餐饮业的标配设备。另外还有卖给房主的全屋软水机和过滤系统。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Water Solutions（估算拆分）</th>
+<th>TTM 营收</th>
+<th>占总营收</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>~$11.1 亿</td>
+<td>~28%</td>
+<td>~21%</td>
+<td>~$2.3 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注</strong>：财报只披露分部营收到 Pool 一级，Flow/Water Solutions 拆分及全部分部利润率按 2024 年报结构和整体利润率推算，是估算不是精确数。</p>
+<p>三门生意的共性：卖的都是"水路上绕不开的小设备"，单笔金额不大、坏了必须换、走专业渠道（水管工/泳池服务商/餐饮采购），品牌粘性强。整体毛利率 41.4%、经营利润率 22.8%，且还在逐年爬（2022 年才 15.4%，公司做了三年降本增效，效果是真的）。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 3,530 万，占净利润 5.4%。比例很低，工业公司的正常水平，不构成失真。</p>
+<p><strong>一次性项目</strong>：TTM 里重组和资产减值只有 210 万,可忽略。但注意 FY2025 全年有 4,910 万重组费 + 2,630 万卖资产损失——这家公司年年都在"转型降本"，重组费属于"年年都有的一次性"，好在金额占利润不到 8%，不改变大局。</p>
+<p><strong>资本化的支出</strong>：没有。制造业，研发直接费用化，资本开支一年才 7,850 万（占营收 2%），是台轻资产的印钞机。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 4.47 亿 ÷ SBC 3,530 万 = <strong>12.7 倍</strong>，这是真回购，不是抵消员工发股的表演。股本一年实缩 1.59%。加上分红 1.69 亿，TTM 合计还给股东 6.17 亿——几乎等于全年净利润（6.51 亿）。</p>
+<p><strong>利润和现金流的差</strong>：不用做对账表，因为没有差——净利润 6.51 亿、经营现金流 7.52 亿、自由现金流 6.73 亿。FCF 比净利润还多 3%，利润是真现金。路径很干净：净利润加回 1.21 亿折旧摊销和 0.35 亿 SBC，营运资金基本没吃钱，减掉 0.79 亿资本开支就是自由现金流。</p>
+<p>这是一份几乎挑不出毛病的账。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<p>市值 101.45 亿，净负债 16.7 亿，企业价值 118.2 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>101.45亿 ÷ 6.51亿</td>
+<td>15.6</td>
+<td>¥6.4</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回无形摊销和重组费，调整后净利约7.2亿（估算）</td>
+<td>~14.1</td>
+<td>¥7.1</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 一次性项目仅210万，SBC已扣，≈GAAP</td>
+<td><strong>15.6</strong></td>
+<td><strong>¥6.4</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>101.45亿 ÷ 6.73亿</td>
+<td>15.1</td>
+<td>¥6.6</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>118.2亿 ÷ 9.14亿</td>
+<td>12.9</td>
+<td>¥7.7（对全部出资人）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>101.45亿 ÷ 6.34亿（FY23–25均值）</td>
+<td>16.0</td>
+<td>¥6.3</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最值钱的一行是最后一行</strong>：当期 15.6 倍，三年平均 16.0 倍——两个数几乎一样。意思是现在的利润<strong>不是周期高点上的虚胖</strong>（对比：泳池同行在 2021 疫情宅家潮时利润翻倍过，那才是高点）。滨特尔这三年利润稳在 6.2–6.5 亿之间，跌的只有股价。</p>
+<p>大白话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 6.4 块</strong>。这 6.4 块里，约 1.7 块以分红发给你、4.4 块用来回购注销股份（你的持股比例变大），合计 6.1 块——<strong>赚的钱几乎一分不留全还给股东</strong>，因为这生意本身不需要再投入多少钱（资本开支只占营收 2%）。剩下的并购花的是另借的钱。</p>
+<p>X 未来变大还是变小？短期往下：营收 TTM 已经 -2.2%，泳池分部还在收缩，地产不回暖它好不了；2026 年利润大概率持平到微降。长期往上：七成泳池收入是存量替换（540 万个泳池不会消失），利润率还在爬坡通道里，提价能力过去五年验证过。这不是成长股，是台稳定的现金机器碰上了周期逆风。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>股价跌了四成、利润一分没跌、三年平均口径确认利润不虚、赚的钱 95% 真金白银还给股东——15.6 倍买美国泳池设备龙头加两门"坏了必须换"的水设备生意，<strong>这是便宜，不是陷阱</strong>。代价是你要忍受地产周期：买了之后一两年内它的营收大概率继续阴跌，市场情绪可能让它更便宜。但按这个价，等得起。</p>
+</div></body></html>

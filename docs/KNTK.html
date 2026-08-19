@@ -1,0 +1,251 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KNTK · Kinetik Holdings</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KNTK</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">表面19.9倍是卖管道撑的,股息3倍于FCF靠卖家当</div><h1>KNTK · Kinetik Holdings</h1>
+<p>市值 $88.6亿 / 股价约 $54.6 / 能源中游（天然气收集与处理） / TTM 截止 2026-06-30</p>
+<h2>一、它到底做几件事</h2>
+<p>Kinetik 是一家管道公司，地盘只有一块：德州西部的 <strong>Delaware 盆地</strong>（二叠纪大油田的西半边，美国页岩油产量最猛的地方）。它做两门生意，本质都是"油气从井口到市场的中间商，按量收过路费"。</p>
+<h3>生意一：井口收集与处理（Midstream Logistics）—— 占营收 99.5%</h3>
+<p>页岩油商（雪佛龙、西方石油、Diamondback 这些）在 Delaware 盆地打井，井里喷出来的除了原油还有大量伴生天然气。这些气不能就地烧掉（德州环保法规越收越紧），必须有管道接走——<strong>没有管道接气，油井就得限产甚至关井</strong>。</p>
+<p>Kinetik 干的就是这个：在盆地里铺了几千英里的收集管网，把几百口井的湿气（甲烷混着乙烷、丙烷、丁烷）接到自己的处理厂，分离成干气和天然气凝析液（NGL）分别外输，总处理能力约 20 亿立方英尺/天，是 Delaware 盆地最大的独立处理商之一。2026 年新处理厂 Kings Landing 投产，还在继续扩。</p>
+<p>怎么收钱：跟油气商签 10 年以上的长约，<strong>按处理量收固定费用</strong>，每千立方英尺收几毛美元，油价气价涨跌基本不关它的事（大部分合同是 fixed-fee）。客户为什么跑不掉：井打好了，气必须走管道，而一片井区基本只有一家的管网连过来——<strong>井口管道是天然的区域垄断</strong>，换供应商等于重新铺管子，没人干这种事。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM营收</th>
+<th>对比上一财年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>井口收集与处理</td>
+<td>$18.8亿</td>
+<td>$17.6亿（+7.0%）</td>
+<td>99.5%</td>
+</tr>
+<tr>
+<td>长输管道（表内部分）</td>
+<td>$0.35亿</td>
+<td>$0.35亿（持平）</td>
+<td>0.5%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>$18.9亿</td>
+<td>同比+14.2%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：长输管道股权（Pipeline Transportation）—— 表内营收几乎为零，真金白银在表外</h3>
+<p>气处理完了要运到墨西哥湾沿岸去卖、去出口。Kinetik 持有几条长输管道的股权：Permian Highway 天然气管道（控股权益）、Shin Oak NGL 管道（约三分之一）等。这些管道不并表，利润以"权益法投资收益"的形式出现在经营利润线以下，TTM 估算贡献约 $1.9亿（估算值：从税前利润倒推）——<strong>比表内那 0.35 亿营收大了五倍不止，这个板块的真实体量藏在报表夹缝里</strong>。</p>
+<p>2025 年它把 Gulf Coast Express 管道 16% 的股权卖了约 5 亿美元——这笔交易是理解下面所有数字的钥匙。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $6200万，占归属净利润 33%——不小，当真实成本，GAAP 已扣。</li>
+<li><strong>一次性项目（本篇核心）</strong>：<strong>TTM 净利润里含卖 GCX 管道股权的一次性收益 $4.15亿（税前）</strong>——这一笔比全年经营利润（$2.25亿）还大。而且 FY2024 也有 $0.9亿卖资产收益，"年年都有的一次性"的味道出来了。管道就那几条，卖一条少一条，这不是可持续的利润来源。</li>
+<li><strong>资本化的支出</strong>：资本开支 $4.83亿，大头是 Kings Landing 等扩建项目（成长性开支），没有软件资本化把戏。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $1.03亿 ÷ SBC $0.62亿 = 1.7 倍，看着还行——但<strong>股本一年增加了 10.35%</strong>，一边小额回购一边大额增发，净效果是实打实的稀释。</li>
+<li><strong>利润和现金流的差</strong>：这是全篇含金量最高的一张表。归属净利润 $1.85亿 vs 经营现金流 $6.40亿 vs 自由现金流只有 $1.57亿：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公司总净利润（含少数股东）</td>
+<td>550.2</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>+416.7</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>+62.0</td>
+</tr>
+<tr>
+<td><strong>－卖管道股权收益（非现金入账）</strong></td>
+<td><strong>-415.4</strong></td>
+</tr>
+<tr>
+<td>＋权益法投资等其他调整</td>
+<td>+78.4</td>
+</tr>
+<tr>
+<td>－营运资金变化</td>
+<td>-52.2</td>
+</tr>
+<tr>
+<td>＝经营现金流</td>
+<td>639.7</td>
+</tr>
+<tr>
+<td>－资本开支</td>
+<td>-482.9</td>
+</tr>
+<tr>
+<td>＝自由现金流</td>
+<td>156.8</td>
+</tr>
+</tbody>
+</table></div>
+<p>然后看它发了多少钱：<strong>TTM 现金分红 $5.16亿，是自由现金流的 3.3 倍</strong>。差额哪来的？卖 GCX 收回的 $5.04亿现金正好补上。翻译成人话：<strong>它今年发给股东的股息，三分之二是卖家当的钱，不是挣的钱</strong>。净债务 $39.7亿、Debt/EBITDA 5.8 倍、利息覆盖率 0.99——经营利润刚刚够付利息。</p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（表面）</td>
+<td>股价 ÷ EPS 2.74</td>
+<td>19.9</td>
+<td>¥5.0</td>
+</tr>
+<tr>
+<td>公司主推口径（可分配现金流，估算）</td>
+<td>市值 ÷ 约6亿DCF</td>
+<td>约15</td>
+<td>¥6.7</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>88.6亿 ÷（总净利5.5亿－税后卖资产收益3.8亿）</td>
+<td><strong>约51</strong></td>
+<td><strong>¥2.0</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>88.6亿 ÷ 1.57亿</td>
+<td>56.5</td>
+<td>¥1.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>128.2亿 ÷ 2.25亿</td>
+<td>56.9</td>
+<td>¥1.8（对整个企业）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>88.6亿 ÷ 1.66亿（FY23-25平均，各年也含卖资产收益）</td>
+<td>53.3</td>
+<td>¥1.9</td>
+</tr>
+</tbody>
+</table></div>
+<p>两点说明：公司主推的"可分配现金流"口径故意不扣成长性资本开支，而那些开支实际靠借债和增发在填，所以 15 倍那行看看就好；EV/EBIT 的 56.9 倍略有虚高，因为权益法管道的利润不在 EBIT 里（加回约 1.9 亿估算后约 31 倍）——但 31 倍对中游资产依然是贵的，同行 Targa、MPLX 的 EV/EBITDA 普遍 8–12 倍，Kinetik 是 20.5 倍。</p>
+<p>大白话：<strong>表面上这是个"19.9 倍、股息率 5.8%"的便宜收息股；剥掉卖管道的一次性收益后，你投 100 块它一年真正挣 2 块钱左右，却给你发 5.8 块——差额靠卖资产和借新债</strong>。5.8% 的股息率是真的，但发钱的方式不可持续：要么未来利润真的大涨（Kings Landing 投产、二叠纪气量继续增长，远期市盈率 35 倍说明市场也在赌这个），要么某天减分红。</p>
+<h2>四、一句话结论</h2>
+<p>资产本身是好东西——井口垄断、十年长约、客户跑不掉；但财务包装是坏东西——表面 19.9 倍是卖管道撑出来的，真实盈利口径 50 倍上下，杠杆 5.8 倍，利息刚够付，股息靠变卖家当维持，还一边发股一边稀释你 10%。这是典型的"<strong>统计上便宜、商业上可疑</strong>"：想收 5.8% 的息，先想清楚这息是从你自己本金里发出来的。不值这个价，绕开。</p>
+</div></body></html>
