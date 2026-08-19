@@ -1,0 +1,423 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OSIS · OSI 系统（OSI Systems, Inc.，安检 X 光机与光电制造）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OSIS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">五年赚6.4亿利润只收回2.6亿现金，全埋在应收账款里，还借债7.4亿做回购</div><h1>OSIS · OSI 系统（OSI Systems, Inc.，安检 X 光机与光电制造）</h1>
+<p>市值 36.05 亿美元 ｜ 股价 218.73 美元 ｜ 行业：电子科技 / 安防设备 ｜ TTM 截止 2026 年 3 月 31 日（财年结束于每年 6 月 30 日）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>OSI 做三件事，一件在赚钱、一件在打工、一件在慢慢死掉。</p>
+<h3>生意一：Security Division 安检分部 —— TTM 营收 12.75 亿，占 70.6%</h3>
+<p>这是公司的心脏。旗下两个牌子：<strong>Rapiscan Systems</strong> 和 <strong>AS&amp;E</strong>（American Science &amp; Engineering，2016 年买来的）。做的是<strong>用 X 光和伽马射线看穿东西</strong>。</p>
+<p><strong>它卖三类东西，价格差三个数量级，要分开讲：</strong></p>
+<p><strong>第一类：机场检查口的行李机。</strong> 你在机场把背包放上传送带、过一个黑色隧道的那台机器，很可能就是 Rapiscan。基础款双能量 X 光机（620DV 一类）一台约 <strong>8 万–15 万美元</strong>；新一代 CT 机（能像医院 CT 那样把箱子扫成三维、旅客不用再掏出笔记本电脑）一台约 <strong>25 万–35 万美元</strong>。买家是美国运输安全管理局（TSA）、欧洲各国机场、中东机场，一签就是几百台的框架合同，分几年交付。这门生意的护城河是<strong>认证</strong>：一台机器要通过 TSA 和欧盟 ECAC 的检测认证，要几年时间和几千万美元，全世界能过认证的公司不超过六七家（Smiths Detection、Leidos、Nuctech、Analogic 和 OSI）。政府不会随便换供应商。</p>
+<p><strong>第二类：口岸的集装箱扫描系统。</strong> 这个才是大钱。一台车载式或龙门式的高能 X 光集装箱检查系统——货车整车开进去，几十秒扫出一张能看见货物轮廓的图，海关据此判断有没有藏毒品、武器、偷渡客——<strong>一套 200 万到 500 万美元</strong>。买家是各国海关和边防：美墨边境、沙特、阿联酋、印度、拉美国家。一个大合同动辄一两亿美元。</p>
+<p><strong>第三类，也是理解这家公司财务的关键：交钥匙服务（turnkey）。</strong> OSI 不只是卖机器，它还整包承接一个国家某些口岸的安检运营。典型模式是：<strong>OSI 自己掏钱买设备、自己装到口岸、自己雇人操作和维护，政府按每扫描一个集装箱付费、或者按年付服务费，合同期 5 到 10 年。</strong> 墨西哥政府的边境扫描项目、阿尔巴尼亚全国口岸、波多黎各的货运检查，都是这种。</p>
+<p>这个模式在商业上很聪明——它把一次性的设备销售变成了十年的经常性收入，客户黏性极强。<strong>但它在财务上是个吞金兽：钱先由 OSI 垫出去，收入按合同期确认，现金要五到十年才慢慢回来。</strong> 这直接造成了第二部分要讲的、这家公司最严重的问题。</p>
+<h3>生意二：Optoelectronics and Manufacturing 光电与制造分部 —— TTM 营收 4.457 亿，占 24.7%</h3>
+<p>两块：一是自己做光电元器件（光电二极管、光耦合器、闪烁探测器——就是把 X 光转成电信号的那种感光元件）；二是<strong>电子代工（EMS）</strong>，替别人贴片、组装电路板和整机，客户在医疗设备、汽车、工业自动化领域。</p>
+<p>这是<strong>给别人打工的生意</strong>：毛利率低、没什么定价权、靠规模和良率吃饭。而且这块超过一半的产出是卖给自己的另外两个分部（所以合并报表里有 -7,462 万的内部抵销）——它存在的一大理由是让安检分部的核心探测器不受制于外部供应商。</p>
+<h3>生意三：Healthcare 医疗分部（Spacelabs Healthcare）—— TTM 营收 1.607 亿，占 8.9%，<strong>在萎缩</strong></h3>
+<p>医院病房床头那台显示心率、血压、血氧的监护仪，还有 24 小时动态心电图（Holter）设备。买家是医院和诊所。</p>
+<p>这块从 2021 财年的 2.123 亿一路掉到 TTM 的 1.607 亿，<strong>五年缩了 24%</strong>。原因不复杂：对手是飞利浦、GE 医疗和迈瑞，OSI 在这个领域既没有规模也没有渠道。公司几年前尝试过把这块卖掉但没成。</p>
+<h3>财务拆解</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>对比 2025 财年</th>
+<th>占比</th>
+<th>经营利润率（<strong>估算</strong>）</th>
+<th>贡献利润（<strong>估算</strong>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Security 安检</td>
+<td><strong>1,275</strong></td>
+<td>1,196（+6.6%）</td>
+<td>70.6%</td>
+<td>约 15.5%</td>
+<td>约 1.98 亿</td>
+</tr>
+<tr>
+<td>Optoelectronics 光电与制造</td>
+<td><strong>445.68</strong></td>
+<td>412.07（+8.2%）</td>
+<td>24.7%</td>
+<td>约 9%</td>
+<td>约 0.40 亿</td>
+</tr>
+<tr>
+<td>Healthcare 医疗</td>
+<td><strong>160.66</strong></td>
+<td>168.36（<strong>-4.6%</strong>）</td>
+<td>8.9%</td>
+<td>约 2%</td>
+<td>约 0.03 亿</td>
+</tr>
+<tr>
+<td>内部抵销与总部费用</td>
+<td>-74.62</td>
+<td>-63.44</td>
+<td>-4.1%</td>
+<td>—</td>
+<td>约 -0.16 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,807</strong></td>
+<td>1,713（<strong>+6.98%</strong> 同比）</td>
+<td>100%</td>
+<td><strong>12.46%</strong></td>
+<td><strong>2.2506 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>营收数字全部来自财报。<strong>分部经营利润率财报没有披露，上表是按整体经营利润 2.2506 亿反推的估算</strong>，不是真实数字。另外 TTM 截止 3 月 31 日、可比列是截止 6 月 30 日的 2025 财年，两者错开九个月，分部增速只能当方向读；总营收的 +6.98% 是网站给的真同比。</p>
+</blockquote>
+<p>整体毛利率 <strong>32.83%</strong>、经营利润率 <strong>12.46%</strong>。这是典型的硬件公司数字——不难看，但也说明这不是一门轻资产、高溢价的生意。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节只有一个主题，而这个主题足以决定要不要买这只股票：这家公司的利润，五年来基本没有变成过现金。</strong></p>
+<p><strong>股权激励（SBC）：2,930 万美元，占 TTM 净利润 1.5222 亿的 19.2%。</strong>
+比例偏高但不离谱（硬件公司常见区间 10%–25%）。它已经在 GAAP 里扣除了，<strong>不加回</strong>——员工拿走的每一股都真实稀释了你。</p>
+<p><strong>一次性项目：TTM 没有。</strong>
+资产减值和重组费用 TTM 为 0；上一次有意义的一次性项目是 2022 财年卖资产的 2,737 万收益，早就滚出窗口了。TTM 的利润表是干净的，没有需要剔除的噪音。<strong>问题不在利润表，在现金流量表。</strong></p>
+<p><strong>资本化的支出：有，而且它藏在"资本开支"之外。</strong>
+投资活动里有一行"购买无形资产 <strong>-1,785 万</strong>"，五年分别是 1,785 / 1,767 / 1,733 / 1,644 / 1,557 万——极其稳定。这是资本化的软件和产品开发支出。它是<strong>每年都要花的真金白银</strong>，但计算"自由现金流"时通常不算进资本开支里。所以网站给的自由现金流 6,697 万是被高估的，<strong>真实的自由现金流是 6,697 万 − 1,785 万 = 4,912 万。</strong></p>
+<p><strong>回购与稀释：账面看是大手笔回购，但股本反而涨了。</strong></p>
+<p>TTM 回购 <strong>1.8341 亿美元</strong>（占市值 5.1%），发行新股（期权行权）+777 万，净回购约 1.756 亿。<strong>回购 ÷ SBC = 1.8341 ÷ 0.293 = 6.3 倍</strong>——按常规标准，这是一笔"真回购"。</p>
+<p>但股本数据对不上：网站显示流通股 <strong>1,648 万股，同比 +1.32%</strong>（环比 -1.02%）。回购了 5.1% 的市值，股本却在涨。</p>
+<p>更直接的证据在每股收益里：净利润 1.5222 亿 ÷ 每股收益 8.73 美元 = <strong>摊薄股本 1,744 万股，比基本股本 1,648 万股多 5.8%</strong>。<strong>存在一批规模不小的稀释性证券（期权、限制性股票，以及可能的可转债）在持续抵消回购。</strong> 我只能从这四个财报页看到结果，看不到具体是哪些工具，但结果是明确的：<strong>你花了 1.83 亿去回购，每股拿到的东西没有相应变多。</strong></p>
+<p><strong>没有分红。</strong> OSI 从不派息（网站显示除息日 n/a）。所以股东能拿到的全部现金回报，就是上面这笔效果存疑的回购。</p>
+<p><strong>利润和现金流的差：差得触目惊心，必须做逐项对账表。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td><strong>152.22</strong></td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>40.30</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>2.62</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>29.30</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>4.40</td>
+</tr>
+<tr>
+<td>－ 其他经营项</td>
+<td>-7.96</td>
+</tr>
+<tr>
+<td><strong>＝ 营运资金变化前小计</strong></td>
+<td><strong>220.88</strong></td>
+</tr>
+<tr>
+<td><strong>－ 应收账款增加</strong></td>
+<td><strong>-159.03</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+27.11</td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>+6.74</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+2.24</td>
+</tr>
+<tr>
+<td>－ 其他经营性资产变化</td>
+<td>-3.58</td>
+</tr>
+<tr>
+<td>　　营运资金变化合计</td>
+<td><strong>-126.52</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>94.36</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-27.39</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流（报表口径）</strong></td>
+<td><strong>66.97</strong></td>
+</tr>
+<tr>
+<td>－ 资本化的软件与开发支出</td>
+<td>-17.85</td>
+</tr>
+<tr>
+<td><strong>＝ 真实自由现金流</strong></td>
+<td><strong>49.12</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一句话看懂这张表：赚了 1.52 亿，其中 1.59 亿变成了客户欠的钱，最后只剩 4,912 万是真现金。</strong></p>
+<p>而且<strong>这不是一年的意外，这是五年的常态</strong>。把五年摊开看：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>净利润</th>
+<th>经营现金流</th>
+<th>应收账款变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM（截止 2026.3）</td>
+<td>152.22</td>
+<td>94.36</td>
+<td><strong>-159.03</strong></td>
+</tr>
+<tr>
+<td>2025（截止 2025.6）</td>
+<td>149.64</td>
+<td>97.59</td>
+<td><strong>-164.72</strong></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>128.15</td>
+<td><strong>-87.50</strong></td>
+<td><strong>-293.64</strong></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>91.78</td>
+<td>94.81</td>
+<td>-66.09</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>115.35</td>
+<td>63.81</td>
+<td>-13.71</td>
+</tr>
+<tr>
+<td><strong>五年合计</strong></td>
+<td><strong>637.14</strong></td>
+<td><strong>263.07</strong></td>
+<td><strong>-697.19</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年赚了 6.37 亿美元的会计利润，只收回 2.63 亿的经营现金（41%），同时应收账款涨了 6.97 亿——比五年利润总和还多。</strong></p>
+<p>2024 财年更极端：那一年报表上赚了 1.28 亿，经营现金流是<strong>负的 8,750 万</strong>，应收账款一年涨了 2.94 亿。</p>
+<p><strong>这些钱去哪儿了？</strong></p>
+<p>回到第一部分讲的"交钥匙服务"模式。OSI 先垫钱建口岸安检系统，收入按合同进度确认成利润，现金按合同约定分五到十年收回来。会计上完全合规——这些是各国政府和大型海关的合同应收款，不是收不回来的坏账。<strong>但它意味着：OSI 的利润是一张需要等十年才能兑现的欠条。</strong></p>
+<p><strong>这个洞是靠借钱填上的。</strong> 总债务从 2021 财年的 3.011 亿，涨到现在的 <strong>10.45 亿</strong>，五年 <strong>+7.44 亿</strong>。同期公司还花了 4.876 亿回购股票（五年合计）。</p>
+<p>也就是说：<strong>五年里公司产生的真实自由现金流大约只有 7,400 万（1.59 亿报表自由现金流减去 8,486 万资本化开发支出），却花了 4.88 亿回购，差额靠借了 7.44 亿债补上。</strong> 净负债从 2.20 亿升到 <strong>7.00 亿</strong>，净负债/EBITDA 从 1.30 倍升到 <strong>2.64 倍</strong>。</p>
+<p>这不是欺诈，也不是造假——每一分钱都在报表上写得清清楚楚。但它是一门<strong>越长大越缺现金</strong>的生意，而管理层选择用借债去做回购，而不是用现金流去支撑增长。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>股价 218.73 ÷ 摊薄每股收益 8.73</td>
+<td><strong>25.0 倍</strong></td>
+<td><strong>4.00 元</strong></td>
+</tr>
+<tr>
+<td>（按基本股本口径的对照）</td>
+<td>36.05 亿 ÷ 净利 1.5222 亿</td>
+<td>23.7 倍</td>
+<td>4.22 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这四个财报页里没有公司的调整后 EPS，不编</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无重大一次性项目；SBC 已按 GAAP 扣除不加回</td>
+<td><strong>25.0 倍</strong></td>
+<td><strong>4.00 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表原值）</td>
+<td>36.05 亿 ÷ 0.6697 亿</td>
+<td><strong>53.8 倍</strong></td>
+<td>1.86 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（再扣资本化开发支出）</strong></td>
+<td>36.05 亿 ÷ 0.4912 亿</td>
+<td><strong>73.4 倍</strong></td>
+<td><strong>1.36 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>43.05 亿 ÷ 2.2506 亿</td>
+<td>19.1 倍</td>
+<td>5.23 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>36.05 亿 ÷（1.5222＋1.4964＋1.2815）/3 = 1.4334 亿</td>
+<td><strong>25.2 倍</strong></td>
+<td><strong>3.97 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意"基本口径 23.7 倍"和"摊薄口径 25.0 倍"之间那 1.3 倍的差。</strong> 那 1.3 倍就是稀释——你以为自己按 23.7 倍买入，实际上因为期权和其他稀释性证券的存在，真实成本是 25.0 倍。这里用摊薄口径。</p>
+<p><strong>这张表的核心是两个数字之间的 3 倍鸿沟：</strong></p>
+<ul>
+<li><strong>利润口径：25.0 倍，投 100 块一年赚 4 元。</strong></li>
+<li><strong>真实现金口径：73.4 倍，投 100 块一年产生 1.36 元现金。</strong></li>
+</ul>
+<p>差了 2.9 倍。三年平均利润口径 25.2 倍，和当期的 25.0 倍几乎一样——<strong>说明现在这个利润不是周期高点，是常态</strong>。但这也意味着：现金转化差也不是暂时的，是常态。</p>
+<p>EV/EBIT 19.1 倍，比市盈率 25 倍看起来友好一些，但要记得 EV 里已经包含了 7 亿净负债，而这 7 亿是过去五年借出来填现金流缺口的——它还在往上走。</p>
+<h3>所以，你投 100 块进去，一年公司替你赚多少？</h3>
+<p><strong>会计上 4.00 元；真实现金只有 1.36 元。</strong></p>
+<p>而这 1.36 元里，你能拿到多少？</p>
+<ul>
+<li><strong>分红：0 元。</strong> 公司不派息。</li>
+<li><strong>回购：TTM 花了 1.834 亿，占市值 5.1%——但股本同比还涨了 1.32%，摊薄股本比基本股本多 5.8%。</strong> 这笔钱的效果被稀释吃掉了相当一部分。</li>
+<li><strong>更要命的是，回购的钱不是赚来的，是借来的。</strong> TTM 净增债务 3.707 亿（借入 6.631 亿、偿还 2.924 亿），同期回购 1.834 亿。<strong>公司在借债给股东做回购，同时经营本身在往应收账款里倒钱。</strong></li>
+</ul>
+<p><strong>这个 4 元未来会变大还是变小？</strong></p>
+<ul>
+<li><strong>变大的理由</strong>：① 安检分部增长 6.6%，全球口岸和机场的更新周期还在（美国 TSA 的 CT 机替换、边境安全预算），在手订单积压量是公司的招牌；② 市场共识很乐观——前瞻市盈率 19.74 倍对应下一年每股收益约 11.08 美元，比 TTM 的 8.73 高 <strong>27%</strong>；③ 光电分部增长 8.2%，代工利用率在改善。</li>
+<li><strong>变小的理由</strong>：① 医疗分部五年缩水 24%，还没止血；② 应收账款黑洞如果继续以每年 1.5 亿以上的速度扩大，净负债会在两三年内突破 EBITDA 的 3.5 倍，届时借债回购的游戏必须停；③ 交钥匙合同集中在少数几个国家的政府手里，政权更替、预算削减或合同重谈都会直接冲击营收和已确认的应收款；④ 利息支出已经在吃利润（利息保障倍数 7.67 倍，三年前是 12 倍以上）。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是真的，但这个价格没有为"利润五年不变现金"这件事给出任何补偿——25 倍买一家真实自由现金流只有净利润三分之一的公司，不值。</strong></p>
+<p>先说好的：安检这门生意有真护城河（认证壁垒、政府客户黏性、十年期交钥匙合同），安检分部五年营收从 6.33 亿涨到 12.75 亿、翻了一倍，这是实打实的增长，不是并购堆出来的。ROE 17.2%，报表干净，没有一次性项目要剔。</p>
+<p>但把现金流量表摊开，故事完全变了：<strong>五年赚了 6.37 亿利润，只收回 2.63 亿经营现金，应收账款涨了 6.97 亿——利润全都变成了各国政府未来十年才会付的欠条。</strong> 同期公司借了 7.44 亿债，花了 4.88 亿回购股票，净负债从 2.2 亿涨到 7.0 亿，而股本因为稀释反而增加了。</p>
+<p><strong>这是一家用债务给股东制造"股东回报"假象、同时把真实现金埋进应收账款里的公司。</strong> 它不违法、不造假，模式甚至有商业逻辑，但它需要一个折价来补偿这个风险——而 25 倍市盈率、73 倍真实自由现金流、19 倍 EV/EBIT，给的是溢价。</p>
+<p>结论：<strong>没有便宜可占，风险也没有被定价。</strong> 如果一定要关注，唯一值得盯的指标是<strong>经营现金流 ÷ 净利润这个比值什么时候能连续两年回到 70% 以上</strong>——那意味着早年垫出去的交钥匙合同开始回款了。在那之前，这个价格不值得为它冒这个险。</p>
+</div></body></html>

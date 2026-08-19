@@ -1,0 +1,367 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KAI · 卡丹特（Kadant Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KAI</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">两年半砸掉四分之一市值买公司，营收+20%净利-5.5%，ROIC刚好等于资金成本</div><h1>KAI · 卡丹特（Kadant Inc.）</h1>
+<p><strong>市值</strong> 36.6 亿美元 · <strong>股价</strong> $309.64（2026-08-18 收盘）· <strong>行业</strong> 工业制造（造纸/林木/回收设备）· <strong>TTM 截止</strong> 2026 年 7 月 4 日</p>
+<blockquote>
+<p>全篇数字一律是 TTM 口径（最近四个季度滚动，截至 2026-07-04），除非另行标注。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Kadant 是一家你一辈子不会在货架上见到、但每天用的纸巾和纸箱都经过它设备的公司。它做三件事，都围绕同一个场景：<strong>把树皮、废纸、木片这类脏东西，变成能进造纸机的浆料，并保证机器不停机。</strong></p>
+<h3>生意一：流体控制（Flow Control）——靠"零件磨损"吃饭</h3>
+<p>造纸机是一台一百多米长、时速一百公里的巨型机器，一卷纸从湿浆到成品要经过几十个滚筒。这些滚筒内部要通高压蒸汽把纸烘干，蒸汽从哪儿进、冷凝水从哪儿出？靠一个叫<strong>旋转接头（rotary joint）</strong>的东西——一头固定接管道，一头跟着滚筒每分钟转几百圈，中间靠石墨密封环压住，还不能漏蒸汽。这东西是消耗品，密封环几个月到一两年就磨穿，必须换。</p>
+<p>还有<strong>刮刀系统（doctor blade）</strong>：滚筒表面会粘上纸浆和胶，得用一把横跨整个机幅的刮刀贴着滚筒不停刮。刮刀是碳纤维或陶瓷的，属于纯耗材，一台机器一年吃掉几十上百片。</p>
+<p>Kadant 卖的就是这些。生意模式是：一家造纸厂上一条新线时，Kadant 卖一整套流体系统，可能一两百万美元；然后接下来二十年，这家厂每年要回来买几十万美元的密封环、刮刀片、喷淋头。<strong>客户不能不买</strong>——一片二百美元的刮刀失效，会让一条日产值几十万美元的产线停机半天。这就是典型的"卖打印机不赚钱，卖墨盒赚钱"，而且换刀这件事没法自己 DIY，规格是跟机器绑死的。</p>
+<p>TTM 营收 3.93 亿美元，占全公司 34%。这块是三门生意里<strong>最像年金</strong>的一块——增长慢（对比上一完整财年只有 +2.8%），但客户几乎不会跑。</p>
+<h3>生意二：工业加工（Industrial Processing）——卖"大铁疙瘩"</h3>
+<p>这块是真正的重型设备。两条线：</p>
+<p><strong>林木处理线。</strong> 一棵树砍下来送到锯木厂，第一步得剥皮——树皮进不了纸浆，会让纸发黑。Kadant 的<strong>环式剥皮机（ring debarker）</strong>就是一个大铁环，树干从中间穿过去，环上的刀片把树皮刮下来，一根 10 米长的原木几秒钟过完。再往后是<strong>削片机（chipper）</strong>，把去皮的原木切成指甲盖大小的木片，一台大型削片机卖三五百万美元，一装二十年。还有<strong>刨片机（strander）</strong>，给做定向刨花板（OSB，就是美国盖房子墙面用的那种板材）的厂子把木头削成长条刨花。</p>
+<p><strong>废纸回收线。</strong> 你扔进回收桶的纸箱，到了浆厂要先泡成糊，然后把里面混的塑料带、订书钉、胶带、油墨全挑出来。Kadant 卖整条这个流程的设备：碎浆机、筛选机、除渣器、脱墨系统。一条完整的废纸制浆线报价能到两三千万美元。</p>
+<p>生意模式跟第一块完全相反：<strong>这是项目型的，靠客户的资本开支周期活。</strong> 全球造纸厂什么时候扩产、锯木厂什么时候换设备，Kadant 说了不算。所以这块波动最大——TTM 营收 4.91 亿美元（占 43%），比上一完整财年跳了 <strong>+19.9%</strong>，是这一年全公司增长的主要来源；但这个数里包含新收购来的公司，不是纯内生。</p>
+<h3>生意三：物料搬运（Material Handling）——传送带和打包机</h3>
+<p>把散装的东西从 A 点运到 B 点：振动输送机、斗式提升机、气力输送系统。客户不只是造纸厂，还包括矿山、水泥、粮食加工。另外一块是<strong>打包线用的捆扎丝</strong>——废纸压成一立方米的方块后要用钢丝捆住，那根钢丝以及送丝的液压设备是 Kadant 的，钢丝是纯耗材、按吨卖。</p>
+<p>TTM 营收 2.68 亿美元（占 23%），对比上一完整财年 +3.1%。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比上一完整财年</th>
+<th>占比</th>
+<th>经营利润率（<strong>估算</strong>）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>流体控制 Flow Control</td>
+<td>3.934 亿</td>
+<td>+2.8%</td>
+<td>34.1%</td>
+<td>~25%</td>
+<td>~0.98 亿</td>
+</tr>
+<tr>
+<td>工业加工 Industrial Processing</td>
+<td>4.909 亿</td>
+<td>+19.9%</td>
+<td>42.6%</td>
+<td>~16%</td>
+<td>~0.79 亿</td>
+</tr>
+<tr>
+<td>物料搬运 Material Handling</td>
+<td>2.679 亿</td>
+<td>+3.1%</td>
+<td>23.3%</td>
+<td>~15%</td>
+<td>~0.40 亿</td>
+</tr>
+<tr>
+<td>减：总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−0.34 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>11.52 亿</strong></td>
+<td><strong>+12.5%</strong></td>
+<td>100%</td>
+<td><strong>15.90%（实际）</strong></td>
+<td><strong>1.832 亿（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须说明两点。</strong> 第一，Kadant 在财报网页上只披露到分部营收，<strong>不披露分部利润</strong>，上表利润率是我按"耗材占比高的毛利高、整机项目毛利低"这个行业常识倒推的估算，加总后能对上真实的 1.832 亿经营利润，但单项可能有几个点的误差，不要当精确数字用。第二，"对比上一完整财年"不是严格的同比——Kadant 的 FY2025 是一个截止 2026 年 1 月 3 日的 53 周财年，跟截止 2026 年 7 月 4 日的 TTM 有半年重叠。全公司口径的真实同比是 +12.5%。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：1,122 万美元，占净利润 10.2%。</strong> 规模不大，在工业股里算克制的。我按 GAAP 原样当成本扣着，不加回——公司发给员工的股票是从你的股份里稀释出来的，那是真钱。</p>
+<p><strong>一次性项目：几乎没有。</strong> TTM 资产减值和重组费用只有 29 万美元，可以忽略。这一点值得表扬：Kadant 不像很多工业股那样年年"一次性重组"。</p>
+<p><strong>资本化的支出：没有异常。</strong> 没有软件开发费或内容费资本化的痕迹，资本开支 2,345 万美元、只占营收 2%，是一家轻资产的组装型制造商（大部分零件外包，自己做设计、装配和售后）。</p>
+<p><strong>折旧摊销的暴涨值得单独说。</strong> 折旧摊销从 FY2023 的 3,330 万跳到 TTM 的 5,733 万，两年半涨了 72%，而同期资本开支反而从 3,185 万降到 2,345 万。<strong>这多出来的两千多万几乎全是收购来的无形资产摊销</strong>——客户关系、技术、商标之类，是 Kadant 这几年买公司买出来的账面成本。有人会说这是"非现金费用应该加回"，但请注意：这笔钱以前是<strong>真金白银付出去买的</strong>，摊销只是把当年那笔现金支出分期记账而已，加回等于假装收购不花钱。</p>
+<p><strong>回购与稀释：这是全篇最难看的一项。</strong> TTM 回购 497 万美元，同期 SBC 是 1,122 万美元，<strong>比值只有 0.44</strong>——回购金额连员工发股的一半都覆盖不了。结果就是股本不但没减，反而<strong>增加了 0.19%</strong>。所谓回购在这里纯粹是税务上的代扣代缴，不是回馈股东。</p>
+<p><strong>利润和现金流的差：现金流质量是好的。</strong> 净利润 1.097 亿，经营现金流 1.834 亿，多出 7,370 万，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>109.72</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+57.33</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+11.22</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>+0.29</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+0.87</td>
+</tr>
+<tr>
+<td>＋ 其他经营项（含递延所得税）</td>
+<td>+12.03</td>
+</tr>
+<tr>
+<td>＋ 应收账款回收</td>
+<td>+11.46</td>
+</tr>
+<tr>
+<td>＋ 存货下降</td>
+<td>+3.04</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−6.67</td>
+</tr>
+<tr>
+<td>− 预收款（合同负债）减少</td>
+<td>−7.49</td>
+</tr>
+<tr>
+<td>− 其他经营性资产净增</td>
+<td>−9.90</td>
+</tr>
+<tr>
+<td>＋ 未单列的零星项</td>
+<td>+1.54</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>183.44</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>结论：利润是真现金，没有靠应收账款堆出来的假利润（应收还回收了 1,146 万）。<strong>唯一的黄灯是预收款减少 749 万</strong>——预收款是客户为在建订单预付的钱，它下降说明在手订单的现金前置在往回走，是需求走弱的领先信号，但幅度不大。</p>
+<p><strong>真正的问题不在会计，在资本配置。</strong> 看 TTM 这一年的钱去哪了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>现金流向</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>+183.44</td>
+</tr>
+<tr>
+<td>资本开支</td>
+<td>−23.45</td>
+</tr>
+<tr>
+<td><strong>收购公司</strong></td>
+<td><strong>−361.75</strong></td>
+</tr>
+<tr>
+<td>净借债</td>
+<td>+266.27</td>
+</tr>
+<tr>
+<td>分红</td>
+<td>−16.27</td>
+</tr>
+<tr>
+<td>回购</td>
+<td>−4.97</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>−2.59</td>
+</tr>
+<tr>
+<td>汇兑</td>
+<td>−2.30</td>
+</tr>
+<tr>
+<td><strong>= 现金净增</strong></td>
+<td><strong>+40.44</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>一年内花 3.62 亿美元买公司（<strong>接近市值的 10%</strong>），钱从哪来？借的 2.66 亿。往前看：FY2024 收购花 3.00 亿，FY2025 花 1.90 亿。三个财年口径有重叠（TTM 与 FY2025 下半年重合），保守估计<strong>这两年半在收购上砸下去 7 亿到 8.5 亿美元现金</strong>，相当于当前市值的 <strong>19%–23%</strong>。</p>
+<p>代价是资产负债表：净负债从 FY2023 末的 3,178 万，扩到现在的 <strong>3.761 亿</strong>。债务/EBITDA 2.03 倍，利息保障 10 倍——还不危险，但已经不是原来那家净负债几乎为零的公司了。</p>
+<p>买回来什么？营收从 FY2023 的 9.577 亿涨到 TTM 的 11.52 亿，<strong>+20.3%</strong>；同期净利润从 1.161 亿变成 <strong>1.097 亿，跌了 5.5%</strong>。自由现金流从 1.337 亿到 1.600 亿，涨了 2,630 万。也就是说：<strong>砸了 7–8.5 亿现金 + 3.4 亿新增负债，换来每年多 2,630 万自由现金流。</strong> 就算全额算，这笔投资的现金回报率约 3%，还不如买国债。当然最近一年收的那 3.6 亿还没完整贡献一年，这个算法对公司偏苛刻，但即便只看已经消化完的 FY2024 那 3 亿，利润也没起来。</p>
+<p>这个判断有一个客观印证：<strong>ROIC 9.76%，WACC 9.73%。</strong> 投入资本回报率刚好等于资金成本——教科书意义上的"增长不创造任何价值"。规模在涨，股东价值原地踏步。</p>
+<p>还有一个细节：<strong>P/TBV（市净率，有形账面）450 倍。</strong> 意思是这家公司账上 10.3 亿的净资产，扣掉商誉和无形资产之后几乎归零——所有的账面价值都是买来的商誉。这不必然是坏事（好的工业分销商都这样），但它说明一旦某笔收购减值，账面权益会瞬间蒸发一大块。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>36.57 亿 ÷ 1.097 亿</td>
+<td><strong>33.3 倍</strong></td>
+<td><strong>3.00 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回收购无形资产摊销约 3,300 万税前、税后约 2,340 万 → 调整后净利 ≈1.331 亿</td>
+<td>27.5 倍</td>
+<td>3.64 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无重大一次性项目，SBC 按 GAAP 扣除不加回</td>
+<td><strong>33.4 倍</strong></td>
+<td><strong>2.99 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>36.57 亿 ÷ 1.600 亿</td>
+<td>22.9 倍</td>
+<td>4.37 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>40.3 亿 ÷ 1.832 亿</td>
+<td>22.0 倍</td>
+<td>4.55 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>36.57 亿 ÷ [(1.097+1.020+1.116)/3=1.078 亿]</td>
+<td><strong>33.9 倍</strong></td>
+<td><strong>2.95 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意这张表里几乎没有分歧。</strong> GAAP 33.3 倍、真实口径 33.4 倍、三年平均 33.9 倍——三个数字挤在一起，说明 Kadant 的账<strong>没有障眼法可剥</strong>，当期利润既不是虚高的高点，也不是被一次性费用压低的低点。这在任务1做过的七百多家里算少见的干净。这也顺带说明：<strong>它贵，不是因为会计，就是因为贵。</strong></p>
+<p>那个 27.5 倍的 Non-GAAP 是公司自己会拿出来说的口径，别信。加回的是收购摊销，而收购的现金是真花了的。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 2.99 元。</strong></p>
+<p>这 2.99 元里，有多少回到你口袋？TTM 分红 1,627 万 + 回购 497 万 = 2,124 万，除以 36.57 亿市值 = <strong>0.58%</strong>。也就是说 100 块里只有 <strong>0.58 元</strong>是现金分给你的，剩下 2.41 元全部留在公司里。留下来干什么了？看现金流向表就知道——<strong>去买公司了</strong>，而且是加着杠杆买的。</p>
+<p>这个 2.99 元未来会变大还是变小？两股力量：</p>
+<ul>
+<li><strong>往上的：</strong> 最近一年确实在提速。TTM 营收 +12.5%、经营利润 1.832 亿已经超过 FY2025 的 1.645 亿，工业加工分部 +19.9%。市场预期的远期市盈率是 24.4 倍，隐含明年 EPS 从 9.30 涨到约 12.7 元、<strong>+37%</strong>。如果收购整合真的开始出利润，这个数能兑现。</li>
+<li><strong>往下的：</strong> 过去四年的记录是 EPS 从 FY2022 的 10.35 一路跌到 9.30，<strong>四年负增长</strong>；预收款在减少；债务/EBITDA 已经到 2 倍，继续靠借钱买增长的空间在收窄；而 ROIC=WACC 意味着即便买成了，也不创造价值。造纸和林木都是彻底的周期行业，客户资本开支说停就停。</li>
+</ul>
+<p>一句话概括这个矛盾：<strong>你付的是 33 倍（成长股的价），拿到的是四年零增长的历史（价值股的现实），赌的是那个 +37% 的远期预期能兑现。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>Kadant 的生意本身没问题——刮刀和密封环这种"客户不敢不买"的耗材是好东西，账做得干净、现金流是真的、没有一次性花招，这在中小盘工业股里已经跑赢大多数同行；但<strong>它用两年半、接近四分之一市值的现金加两倍杠杆去买增长，买来的是营收 +20% 和净利润 −5.5%，ROIC 刚好等于资金成本，现金分给股东的只有 0.58%，而你要为这一切付 33 倍市盈率。</strong> 一家四年 EPS 负增长的公司卖成长股的价钱，这个价没有便宜可占，要买也该等它先把收购整合出利润、或者等造纸周期把股价再砸下去一截。</p>
+<hr />
+<p><em>分析日期：2026-08-19 · 数据来源：stockanalysis.com（利润表 / 现金流量表 / 统计页），TTM 截止 2026-07-04</em></p>
+</div></body></html>

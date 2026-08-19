@@ -1,0 +1,373 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>COCO · 唯他可可（The Vita Coco Company, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">COCO</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">ROIC69%的轻资产好生意，但41%毛利率是运费送的，正常化后42倍、三年平均47倍</div><h1>COCO · 唯他可可（The Vita Coco Company, Inc.）</h1>
+<p><strong>市值</strong> 37.3 亿美元 · <strong>股价</strong> $63.54（2026-08-18 收盘）· <strong>行业</strong> 消费品（饮料）· <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<blockquote>
+<p>全篇数字一律是 TTM 口径（最近四个季度滚动，截至 2026-06-30），除非另行标注。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说清楚这个产品是什么，因为很多人会搞混。<strong>椰子水不是椰奶。</strong> 椰奶是把成熟椰子里那层白色的硬肉刨下来压榨出的浓白汁；椰子水是<strong>六到九个月大的青椰子里面那泡清澈的、微甜的液体</strong>，直接倒出来就能喝。一个青椰子大概能倒出 200–300 毫升，所以你在超市货架上看到的那盒 330 毫升 Vita Coco，背后差不多是一到一个半颗真椰子。</p>
+<p>它为什么卖得动：这泡水天然含钾和电解质，钾含量比香蕉还高。于是它在美国被定位成"没有色素、没有人工甜味剂的天然版佳得乐"——健身房练完喝、宿醉第二天早上喝、不想喝可乐又嫌矿泉水没味道的时候喝。Vita Coco 在美国椰子水这个品类里占了大约一半的份额，<strong>在美国消费者脑子里，它基本上就等于"椰子水"这个词本身</strong>。</p>
+<p>它实质上做三门生意：</p>
+<h3>生意一：Vita Coco 品牌椰子水（占 80%）</h3>
+<p><strong>核心是一个"自己不生产任何东西"的模式。</strong> Vita Coco 全公司只有 <strong>336 名员工</strong>，没有一个椰子园，没有一间工厂。</p>
+<p>实际流程是这样：菲律宾、巴西、斯里兰卡、印尼、泰国这些产地有一批代工厂（co-packer），它们跟当地的椰农收青椰子，机器开壳、把水倒出来、闪蒸灭菌，灌进利乐包（Tetra Pak），包装上印的是 Vita Coco 的商标。Vita Coco 付钱买断这些成品，装进集装箱海运到美国港口，再卖给 Costco、沃尔玛、Kroger、7-Eleven、亚马逊这些渠道。</p>
+<p><strong>Vita Coco 自己只干三件事：设计配方和包装、维护品牌、管好这条从赤道到美国货架的链条。</strong> 结果就是那些漂亮的财务数字：</p>
+<ul>
+<li>一年资本开支只有 <strong>725 万美元</strong>（营收的 1.03%）</li>
+<li>全年折旧摊销只有 <strong>163 万美元</strong>——占营收的 <strong>0.23%</strong>，这个数字在制造业里几乎不存在</li>
+<li><strong>人均创收 210 万美元、人均创利 32.6 万美元</strong>，336 个人撑起 7 亿美元营收</li>
+<li><strong>ROIC 69.01%</strong>，而资金成本只有 8.44%</li>
+</ul>
+<p>这门生意的护城河是<strong>品牌 + 渠道货架位</strong>：一个新品牌想进 Costco 的椰子水货架，得先说服采购把 Vita Coco 挤掉，而 Costco 换供应商是要冒断货风险的。</p>
+<p>TTM 营收 <strong>5.669 亿美元</strong>。</p>
+<h3>生意二：给零售商代工自有品牌（占 16%）</h3>
+<p><strong>这是全篇最值得琢磨的一块。</strong> Costco 的 Kirkland、全食的 365、Trader Joe's 这些自有品牌椰子水，是谁做的？很多就是 Vita Coco 用同一条供应链做的，只是包装上印的是零售商的商标。</p>
+<p><strong>为什么公司要做这件事？</strong> 两个理由。第一，货架上那个便宜 30% 的自有品牌本来就会存在——与其让别人做、顺手把整条供应链学走，不如自己做，至少赚个加工利润，还能锁住这个零售商的关系；第二，它能填满代工厂的产能，摊薄整条链的固定成本。</p>
+<p><strong>为什么这件事同时是个隐患？</strong> 因为你在亲手养大自己的竞争对手。消费者在货架前看到 Vita Coco 4.99 美元、Kirkland 3.49 美元，喝起来差不多——买多了他就不再需要那个品牌了。而自有品牌的毛利率必然远低于品牌产品。</p>
+<p>TTM 营收 <strong>1.133 亿美元</strong>。要命的是它的增速：对比上一完整财年 <strong>+27.7%</strong>，比品牌业务的 +14.2% <strong>快一倍</strong>。<strong>低毛利业务跑得比高毛利业务快，这是长期毛利率的负担。</strong></p>
+<h3>生意三：椰子水以外的新品（占 3.7%）</h3>
+<p>椰子油、椰子汁、有机农场系列、植物基"椰奶"、以及重点押注的 <strong>PWR LIFT</strong>——一款加了蛋白的健身水，想抢的是 Gatorade 和蛋白饮料之间那块地。</p>
+<p>这块 TTM 营收 <strong>2,586 万美元</strong>，占比不到 4%，对比上一完整财年只涨了 4.1%。<strong>说白了：这家公司到目前为止，还没能证明自己是"一家饮料公司"，它只是"一款饮料公司"。</strong> 第二增长曲线还没画出来。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比上一完整财年</th>
+<th>占比</th>
+<th>毛利率（<strong>估算</strong>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vita Coco 品牌椰子水</td>
+<td>5.669 亿</td>
+<td>+14.2%</td>
+<td>80.3%</td>
+<td>~45%</td>
+</tr>
+<tr>
+<td>零售商自有品牌代工</td>
+<td>1.133 亿</td>
+<td><strong>+27.7%</strong></td>
+<td>16.0%</td>
+<td>~25%</td>
+</tr>
+<tr>
+<td>其他新品</td>
+<td>0.259 亿</td>
+<td>+4.1%</td>
+<td>3.7%</td>
+<td>~35%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>7.060 亿</strong></td>
+<td><strong>+26.1%（真实同比）</strong></td>
+<td>100%</td>
+<td><strong>41.13%（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两点说明。</strong> 第一，财报只披露到分部营收，<strong>不披露分部毛利</strong>，上表毛利率是按"品牌溢价高、代工无溢价"的常识估算，加权后能对上全公司真实的 41.13%，但单项有误差，不要当精确数字。第二，"对比上一完整财年"不是严格同比（TTM 与 2025 财年有半年重叠），全公司口径的真实同比是 <strong>+26.1%</strong>。</p>
+<p><strong>顺带一个可以精确算出来的事实</strong>：TTM（截至 2026 年 6 月）营收 7.060 亿，2025 全年是 6.098 亿，两者共享 2025 下半年，相减即得——<strong>2026 年上半年的营收比 2025 年上半年多了 9,624 万美元，净利润多了 3,814 万美元。</strong> 这不是温和增长，这是在猛冲。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：1,391 万美元，占净利润 12.7%。</strong> 对一家 336 人的公司来说，人均 4.1 万美元的股票薪酬不算低。按 GAAP 原样扣着，不加回。公司自己爱讲的"调整后 EBITDA"就是要把这 1,391 万加回去的，别信——员工拿走的股份是从你手里稀释出去的。</p>
+<p><strong>一次性项目：几乎没有。</strong> 资产减值和重组只有 19 万美元，可以忽略。</p>
+<p><strong>资本化的支出：没有。</strong> 这家公司几乎没有可以资本化的东西——它不建工厂、不做研发资本化、不拍内容。折旧摊销全年 163 万，是整张报表最能说明"轻资产"三个字的数字。顺带解释一个现象：它的 <strong>EV/EBITDA（25.36）和 EV/EBIT（25.67）几乎一模一样</strong>，因为中间那个 D&amp;A 差不多等于零。</p>
+<p><strong>回购与稀释：这一项不及格。</strong> TTM 回购 <strong>2,122 万美元</strong>，同期 SBC 是 <strong>1,391 万</strong>，<strong>比值只有 1.53</strong> ——前面说过，接近 1 意味着回购只是在抵消员工发股，大于 3 才算真回馈。更糟的是同期还<strong>发行了 888 万美元的股票</strong>（期权行权），净流出只有 1,234 万。最终结果：<strong>股本不但没减，一年还增加了 0.94%</strong>。公司<strong>不分红</strong>。</p>
+<p>所以：<strong>这家公司今年一分钱都没有真正还给股东，你的股份还被稀释了近 1%。</strong> 赚的钱全部堆在账上——现金从 1.969 亿涨到 <strong>2.786 亿</strong>，净现金 2.646 亿，占市值的 7.1%。钱是安全的，但也是闲着的。</p>
+<p><strong>利润和现金流的差：数字对得上，但来源需要拆开看。</strong> 净利润 1.095 亿，经营现金流 1.317 亿，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>109.46</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+1.65</td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>+0.19</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+13.91</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+0.59</td>
+</tr>
+<tr>
+<td>− 其他经营项</td>
+<td>−2.27</td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−31.40</strong></td>
+</tr>
+<tr>
+<td>＋ 存货基本持平</td>
+<td>+0.86</td>
+</tr>
+<tr>
+<td>＋ <strong>应付账款增加</strong></td>
+<td><strong>+44.31</strong></td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−5.59</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>131.69</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里藏着本篇第二个关键点。</strong> 营运资金四项加起来是 <strong>+818 万</strong>的净顺风，但内部是两个大数在对冲：应收账款增加 <strong>3,140 万</strong>（卖得多了，客户还没付钱，正常），应付账款增加 <strong>4,431 万</strong>（自己还没付给代工厂的钱变多了）。</p>
+<p>应付账款一年多出 4,431 万——<strong>这相当于向供应商多借了四千多万的无息短期资金</strong>。这个数字接近净利润的一半。它可能只是采购量随收入同步放大的自然结果，也可能是主动拉长了付款账期。<strong>无论哪一种，它都不能年年重复</strong>：账期不可能无限拉长。剔掉这 818 万的营运资金顺风，"干净的"自由现金流大约是 <strong>1.163 亿</strong>，而不是账面的 1.244 亿。</p>
+<p><strong>真正的障眼法不在会计，在毛利率。这是本篇最重要的一段。</strong></p>
+<p>看这家公司六年的毛利率：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年度</th>
+<th>毛利率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>29.81%</td>
+</tr>
+<tr>
+<td><strong>FY2022</strong></td>
+<td><strong>24.16%</strong> ← 全球海运费飙升那一年</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>36.61%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>38.52%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>36.50%</td>
+</tr>
+<tr>
+<td><strong>TTM（截至 2026-06）</strong></td>
+<td><strong>41.13%</strong> ← 六年最高</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>毛利率在六年里摆动了 17 个百分点，而当前这个 41.13% 是六年最高点。</strong></p>
+<p>为什么会这样摆？因为 Vita Coco 的成本结构里，两块大头<strong>它一样都控制不了</strong>：</p>
+<ol>
+<li><strong>海运费。</strong> 它把液体从赤道运到美国，一箱椰子水里运的绝大部分重量是水。2022 年全球集装箱运价暴涨，直接把毛利率从 29.8% 砸到 24.2%——<strong>六个百分点，就是运费一项干出来的</strong>。运价回落，毛利率就跟着弹回 36%–38%。</li>
+<li><strong>青椰子的收购价。</strong> 椰子树从种下到结果要六到八年。今天的椰子供给，是六年前菲律宾农民种树时决定的；一场台风、一次病虫害、或者椰子油市场抢原料，价格就上去了，Vita Coco 只能被动接受。</li>
+</ol>
+<p>所以那个 41.13% 不是效率提升，也不是品牌溢价变强了（品牌业务增速 +14.2%，反而慢于低毛利的代工 +27.7%，产品结构在<strong>恶化</strong>）。它主要是<strong>成本端顺风</strong>——外部环境送的。</p>
+<p>这件事的分量有多大？如果毛利率回到最近三个完整财年的平均值 <strong>37.21%</strong>，其他条件不变：</p>
+<ul>
+<li>毛利少 <strong>2,767 万</strong></li>
+<li>经营利润从 1.350 亿降到 <strong>1.073 亿</strong></li>
+<li>净利润从 1.095 亿降到约 <strong>8,816 万</strong>（按 23.05% 税率）</li>
+<li><strong>市盈率从 34.1 倍变成 42.3 倍</strong></li>
+</ul>
+<p><strong>换句话说：现在这个"看起来只有 34 倍"的估值，有整整 8 倍市盈率是集装箱运价送的。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>37.29 亿 ÷ 1.095 亿</td>
+<td><strong>34.1 倍</strong></td>
+<td><strong>2.94 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回 SBC 1,391 万税后约 1,071 万 → 调整后净利 ≈1.202 亿</td>
+<td>31.0 倍</td>
+<td>3.22 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无重大一次性项目，SBC 按 GAAP 扣除不加回</td>
+<td><strong>34.1 倍</strong></td>
+<td><strong>2.93 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>37.29 亿 ÷ 1.244 亿</td>
+<td>30.0 倍</td>
+<td>3.34 元</td>
+</tr>
+<tr>
+<td>自由现金流（剔除营运资金顺风）</td>
+<td>37.29 亿 ÷ 1.163 亿</td>
+<td>32.1 倍</td>
+<td>3.12 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>34.60 亿 ÷ 1.350 亿</td>
+<td>25.6 倍</td>
+<td>3.90 元</td>
+</tr>
+<tr>
+<td><strong>毛利率正常化口径（37.2%）</strong></td>
+<td>37.29 亿 ÷ 0.882 亿</td>
+<td><strong>42.3 倍</strong></td>
+<td><strong>2.36 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>37.29 亿 ÷ [(1.095+0.713+0.560)/3=0.789 亿]</td>
+<td><strong>47.3 倍</strong></td>
+<td><strong>2.12 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表跟本批另外两家（Kadant、Badger Meter）形成了刺眼的对比。</strong> 那两家的各口径数字全都挤在一起、差不了两三倍；这一家从 <strong>25.6 倍摊到 47.3 倍</strong>，中间隔着将近一倍。</p>
+<p>差在哪儿？差在<strong>你相信哪一年的利润是"正常"的</strong>：</p>
+<ul>
+<li>34.1 倍，是相信今年 1.095 亿的利润就是常态；</li>
+<li>42.3 倍，是相信毛利率会退回过去三年的平均水平；</li>
+<li><strong>47.3 倍，是三年平均口径</strong>——过去三年净利润 5,595 万 → 7,132 万 → 1.095 亿，今年这一年<strong>几乎等于前两年之和</strong>。</li>
+</ul>
+<p><strong>这个 34 倍对 47 倍的裂口，就是本篇最有价值的一句话：你不是在 34 倍买它，你是在一个利润三年翻了一倍、毛利率处于六年最高点的时刻，按 34 倍买它。</strong></p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算（三年平均），公司一年替你赚 2.12 元；按当期最乐观的口径算，2.94 元。</strong></p>
+<p>这 2.94 元里有多少回到你口袋？<strong>几乎为零。</strong> 不分红；回购 2,122 万扣掉发新股 888 万，净流出 1,234 万，只占市值的 <strong>0.33%</strong>，而且股本还是净增加了 0.94%——<strong>回购连稀释都没堵住</strong>。剩下的钱去哪了？不是再投资（资本开支才 725 万），而是<strong>趴在账上</strong>：现金一年增加 8,177 万。这家公司现在的状态是"赚了很多钱，但既不还给你，也没想好怎么花"。</p>
+<p>那 2.94 元未来会变大还是变小？</p>
+<ul>
+<li><strong>往上：</strong> 增长是真的，而且在加速——2026 上半年营收比去年同期多 9,624 万；椰子水品类在美国还在渗透，健康饮料替代碳酸饮料是长趋势；ROIC 69% 对 WACC 8.44%，<strong>每投一块钱赚六毛九、钱的成本才八分四</strong>，这是任务1做过的公司里最高的一档，意味着它每留一分钱在公司里都在创造巨大价值（如果它肯花的话）；账上 2.65 亿净现金，无任何财务风险；PWR LIFT 如果跑通，第二曲线就有了。</li>
+<li><strong>往下：</strong> 毛利率在六年最高点，而它由集装箱运价和椰子收购价决定，<strong>这两样公司一样控制不了</strong>，运费或椰价任意一个反向走，41% 掉回 36% 就抹掉四分之一的利润；低毛利的自有品牌代工增速是品牌业务的两倍，产品结构在恶化；4,431 万的应付账款扩张不可持续；<strong>股价 52 周涨了 92.14%</strong>——整轮重估已经发生完了，市场给的远期市盈率 33.08 倍，意味着<strong>连分析师都不认为明年利润还能再跳一次</strong>。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>Vita Coco 是一门<strong>结构上极其漂亮的生意</strong>——336 个人、不建一间工厂、资本开支只占营收 1%、ROIC 69% 是资金成本的八倍、账上 2.65 亿净现金零负债，还占着美国椰子水品类一半的心智份额，这种资本效率在实体消费品里是稀有的。<strong>但它现在的价格建立在一个不可持续的时点上</strong>：毛利率处于六年最高的 41.13%，而这个数字是集装箱运价和椰子价格送的、不是它自己挣的；股价一年涨了 92%，账面 34 倍市盈率在毛利率正常化后是 42 倍、按三年平均利润是 47 倍；公司不分红、回购连 0.94% 的稀释都没堵住，你拿到的现金回报接近于零。<strong>这是标准的"好公司，坏价格"</strong>——真正的问题不是它值不值 34 倍，而是它现在的利润根本不是 1.095 亿这个数。等运费涨回去、或者哪个季度毛利率掉回 36% 的时候，市场会用一次很难看的下跌重新告诉你这件事。留在观察名单上，别在 92% 之后追。</p>
+<hr />
+<p><em>分析日期：2026-08-19 · 数据来源：stockanalysis.com（利润表 / 现金流量表 / 统计页 / 公司简介），TTM 截止 2026-06-30</em></p>
+</div></body></html>

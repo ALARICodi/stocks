@@ -1,0 +1,415 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NESR · 国家能源服务联合公司（National Energy Services Reunited Corp）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NESR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">3.5亿经营现金流里2.33亿是欠供应商，剔掉后FCF为负</div><h1>NESR · 国家能源服务联合公司（National Energy Services Reunited Corp）</h1>
+<p>市值 35.59 亿美元 ｜ 股价约 $35.29 ｜ 行业：油田服务（NASDAQ）｜ TTM 截止 2026-06-30 ｜ 全榜第 725 名</p>
+<blockquote>
+<p><strong>先记住一个数字：这只股票过去 52 周涨了 407%。</strong> 200 日均线还在 $22.07，50 日均线 $28.27，现在 $35.29。下面所有的分析，本质上都在回答一个问题：这 407% 里，有多少是生意真的变好了，有多少是市场在给一个周期股的顶部估值。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>NESR 是<strong>中东和北非（MENA）地区最大的本土油田服务公司</strong>。总部注册在休斯顿，但业务几乎全在沙特、阿曼、阿联酋、科威特、伊拉克、阿尔及利亚、埃及、利比亚这一带。</p>
+<p>它的客户不是埃克森美孚这种国际石油公司，而是<strong>国家石油公司</strong>——沙特阿美（Saudi Aramco）、阿布扎比国家石油（ADNOC）、阿曼石油开发公司（PDO）、科威特石油公司、阿尔及利亚 Sonatrach、埃及 EGPC。这个客户结构决定了它生意的两个特征：<strong>付款方几乎不会破产</strong>（背后是主权信用），但<strong>议价能力也几乎为零</strong>（国家石油公司是买方垄断，招标压价压得很凶，而且付款周期长得离谱——后面第二部分会看到这个特征在报表上留下的痕迹）。</p>
+<p>公司本身是 2018 年由一个 SPAC（特殊目的收购公司）把两家中东油服公司——阿联酋的 NPS Holdings 和阿曼的 Gulf Energy——合并出来的。这段并购史直接决定了它今天的资产负债表长什么样：<strong>账面净资产 10.4 亿美元，但有形净资产只有约 3.59 亿</strong>（市净率 3.42 倍 vs 有形市净率 9.92 倍倒推），也就是说<strong>净资产里有大约 6.81 亿、占 65.5% 是商誉和无形资产</strong>——是当年并购溢价留下的账面数字，不是能打油、能压裂的实物设备。这一条后面会再提。</p>
+<p>它做两件事：</p>
+<h3>生意一：生产服务（Production Services），TTM 营收 9.94 亿，占 61.4%</h3>
+<p><strong>这是油井打完、开始出油之后的所有活儿。</strong> 核心是让一口产量下降的老井重新出油。</p>
+<p><strong>最大的一块是水力压裂和增产作业。</strong> 一口井打了几年，周围的岩层被抽干了，油流不动。NESR 开一队卡车过去——高压泵车、砂罐车、混砂车、仪表车，一队十几台——把水、石英砂和化学添加剂用几千个大气压的压力泵进地下几千米，把致密的岩层压出一道道裂缝，砂子撑在裂缝里不让它闭合，油就能沿着裂缝流回井筒。</p>
+<p><strong>怎么收钱：</strong> 按"级"（stage）计价。一口水平井要分段压裂，通常打十几到几十级，每级的作业费从几万到十几万美元不等（取决于泵入的液量、砂量和井深），一口井一次完整的压裂合同能到几百万美元。合同形式是跟国家石油公司签 3–5 年的框架协议（call-off contract），单价在合同里锁死，客户按实际需要派活，NESR 按完成的作业量开票。举个具体的数：沙特阿美的一份增产服务框架合同，可能要求 NESR 常驻两支压裂车队在东部省，每支车队每天有固定的待命日费（day rate，几万美元级别），再加上实际作业的计次费——<strong>日费保底、计次费给弹性</strong>，这是油服合同的标准结构。</p>
+<p>这块还包括：
+- <strong>连续油管作业（coiled tubing）</strong>：一根几千米长的钢管卷在一个大卷筒上，用注入头连续送进井里，末端接上工具，可以洗井（冲掉井底的砂和垢）、打捞（把掉进井里的工具捞出来）、酸洗（往地层里挤盐酸溶掉碳酸盐岩的堵塞）。收费按天算，加上工具和液体的材料费。
+- <strong>修井（workover）</strong>：把井里的老管柱起出来，换新的，换井下泵。
+- <strong>制氮和液氮服务</strong>：往井里注氮气把液体举升出来。
+- <strong>过滤和采出水处理</strong>：油田采出来的水含油含盐，要处理才能回注或排放。</p>
+<h3>生意二：钻井与评价服务（Drilling and Evaluation Services），TTM 营收 6.25 亿，占 38.6%</h3>
+<p><strong>这是打井过程中的活儿</strong>，技术含量更高，也是这两年增长更快的一块（TTM 6.25 亿 vs FY2025 全年 5.08 亿）。</p>
+<ul>
+<li><strong>钻井液（泥浆）服务</strong>：往井里循环一种特制的泥浆，它要同时干四件事——冷却和润滑钻头、把钻碎的岩屑带回地面、用液柱压力顶住地层不让井壁塌或者地层流体涌进来、在井壁上糊一层泥饼防止漏失。NESR 派工程师驻井场，实时测泥浆的密度、粘度、失水量并调配方，按每桶泥浆的材料费加每天的工程师服务费收钱。一口深井几个月下来，泥浆合同能到上百万美元。</li>
+<li><strong>定向钻井</strong>：打的不是直井，而是先垂直往下、到某个深度开始拐弯、最后水平钻进油层几公里。做法是在钻头后面接一个由泥浆驱动的井下马达（不转钻杆也能转钻头），配合弯接头控制方向。</li>
+<li><strong>随钻测量与随钻测井（MWD/LWD）</strong>：在钻头后面几米处挂一串传感器，边打边测井眼的方位、倾角，以及地层的自然伽马、电阻率、密度、中子孔隙度，数据通过泥浆脉冲（在泥浆柱里打压力波，像摩尔斯电码）实时传回地面。工程师据此判断钻头有没有钻出油层、要不要调整方向。这块是纯技术服务，按天收费，日费比压裂高得多。</li>
+<li><strong>固井</strong>：打完一段，把套管下到井里，往套管和井壁之间灌水泥浆固定并封隔各个地层。这一步做砸了会导致层间窜流甚至井喷。</li>
+<li><strong>测试与完井工具</strong>：钻完试油，测地层能出多少。</li>
+</ul>
+<p><strong>为什么客户非用它不可：</strong> 中东的国家石油公司这几年都在推"本地化率"（沙特叫 IKTVA，阿联酋叫 ICV）——招标时给本地公司加分，要求外国承包商必须把一定比例的采购、雇佣、制造放在本国。NESR 的 7,352 名员工绝大部分在当地，设备维修基地也在当地，<strong>这个"本土身份"是它对抗斯伦贝谢、哈里伯顿、贝克休斯这三家国际巨头的主要武器</strong>。它的技术不如三巨头，但在中东的招标表上能拿到加分。</p>
+<h3>两门生意的钱（TTM，截止 2026-06-30，单位百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上一完整年(FY2025)</th>
+<th>变化</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生产服务 Production Services</td>
+<td>993.63</td>
+<td>816.00</td>
+<td>+21.8%</td>
+<td>61.4%</td>
+<td>估算 7%–8%</td>
+</tr>
+<tr>
+<td>钻井与评价 Drilling &amp; Evaluation</td>
+<td>625.29</td>
+<td>508.05</td>
+<td>+23.1%</td>
+<td>38.6%</td>
+<td>估算 11%–12%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,619</strong></td>
+<td><strong>1,324</strong></td>
+<td><strong>+22.3%</strong></td>
+<td>100%</td>
+<td>整体 9.25%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（TTM 相对上年同期的营收增速是 <strong>+23.55%</strong>。<strong>分部利润财报不披露，只披露到营收</strong>。上表按行业惯例估算——钻井与评价的技术含量和日费更高，利润率通常比生产服务高 3–5 个百分点。这是估算，不是财报数字。）</p>
+<p><strong>整体利润结构：</strong> 毛利 2.15 亿（毛利率 <strong>13.28%</strong>）、经营利润 1.50 亿（<strong>9.25%</strong>）、净利润 0.93 亿（<strong>5.77%</strong>）。<strong>这是一门利润率很薄的重资产生意</strong>——人均创收只有 22 万美元（对比 NHI 那种包租公模式的人均 1,362 万），意味着营收的大头是人工和设备折旧。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>NESR 的利润表本身相当干净，问题全在现金流量表里。</strong></p>
+<p><strong>股权激励（SBC）：</strong> TTM <strong>992 万美元</strong>，占净利润 9,338 万的 <strong>10.6%</strong>。规模温和。GAAP 已经扣除，不加回。</p>
+<p><strong>回购与稀释——最简单也最刺眼的一项：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>992 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>股本一年变化</td>
+<td><strong>+5.70%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>没有回购、没有分红，股本一年增加 5.70%。</strong> 股东从这家公司拿到的现金回报是零，同时每年被稀释 5.7%。<strong>这是必须扣在回报率上的一笔硬成本</strong>——后面算"投 100 块回报多少"时会体现。</p>
+<p><strong>一次性项目：</strong> TTM 资产减值与重组 808 万（FY2025 957 万、FY2024 532 万、FY2023 792 万——<strong>每年都有，规模稳定，属于常态化经营损耗，不算真一次性</strong>）。卖资产收益 504 万（这个是真一次性收益，算回报时应扣掉）。两项都很小，加起来不到净利润的 4%，对估值没有实质影响。</p>
+<p><strong>坏账计提：</strong> TTM <strong>1,129 万</strong>（FY2025 873 万、FY2022 819 万）。这一项值得单独说：给国家石油公司干活，付款周期动辄 6–12 个月，中间还要过政府预算审批。<strong>每年都要计提 1,000 万左右的坏账，说明"客户是主权信用所以不会赖账"这句话只对了一半——不赖账，但拖账，拖到一定程度就得计提。</strong> 这是真实的经营成本，不加回。</p>
+<p><strong>资本化的支出：</strong> 没有软件或内容资本化。但要注意 <strong>TTM 资本开支 1.937 亿 vs 折旧摊销 1.397 亿，比值 1.39 倍</strong>——公司在扩产能，买压裂车队和钻井设备。资本开支占营收 12.0%，这是重资产油服的常态。</p>
+<p><strong>利润和现金流的差——这里是全篇的核心，也是这份分析最重要的发现：</strong></p>
+<p>净利润 9,338 万，经营现金流 <strong>3.5003 亿</strong>，差 2.57 亿，是净利润的 2.75 倍。逐项对账（单位百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>93.38</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+139.70</td>
+<td>重资产，不花钱</td>
+</tr>
+<tr>
+<td>− 卖资产收益</td>
+<td>−5.04</td>
+<td>一次性，现金在投资活动</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+8.08</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+9.92</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+11.29</td>
+<td>非现金，但代表真实损失</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+5.14</td>
+<td></td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−87.22</strong></td>
+<td>客户拖账，钱没收回来</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−29.36</td>
+<td></td>
+</tr>
+<tr>
+<td>+ <strong>应付账款增加</strong></td>
+<td><strong>+233.16</strong></td>
+<td><strong>← 全篇关键</strong></td>
+</tr>
+<tr>
+<td>− 其他净经营资产变化</td>
+<td>−29.01</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>350.03</strong></td>
+<td><strong>每一分钱都对得上</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表每一项都能核对上，报出来的 3.5003 亿一分不差。但它讲的故事非常难看：</strong></p>
+<p><strong>应付账款一年增加了 2.3316 亿美元。</strong> 应付账款就是"欠供应商的钱"——欠得越多，账上留的现金越多。这 2.33 亿相当于全年营收的 <strong>14.4%</strong>。营收一年只增长了 2.95 亿（16.19 亿 vs 13.24 亿），采购规模按比例扩张最多多欠几千万，<strong>2.33 亿的增幅远远超出业务扩张能解释的范围</strong>。</p>
+<p><strong>把这一项剔掉，重算一遍：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>经营现金流</th>
+<th>减资本开支 1.937 亿</th>
+<th>自由现金流</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报表口径</td>
+<td>3.5003 亿</td>
+<td></td>
+<td><strong>+1.5633 亿</strong></td>
+</tr>
+<tr>
+<td><strong>剔除应付账款增加后</strong></td>
+<td><strong>1.1687 亿</strong></td>
+<td></td>
+<td><strong>−0.7683 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：如果不靠多欠供应商 2.33 亿，NESR 这一年的自由现金流是负 7,683 万。</strong></p>
+<p>有两个旁证支持这个判断不是过度解读：</p>
+<ol>
+<li><strong>流动比率只有 1.02，速动比率只有 0.76。</strong> 流动比率 1.02 意味着流动资产刚刚够覆盖流动负债，一点缓冲都没有；速动比率 0.76（剔除存货后）意味着<strong>手上的现金加应收，只够还 76% 的短期负债</strong>。一家现金流真的很健康的公司不会长成这样。</li>
+<li><strong>应收账款同时在增加 8,722 万。</strong> 一边被客户拖着不给钱，一边拖着供应商不给钱——NESR 实际上是在<strong>把国家石油公司施加给它的付款压力，原样转嫁给自己的供应商</strong>。这个链条能转多久，取决于供应商的耐心和 NESR 的议价地位。</li>
+</ol>
+<p><strong>这不等于财务造假</strong>——应付账款变动是完全合法的正常科目，油服公司在扩张期占用供应商资金也是行业常态。但它意味着<strong>报表上那个 3.5 亿的经营现金流和 22.77 倍的 P/FCF，含有大量不可持续的成分</strong>。明年如果应付账款不再增加（甚至回吐），经营现金流会直接腰斩。</p>
+<p><strong>债务方面倒是一个亮点</strong>：总债务从 FY2021 的 6.11 亿一路降到现在的 <strong>3.05 亿</strong>，净债务只剩 1.30 亿，债务/EBITDA 仅 <strong>0.59 倍</strong>，利息保障倍数 5.12 倍。<strong>资产负债表已经修好了。</strong> 这是过去几年管理层做得最对的一件事。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>35.59 亿 ÷ 0.9338 亿</td>
+<td>38.1 倍</td>
+<td>$2.62</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这四页不披露</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>35.59 亿 ÷ 0.9581 亿（净利润 + 减值税后 646 万 − 卖资产收益税后 403 万）</td>
+<td><strong>37.1 倍</strong></td>
+<td><strong>$2.69</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径 P/FCF（报表）</td>
+<td>35.59 亿 ÷ 1.5633 亿</td>
+<td>22.8 倍</td>
+<td>$4.39</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除应付账款）</strong></td>
+<td>35.59 亿 ÷ <strong>−0.7683 亿</strong></td>
+<td><strong>负数</strong></td>
+<td><strong>−$2.16</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>36.89 亿 ÷ 1.4966 亿</td>
+<td>24.7 倍</td>
+<td>$4.06</td>
+</tr>
+<tr>
+<td>企业价值 / EBITDA</td>
+<td>36.89 亿 ÷ 2.8937 亿</td>
+<td>12.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>35.59 亿 ÷ 0.7361 亿（TTM 9,338 万 + FY25 5,113 万 + FY24 7,631 万 的均值）</td>
+<td><strong>48.4 倍</strong></td>
+<td><strong>$2.07</strong></td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>有形净资产约 3.59 亿</td>
+<td><strong>9.9 倍</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>（企业价值 36.89 亿 = 市值 35.59 亿 + 净负债 1.30 亿。GAAP 利润本身很干净——剔除障眼法后 37.1 倍对比原来的 38.1 倍，几乎没动，说明利润表没有粉饰。<strong>问题不在利润表，在现金流表和价格。</strong>）</p>
+<h3>说人话：你投 100 块进去，一年拿回多少</h3>
+<p><strong>按最保守的真实口径（三年平均利润 48.4 倍），公司一年替你赚 2.07 元。</strong></p>
+<p>而且这 2.07 元里：</p>
+<ul>
+<li><strong>0 元以分红回到你口袋。</strong></li>
+<li><strong>0 元以回购回到你口袋。</strong></li>
+<li><strong>2.07 元全部留在公司</strong>，拿去买压裂车队和钻井设备（TTM 资本开支 1.937 亿，是折旧的 1.39 倍）。</li>
+<li><strong>同时，你的股份数一年被稀释了 5.70%。</strong></li>
+</ul>
+<p>把稀释算进去：你名义上分到 2.07 元的利润，但你在公司里的占比缩小了 5.7%，<strong>扣掉稀释后你实际得到的接近于零，甚至是负的</strong>。这不是文字游戏——公司发新股不给你现金、也不给你回购，那 2.07 元留存的价值有相当一部分流向了新股东和员工。</p>
+<p><strong>再看现金的真相：</strong> 报表口径的自由现金流 1.5633 亿看起来还行（P/FCF 22.8 倍），但那里面 2.33 亿是欠供应商的钱。<strong>按可持续口径算，NESR 今年不但没有产生自由现金流，还倒贴了 7,683 万。</strong> 也就是说，你投的这 100 块，公司今年不但没替你赚到现金，还需要靠占用供应商的资金来维持运转。</p>
+<p><strong>这个数字未来会变大还是变小？</strong></p>
+<p>市场的答案写在远期市盈率上：<strong>38.19 倍（当前）对 15.04 倍（远期）</strong>，PEG 只有 0.26。市场预期利润在未来一年多里翻大约 2.5 倍。这个预期不是凭空来的——中东的国家石油公司确实在加大上游投入（沙特阿美维持产能、ADNOC 扩产、伊拉克和阿尔及利亚重启项目），NESR 的营收连续两年增长 20%+，钻井与评价这块高利润率业务增长更快（+23.1%）。</p>
+<p><strong>但周期股在周期顶部的远期市盈率永远是最便宜的。</strong> 油服行业每一轮上行期的末尾都长成这样：营收增长 20%+、分析师预测利润翻倍、远期市盈率看起来只有十几倍——然后油价一跌，国家石油公司的资本开支一砍，压裂车队立刻闲置，那 1.937 亿刚买回来的设备变成折旧包袱。2022 年 NESR 的经营利润是 <strong>−92 万美元</strong>，2021 年是 <strong>−4,333 万</strong>。上一轮周期底部离现在只有四年。</p>
+<p><strong>还有一个必须看的数字：三年平均口径 48.4 倍，比当期 38.1 倍还贵。</strong> 这个方向说明当期利润处在近三年的高点（TTM 9,338 万 vs FY2025 5,113 万 vs FY2024 7,631 万）。当"三年平均"这一行比"当期"更贵时，通常意味着你正在用高点的利润去买一个周期股。</p>
+<p><strong>最后，那 6.81 亿商誉。</strong> 净资产 10.4 亿里有 65.5% 是 2018 年 SPAC 并购留下的商誉和无形资产。如果周期转向、下游需求萎缩，这笔商誉要减值——账面净资产会瞬间从 10.4 亿变成 3.6 亿，市净率从 3.42 倍变成 9.9 倍。<strong>这不是假设，这就是有形市净率 9.92 倍这个数字现在已经告诉你的事。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是真生意，价格是周期顶部的价格，现金流是靠拖欠供应商拼出来的——三样凑在一起，这个价买不得。</strong></p>
+<p>先把好话说完，因为它确实有好的地方：中东油服是一门有真实需求的生意，客户是主权信用背书的国家石油公司，本地化政策给了它对抗三巨头的护城河，营收连续两年增长 20%+，债务从 6.11 亿降到 3.05 亿（债务/EBITDA 只有 0.59 倍），资产负债表已经修好，ROIC 9.98% 高于 WACC 6.36%，利润表本身干净得几乎不需要调整。</p>
+<p>但三件事让它在这个价格上不成立：</p>
+<p><strong>第一，现金流的质量是假的。</strong> 3.5 亿的经营现金流里有 2.33 亿来自应付账款增加——把这一项剔掉，自由现金流从 +1.56 亿变成 <strong>−0.77 亿</strong>。速动比率 0.76 和应收账款同步增加 8,722 万，都在印证同一件事：这家公司正在被客户拖账，又把压力原样转嫁给供应商。这个链条不可能永远转下去。</p>
+<p><strong>第二，估值在周期股里属于顶部区间。</strong> GAAP 市盈率 38.1 倍、三年平均口径 48.4 倍（比当期还贵，说明当期利润在高点）、EV/EBIT 24.7 倍、有形市净率 9.9 倍。股价一年涨了 <strong>407%</strong>，200 日均线才 $22.07——现在的价格比过去一年的平均成本高了 60%。这个位置买入，你需要的不只是"中东资本开支继续增长"，而是"增长速度快于市场已经定价的水平"。</p>
+<p><strong>第三，股东一分钱拿不到，还每年被稀释 5.70%。</strong> 零分红、零回购、SBC 992 万全是净稀释。按最保守口径 2.07 元的年回报，扣掉 5.7% 的稀释之后基本归零。</p>
+<p>四年前，也就是 2022 年，这家公司的经营利润是负的。周期股最危险的时刻，就是它的报表最漂亮、增速最快、远期市盈率看起来最便宜的时候。</p>
+<p><strong>我不会在 $35 买它。</strong> 如果一定要给个价，我会等它回到 200 日均线以下——$20 左右对应约 20 倍市盈率、1.3 倍有形净资产的两倍多，那时候即使周期转向也还有下跌保护。现在这个价格，你买的是"周期不会转"这个赌注，而不是这门生意。</p>
+</div></body></html>

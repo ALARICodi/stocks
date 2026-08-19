@@ -1,0 +1,355 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JOE · 圣乔公司（The St. Joe Company）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">JOE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">17万英亩佛州海岸线+SBC只占利润1%，但现金流漂亮是因为停止投资了</div><h1>JOE · 圣乔公司（The St. Joe Company）</h1>
+<p>市值 38.3 亿美元 | 股价 $67.27 | 行业：房地产开发与运营（佛罗里达狭长地带）| TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p>全篇数字都是 TTM 口径（截至 2026 年 6 月 30 日的最近四个季度）。
+<strong>先说明一句口径</strong>：圣乔虽然干的是房地产，但它是普通 C 型公司、不是 REIT（TTM 实际税率 25.39% 就是证据，REIT 基本不交所得税）。所以下面还是用市盈率，但会额外把现金流口径摆出来——因为它一半的资产是酒店和公寓，折旧数字很大，而折旧对海边房产来说有多真实，是这家公司估值的核心争议。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>要理解圣乔，先记住一件事：<strong>它在佛罗里达狭长地带（Panhandle，就是佛州西北那条挨着阿拉巴马的海岸线）拥有大约 17 万英亩土地</strong>——差不多是 690 平方公里，比整个新加坡还大一点。这些地是它一百多年前当造纸公司时攒下来的松树林，账面成本低到可以忽略不计。</p>
+<p><strong>这一点有数据可以佐证</strong>：它的存货周转率是 <strong>77.21 倍</strong>。一家坐拥 690 平方公里土地的公司，存货周转率高到这个程度，只能说明一件事——那些地在账上几乎不值钱。所以它每卖出一块地，报表上的"成本"小得离谱，毛利率看起来惊人。这不是造假，是真的；但它也意味着这门生意的本质里，有很大一块是<strong>在变卖一份不可再生的存货</strong>。</p>
+<p>真正让这份存货值钱的转折点是 2010 年——圣乔捐地建成的西北佛罗里达海滩国际机场通航，这片原本只有本地人知道的海岸线突然可以直飞了。之后疫情期间的远程办公潮又送来一批从东北部和中西部搬来的人。人一多，地就值钱。</p>
+<p>它报四个分部，实质是三门生意加一个零头。</p>
+<h3>生意一：卖宅基地（Residential，占营收 32%）</h3>
+<p><strong>圣乔自己基本不盖房子。</strong> 它做的是"把松树林变成可以盖房子的地"这一段：跑规划审批、修路、埋水管电缆、做排水，然后把整理好的宅基地整批卖给全国性建商。</p>
+<p><strong>举个例子</strong>：D.R. Horton 或 Pulte 这样的建商要在 Watersound Origins 这个社区拿 200 块宅基地，圣乔按每块约 12 万美元卖给它们，一笔 2,400 万美元。圣乔的实际现金支出只有修路埋管那部分，土地本身接近白得。盖房子那一段——低毛利、压资本、要担保修——留给建商去干。</p>
+<p>它也和 Minto 合作开发 Latitude Margaritaville Watersound（一个以吉米·巴菲特品牌为主题的退休社区），这类项目按销售分成。</p>
+<h3>生意二：酒店、高尔夫和俱乐部（Hospitality，占营收 43%，已经是最大的一块）</h3>
+<p>圣乔在自己造的这些镇子里，同时拥有酒店、球场、海滩俱乐部和餐厅。酒店挂在希尔顿、洲际这些品牌下（Embassy Suites 巴拿马城海滩度假酒店、Home2 Suites、Hotel Indigo、Camp Creek Inn 等），一千三百多间房。</p>
+<p><strong>举个例子</strong>：一家亚特兰大来的四口之家在 Camp Creek Inn 住四晚，每晚 450 美元；三餐花 600；打一场高尔夫 400。这 2,800 美元全部进圣乔口袋。而他们之所以来这个海滩小镇度假，是因为这个镇子本身就是圣乔一手建起来的。</p>
+<p>俱乐部这块尤其值钱：Watersound Club 的会员资格要交一笔几万美元的入会费，之后每年交年费。这笔钱不但利润率极高，还是提前收的现金。</p>
+<h3>生意三：收租（Commercial，占营收 22%）</h3>
+<p>公寓楼（一千三百多套）、自助仓储、Publix 超市带头的社区购物中心、写字楼，还有这两年在推的医疗和养老物业。<strong>举个例子</strong>：一家 Publix 签 20 年租约；一个护士在圣乔的公寓租两居室，月租 2,100 美元。这是合同化的、每月自动到账的钱，也是这三门生意里最稳的一门。它还会不定期整块卖商业地给别人开发。</p>
+<h3>第四块：其他（3%）</h3>
+<p>木材采伐、采矿权、湿地补偿银行（把自己名下的湿地做成保护地，卖"补偿额度"给要在别处填湿地的开发商）。</p>
+<h3>为什么这三件事必须放在一家公司里</h3>
+<p><strong>这是一个飞轮，也是圣乔真正的护城河</strong>：卖宅基地 → 人搬进来 → 他们的父母来看孙子要住酒店、年轻人要租公寓、所有人要逛超市要看病 → 而这些酒店、公寓、超市、诊所也都是圣乔的 → 镇子越热闹，下一块宅基地卖得越贵。</p>
+<p><strong>它不是在卖地，它是在造一座城，然后把这座城的每一层都收一遍钱。</strong> 全美国能这么干的公司屈指可数，因为没人再有这么大一块连片的、位置这么好的地。</p>
+<h3>钱怎么分（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>对比 FY2025 全年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卖宅基地 Residential</td>
+<td>175.18</td>
+<td>+6.1%</td>
+<td>32.0%</td>
+<td>约 50%（估算）</td>
+<td>约 88</td>
+</tr>
+<tr>
+<td>酒店俱乐部 Hospitality</td>
+<td>237.03</td>
+<td>+7.4%</td>
+<td>43.3%</td>
+<td>约 15%（估算）</td>
+<td>约 36</td>
+</tr>
+<tr>
+<td>收租 Commercial</td>
+<td>120.04</td>
+<td>+0.9%</td>
+<td>21.9%</td>
+<td>约 45%（估算）</td>
+<td>约 54</td>
+</tr>
+<tr>
+<td>其他 Other</td>
+<td>15.60</td>
+<td>+85.1%</td>
+<td>2.8%</td>
+<td>约 30%（估算）</td>
+<td>约 5</td>
+</tr>
+<tr>
+<td>减：总部费用</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 −17</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>547.84</strong></td>
+<td><strong>+6.7%</strong></td>
+<td>100%</td>
+<td>30.18%（实际）</td>
+<td><strong>165.33</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报页只披露到分部营收，分部利润率是估算的</strong>（用整体经营利润 1.6533 亿倒推，按房地产开发高毛利、酒店低毛利的常识分配）。营收整体 TTM 同比 <strong>+28.4%</strong>（上表对比的是上一个完整财年 FY2025，所以只有 +6.7%，两个数不矛盾，是比较基准不同）。</p>
+<p>另外注意一件事：<strong>全公司只有 1,131 名员工做 5.48 亿美元营收。</strong> 酒店餐厅是出了名的用人密集，圣乔却只有一千出头的人——因为酒店大多由品牌方或第三方运营，圣乔收的是资产的钱，不是运营辛苦钱。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 只有 <strong>129 万美元</strong>，占净利润 <strong>1.05%</strong>。这个数字低得不像一家 38 亿美元市值的美国上市公司——同规模公司普遍在 5%–15%。管理层几乎不给自己发股票。<strong>这是全篇最干净的一个数字。</strong></p>
+<p><strong>一次性项目</strong>：只有一笔小的——资产处置收益 254 万美元，一次性收益，下面算真实利润时扣掉。除此之外没有诉讼和解、没有重组、没有减值。</p>
+<p><strong>要单独拎出来的一项：权益法投资在亏钱，而且越亏越多。</strong> 圣乔有一些合资持有的项目和一个投资组合，这一项从 FY2023 的<strong>赚 1,196 万</strong>，一路变成 FY2024 亏 320 万、FY2025 亏 997 万、TTM <strong>亏 1,326 万</strong>。三年方向反过来了，窟窿一年比一年大，TTM 这笔亏损吃掉了净利润的 10.8%。它是非现金的（已在经营现金流里加回去了），但它是真实的经济损失，不是会计噪音。</p>
+<p><strong>资本化的支出</strong>：没有异常。房地产开发商把开发成本计入存货是行业标准做法，不是激进会计。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>6,227 万美元</strong>，SBC 只有 129 万，<strong>回购/SBC = 48 倍</strong>。这个比值高得离谱——因为分母几乎为零。这是货真价实的回购，不是在给员工发股擦屁股。股本一年减少 1.21%。同期分红 3,567 万（约每股 0.62 美元，股息率 0.93%）。<strong>两项加起来还给股东 9,794 万，占市值 2.56%。</strong></p>
+<p><strong>利润和现金流的差，以及全篇最重要的那件事</strong>：净利润 1.2305 亿，经营现金流 2.168 亿。差了 9,375 万，接近净利润的八成。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>123.05</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+46.13</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+0.83</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−2.54</td>
+</tr>
+<tr>
+<td>＋ 权益法投资亏损（非现金）</td>
+<td>+13.26</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+1.29</td>
+</tr>
+<tr>
+<td>＋ <strong>其他经营项目</strong></td>
+<td><strong>+42.37</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款 / 递延收入 / 其他营运资金</td>
+<td>−7.58</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>216.80</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>那笔 <strong>+4,237 万的"其他经营项目"是关键</strong>。财报页不拆开这一项，但对一家土地开发商，它主要装的是<strong>房地产存货的变动</strong>：往里投的开发成本 vs 卖掉时释放的账面成本。看它的历史就明白了——FY2022 是 <strong>−5,935 万</strong>（拼命往里投），FY2025 变成 +1,317 万，TTM 变成 <strong>+4,237 万</strong>（在往外收）。</p>
+<p><strong>而投资活动那边讲的是同一个故事，而且更直白：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>投在房地产上的钱</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>−1.492 亿</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>−2.518 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>−1.338 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>−4,219 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>−1,976 万</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>−2,105 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>圣乔在 2021–2023 年疯狂造东西（总债务从 4.02 亿冲到 6.33 亿），2024 年之后停手了，现在在收割。</strong> 建的那批酒店和公寓已经建成、爬坡、开始产生 2.37 亿美元的酒店收入和 1.20 亿美元的租金；同时它不再往里砸钱，还在拿钱还债（TTM 净还债 5,850 万，总债务降到 5.51 亿）。</p>
+<p><strong>这就是自由现金流突然变漂亮的原因，而这个原因你必须知道</strong>——它不是效率提升，是投资停了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>38.3 亿 ÷ 1.2305 亿</td>
+<td><strong>31.1×</strong></td>
+<td><strong>$3.21</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>圣乔不发布调整后利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>净利 1.2305 亿 − 一次性处置收益（税后 189 万）</td>
+<td><strong>31.6×</strong></td>
+<td><strong>$3.16</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报告值）</td>
+<td>38.3 亿 ÷ 2.1229 亿</td>
+<td>18.0×</td>
+<td>$5.55</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（把地产开发投入也扣掉）</strong></td>
+<td>38.3 亿 ÷（2.168 −0.045 −0.211）= 1.9124 亿</td>
+<td><strong>20.0×</strong></td>
+<td><strong>$4.99</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>42.7 亿 ÷ 1.6533 亿</td>
+<td>25.8×</td>
+<td>$3.87</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>38.3 亿 ÷（0.7419＋1.1563＋1.2305）/3 = 1.0429 亿</td>
+<td><strong>36.7×</strong></td>
+<td><strong>$2.72</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：你现在投 100 块进圣乔，按会计利润算，公司一年替你赚 3 块 2；按穿越三年的平均利润算，只有 2 块 7；但按现金流算，是 5 块。</strong></p>
+<p><strong>为什么利润口径和现金流口径差这么远（31 倍 vs 20 倍）？</strong> 就是那 4,613 万的折旧。会计规定酒店和公寓楼要按几十年折旧，好像它们会一点点烂掉。对一栋工厂厂房，这是对的；对佛罗里达海边一栋维护良好的酒店，这在很大程度上不对——它可能还在升值。这正是 REIT 行业发明 FFO 指标的原因。所以对圣乔来说，<strong>20 倍现金流那个数字，比 31 倍市盈率更接近真相</strong>。</p>
+<p><strong>这 5 块钱里有多少真回到你口袋？</strong> 分红 0.93% + 回购 1.63% = <strong>2.56%</strong>。剩下的用来还债（TTM 净还 5,850 万）。它现在既不扩张也不加杠杆，是一个纯粹的"收割 + 还钱 + 回购"状态。</p>
+<p><strong>这个数字未来会变大还是变小？</strong> 有一个具体的隐忧：<strong>ROIC 10.25%，而它自己的加权平均资本成本是 10.41%。</strong> 也就是说，这家公司过去投进去的每一块钱，赚回来的刚好等于（甚至略低于）资金成本。这跟"拥有不可复制的稀缺资产"这个故事是有张力的——好资产应该赚超额回报。合理的解释是那批 2021–2023 建的酒店公寓还在爬坡，回报率会往上走；但这是需要兑现的假设。</p>
+<p>那个 36.7 倍的三年平均口径同样刺眼：<strong>当期 31.1 倍、三年平均 36.7 倍</strong>，说明现在这个利润水平是这三年里最好的。而 FY2021 到 FY2024 四年，净利润分别是 7,455 万、7,093 万、7,771 万、7,419 万——<strong>四年原地踏步</strong>。真正的跃升只发生在最近一年半。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>资产是真好，账是真干净，价格是真不便宜。</strong></p>
+<p>好在哪：17 万英亩连片的佛州海岸线土地，账面成本接近于零，全美国没有第二家能复制；卖地—造城—收租的飞轮是真的在转；股权激励只占净利润 1%（这个数字在美股里几乎是圣品）；回购是真回购不是走过场；债在还，投资在收，现金流实打实。护城河和账本都挑不出毛病。</p>
+<p>问题在哪：31 倍会计利润、37 倍三年平均利润，你一年拿回 2 块 7 到 3 块 2。就算按最宽容的现金流口径，也要 20 倍、一年 5 块。而这份漂亮的现金流有一半功劳属于"它不再花钱建东西了"——这种漂亮持续不了太久，要么以后重新开始投（现金流回落），要么真的不投了（那增长也就到头了）。再加上 ROIC 刚好等于资本成本、股价一年已经涨了 34%、全部身家押在佛罗里达一小段海岸线上（飓风、佛州房产保险危机、人口流入速度）——<strong>这个价钱没有留给你任何犯错的余地。</strong></p>
+<p>一门值得放进观察名单的好生意，但不是现在这个价。</p>
+</div></body></html>

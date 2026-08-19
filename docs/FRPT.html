@@ -1,0 +1,355 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FRPT · Freshpet（冷藏鲜食宠物粮）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FRPT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">19倍是递延税转回变的，真实50倍，冰箱护城河真但价格假</div><h1>FRPT · Freshpet（冷藏鲜食宠物粮）</h1>
+<p>市值 34.90 亿美元 / 股价约 72.63 美元 / 行业：非耐用消费品（宠物食品）/ TTM 截止 <strong>2026 年 6 月 30 日</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>只有一门生意：做冷藏的鲜狗粮，然后用自己出钱买的冰箱把它塞进别人的超市。</strong> 财报把收入拆成两块，但那是按渠道拆的，不是两门生意。</p>
+<h3>这门生意到底是什么</h3>
+<p>普通狗粮（kibble，干粮）是把肉粉、谷物粉、油脂高温高压挤压成小颗粒，含水量 10% 以下，室温能放两年。Freshpet 走的是完全相反的路：真鸡肉、真牛肉、真胡萝卜、真菠菜，轻度蒸煮杀菌，不加防腐剂，含水量 70%，<strong>做完必须一路冷藏到狗嘴里</strong>。产品长得像超市里卖的绞肉卷（他们叫 roll 或 chub，一根圆柱形塑料膜包着，切片喂）或者小袋装的软颗粒。</p>
+<p>价格差距很大。一只 18 公斤的中型犬吃干粮一天大概 1 美元；吃 Freshpet 一天要 3～5 美元。一年下来是 400 美元和 1500 美元的区别。所以这东西卖给的是"把狗当孩子养"的人——美国这群人足够多，而且这些年一直在变多。</p>
+<p><strong>这门生意真正的门槛不在配方，在冰箱。</strong></p>
+<p>冷藏货是超市里最难摆的东西。生鲜柜台的位置寸土寸金、有既定的品类分配（肉、奶、蛋、熟食），谁都不会为一个新出的狗粮腾一节冷柜出来。Freshpet 的解法是：<strong>我自己出钱造冰箱，免费放进你的店。</strong></p>
+<p>具体是这样：Freshpet 掏钱定制一台带 Logo 的玻璃门冷柜（一台成本大几千美元），运到 Kroger、Walmart、Target、Publix、Petco、PetSmart、Costco 的门店，谈好放在宠物用品货架的走道尽头或者生鲜区旁边，通上电，插满自己的货。零售商一分钱不出、不占自己的冷柜、卖出去还有毛利，没理由拒绝。Freshpet 全美铺了<strong>两万八千台以上</strong>这样的冰箱，这台冰箱记在 Freshpet 自己的资产负债表上，每年计提折旧。</p>
+<p>这就是护城河的形态：<strong>你要跟 Freshpet 竞争，不是要做出更好吃的鲜狗粮，是要说服 Kroger 再腾一个走道尽头出来放你的第二台冰箱。</strong> 而店里那个位置只有一个。玛氏、雀巢普瑞纳这些巨头这些年都推过鲜食产品线，铺货速度都远不如 Freshpet，卡的就是这一关。</p>
+<p>代价也在这里：这是一门<strong>极其吃资本开支</strong>的生意。除了冰箱，Freshpet 还得自己造工厂——因为没有代工厂能做冷链鲜食宠物粮。他们在宾州伯利恒（自称 "Freshpet Kitchens"）和德州恩尼斯建了自己的厂。<strong>2021 到 2023 年，这家公司每年花 2.3 亿到 3.2 亿美元建产能，而当年营收才 4 亿到 7 亿。</strong> 那三年自由现金流分别是 −3.21 亿、−2.73 亿、−1.63 亿，全靠增发股票和发可转债续命。</p>
+<p>这个阶段刚刚结束——这是理解当前财报的关键。</p>
+<h3>两个渠道的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>渠道</th>
+<th>TTM 营收（百万）</th>
+<th>占比</th>
+<th>2025 全年</th>
+<th>2024 全年</th>
+<th>2025 vs 2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商超 / 大卖场 / 国际 / 电商</td>
+<td>932.24</td>
+<td>79.2%</td>
+<td>892.94</td>
+<td>800.78</td>
+<td><strong>+11.5%</strong></td>
+</tr>
+<tr>
+<td>宠物专卖店 / 仓储会员店</td>
+<td>245.07</td>
+<td>20.8%</td>
+<td>209.07</td>
+<td>174.40</td>
+<td><strong>+19.9%</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,177</strong></td>
+<td>100%</td>
+<td>1,102</td>
+<td>975.18</td>
+<td><strong>+13.0%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按渠道披露利润。按整体 41.37% 的毛利率和这两个渠道的定价结构推断，仓储会员店（Costco、Sam's）走大包装、单价低、毛利率明显更薄，商超渠道更赚钱——<strong>这是估算，不是财报数字。</strong></p>
+<p><strong>这张表要盯的是增速的塌方</strong>：2022 年 +39.9% → 2023 年 +28.8% → 2024 年 +27.2% → 2025 年 +13.0% → TTM +12.8%。<strong>两年之内从近 30% 掉到 13%。</strong> 而占八成的商超渠道，TTM 相对 2025 年报只多了 3,930 万，滚了半年增速已经降到个位数区间。宠物专卖 / 会员店那 20% 还在跑 20%，但它太小，拉不动大盘。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节是全篇最重要的部分。这家公司 TTM 报出来的 2.03 亿净利润，绝大部分不是卖狗粮赚的。</strong></p>
+<p>先把利润表摆开：</p>
+<ul>
+<li>营收 11.77 亿</li>
+<li><strong>经营利润 9,648 万</strong>（经营利润率 8.20%）</li>
+<li>税前利润 <strong>1.583 亿</strong></li>
+<li>所得税 <strong>−4,516 万</strong>（负数，是<strong>退税收益</strong>不是纳税）</li>
+<li>净利润 <strong>2.035 亿</strong></li>
+</ul>
+<p>经营利润 9,648 万，怎么走到税前 1.583 亿的？中间凭空多出 6,184 万。现金流量表给了答案：<strong>"处置投资收益" 6,655 万</strong>——一笔一次性的投资变现收益。扣掉约 470 万的净利息支出，正好对得上。</p>
+<p>然后税前 1.583 亿，怎么变成净利润 2.035 亿的？因为所得税是负的 4,516 万。<strong>这是递延所得税资产的估值备抵转回</strong>：Freshpet 2021—2023 年连亏三年，累积了大笔可抵扣亏损，但因为看不到什么时候能盈利，会计上把这笔资产的价值先减记掉了；现在公司转盈了，未来确定能用上这些亏损抵税，于是把当年减记的部分一次性加回来，走进利润表变成"负所得税"。<strong>这是一笔纯粹的会计分录，没有一分钱现金进公司。</strong></p>
+<p>证据就在现金流量表上：经营活动里有一行"其他经营活动 <strong>−4,401 万</strong>"——把这笔非现金的税收收益又扣了出去，跟 −4,516 万几乎一样大。</p>
+<p><strong>所以真实的、可持续的利润是多少？</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td>158.32</td>
+</tr>
+<tr>
+<td>− 一次性处置投资收益</td>
+<td>−66.55</td>
+</tr>
+<tr>
+<td><strong>＝ 核心税前利润</strong></td>
+<td><strong>91.77</strong></td>
+</tr>
+<tr>
+<td>× (1 − 25% 正常税率)</td>
+<td>×0.75</td>
+</tr>
+<tr>
+<td><strong>＝ 真实可持续净利润</strong></td>
+<td><strong>约 68.8</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2.035 亿的报告净利润，真实的部分是 6,880 万。差了整整三倍。</strong></p>
+<p><strong>股权激励（SBC）</strong>：TTM 1,436 万，占真实净利润 20.9%，占营收 1.2%。这个金额本身不算离谱，但<strong>它的历史很奇怪</strong>：2024 年 5,181 万 → 2025 年 1,388 万 → TTM 1,436 万，一年之内掉了 73%。这么大的跳水通常是业绩型股权奖励没达标被冲回。<strong>意思是现在这个 1,400 万很可能不是常态</strong>，公司真要重新给管理层发激励，这条线会弹回去，直接吃掉真实利润的一大块。</p>
+<p><strong>一次性项目</strong>：上面那两笔（6,655 万投资收益 + 4,516 万税收转回）就是全部，合计<strong>超过报告净利润的一半</strong>。另外 2025 年也有一笔约 6,645 万的类似非现金调整——<strong>说明这家公司连续两年靠一次性项目撑净利润，而"连续两年发生的一次性"该不该叫一次性，单看一期财报判断不了。</strong></p>
+<p><strong>资本化的支出</strong>：没有软件或研发资本化。资本开支 1.456 亿全是实物——工厂产线和冰箱。</p>
+<p><strong>回购与稀释</strong>：<strong>表面数字骗人。</strong> TTM 回购 5,918 万、发行 790 万，回购 ÷ SBC = 4.12 倍，看起来是"真回购"。但把摊薄股数拉出来看：</p>
+<ul>
+<li>2023 年 4,801 万股 → 2024 年 5,046 万 → 2025 年 5,270 万 → TTM <strong>5,529 万</strong></li>
+</ul>
+<p><strong>每年稀释约 5%，回购完全没抵消掉。</strong> 而 SBC 只有 1,436 万（占市值 0.4%），解释不了 5% 的稀释。差额几乎肯定来自 2023 年发的那笔约 4 亿美元可转债——股价涨上来之后，会计上要按"假设全部转股"把这些股份计进摊薄股数。总债务从 2022 年的 571 万一夜跳到 2023 年的 4.25 亿，那一年"长期债务发行 3.935 亿"，利息覆盖 6.90 倍对应利息约 1,400 万、除以 4 亿多是 3.5% 的票息——低息可转债的典型特征。</p>
+<p>（数据源上还有一行"股数一年 +17.03%"，跟现金流量表上净回购 5,100 万对不上，我按现金流量表和摊薄股数为准。）</p>
+<p><strong>利润和现金流的差</strong>：逐项对账，看这 2.03 亿利润有多少是纸面的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>203.47</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>97.24</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>2.21</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>1.14</td>
+</tr>
+<tr>
+<td><strong>− 处置投资收益（一次性、非经营）</strong></td>
+<td><strong>−66.55</strong></td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>14.36</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>0.69</td>
+</tr>
+<tr>
+<td><strong>− 其他经营项（主要是递延税收益转出）</strong></td>
+<td><strong>−44.01</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−5.14</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>3.23</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−6.53</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产变动</td>
+<td>6.52</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>206.62</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−145.58</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>61.05</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表把整个故事说完了：净利润 2.03 亿里，有 1.11 亿（6,655 万 ＋ 4,401 万）在算现金流时被原样扣掉，因为那根本不是现金。真正撑起经营现金流的是折旧 9,724 万——而折旧对应的那些冰箱和产线，是真的会坏、真的要换的。</p>
+<p>自由现金流 6,105 万，是这家公司<strong>上市以来第一个像样的正数</strong>（2024 年还是 −3,280 万，2025 年才 1,238 万）。资本开支从 2021 年 3.22 亿降到 TTM 1.456 亿，但仍然比折旧 9,724 万高出 48%，说明还在扩产，只是不像以前那么疯。</p>
+<p><strong>账上负债</strong>：现金 3.51 亿，债务 4.94 亿，净负债 1.43 亿。流动比率 6.05，很安全。这块没问题。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 34.90 亿，企业价值 36.33 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>34.90 亿 ÷ 2.035 亿</td>
+<td>17.2 倍</td>
+<td>5.83 元</td>
+</tr>
+<tr>
+<td>按摊薄 EPS 算</td>
+<td>72.63 ÷ 3.68</td>
+<td>19.7 倍</td>
+<td>5.07 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>再加回 SBC 后约 2.14 亿</td>
+<td>16.3 倍</td>
+<td>6.14 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>34.90 亿 ÷ 0.688 亿（扣掉一次性投资收益、按 25% 正常税率）</td>
+<td><strong>50.7 倍</strong></td>
+<td><strong>1.97 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>34.90 亿 ÷ 0.611 亿</td>
+<td><strong>57.2 倍</strong></td>
+<td>1.75 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>36.33 亿 ÷ 0.965 亿</td>
+<td><strong>37.7 倍</strong></td>
+<td>2.66 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>34.90 亿 ÷ 0.506 亿（TTM 6,880 万、2025 约 6,300 万、2024 约 2,000 万，均已剔一次性，<strong>后两年为估算</strong>）</td>
+<td><strong>69.0 倍</strong></td>
+<td><strong>1.45 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>从 17.2 倍到 50.7 倍，这是任务 1 至今见过的最大一次口径撕裂。</strong></p>
+<p>而且这不是我一个人的看法——<strong>市场自己给出的前瞻市盈率是 46.57 倍</strong>，跟我算的 50.7 倍基本吻合。也就是说，17.2 倍（以及筛选器里那个 19.1 倍）是个纯粹的会计幻觉，稍微专业一点的投资者根本不看它。这家公司之所以能出现在"市盈率 15–50 倍"的筛选结果里，靠的就是那笔递延税转回。</p>
+<p><strong>所以：你现在投 100 块进去，按最保守的真实口径算（三年平均），公司一年替你赚 1.45 元；按当期真实口径算，赚 1.97 元。</strong></p>
+<p>这 1.97 元有多少回到你口袋？<strong>接近于零。</strong> 不分红。回购 5,918 万只占市值 1.7%，而且完全没抵消掉每年 5% 的摊薄。绝大部分钱进了 1.456 亿的资本开支——继续造冰箱、继续扩产线。</p>
+<p>这个 1.97 元未来会变大吗？<strong>会，但速度撑不住这个价格。</strong> 好的一面是真实的：营收还在涨 13%，毛利率 41.4% 且稳定，经营利润率从 2023 年的 −3.9% 转正到 8.2%，资本开支高峰过去了、自由现金流刚刚转正，产能爬坡后经营杠杆会继续释放。坏的一面是：投入资本回报率 <strong>7.00%</strong>，而加权平均资本成本 <strong>11.90%</strong>——<strong>这家公司现在每投一块钱进去，赚回来的比它借这块钱的成本还低，在毁灭价值</strong>。增速两年内腰斩，占八成的主渠道已经掉到个位数。50 倍买一个增速 13% 且还在减速、ROIC 打不过资本成本的生意，需要它未来几年利润率翻倍才划得来。</p>
+<p>另外两个信号：股价 52 周涨了 18.6%，现在比 200 日均线（62.22）高出 17%，RSI 70.6，<strong>明显是短期急涨出来的位置</strong>；同时 <strong>16.68% 的流通股被做空</strong>，是任务 1 里空头比例最高的一档。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>筛选器上那个 19 倍是假的，真实是 50 倍——这不是便宜的好公司，是一个真实但被算错价的好生意。</strong></p>
+<p>冰箱护城河是真的，品牌是真的，毛利率 41% 是真的，资本开支高峰结束、自由现金流转正的拐点也是真的。这些让 Freshpet 值得放在观察名单上，但<strong>不是以现在这个价格</strong>。</p>
+<p>要让 50 倍变得合理，需要：营收增速重新回到 20% 以上（现在 13% 且在降），或者经营利润率从 8.2% 走到 15% 以上（有可能，但要几年），或者两者一起。任何一条落空，这个价格就没有支撑——因为托底的东西一样都没有：不分红、回购抵不过摊薄、账面利润里一半是会计分录、ROIC 低于资本成本。</p>
+<p>一句话：<strong>好生意，坏价格，而且价格的"好看"本身是个会计幻觉。</strong></p>
+</div></body></html>

@@ -1,0 +1,473 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ATRO · Astronics（阿斯特罗尼克斯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ATRO</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">涨209%后57倍市盈率，三年平均120倍，股本一年还多6.95%</div><h1>ATRO · Astronics（阿斯特罗尼克斯）</h1>
+<p>市值 36.96 亿美元 | 股价约 $86.0（4301 万股） | 行业：电子科技（航空电子与机载电源） | TTM 截止 2026 年 7 月 4 日 | 全榜第 716 名</p>
+<blockquote>
+<p>先摆一个必须先知道的事实：<strong>这只股票过去 52 周涨了 208.95%。</strong>下面所有估值都是在这个前提下算的。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Astronics 是纽约州东奥罗拉（East Aurora）的一家老牌航空零部件公司，2700 名员工。财报拆成两块：<strong>Aerospace（航空）</strong>和<strong>Test Systems（测试系统）</strong>。真实情况是"一大一小"，大的那块自己又分成好几摊。</p>
+<h3>生意一：Aerospace —— 飞机上"带电的那些东西"（TTM 营收 8.634 亿，占 91.7%）</h3>
+<p>一句话概括这门生意：<strong>飞机上凡是需要通电、需要发光、需要传数据的小零件，很多是它做的。</strong>它不造飞机，不造发动机，它给波音、空客、湾流、贝尔直升机以及它们的一级供应商供货，也直接卖给航空公司做客舱改装。具体是这么几摊：</p>
+<p><strong>① 座椅电源（EmPower）—— 看家产品，全球装机量第一</strong></p>
+<p>你坐飞机时座位扶手里或者前排座椅底下那个能给手机充电的 USB 口和电源插座，很大概率是 Astronics 的 EmPower 系统。它卖的不是"一个插座"，而是<strong>一整套机上供电系统</strong>：机舱地板下的主控电源单元把飞机的 115V/400Hz 交流电转成低压直流，再通过座椅排线送到每个座位的插座上，还得处理"一百多个乘客同时插电时怎么分配功率、怎么不跳闸、怎么过适航认证"。</p>
+<p>一单大概多少钱？给一架 180 座的空客 A320neo 全客舱配 EmPower，整套系统的价格在<strong>几十万美元</strong>量级；一架宽体机能到百万美元级。客户为什么非买不可——<strong>因为不装乘客会投诉、航司卖不出票</strong>，而这套东西要通过 FAA/EASA 适航认证，认证一次要几年、几百万美元，换供应商等于重做一遍认证。这就是它的护城河：不是技术多难，是<strong>认证和装机基础换不动</strong>。</p>
+<p><strong>② 电源转换与配电</strong></p>
+<p>飞机发电机发出来的是 115V/400Hz 三相交流电，但机上每个设备要的制式都不一样——厨房烤箱要一种、娱乐系统要一种、雷达要一种。Astronics 做的就是中间那一堆"变压 + 配电 + 保护"的盒子。军机、公务机、商用机都用，这块毛利率高于座椅电源。</p>
+<p><strong>③ 照明与安全系统</strong></p>
+<p>LED 阅读灯、客舱氛围灯（就是波音 787 那种能变色的顶灯）、外部航行灯、紧急出口地面指引条、驾驶舱照明，以及军用直升机的<strong>夜视兼容照明</strong>（灯光必须不干扰飞行员的夜视仪，这是个小而硬的细分市场）。</p>
+<p><strong>④ 航电数据总线（Ballard Technology 品牌）</strong></p>
+<p>飞机内部设备之间通信用的是 ARINC 429 和 MIL-STD-1553 这类几十年没变过的老总线协议。Astronics 做接口卡、协议分析仪、总线测试盒——卖给航电厂商的工程部门和军方维修站。单价不高（几千到几万美元一台），但客户黏性极强，因为整个行业的测试流程都是围着它的产品写的。</p>
+<p><strong>⑤ 天线与机身连接</strong></p>
+<p>机身外面那些鲨鱼鳍状的卫星通信/Wi-Fi 天线的适配件和电源。</p>
+<p><strong>⑥ 军用与国防</strong></p>
+<p>弹药与导弹的电源系统、无人机电源。这块近两年因为国防预算上行而增长最快。</p>
+<p><strong>这门生意的经济特征</strong>：装机（卖给波音空客的新机）毛利低但量大且能锁十几年；<strong>售后与改装（航空公司自己掏钱给老飞机加插座、换灯、上 Wi-Fi）毛利高得多</strong>。过去两年利润率暴涨，很大程度就是因为改装业务在爆发——疫情后航司现金回来了，集中给老机队升级客舱。</p>
+<h3>生意二：Test Systems —— 给军方做"检测仪"（TTM 营收 7881 万，占 8.4%）</h3>
+<p>做自动测试设备（ATE）。最典型的产品是<strong>美国陆军的手持式通信系统测试仪</strong>：一个士兵拎着一个加固笔记本大小的盒子，插到车载电台或跳频电台上，几分钟就能判断这台设备是好是坏、坏在哪。此外也给通信和半导体厂商做射频量产测试台。</p>
+<p>这块业务<strong>极不稳定</strong>——它靠几个大合同吃饭，一个交付完就断档。FY2025 收入从 8887 万掉到 6524 万，<strong>一年跌 27%</strong>；TTM 又回到 7881 万。它对整体影响不大，但会让季度数字忽上忽下。</p>
+<h3>两块生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上年同期（FY2025 vs FY2024）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aerospace</td>
+<td><strong>8.634 亿</strong></td>
+<td>7.974 亿 vs 7.068 亿，<strong>+12.8%</strong></td>
+<td>91.7%</td>
+<td><strong>估算 17%~19%</strong></td>
+<td>估算 1.5~1.6 亿</td>
+</tr>
+<tr>
+<td>Test Systems</td>
+<td>0.788 亿</td>
+<td>0.652 亿 vs 0.889 亿，<strong>−26.6%</strong></td>
+<td>8.4%</td>
+<td><strong>估算 3%~6%</strong></td>
+<td>估算 300~500 万</td>
+</tr>
+<tr>
+<td>分部间抵销</td>
+<td>−0.002 亿</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>9.421 亿</strong></td>
+<td><strong>+14.5%</strong></td>
+<td>100%</td>
+<td>13.3%（实际）</td>
+<td>1.257 亿（实际）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只披露到分部营收，不披露分部经营利润。上表分部利润率是按整体 13.3% 的经营利润率、扣除总部费用、并参照两块业务的历史毛利结构<strong>估算</strong>的，不是财报数字。</p>
+</blockquote>
+<h3>这是一场翻身仗，幅度罕见</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年度</th>
+<th>营收</th>
+<th>毛利率</th>
+<th>经营利润</th>
+<th>净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>4.449 亿</td>
+<td>12.3%</td>
+<td>−4864 万</td>
+<td>−2558 万</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>5.349 亿</td>
+<td>12.3%</td>
+<td>−3761 万</td>
+<td>−3575 万</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>6.892 亿</td>
+<td>25.3%</td>
+<td>−682 万</td>
+<td>−2642 万</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>7.954 亿</td>
+<td>27.7%</td>
+<td>+2467 万</td>
+<td>−1622 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>8.621 亿</td>
+<td>30.6%</td>
+<td>+9375 万</td>
+<td>+2936 万</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>9.421 亿</strong></td>
+<td><strong>32.3%</strong></td>
+<td><strong>+1.257 亿</strong></td>
+<td><strong>+7912 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连亏四年，2025 年才转正。</strong>收入五年涨了 112%，毛利率从 12.3% 翻到 32.3%，经营利润从 −4864 万变成 +1.257 亿。这就是航空零部件典型的<strong>极端经营杠杆</strong>：固定成本（工厂、认证、工程师）扛住了，一旦航班量回来、产量爬坡，增量收入几乎全部掉进利润。</p>
+<p>也正因为如此，<strong>它反过来一样成立</strong>——下一次航空周期向下时，这个杠杆会以同样的力度反向工作。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的账<strong>不干净</strong>，有四处必须剥。</p>
+<h3>① 最大的一处：花了约 2.86 亿现金买回可转债，其中 1.39 亿直接冲了股本溢价，利润表上一个字都没有</h3>
+<p>这是全篇最重要的发现。</p>
+<p>看资产负债表：<strong>股本溢价（Additional Paid-In Capital）从 FY2024 的 1.4415 亿掉到 FY2025 的 490 万，一年蒸发 1.3925 亿</strong>，公司的股本溢价几乎被清零；同期股东权益从 2.561 亿掉到 1.401 亿，<strong>尽管当年是盈利的</strong>。</p>
+<p>再看长期负债：从 1.6867 亿涨到 3.3445 亿，涨了 1.658 亿，<strong>但当年现金流量表上的净举债只有 1425 万</strong>。</p>
+<p>对上公司公告就全通了：Astronics 在 2025 年 9 月发行了 <strong>2.25 亿美元、票面利率 0% 的 2031 年到期可转债</strong>，把其中约 <strong>1.898 亿净募资 + 8500 万循环贷 + 1100 万自有现金，合计约 2.858 亿美元现金</strong>，用来回购了 <strong>1.32 亿本金</strong>的 2030 年可转债。</p>
+<p><strong>用 2.86 亿买回 1.32 亿的债。多付出去的约 1.53 亿是什么？</strong>是买回自己当初卖给债券持有人的那份<strong>看涨期权</strong>——因为股价一年涨了 209%，那批可转债的转股权已经值大钱了，持有人不肯按面值还给你。这 1.53 亿里，大部分（约 1.39 亿）按会计准则被判定为"权益部分的回购"，<strong>直接冲减股本溢价，不走利润表</strong>。</p>
+<p>用人话说：<strong>公司实实在在花掉了相当于 4.7 年自由现金流的现金，为过去的融资决策买单，而这件事在利润表上完全看不见。</strong>看净利润 7912 万你不会知道；只有把资产负债表和公告对起来才看得见。</p>
+<p>顺带说，这也解释了为什么股本一年增加了 <strong>6.95%</strong> ——没有增发，是可转债和股权激励在稀释。</p>
+<h3>② 所得税率 4.17%，这是不可持续的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td>8256 万</td>
+</tr>
+<tr>
+<td>所得税费用</td>
+<td><strong>344 万</strong></td>
+</tr>
+<tr>
+<td><strong>实际税率</strong></td>
+<td><strong>4.17%</strong></td>
+</tr>
+<tr>
+<td><strong>实际付出去的现金税</strong></td>
+<td><strong>87 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>原因是 2021–2024 那四年累计亏损形成的<strong>递延所得税资产（NOL）</strong>正在抵扣现在的利润，同时估值备抵在释放。这是"过去亏得多"的红利，用完就没有了。</p>
+<p><strong>正常化到 22% 的税率，同样的税前利润只能剩下 6440 万净利润</strong>——比报表上的 7912 万低 19%。第三部分会用这个数字。</p>
+<h3>③ 4309 万的"利息"里，只有 998 万是真掏出去的现金</h3>
+<p>经营利润 1.2565 亿，税前利润 8256 万，中间少了 <strong>4309 万</strong>。但 TTM 实际支付的现金利息只有 <strong>998 万</strong>。差出来的约 3300 万是非现金的，主要是两块：<strong>0% 票面可转债的折价摊销</strong>（票面不付息，但会计上必须按市场利率把折价摊成利息费用）和<strong>回购旧可转债的债务清偿损失</strong>。</p>
+<p>这一项在现金流量表上以"其他经营活动 <strong>+5096 万</strong>"的形式被加回来。它是全公司经营现金流的第二大来源——<strong>比折旧摊销（2311 万）还大一倍。</strong></p>
+<h3>④ 股权激励与回购</h3>
+<p>TTM 股权激励 <strong>772 万</strong>，占净利润 9.8%，规模不算大，<strong>按 GAAP 已扣除，本文不加回</strong>。
+<strong>回购金额：0。回购 ÷ SBC = 0 倍。</strong>公司<strong>不分红、不回购</strong>，现金全部用来还债和买回可转债。股本一年增加 6.95%——<strong>股东在被持续稀释，没有任何对冲。</strong></p>
+<h3>⑤ 利润 vs 现金流：逐项对账（TTM）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>79.12</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+23.11</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+3.03</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+7.72</td>
+</tr>
+<tr>
+<td><strong>＋ 其他经营活动（非现金利息 + 债务清偿损失 + 递延税）</strong></td>
+<td><strong>+50.96</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−38.90</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−30.44</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+17.55</td>
+</tr>
+<tr>
+<td>− 预收/税金/其他合计</td>
+<td>−9.62</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>102.51</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−41.83</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>60.68</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两件事值得指出：</p>
+<p><strong>第一，营运资金一年吃掉 6141 万。</strong>收入涨 14.5%，但应收账款涨了 3890 万、存货涨了 3044 万——<strong>这门生意每多做 1 块钱收入，要先垫进去大约 0.65 块钱的应收和存货。</strong>这是长周期航空供应链的本性（客户账期长、零件必须备货），增长越快占款越多。</p>
+<p><strong>第二，资本开支从 FY2024 的 843 万暴涨到 TTM 的 4183 万，五倍。</strong>这是在为产能爬坡花钱，也意味着<strong>自由现金流（6068 万）只有净利润（7912 万）的 77%</strong>。</p>
+<h3>⑥ 资产负债表：几乎没有净资产</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现金</td>
+<td><strong>902 万</strong></td>
+</tr>
+<tr>
+<td>总负债（含租赁）</td>
+<td>3.53 亿</td>
+</tr>
+<tr>
+<td><strong>净负债</strong></td>
+<td><strong>−3.44 亿</strong></td>
+</tr>
+<tr>
+<td>股东权益</td>
+<td><strong>1.982 亿</strong></td>
+</tr>
+<tr>
+<td>每股账面价值</td>
+<td><strong>$4.61</strong></td>
+</tr>
+<tr>
+<td>负债 / 权益</td>
+<td><strong>1.78</strong></td>
+</tr>
+<tr>
+<td>负债 / EBITDA</td>
+<td>2.17</td>
+</tr>
+</tbody>
+</table></div>
+<p>账上只剩 <strong>902 万美元现金</strong>，对着 3.53 亿的债。这不是"轻资产"，这是<strong>四年亏损把家底烧穿、又被 1.39 亿的可转债回购冲掉股本溢价之后剩下的残值</strong>。市净率因此高达 <strong>18.68 倍</strong>，有形账面市净率 <strong>43.92 倍</strong>——不是因为公司多值钱，是因为分母几乎没有了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 36.96 亿，企业价值 40.5 亿（市值 + 3.44 亿净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>36.96 亿 ÷ 0.7912 亿</td>
+<td><strong>46.7 倍</strong></td>
+<td><strong>$2.14</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（估算）</td>
+<td>剔除债务清偿损失等，约 1.10 亿</td>
+<td>33.6 倍</td>
+<td>$2.98</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 0.8256 亿 × (1−22% 正常税率) = 0.644 亿</td>
+<td><strong>57.4 倍</strong></td>
+<td><strong>$1.74</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>36.96 亿 ÷ 0.6068 亿</td>
+<td><strong>60.9 倍</strong></td>
+<td><strong>$1.64</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>40.5 亿 ÷ 1.2565 亿</td>
+<td>32.2 倍</td>
+<td>$3.10</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>36.96 亿 ÷ 0.3075 亿（FY24 −0.16 亿、FY25 +0.29 亿、TTM +0.79 亿的均值）</td>
+<td><strong>120.2 倍</strong></td>
+<td><strong>$0.83</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>补充几个：EV/EBITDA <strong>27.2 倍</strong>，市销率 <strong>3.93 倍</strong>，市净率 <strong>18.68 倍</strong>，有形账面市净率 <strong>43.92 倍</strong>，前瞻市盈率 <strong>29.5 倍</strong>。</p>
+<p><strong>最后一行是全表最有价值的一行。</strong>如果把三年窗口往前挪一格（FY2023 −2642 万、FY2024 −1622 万、FY2025 +2936 万），<strong>三年平均利润是负的</strong>，倍数根本算不出来。这句话把问题说透了：</p>
+<blockquote>
+<p><strong>当前这个 7912 万的利润，不是一个正常年份的利润，是这家公司二十年来最好的一年。</strong></p>
+</blockquote>
+<p>它同时踩中了三件好事：航空周期在高位、客舱改装潮在高位、税率因为历史亏损降到 4%。三件事没有一件是永久的。</p>
+<h3>你投 100 块，一年拿回多少？</h3>
+<p>按最保守的真实口径（税率正常化到 22%）：<strong>公司一年替你赚 1.74 块。</strong>如果按真实自由现金流算，只有 <strong>1.64 块。</strong></p>
+<p>这 1.64–1.74 块里，<strong>有多少回到你口袋？零。</strong>
+- 不分红（无股息）
+- 不回购（TTM 回购 0）
+- 股本反而一年增加 6.95%</p>
+<p><strong>所有的钱都留在公司里</strong>，具体去向很明确：4183 万投产能、998 万付利息，以及那笔约 2.86 亿的可转债回购。<strong>这是一家现在把每一分钱都用来修理自己资产负债表的公司。</strong></p>
+<p><strong>这个 1.7 块未来会变大还是变小？</strong></p>
+<p>变大的理由是真的：窄体机产量还在爬坡、客舱改装订单积压还没做完、国防预算在涨、经营杠杆继续放大（收入每涨 10%，利润能涨 25%+）。市场共识给的前瞻市盈率 29.5 倍，意味着预期未来一年利润再涨 58%。</p>
+<p>变小的风险同样是真的，而且有三条<strong>确定会发生</strong>的：
+1. <strong>税率必然从 4% 回到 20%+</strong>，这一条单独就要吃掉约 19% 的净利润；
+2. <strong>股本继续被可转债稀释</strong>，2.25 亿的 2031 年可转债还挂着；
+3. <strong>营运资金随增长继续占款</strong>，自由现金流会持续落后于账面利润。</p>
+<p>再加上一条不确定但杀伤力最大的：<strong>航空业是周期行业。</strong>2021 年这家公司毛利率是 12.3%，不是 32.3%。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是真的好起来了，但价格已经贵到离谱——涨了 209% 之后，你现在付 57 倍市盈率去买一家二十年来最好的一年。</strong></p>
+<p>先给它公道：EmPower 座椅电源在全球的装机基础和适航认证壁垒是真的，航电总线那块的客户黏性是真的，22.5% 的投入资本回报率是真的，收入连续三年双位数增长也是真的。这不是一家空壳公司，这是一家实实在在打赢了翻身仗的老牌零部件商。</p>
+<p>但价格上的每一个数字都在报警：</p>
+<ul>
+<li><strong>46.7 倍</strong> GAAP 市盈率；把 4.17% 那个荒唐税率还原到正常水平，是 <strong>57.4 倍</strong></li>
+<li><strong>60.9 倍</strong>自由现金流</li>
+<li><strong>120 倍</strong>三年平均利润——把窗口再往前挪一年，三年平均是<strong>亏的</strong></li>
+<li><strong>18.68 倍</strong>市净率、<strong>43.9 倍</strong>有形账面市净率</li>
+<li>账上只剩 <strong>902 万现金</strong>，对着 <strong>3.53 亿</strong>负债</li>
+<li>不分红、不回购，<strong>股本一年还多出 6.95%</strong></li>
+<li>空头持仓占流通股 <strong>7.08%</strong></li>
+</ul>
+<p>而且这家公司刚刚做了一件很说明问题的事：<strong>花掉约 2.86 亿现金（相当于四年半的自由现金流）去买回 1.32 亿本金的可转债，多付的 1.39 亿直接冲掉了股本溢价，利润表上一个字都没写。</strong>一家账上只有 902 万现金的公司，被迫用这种方式处理自己的融资旧账——这说明资产负债表比利润表紧张得多。</p>
+<p><strong>投 100 块，按最保守的真实口径一年替你赚 1.7 块，而且这 1.7 块一分钱都不会回到你手里。</strong>在此之上，你还要接受一个确定的税率正常化、一个还没到期的 2.25 亿可转债，和一个终将掉头的航空周期。</p>
+<p><strong>好公司，坏得离谱的价格。</strong>如果你在 2024 年 20 块钱的时候买了，恭喜，这是笔非常漂亮的投资——现在该考虑的是卖，不是买。</p>
+</div></body></html>
