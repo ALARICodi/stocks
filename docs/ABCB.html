@@ -1,0 +1,358 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ABCB · 阿美里斯银行（Ameris Bancorp）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ABCB</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔除8250万诉讼后13.6倍，ROTCE14.3%，真回购，商誉占26%</div><h1>ABCB · 阿美里斯银行（Ameris Bancorp）</h1>
+<p><strong>市值</strong> $59.0 亿 · <strong>股价</strong> 约 $88.22 · <strong>行业</strong> 区域性银行 · <strong>TTM 截止</strong> 2026 年 6 月 30 日 · <strong>交易所</strong> NYSE</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率（PB）、有形账面市净率（P/TBV）、净资产收益率（ROE / ROTCE）这套口径，而不是单纯看市盈率。</strong></p>
+<p>原因是：银行的"资产"就是它放出去的贷款，"负债"就是储户的存款，它的利润高低几乎完全取决于<strong>账面净资产有多厚、以及这些净资产上加了多少倍杠杆</strong>。一家银行可以通过多放贷（加杠杆）让利润在一年内翻倍，市盈率立刻变得很"便宜"——但风险同时翻倍了，经济一转向就会连本金一起亏掉。所以看银行必须同时看"它赚多少"（ROE）和"你付了几倍净资产的价"（PB），单看市盈率会被杠杆骗。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Ameris 是一家总部在亚特兰大的区域银行，在佐治亚、佛罗里达、亚拉巴马、南卡罗来纳四个州开了一百多家网点，总资产约 277 亿美元。它这十几年是靠<strong>连续收购小银行</strong>长起来的——这一点后面会反复出现，因为它解释了这家公司账上为什么趴着 10.6 亿美元的商誉。</p>
+<p>银行的基本商业模式在讲具体业务前必须先说清楚，否则后面的数字没法读：<strong>银行是一门"低价借钱、高价放钱、赚中间差价"的生意</strong>。Ameris 从储户那里吸收存款——活期账户可能一分利息不给，定期存单可能给 4%——平均下来，它 TTM 为所有存款和借款一共付了 <strong>$4.50 亿</strong>的利息。转手它把这些钱放出去——给小企业的经营贷可能收 8%，给买房人的按揭可能收 6.5%——TTM 一共收回 <strong>$14.30 亿</strong>的利息。<strong>中间的差额 $9.80 亿，叫"净利息收入"，这是银行的主粮。</strong></p>
+<p>它的四门生意如下。</p>
+<h3>生意一：商业银行（Banking）——占七成半，主粮</h3>
+<p>这是核心。一家在萨凡纳开了三家门店的餐饮集团要开第四家，需要 300 万美元装修加设备，Ameris 的商业客户经理去谈，给一笔 5 年期、利率 7.8% 的贷款，用门店资产和老板个人担保做抵押。同时要求这家公司把日常经营账户（收银流水、发工资、付供应商）都搬到 Ameris——这个要求才是关键：<strong>那个经营账户里常年趴着的一两百万活期余额，Ameris 一分利息不用付，转手就能放出去收 7.8%。</strong>这就是银行业最值钱的东西，叫"低成本存款特许权"。</p>
+<p>一家亚特兰大的牙科诊所买设备，一家佛罗里达的仓储物业开发商要建仓库，一家亚拉巴马的农机经销商要备货——这些都是它的典型客户。单笔从几十万到几千万不等。银行赚的钱按"贷款余额 × 利差"算：放出去 300 万、利差 3.5 个点，一年就是 10.5 万。</p>
+<p><strong>为什么客户非用它不可：</strong>这个层级的客户（年营收几百万到几千万）对大银行来说太小、审批流程走不通，对社区小银行来说又太大、单笔贷款超出人家的额度上限。Ameris 卡在中间这个位置，而且客户经理能真的到店里去看、认识老板本人——这在小企业信贷里是真实的竞争壁垒。</p>
+<h3>生意二：零售按揭（Retail Mortgage）——占一成八，正在萎缩</h3>
+<p>Ameris 有一支按揭贷款团队，帮个人买房办房贷。这块的赚钱方式跟商业银行不一样：<strong>它主要不是靠持有贷款吃利息，而是靠"做完就卖"赚手续费</strong>——办一笔 40 万的房贷，收 1% 左右的各种费用（约 $4,000），然后把这笔贷款打包卖给房利美、房地美或其他机构，收回本金再去做下一笔。有些贷款卖掉后它还留着"服务权"，也就是继续帮买家收月供、转给债券持有人，从中抽约 0.25% 的年费。</p>
+<p>这块 TTM 收入 $2.14 亿，但<strong>在明显萎缩</strong>：FY2025 $2.22 亿、FY2024 $2.64 亿、FY2021 高峰期 $3.62 亿。原因不复杂——利率高企，美国人不换房也不再融资，房贷成交量塌下来了。这是全行业现象，不是 Ameris 一家的问题，但它意味着这家银行有近两成收入趴在一条下行的轨道上。</p>
+<h3>生意三：仓储贷款（Warehouse Lending）——占三成不到，小而精</h3>
+<p>这门生意有点绕但很有意思。<strong>它是"借钱给别的房贷公司去放房贷"。</strong>一家独立按揭公司要给客户放一笔 40 万的房贷，但它自己没有 40 万，于是从 Ameris 这里开一条循环授信额度先垫上；等这笔房贷两三周后卖给房利美，钱回来了立刻还给 Ameris。<strong>所以这笔钱一年能周转十几二十次</strong>，Ameris 按天收息（比如年化 6.5%），风险极低——因为抵押品就是那笔已经有买家的房贷本身，账期只有两三周。TTM 收入 $3389 万。小，但资本占用少、损失率极低。</p>
+<h3>生意四：保费融资（Premium Finance）——占不到四个点</h3>
+<p><strong>帮企业分期付保险费。</strong>一家有 200 台卡车的运输公司，商业车险年保费 120 万美元，保险公司要求一次性付清，公司现金流吃不消。Ameris 替它一次性把 120 万付给保险公司，然后让运输公司分 10 个月还，年化利率 9%–12%。风险控制得很巧：<strong>万一它还不上，Ameris 有权直接找保险公司退保，把没用完的那部分保费拿回来</strong>——抵押品是保单本身，天然自带回收机制。TTM 收入 $4503 万，增速 +20%，是四门生意里增长最快的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入</th>
+<th>占比</th>
+<th>增速（FY25 vs FY24）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商业银行 Banking</td>
+<td>$8.898 亿</td>
+<td>75.2%</td>
+<td>+11.7%</td>
+</tr>
+<tr>
+<td>零售按揭 Retail Mortgage</td>
+<td>$2.137 亿</td>
+<td>18.1%</td>
+<td><strong>−15.8%</strong></td>
+</tr>
+<tr>
+<td>保费融资 Premium Finance</td>
+<td>$4503 万</td>
+<td>3.8%</td>
+<td>+19.8%</td>
+</tr>
+<tr>
+<td>仓储贷款 Warehouse Lending</td>
+<td>$3389 万</td>
+<td>2.9%</td>
+<td>+2.5%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$11.82 亿</strong></td>
+<td>100%</td>
+<td>+6.0%</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>（分部只披露收入，不披露分部利润。按业务性质</em><em>估算</em><em>，商业银行贡献了绝大部分利润，零售按揭在当前成交量下利润率被压得很薄。）</em></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一期最大的一件事：一笔 $8250 万的诉讼计提。</strong></p>
+<p>TTM 净利润 $3.763 亿，比 FY2025 全年的 $4.122 亿还<strong>低</strong>——但同期净利息收入是<strong>涨了 10.19%</strong> 的。这个矛盾必须解释清楚，否则整份分析都是错的。</p>
+<p>答案在 2026 年第二季度：<strong>公司为一起加州雇佣纠纷案计提了 $8250 万的诉讼准备金。</strong>那个季度净利润因此从上年同期的 $1.098 亿掉到 $5140 万，每股收益从 $1.60 掉到 $0.77。公司自己的口径是：剔除这笔诉讼计提和证券出售收益后，调整后净利润 $1.073 亿、每股 $1.60，跟上年同期的 $1.59 基本持平。</p>
+<p><strong>这笔钱该不该加回来？我的判断是该加，但要打个问号。</strong>加州的雇佣集体诉讼（通常是加班费、休息时间合规一类）确实是典型的一次性事件，而且金额远超正常年份的波动。但要诚实地说：<strong>只看 TTM 这一期，我没法判断这家公司是不是"年年都有点什么一次性"</strong>——一家靠连环收购长大的银行，整合费用、系统迁移、法务纠纷本来就容易反复出现。对照历史：FY2024 的一次性项目是 −$150 万，FY2023 是 −$1160 万，FY2022 是 +$2182 万，都是小钱。这一笔 $8250 万确实是异常值。<strong>我按一次性处理，但你要知道这个判断有不确定性。</strong></p>
+<p><strong>证券出售收益</strong>：TTM $899 万，靠卖债券实现的账面收益，跟放贷做生意无关，<strong>要剔掉</strong>。</p>
+<p><strong>股权激励（SBC）</strong>：现金流量表里<strong>没有单独列出这一行</strong>，被归进了"其他经营活动"（TTM −$2755 万）里。银行业的股权激励规模通常远小于科技公司（薪酬总额 $3.418 亿里绝大部分是现金工资），但<strong>我必须说清楚：这个数字本次取数没拿到，我无法把它单独扣出来</strong>。按同规模区域银行的常见水平，大致在净利润的 3%–6% 区间，不影响大的结论。</p>
+<p><strong>资本化的支出</strong>：银行没有软件资本化这类问题的典型场景，无形资产摊销 TTM $1427 万，是收购来的客户关系和核心存款无形资产在按年摊销——<strong>这一项在下降</strong>（FY2021 $1497 万 → TTM $1427 万），说明近两年没有新的大额收购。</p>
+<p><strong>商誉的问题要单独说</strong>：账面净资产 $40.9 亿，其中<strong>商誉和无形资产约 $10.6 亿，占 26%</strong>。商誉是历年收购时"出价高于被收购银行净资产"的那部分溢价，它不会产生任何现金流，一旦收购的银行经营恶化就要减值。所以看这家银行的净资产，<strong>有形净资产 $30.3 亿才是真实的本钱</strong>——这也是为什么下面第三部分我会同时给 PB（1.44 倍）和 P/TBV（1.95 倍）两个数，后者才是你真正付的价。</p>
+<p><strong>回购与稀释——这一项很干净，是全篇亮点</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>−$1.525 亿</strong></td>
+</tr>
+<tr>
+<td>发行新股</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>分红</td>
+<td>−$5482 万</td>
+</tr>
+<tr>
+<td><strong>股本一年变化</strong></td>
+<td><strong>−1.52%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购 $1.525 亿，是 FY2025（$8290 万）的<strong>近两倍</strong>，而且完全没有增发。TTM 回购 + 分红合计 <strong>$2.073 亿</strong>，占调整后净利润（下面算出来是 $4.334 亿）的 <strong>47.8%</strong>——<strong>接近一半的真实利润，以现金和回购的形式实实在在回到了股东手里，股本在减少。</strong>由于 SBC 没有单独披露，无法精确算"回购÷SBC"这个比值，但从股本净减少 1.52% 这个结果可以确认：<strong>这是真回购，不是在给员工发股擦屁股。</strong></p>
+<p><strong>利润和现金流的差</strong>：银行的现金流量表跟制造业读法完全不同——"经营现金流"里混进了大量放贷收贷的资金搬运，跟"赚了多少钱"关系不大。TTM 经营现金流 $5.485 亿 vs 净利润 $3.763 亿，差额主要来自拨备 $7938 万（计提了但没实际损失的钱，是非现金费用加回）和贷款买卖的时间差。<strong>这里没有异常，不需要做逐项对账表</strong>——银行看现金流的意义远小于看资产质量。</p>
+<p>真正该看的是<strong>拨备</strong>：TTM 计提信用损失准备 $7938 万，比 FY2025 的 $7024 万增加 13%。放在贷款余额（约 $210 亿，<strong>估算</strong>）上大约 0.38%，属于正常区间，没有看到信用恶化的警报，但也在缓慢往上走。</p>
+<hr />
+<h2>第三部分：银行口径估值</h2>
+<h3>先把真实利润算出来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 报告净利润</td>
+<td>376.32</td>
+</tr>
+<tr>
+<td>＋ 加州诉讼计提 $8250 万（税后，税率 22.39%）</td>
+<td>+64.03</td>
+</tr>
+<tr>
+<td>− 证券出售收益 $899 万（税后）</td>
+<td>−6.98</td>
+</tr>
+<tr>
+<td><strong>＝ 调整后真实净利润</strong></td>
+<td><strong>433.37</strong></td>
+</tr>
+<tr>
+<td><strong>调整后每股收益</strong></td>
+<td><strong>$6.37</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>估值表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>59.0 亿 ÷ 净资产 40.9 亿</td>
+<td><strong>1.44 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>59.0 亿 ÷ 有形净资产 30.3 亿</td>
+<td><strong>1.95 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE（报告口径）</strong></td>
+<td>3.763 亿 ÷ 40.9 亿</td>
+<td><strong>9.40%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE（调整后）</strong></td>
+<td>4.334 亿 ÷ 40.9 亿</td>
+<td><strong>10.60%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形净资产回报，报告）</strong></td>
+<td>3.763 亿 ÷ 30.3 亿</td>
+<td><strong>12.44%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形净资产回报，调整后）</strong></td>
+<td>4.334 亿 ÷ 30.3 亿</td>
+<td><strong>14.32%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROA（总资产回报，调整后）</strong></td>
+<td>4.334 亿 ÷ 约 277 亿</td>
+<td><strong>1.57%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>年回报 = ROE ÷ PB（报告口径）</strong></td>
+<td>9.40% ÷ 1.44</td>
+<td>—</td>
+<td><strong>$6.53</strong></td>
+</tr>
+<tr>
+<td><strong>年回报 = ROE ÷ PB（调整后）</strong></td>
+<td>10.60% ÷ 1.44</td>
+<td>—</td>
+<td><strong>$7.36</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>59.0 亿 ÷ 3.763 亿</td>
+<td>15.7 倍</td>
+<td>$6.38</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>59.0 亿 ÷ 4.334 亿</td>
+<td><strong>13.6 倍</strong></td>
+<td><strong>$7.35</strong></td>
+</tr>
+<tr>
+<td>市场预期（Forward PE）</td>
+<td>分析师预测下一年</td>
+<td>13.0 倍</td>
+<td>$7.69</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>59.0 亿 ÷ 三年平均 3.824 亿</td>
+<td><strong>15.4 倍</strong></td>
+<td><strong>$6.49</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>59.0 亿 ÷ 5.22 亿</td>
+<td>11.3 倍</td>
+<td>（银行此口径意义有限）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净息差（NIM）</strong>：净利息收入 $9.802 亿 ÷ 生息资产约 $256 亿 ≈ <strong>3.83%</strong>（<strong>估算</strong>，因为 stockanalysis 不提供生息资产余额，我按总资产的 92.5% 推算）。3.8% 出头对区域银行是<strong>健康偏好</strong>的水平——行业中位数大致在 3.2%–3.5%。而且这个数在改善：TTM 存款利息支出 $4.074 亿，反而低于 FY2025 全年的 $4.242 亿，说明<strong>存款成本已经开始往下走</strong>，而贷款收益还没降——这是净利息收入 TTM 增长 10.19% 的直接原因。</p>
+<p><strong>资本充足率（CET1）</strong>：本次取数没有拿到。这是评估银行安全垫的重要指标，缺失需要说明。间接看，杠杆倍数（总资产 277 亿 ÷ 净资产 40.9 亿）约 <strong>6.8 倍</strong>，对区域银行属于保守偏低（很多同行在 8–10 倍），说明它并没有靠加杠杆撑利润。</p>
+<h3>说人话：投 100 块，一年替你赚多少</h3>
+<p><strong>按剔除诉讼计提后的真实口径，你投 100 块进去，Ameris 一年替你赚 $7.35。</strong></p>
+<p>这个数怎么来的：你花 100 块，买到的是 $69 的账面净资产（PB 1.44 倍的倒数）——但其中有 26% 是收购留下的商誉，<strong>真正有形的本钱只有 $51</strong>（P/TBV 1.95 倍的倒数）。这 $69 账面净资产上，银行一年赚 10.6% 的回报，就是 $7.35。</p>
+<p><strong>这 $7.35 里，有多少真回到你口袋？</strong>
+- <strong>分红</strong>：TTM 派息 $5482 万，股息率 <strong>0.91%</strong>——100 块里只给你 $0.91 现金。这个股息率低得反常，派息率只占调整后利润的 12.6%。
+- <strong>回购</strong>：TTM 回购 $1.525 亿，占市值 <strong>2.58%</strong>——这部分不给你现金，但让你手里每股的含金量变高（股本减少 1.52%）。
+- <strong>两项合计约 $3.49</strong>，占 $7.35 的 47.8%。
+- <strong>剩下的 $3.86 留在银行里</strong>。留下来干什么？看投资活动：TTM 净新增贷款 $11.78 亿、净买入证券 $6.69 亿——<strong>留存利润全部变成了新放出去的贷款</strong>。对银行来说这是正确的用法：每留下 1 块钱资本，按 6.8 倍杠杆可以支撑约 6.8 块钱的新贷款，只要 ROE 保持在 10% 以上，留存就比分红更划算。</p>
+<p><strong>这个 $7.35 未来会变大还是变小？</strong></p>
+<p><strong>往上的力量</strong>：存款成本已经在降（TTM $4.07 亿 &lt; FY25 $4.24 亿），而贷款重定价慢，净息差还有扩张空间；保费融资和仓储贷款两块小生意增速快、资本占用少；诉讼计提是一次性的，明年这个包袱不在了，报告利润会自然跳一个台阶（这正是 Forward PE 13.0 倍隐含的意思）。</p>
+<p><strong>往下的力量</strong>：零售按揭占收入 18%，正在以每年 15% 的速度萎缩，短期看不到止跌的理由；拨备在往上走（+13%），如果东南部商业地产或小企业信贷出问题，这块会迅速放大；ROE 10.6% 说不上优秀，意味着它的利润增长最终受限于资产扩张速度，而资产扩张要么靠经济增长，要么靠继续收购——<strong>而继续收购就意味着商誉继续堆高</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，是本批三家里唯一一家你付的钱和拿到的东西大致对得上的公司。</strong></p>
+<p>表面上 15.7 倍市盈率对区域银行不算便宜（行业里 11–13 倍是常态），但那是被 $8250 万加州诉讼计提压出来的。把这笔一次性开销剥掉，真实市盈率 <strong>13.6 倍，投 100 块一年赚 $7.35</strong>；调整后有形净资产回报率 <strong>14.3%</strong>，总资产回报率 <strong>1.57%</strong>（银行业超过 1% 就算合格，1.5% 属于优等生），净息差 3.83% 且还在改善，杠杆只有 6.8 倍——<strong>它是靠真本事赚的钱，不是靠把杠杆加满赚的</strong>。TTM 拿出接近一半的真实利润回购加分红，回购金额翻倍且完全没有增发，股本实实在在减少了 1.52%。</p>
+<p>它也不是什么便宜货，别搞错了。有形账面市净率 <strong>1.95 倍</strong>已经站在区域银行合理区间的上沿，过去一年股价涨了 26%，便宜的时候已经过去了。真正的两处硬伤：<strong>一是商誉占了账面净资产的 26%</strong>——这是十几年连环收购堆出来的，一旦哪家收购标的出问题就要减值，你付的 1.44 倍 PB 里有相当一块买的是空气；<strong>二是零售按揭这门占收入 18% 的生意还在往下掉</strong>，每年跌 15%，而且要等美国房贷市场解冻才有转机，这不是管理层努努力就能扭转的。加上 ROE 10.6% 只能算中等偏上、诉讼这类事情在连环并购的银行身上未必只出一次——它是一门站得住但不出彩的生意。</p>
+<p><strong>结论：13.6 倍买一家 ROTCE 14.3%、净息差在改善、真金白银回购的区域银行，价格是公道的，不占便宜也不吃亏。</strong>如果你想要的是"每年稳稳赚七个点、生意听得懂、管理层不玩花活"，这家配得上；如果你指望它翻倍，那得等美国房贷市场回来，而那件事不由它决定。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（TTM 截至 2026 年 6 月 30 日，最后更新 2026 年 7 月 23 日）；$8250 万诉讼计提金额来自公司 2026 年第二季度业绩公告。生息资产、贷款余额、总资产为估算，已在文中标注；CET1 资本充足率与股权激励金额本次取数未获得。</em></p>
+</div></body></html>

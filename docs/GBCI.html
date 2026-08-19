@@ -1,0 +1,459 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GBCI · Glacier Bancorp（冰川银行集团）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GBCI</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">ROE才8%卖1.48倍净资产，每股利润五年没涨</div><h1>GBCI · Glacier Bancorp（冰川银行集团）</h1>
+<p>市值 $63.8 亿 / 股价约 $48.9 / 行业：金融（社区银行） / TTM 截止 2026年6月30日
+上市地 NYSE / 员工 4,125 人 / 股份 1.302 亿股 / 总资产约 $303 亿（按 ROA 倒推）</p>
+<blockquote>
+<p><strong>这是一家银行，第三部分不用市盈率当主口径，改用市净率（PB）、有形账面市净率（P/TBV）、净资产收益率（ROE / ROTCE）。</strong>
+原因很实在：银行的"利润"里有一块叫<strong>信用减值准备</strong>，是管理层自己估出来的——今年少提一点，利润就多一块；明年多提一点，利润就少一块。而净资产（账面价值）是资产负债表上算出来的，操纵空间小得多。所以看银行，先看你花多少钱买它一块钱的净资产（PB），再看这块净资产一年能生出多少利润（ROE），两个数一乘才是你真正的回报率。市盈率我也会列，但只当参考。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<h3>生意一：收存款、放贷款，赚中间的差价（约占营收 87%）</h3>
+<p>这是银行的本体。具体到 Glacier 是这样运作的：</p>
+<p>蒙大拿州卡利斯佩尔（Kalispell）镇上一个开牙科诊所的医生，想开第二家店，看中一栋商业楼，要 200 万美元。他去镇上的 First Interstate…不对，他去的是 <strong>Glacier Bank</strong>——名字就叫这个，就是本地那家。分行经理认识他十几年，看了两年报表、看了楼的评估，批了一笔 7 年期商业地产贷款，年利率 7.2%，每年收利息约 14.4 万美元。</p>
+<p>这 200 万从哪来？来自同一个镇上的居民和小企业存在这家分行里的钱。活期账户 Glacier 付 0.1%，储蓄账户付 1.5%，定期存单付 3.8%。全行加权平均下来，Glacier TTM 实际付出去的存款和借款利息是 <strong>$3.913 亿</strong>。</p>
+<p><strong>中间的差就是它的饭。</strong> 按营收倒推，Glacier 的净息差（NIM，就是"生息资产的平均收益率减去付息负债的平均成本率"）大概在 <strong>3.4%–3.6%</strong> 之间——这是我按「营收 $11.29 亿 − 估计的非息收入约 $1.4 亿 = 净利息收入约 $9.9 亿」除以约 $280 亿生息资产估的，<strong>财报页没直接给这个数，属于估算</strong>。</p>
+<p><strong>它跟大银行不一样的地方</strong>：Glacier 不是一家银行，而是<strong>十几家银行挂在一个上市壳下面</strong>。在蒙大拿它叫 Glacier Bank，在爱达荷叫 Mountain West Bank，在犹他叫 Altabank，在科罗拉多叫 Collegiate Peaks Bank，在华盛顿叫 North Cascades Bank……每家保留原来的招牌、原来的行长、原来的贷款审批权。总部只管资金、合规、IT 和资本。</p>
+<p>这不是情怀，是生意逻辑：<strong>在人口两万的小镇，唯一能判断"这个牙医的第二家店会不会开垮"的，是认识他十五年的本地行长，不是丹佛总部的信贷模型。</strong>这种关系型贷款收得起更高的利率，同时——这才是关键——<strong>存款端极其便宜且极其黏</strong>。镇上的人不会因为网上银行多给 0.5% 就把工资卡搬走。这是 Glacier 真正的护城河，也是它唯一的护城河。</p>
+<p>放出去的贷款主要是四类：商业地产（本地的沿街商铺、小厂房、公寓楼）、工商业贷款（当地企业的经营周转）、住宅按揭、农业贷款（西部各州的牧场和农场）。</p>
+<h3>生意二：收手续费（约占营收 13%）</h3>
+<p>三块：
+- <strong>账户服务费和透支费</strong>：小额但极稳定。
+- <strong>借记卡刷卡分成</strong>：镇上的人用 Glacier 的借记卡在超市刷 100 美元，Glacier 从商户那边分到大概 0.5 美元。几十万张卡，一年就是几千万。
+- <strong>卖房贷赚差价</strong>：客户来办 30 年期住房按揭，Glacier 放款，然后转手把这笔贷款打包卖给房利美/房地美，卖价比放款额高一点，差价当期入账。财报的「投资/贷款出售收益」这一行 TTM <strong>$3,807 万</strong>——注意，FY2025 是 $3,794 万、FY2024 是 $3,718 万、FY2023 是 $3,451 万，<strong>六年来年年在 $3,400 万–$6,100 万之间</strong>。所以它不是"一次性收益"，是这家银行常态化的一门生意，可以当经常性收入看。</p>
+<h3>生意三：买小银行（不产生营收，但决定了这家公司的形状）</h3>
+<p>Glacier 过去三十年买了三十多家西部小银行。做法：用自己的股票（偶尔加点现金）换对方全部股权，然后把对方的贷款和存款并进来，招牌留着，后台系统换成 Glacier 的。</p>
+<p>TTM 里刚做完的一批收购，让 Glacier <strong>收到 $1.789 亿净现金</strong>（收购一家银行时，对方账上的现金归你，所以在现金流量表上是流入），同时<strong>股本增加了 11.44%</strong>。</p>
+<p>这门"生意"是理解 Glacier 全部问题的钥匙，第三部分会算清楚它到底赚没赚。</p>
+<h3>一张表看清</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估）</th>
+<th>占比</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入（存贷差）</td>
+<td>约 989</td>
+<td>约 87%</td>
+<td>本体，靠利率环境和本地关系</td>
+</tr>
+<tr>
+<td>非息收入（服务费+刷卡+卖房贷）</td>
+<td>约 140</td>
+<td>约 13%</td>
+<td>稳定，其中卖房贷收益 38.07</td>
+</tr>
+<tr>
+<td><strong>合计营收</strong></td>
+<td><strong>1,129</strong></td>
+<td>100%</td>
+<td>TTM 同比 <strong>+32.1%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>单位：百万美元。<strong>净利息收入和非息收入的拆分是我按「卖房贷收益 38.07（财报直接给）＋估计的服务费与刷卡收入约 100」倒推的，不是财报直接披露，属于估算。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p><strong>现金流量表上没有单列这一行</strong>——对一家净利润 $3.12 亿的公司来说，这说明 SBC 小到不值得单独列示。社区银行发的是工资和奖金，不是期权。这一项没问题。</p>
+<h3>一次性项目</h3>
+<p>TTM 没有大额重组、减值或诉讼和解。<strong>但有两项需要单独盯：</strong></p>
+<p><strong>（1）信用减值准备（provision for credit losses）—— 银行唯一的利润调节阀</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>计提的信用损失准备</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>$1,480 万</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$2,831 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$7,140 万</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$5,574 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年之内从 1,480 万涨到 7,140 万，翻了 4.8 倍，TTM 回落到 5,574 万。<strong>峰值可能过了，但仍是 FY2023 的 3.8 倍。</strong></p>
+<p>这个数往哪走，直接决定利润。假设 TTM 计提回到 FY2023 的水平（1,480 万），净利润当场多出约 $3,300 万（税后），EPS 从 $2.44 变成 $2.70。反过来，如果西部的商业地产继续走弱、计提回到 FY2025 的 7,140 万，EPS 掉到约 $2.34。</p>
+<p><strong>这不是造假，是银行会计的正常机制。但它意味着"20 倍市盈率"这个数字本身就有 ±10% 的弹性，别当精确值看。</strong></p>
+<p><strong>（2）卖房贷/卖证券的收益 $3,807 万，占净利润 12.2%</strong></p>
+<p>前面说了，这一项六年来年年都有（$3,400 万–$6,100 万），<strong>所以它是经常性的，不能当一次性剔除</strong>。但要知道它的性质：这不是"存贷差"那种滚动收入，它取决于按揭市场活不活跃。房贷市场冻住的时候，这一块会快速缩水。</p>
+<h3>资本化的支出</h3>
+<p>银行没有软件资本化的大问题。但<strong>有形资产之外的一大块要说清楚</strong>：</p>
+<ul>
+<li>账面净资产 $43.1 亿，每股 $33.13</li>
+<li>有形账面净资产（扣掉商誉和无形资产）每股约 <strong>$21.73</strong>，合计约 <strong>$28.3 亿</strong></li>
+<li><strong>中间差的 $14.8 亿，全是商誉和收购形成的无形资产</strong>——是三十年买银行付出的溢价。</li>
+</ul>
+<p>也就是说，<strong>Glacier 账面上每 100 块钱的净资产里，有 34 块是"当年买别人时多付的钱"，不是真金白银的资产。</strong>这块钱不能拿去放贷、不能吸收贷款损失、监管算资本时也不认。看这家公司，<strong>必须看有形账面价值，不能看账面价值</strong>。</p>
+<h3>回购与稀释：这一项是这份分析里最重要的发现</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>−$240 万（约等于零）</td>
+</tr>
+<tr>
+<td>发行股票</td>
+<td>+$460 万</td>
+</tr>
+<tr>
+<td>支付股息</td>
+<td>−$1.682 亿</td>
+</tr>
+<tr>
+<td><strong>股本一年变化</strong></td>
+<td><strong>+11.44%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购几乎不存在。但更重要的是把时间轴拉长——<strong>从各年的「每股净负债」和「净负债总额」可以反推出历年股本</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>股本（推算）</th>
+<th>净利润</th>
+<th>每股收益</th>
+<th>每股股息</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>约 9,940 万股</td>
+<td>$2.848 亿</td>
+<td><strong>$2.86</strong></td>
+<td>$1.27</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>约 1.108 亿股</td>
+<td>$3.032 亿</td>
+<td>$2.74</td>
+<td>$1.32</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>约 1.109 亿股</td>
+<td>$2.229 亿</td>
+<td>$2.01</td>
+<td>$1.32</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>约 1.132 亿股</td>
+<td>$1.901 亿</td>
+<td>$1.68</td>
+<td>$1.32</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>约 1.199 亿股</td>
+<td>$2.390 亿</td>
+<td>$1.99</td>
+<td>$1.32</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>1.302 亿股</strong></td>
+<td><strong>$3.117 亿</strong></td>
+<td><strong>$2.44</strong></td>
+<td><strong>$1.32</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（股本按「净负债总额 ÷ 每股净负债」推算，财报页没直接给历年股本。）</p>
+<p><strong>看这五年发生了什么：</strong>
+- 净利润：$2.848 亿 → $3.117 亿，<strong>+9.5%</strong>
+- 股本：约 9,940 万股 → 1.302 亿股，<strong>+31.0%</strong>
+- <strong>每股收益：$2.86 → $2.44，−14.7%</strong>
+- 每股股息：$1.27 → $1.32，五年只涨了 4 分钱，且 FY2022 之后<strong>四年一分没涨</strong></p>
+<p><strong>Glacier 用增发 31% 的股票，买来了 9.5% 的利润增长。</strong>从整体看它变大了，从股东每股的角度看，它退步了。这就是"买银行"这门生意的真实成绩单。</p>
+<p>顺带一提：股东综合回报率（Shareholder Yield）<strong>−8.74%</strong>——股息给你 2.70%，稀释拿走 11.44%。</p>
+<h3>利润和现金流的差</h3>
+<p>银行的现金流量表意义有限（存款流入流出的规模远大于利润，会淹没一切），但还是核一下：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>311.69</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+56.65</td>
+</tr>
+<tr>
+<td>＋ 信用损失计提（非现金）</td>
+<td>+55.74</td>
+</tr>
+<tr>
+<td>− 出售投资/贷款收益（已计入净利润，此处剔除）</td>
+<td>−38.07</td>
+</tr>
+<tr>
+<td>＋ 已发放贷款净转出</td>
+<td>+22.33</td>
+</tr>
+<tr>
+<td>＋ 其他调整合计</td>
+<td>−27.09</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>444.55</strong></td>
+</tr>
+<tr>
+<td>− 资本开支（分行、设备、IT）</td>
+<td>−37.28</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>407.27</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>自由现金流 $4.07 亿 &gt; 净利润 $3.12 亿，<strong>利润的现金含量是够的</strong>，这一点没问题。资本开支只有 $3,728 万，轻资产。</p>
+<p><strong>税率是个亮点：TTM 实际税率只有 19.30%，比 21% 的联邦税率还低。</strong>原因是社区银行大量持有免税的市政债（借钱给本地学区、水厂），还投了税收抵免项目。这是真实且可持续的，不是障眼法。</p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<p>市值 $63.80 亿，股价约 $48.9。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>48.9 ÷ 每股净资产 33.13</td>
+<td><strong>1.48×</strong></td>
+<td>ROE 7.95% ÷ 1.48 = <strong>$5.37</strong></td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>48.9 ÷ 每股有形净资产 21.73</td>
+<td><strong>2.25×</strong></td>
+<td>ROTCE 11.02% ÷ 2.25 = <strong>$4.89</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,380 ÷ 311.69</td>
+<td>20.1×</td>
+<td>$4.99</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>6,380 ÷ 407.27</td>
+<td>15.7×</td>
+<td>$6.39</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>6,380 ÷（311.69+239.03+190.14）÷3 = 6,380 ÷ 246.95</td>
+<td><strong>25.8×</strong></td>
+<td><strong>$3.87</strong></td>
+</tr>
+<tr>
+<td>（参考）分析师预期的明年</td>
+<td>前瞻市盈率</td>
+<td>14.5×</td>
+<td>$6.90</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关键的银行指标：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ROE（净资产收益率）</td>
+<td><strong>7.95%</strong></td>
+<td>一块钱账面净资产一年赚 8 分。<strong>平庸。</strong>好银行在 12%–15%</td>
+</tr>
+<tr>
+<td>ROTCE（有形净资产收益率）</td>
+<td><strong>11.02%</strong></td>
+<td>剔掉商誉后的真实回报，尚可，但也只是尚可</td>
+</tr>
+<tr>
+<td>ROA（总资产收益率）</td>
+<td><strong>1.03%</strong></td>
+<td>刚过 1% 这条及格线，不难看也不出色</td>
+</tr>
+<tr>
+<td>净息差 NIM（估算）</td>
+<td>约 3.4%–3.6%</td>
+<td>社区银行的正常水平</td>
+</tr>
+<tr>
+<td>实际税率</td>
+<td>19.30%</td>
+<td>低于法定税率，真实优势</td>
+</tr>
+<tr>
+<td>拨备覆盖率 / CET1 资本充足率</td>
+<td><strong>财报页不提供</strong></td>
+<td>无法核实，这是本分析的一个缺口</td>
+</tr>
+</tbody>
+</table></div>
+<h3>用大白话说清楚这笔账</h3>
+<p><strong>你花 $48.9 买 Glacier 的一股。这一股背后是 $33.13 的账面净资产，但其中 $11.40 是三十年买银行付出去的商誉，摸不着也不能抵御损失。真正实打实的有形净资产只有 $21.73。</strong></p>
+<p><strong>也就是说，你花 2.25 块钱，买了 1 块钱的真家当。</strong></p>
+<p>这 1 块钱的真家当，一年替你赚 11.02 分（ROTCE）。除以你付的 2.25 块，<strong>投 100 块，公司一年替你赚 $4.89</strong>。</p>
+<p>这 $4.89 怎么分配？
+- <strong>$2.70 以现金股息发到你手里</strong>（股息率 2.70%，派息率 54.05%）；
+- 剩下 $2.19 留在银行里——理论上应该变成更多的贷款、更多的净资产；
+- <strong>但同期股本增加 11.44%。</strong>留下的那 $2.19，实质上被稀释稀释掉了。前面那张五年表已经证明了这一点：五年利润增长 9.5%，每股收益反而跌了 14.7%。</p>
+<p><strong>这个 $4.89 未来是变大还是变小？</strong> 有一个真实的顺风，也有一个真实的逆风：</p>
+<p><strong>顺风（而且是机械性的，不靠运气）</strong>：2021 年零利率的时候，Glacier 把钱大量买成了低息债券。这批债券正在陆续到期——TTM 光是证券到期/出售就回笼了 <strong>$13.83 亿</strong>现金。这些钱正被用来：放新贷款（+$7.35 亿）、还掉贵的借款（净还 <strong>$13.24 亿</strong>）。同时存款成本已经开始降：付出去的现金利息从 FY2024 的 <strong>$5.289 亿</strong> 降到 FY2025 的 $4.136 亿，再降到 TTM 的 <strong>$3.913 亿</strong>。<strong>这就是营收 +32%、前瞻市盈率只有 14.5 倍的全部原因</strong>——不是新故事，是老资产按新利率重新定价。这条顺风大概还能吹两三年。</p>
+<p><strong>逆风</strong>：（1）信用成本从 $1,480 万涨到 $5,574 万还没回落到位，西部商业地产是悬着的；（2）它每年靠增发股票买银行，前五年的结果是每股倒退——<strong>除非这次买得比以前便宜，否则同样的事会再发生一遍</strong>；（3）股息四年没涨过一分钱，这是管理层自己给出的信号。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家好银行，一个不好的价格。</strong></p>
+<p>Glacier 的存款franchise是真的：西部小镇上十几块本地招牌，认识客户十五年的行长，便宜且黏的存款，1.03% 的 ROA，19.3% 的低税率，$4.07 亿实打实的自由现金流。这些都不是包装出来的。</p>
+<p>问题只有一个，但很硬：<strong>你在为一个 ROE 只有 7.95% 的生意付 1.48 倍账面净资产、2.25 倍有形净资产。</strong></p>
+<p>一个粗糙但管用的尺子：银行值几倍净资产，大致等于「ROE ÷ 你要求的回报率」。要求 10% 的话，7.95% 的 ROE 值 0.8 倍净资产。Glacier 现在卖 1.48 倍。<strong>你付的价格里，已经预支了 ROE 从 8% 涨到 12% 这件事。</strong></p>
+<p>它确实可能涨到 12%——债券重定价的顺风是机械性的、真实的、看得见的，前瞻 14.5 倍不是画饼。但你要付的代价是：<strong>如果这个顺风只是把 EPS 拉回到 2021 年的 $2.86（五年前的水平），你现在买的就是 17 倍。而它过去五年每股收益是净下跌的。</strong></p>
+<p>再加上三年平均利润口径 25.8 倍、股本一年增 11.4%、股息四年没动——<strong>这不是能闭眼买的价格，是一个"等它跌回 1.1 倍有形净资产再说"的价格。劝等。</strong></p>
+</div></body></html>

@@ -1,0 +1,432 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AIR · AAR 公司（AAR Corp.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AIR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">176倍自由现金流，ROIC 8%低于资本成本9.7%，涨的是一次性坑爬出来</div><h1>AIR · AAR 公司（AAR Corp.）</h1>
+<p>市值 58.7 亿美元 · 股价约 149 美元 · 行业：航空零部件与维修（电子科技） · TTM 截止 2026 年 5 月 31 日（＝其 2026 财年，刚结束）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AAR 是一家 1955 年就在的芝加哥公司，做的事一句话概括：<strong>飞机公司只管造新飞机，飞机造出来之后那 25 年里的一切零件、修理、后勤，是 AAR 这类公司在做。</strong> 全球在飞的商用客机大约 2.8 万架，平均机龄已经涨到 12 年以上，因为波音和空客的交付延迟严重，航司只能让老飞机继续飞——飞机越老，AAR 的活越多。</p>
+<p>财报把它拆成四门生意，TTM 合计 33.08 亿美元营收。</p>
+<h3>生意一：零件供应（TTM 14.88 亿，占 45%）</h3>
+<p>这门最大，实际上是两件事捏在一起。</p>
+<p><strong>第一件是新件分销。</strong> 发动机点火器、液压阀、起落架轴承这类零件，是由 Unison、Chromalloy、Eaton 这些制造商生产的，但制造商不想自己在全球各地建仓库、也不想应付几千家航司的零星订单。于是它们把某个产品线的<strong>独家分销权</strong>签给 AAR。AAR 在芝加哥、阿姆斯特丹、新加坡、迪拜备货，一架 A320 在深夜落地时发现某个阀门坏了，航司凌晨两点下单，AAR 保证几小时内把件送到停机坪——因为一架窄体机停场一天要烧掉航司十几万美元，这个"几小时"就是 AAR 收钱的理由。它赚的是分销毛利，大约 15%–20%。</p>
+<p><strong>第二件是旧件拆解（USM，Used Serviceable Material）。</strong> 这件更像做生意而不是做服务：AAR 花比如 300 万美元买下一架退役的 20 年机龄的波音 737，或者一台用过的 CFM56 发动机，拉回自己的场地拆开，把上面还能用的几千个零件逐个送去做适航复检、拿到 FAA 的挂签，然后在未来三五年里一个一个卖出去，总共可能卖 500 万美元。<strong>这门生意赚不赚钱，几乎完全取决于买那架飞机的时候价钱谈得对不对</strong>——买贵了，几千个零件就得慢慢在货架上躺成死库存。这也是理解 AAR 现金流的钥匙（见第二部分）。</p>
+<h3>生意二：维修、工程与软件（TTM 10.81 亿，占 33%）</h3>
+<p><strong>主体是机库大修（重维修）。</strong> 航司把一架 737 飞进 AAR 在俄克拉荷马城、迈阿密、罗克福德或加拿大三河城的机库，大约 100 名机械师花三到五周，把内饰全拆、蒙皮板揭开、逐寸检查机身结构和腐蚀、换掉磨损件、重新喷漆，然后交还。这样一次「C 检」或「D 检」，航司付大约 100 万到 200 万美元。这是纯劳动力生意——毛利率取决于机械师招不招得到、工时估得准不准，AAR 的机库利用率和人工短缺是这块的核心变量。</p>
+<p><strong>其次是部件修理厂。</strong> 一个液压作动筒坏了，买新的要 6 万美元，送到 AAR 的修理厂拆开换密封件重新测试，收 1.5 万美元。航司当然选后者。</p>
+<p><strong>还有一块小但性质完全不同的：Trax 软件。</strong> 这是 AAR 在 2023 年买来的云端机务管理系统，大约 200 家航司在用，功能是追踪每一架飞机上每一个带寿命的零件——这个起落架已经落了多少次、这台发动机还剩多少循环、下次检查在哪一天。这是订阅制、高毛利、换掉成本极高的生意，是全公司唯一一块有软件属性的资产，但营收占比很小。</p>
+<h3>生意三：政府业务（TTM 5.02 亿，占 15%）</h3>
+<p>给美国政府和盟国军队做后勤。三类活：一是「按效果付费的后勤合同」——比如包下某型军用直升机机队的全部备件保障，按每飞行小时收固定价，备件缺货的风险由 AAR 承担；二是包机飞行——替美国国务院在中东等地区运营直升机和固定翼飞机；三是制造远征装备——可空运的野战方舱、货盘、集装箱，装进 C-17 运输机里飞到前线。这块的特点是合同期长、现金流稳、但增长有限，且高度依赖美国国防预算的走向。</p>
+<h3>生意四：遗留商业项目（TTM 2.37 亿，占 7%）</h3>
+<p>一批老的综合机队保障合同，正在收尾，营收逐年下滑（2024 财年 2.19 亿 → 2025 财年 2.55 亿 → 2026 财年 2.37 亿）。没什么可说的。</p>
+<h3>一张表看清楚</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>估算经营利润率</th>
+<th>估算贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>零件供应</td>
+<td>1,488</td>
+<td><strong>+35.3%</strong></td>
+<td>45%</td>
+<td>约 11%</td>
+<td>约 164</td>
+</tr>
+<tr>
+<td>维修、工程与软件</td>
+<td>1,081</td>
+<td>+16.1%</td>
+<td>33%</td>
+<td>约 8%</td>
+<td>约 86</td>
+</tr>
+<tr>
+<td>政府业务</td>
+<td>502</td>
+<td>+1.4%</td>
+<td>15%</td>
+<td>约 7%</td>
+<td>约 35</td>
+</tr>
+<tr>
+<td>遗留商业项目</td>
+<td>237</td>
+<td>−6.8%</td>
+<td>7%</td>
+<td>约 5%</td>
+<td>约 12</td>
+</tr>
+<tr>
+<td>公司层费用</td>
+<td>—</td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 −26</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,308</strong></td>
+<td><strong>+19.0%</strong></td>
+<td>100%</td>
+<td>8.2%</td>
+<td><strong>271</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润</strong>，上表的利润率是按整体 8.2% 的经营利润率、结合各块生意的性质（分销＞维修＞政府合同）估算的，<strong>不是财报数字</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 1,780 万美元，占净利润的 9.5%。</strong> 规模不大，按 GAAP 已经扣掉，我们不加回。</p>
+<p><strong>一次性项目：TTM 有 4,070 万美元的税前非经常性收益，这不是小数。</strong></p>
+<p>利润表拆开是这样的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润</td>
+<td>271.2</td>
+</tr>
+<tr>
+<td>利息支出</td>
+<td>−72.1</td>
+</tr>
+<tr>
+<td>利息与投资收益</td>
+<td>+1.6</td>
+</tr>
+<tr>
+<td>权益法投资收益</td>
+<td>+7.2</td>
+</tr>
+<tr>
+<td>其他非经营</td>
+<td>−2.7</td>
+</tr>
+<tr>
+<td><strong>剔除非经常项的税前利润</strong></td>
+<td><strong>205.2</strong></td>
+</tr>
+<tr>
+<td>＋ 出售资产收益</td>
+<td><strong>+11.2</strong></td>
+</tr>
+<tr>
+<td>＋ 其他非经常项目</td>
+<td><strong>+29.5</strong></td>
+</tr>
+<tr>
+<td>＝ 报表税前利润</td>
+<td>245.9</td>
+</tr>
+<tr>
+<td>− 所得税（23.67%）</td>
+<td>−58.2</td>
+</tr>
+<tr>
+<td>＝ <strong>净利润</strong></td>
+<td><strong>187.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>也就是说，<strong>187.7 的净利润里有约 31.1（＝40.7×76.3%）是非经常性的，占 16.6%。</strong> 干净的经常性净利润大约是 <strong>1.566 亿美元</strong>。</p>
+<p><strong>单期口径无法判断这些「一次性」是不是年年发生</strong>——但把六年排开看，很难说不是：2026 财年出售资产赚 11.2、其他非经常项赚 29.5；2025 财年出售资产亏 72.4；2024 财年重组费 −21.0、其他非经常 −33.0、出售资产 −2.8。<strong>每年都有，只是有时是正号有时是负号。</strong> 这也解释了为什么 2025 财年净利润只有 1,250 万、2026 财年却跳到 1.877 亿，EPS 涨了 1,288%——绝大部分不是主业变强了，是一次性项目从大负数翻成了正数。</p>
+<p><strong>资本化的支出：没有异常。</strong> 软件开发资本化金额不重大。</p>
+<p><strong>回购与稀释：这一项是本篇最难看的地方。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>1,780 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0 倍</strong></td>
+</tr>
+<tr>
+<td><strong>发行新股融资</strong></td>
+<td><strong>2.851 亿美元</strong></td>
+</tr>
+<tr>
+<td>股数变化（同比）</td>
+<td><strong>+7.26%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>不但没有回购，还在<strong>股价一年翻倍之后增发了 2.85 亿美元的新股</strong>，股数一年多了 7.26%。钱主要用在了 2.594 亿美元的现金收购上。管理层在高位卖自己的股票换资产，从公司角度这是聪明的资本运作；但从你这个已经持股的人的角度，你手上每股对应的公司份额被切掉了 7%。</p>
+<p><strong>利润和现金流的差距：这是全篇最关键的一张表。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>187.7</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+72.1</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+3.2</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+17.8</td>
+</tr>
+<tr>
+<td>− 出售资产收益（非现金调整）</td>
+<td>−9.8</td>
+</tr>
+<tr>
+<td>− 权益法投资收益</td>
+<td>−7.2</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+2.1</td>
+</tr>
+<tr>
+<td>＋ 减值/重组</td>
+<td>+1.0</td>
+</tr>
+<tr>
+<td>− 其他经营调整</td>
+<td>−32.7</td>
+</tr>
+<tr>
+<td><strong>小计（不含营运资金）</strong></td>
+<td><strong>234.2</strong></td>
+</tr>
+<tr>
+<td><strong>− 存货增加</strong></td>
+<td><strong>−69.0</strong></td>
+</tr>
+<tr>
+<td><strong>− 应付账款减少</strong></td>
+<td><strong>−49.9</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+15.8</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−32.4</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>98.7</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−65.4</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>33.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看清楚这条链：账上赚了 1.877 亿，落到自由现金流只剩 3,330 万——蒸发了 82%。</strong> 蒸发在哪里？营运资金一年吸掉 1.355 亿，其中光存货就多压了 6,900 万。</p>
+<p>这不是偶发，是<strong>结构性的</strong>。把五年的营运资金变动排开：−1.355 亿（2026）、−1.123 亿（2025）、−0.661 亿（2024）、−1.120 亿（2023）、−0.471 亿（2022）。同期自由现金流分别是 0.333 亿、−0.026 亿、0.124 亿、−0.062 亿、0.579 亿——<strong>五年加起来的自由现金流总共 9,480 万美元，还不到一年报表净利润的一半。</strong></p>
+<p>原因就在第一部分说的那个生意模式：零件分销和 USM 拆解的本质是<strong>把钱变成货架上的零件</strong>。营收要涨 19%，货架上就得多摆 19% 的库存。这门生意的增长永远要先掏钱买库存，赚的利润先变成存货，等零件卖出去（可能要两三年）才变回现金。所以 AAR 是一家「利润表好看、现金流表难看」的公司，而且这个特征不会因为管理层努力就改变。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>58.7 亿 ÷ 1.877 亿</td>
+<td><strong>31.3 倍</strong></td>
+<td><strong>3.20 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>调整后净利润约 1.80 亿</td>
+<td>约 32.6 倍</td>
+<td>3.07 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>58.7 亿 ÷ 1.566 亿（剔除 4,070 万一次性收益，SBC 按 GAAP 已扣不加回）</td>
+<td><strong>37.5 倍</strong></td>
+<td><strong>2.67 元</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径 P/FCF</strong></td>
+<td>58.7 亿 ÷ 0.333 亿</td>
+<td><strong>176 倍</strong></td>
+<td><strong>0.57 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>68.0 亿 ÷ 2.712 亿</td>
+<td><strong>25.1 倍</strong></td>
+<td>3.99 元（税前）</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td>68.0 亿 ÷ 3.433 亿</td>
+<td>19.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>58.7 亿 ÷（1.877＋0.125＋0.463）÷3 ＝ 0.822 亿</td>
+<td><strong>71.4 倍</strong></td>
+<td><strong>1.40 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行需要说明一下：2025、2024 两个财年的利润被大额一次性损失压得很低，所以 71.4 倍这个数字<strong>夸大了</strong>它的贵。但反过来说也成立——<strong>这家公司三年里有两年是被"一次性"事件砸掉大半利润的</strong>，这本身就说明它的利润根本不稳定，不能拿最好的一年当常态去估值。</p>
+<h3>说人话</h3>
+<p>你现在投 100 块进 AAR：</p>
+<ul>
+<li>按 GAAP 报表算，公司一年替你赚 <strong>3.20 元</strong>。</li>
+<li>剔掉那 4,070 万美元的一次性收益，只剩 <strong>2.67 元</strong>。</li>
+<li>而如果你问「这 2.67 元里，有多少是真的现金、能拿出来分给我或者回购我的股票」——答案是 <strong>0.57 元</strong>。其余的全变成了仓库货架上的航空零件。</li>
+<li>这 0.57 元里，实际回到你口袋的是 <strong>零</strong>：AAR 不分红（无除息日），TTM 没有回购一分钱股票，反而增发了 2.85 亿新股。也就是说，<strong>你现在买入，未来若干年内公司不会给你任何现金，你能赚的只有股价差价。</strong></li>
+<li>公司把钱花去哪了？2.594 亿现金收购、6,540 万资本开支，钱去做并购和买设备了。这些投资未来能不能赚回来，看下面一个数。</li>
+</ul>
+<p><strong>最该看的一个数：投入资本回报率（ROIC）8.00%，加权平均资本成本（WACC）9.70%。</strong>
+翻译成人话：AAR 每投出去 100 块钱，一年赚回 8 块；而这 100 块钱（借的债 + 股东的钱）的成本是 9.7 块。<strong>它每扩张一块钱，就在毁掉大约两分钱的价值。</strong> 一家增长 19% 的公司，如果 ROIC 低于资本成本，那增长得越快，股东越亏——这是估值上最不该给高倍数的组合。</p>
+<p><strong>这个回报未来会变大还是变小？</strong> 有真实的向上力量：全球机队老龄化、新飞机交付持续延迟、发动机（尤其 GTF）返厂潮让二手件价格坚挺，这些都对 AAR 有利，也确实推着它的收入连续四年两位数增长。但有两个向下的力量同样真实：一是机库大修受制于机械师人工短缺和工资上涨，这块很难扩利润率；二是营运资金的吞噬会跟着增长同步放大——<strong>营收涨得越快，现金流缺口越大</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>很贵，而且贵在最不该贵的地方。</strong> 生意本身是真的、赛道也是真的——飞机变老，AAR 的活就变多。但你现在为它付的是 31 倍 GAAP 市盈率、37.5 倍剔除一次性后的市盈率、<strong>176 倍自由现金流</strong>，买的是一家投入资本回报率（8.0%）低于资本成本（9.7%）、五年累计自由现金流不到一年报表利润一半、不分红不回购、还刚刚在股价翻倍后增发了 7% 新股的公司。股价过去 52 周涨了 97.7%，涨的是"利润从一次性坑里爬出来"这个故事，不是现金创造能力的改善。<strong>这是一家好行业里的普通公司，被按好公司的价格标了牌。</strong></p>
+</div></body></html>

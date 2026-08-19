@@ -1,0 +1,292 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QLYS · Qualys（高纳斯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">QLYS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">报表干净回购真实,但31.5倍买10%增长,直销已停滞在3.9%</div><h1>QLYS · Qualys（高纳斯）</h1>
+<p>市值 65.0 亿美元 | 股价约 188 美元 | 行业：科技服务（网络安全 SaaS） | TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Qualys 卖的是<strong>一台永远在扫描你公司的机器</strong>。</p>
+<p>先说清楚它解决的是什么问题。假设一家有 4 万台设备的银行——笔记本、机房服务器、云上的虚拟机、分行的柜面终端。今天新闻爆出一个大漏洞（比如当年的 Log4j），安全主管面对三个问题：我们公司到底有几台机器中招？哪几台从外网能直接打进来？先修哪台？</p>
+<p><strong>没有人能靠手工数清楚。</strong> 一家几万人的公司，谁在哪台机器上装了什么软件、什么版本、打没打补丁，没有任何一份台账是准的。</p>
+<p>装了 Qualys 之后是这样：每台设备上装一个几十兆的小程序（Cloud Agent），它每隔几分钟就把「我是谁、装了哪些软件、版本号多少、开了哪些端口、打了哪些补丁」上报到 Qualys 云端。云端有一个不断更新的漏洞库（对应公开的 CVE 编号），一比对，几分钟出结果：「你有 3,214 台机器跑着有漏洞的 Log4j，其中 212 台直接暴露在公网上，这 212 台的风险分是 92 分（满分 100），先修它们。」再点一下 Patch Management 模块，Qualys 直接把补丁推下去装上。</p>
+<p><strong>怎么收钱：按资产数 × 年费订阅。</strong> 基础模块 VMDR（漏洞管理、检测与响应）大致是每台设备每年几十美元，那家 4 万台的银行一年就要付一两百万美元。然后是加购模块，每加一个再加一笔账：Web 应用扫描、云安全配置检查（CSPM）、容器安全、文件完整性监控、合规策略检查、终端检测响应（EDR）。<strong>客户用得越久，模块加得越多，账单越大——这是 Qualys 增长的主要来源，不是拉新客户。</strong></p>
+<p>还有一门被法规按着买的小生意：任何接受信用卡付款的商户，PCI DSS 规定必须每季度做一次外部漏洞扫描，而且必须由认证的 ASV（Approved Scanning Vendor）来做。Qualys 是最老牌的 ASV 之一。一家中型电商一年付几百到几千美元买这个季度扫描，外加一份可以直接交给收单行的合规报告。钱不多但极其黏——不扫就不能收信用卡。</p>
+<p>客户为什么非买不可？<strong>不是因为 Qualys 多聪明，是因为监管和保险公司都要求你证明自己在持续扫描。</strong> PCI、SOX、HIPAA、各国网络安全法、网络保险的续保问卷，全都要这份报告。这是一张合规入场券，不是一个技术选择。</p>
+<h3>钱是怎么分的</h3>
+<p>财报的分部按销售渠道分，不按产品分：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比（FY2025 口径）</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct（自己的销售团队直卖企业）</td>
+<td>3.405 亿</td>
+<td><strong>+3.9%</strong></td>
+<td>48.4%</td>
+</tr>
+<tr>
+<td>Partner（经销商、托管安全服务商 MSSP、审计咨询公司转售或打包）</td>
+<td>3.625 亿</td>
+<td><strong>+17.4%</strong></td>
+<td>51.6%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>7.030 亿</td>
+<td>+10.4%（TTM 同比）</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说的是 Qualys 最大的问题。</strong> 直销几乎不长了（+3.9%），全部增长来自渠道（+17.4%），而且渠道刚刚在 TTM 里第一次超过直销。渠道卖出去的单子，Qualys 拿的是折扣后的价格，而且客户关系握在 MSSP 手里、不在 Qualys 手里——续约谈判桌上坐的不是你。</p>
+<p>直销停滞意味着大企业不再主动上门。它们在被谁分走？CrowdStrike 把漏洞管理做进了 Falcon 平台，微软把 Defender 漏洞管理<strong>白送进 E5 套餐</strong>（很多大企业本来就买了 E5），Wiz 和 Orca 拿下了云原生这一块，Tenable 是二十年的老对手。当一件事从「必须专门买一个产品」变成「你现有的套餐里已经附送了」，那门生意的定价权就结束了。</p>
+<p>分部利润：<strong>财报只披露到营收，不披露分部利润。</strong> Partner 要给经销商折扣、毛利率应低于直销，但 Qualys 不承担渠道那边的销售成本，净下来两者的贡献利润可能接近。<strong>这是估算，公司未披露。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>7,825 万美元</strong>，占净利润 <strong>37.9%</strong>，占营收 11.1%。每 100 块营收里有 11 块是发给员工的股票。按 GAAP 已经扣了，不加回。公司自己的 Non-GAAP 口径正是把这 7,825 万全加回去——于是「调整后净利润」从 2.07 亿变成 2.68 亿，市盈率从 31.5 倍变成 24.2 倍。<strong>那 7 倍的差额就是障眼法本身</strong>：股票不是天上掉的，它稀释你的持股比例，Qualys 每年还得掏两亿多现金回购来把它买回去（见下）。</p>
+<p><strong>一次性项目</strong>：TTM 资产减值 62 万、投资处置收益 32 万。基本没有。<strong>这家公司的报表干净得罕见</strong>，没有商誉减值、没有重组费用、没有并购摊销的把戏。</p>
+<p><strong>资本化的支出</strong>：Qualys <strong>不资本化软件开发费用</strong>（现金流量表里根本没有「购买无形资产」这一行），研发全部当期费用化。这一点比绝大多数软件公司诚实。但有另一件事值得注意：资本开支从 2021 年的 2,442 万一路降到 TTM 的 <strong>699 万</strong>，只占营收 1.0%。Qualys 历史上自建扫描机房，现在显然在转向租用公有云——成本从资本开支变成了经营费用（藏进毛利率里）。这不是造假，但意味着「自由现金流变好」有一部分只是会计科目搬了个家。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>2.489 亿美元</strong>，SBC 7,825 万，<strong>回购/SBC = 3.18 倍</strong>。按标准，大于 3 才算真回购——Qualys 刚好过线。更重要的是看股数：<strong>股本一年真实减少 2.92%</strong>，两年少了近 6%。这是真回馈股东，不是做样子。公司不分红，所有的钱都拿去回购。</p>
+<p><strong>利润和现金流的差</strong>：净利润 2.065 亿 vs 经营现金流 3.209 亿，差 1.14 亿，逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>206.54</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>12.44</td>
+</tr>
+<tr>
+<td>＋ <strong>股权激励 SBC</strong></td>
+<td><strong>78.25</strong></td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>0.62</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>0.70</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−0.32</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目（主要是递延所得税）</td>
+<td>21.30</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−11.81</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−0.77</td>
+</tr>
+<tr>
+<td>＋ <strong>预收款（客户预付的订阅费）增加</strong></td>
+<td><strong>+28.11</strong></td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−14.13</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>320.95</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−6.99</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>313.96</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>差额的来源一清二楚：<strong>7,825 万是 SBC（不花现金，但真实稀释你）</strong>，2,811 万是客户提前付的订阅费（订阅生意的正常好处）。把 SBC 还原成真实成本，「自由现金流 3.14 亿」应该看成 <strong>2.36 亿</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 65.00 亿，企业价值 58.50 亿（净现金 6.50 亿），股本 3,460 万股。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>65.00 ÷ 2.065</td>
+<td>31.5 倍</td>
+<td>3.18 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>65.00 ÷ (2.065 + 0.7825×(1−21.1%)) = 2.683</td>
+<td>24.2 倍</td>
+<td>4.13 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>一次性项目几乎为零，SBC 按 GAAP 扣除不加回</td>
+<td><strong>31.5 倍</strong></td>
+<td><strong>3.18 元</strong></td>
+</tr>
+<tr>
+<td>剔除利息收入的主业口径</td>
+<td>65.00 ÷ (2.065 − 0.1956×(1−21.1%)) = 1.911</td>
+<td>34.0 倍</td>
+<td>2.94 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（通用）</td>
+<td>65.00 ÷ 3.140</td>
+<td>20.7 倍</td>
+<td>4.83 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC）</strong></td>
+<td>65.00 ÷ 2.357</td>
+<td><strong>27.6 倍</strong></td>
+<td><strong>3.62 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>58.50 ÷ 2.422</td>
+<td>24.2 倍</td>
+<td>4.13 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>65.00 ÷ ((2.065+1.983+1.737)/3 = 1.929)</td>
+<td>33.7 倍</td>
+<td>2.97 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>「剔除利息收入」这一行值得单说：Qualys 税前利润 2.618 亿，而经营利润只有 2.422 亿——中间那 1,956 万是 6.5 亿现金堆吃的利息，占税前利润的 7.5%。<strong>这部分利润跟卖软件没关系，是把钱放银行赚的</strong>，利率一降它就缩水。只看主业，市盈率是 34.0 倍不是 31.5 倍。</p>
+<p>三年平均口径 33.7 倍，只比当期的 31.5 倍高一点点——<strong>这恰恰是好消息</strong>。它说明 Qualys 现在的利润不是周期高点，而是一条平稳上升的线（2024 年 1.74 亿 → 2025 年 1.98 亿 → TTM 2.07 亿）。这跟一个在景气顶部的周期股完全不同。</p>
+<p><strong>大白话</strong>：你现在投 100 块进去，按最保守的口径（扣掉 SBC 的自由现金流）公司一年替你赚 <strong>3.62 元</strong>。这 3.62 元里，<strong>一分钱都不会打进你的账户</strong>——Qualys 不分红，全部拿去回购股票（TTM 回购 2.489 亿，甚至超过扣 SBC 后的自由现金流 2.36 亿，多出来的部分从现金堆里掏）。所以你拿到的不是现金，而是「每年你手里的股份占比自动变大 2.9%」。这本身是好的股东回报方式，前提是股价不贵——<strong>贵着回购等于用你的钱买高价货</strong>。</p>
+<p>这个 3.62 元未来会变大还是变小？短期会变大：营收年增 10%，经营利润率还在往上爬（2021 年 28.0% → 现在 34.5%），资本开支几乎为零，每一分增量收入都掉进利润。但增长的质量在恶化：直销只有 +3.9%，全靠渠道撑着；微软把同类功能塞进 E5 白送，CrowdStrike 从终端安全那头打过来。<strong>这是一门在慢慢被平台化的生意</strong>——它不会突然死掉（合规要求救了它），但也很难再加速。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是好生意，价格没有便宜可占。</strong> 83% 毛利率、112% 投入资本回报率、6.5 亿净现金零负债、报表干净到挑不出毛病、回购是 SBC 的 3.18 倍且股数真的每年少 2.9%——按公司质量排，Qualys 在整个软件行业里都属于第一梯队。问题全在价钱上：31.5 倍 GAAP、34.0 倍主业口径、27.6 倍扣了 SBC 的自由现金流，买的是一家营收只增长 10%、而且直销端已经停滞在 +3.9% 的公司。股价过去 52 周涨了 45.6%，已经站到分析师平均目标价（171.74 美元）上方，10.8% 的流通股被做空。这个价格要求它未来几年增速不下滑，而它自己的分部数据正在告诉你增速在往下走。好公司，等一个更差的价格。</p>
+</div></body></html>

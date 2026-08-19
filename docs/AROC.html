@@ -1,0 +1,432 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AROC · Archrock（阿奇洛克）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AROC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">收入合约化跟气价脱钩，ROIC 11.2%高于资本成本8%，几乎不交现金税</div><h1>AROC · Archrock（阿奇洛克）</h1>
+<p>市值 59.8 亿美元 · 股价约 34.12 美元 · 行业：天然气压缩服务（工业服务） · TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说这家公司到底在干嘛，因为它的名字什么都看不出来。</p>
+<p><strong>Archrock 是全美最大的「天然气压缩机出租公司」。</strong> 它买压缩机、开到油气井场、自己派人开着维护，油气公司按月交租金。就这么简单一件事，占它 87% 的收入。</p>
+<p>为什么天然气非要压缩不可？气从地下出来的时候压力是低的，而且<strong>井越老压力越低</strong>——一口页岩气井刚打出来可能有 3,000 psi，五年后掉到 200 psi。可管道要求你送进去的气至少 1,000 psi 以上。中间这段差，必须靠压缩机把气「顶」上去。没有压缩机，井里的气出不来，或者出来了进不了管道，等于白打。</p>
+<p>而且压缩需求是<strong>只增不减</strong>的：一个页岩气田开采得越久，井口压力越低，同样一方气需要的压缩马力就越多。所以哪怕美国天然气产量不增长，压缩马力的需求也在涨。</p>
+<h3>生意一：合约运营（TTM 13.13 亿，占 87%）</h3>
+<p>这是全部的核心。</p>
+<p><strong>具体怎么做的：</strong> 一家在二叠纪盆地作业的油气公司（比如 Diamondback、Pioneer 这类）打了一片井，需要给采出的伴生气加压送进集气管道。它不想自己买压缩机——买一台 1,500 马力的机组要花两三百万美元，还得雇会修燃气发动机的技工，而且五年后井衰竭了这机器就砸手里。于是它打给 Archrock。</p>
+<p>Archrock 把一台橇装机组拖到井场——底座上是一台卡特彼勒或 Waukesha 的燃气发动机，驱动一台往复式压缩机，用现场的天然气当燃料，不用外接电。装好、调试、并网。之后<strong>机器的产权、维护、大修全归 Archrock</strong>，它派自己的技工按路线巡回，一个技工负责方圆几十公里的十几台机器，坏了立刻修。</p>
+<p><strong>客户按月交固定租金，跟天然气价格一分钱关系都没有。</strong> 一台 1,500 马力的机组月租大约 3 万到 3.5 万美元。合同期通常 1 到 5 年，大马力的机组合同更长。天然气从 8 美元跌到 2 美元，只要那口井还在产气，租金照付——因为关掉井的损失远大于付租金。<strong>这就是这门生意最值钱的地方：收入是合约化的，跟大宗商品价格解耦。</strong></p>
+<p>按马力大小拆开看，正好三分天下：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>机组规格</th>
+<th>用途</th>
+<th>TTM 营收（百万）</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–1,000 马力</td>
+<td>单井井口压缩、气举</td>
+<td>426.0</td>
+<td><strong>+72.8%</strong></td>
+</tr>
+<tr>
+<td>1,001–1,500 马力</td>
+<td>集气站</td>
+<td>433.7</td>
+<td>+12.7%</td>
+</tr>
+<tr>
+<td>1,500 马力以上</td>
+<td>中央处理厂、外输</td>
+<td>453.2</td>
+<td>+30.1%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td></td>
+<td>0.6</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td></td>
+<td><strong>1,313.5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>小马力那块同比涨 72.8%，是因为 2024 年花约 9.8 亿美元买下的 TOPS 公司——那家专做二叠纪的小型电驱压缩机——并表了。</p>
+<p><strong>资产的经济学是这门生意的第二个关键点：</strong> 一台压缩机组新造成本大约每马力 1,500–2,000 美元。会计上按 25 年折旧，但<strong>实物寿命是 30 到 40 年</strong>——中途做几次大修换掉气缸和活塞就能接着用，机身和曲轴几乎不坏。所以「折旧」这个成本在账上被记得比实际磨损快，这是它 GAAP 利润被低估、现金流远好于净利润的根本原因。</p>
+<p>利用率现在在 96% 左右，几乎满租；而且新压缩机组因为发动机供货周期长（卡特彼勒的订单排到一年多以后），行业没法快速加供给——所以 Archrock 这两年一直在涨租金。</p>
+<h3>生意二：售后服务（TTM 1.91 亿，占 13%）</h3>
+<p>有些大型油气公司自己买了压缩机，但没有养一支技工队伍。Archrock 就把自己那套维修能力卖给它们：出人上门做保养和大修（TTM 1.12 亿），以及卖零配件（TTM 0.79 亿）。</p>
+<p>这块毛利率低得多（大约 22%，对比主业的 68%），赚钱不多，但战略上有用：它让 Archrock 的技工网络在每个盆地都有足够的活养着，也让它随时知道哪家客户的自有机队快撑不住了——那就是下一个把机器卖给 Archrock、改成租的潜在客户（行业里管这叫"从自有转外包"，是这个行业十年来的长期趋势）。</p>
+<h3>一张表看清楚</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>估算经营利润率</th>
+<th>估算贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合约运营</td>
+<td>1,313.5</td>
+<td>+14.7%</td>
+<td>87%</td>
+<td>约 42%</td>
+<td>约 552</td>
+</tr>
+<tr>
+<td>售后服务</td>
+<td>191.0</td>
+<td>−11.5%</td>
+<td>13%</td>
+<td>约 13%</td>
+<td>约 25</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,504.5</strong></td>
+<td><strong>+11.5%</strong></td>
+<td>100%</td>
+<td><strong>38.3%</strong></td>
+<td><strong>576.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只按产品线披露营收，不披露分部经营利润</strong>，上表的利润率是按公司披露的整体毛利率（67.3%）和两块业务公开的毛利差异估算的，<strong>不是财报数字</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 2,419 万美元，占净利润的 7.4%。</strong> 比例正常偏低，GAAP 已扣，不加回。</p>
+<p><strong>一次性项目：有两项，方向相反，基本对冲。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>出售资产<strong>收益</strong></td>
+<td>+45.86</td>
+<td>+47.08</td>
+<td>+17.89</td>
+<td>+10.20</td>
+<td>+40.49</td>
+</tr>
+<tr>
+<td>资产减值/重组<strong>损失</strong></td>
+<td>−16.61</td>
+<td>−18.29</td>
+<td>−10.68</td>
+<td>−12.26</td>
+<td>−21.44</td>
+</tr>
+<tr>
+<td><strong>净额</strong></td>
+<td><strong>+29.25</strong></td>
+<td>+28.79</td>
+<td>+7.21</td>
+<td>−2.06</td>
+<td>+19.05</td>
+</tr>
+</tbody>
+</table></div>
+<p>出售资产收益的来源是它卖掉闲置或非核心的旧压缩机——因为账上折旧记得比实物磨损快，一台折到很低账面价值的机器卖二手价就是「赚」。<strong>这是年年都有的</strong>，五年没断过，所以严格说不算"一次性"；但它属于处置资产、不属于经营，估值时我把它剥掉。剥掉后（净额 2,925 万税前，按 24.48% 税率折成 2,209 万）：</p>
+<p><strong>干净的经常性净利润 ≈ 3.028 亿美元</strong>（报表 3.249 亿）。</p>
+<p><strong>资本化的支出：没有异常。</strong> 这是重资产公司，买压缩机本来就走资本开支，透明。</p>
+<p><strong>回购与稀释：这一项做得不错。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>5,863 万美元</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>2,419 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.4 倍</strong></td>
+</tr>
+<tr>
+<td>现金股息</td>
+<td>1.523 亿美元（每股约 0.87 美元，股息率 2.55%）</td>
+</tr>
+<tr>
+<td>股数变化（同比）</td>
+<td>+1.27%</td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是 SBC 的 2.4 倍，超过了 1 倍这条「只是抵消员工发股」的及格线，属于真回购。但股数同比还是增加了 1.27%——原因是 2025 年收购 NGCS 时用股票支付了一部分对价，那是非现金发股，不走现金流量表。所以<strong>回购的钱是真回购，但被并购发股抵掉了，股东实际份额还是被稀释了一点点</strong>。加上 2.55% 的股息，股东综合回报大约是 2.55% − 1.27% ≈ <strong>1.3%</strong> 的净现金回报，其余的钱都投回业务了。</p>
+<p><strong>利润和现金流的差：这家公司是反过来的——现金流远好于利润。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>324.9</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+282.0</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+30.6</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+24.2</td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>+16.6</td>
+</tr>
+<tr>
+<td>− 出售资产收益（非现金调整）</td>
+<td>−45.9</td>
+</tr>
+<tr>
+<td>＋ <strong>其他经营项（主要是递延所得税）</strong></td>
+<td><strong>+76.6</strong></td>
+</tr>
+<tr>
+<td>＋ 营运资金净变化</td>
+<td>+10.7</td>
+</tr>
+<tr>
+<td>＋ 坏账等</td>
+<td>+1.2</td>
+</tr>
+<tr>
+<td>＝ <strong>经营现金流</strong></td>
+<td><strong>725.6</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−434.3</td>
+</tr>
+<tr>
+<td>＝ 自由现金流</td>
+<td><strong>291.3</strong></td>
+</tr>
+<tr>
+<td>（备注：出售旧设备回收现金）</td>
+<td>+114.7</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这里藏着本篇最值钱的一个发现：所得税。</strong></p>
+<p>利润表上记了 <strong>1.065 亿美元</strong>的所得税费用（有效税率 24.48%），但现金流量表上「实际交出去的所得税」只有 <strong>329 万美元</strong>。差了 1.03 亿。</p>
+<p>原因是美国税法对这类设备给的加速折旧（bonus depreciation）——买一台新压缩机，税务上第一年就能把大部分成本抵掉，而会计上要摊 25 年。Archrock 每年买四亿多美元的新机器，产生的税盾把当年该交的现金税几乎全抵没了。</p>
+<p><strong>所以它账上的净利润 3.25 亿，对应的实际现金盈利接近 4.28 亿。</strong> 但要说清楚：这是<strong>递延不是免除</strong>——如果哪天它停止扩张、不再买新机器，这笔税迟早要补交。只不过对一家还在增长的重资产公司来说，这个"迟早"可以推很多年。</p>
+<p><strong>再说自由现金流那 2.91 亿。</strong> 这个数是扣完全部 4.34 亿资本开支之后的，而这 4.34 亿里绝大部分是<strong>增长性支出</strong>（买新压缩机去接新合同），不是维持现有机队所必需的。Archrock 维持性资本开支大致在每年 1 亿美元上下（这是我按行业惯例和它披露的口径<strong>估算</strong>的，财报未单独列示）。按这个口径，"维持性自由现金流" ≈ 7.26 亿 − 1.0 亿 ≈ <strong>6.3 亿美元</strong>。这两个数字（2.91 亿 vs 6.3 亿）差一倍多，估值时用哪个，结论会差很远，下面两个都给。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>59.8 亿 ÷ 3.249 亿</td>
+<td><strong>18.4 倍</strong></td>
+<td><strong>5.44 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的调整后口径</td>
+<td>调整后净利润约 3.35 亿</td>
+<td>17.9 倍</td>
+<td>5.59 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>59.8 亿 ÷ 3.028 亿（剔除出售资产收益净额，SBC 不加回）</td>
+<td><strong>19.8 倍</strong></td>
+<td><strong>5.06 元</strong></td>
+</tr>
+<tr>
+<td>现金税口径（把递延税加回）</td>
+<td>59.8 亿 ÷ 4.281 亿</td>
+<td>14.0 倍</td>
+<td>7.16 元</td>
+</tr>
+<tr>
+<td>自由现金流口径 P/FCF</td>
+<td>59.8 亿 ÷ 2.913 亿</td>
+<td><strong>20.5 倍</strong></td>
+<td>4.87 元</td>
+</tr>
+<tr>
+<td><strong>维持性自由现金流口径（估算）</strong></td>
+<td>59.8 亿 ÷ 约 6.3 亿</td>
+<td>约 9.5 倍</td>
+<td>约 10.5 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>83.4 亿 ÷ 5.767 亿</td>
+<td><strong>14.5 倍</strong></td>
+<td>6.92 元（税前）</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td>83.4 亿 ÷ 8.539 亿</td>
+<td>9.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>59.8 亿 ÷（3.249＋3.190＋1.700）÷3 ＝ 2.713 亿</td>
+<td><strong>22.1 倍</strong></td>
+<td><strong>4.54 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行的 22.1 倍值得单说：它比当期的 18.4 倍<strong>贵</strong>，这跟大多数公司是反的——大多数公司三年平均口径更贵，说明现在的利润在高点。Archrock 反过来，说明它的利润在<strong>持续爬升</strong>（2024 年 1.70 亿 → 2025 年 3.19 亿 → TTM 3.25 亿），三年平均被两年前的低基数拖住了。这是好现象，但也提醒你：这段利润跳升有很大一部分来自 2024 年那笔 9.8 亿的 TOPS 收购并表，不是纯内生的。</p>
+<h3>说人话</h3>
+<p>你现在投 100 块进 Archrock：</p>
+<ul>
+<li>按 GAAP 报表算，公司一年替你赚 <strong>5.44 元</strong>。</li>
+<li>剔掉卖旧机器赚的那部分，按最保守的经常性口径算，是 <strong>5.06 元</strong>。</li>
+<li>但如果按它实际交税之后的现金盈利算，是 <strong>7.16 元</strong>（代价是这笔税以后可能要还）。</li>
+<li>如果按"只维持现有机队、不扩张"的口径算，是 <strong>约 10.5 元</strong>——不过这个 10.5 元是建立在"停止增长"这个假设上的，现实里它不会这么干。</li>
+</ul>
+<p><strong>这 5 块钱里，多少真回到你口袋？</strong> 股息每年 0.87 美元，约 <strong>2.55 元</strong>；回购 5,863 万约 <strong>0.98 元</strong>，但被并购发股抵掉了一半多，净下来约 <strong>0.5 元</strong>。合计大约 <strong>3.0 元现金到手</strong>，剩下的 2 元多留在公司里——去买新压缩机了。TTM 花了 4.34 亿资本开支，其中约 3.3 亿是买新机组去接新合同。</p>
+<p><strong>这些留下来的钱投得值不值？看这个数：投入资本回报率（ROIC）11.15%，加权平均资本成本（WACC）8.00%。</strong> 每投 100 块赚回 11.15 块，成本 8 块——<strong>每扩张一块钱，创造大约三分钱的价值</strong>。这跟上一篇 AAR 正好相反。对一家还在花钱扩张的公司来说，ROIC 高于资本成本是能不能给它增长溢价的前提，Archrock 过关了。</p>
+<p><strong>这个回报未来变大还是变小？</strong> 向上的力量比较扎实：二叠纪的伴生气产量还在涨、老井压力持续下降（同样的气需要更多马力）、LNG 出口终端和数据中心的用电需求把天然气需求整体抬起来、新压缩机组供货周期长导致行业没法快速加供给所以租金还在涨。向下的风险有两个：一是 2.36 亿×10 的债务（净负债 23.6 亿，债务/EBITDA 2.73 倍，利息保障 3.55 倍），利率环境恶化或者行业转差时这个杠杆会放大痛感；二是它的客户就是美国的页岩油气公司，如果油价长期跌破 50 美元，钻井活动收缩，新机组的需求会停，虽然存量合同还在跑。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，是这一批里唯一值得留着观察的。</strong> 18.4 倍 GAAP、19.8 倍剔干净、14.5 倍 EV/EBIT，买的是一门收入合约化、跟气价脱钩、利用率 96%、租金还在涨、投入回报（11.2%）明显高于资本成本（8.0%）的重资产租赁生意；账上的折旧比机器实际磨损快，加上加速折旧几乎不用交现金税，所以它的现金创造能力比 18 倍市盈率显示的要好一截。不便宜——股价一年涨了 43%，3.85 倍市净率也不算低价，2.7 倍的债务杠杆是必须盯住的那根弦——但<strong>你付的是公道价钱，买的是一门真生意，而不是一个故事</strong>。</p>
+</div></body></html>

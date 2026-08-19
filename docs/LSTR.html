@@ -1,0 +1,313 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LSTR · 兰德斯塔系统（Landstar System）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LSTR</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">48倍是股价涨44%涨出来的，同期EPS跌19%</div><h1>LSTR · 兰德斯塔系统（Landstar System）</h1>
+<p>市值 $63.18 亿 · 股价 $186.16 · 行业：运输（公路货运经纪） · TTM 截止 2026 年 6 月 27 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>先说清楚一件事：兰德斯塔几乎不拥有卡车。</strong> 它是一家货运经纪公司，干的是"给货找车、给车找货"的撮合生意，靠三条腿站着，这三条腿全都不在它的资产负债表上。</p>
+<p><strong>第一条腿是代理（agent）。</strong> 全美约 1,100 个独立代理点，全是纯佣金制——兰德斯塔一分钱底薪不发。俄亥俄州一个钢厂要把一卷 40 吨的热轧钢运到德州休斯顿，它打电话给当地的兰德斯塔代理，代理报价 4,200 美元。这笔单子归代理谈、代理跟进、代理承担客户关系，代理拿其中约 7%–8% 的佣金，也就是 300 多美元。如果没成单，代理一分钱拿不到，兰德斯塔也一分钱不用付。<strong>这就是这门生意最核心的东西：全公司最大的销售队伍，固定成本是零。</strong></p>
+<p><strong>第二条腿是 BCO（Business Capacity Owner，运力所有者）。</strong> 大约 8,000 多名自己买了卡车的个体司机，把车挂靠在兰德斯塔名下，用兰德斯塔的运营牌照和保险跑活。上面那卷钢，兰德斯塔派给一个开平板车的 BCO，付给他约 2,900 美元（BCO 单子通常拿走营收的 68%–72%）。柴油、保养、轮胎、车贷，全是 BCO 自己的事。司机不跑活的日子，兰德斯塔不付钱。</p>
+<p><strong>第三条腿是外部承运商。</strong> 另外还有几万家已审核通过的第三方卡车公司，在 BCO 运力不够或者线路不顺时接单。</p>
+<p>所以整条链条上，兰德斯塔自己出的只有：一套调度系统、一张保险、一批拖挂车（不是卡车头），和约 1,378 名正式员工。全年 50 亿美元的营收，人均创收 363 万美元。资本开支一年才 1,421 万美元，占市值的 0.22%——<strong>这门生意几乎不吃钱</strong>。</p>
+<p>代价是毛利率只有 19%：收 4,200 元，付给司机和代理 3,400 元，剩下 800 元再扣掉保险、理赔、系统、总部开销，最后落到营业利润只有 4.04%。</p>
+<p>按货物类型拆，它实际在做七件事，但真正有分量的是前两件：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>上一完整财年 FY2025</th>
+<th>变化</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>厢式整车（Van）</td>
+<td>2,463</td>
+<td>2,328</td>
+<td>+5.8%</td>
+<td>49.3%</td>
+</tr>
+<tr>
+<td>平板/无侧板整车（Platform）</td>
+<td>1,647</td>
+<td>1,528</td>
+<td>+7.8%</td>
+<td>33.0%</td>
+</tr>
+<tr>
+<td>其他卡车运输</td>
+<td>376.8</td>
+<td>384.0</td>
+<td>−1.9%</td>
+<td>7.5%</td>
+</tr>
+<tr>
+<td>海运与空运货代</td>
+<td>222.7</td>
+<td>241.4</td>
+<td>−7.8%</td>
+<td>4.5%</td>
+</tr>
+<tr>
+<td>零担（LTL）</td>
+<td>97.0</td>
+<td>95.9</td>
+<td>+1.2%</td>
+<td>1.9%</td>
+</tr>
+<tr>
+<td>铁路多式联运</td>
+<td>94.7</td>
+<td>87.2</td>
+<td>+8.7%</td>
+<td>1.9%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>81.7</td>
+<td>79.2</td>
+<td>+3.2%</td>
+<td>1.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,995</strong></td>
+<td><strong>4,757</strong></td>
+<td><strong>+5.0%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>厢式整车</strong>是最标准化的活：一个封闭的 53 英尺挂车，装消费品、包装食品、纸箱货，从仓库拉到配送中心。谁都能干，所以竞价最凶，兰德斯塔在这块跟 C.H. Robinson、Uber Freight 以及无数小经纪公司贴身肉搏。</p>
+<p><strong>平板/无侧板</strong>才是兰德斯塔真正有护城河的地方。这类货是钢卷、预制混凝土梁、变压器、风机叶片、工程机械——尺寸超限、装卸要用吊车、绑扎方式有讲究、经常需要办超宽超高的路权许可。一个新手司机接不了这种活，一个纯软件平台也调度不了。兰德斯塔的 BCO 队伍里很大一部分是干这个的老手，代理网络里也有一批专做重型工业客户的。这块 TTM 营收 16.47 亿、增长 7.8%，是全公司增长最快的大板块。</p>
+<p>财报只披露到营收，<strong>各条线的利润率没有拆开</strong>，全公司口径 4.04%。按常识判断平板线的单价和毛利额都高于厢式，但没有精确数字，不硬编。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 只有 776 万美元，占净利润 1.317 亿的 <strong>5.9%</strong>，占营收 0.16%。在美股里这个比例低到几乎可以忽略——兰德斯塔发给员工的是工资，不是股票。这一条干净。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>3,217 万美元的资产减值/重组费用</strong>。这笔钱在 TTM 和 FY2025 两列里数字完全一样（都是 32.17），说明它整笔发生在 2025 年下半年、并且还留在 TTM 窗口里。往前翻五年（FY2021–FY2024）这一行全是空的，所以从数据本身看它确实是六年来头一回。税后约 2,441 万，相当于净利润的 <strong>18.5%</strong>——不算小。单期口径下我无法判断这是否会再来一次，但历史记录支持"真一次性"。</p>
+<p><strong>坏账计提</strong>：TTM 945 万，FY2025 是 1,657 万，FY2024 是 1,827 万。相比 FY2021 的 572 万明显抬高了。货运经纪最近几年被货运诈骗和小承运商破产折腾得厉害，这笔钱是真实的经营损耗，<strong>不该剔除</strong>，但它从 2023 年起就翻了三倍，值得盯着。</p>
+<p><strong>资本化的支出</strong>：没有。没有软件开发费资本化，没有内容制作费，资本开支一年 1,421 万全是实物。这一条干净。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>1.028 亿</strong>，同期 SBC 776 万，<strong>比值 13.2 倍</strong>。这是真回购，不是给员工发股票擦屁股。股本从 3,496 万股降到 3,394 万股，<strong>一年缩了 2.89%</strong>。这一条是全篇最漂亮的地方。分红另付 5,470 万，每股 1.60 美元，占 EPS 3.85 美元的 42%。</p>
+<p><strong>利润和现金流的差</strong>：净利润 1.317 亿 → 经营现金流 1.899 亿，差 5,800 万。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>131.70</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>42.98</td>
+</tr>
+<tr>
+<td>＋ 资产减值/重组（不花钱）</td>
+<td>32.17</td>
+</tr>
+<tr>
+<td>＋ 股权激励（发股票不发现金）</td>
+<td>7.76</td>
+</tr>
+<tr>
+<td>＋ 坏账计提（还没真收不回）</td>
+<td>9.45</td>
+</tr>
+<tr>
+<td>− 卖资产收益</td>
+<td>−0.79</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>16.49</td>
+</tr>
+<tr>
+<td><strong>＝ 小计</strong></td>
+<td><strong>239.76</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td><strong>−157.60</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+66.93</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产净变动</td>
+<td>+40.77</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>189.86</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最刺眼的是那笔 −1.576 亿的应收账款。</strong> 营收只涨了 4%，应收账款却多占用了 1.576 亿现金，等于把全年净利润的 120% 压在了客户欠款上。同期应付账款只多欠了 6,693 万，抵不掉。这意味着要么客户账期在拉长，要么货量在季末冲了一把还没收回来。对一家中间商来说，应收跑在营收前面是需要盯紧的信号——它自己不欠司机钱，但司机的钱得先垫出去。</p>
+<p>自由现金流 1.757 亿，比净利润高 33%，但这个"好看"有一半是那笔不花钱的 3,217 万减值加回来的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 63.18 亿，净现金 2.086 亿（现金 3.477 亿 − 负债 1.391 亿），企业价值 61.09 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,318 ÷ 131.70</td>
+<td><strong>48.0 倍</strong></td>
+<td><strong>$2.08</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>兰德斯塔基本不报调整后利润，最多剔除那笔减值 → 156.11</td>
+<td>40.5 倍</td>
+<td>$2.47</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>6,318 ÷（131.70 ＋ 减值税后 24.41），SBC 不加回</td>
+<td><strong>40.5 倍</strong></td>
+<td><strong>$2.47</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>6,318 ÷ 175.65</td>
+<td>36.0 倍</td>
+<td>$2.78</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>6,109 ÷ 201.93</td>
+<td>30.3 倍</td>
+<td>$3.31</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>6,318 ÷ 均值(TTM调整156.1, FY25调整139.4, FY24 195.9)=163.8</td>
+<td>38.6 倍</td>
+<td>$2.59</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这里有一件跟大多数股票相反的事：三年平均口径比当期口径更便宜，不是更贵。</strong> 如果用三个完整财年（FY2023 的 2.644 亿、FY2024 的 1.959 亿、FY2025 调整后的 1.394 亿）来算，平均 1.999 亿，对应 <strong>31.6 倍</strong>。原因很简单——<strong>兰德斯塔现在的利润在周期底部，不在顶部</strong>。营收从 FY2022 峰值的 74.4 亿一路掉到 50 亿，跌了 33%；营业利润率从 7.64% 压到 4.04%；EPS 从 11.76 美元掉到 3.85 美元，跌了 67%。这是美国卡车运力过剩、运价打到成本线的第四年。</p>
+<p><strong>所以，你现在投 100 块进去，按最保守的真实口径（40.5 倍）算，公司一年替你赚 $2.47。</strong></p>
+<p>这 2.47 块里有多少回到你口袋？分红 5,470 万 ÷ 市值 63.18 亿 = <strong>$0.87</strong>；回购 1.028 亿 ÷ 63.18 亿 = <strong>$1.63</strong>。合计 <strong>$2.50</strong>——<strong>比它赚的还多一点点</strong>。也就是说兰德斯塔现在把赚来的钱一分不剩地全发还给股东了，甚至动了一点存量现金（净现金从 FY2024 的 4.033 亿降到 2.086 亿）。留在公司里再投资的部分是资本开支 1,421 万，占市值 0.22%，可以当成零。</p>
+<p><strong>这个 $2.47 未来会变大还是变小？大概率变大，但你不知道什么时候。</strong> 这门生意的杠杆全在周期上：营收如果回到 65 亿、利润率回到 6%，营业利润就是 3.9 亿，接近现在（2.02 亿）的两倍；净利润有希望回到 2.8 亿，那时的市盈率就是 22 倍。市场显然也是这么想的——远期市盈率 27.18 倍，比当期的 48 倍低了一大截，意味着分析师预期一年内利润翻近一倍。</p>
+<p>问题是价格已经先走了。<strong>过去 52 周股价涨了 44.19%，而同期 EPS 跌了 19.24%。</strong> 这 48 倍不是利润跌出来的，是股价涨出来的——市盈率从 FY2022 的 13.58 倍一路扩张到今天的 48.33 倍，翻了三倍半。你今天买的不是"周期底部的便宜货"，是"已经把复苏提前定价了的周期底部"。</p>
+<p>生意本身没得挑：ROIC 26.87%（在周期最烂的年份还有这个数），净现金 2.09 亿零负债压力，SBC 只占利润 6%，回购是 SBC 的 13 倍，代理和 BCO 网络是二十年攒出来的、且完全不占资本。这是一门好生意。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好公司，坏价格。</strong> 40 倍买一个利润还在往下走、复苏时点完全说不准的周期股，而股价已经先涨了 44%——真实市盈率 40.5 倍、三个完整财年平均 31.6 倍，这两个数字都说明便宜早就没了。如果卡车运价明年真的翻身，这笔买卖也就是不赔不赚；如果再拖两年，48 倍会很难看。等，别追。</p>
+</div></body></html>

@@ -1,0 +1,406 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SSRM · SSR Mining（金银矿商）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SSRM</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">6倍EV/EBIT+18亿净现金(占市值28%),但你买的是金价不是公司</div><h1>SSRM · SSR Mining（金银矿商）</h1>
+<p>市值 64.6 亿美元 | 股价约 31.7 美元 | 行业：非能源矿产（黄金/白银开采） | TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>SSR Mining 只做一件事：<strong>从地里挖石头，把石头里的金和银弄出来，卖掉。</strong> 但这件事在四座矿上以两种完全不同的方式进行，值得说清楚，因为它决定了成本结构。</p>
+<h3>主力做法：露天堆浸金矿（Marigold、Cripple Creek &amp; Victor）</h3>
+<p>内华达州的 Marigold 矿是这样运转的：先用炸药把含金的岩层炸松，几百吨的矿车把碎石拉到一块铺了防渗膜的巨大平台上，堆成一座人造石头山（叫堆浸场）。然后从山顶滴淋稀氰化钠溶液，溶液渗过石头，把里面的金溶解带下来，在底部的池子里收集；再用活性炭把金吸附出来，电解、熔炼，最后铸成金锭（doré，含金 80%–90% 的粗金锭）。</p>
+<p><strong>这里最关键的数字是品位</strong>：这类矿石大概每吨含 0.3–0.5 克金。也就是说，为了拿到一枚 1 盎司（31.1 克）的金币，SSR 要挖动并处理大约 <strong>60 到 100 吨石头</strong>。所以这门生意的成本清单上写的全是：柴油、炸药、卡车轮胎、电、氰化钠、人工——<strong>没有一项跟金价有关</strong>。</p>
+<p>Cripple Creek &amp; Victor（科罗拉多州，简称 CC&amp;V）是同样的做法，2025 年 2 月刚从 Newmont 手里买过来。这笔收购是 TTM 营收暴涨 48.4% 的一半原因，另一半是金价。</p>
+<h3>第二种做法：地下矿（Seabee）</h3>
+<p>加拿大萨斯喀彻温省的 Seabee 是地下开采——打竖井和斜坡道下去，沿着高品位矿脉爆破、出矿，运到地面的选厂用重选加氰化浸出提金。品位比露天高得多（每吨好几克），产量小但单位成本低。</p>
+<h3>第三种：银铅锌精矿（Puna）</h3>
+<p>阿根廷的 Puna（Chinchillas 矿）出来的不是金属，是<strong>精矿</strong>——一种粉末状的矿物富集物，用浮选法把银、铅、锌从废石里分出来。精矿装船卖给冶炼厂，冶炼厂按里面的金属含量付钱，但要扣掉一笔加工费（行业叫 TC/RC）。所以 Puna 的售价天然比伦敦牌价低一截。</p>
+<h3>卖给谁，怎么定价</h3>
+<p>金锭直接卖给精炼厂和银行，按伦敦金定盘价结算。<strong>没有议价空间，没有客户关系，没有品牌</strong>——SSR 挖出来的金子和纽蒙特挖出来的一模一样。这是这门生意最本质的特征：<strong>它是一个纯粹的价格接受者，唯一能控制的只有成本和产量。</strong></p>
+<h3>2026 年产量指引（卖掉土耳其之后的完整口径）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>矿山</th>
+<th>位置</th>
+<th>2026 年指引</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Marigold</td>
+<td>美国内华达</td>
+<td>17.0–20.0 万盎司黄金</td>
+</tr>
+<tr>
+<td>Cripple Creek &amp; Victor</td>
+<td>美国科罗拉多</td>
+<td>12.5–15.0 万盎司黄金</td>
+</tr>
+<tr>
+<td>Seabee</td>
+<td>加拿大萨斯喀彻温</td>
+<td>6.0–7.0 万盎司黄金</td>
+</tr>
+<tr>
+<td>Puna</td>
+<td>阿根廷</td>
+<td>9.5–11.5 万盎司黄金当量（主要是银）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td></td>
+<td><strong>35.5–42.0 万盎司黄金 + 625–700 万盎司白银</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>钱是怎么分的（按金属，TTM）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>金属</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>黄金</td>
+<td>13.47 亿</td>
+<td>69.7%</td>
+<td>11.60 亿</td>
+</tr>
+<tr>
+<td>白银</td>
+<td>4.91 亿</td>
+<td>25.4%</td>
+<td>3.84 亿</td>
+</tr>
+<tr>
+<td>铅</td>
+<td>0.40 亿</td>
+<td>2.0%</td>
+<td>0.44 亿</td>
+</tr>
+<tr>
+<td>锌</td>
+<td>0.05 亿</td>
+<td>0.3%</td>
+<td>0.045 亿</td>
+</tr>
+<tr>
+<td>其他金属</td>
+<td>0.50 亿</td>
+<td>2.6%</td>
+<td>0.36 亿</td>
+</tr>
+<tr>
+<td>合计</td>
+<td><strong>19.33 亿</strong>（+48.4% 同比）</td>
+<td>100%</td>
+<td>16.30 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>分部经营利润：<strong>财报只披露到营收，不披露分矿利润。</strong> 按整体 38.4% 的经营利润率估算，Seabee（地下高品位）的单位利润率应高于两座露天堆浸矿，Puna 受精矿加工费拖累最低。<strong>这是估算，公司未披露。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>先说最大的那件事：它刚刚卖掉了土耳其</h3>
+<p>2026 年 6 月 24 日，SSR 把土耳其 Çöpler 金矿 <strong>80% 的股权以 15 亿美元卖给了土耳其 Cengiz Holding</strong>，扣掉营运资金调整后实收现金约 14.9 亿美元。Çöpler 就是 2024 年 2 月发生堆浸场垮塌事故、9 名工人遇难之后停产的那座矿，从停产到卖掉基本没再产过金。</p>
+<p>这笔交易的效果：<strong>账上凭空多出 18.3 亿美元现金，同时甩掉了一个只烧钱不产金的窟窿，和一条悬着的赔偿/诉讼尾巴。</strong> 交易在 TTM 期末的最后一周才完成——也就是说，<strong>资产负债表已经是「卖掉之后」，利润表却还背着「卖掉之前」的全部代价</strong>。这是理解这家公司报表的钥匙。</p>
+<h3>结果就是：TTM 的净利润数字是废的</h3>
+<p>看这条链（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td>672.95</td>
+</tr>
+<tr>
+<td>− 所得税（20.71%）</td>
+<td>−139.38</td>
+</tr>
+<tr>
+<td>＝ 持续经营利润</td>
+<td>533.57</td>
+</tr>
+<tr>
+<td>− 少数股东权益</td>
+<td>−33.34</td>
+</tr>
+<tr>
+<td><strong>本应剩下</strong></td>
+<td><strong>500.23</strong></td>
+</tr>
+<tr>
+<td><strong>报表上的净利润</strong></td>
+<td><strong>237.73</strong></td>
+</tr>
+<tr>
+<td><strong>凭空少掉</strong></td>
+<td><strong>−262.50</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这 2.625 亿是终止经营（Çöpler）的亏损——处置损失加上停产期间的维护费用。<strong>财报数据源没有单列这一行，这个数是我从上面这串数字的缺口倒推出来的。</strong></p>
+<p>结论很硬：<strong>用 2.377 亿净利润算出来的 27.2 倍市盈率，衡量的是一个已经不存在的公司。</strong></p>
+<h3>一次性项目：在这家公司，「一次性」是常态</h3>
+<p>TTM 税前：并购重组费用 −1,042 万、投资处置收益 +2,080 万、资产处置损失 −651 万、资产减值 −269 万、<strong>其他非经常项目 −8,929 万</strong>、汇兑损失 −2,779 万。财报自己给了一个「剔除非经常项目的税前利润」＝ <strong>7.167 亿</strong>，比报表税前利润高 4,370 万。</p>
+<p>那笔 −8,929 万的「其他非经常项目」是什么，单期口径看不出来，也<strong>无法判断它是不是年年都有</strong>。但历史给了答案：FY2024 是 −3.05 亿，FY2023 是资产减值 −3.62 亿加商誉减值 −0.50 亿。<strong>连续四年每年都有大额「一次性」项目——在 SSR 这里，一次性就是常态。</strong></p>
+<h3>资本化的支出</h3>
+<p>矿业的资本化逻辑跟软件公司不同：剥离表土（stripping）、井下开拓、勘探，只要被判定为「能带来未来产量」就可以计入资产而不是当期成本。SSR 的 TTM 资本开支 2.761 亿里，公司口径把其中约 1.15 亿归为「增长资本」（Buffalo Valley、Cortaderas、Porky 三个扩产项目），再加 3,500 万增长勘探费。<strong>剩下约 1.6 亿是维持性资本开支——这部分不是可选的</strong>，不花，明年产量就掉。</p>
+<h3>回购与稀释：别被比值骗了</h3>
+<p>TTM 回购 <strong>3.426 亿美元</strong>，SBC 5,954 万，<strong>回购/SBC = 5.75 倍</strong>——纸面上是漂亮的真回购。但看股数：<strong>一年下来股本反而增加了 2.77%</strong>（2.039 亿股）。回购了 3.4 亿还越回越多，说明期间有别的发股（收购对价、可转债结算或期权行权）把回购全吃光了。<strong>看股数，不要看比值。</strong></p>
+<p>SBC 本身还要单说：FY2024 是 472 万，FY2025 是 4,456 万，TTM 是 5,954 万——<strong>两年涨了 12.6 倍</strong>，而同期股价涨了 88.9%。这是典型的股价挂钩型薪酬在牛市里自我膨胀。</p>
+<p>股息：从 2022–23 年的每股 0.28 美元砍到 0，2026 年才恢复到象征性的 0.03 美元，股息率 <strong>0.09%</strong>。</p>
+<h3>利润和现金流的差</h3>
+<p>净利润 2.377 亿 vs 经营现金流 5.968 亿，差 3.59 亿（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>237.73</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>120.55</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>59.54</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>6.62</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−10.66</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>83.29</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>5.69</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−170.84</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>10.99</td>
+</tr>
+<tr>
+<td>− 其他经营资产变动</td>
+<td>−49.20</td>
+</tr>
+<tr>
+<td>小计</td>
+<td>293.71</td>
+</tr>
+<tr>
+<td>＋ <strong>数据源未单列的非现金项（主要是 Çöpler 终止经营损失的回加）</strong></td>
+<td><strong>+303.04</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>596.75</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−276.06</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>320.69</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>那笔 3.03 亿的缺口，和利润表上那 2.625 亿的缺口，<strong>指的是同一件事</strong>——现金流量表把 Çöpler 的账面损失加回去了（因为它不花现金），从两个方向印证了这笔处置的规模。</p>
+<p>还要注意存货那 −1.708 亿：堆浸矿的特点是溶液要在石头山里渗好几个月，这期间的矿石算「在产品存货」。产量扩张时存货必然涨，这是真实占用的现金。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 64.60 亿，企业价值 <strong>45.90 亿</strong>（净现金 18.32 亿，占市值 28%），股本 2.039 亿股。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>64.60 ÷ 2.377</td>
+<td>27.2 倍</td>
+<td>3.68 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>64.60 ÷ (7.167×(1−20.71%) − 0.333 = 5.35)</td>
+<td>12.1 倍</td>
+<td>8.28 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>同上（SBC 已按 GAAP 扣除不加回，Çöpler 已剥离）</td>
+<td><strong>12.1 倍</strong></td>
+<td><strong>8.28 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>64.60 ÷ 3.207</td>
+<td>20.1 倍</td>
+<td>4.96 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>45.90 ÷ 7.432</td>
+<td><strong>6.2 倍</strong></td>
+<td><strong>16.19 元</strong></td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td>45.90 ÷ 8.637</td>
+<td>5.3 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径（GAAP）</td>
+<td>64.60 ÷ ((2.377+3.958−2.613)/3 = 1.241)</td>
+<td><strong>52.1 倍</strong></td>
+<td>1.92 元</td>
+</tr>
+<tr>
+<td><strong>三年平均经营利润口径（EV/平均EBIT）</strong></td>
+<td>45.90 ÷ ((7.432+5.351+0.955)/3 = 4.579)</td>
+<td><strong>10.0 倍</strong></td>
+<td><strong>9.98 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>同一家公司，从 6.2 倍到 52.1 倍，差 8 倍。这个跨度本身就是最重要的信息。</strong> GAAP 那一头被 Çöpler 的处置彻底搅浑；EV 那一头则享受了 18.3 亿净现金把企业价值压低 28% 的好处。</p>
+<p>那两行三年平均口径要分开看：GAAP 的 52.1 倍是被 FY2024 的 −2.61 亿（Çöpler 事故年）拉废的，参考价值有限；<strong>真正该看的是三年平均经营利润口径的 10.0 倍</strong>——它剔除了处置噪音，只问「过去三年这几座矿平均一年赚多少经营利润」。当期 6.2 倍 vs 三年平均 10.0 倍，说明<strong>当期利润确实处在一个偏高的位置，但没有偏离到离谱的程度</strong>（这跟一个当期 34 倍、三年平均 73 倍的公司完全是两回事）。</p>
+<p><strong>大白话</strong>：你现在投 100 块进去——按当期企业价值口径公司一年替你赚 <strong>16.19 元</strong>；按三年平均口径 <strong>9.98 元</strong>；按 GAAP 净利润只有 <strong>3.68 元</strong>。</p>
+<p>这些钱有多少真进你口袋？<strong>几乎没有。</strong> 股息每股 0.03 美元，股息率 0.09%，聊胜于无。TTM 回购了 3.43 亿，但股数反而多了 2.77%，回购也没变成你的份额。钱去哪了？<strong>趴在账上——18.3 亿现金，占市值 28%</strong>，管理层的说法是留给「并购和增长项目」，2026 年计划花 1.15 亿增长资本加 3,500 万勘探费。所以你买的实际上是：一个现金堆 ＋ 四座正在赚钱的矿 ＋ 一个还没公布的收购计划。</p>
+<p>这个数字未来变大还是变小？<strong>完全取决于金价，别的都是噪音。</strong> TTM 毛利率 54.97%，两年前是 36.29%——涨的这 18 个百分点全是金价给的（营收 +48.4%，而产量指引 35.5–42.0 万盎司跟前两年是一个量级）。矿山成本是刚性的：柴油、炸药、人工不会因为金价跌就跟着跌。<strong>所以金价每跌 10%，SSR 的经营利润大约跌 25%–30%；反过来也一样。</strong> 这不是一门生意，这是一个带杠杆的金价头寸，只不过杠杆来自成本的固定性，而不是来自借钱（公司几乎零负债，债务/权益 0.00）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真便宜，但你买的不是 SSR Mining，你买的是金价。</strong> 一家刚甩掉土耳其包袱、口袋里装着 18.3 亿美元现金（占市值 28%）、几乎零负债、企业价值只有 6.2 倍经营利润、5.3 倍 EBITDA 的金矿公司——数字便宜到你会怀疑自己算错了，而且这次不是算错，是 GAAP 净利润被一笔 2.6 亿的处置损失砸出了一个坑，把 27 倍的假象摆在了明面上。</p>
+<p>但要说清楚代价：这家公司没有护城河（金子就是金子），它的管理层 2024 年在土耳其把堆浸场堆垮了、死了 9 个人、赔进去一整座矿，它连续四年每年都有大额「一次性」项目，它的股权激励两年涨了 12.6 倍，它回购了 3.4 亿股数却还是增加了 2.77%，股息率 0.09%。金价维持在这里，12 倍市盈率、6 倍 EV/EBIT 是真便宜；金价回到 2,500 美元，这些倍数一年之内就会翻倍。<strong>这是一张定价合理的金价看涨期权，不是一门可以放着不管的生意。</strong></p>
+</div></body></html>

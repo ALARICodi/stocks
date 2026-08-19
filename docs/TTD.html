@@ -1,0 +1,299 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TTD · 贸易台（The Trade Desk）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TTD</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">7倍自由现金流是假的，扣掉股权激励是15倍；赌它守住独立DSP位置</div><h1>TTD · 贸易台（The Trade Desk）</h1>
+<p>市值 $63.06 亿 · 股价 $13.42 · 行业：科技服务（程序化广告） · TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p>一年前这家公司值 580 亿美元。现在值 63 亿。股价 52 周跌了 74.25%，从最高点算下来跌了接近 89%。这份分析的核心问题只有一个：<strong>这是错杀，还是生意真的坏了。</strong></p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上只有一条收入线（"平台费"），只按美国 / 国际拆，所以严格说它只做一件事。但这一件事值得讲透。</p>
+<p><strong>你在手机上打开一个新闻 App，或者在电视上看 Roku、Tubi、Disney+ 的带广告版本。页面刚要加载的那 0.1 秒里，屏幕上那个广告位被拍卖了一次。</strong> 卖方（网站、流媒体平台）把这个位子挂出去，附上一堆信息：这是谁的设备、在哪个城市、正在看什么内容。几十个买家在 100 毫秒内同时出价，出价最高的那条广告在你眼前展开。</p>
+<p><strong>The Trade Desk 就是替广告主出价的那台机器。</strong></p>
+<p>具体怎么收钱：一家汽车品牌的广告代理公司（比如宏盟集团）在 TTD 上开个账户，说"我这个季度有 1 亿美元，要投给 25–45 岁、家里有两辆车、最近三十天搜过 SUV 的美国人，优先投联网电视，同一个人别让他一天看八遍"。这 1 亿美元流过 TTD 的系统去买各家媒体的广告位，<strong>TTD 从中抽约 20% 作为平台费</strong>。所以 TTM 收入 29.9 亿美元，背后大约是 150 亿美元的广告开支流过这个平台。</p>
+<p><strong>这门生意最要命的一条：TTD 自己不拥有任何媒体。</strong> 谷歌有 YouTube 和搜索结果页，Meta 有 Instagram 信息流，亚马逊有自家电商页面和 Prime Video——它们既组织拍卖又是卖家，屁股是歪的：广告主永远不知道谷歌是不是在自家库存卖不掉的时候悄悄压低了别家的出价。TTD 只站在买方这一边，它没有库存可以偏袒。<strong>"独立"是它全部的立身之本</strong>，也是广告主愿意多付这 20% 的唯一理由。</p>
+<p>围绕这个核心，它铺了几层东西（收入上不分开报）：</p>
+<ul>
+<li><strong>Kokai</strong>：2023 年推出、2025 年全量切换的主平台，替代上一代 Solimar。用机器学习决定每一次出价该出多少、值不值。2025 年这次强制迁移搞得很难看，一批客户在切换期间效果下滑，是股价崩盘的导火索之一。</li>
+<li><strong>UID2（统一身份 2.0）</strong>：cookie 的替代品。你在某个网站用邮箱登录，邮箱被哈希成一串匿名字符，广告主在别的网站看到同一串字符就知道"还是这个人"。TTD 想把它做成行业标准，摆脱对谷歌浏览器的依赖。</li>
+<li><strong>OpenPath</strong>：跳过中间的卖方平台（SSP），直接接到《华盛顿邮报》《卫报》这类媒体的库存上，省掉一层抽成。</li>
+<li><strong>Ventura</strong>：2025 年推的联网电视操作系统，直接装进电视机里。这是想从"买广告的中间商"往"控制内容分发入口"上爬。</li>
+<li><strong>零售数据合作</strong>：沃尔玛、塔吉特、克罗格把自家的会员购买数据接进来。广告主可以投"上周在沃尔玛买过尿布的人"，然后回头对账看这次广告到底带来了多少实际销售。这是 TTD 对抗亚马逊数据优势的主要武器。</li>
+</ul>
+<p>财报唯一披露的拆分是地区（只有年度数据）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>FY2025 营收（百万）</th>
+<th>FY2024</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>2,477</td>
+<td>2,134</td>
+<td>+16.1%</td>
+<td>85.5%</td>
+</tr>
+<tr>
+<td>国际</td>
+<td>419.6</td>
+<td>311.3</td>
+<td>+34.8%</td>
+<td>14.5%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,896</strong></td>
+<td><strong>2,445</strong></td>
+<td>+18.5%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>国际只占 14.5%，但增速是美国的两倍多。整体 TTM 营收 29.90 亿、增长 11.61%——<strong>而这条增速曲线是这样的：FY2021 +43.1%，FY2022 +31.9%，FY2023 +23.3%，FY2024 +25.6%，FY2025 +18.5%，TTM +11.6%。</strong> 一年砍掉一半。</p>
+<p>财报没有按业务披露利润，全公司口径营业利润率 19.61%。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 4.521 亿美元，占净利润 4.069 亿的 111%，占营收的 15.1%。这是全篇最重要的数字。</strong></p>
+<p>发出去的股票比赚到的钱还多。历史上更夸张：FY2022 的 SBC 是 4.986 亿，而当年营收才 15.78 亿——<strong>占营收 31.6%</strong>（那一年主要是给创始人兼 CEO 杰夫·格林的一笔十年期业绩期权）。</p>
+<p>好消息是这个绝对值这五年基本没涨（498.6 → 491.6 → 494.7 → 490.6 → 452.1），而营收从 15.78 亿翻到 29.90 亿。所以占营收的比例从 31.6% 一路降到 15.1%，TTM 更是第一次出现绝对值下降。<strong>这是这家公司过去五年最实质的进步。</strong></p>
+<p><strong>这笔钱必须当成真实成本扣掉。</strong> GAAP 里已经扣了，所以 4.069 亿的净利润是诚实的。但下面会看到，自由现金流那个数字没扣。</p>
+<p><strong>一次性项目</strong>：没有。没有大额诉讼和解、没有重组、没有减值。这一条干净得少见。</p>
+<p><strong>递延税的影响要单独说</strong>：账上税费 2.350 亿，实际交出去的现金税只有 1.501 亿，差 <strong>8,480 万</strong>是递延的、没真掏钱。有效税率 36.61%，远高于 21% 的法定税率——多出来的部分主要是股权激励里不可抵扣的那块。现金流量表上那笔"其他经营活动 +2.407 亿"（FY2024 还是 −2,653 万，一年翻了符号）大头就是这类非现金税务调整。<strong>结论：经营现金流被这一项系统性地美化了。</strong></p>
+<p><strong>资本化的支出</strong>：无形资产购买 1,441 万，不大。但<strong>资本开支从 FY2023 的 4,679 万暴涨到 TTM 的 2.186 亿，两年多了四倍多</strong>——在自建数据中心和 Ventura 电视系统。这是真金白银的投入，直接压住了自由现金流的增长。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>10.36 亿美元</strong> ÷ SBC 4.521 亿 = <strong>2.29 倍</strong>。没到"3 倍以上才算真回购"的线，但明显超过 1，股本实实在在缩了 <strong>4.27%</strong>。</p>
+<p>但这里有一笔必须点名的钱：<strong>FY2025 一年回购了 14.78 亿美元，FY2023 回购 7.25 亿。</strong> 这两年股价在 38–118 美元之间。今天股价 13.42 美元。也就是说过去三年花掉的 30 多亿美元回购款，按今天的价格算只值不到 5 亿。<strong>这是这家管理层最贵的一次判断失误——他们在最高点用股东的钱大规模买入自家股票。</strong> 好在账上还有 14.85 亿现金、净现金 10.51 亿，没有伤到根本。</p>
+<p><strong>利润和现金流的差</strong>：净利润 4.069 亿 → 经营现金流 10.82 亿，差了 2.7 倍。这个差额必须逐项拆开（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>406.89</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>111.67</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>15.00</td>
+</tr>
+<tr>
+<td><strong>＋ 股权激励（发股票不发现金）</strong></td>
+<td><strong>452.09</strong></td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>3.11</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（主要是递延税）</td>
+<td>240.69</td>
+</tr>
+<tr>
+<td><strong>＝ 小计</strong></td>
+<td><strong>1,229.45</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+35.36</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−117.03</td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−52.33</td>
+</tr>
+<tr>
+<td><strong>＝ 营运资金变动合计</strong></td>
+<td><strong>−134.00</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,082</strong>（尾差约 1,300 万来自四舍五入）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>10.82 亿的经营现金流里，4.52 亿是"发股票当工资"加回来的，2.41 亿是递延税等非现金项。</strong> 真正由生意本身产生、且已经付清了所有代价的现金，大约是 4 亿出头——<strong>和 GAAP 净利润 4.07 亿几乎完全吻合</strong>。这是个很强的信号：这家公司的利润是真的，只是报表上的现金流数字被 SBC 撑大了一倍多。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 63.06 亿，现金 14.85 亿，负债 4.341 亿，净现金 <strong>10.51 亿</strong>（占市值 16.7%），企业价值 52.55 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,306 ÷ 406.89</td>
+<td><strong>15.5 倍</strong></td>
+<td><strong>$6.45</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>6,306 ÷（406.89 ＋ SBC 税后约 339）</td>
+<td>8.5 倍</td>
+<td>$11.83</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目需调整，SBC 按 GAAP 全额扣除</td>
+<td><strong>15.5 倍</strong></td>
+<td><strong>$6.45</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>6,306 ÷ 863.05</td>
+<td>7.3 倍</td>
+<td>$13.69</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC）</strong></td>
+<td>6,306 ÷（863.05 − 452.09 = 410.96）</td>
+<td><strong>15.3 倍</strong></td>
+<td><strong>$6.52</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>5,255 ÷ 586.32</td>
+<td><strong>9.0 倍</strong></td>
+<td>$11.16</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>6,306 ÷ 均值(406.89, 443.30, 393.08)=414.42</td>
+<td><strong>15.2 倍</strong></td>
+<td>$6.57</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有两个关键读数。</strong></p>
+<p><strong>第一，市面上到处在说的"TTD 只有 7 倍自由现金流"是假的。</strong> 自由现金流 8.63 亿没有扣掉那 4.52 亿的股权激励——公司发出去的股票稀释了你的持股，只是没从银行账户里划钱而已。扣掉之后是 15.3 倍，<strong>和 GAAP 市盈率的 15.5 倍严丝合缝地对上了</strong>。两条完全独立的路走到同一个数，说明这家公司的账没有藏东西。同理，卖方喜欢用的 8.5 倍"调整后市盈率"是把稀释成本当空气，直接忽略。</p>
+<p><strong>第二，三年平均口径 15.2 倍和当期 15.5 倍几乎一样，说明这个利润不是周期顶点。</strong> 净利润三年走势是 393.08 → 443.30 → 406.89，横着走。这跟那种"当期 34 倍、三年平均 73 倍"的高点公司完全相反——你不是在为一个注定要回落的峰值利润付钱。</p>
+<p><strong>所以，你现在投 100 块进去，按最保守的真实口径（15.5 倍）算，公司一年替你赚 $6.45。</strong></p>
+<p>这 6.45 块里有多少回到你口袋？<strong>不分红</strong>。TTM 回购 10.36 亿 ÷ 市值 63.06 亿 = 16.4%，看起来惊人，但那是在股价高得多的时候花掉的钱，而且回购金额远超真实利润，动用的是账上存量现金。<strong>可持续的回购能力大约等于真实自由现金流 4.11 亿 ÷ 63.06 亿 = 6.5%（$6.50）。</strong> 剩下的钱去了资本开支 2.19 亿——数据中心和 Ventura 电视操作系统，占真实自由现金流的一半以上。</p>
+<p><strong>这个 $6.45 未来会变大还是变小？这是全篇唯一真正难的问题。</strong></p>
+<p>往大了走的理由：联网电视的广告预算还在从传统有线电视往这边搬，这个迁移远没完；国际业务增长 34.8%，占比只有 14.5%，空间还大；SBC 绝对值已经开始降，而营收还在涨，每多一块钱收入的边际利润率极高；账上 10.51 亿净现金、零债务压力，ROIC 24.83%，这门生意本身不吃资本。</p>
+<p>往小了走的理由——<strong>这才是市场砍掉 74% 的原因</strong>：<strong>亚马逊的 DSP</strong> 正在用近乎白送的价格抢 TTD 的客户，而且亚马逊手里有 TTD 没有的两样东西：真实的商品购买记录，和 Prime Video 的独家库存。更要命的是这两条线在同时往下走——<strong>营收增速从 25.6% 掉到 11.6%，毛利率从 FY2022 的 82.18% 一路掉到 76.87%</strong>。增速掉的同时毛利率也掉，通常只有一个解释：<strong>在降价保份额。</strong> 做空盘占流通股 18.04%，五天以上的回补量，市场里有一大批人在赌它继续往下。</p>
+<p>说到底这是一个赌注：TTD 到底是"独立买方"这个结构性位置的长期受益者，还是只是 cookie 时代留下的一个中间商，在零售巨头和流媒体巨头各自建起自家 DSP 之后被慢慢挤扁。<strong>没人知道答案，但今天的价格已经把"被挤扁"当成了基准情形。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真便宜，麻烦也是真麻烦。</strong> 15.5 倍 GAAP、9 倍 EV/EBIT、扣完股权激励后仍有 6.5% 的真实自由现金流收益率、10.5 亿净现金、三年平均利润证明这不是周期顶——账上找不出任何粉饰，两条独立算法都落在 15 倍。但增速一年腰斩、毛利率连跌四年、对手是亚马逊，这不是错杀，是市场对"护城河正在被冲刷"的合理定价。<strong>值得放进观察名单，但买它等于押注 TTD 能守住"独立"这个位置——想清楚这一点再动手。</strong></p>
+</div></body></html>
