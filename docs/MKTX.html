@@ -1,0 +1,448 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MKTX · MarketAxess（债券电子交易平台）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MKTX</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">ROIC28%网络效应，回购是发股10.9倍，输在增速只剩3.9%</div><h1>MKTX · MarketAxess（债券电子交易平台）</h1>
+<p>市值 57.2 亿美元 ｜ 股价约 $162.6 ｜ 企业价值 55.5 亿 ｜ 行业：金融（交易平台）
+TTM 口径截止日：<strong>2026 年 6 月 30 日</strong></p>
+<blockquote>
+<p><strong>它虽然被归在「金融」行业，但不是银行、保险或 REITs，所以下面照常用市盈率。</strong> MarketAxess 不放贷、不承保风险、不用自己的资产负债表赚钱——它是一个撮合平台，收的是过路费，商业模式跟纳斯达克交易所或者携程更像，跟摩根大通完全不像。用市盈率是对的。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<h3>1. 佣金 Commission — 7.35 亿（占 86.8%）</h3>
+<p>这是它的全部。理解这一块，就理解了这家公司。</p>
+<p><strong>先说它解决了什么问题。</strong></p>
+<p>股票买卖很简单，你在手机上点一下，价格实时跳动，全世界都看得见。债券完全不是这样。美国有几十万只公司债在流通，其中绝大多数<strong>一个月都不成交一次</strong>。你想卖手上 500 万美元面值的辉瑞公司债，市场上没有一个屏幕告诉你它现在值多少钱。</p>
+<p>传统做法是打电话：你给三到五家投行的债券交易台打电话问价。这些投行是「做市商」，他们靠买卖价差赚钱。他们报给你的买入价，通常比债券的公允价格低 <strong>25 到 30 个基点</strong>（每 100 块面值的债券少给你两毛五到三毛）。500 万美元，就是 <strong>1.25 万到 1.5 万美元</strong>的隐性成本被投行拿走了。更糟的是，你一打电话就暴露了意图——五家投行都知道有人在卖辉瑞债，价格立刻对你不利。</p>
+<p><strong>MarketAxess 的做法叫 Open Trading（全对全匿名撮合）：</strong></p>
+<p>你把这笔 500 万的卖单甩进 MarketAxess 的池子里。池子里有 <strong>2000 多家参与者</strong>：其他养老基金、共同基金、对冲基金、ETF 做市商、以及那 100 多家投行。所有人同时看到「有人要卖 500 万辉瑞债」，但<strong>没人知道是谁</strong>。谁出价最高谁拿走。</p>
+<p>竞价者从 5 家变成 2000 家，价差立刻被压到 <strong>5 到 10 个基点</strong>。你省下了大约 1 万美元。</p>
+<p><strong>MarketAxess 收多少？</strong> 高等级公司债的费率大约是<strong>每百万美元面值 150 到 200 美元</strong>，这笔 500 万的交易，它收你 <strong>750 到 1000 美元</strong>。</p>
+<p>你省了 1 万，付它 1000。这就是为什么客户离不开它。</p>
+<p><strong>费率不是一个数，是一张表：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品种</th>
+<th>每百万美元面值大致收费</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国高等级公司债</td>
+<td>$150–200</td>
+<td>流动性最好，价差窄，客户能省的少</td>
+</tr>
+<tr>
+<td>美国高收益债（垃圾债）</td>
+<td>$400–700</td>
+<td>流动性差，价差宽，客户能省的多，愿意多付</td>
+</tr>
+<tr>
+<td>新兴市场债</td>
+<td>高</td>
+<td>同上，且信息更不透明</td>
+</tr>
+<tr>
+<td>欧洲信用债</td>
+<td>中等</td>
+<td></td>
+</tr>
+<tr>
+<td>美国国债</td>
+<td>极低</td>
+<td>本来就流动性极好，几乎没有价差可省</td>
+</tr>
+</tbody>
+</table></div>
+<p>所以 MarketAxess 的收入 = <strong>成交量 × 品种组合</strong>。高收益债交易活跃的季度，同样的成交额能赚更多钱。这也是为什么它的季度收入会随市场波动。</p>
+<p>除了按笔抽成，那 100 多家做市商投行还要付<strong>固定的月度接入费</strong>（distribution fee）——不管你交易多少，想接入这个池子就得先交这笔钱。这部分是雷打不动的订阅收入。</p>
+<p><strong>这门生意的护城河是网络效应，而且是真的：</strong> 池子里挂单的人越多 → 价差越窄 → 客户省的钱越多 → 更多人来挂单。这个循环一旦转起来，后来者很难插进去，因为一个空池子对客户毫无价值。</p>
+<p>FY2025 这块收入 7.35 亿，比上年涨 3.2%。</p>
+<h3>2. 信息服务 Information Services — 0.53 亿（6.3%）</h3>
+<p><strong>卖数据，而且是别人造不出来的数据。</strong></p>
+<p>刚才说了，大多数公司债一个月都不成交一次。那资管公司每天收盘要给基金净值定价，怎么给这些不成交的债券估值？监管要求的公允价值怎么算？</p>
+<p>MarketAxess 有个模型叫 <strong>CP+</strong>：它用平台上每天流过的几百万条实时报价和成交，反推出<strong>每一只公司债每天的公允价格</strong>——包括那些当天根本没成交的债券。这是全市场最接近真相的债券价格数据，因为原始数据只有它有。</p>
+<p>卖给谁：资管公司（做基金估值）、做市商（做定价参考）、指数公司（编制债券指数）、监管和审计（合规核查）。<strong>年费订阅制</strong>，一家客户几万到几十万美元。</p>
+<p>这块 0.53 亿，涨 5.3%。盘子小，但毛利极高，而且黏性比交易佣金还强——一旦你的估值流程接了 CP+，换供应商要重做整套合规文档。</p>
+<h3>3. 交易后服务 Post Trade Services — 0.44 亿（5.3%）</h3>
+<p>主要是欧洲收购来的 <strong>Trax</strong> 业务。</p>
+<p>欧洲的 MiFID II 法规要求：每笔债券交易成交后 <strong>15 分钟内</strong>必须向监管机构申报，格式极其复杂，报错要罚款。大部分资管公司自己不愿意搞这套系统，就外包给 Trax。Trax 还做交易匹配——买卖双方核对成交细节（价格、数量、结算日期）是否一致，不一致就打回去。</p>
+<p>按笔收费或者订阅制。这块 0.44 亿，涨 4.7%。这是个「杂活生意」，不性感，但客户换起来麻烦。</p>
+<h3>4. 其他 Other Services — 0.14 亿（1.6%）</h3>
+<p>主要是 2023 年收购的 <strong>Pragma</strong>（算法交易技术，帮机构把大单拆成小单执行）和一点外汇业务。目前还是试验田。</p>
+<h3>钱的账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>FY2025 营收（百万）</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>佣金 Commission</td>
+<td>734.6</td>
+<td>+3.2%</td>
+<td>86.8%</td>
+</tr>
+<tr>
+<td>信息服务 Information Services</td>
+<td>53.2</td>
+<td>+5.3%</td>
+<td>6.3%</td>
+</tr>
+<tr>
+<td>交易后服务 Post Trade</td>
+<td>44.5</td>
+<td>+4.7%</td>
+<td>5.3%</td>
+</tr>
+<tr>
+<td>其他（Pragma / 外汇）</td>
+<td>13.9</td>
+<td>+12.6%</td>
+<td>1.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>846.3</strong></td>
+<td><strong>+3.6%</strong></td>
+<td>100%</td>
+</tr>
+<tr>
+<td><strong>TTM 合计（截至 2026-06）</strong></td>
+<td><strong>870.0</strong></td>
+<td><strong>+3.9%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>MarketAxess 只按年度披露分部营收，TTM 没有分部数据，所以上表用的是 FY2025（截至 2025年12月）的分部结构，总额那行补了 TTM。<strong>分部利润完全不披露</strong>——公司只有一个经营分部，所有成本混在一起。整体经营利润率 41.05%，可以假设佣金和信息服务这两块显著高于这个数，交易后服务低于这个数。</p>
+</blockquote>
+<p><strong>整体经营利润率 41%，ROIC 28.4%，一年资本开支只有 598 万美元</strong>——868 个员工，人均创收 100 万美元、创利 35 万美元。这是一门几乎不需要投入实物资产就能赚钱的生意。</p>
+<p><strong>但增速掉到 3.9% 了。</strong> 这就是全部问题所在，后面会讲。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>最重要的发现：TTM 净利润暴涨 42%，全部来自税</h3>
+<p>这个对比干净得可怕：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2025（截至 2025-12）</th>
+<th>TTM（截至 2026-06）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td><strong>3.670 亿</strong></td>
+<td><strong>3.671 亿</strong></td>
+</tr>
+<tr>
+<td>所得税</td>
+<td>1.204 亿</td>
+<td>0.600 亿</td>
+</tr>
+<tr>
+<td><strong>有效税率</strong></td>
+<td><strong>32.8%</strong></td>
+<td><strong>16.3%</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>2.466 亿</td>
+<td><strong>3.064 亿</strong></td>
+</tr>
+<tr>
+<td>每股收益</td>
+<td>$6.64</td>
+<td>$8.48（<strong>+42.4%</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>税前利润一分钱没多赚（3.670 亿 vs 3.671 亿），但净利润多了 6 亿人民币左右，每股收益涨了 42%。</strong></p>
+<p>差别 100% 来自税率：一年前是 32.8%，现在是 16.3%。美国公司的正常有效税率应该在 <strong>23–25%</strong>（联邦 21% + 州税）。这说明两期都不正常——FY2025 多交了一次性税款，TTM 拿到了一次性税收返还或递延税资产重估的好处。</p>
+<p>单看一期的数据分不清具体是什么（可能是海外利润汇回、股权激励行权的税务抵扣、或者递延税项重估），但结论很明确：<strong>用 TTM 的 3.064 亿净利润算市盈率，会把这家公司算便宜了。</strong> 按 24% 的正常税率，真实净利润应该是 <strong>2.79 亿</strong>。</p>
+<p>任何看到「MarketAxess 每股收益暴涨 42%」就兴奋的人，都被这个数字骗了。经营层面，它一分钱没多赚。</p>
+<h3>第二个发现：资本开支只有 598 万，但每年还偷偷花 5,172 万买无形资产</h3>
+<p>财报的资本开支（capex）栏只有 <strong>598 万美元</strong>，看起来是一门完全不需要投钱的生意。</p>
+<p>但现金流量表往下翻一行，「购买无形资产」这一项 TTM 是 <strong>5,172 万美元</strong>，而且年年都有（FY2025 是 4,981 万、FY2024 是 4,662 万、FY2023 是 4,312 万，一路在涨）。</p>
+<p>这是<strong>软件开发费用资本化</strong>——它自己开发交易平台的工程师工资，没有当期费用化，而是记成资产、以后慢慢摊销。这是合法的会计处理，但从经济上看，<strong>这就是维持这个平台不掉队必须花的钱</strong>。</p>
+<p>所以：
+- 网站算自由现金流时只减了 598 万的资本开支
+- <strong>真实的「维持这门生意的年度支出」是 598 万 + 5,172 万 = 5,770 万</strong>
+- 报表的自由现金流<strong>高估了约 5,000 万美元/年</strong></p>
+<p>这一条是本篇最实在的会计发现，后面估值会用上。</p>
+<h3>第三个发现：TTM 的自由现金流「崩了」，但那是假的</h3>
+<p>报表上 TTM 经营现金流只有 <strong>2.003 亿</strong>，比 FY2025 的 3.821 亿掉了一半。P/FCF 因此显示 29.45 倍，看起来贵得离谱。</p>
+<p><strong>这是个假象。</strong> 看现金流量表的两行：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>应收账款变化</td>
+<td><strong>−7.154 亿</strong></td>
+</tr>
+<tr>
+<td>应付账款变化</td>
+<td><strong>+5.529 亿</strong></td>
+</tr>
+<tr>
+<td>净影响</td>
+<td><strong>−1.624 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>一家全年只有 8.7 亿营收的公司，怎么会有 7.15 亿的应收账款变动？</p>
+<p>因为 MarketAxess 有一部分交易是「<strong>撮合本金交易</strong>」（matched-principal）——它在中间做一道过桥：从卖方买入，同时卖给买方，同一秒完成，自己不承担价格风险。但在结算完成之前（通常 T+1 或 T+2），这笔钱在账上会同时挂出一笔巨额应收和一笔巨额应付。</p>
+<p><strong>季度末那一天恰好有多少笔没结算完，纯粹看运气。</strong> 这次是应收比应付多了 1.62 亿，所以经营现金流被压掉了 1.62 亿。下个季度会反过来。</p>
+<p>把这 1.62 亿加回去，正常化的经营现金流约 <strong>3.6 亿</strong>，跟历史（FY2025 3.82 亿、FY2024 3.85 亿）完全一致。</p>
+<p><strong>结论：不要用报表上的 P/FCF 29.45 倍判断 MarketAxess 贵不贵。那个数字是结算时点造出来的噪音。</strong></p>
+<h3>股权激励：非常干净</h3>
+<p>TTM 股权激励 <strong>3,340 万</strong>，只占净利润的 <strong>10.9%</strong>。</p>
+<p>对比一下同批次分析的杜比（57.4%），这个数字堪称清白。而且五年基本没涨（FY2021 是 2,731 万，五年涨 22%，跟营收涨幅 24.5% 同步）。</p>
+<p>MarketAxess 没有靠印股票给员工发工资。</p>
+<h3>回购：真回购，10.9 倍</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>3.649 亿</strong></td>
+</tr>
+<tr>
+<td>员工行权发行新股</td>
+<td>0（TTM 为零）</td>
+</tr>
+<tr>
+<td>同期股权激励</td>
+<td>0.334 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ 股权激励</strong></td>
+<td><strong>10.9 倍</strong></td>
+</tr>
+<tr>
+<td>实际股本变化</td>
+<td><strong>−3.69%</strong>（一年）</td>
+</tr>
+<tr>
+<td>另外还有现金分红</td>
+<td>1.134 亿（股息率 1.92%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>10.9 倍是本批三家里最高的</strong>，也是全市场少见的水平。绝大多数科技公司这个比值在 1 到 2 之间（回购只够抵消员工发股）。MarketAxess 的回购是真真正正在减少股东人数。</p>
+<p><strong>但钱是从哪来的，要看清楚：</strong> TTM 回购 3.65 亿 + 分红 1.13 亿 = <strong>4.78 亿</strong>，而同期净利润只有 3.06 亿。差额从两个地方来：</p>
+<ul>
+<li>账上净现金从 5.71 亿（FY2024 年末）降到 <strong>1.67 亿</strong>——一年花掉了 4 亿的金库</li>
+<li>净新增借款 <strong>1.16 亿</strong>，总债务从 7,265 万涨到 1.789 亿</li>
+</ul>
+<p>也就是说，这轮大手笔回购是<strong>清空金库 + 借了一点钱</strong>做的，不是当年经营赚出来的。</p>
+<p>这不算危险（债务/EBITDA 只有 0.40，利息覆盖倍数 73 倍，账上还有 3.46 亿现金），但它意味着<strong>这个回购速度不可持续</strong>。明年回购金额大概率要降回 2 亿以下的水平，回到跟净利润匹配的节奏。</p>
+<h3>一次性项目、资本化、其他</h3>
+<p>除了上面说的税率异常和软件资本化，TTM 没有资产减值、没有重组费用、没有诉讼和解。这份财报的其他部分是干净的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 <strong>57.23 亿</strong>，企业价值 <strong>55.48 亿</strong>（净现金只剩 1.674 亿了）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>57.23亿 ÷ 3.064亿</td>
+<td><strong>18.7 倍</strong></td>
+<td><strong>5.35 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>前瞻市盈率 19.55 ≈ 当期 19.18</td>
+<td><strong>几乎没有差异</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除税率异常后的真实市盈率</strong></td>
+<td>57.23亿 ÷ 2.79亿（税前 3.671亿 × 76%）</td>
+<td><strong>20.5 倍</strong></td>
+<td><strong>4.88 元</strong></td>
+</tr>
+<tr>
+<td>报表自由现金流口径</td>
+<td>57.23亿 ÷ 1.943亿</td>
+<td>29.5 倍</td>
+<td>3.39 元 ← <strong>被结算时点扭曲，不可用</strong></td>
+</tr>
+<tr>
+<td><strong>正常化真实自由现金流</strong></td>
+<td>57.23亿 ÷ 2.99亿（税后经营利润＋折旧摊销−资本开支−资本化软件）</td>
+<td><strong>19.1 倍</strong></td>
+<td><strong>5.24 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>55.48亿 ÷ 3.572亿</td>
+<td><strong>15.5 倍</strong></td>
+<td><strong>6.44 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>57.23亿 ÷ 2.757亿（TTM 3.064、FY25 2.466、FY24 2.742 平均）</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>4.82 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>「公司自己吹的 Non-GAAP」这一行值得单独说一句：MarketAxess 几乎不吹。</strong> 它的前瞻市盈率（19.55）比当期市盈率（19.18）还略高一点，说明分析师用的调整后利润跟 GAAP 利润基本是一回事。对比杜比（当期 26 倍、前瞻 13.4 倍，差一倍），这家公司在财报表述上是诚实的。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 MarketAxess，按最保守的口径（三年平均利润，20.8 倍）算，公司一年替你赚 4.82 元。</strong></p>
+<p>按剔除税率异常后的真实口径（20.5 倍）是 4.88 元；按正常化自由现金流口径（19.1 倍）是 5.24 元。<strong>三个独立算法收敛到 4.8–5.2 元之间</strong>，说明这个数字是可靠的，不是靠某一种口径凑出来的。</p>
+<p>这 4.82 元里，<strong>几乎全部回到你口袋</strong>：
+- 分红 1.13 亿（股息率 1.92%）
+- 回购 3.65 亿</p>
+<p>两项合计 4.78 亿，比净利润 3.06 亿还多。公司不留钱——因为它不需要留：一年的资本开支加软件投入才 5,770 万，占利润的 19%。这是「资本轻」生意最大的好处，赚的钱没地方花，只能还给股东。</p>
+<h3>这 4.82 元未来会变大还是变小？</h3>
+<p><strong>大概率缓慢变大，但增速比你想的慢，而且有一个真实的威胁。</strong></p>
+<p>往上的力量：
+- 营收增速 3.9%，经营利润率稳在 41%（十年没塌），所以利润增速约 4%
+- 股本每年缩 3.7%（即使回购速度降一半，也有 2%）
+- 加起来<strong>每股利润年化增长 6–8%</strong>，再加 4.8% 的当期回报，长期年化 11–13%</p>
+<p>往下的威胁，就一个，但很重：<strong>它在丢地盘。</strong></p>
+<p>MarketAxess 五年前是电子债券交易的绝对王者，市盈率给到 60 倍。现在 19 倍。估值跌掉三分之二不是因为利润跌了（利润还在涨），是因为<strong>增速从两位数掉到了 3.9%</strong>。</p>
+<p>抢它地盘的是两家：
+- <strong>Tradeweb</strong>（TW）——原本主攻国债和利率产品，这几年猛攻信用债，靠费率战和跟 Bloomberg 的整合抢客户
+- <strong>Bloomberg</strong>——它的终端摆在 30 万个交易员桌上，交易功能直接内置在终端里，客户不用切换软件</p>
+<p>MarketAxess 在美国高等级公司债电子交易的市场份额，从峰值往下掉了几个百分点。<strong>这才是这只股票过去五年跌掉一半、市盈率从 60 倍砍到 19 倍的原因，也是买它之前必须想清楚的唯一问题。</strong></p>
+<p>网络效应是真的，但网络效应不是无敌的——它保护的是「池子里的人不会一夜跑光」，保护不了「新增的交易量流向谁」。</p>
+<h3>一个提醒</h3>
+<p>股价在过去 50 个交易日从 129 美元附近拉到了 162 美元，<strong>一个多月涨了 25%</strong>（50 日均线 129.28、200 日均线 157.34、现价 162.6，RSI 84.6 属于极度超买）。全年仍是 −14.45%。</p>
+<p>也就是说：这份分析里算出来的「4.8 元回报」，是按刚刚涨完 25% 之后的价格算的。一个月前买，同样的公司回报是 6 元多。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是本批三家里唯一一门真正的好生意，价格公道，值得留着观察。</strong></p>
+<p>理由摆在这：41% 的经营利润率、28.4% 的资本回报率、一年只花 5,770 万就能维持整个平台、股权激励只占利润 11%、回购是股权激励的 10.9 倍、财报不吹 Non-GAAP、护城河是真实的双边网络效应。这些指标凑在一家公司身上，很少见。</p>
+<p>价格也不贵：三个独立口径都指向 <strong>19–21 倍</strong>，对应每年 4.8–5.2 元的回报，加上 4% 的利润增长和 3.7% 的股本收缩，长期年化 11–13% 是合理预期。</p>
+<p><strong>但它不是「捡钱」，因为增速只有 3.9%，而且是被 Tradeweb 和 Bloomberg 逼下来的。</strong> 你买它，本质上是在赌一件事：债券电子化这个大趋势的蛋糕还在长大，MarketAxess 即使份额从 20% 掉到 15%，绝对量还是在涨。如果这个赌注错了——份额继续掉、且总量不再增长——那 19 倍就不便宜。</p>
+<p><strong>两个减分项要记住</strong>：报表的自由现金流每年高估约 5,000 万（软件资本化没扣）；TTM 每股收益暴涨 42% 是税率造出来的假象，经营层面一分钱没多赚。</p>
+<p><strong>结论：19–21 倍买一门 ROIC 28%、把利润全数还给股东的网络效应生意，价格公道、质地过硬。放进观察名单，等它跌回 130 美元附近（对应 16 倍）是更好的买点——一个月前刚给过这个价。</strong></p>
+</div></body></html>
