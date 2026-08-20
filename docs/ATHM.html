@@ -1,0 +1,389 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ATHM · Autohome 汽车之家</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ATHM</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">股价比每股净现金还低、企业价值为负；但营收下滑在加速，是烟蒂不是好生意</div><h1>ATHM · Autohome 汽车之家</h1>
+<p><strong>市值</strong> 26.0 亿美元 ｜ <strong>企业价值 −0.59 亿美元（负数）</strong> ｜ <strong>股价</strong> 约 $22.5 ｜ <strong>行业</strong> 互联网内容与信息（中概股，NYSE + 港交所 2518 两地上市） ｜ <strong>TTM 截止日</strong> 2026 年 3 月 31 日 ｜ <strong>员工</strong> 3,876 人</p>
+<blockquote>
+<p>财报以人民币计价，本文按 1 美元 ≈ 6.90 人民币换算，美元数字都标注了出处。</p>
+</blockquote>
+<p><strong>先把最反常的一件事摆出来</strong>：这家公司的账上有 <strong>26.6 亿美元净现金、零负债</strong>，而它的整个市值只有 <strong>26.0 亿美元</strong>。也就是说，<strong>你按现价买下整家公司，拿到手的现金比你付出去的钱还多 5860 万美元，然后那个每年赚 7270 万美元经营利润的网站白送给你。</strong> 企业价值（市值 + 负债 − 现金）是负的。</p>
+<p>这种事在市场上不会无缘无故发生。下面就是为什么。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>汽车之家 2013 年在纽交所上市，是中国最大的汽车垂直网站。它旗下有三个站：autohome.com.cn（汽车之家，新车）、che168.com（二手车之家）、ttpai.cn（天天拍车，二手车竞拍）。</p>
+<blockquote>
+<p><strong>说明</strong>：我的数据源不提供这家公司的分部营收拆分，下面四块生意的占比是<strong>估算</strong>——依据是公司公开的业务口径，以及毛利率结构的变化（见后文的推导，这个推导本身是硬数据支撑的）。营收和利润的<strong>总数</strong>都是财报原始数字。</p>
+</blockquote>
+<h3>生意一：卖广告给车企（媒体服务）</h3>
+<p>比亚迪要上一款新车，市场部找到汽车之家，买一个"新车上市套餐"：首页开屏广告连续三天、新车频道置顶推荐、找平台的编辑和 KOL 拍一组试驾评测视频、发布会在站内直播。一单从几百万到上千万人民币不等。</p>
+<p>这块钱来自<strong>车企的市场预算</strong>，所以它是最先被砍的。中国车市这三年打价格战打到刀刀见血，车企第一件事就是砍营销费用；同时短视频平台（抖音、小红书、B站）把"看车、看评测"的用户大量吸走了——一个想买车的人现在更可能在抖音刷懂车帝的视频，而不是打开汽车之家的网页。这块业务是这几年下滑的主因之一。</p>
+<h3>生意二：把购车线索卖给 4S 店（线索服务）</h3>
+<p>这是它过去二十年真正的现金牛，也是最值钱的一块。</p>
+<p>具体怎么运作：某个城市的一家丰田 4S 店，每年付给汽车之家大约十几万到几十万人民币的"会员订阅费"，换来在平台上开一个官方店铺页，展示自己的车源、报价、优惠活动。但真正值钱的不是那个页面，而是<strong>线索</strong>——一个网友在汽车之家上翻凯美瑞的参数、看车主口碑，然后填了手机号说"想预约试驾"，这条信息（姓名 + 电话 + 意向车型 + 所在城市）就被推送给附近几家 4S 店的销售，当天下午销售的电话就打过去了。</p>
+<p>4S 店愿意为这个付钱，因为一条真实的购车线索比在商场门口发传单的成交率高一两个数量级。汽车之家的护城河就建在这里：中国的购车者习惯了先上汽车之家看参数对比和车主真实口碑，这个"先看哪儿"的心智占位，让它能同时向几万家经销商收订阅费。</p>
+<p><strong>这块业务现在正被两件事从两头夹击</strong>：一头是 4S 店本身在大批倒闭（燃油车经销商这三年关了几千家，倒闭的店不会续费）；另一头是新势力——蔚来、理想、小米、特斯拉全是直营模式，自己开体验店、自己卖车，<strong>根本不需要经销商线索</strong>。汽车之家最赚钱的这门生意，服务的是一个正在消失的商业体系。</p>
+<h3>生意三：二手车（二手车之家 + 天天拍车）</h3>
+<p>二手车之家是车商付费上架车源的信息平台，逻辑和线索业务一样。天天拍车是竞拍：个人卖家把车挂上去，全国的二手车商在线竞价，成交后平台抽佣。</p>
+<p>近年这块开始掺入<strong>自己收车再卖</strong>的成分——平台不再只当中介，而是真的把车买下来再转手。这一步改变了会计口径：卖出一台 15 万的二手车，15 万全额计入营收，收车成本 14 万计入成本，毛利只有 1 万。</p>
+<h3>生意四：卫星店（新零售）</h3>
+<p>近两年推的新业务：在三四线城市开线下门店，替新能源车企覆盖它们直营体系够不到的下沉市场——帮它们展车、卖车、交付、做售后。同样是卖整车，同样要按整车价格记收入、按进价记成本，毛利率个位数。</p>
+<h3>钱的分布，以及一个能从数字里证明的结论</h3>
+<p>财报不披露分部，但<strong>毛利率的变化能反过来证明业务结构变了</strong>，这是硬数据：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>营收（百万元）</th>
+<th>营业成本（百万元）</th>
+<th>毛利率</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>7,237</td>
+<td>1,009</td>
+<td><strong>86.1%</strong></td>
+<td><strong>24.6%</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>7,184</td>
+<td>1,317</td>
+<td>81.7%</td>
+<td>15.8%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>6,452</td>
+<td>1,716</td>
+<td>73.4%</td>
+<td>11.9%</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>6,047</strong></td>
+<td><strong>1,658</strong></td>
+<td><strong>72.6%</strong></td>
+<td><strong>8.3%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看这两列的方向：营收从 72.4 亿掉到 60.5 亿（−16%），而营业成本从 10.1 亿涨到 16.6 亿（+64%）。</strong> 一个纯卖广告和线索的生意，毛利率天然在 85% 以上——因为卖的是网页位置和数据，边际成本几乎为零。毛利率能从 86% 塌到 72.6%，只有一个解释：<strong>低毛利的"卖实体车"业务在营收里的占比越来越大，而高毛利的广告和线索业务在萎缩。</strong></p>
+<p>换句话说，它在用低质量的营收去填高质量营收留下的坑。表面上营收只掉了 16%，实际上<strong>利润的含金量掉了一大半</strong>：经营利润从 17.82 亿掉到 5.02 亿，<strong>四年少了 72%</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收占比（估算）</th>
+<th>毛利率特征</th>
+<th>趋势</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>线索服务（4S 店订阅）</td>
+<td>约 40%</td>
+<td>极高（85%+）</td>
+<td><strong>↓↓ 结构性萎缩</strong></td>
+</tr>
+<tr>
+<td>媒体服务（车企广告）</td>
+<td>约 20%</td>
+<td>极高（85%+）</td>
+<td><strong>↓↓ 预算被砍 + 抖音抢流量</strong></td>
+</tr>
+<tr>
+<td>二手车与交易</td>
+<td>约 25%</td>
+<td>中低</td>
+<td>→ 掺入自营，拉低毛利</td>
+</tr>
+<tr>
+<td>卫星店与新业务</td>
+<td>约 15%</td>
+<td>个位数</td>
+<td>↑ 在长，但不赚钱</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>60.47 亿元（8.77 亿美元）</strong></td>
+<td><strong>72.6%</strong></td>
+<td><strong>营收 −12.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>最要紧的一项不是障眼法，而是一个必须看穿的结构</strong>——</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 项目（百万元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润（主业赚的）</td>
+<td><strong>501.5</strong></td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td><strong>1,185</strong></td>
+</tr>
+<tr>
+<td><strong>差额 ＝ 非经营收入（主要是 184 亿现金的利息和投资收益）</strong></td>
+<td><strong>683.5</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>1,089</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这家公司 58% 的税前利润，不是网站赚的，是那 184 亿人民币现金存在银行和理财里生出来的利息。</strong> 主业只贡献了 42%。</p>
+<p>所以"16.6 倍市盈率"这个数字本身就是误导的——它把利息收入和经营收入混在一起算。真正该问的是：<strong>主业值多少钱？现金值多少钱？</strong> 后面第三部分会把这两件事拆开。</p>
+<p><strong>股权激励（SBC）</strong>：FY2025 为 2.19 亿元，占当年净利润的 <strong>15.8%</strong>。TTM 大致同量级。这笔钱 GAAP 里已经扣了，我不加回。对一家员工只有 3,876 人的公司来说，一年发两亿多的股票不算克制。</p>
+<p><strong>一次性项目</strong>：FY2025 有 1.03 亿元的权益法投资收益（正的）和 1,474 万的投资处置损失，往前几年这两项在正负之间来回摆（2022 年是 +1.18 亿损失，2021 年是 +1.08 亿损失）。<strong>这说明它每年都有一笔说不准正负的投资损益——这不是"一次性"，是年年都有的一次性。</strong> 金额相对 10.89 亿的净利润在 10% 上下，不改变大局，但提醒你别把某一年的净利润当成主业的真实水平。</p>
+<p><strong>资本化的支出</strong>：没有异常。资本开支 FY2025 只有 1.18 亿元，占营收 1.8%——一个纯网站生意本来就不需要重资产。</p>
+<p><strong>利润和现金流的差</strong>：TTM 经营现金流 1.322 亿美元（约 9.12 亿元），资本开支 1754 万美元，自由现金流 <strong>1.146 亿美元</strong>（约 7.9 亿元）。而净利润是 1.579 亿美元。<strong>现金流比利润低</strong>，这是个值得注意的信号——差在两个地方：预收账款（经销商预付的年费）连续三年净减少（FY2023 −3.46 亿、FY2024 −5.25 亿、FY2025 −1.06 亿），这是<strong>经销商续费在减少的直接财务证据</strong>；以及应收账款和其他营运资产的占用在增加。</p>
+<p>自由现金流的滑坡比利润更陡：FY2021 的 33.05 亿 → FY2023 的 23.73 亿 → FY2025 的 7.71 亿，<strong>四年少了 77%</strong>。</p>
+<p><strong>回购与分红——这一项是全篇最有力的正面证据</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>FY2025（百万元）</th>
+<th>金额</th>
+<th>折合美元</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>−1,052</strong></td>
+<td>约 1.53 亿</td>
+</tr>
+<tr>
+<td>现金分红</td>
+<td><strong>−1,481</strong></td>
+<td>约 2.15 亿</td>
+</tr>
+<tr>
+<td><strong>合计返还股东</strong></td>
+<td><strong>−2,533</strong></td>
+<td><strong>约 3.67 亿</strong></td>
+</tr>
+<tr>
+<td>同期自由现金流</td>
+<td>771</td>
+<td>约 1.12 亿</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>219</td>
+<td>约 0.32 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是 SBC 的 <strong>4.8 倍</strong>，股本一年真实减少 <strong>3.3%</strong>。分红加回购合计 3.67 亿美元，<strong>相当于当前市值的 14%</strong>——而它一年只赚了 1.12 亿的自由现金流。</p>
+<p><strong>它在主动把账上的现金发出去，发的钱是赚的钱的 3.3 倍。</strong> 净现金从 2024 年末的 232 亿元降到 2026 年 3 月的 184 亿元，15 个月少了 48.6 亿——绝大部分就是这么发掉的，不是烧掉的。而且它上个月刚宣布了一个<strong>新的 4 亿美元回购计划</strong>。</p>
+<p>这件事的意义再怎么强调都不过分：<strong>对一家坐在巨额现金上的中概股，"钱会不会真的到股东手里"是全部争议的核心，而汽车之家用连续两年的真金白银给出了答案。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>TTM 摊薄股本约 1.171 亿股（ADS 口径），股价 $22.5，每股净现金 <strong>$22.99</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 26.0 亿 ÷ 净利 1.579 亿</td>
+<td><strong>16.5 倍</strong></td>
+<td><strong>$6.1</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回 SBC 约 0.32 亿</td>
+<td>约 13.7 倍</td>
+<td>$7.3</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 不加回；投资损益年年有、不剔除</td>
+<td><strong>16.5 倍</strong></td>
+<td><strong>$6.1</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ FCF 1.146 亿</td>
+<td><strong>22.7 倍</strong></td>
+<td>$4.4</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td><strong>EV −0.59 亿 ÷ 经营利润 0.727 亿</strong></td>
+<td><strong>−0.8 倍（负）</strong></td>
+<td><strong>无穷大</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>股价 22.5 ÷ 三年平均每股收益 $1.95</td>
+<td><strong>11.5 倍</strong></td>
+<td>$8.7</td>
+</tr>
+<tr>
+<td><strong>当前股息率</strong>（按 FY2025 实付）</td>
+<td>每股约 $1.83 ÷ 股价</td>
+<td>—</td>
+<td><strong>$8.1 现金到手</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>三年平均每股收益 = (FY2023 的 15.32 元 + FY2024 的 13.32 元 + FY2025 的 11.72 元) ÷ 3 = <strong>13.45 元 ≈ $1.95</strong>。</p>
+<p><strong>注意这一行的方向和大多数公司相反</strong>：三年平均口径（11.5 倍）比当期（16.5 倍）<strong>便宜</strong>，说明当前的利润不是高点、而是低点。但这<strong>不是好消息</strong>——利润是一年比一年低的（15.32 → 13.32 → 11.72 → TTM 的 9.30），所谓"低点"只是下坡路上的这一段，明年的当期大概率比今年还低。</p>
+</blockquote>
+<p><strong>现在把这笔账用最直白的方式算一遍。你花 $22.5 买一股，买到的是：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>你买到什么</th>
+<th>每股价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净现金（银行存款和理财，零负债）</td>
+<td><strong>$22.99</strong></td>
+</tr>
+<tr>
+<td>那个网站生意（TTM 经营利润 7270 万美元、自由现金流 1.15 亿美元）</td>
+<td><strong>白送</strong></td>
+</tr>
+<tr>
+<td><strong>你付出去的</strong></td>
+<td><strong>$22.50</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>你花 22.5 块，买到 22.99 块的现金，外加一个年赚 1.15 亿美元自由现金流的生意。</strong> 如果给这个生意随便一个 8 倍自由现金流的估值（对一个下滑中的生意已经很保守），它值 $7.9/股，合理股价应该是 $30.9——现价折价 27%。</p>
+<p><strong>所以，问题不是"它便宜不便宜"，它明摆着便宜。问题是"为什么便宜"。</strong> 三个原因，每一个都成立：</p>
+<p><strong>一、主业在加速融化。</strong> 营收增速：FY2024 的 −2.0% → FY2025 的 −8.4% → TTM 的 −12.2%。<strong>下滑在加速，不是在见底。</strong> 经营利润率从 24.6% 一路滑到 8.3%。它服务的整个 4S 店经销商体系正在被直营模式取代，它赖以获客的网页流量正在被短视频取代。这两件事都不可逆。今天的 1.15 亿自由现金流，三年后还剩多少，没人知道，但方向是清楚的。</p>
+<p><strong>二、这笔现金你法律上够不到。</strong> 你买的 ADS 不是汽车之家的股权，是一家开曼群岛公司的股票，那家公司通过一系列协议（VIE 结构）控制境内的实体。184 亿人民币躺在境内，出境要过资本管制和税，能不能出、发多少，由控股股东说了算——而流通股只占总股本的 51%，另一半握在控股股东手里。<strong>好消息是它过去两年确实每年发了 14 亿多的分红和 10 亿的回购</strong>，坏消息是这份慷慨随时可以停。</p>
+<p><strong>三、市场的定价已经反映了这些。</strong> 分析师 12 个月目标价 $20.89，<strong>比现价还低 7%</strong>；一天前美银刚把它下调到"跑输大盘"。这不是一个被市场遗忘的角落，是一个被市场看过、算过、然后决定用净现金折价来定价的标的。市场的判断是：这些现金会在主业融化的过程中被慢慢消耗掉，或者永远发不完。</p>
+<p><strong>说人话：你现在投 100 块进去，公司一年替你赚 6.1 块（GAAP）；但其中 3.5 块是银行利息，只有 2.6 块是网站真正赚的。</strong> 而这一年它会以分红的形式给你 <strong>8.1 块现金</strong>——发的比赚的多，多出来的部分是从那个 26.6 亿的现金池子里舀出来的。</p>
+<p>这就是这笔投资的全部逻辑：<strong>它在清算自己，把家底一点点分给你。你赌的是"分完之前，家底比股价多"这件事成立。</strong> 按当前的账，家底 $22.99 vs 股价 $22.50，成立。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一台正在融化的印钞机，股价比它口袋里的现金还便宜——统计上是白捡，商业上是一根还在燃烧的雪茄烟蒂。</strong></p>
+<p>正面：负的企业价值、零负债、市净率 0.78、股价低于每股净现金、一年 8% 的股息加 3.3% 的回购（合计 14% 的股东回报率）、而且它刚宣布了新的 4 亿美元回购。它是真的在把钱还给你，这一点在中概股里罕见。</p>
+<p>反面：营收下滑在<strong>加速</strong>（−2% → −8% → −12%），经营利润率四年从 24.6% 崩到 8.3%，毛利率从 86% 掉到 72.6%（靠低毛利的卖车业务撑营收），预收账款连年下降（经销商在流失的铁证），自由现金流四年少了 77%。它的两大金主——4S 经销商和燃油车企的市场部——都在结构性消失，而且没有回头路。加上 VIE 结构和资本管制，那 26.6 亿美元现金对你只是一个账面数字，不是一张可以兑现的支票。</p>
+<p><strong>归档：便宜是真的，但质量有硬伤。</strong> 它属于"股价便宜到一定程度、值得放在雷达上盯着"的那一类，但不属于"可以放心买入长期持有"的那一类——买它等于赌两件事赛跑：现金往股东口袋里流的速度，能不能跑赢主业融化的速度。过去两年这场赛跑股东是赢的，但主业融化在提速，而现金池只有一个。</p>
+<p><strong>如果你要买，买的理由只能是"清算价值 + 高分红"，绝不能是"汽车之家是中国汽车流量的入口"——那个入口正在关上。</strong></p>
+</div></body></html>

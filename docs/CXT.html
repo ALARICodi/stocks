@@ -1,0 +1,407 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CXT · 克兰 NXT（Crane NXT, Co.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CXT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">19.9倍买营收+35%但利润-32%的滚雪球，回购只有SBC的13%</div><h1>CXT · 克兰 NXT（Crane NXT, Co.）</h1>
+<p><strong>市值</strong> 27.95 亿美元 ｜ <strong>股价</strong> $48.56（2026-08-19 收盘）｜ <strong>股本</strong> 5,756 万股
+<strong>行业</strong> 生产制造 / 专用工业机械（NYSE）
+<strong>TTM 口径</strong> 最近四个季度滚动，截至 <strong>2026 年 6 月 30 日</strong>
+<strong>本篇全部数字均为 TTM，除非另行标注</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Crane NXT 是 2023 年 4 月从老牌工业集团 Crane Co. 分拆出来的一半。分家的时候，把「阀门、飞机零件」那一半留给了 Crane Company，把「跟钱和防伪打交道」的这一半独立出来叫 Crane NXT。所以这家公司的所有生意，本质上都围绕一句话：<strong>帮别人确认「这张东西是真的」，以及「这笔钱收到了」。</strong></p>
+<p>财报把它切成两块，TTM 营收几乎对半开：</p>
+<h3>生意一：收钱的机器（财报叫 Detection and Traceability Technologies，前身是 Crane Payment Innovations / CPI）</h3>
+<p>这门生意做的是<strong>验钞和收币的硬件模块</strong>，卖给那些「要在无人看管的情况下收现金」的机器厂商。</p>
+<p>具体是这样：你在赌场看到的老虎机，塞进去一张 100 美元，机器要在 0.3 秒内判断这张钞票是真的、面额是多少、正反方向如何，然后把它吞进去锁好。做这件事的不是老虎机厂商自己，而是机器肚子里一个巴掌大的模块——那个模块八成是 Crane 的。同样的模块也装在自助加油站的付款柱、地铁站的自动售票机、超市的自助结账机（顾客付现金的那种）、自动售货机、还有洗车场的收款柱里面。</p>
+<p>它怎么收钱：<strong>卖硬件 + 卖后续服务</strong>。一台验钞模块卖给设备厂商大概两三百到七八百美元不等，成套的自助收银找零系统（带钞箱、找零、点钞、自动清分的那种）能卖到几千甚至上万。硬件卖出去之后还有第二笔生意——固件更新和现场维护。这一点很关键：<strong>各国钞票会改版</strong>。比如美国换了新版 100 元、英国从纸币换成塑料币，全世界几百万台机器就都得更新识别算法，否则新钞塞进去机器不认。这个更新只能找原厂买，客户换不了供应商。这就是这门生意的护城河：不是技术多难，是<strong>换供应商要把几万台机器全拆一遍</strong>，没人干这事。</p>
+<p>客户长什么样：一家做连锁自助洗衣的公司装了 8,000 台机器，每台里面一个 Crane 的收币加验钞模块，第一次采购花掉三四百万美元；之后每年为固件订阅、备件和现场服务再付几十万；五到七年后模块老化，再来一轮换新。这就是一台典型的「装机基数生意」。</p>
+<p><strong>问题也在这门生意上：它不长了。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>DTT（收钱的机器）</th>
+<th>TTM</th>
+<th>2025财年</th>
+<th>2024财年</th>
+<th>2023财年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万美元）</td>
+<td>893.7</td>
+<td>846.6</td>
+<td>873.2</td>
+<td>886.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>2023 财年 8.86 亿，2024 年 8.73 亿，2025 年 8.47 亿——<strong>连跌两年</strong>。TTM 回到 8.94 亿，看着反弹了，但三年下来基本原地踏步。原因不难猜：全世界都在少用现金。现金交易笔数下降 → 验钞机装机需求下降。这是个结构性逆风，不是周期。</p>
+<h3>生意二：防伪（Security and Authentication Technologies，SAT）</h3>
+<p>这门生意才是公司现在真正押注的地方，也是全部增长的来源。它自己又分三层：</p>
+<p><strong>第一层，印钞纸和钞票里的那根安全线（Crane Currency）。</strong> 这是全公司最硬的资产。Crane 家族从 <strong>1879 年</strong>开始给美国财政部下属的印钞局供应美元钞票用纸，一百多年至今<strong>是唯一供应商</strong>——你钱包里每一张美元的纸，都是这家公司做的。这不是「市占率高」，这是独家合同。除了纸，他们还做钞票上那条会变色、会流动的安全线（专利叫 MOTION，你把 100 美元斜过来看，那条蓝色条带上的钟会上下游动，就是这个东西）。这条线卖给全球五十多个国家的央行。</p>
+<p>这门生意的经济特征极好：<strong>客户是央行，需求跟经济周期几乎无关</strong>（钞票旧了就要换，跟 GDP 没多大关系），换供应商要重新设计整套钞票并通过国家安全审查，实际上换不动。缺点是<strong>增长天花板也低</strong>——全世界央行就那么多，每家每年印多少钞票基本是固定的。</p>
+<p><strong>第二层，品牌防伪（OpSec Security，2024 年买来的）。</strong> 做的是给实体商品贴「真伪标签」：奢侈品包上的那张全息标、药品盒上的防拆封条、汽车零件上的激光刻码。再配一套线上服务，去电商平台和社交媒体上自动扫描盗版链接、代客户发下架通知。收钱方式是按标签数量卖 + 按年收软件订阅。一家做名牌运动鞋的客户，一年可能要贴几千万张标，每张几分钱，加上一年几十万美元的线上监测订阅。</p>
+<p><strong>第三层，政府税票（De La Rue 认证业务，2025 年买来的，约 3 亿美元）。</strong> 这个生意很有意思：很多国家对烟、酒征收高额消费税，但走私和逃税严重。政府的解法是要求每一包烟、每一瓶酒都必须贴一张政府认证的税票，税票上有唯一编码，全链路可追溯。承包这套系统的公司负责印税票、建追溯数据库、连政府税务系统。收费按贴出的税票张数抽成——一个国家一年几十亿包烟，一张税票哪怕抽半美分，也是几千万美元的年收入，而且<strong>合同一签就是十年，中途换供应商等于整个税收系统停摆</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>SAT（防伪）</th>
+<th>TTM</th>
+<th>2025财年</th>
+<th>2024财年</th>
+<th>2023财年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万美元）</td>
+<td>909.2</td>
+<td>810.1</td>
+<td>613.6</td>
+<td>504.9</td>
+</tr>
+</tbody>
+</table></div>
+<p>从 5.05 亿涨到 9.09 亿，翻了快一倍。<strong>但这个增长几乎全是买来的</strong>——2024 年买 OpSec，2025 年买 De La Rue 认证。剔掉收购，内生增长大概是个位数。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>相对 2025 财年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DTT 收钱的机器</td>
+<td>893.7</td>
+<td>+5.6%</td>
+<td>49.6%</td>
+<td>~28%（<strong>估算</strong>）</td>
+<td>~250</td>
+</tr>
+<tr>
+<td>SAT 防伪</td>
+<td>909.2</td>
+<td>+12.2%</td>
+<td>50.4%</td>
+<td>~14%（<strong>估算</strong>）</td>
+<td>~127</td>
+</tr>
+<tr>
+<td>公司总部 + 收购摊销</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~-74</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,803</strong></td>
+<td><strong>+17.3%</strong></td>
+<td>100%</td>
+<td><strong>16.83%</strong></td>
+<td><strong>303.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润率这一列是估算，不是财报数字。</strong> stockanalysis 只披露到分部营收，不披露分部利润。我按公司整体经营利润率 16.83%、结合 CPI 历史上一直是高毛利业务、而 SAT 刚吞下两笔收购背着大量无形资产摊销这两点倒推。<strong>别把 250 和 127 当成精确数字，它只说明一件事：赚钱的仍然是那个不增长的老业务，增长的那个业务不太赚钱。</strong></p>
+<p>一个不需要估算的事实可以佐证：<strong>营收从 2022 年的 13.40 亿涨到 TTM 的 18.03 亿（+35%），同期经营利润率从 22.86% 掉到 16.83%，净利润从 2.05 亿掉到 1.40 亿（-32%）。</strong> 收入涨了三分之一，利润掉了三分之一。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 2,590 万美元，占净利润 1.40 亿的 <strong>18.5%</strong>。绝对值不大（这是家工业公司，不是软件公司），但注意它在<strong>加速</strong>——2022 年才 930 万，四年翻了近三倍。这笔钱在 GAAP 里已经扣掉了，本文全程按扣掉处理，公司自己的调整后口径会把它加回去，那是骗人的。</p>
+<p><strong>一次性项目</strong>：TTM 里有一笔 710 万美元的「股权投资亏损」。这个科目 2023 及之前都是零，2024 年出现 1,150 万，TTM 又是 710 万——<strong>连续两年出现的"一次性"，就不叫一次性了</strong>。另外，2024–2026 连续三年做收购，收购相关的交易费、整合费必然存在，但财报没有单列，无法量化。<strong>只看单期 TTM 分不清哪些是真一次性，这里明说：无法判断。</strong></p>
+<p><strong>资本化的支出</strong>：没有明显迹象。这是硬件制造企业，研发按期间费用处理，没有软件公司那种把开发费资本化的空间。</p>
+<p><strong>折旧摊销 vs 资本开支</strong>——这是本篇最重要的一项：</p>
+<ul>
+<li>TTM 折旧摊销 <strong>1.264 亿</strong></li>
+<li>TTM 资本开支 <strong>4,650 万</strong></li>
+<li>差额 <strong>约 8,000 万美元</strong></li>
+</ul>
+<p>正常公司这个差额是好事（说明过去投的固定资产还在产出，现在不用花那么多钱）。但 Crane NXT 不是——<strong>这 8,000 万里绝大部分是收购来的无形资产摊销</strong>（客户关系、技术、商标）。对一家靠不断收购来维持增长的公司来说，这笔摊销<strong>不是"虚的成本"，而是非常真实的成本</strong>：它对应的是「你买来的客户关系在损耗，想维持规模就得继续买」。折旧摊销四年从 8,180 万涨到 1.264 亿，涨了 55%，正好对应这三年买了三家公司。</p>
+<p>所以：<strong>自由现金流 2.24 亿这个数字被这 8,000 万虚高了。</strong> 一个更诚实的「维持性现金流」大约是 2.24 − 0.80 = <strong>1.44 亿</strong>，跟 GAAP 净利润 1.40 亿基本重合。这不是巧合——GAAP 净利润在这里恰恰是更接近真相的那个数字。</p>
+<p><strong>回购与稀释</strong>——这是全篇最难看的一项：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>-3.4</strong></td>
+</tr>
+<tr>
+<td>发行股票（员工行权等）</td>
+<td><strong>+23.0</strong></td>
+</tr>
+<tr>
+<td><strong>净额</strong></td>
+<td><strong>+19.6（净发行）</strong></td>
+</tr>
+<tr>
+<td>同期股权激励</td>
+<td>25.9</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.13 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购只有股权激励的十三分之一。</strong> 不但没有回馈股东，连抵消员工发股都做不到——股本过去一年<strong>增加了 0.26%</strong>。股东拿到的现金只有股息一项：TTM 派息 4,020 万，对 27.95 亿市值是 <strong>1.44% 的股息率</strong>。</p>
+<p>钱去哪了？<strong>去买公司了。</strong> TTM 现金收购支出 2.225 亿（上一财年 3.911 亿，再上一年 2.699 亿），三年合计约 8.8 亿。<strong>这笔钱是借的</strong>：TTM 净新增债务 2.334 亿。</p>
+<p><strong>利润和现金流的对账表</strong>（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>140.3</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+126.4</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+25.9</td>
+</tr>
+<tr>
+<td>＋ 股权投资亏损（非现金）</td>
+<td>+7.1</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>-4.5</td>
+</tr>
+<tr>
+<td>＋ 营运资金变化</td>
+<td><strong>-24.7</strong></td>
+</tr>
+<tr>
+<td>　其中：应收账款增加</td>
+<td>-56.0</td>
+</tr>
+<tr>
+<td>　其中：存货增加</td>
+<td>-11.4</td>
+</tr>
+<tr>
+<td>　其中：应付账款减少</td>
+<td>-6.0</td>
+</tr>
+<tr>
+<td>　其中：其他净经营资产</td>
+<td>+45.0</td>
+</tr>
+<tr>
+<td>　其中：所得税</td>
+<td>+3.7</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>270.5</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-46.5</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>224.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表里唯一值得警惕的是<strong>应收账款一年增加了 5,600 万</strong>，而营收增加约 2.6 亿——应收增速快于营收增速。对一家客户是央行和政府的公司，这通常只是回款周期长（政府付款慢是常态），不算造假信号，但要盯着。</p>
+<p><strong>资产负债表状况</strong>：总债务 <strong>14.67 亿</strong>，现金 2.314 亿，<strong>净负债 12.36 亿</strong>。债务 / EBITDA = <strong>3.24 倍</strong>，利息保障倍数只有 <strong>4.26 倍</strong>，TTM 实际付出的现金利息 <strong>6,490 万</strong>。四年前净负债还只有 7.75 亿，现在 12.36 亿——<strong>杠杆是为了买营收加上去的</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 27.95 亿，企业价值（市值 + 净负债）40.3 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>27.95亿 ÷ 1.403亿</td>
+<td><strong>19.9 倍</strong></td>
+<td><strong>$5.02</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>用前瞻 PE 代替（加回摊销+SBC，且是未来一年）</td>
+<td>10.8 倍</td>
+<td>$9.25</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔掉 710 万股权投资亏损（税后约 570 万）</td>
+<td><strong>19.1 倍</strong></td>
+<td><strong>$5.23</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>27.95亿 ÷ 2.24亿</td>
+<td>12.5 倍</td>
+<td>$8.01</td>
+</tr>
+<tr>
+<td><strong>维持性现金流口径</strong>（本篇自算）</td>
+<td>27.95亿 ÷（2.24亿 − 0.80亿摊销缺口）</td>
+<td><strong>19.4 倍</strong></td>
+<td><strong>$5.15</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>40.3亿 ÷ 3.035亿</td>
+<td>13.3 倍</td>
+<td>$7.53</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>27.95亿 ÷（1.403+1.451+1.841）/3 = 1.565亿</td>
+<td><strong>17.9 倍</strong></td>
+<td><strong>$5.60</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最刺眼的一行是最后一行，但方向和大多数公司相反。</strong></p>
+<p>绝大多数公司三年平均口径会比当期贵得多（说明现在的利润是高点）。Crane NXT 反过来：三年平均 17.9 倍，<strong>比当期 19.9 倍还便宜</strong>。翻译成人话就是——<strong>这家公司现在的利润是三年里最低的</strong>。2024 财年赚 1.84 亿，2025 年 1.45 亿，TTM 1.40 亿，一路往下。你现在付的 19.9 倍，是对着一个下滑中的利润付的。</p>
+<p>「公司自己吹的 Non-GAAP」那一行 10.8 倍看着很诱人，投 100 块回报 9.25 元。<strong>但它至少做了三件事</strong>：加回收购无形资产摊销（每年约 8,000 万，而这笔摊销对连续收购者是真实成本）、加回 SBC（每年 2,590 万，这是真实的股份稀释）、并且是<strong>未来一年的预测数</strong>而非已发生的事实。GAAP 19.9 倍和 Non-GAAP 10.8 倍差了将近一倍——<strong>差的这一倍，就是这家公司买公司花掉的钱</strong>。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Crane NXT，按最保守的真实口径算，公司一年替你赚 5 块钱多一点（5.02–5.23 元）。</strong></p>
+<p>这 5 块钱里：</p>
+<ul>
+<li><strong>1.44 元</strong>以股息形式真的进你口袋；</li>
+<li><strong>0.12 元</strong>以回购形式回来（TTM 回购只有 340 万美元，几乎可以忽略）；</li>
+<li><strong>剩下的 3.4 元多留在公司里</strong>，但注意——它不是拿去做研发或扩产能了。TTM 资本开支只有 4,650 万（占营收 2.6%），而现金收购花了 2.225 亿。<strong>留存的利润加上新借的债，全部拿去买别的公司了。</strong></li>
+</ul>
+<p>这个 5 块钱未来会变大还是变小？</p>
+<p><strong>往下的力量更清楚</strong>：核心的收钱机器业务（一半营收）面对现金交易长期萎缩，三年营收零增长；债务 14.67 亿，利息保障 4.26 倍，如果利率不降，每年 6,490 万现金利息是固定支出；收购摊销还在往上走。</p>
+<p><strong>往上的力量是可能的但要打赌</strong>：De La Rue 税票业务是真好资产（政府十年长约、按张数抽成、几乎不需要资本开支），如果整合顺利、协同兑现，SAT 的利润率能从估算的 14% 拉回到 20% 以上，那多出来的一亿多美元经营利润就是实打实的。前瞻 PE 10.8 倍押的就是这件事。</p>
+<p>市场怎么看：<strong>股价过去 52 周跌了 19.35%，做空比例高达流通股的 12.77%</strong>（这是一个很高的数字，通常出现在市场普遍怀疑某个叙事的时候）。做空的人押的就是「买来的增长掩盖不了核心业务的萎缩，而杠杆已经上到 3.2 倍」。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>19.9 倍买一家营收涨了三分之一、利润却掉了三分之一的公司，而且这三分之一的营收是借了 12 亿美元买回来的。</strong></p>
+<p>它手上确实有两块非常硬的资产——一百四十多年的美元印钞纸独家合同，和一门十年长约的政府税票生意。这两块东西真值钱。但夹在它们中间的，是一个占了一半营收、正在被无现金社会慢慢腐蚀的验钞机生意，和一个用 0.13 倍 SBC 的回购、1.44% 的股息来"回报股东"的管理层——他们把所有现金和借来的债都拿去买下一家公司了。</p>
+<p><strong>投 100 块一年 5 块钱的回报，其中只有 1.5 块真到你手上，剩下 3.5 块被拿去继续做收购。</strong> 这个交易只有在管理层的收购眼光足够好时才成立，而过去三年的记录（营收 +35%、利润 −32%、杠杆从 0.8 倍升到 3.2 倍）说明还没证明。</p>
+<p><strong>不便宜。</strong> 三年平均口径 17.9 倍比当期还低这件事在提醒你：你买的不是一个暂时受挫的好生意，而是一个利润连续三年下台阶的公司。等 De La Rue 的整合数字真出来、或者杠杆降到 2 倍以下，再看不迟。</p>
+</div></body></html>

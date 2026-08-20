@@ -1,0 +1,442 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UE · Urban Edge Properties（城市边缘地产）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">UE</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">P/FFO14倍不便宜；ROIC4.6%低于资金成本7.7%，每年还稀释你3%</div><h1>UE · Urban Edge Properties（城市边缘地产）</h1>
+<p>市值 $29.0 亿 | 股价 $21.70（2026-08-19 收盘）| 行业：零售商业地产 REIT | TTM 截至 2026-06-30</p>
+<blockquote>
+<p><strong>这是一家 REIT（房地产信托），下面第三部分不用市盈率，改用 FFO / AFFO 口径。</strong>
+原因很简单：REIT 的会计规则要求把房子按几十年直线折旧扣掉，可购物中心不会真的每年少值那么多钱——UE 这一年折旧摊销扣了 1.367 亿美元，是它全年净利润 6789 万的两倍。用净利润算市盈率，等于假装公司每年真的往火里扔了一亿多，算出来 42.7 倍，是个没有意义的数字。行业通用的修正办法叫 FFO（营运资金流），就是把折旧加回去。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是：一件。UE 只做一件生意——在美国东北部人口最密的老城郊区,买下临街的露天购物中心,当二房东收租。</strong></p>
+<p>财报里的营收拆分只有两行：租金收入 4.855 亿、其他收入 148 万。后者小到可以忽略。这家公司连一个"第二增长曲线"的伪装都懒得做。</p>
+<h3>这门生意具体是什么样子</h3>
+<p>先说清楚它拥有的是什么。UE 手上有 <strong>75 处物业、合计 1620 万平方英尺可租面积</strong>，全部集中在<strong>华盛顿特区到波士顿这条走廊</strong>上，重心在纽约、新泽西。这不是那种带天花板、有空调、里面有电影院和美食广场的封闭式商场（mall），而是<strong>露天的、沿着公路排开的一长条店铺</strong>（美国人叫 shopping center 或 strip center）——你开车过去，直接停在店门口，下车进店，买完扔后备厢就走。</p>
+<p>一处典型的 UE 物业长这样：整块地大概 20 万平方英尺，最当中那家占掉一半面积的是"主力店"——可能是一家 ShopRite 超市、一家 Home Depot、一家 Burlington 折扣百货、一家 TJ Maxx。它们签的是<strong>十年到二十年的长约</strong>，每平方英尺一年付十几到二十几美元。剩下一半面积切成十几个小铺，租给美甲店、达美乐披萨、Chipotle、AT&amp;T 门店、牙医诊所、健身房，签五年约，每平方英尺付三十到六十美元——<strong>小铺单价贵得多，因为它们是靠主力店带来的人流吃饭的</strong>。</p>
+<p>所以 UE 的商业模式说白了是：<strong>用一个不赚什么钱的大租户（超市、五金店）把人吸引到这块地上，然后把周围的小铺以高价租出去赚差价。</strong> 超市是诱饵，小铺是利润。</p>
+<h3>钱是怎么收的</h3>
+<p>三部分叠加：</p>
+<ol>
+<li><strong>基础租金</strong>：合同上白纸黑字的月租，占大头。</li>
+<li><strong>费用分摊（CAM）</strong>：停车场铺沥青、扫雪、保安、公共区域照明、地产税、保险——这些成本 UE 先垫，然后按各家租户占的面积比例<strong>全额转嫁给租户</strong>。所以你看它报表里"物业支出 1.717 亿"，其中很大一块其实是走个账，租户会还回来。</li>
+<li><strong>提成租金</strong>：少数租约写着"如果你这家店年销售额超过 X，超出部分抽 2%~5%"。</li>
+</ol>
+<p>一家 4 万平方英尺的 ShopRite，一年可能付 UE 60 万美元基础租金 + 15 万分摊；旁边一家 1500 平方英尺的手机店，一年付 7.5 万 + 2 万分摊。UE 一整年从 75 处物业收上来 4.87 亿。</p>
+<h3>它为什么还能活着（护城河在哪）</h3>
+<p><strong>土地。</strong> UE 的地在东北部人口密度最高的郊区——那些地方<strong>再也审批不出新的购物中心了</strong>。分区规划锁死、邻居反对、地价太贵。这意味着 UE 的竞争对手不可能在马路对面新建一个一样的中心把租户抢走。这是它唯一、也是真实存在的护城河。</p>
+<p><strong>抗电商。</strong> 十年前所有人都以为亚马逊会杀死实体零售。实际结果是：<strong>封闭式大商场（mall）确实死了一大批，露天的社区购物中心反而活得不错</strong>——因为你不会在网上买今晚要吃的菜、不会网购一桶油漆等三天、剪头发和拔牙也搬不到线上。UE 的租户结构（超市、折扣店、餐饮、服务）恰好是电商最难碰的那一类。</p>
+<h3>这门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（截至 2026-06-30）</th>
+<th>上年同期口径参考（FY2025）</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>租金收入</td>
+<td>$4.855 亿</td>
+<td>$4.707 亿</td>
+<td>+5.6%</td>
+</tr>
+<tr>
+<td>其他收入</td>
+<td>$0.015 亿</td>
+<td>$0.013 亿</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>总营收</strong></td>
+<td><strong>$4.870 亿</strong></td>
+<td><strong>$4.719 亿</strong></td>
+<td><strong>+5.6%</strong></td>
+</tr>
+<tr>
+<td>物业支出</td>
+<td>$1.717 亿</td>
+<td>$1.660 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>管理费用（SG&amp;A）</td>
+<td>$0.372 亿</td>
+<td>$0.397 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>折旧摊销</td>
+<td>$1.367 亿</td>
+<td>$1.392 亿</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>$1.495 亿</strong></td>
+<td><strong>$1.271 亿</strong></td>
+<td><strong>+17.6%</strong></td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>30.7%</td>
+<td>26.9%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>只有一个分部，所以不存在"分部利润没披露"的问题。5.6% 的营收增长对购物中心 REIT 来说算不错——来源是老租约到期后按更高价重签（东北部好位置的空铺确实抢手），加上花钱买进新物业。</p>
+<p><strong>但真正决定股东能拿多少的，不是这 1.495 亿经营利润，而是它下面那笔利息。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>折旧：不是障眼法，但也不是免费的午餐</h3>
+<p>TTM 折旧摊销 1.367 亿，占营收 28%。REIT 圈的共识是把它加回去（这就是 FFO），理由是"房子会升值不会贬值"。这个共识<strong>部分正确</strong>：土地确实不折旧，但<strong>屋顶会漏、停车场会裂、空调会坏、招牌会过时</strong>。UE 每年花在物业上的钱（下面细说）就是这笔"折旧其实是真的"的部分。所以看 FFO 可以，但不能只看 FFO。</p>
+<h3>股权激励（SBC）：1211 万，不大，而且已经扣了</h3>
+<p>TTM 股权激励 1211 万，占净利润 6789 万的 17.8%。<strong>这笔钱在 GAAP 净利润和 FFO 里都已经扣掉了</strong>（REIT 的 FFO 只加回折旧和剔除卖楼收益，不加回 SBC）。所以我下面算 FFO 时不用再动它。104 个员工分 1211 万，人均 11.6 万美元的股票——对一家纽约的地产公司来说不算离谱。</p>
+<h3>一次性项目：这一年干净得反常</h3>
+<p>TTM 里的非经常项目只有：卖资产收益 23 万、法律和解 -30 万、其他异常 -107 万。<strong>加起来不到 120 万，占净利润 1.7%，可以忽略。</strong></p>
+<p><strong>但这恰恰暴露了一个大问题。</strong>回头看历史：
+- FY2023 净利润 2.483 亿，其中 <strong>2.177 亿是卖楼的一次性收益</strong>
+- FY2024 净利润 7256 万，其中 3882 万是卖楼收益
+- FY2025 净利润 9354 万，其中 4970 万是卖楼收益
+- <strong>TTM 净利润 6789 万，卖楼收益 23 万</strong></p>
+<p>也就是说，<strong>过去三年 UE 的"利润"里有一半以上是靠卖房子撑起来的</strong>。今年不卖了，利润立刻从 9354 万掉到 6789 万，跌 27%。卖楼收益是纯一次性的——卖掉一处，以后就再也收不到它的租金了。<strong>任何用"去年赚了 9354 万"来给 UE 估值的说法都是错的。</strong></p>
+<h3>资本化的支出：这才是重头戏</h3>
+<p>现金流量表里，TTM <strong>"购置房地产资产"花了 2.331 亿</strong>。这笔钱在利润表上一分钱都看不见——它被记成了资产，然后未来几十年慢慢折旧。</p>
+<p>这 2.331 亿里包含两类，财报没有拆开：
+- <strong>成长性支出</strong>：买下新的购物中心、把旧的推倒重建（redevelopment）。这是投资，花了会带来新租金。
+- <strong>维持性支出</strong>：换屋顶、重铺停车场、给新租户装修铺面（tenant improvement）、付租赁中介佣金。这是成本，花了只能维持现状。</p>
+<p><strong>这两者的比例，是判断 UE 值不值钱的核心，而财报不告诉你。</strong> 一个旁证：stockanalysis 自己算出来的"自由现金流"是 <strong>6220 万</strong>（用 EV/FCF 73.67 倒推），而经营现金流是 2.125 亿——差的 1.5 亿，就是它估的维持性支出。如果这个估计靠谱，<strong>UE 真正能自由支配的钱只有 6220 万，而它一年要派 1.007 亿的股息。</strong></p>
+<h3>回购与稀释：反过来的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>$30 万</strong></td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>$1211 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.025 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+2.91%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这一栏是负分。</strong> 回购金额是零头（30 万，纯粹是替员工代扣税的操作），而股本一年<strong>增加了 2.91%</strong>。也就是说你手里每股代表的资产，一年被稀释掉了近 3%。UE 在 FY2024 发了 1.366 亿的新股，TTM 又靠增发和借债补上买楼的缺口。</p>
+<p><strong>这直接吃掉了增长。</strong> 营收涨 5.6% 听着不错，但股本涨了 2.91%，<strong>每股口径的增长只剩 2.6% 出头</strong>。</p>
+<h3>利润和现金流的差：把每一分钱对上</h3>
+<p>差得很大——净利润 6789 万，经营现金流 2.125 亿，<strong>差 1.45 亿</strong>。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>67.9</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+119.6</td>
+<td>不花钱的账面扣减，加回</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+6.4</td>
+<td>低于市价租约等的摊销</td>
+</tr>
+<tr>
+<td>− 卖资产收益</td>
+<td>−0.2</td>
+<td>已在净利润里，非经营，剔除</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+12.1</td>
+<td>不花现金，加回（但它稀释了你）</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−2.2</td>
+<td>租户还没交的钱</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+6.3</td>
+<td>自己还没付的钱</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>−6.6</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+9.1</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>212.5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：1.45 亿的差额里，1.26 亿是折旧摊销（房子的账面贬值），1211 万是股权激励。没有一分钱是可疑的。</strong> UE 的报表是干净的——它的问题不在会计造假，在于<strong>下面那笔债</strong>。</p>
+<h3>债务：真正的问题在这里</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总负债</td>
+<td><strong>$17.44 亿</strong></td>
+</tr>
+<tr>
+<td>现金</td>
+<td>$0.583 亿</td>
+</tr>
+<tr>
+<td><strong>净负债</strong></td>
+<td><strong>$16.86 亿</strong></td>
+</tr>
+<tr>
+<td>TTM 利息支出</td>
+<td><strong>$0.775 亿</strong></td>
+</tr>
+<tr>
+<td>平均利率（倒推）</td>
+<td>约 4.4%</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td><strong>1.93 倍</strong></td>
+</tr>
+<tr>
+<td>债务 / EBITDA</td>
+<td><strong>6.18 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看这个数字：经营利润 1.495 亿，利息就吃掉 7746 万——一半以上。</strong> 利息保障倍数 1.93 倍的意思是，如果经营利润下滑一半，UE 就付不起利息了。</p>
+<p>而且平均利率只有 4.4%，说明这些债大多是前几年低利率时期锁定的。<strong>这些债到期后要按今天的利率重新借。</strong> 每上浮 1 个百分点，一年就多付 1740 万——那是 TTM 净利润的 26%。</p>
+<p>顺便：<strong>净负债 16.86 亿 ÷ 133.52 百万股 = 每股背了 12.63 美元的债，而股价才 21.70。</strong> 你花 21.70 买的东西，背后是 34.33 美元的资产加 12.63 美元的债。这是 1.58 倍的杠杆——REIT 行业算中等偏上，不算失控，但也绝不安全。</p>
+<h3>一个不该忽略的数字</h3>
+<p><strong>ROIC 4.62%，WACC 7.71%。</strong></p>
+<p>翻译成人话：UE 每投一块钱进去，一年赚回 4.6 分；而它筹这一块钱的成本（借债 + 股权）是 7.7 分。<strong>它每投一块钱，就毁灭三分钱的价值。</strong> 这不是短期波动——它是"在贵地段买低收益率资产 + 用杠杆放大"这个模式的必然结果。UE 花 2.33 亿买楼这件事本身，按这个口径算，是在给股东做减法。</p>
+<hr />
+<h2>第三部分：多口径估值（REIT 口径）</h2>
+<p>先把基础数字摆出来：市值 <strong>$29.0 亿</strong>，企业价值（含债）<strong>$45.8 亿</strong>，股价 <strong>$21.70</strong>，摊薄股数 <strong>1.29 亿股</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率</td>
+<td>29.0 亿 ÷ 净利润 0.679 亿</td>
+<td><strong>42.7 倍</strong></td>
+<td><strong>$2.34</strong></td>
+</tr>
+<tr>
+<td><strong>P/FFO（行业主口径）</strong></td>
+<td>29.0 亿 ÷ FFO 2.062 亿</td>
+<td><strong>14.1 倍</strong></td>
+<td><strong>$7.11</strong></td>
+</tr>
+<tr>
+<td><strong>P/AFFO（估算）</strong></td>
+<td>29.0 亿 ÷ 约 1.96 亿</td>
+<td><strong>约 14.8 倍</strong></td>
+<td><strong>约 $6.76</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径 P/OCF</td>
+<td>29.0 亿 ÷ 2.125 亿</td>
+<td><strong>13.6 倍</strong></td>
+<td><strong>$7.32</strong></td>
+</tr>
+<tr>
+<td><strong>扣掉维持性支出的真实自由现金流</strong></td>
+<td>29.0 亿 ÷ 0.622 亿</td>
+<td><strong>46.6 倍</strong></td>
+<td><strong>$2.15</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>45.8 亿 ÷ 2.691 亿</td>
+<td><strong>17.0 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均 FFO 口径</td>
+<td>29.0 亿 ÷ 平均 1.931 亿</td>
+<td><strong>15.0 倍</strong></td>
+<td><strong>$6.66</strong></td>
+</tr>
+<tr>
+<td><strong>实际到手的股息</strong></td>
+<td>每股 $0.84 ÷ $21.70</td>
+<td>—</td>
+<td><strong>$3.87</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（AFFO 为估算：公司只披露到 FY2025 的 AFFO 1.871 亿，TTM 未披露；按 FFO 的 95% 估。三年平均 FFO = TTM 2.062 亿、FY2025 1.864 亿、FY2024 1.867 亿的均值。）</p>
+<h3>这张表里最重要的一行差</h3>
+<p><strong>P/FFO 说你一年赚 7.11 块，真实自由现金流说你一年赚 2.15 块。差 3.3 倍。</strong></p>
+<p>这 4.96 块的差额去哪了？<strong>去了停车场的沥青、屋顶的防水、新租户的装修补贴、和中介的佣金。</strong> 这就是 REIT 估值里最大的一个坑：FFO 假装房子不需要维护，AFFO 只扣掉一部分，只有把全部物业支出扣干净，你才看到真实数字。</p>
+<p>而 UE 这笔物业支出<strong>特别大</strong>——2.33 亿，是它经营现金流 2.13 亿的 110%。购物中心是重资产里最重的一类：租户三年五年换一批，每换一批就要重新装修铺面。</p>
+<h3>你投 100 块，一年到底赚多少</h3>
+<p><strong>最保守的真实口径：$2.15。</strong> 也就是把所有物业上花的钱都当成本扣掉。</p>
+<p><strong>行业惯用口径（P/FFO）：$7.11。</strong> 这个数字假设那 2.33 亿的房产支出全是"投资"而不是"维护"。</p>
+<p><strong>你实际能拿到手的：$3.87 的股息。</strong></p>
+<p>这三个数字的关系是这样的：UE 一年真金白银收上来 2.125 亿经营现金，然后：
+- <strong>拿 1.007 亿去派股息</strong>（占 47%）→ 这部分进你口袋
+- <strong>拿 2.331 亿去买楼和翻新</strong> → 但这已经超过剩下的 1.118 亿了
+- <strong>缺口 1.2 亿从哪来？借债 +1.117 亿，加上发新股。</strong></p>
+<p><strong>这就是关键：UE 派给你的股息，有一部分实际上是借钱派的。</strong> 严格说不是"庞氏股息"（经营现金流确实覆盖得住股息），但它意味着<strong>公司自己不能靠内生现金增长——每扩张一步都要么加债、要么稀释你</strong>。而它的 ROIC（4.62%）低于资金成本（7.71%），所以这种扩张对你是负贡献。</p>
+<h3>这个 $3.87 未来会变大还是变小</h3>
+<p><strong>大概率小幅变大，但有一个不小的风险。</strong></p>
+<p>变大的理由：东北部好位置的空铺确实抢手，老租约按今天的市价重签能涨价，营收 5.6% 的增速里大部分是这个。股息也在稳定提（FY2021 $0.60 → 现在 $0.84）。</p>
+<p>变小的风险：<strong>17.44 亿的债，平均利率 4.4%。</strong> 这些是低利率时代锁的。每重新借一批，成本就往上跳一截。经营利润 1.495 亿，利息 7746 万——利率再涨 2 个百分点，一年多付 3480 万，那是净利润的一半。</p>
+<p>还有 2.91% 的年稀释在慢慢磨。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>账很干净，生意也真实，但它不便宜——你买的其实是一支加了 1.6 倍杠杆、每年稀释你 3%、每投一块钱毁灭三分钱价值的 3.87% 收益债券。</strong></p>
+<p>P/FFO 14.1 倍在零售 REIT 里是"公道偏贵"的位置，不是便宜货。真正劝退的是三件事叠在一起：</p>
+<ol>
+<li><strong>ROIC 4.62% &lt; WACC 7.71%</strong>——它扩张得越猛，你越亏。而它 TTM 刚花了 2.33 亿去扩张。</li>
+<li><strong>利息保障 1.93 倍</strong>——安全垫太薄，低息债到期重定价是明摆着的雷。</li>
+<li><strong>股本每年 +2.91%</strong>——增长的果实一大半被新发的股票吃掉了。</li>
+</ol>
+<p>再加上一条：<strong>过去三年的漂亮利润有一半是卖楼卖出来的，今年不卖了，净利润立刻跌 27%。</strong></p>
+<p>值得肯定的地方是有的：75 处物业的位置真的难以复制，租户结构（超市、折扣店、餐饮）确实是电商杀不死的那一类，账面上没有任何粉饰的痕迹。<strong>如果它的价格能跌到 P/FFO 11 倍以下（股价 $17 左右），杠杆的问题就被价格补偿掉了，那时它是个不错的收租工具。</strong></p>
+<p><strong>现在的 $21.70，你付的是好资产的价钱，拿的是被利息和稀释啃掉一大半的回报。等。</strong></p>
+</div></body></html>

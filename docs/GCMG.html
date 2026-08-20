@@ -1,0 +1,517 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GCMG · 格罗夫纳（GCM Grosvenor Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GCMG</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">71%利润归创始人，SBC比公众股东全年利润还多，三年平均43.6倍</div><h1>GCMG · 格罗夫纳（GCM Grosvenor Inc.）</h1>
+<p><strong>市值</strong> 27.84 亿美元 ｜ <strong>股价</strong> 约 $13.73 ｜ <strong>总股本 2.028 亿股</strong>（其中公开的 A 类股只有 6,113 万股）
+<strong>行业</strong> 金融 / 另类资产管理（NASDAQ）
+<strong>TTM 口径</strong> 最近四个季度滚动，截至 <strong>2026 年 6 月 30 日</strong>
+<strong>本篇全部数字均为 TTM，除非另行标注</strong></p>
+<blockquote>
+<p><strong>口径说明</strong>：这是一家资产管理公司，不是银行也不是 REIT，所以市盈率仍然适用。但它有一个<strong>极特殊的股权结构（Up-C）</strong>，导致「财报上的净利润」和「你作为股东能分到的利润」是两个完全不同的数字——差了 2.4 倍。第三部分会把这件事彻底算清楚，那是本篇最重要的内容。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先讲清楚这家公司在整条金融食物链上站在哪一格。</p>
+<p>美国最大的一批钱在退休金手里——伊利诺伊州教师退休基金、加州公务员退休金、某个州的市政雇员养老金，动辄两三百亿到几千亿美元。这些钱的管理者是几十个公务员，年薪十几万，办公室在斯普林菲尔德。而他们要做的事情之一，是把资产的 15%–25% 投到私募股权、基础设施、房地产这些"另类资产"里去。</p>
+<p>问题来了：全球有八千多家私募基金管理人（GP），每年募集上千只基金。要判断哪家 GP 的第五期基金值得投、要跟 KKR 谈条款、要做法律尽调、要在基金存续的十二年里持续跟踪——这需要一个二三十人的专业团队。<strong>一个州的退休基金养不起这个团队，也招不到这样的人（薪酬差十倍）。</strong></p>
+<p><strong>GCM Grosvenor 就是被雇来当这个团队的。</strong> 1971 年成立于芝加哥，现在管理的资产按管理费反推大约在 <strong>八百多亿美元</strong>这个量级（TTM 管理费收入约 4.7 亿，按另类资产管理行业 50–60 个基点的混合费率倒推；<strong>这是估算，财报未在本文数据源中直接披露 AUM</strong>）。</p>
+<p>它做两件事：</p>
+<h3>生意一：私募市场（Private Markets）——大头，也是增长的来源</h3>
+<p>具体怎么运作：</p>
+<p>一个州的退休基金说"我要在未来五年往基础设施里投 20 亿美元"。GCM 接下这笔钱，成立一个<strong>专户（separate account）</strong>——不是让客户买一只标准化基金，而是完全按这个客户的规则定制。客户可能会说："我们不投化石燃料"、"我们要求所有承建商必须使用工会劳工"、"至少 20% 要配给管理规模小于 10 亿美元的新兴管理人"。GCM 就照这个约束去全球挑基金、做跟投（co-investment，直接跟着 GP 投单个项目）、买二手份额（从急着套现的其他 LP 手里折价接盘）。</p>
+<p><strong>怎么收钱：</strong></p>
+<ol>
+<li><strong>管理费</strong>——按<strong>承诺资本</strong>（客户答应投的总额，不是已投出去的）每年收 <strong>50–70 个基点</strong>。上面那个 20 亿的专户，一年收 1,000–1,400 万美元。这笔钱最值钱的地方是<strong>它是锁死的</strong>：私募基金的存续期是 10–12 年，客户签下来就是十年的年费，中间想撤也撤不了（底层资产是流动性极差的公司股权）。<strong>这是全公司最优质的收入。</strong></li>
+<li><strong>业绩报酬 / carry</strong>——在跟投和直投的部分，超过约定门槛收益率（通常 8%）之上的收益，GCM 分 10%–20%。这笔钱<strong>极其肥厚但完全不可预测</strong>：它只在项目退出（被卖掉或上市）的那一年确认，而退出时点取决于并购市场。这就是为什么这家公司的利润年年剧烈波动。</li>
+</ol>
+<p><strong>它的真正差异化在哪：</strong></p>
+<ul>
+<li><strong>新兴管理人与多元化配置计划</strong>。很多美国公共退休金有法定或政策要求，必须把一部分资产配给少数族裔、女性创办的中小型基金管理人。但这些 GP 规模小、没有品牌、尽调成本极高，大机构不愿意做。GCM 在这块深耕了很多年，是最大的执行方之一。<strong>这是一个非常难复制的位置</strong>——它不是投资能力的优势，是"愿意做脏活累活并且有二十年记录"的优势，而且客户的需求是政策强制的，不会因为市场好坏而消失。</li>
+<li><strong>基础设施 + 工会关系</strong>。他们的基建产品线在条款里明确写入"责任承包商"条款（使用工会劳工、支付当地现行工资）。对以公共部门雇员为受益人的退休金来说，这是政治上极其重要的卖点——工会既是他们的受益人，也是他们的董事会成员。黑石和 KKR 不太可能在这件事上跟他们竞争。</li>
+</ul>
+<h3>生意二：绝对回报策略（ARS）——老本行，在萎缩</h3>
+<p>这是 1971 年起家的业务：对冲基金的组合管理（fund-of-funds）。客户给一笔钱，GCM 挑十几二十只对冲基金组成一个组合，负责尽调、分配、监控、必要时换人。收费约 50–60 个基点管理费，加上少量业绩提成。</p>
+<p><strong>这门生意在结构性衰退。</strong> 原因很直白：对冲基金本身收 "2% 管理费 + 20% 业绩提成"，GCM 在上面再叠一层 0.5%–1%。客户过了二十年发现，两层费用叠加之后的净回报常常还不如买指数。所以大客户纷纷选择"自己直接投对冲基金，不要中间那一层"。全行业的对冲 FOF 规模从 2008 年高点缩水了一半以上。</p>
+<p>GCM 的应对是把 ARS 团队转型去做定制化的、特定策略的方案（比如专门做保险浮存金的绝对回报组合），保住了一部分，但增长指望不上。</p>
+<h3>两门生意的钱</h3>
+<p>财报（本文数据源）只披露到公司层面，不按业务线拆分利润。TTM 合并数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+<th>相对 2025 财年</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主营收入</td>
+<td>561.95</td>
+<td>+2.3%</td>
+<td>管理费 + 业绩报酬</td>
+</tr>
+<tr>
+<td>其他收入</td>
+<td>4.95</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>营收合计</strong></td>
+<td><strong>566.90</strong></td>
+<td><strong>+6.34%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>营业成本（几乎全是员工薪酬）</td>
+<td>308.78</td>
+<td>-3.3%</td>
+<td>占营收 54.5%</td>
+</tr>
+<tr>
+<td><strong>毛利</strong></td>
+<td><strong>258.13</strong></td>
+<td><strong>+9.8%</strong></td>
+<td>毛利率 45.53%</td>
+</tr>
+<tr>
+<td>销售管理费用</td>
+<td>107.56</td>
+<td>+2.7%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>154.85</strong></td>
+<td><strong>+16.0%</strong></td>
+<td>经营利润率 <strong>27.32%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按行业惯例的拆分估算：<strong>管理费约 4.7 亿（占 83%，经常性、可预测），业绩报酬约 0.9 亿（占 16%，完全不可预测）</strong>。<strong>这是估算，不是财报披露的数字。</strong></p>
+<p><strong>一个不需要估算的事实：全公司只有 553 名员工，人均创收 103 万美元。</strong> 这是一门极度轻资产的生意，资本开支一年只有 1,181 万（占营收 2.1%），不需要工厂、不需要库存。这是它的优点。</p>
+<p>但看看经营利润这条线过去五年长什么样：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>2021</th>
+<th>2022</th>
+<th>2023</th>
+<th>2024</th>
+<th>2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万）</td>
+<td>530.2</td>
+<td>445.6</td>
+<td>443.9</td>
+<td>511.7</td>
+<td>554.4</td>
+<td>566.9</td>
+</tr>
+<tr>
+<td>经营利润（百万）</td>
+<td>109.4</td>
+<td>80.3</td>
+<td><strong>-11.9</strong></td>
+<td>73.5</td>
+<td>133.5</td>
+<td>154.9</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>20.6%</td>
+<td>18.0%</td>
+<td><strong>-2.7%</strong></td>
+<td>14.4%</td>
+<td>24.1%</td>
+<td>27.3%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2023 年经营利润是负数。</strong> 一家轻资产、收 80% 经常性管理费的公司，居然做到了经营亏损。这说明成本结构里有巨大的刚性——薪酬（尤其是跟业绩挂钩但有保底的部分）在业绩报酬归零的年份不会同步下降。<strong>这条曲线告诉你：这不是一门稳定的生意，是一门被 carry 放大的周期生意。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>最大的一项：71% 的利润不是你的</h3>
+<p>这不是"障眼法"，是公司的股权结构，但它造成的误读比任何会计手法都严重，必须放在第一位。</p>
+<p>GCM Grosvenor 用的是 <strong>Up-C 结构</strong>：你在纳斯达克买到的 "GCMG"（A 类股，6,113 万股）只是一个控股壳，它持有底层经营实体 GCMH 的<strong>少数股权</strong>。GCMH 的大部分权益由创始人 Michael Sacks 和员工通过 LP 单位持有——这些单位可以 1:1 换成 A 类股，所以计算市值时被全部算进来（总计 2.028 亿股）。</p>
+<p>于是利润表长这样（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润</td>
+<td>154.85</td>
+</tr>
+<tr>
+<td>利息支出</td>
+<td>-20.51</td>
+</tr>
+<tr>
+<td>利息与投资收益</td>
+<td>+22.91</td>
+</tr>
+<tr>
+<td>其他非经营损益</td>
+<td>+12.33</td>
+</tr>
+<tr>
+<td><strong>税前利润</strong></td>
+<td><strong>169.17</strong></td>
+</tr>
+<tr>
+<td>所得税</td>
+<td>-16.34（<strong>有效税率仅 9.66%</strong>）</td>
+</tr>
+<tr>
+<td><strong>合并净利润</strong></td>
+<td><strong>152.84</strong></td>
+</tr>
+<tr>
+<td><strong>减：少数股东权益（Sacks 和员工那一份）</strong></td>
+<td><strong>-108.33</strong></td>
+</tr>
+<tr>
+<td><strong>归属公开股东（A 类）的净利润</strong></td>
+<td><strong>44.50</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合并赚了 1.53 亿，其中 1.08 亿（71%）归属 Sacks 和员工，只有 4,450 万（29%）归属公开股东。</strong></p>
+<p>顺带解释那个 9.66% 的超低税率：因为 GCMH 是合伙企业，那 71% 的利润在公司层面<strong>根本不缴税</strong>，由持有人各自申报个人所得税。上市公司层面只对自己那 29% 缴税。所以<strong>这个漂亮的低税率并不是税务优化能力，只是"大部分利润不归你"的另一种表述</strong>。</p>
+<h3>税收应收协议（TRA）——一个真实的价值转移</h3>
+<p>Up-C 结构还附带一个东西：当内部人把 LP 单位换成 A 类股时，上市公司会获得一笔可抵税的资产（税基提升）。按 TRA 协议，<strong>这笔税务好处的 85% 要以现金付给内部人</strong>，公司只留 15%。</p>
+<p>现金流量表上「其他融资活动 -1.4196 亿」这一行，装的就是<strong>给少数股东的分配 + TRA 付款</strong>。TTM 有 <strong>1.42 亿美元</strong>从这个口子流出去了，是公开股东可分利润（4,450 万）的三倍多。这笔钱在利润表上你看不到，只在现金流量表里。</p>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>4,554 万美元</strong>。绝对值不算大，但请对比：</p>
+<ul>
+<li>占营收 <strong>8.0%</strong></li>
+<li>占合并净利润 <strong>29.8%</strong></li>
+<li><strong>占归属公开股东净利润（4,450 万）的 102%</strong></li>
+</ul>
+<p><strong>发给员工的股票，比公开股东一整年分到的利润还多一块钱。</strong> 这是本篇最刺眼的一个比值。而且它在快速上升：2023 年 2,276 万，TTM 4,554 万，两年翻倍。</p>
+<h3>回购与稀释——这里比表面难看得多</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>发行股票</strong></td>
+<td><strong>+154.15</strong></td>
+</tr>
+<tr>
+<td>回购股票</td>
+<td>-67.13</td>
+</tr>
+<tr>
+<td><strong>净额</strong></td>
+<td><strong>+87.02（净发行 8,700 万）</strong></td>
+</tr>
+<tr>
+<td>同期股权激励</td>
+<td>45.54</td>
+</tr>
+<tr>
+<td>回购 ÷ SBC</td>
+<td>1.47 倍</td>
+</tr>
+<tr>
+<td><strong>过去一年股本变化</strong></td>
+<td><strong>+3.82%（增加）</strong></td>
+</tr>
+<tr>
+<td>摊薄股本 2023 → TTM</td>
+<td>187M → 202M（<strong>+8.0%</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<p>单看「回购 ÷ SBC = 1.47 倍」还算及格。但同期发行了 <strong>1.54 亿美元</strong>的股票，净额是<strong>净发行 8,700 万</strong>。摊薄股本三年从 1.87 亿股涨到 2.028 亿股。<strong>你的持股比例每年被稀释接近 4%。</strong></p>
+<h3>一次性项目</h3>
+<p>TTM 有一笔 -40 万美元的"其他异常项目"，可以忽略。但「其他非经营损益 +1,233 万」这个科目历年跳动极大（2024 年是 <strong>-1,724 万</strong>，2022 年是 +2,120 万），<strong>只看单期 TTM 无法判断这里面有多少是可持续的</strong>——对资产管理公司来说，这个科目通常装的是自有资金跟投的浮盈浮亏，本质上是非经常性的。这里明说：<strong>单期口径下无法判断。</strong></p>
+<h3>利润和现金流的对账表（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>归属公开股东的净利润</td>
+<td>44.50</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+4.21</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+0.73</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+45.54</td>
+</tr>
+<tr>
+<td>＋ <strong>其他经营活动</strong>（主要是加回上面扣掉的少数股东权益 1.083 亿）</td>
+<td><strong>+127.93</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款增加</td>
+<td>-8.87</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>-15.92</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>198.14</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-11.81</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>186.33</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的关键在于理解「自由现金流 1.863 亿」属于谁。</strong> 它从"归属公开股东的 4,450 万"起算，然后把 1.083 亿的少数股东权益加了回去——所以<strong>这 1.863 亿是全公司的（2.028 亿股共享的），不是 A 类股独享的</strong>。用它对 27.84 亿的总市值算是对得上的（P/FCF = 15.0 倍）。</p>
+<p>但要再扣两样才是股东真能拿到的：<strong>SBC 4,554 万</strong>（真实稀释）。扣掉后 ≈ <strong>1.41 亿</strong>。</p>
+<h3>资产负债表</h3>
+<p>总债务 <strong>4.164 亿</strong>，现金 1.396 亿，<strong>净负债 2.768 亿</strong>。债务/EBITDA 2.46 倍，利息保障 7.55 倍——<strong>不算危险，但对一家利润会在坏年份归零的公司（2023 年经营亏损）来说，这个杠杆不是零风险</strong>。</p>
+<p><strong>市净率 33.24 倍、ROE 300%</strong>——这两个数字<strong>完全没有意义</strong>，直接忽略。原因是 Up-C 结构下上市公司账上的股东权益只有 1.224 亿（大部分权益记在少数股东权益里），分母接近于零导致比率爆表。<strong>任何用 PB 或 ROE 来评价这家公司的说法都是错的。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 27.84 亿（含全部 2.028 亿股），企业价值 30.7 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>❌ 错误但常见的算法</strong></td>
+<td>总市值 27.84亿 ÷ 归属A类净利润 0.445亿</td>
+<td>62.6 倍</td>
+<td>$1.60</td>
+</tr>
+<tr>
+<td><strong>GAAP TTM 市盈率（正确口径）</strong></td>
+<td>摊薄 EPS $0.51 × 2.028亿股 = 1.034亿</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.71</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>用前瞻 PE 代替（加回 SBC，且押注 carry 大幅释放）</td>
+<td>13.6 倍</td>
+<td>$7.37</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无重大一次性项目，SBC 已按 GAAP 扣除</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>$3.71</strong></td>
+</tr>
+<tr>
+<td>　└ 假设它是普通 C-corp、全额缴 25% 税</td>
+<td>27.84亿 ÷（1.6917亿 × 75% = 1.269亿）</td>
+<td>21.9 倍</td>
+<td>$4.56</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>27.84亿 ÷ 1.863亿</td>
+<td>14.9 倍</td>
+<td>$6.69</td>
+</tr>
+<tr>
+<td><strong>扣掉 SBC 的自由现金流口径</strong>（本篇自算）</td>
+<td>27.84亿 ÷ 1.408亿</td>
+<td><strong>19.8 倍</strong></td>
+<td><strong>$5.06</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>30.7亿 ÷ 1.5485亿</td>
+<td>19.8 倍</td>
+<td>$5.04</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>27.84亿 ÷（1.034 + 0.827 + 0.057）/3 = 0.639亿</td>
+<td><strong>43.6 倍</strong></td>
+<td><strong>$2.29</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>「❌ 错误但常见的算法」那一行必须专门说。</strong> 很多免费财经网站会用「总市值 ÷ 净利润」得出 62.6 倍这种吓人的数字，那是把<strong>全部 2.028 亿股的市值</strong>除以<strong>只归属 6,113 万 A 类股的利润</strong>，分子分母口径不一致。正确做法是用摊薄 EPS（$0.51，已经按全部单位换股后重新计算并补齐了应缴税款）乘以总股本，得到 <strong>1.034 亿</strong>的"完全转换后利润"，对应 <strong>26.9 倍</strong>。</p>
+<p><strong>全表最重要的仍然是最后一行——三年平均 43.6 倍。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>完全转换后净利润（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM</td>
+<td>103.4</td>
+</tr>
+<tr>
+<td>2025 财年</td>
+<td>82.7</td>
+</tr>
+<tr>
+<td>2024 财年</td>
+<td><strong>5.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>2024 财年完全转换后的利润只有 <strong>570 万美元</strong>——摊薄 EPS 只有 $0.03。<strong>三年平均下来是 6,390 万，对应 43.6 倍。</strong></p>
+<p>这个数字的含义非常直白：<strong>你现在看到的 26.9 倍，是建立在过去 12 个月是三年里最好的一年这个基础上的。</strong> 往回退两年，同样的股价对应的是四十几倍甚至上百倍。这门生意的利润不是平稳的，是被业绩报酬（carry）放大的锯齿波。</p>
+<p>「公司自己吹的」13.6 倍前瞻 PE，押注的是<strong>未来 12 个月会有大量的私募项目退出、carry 集中兑现</strong>。这个赌注可能对——2021 年那批基金到了退出窗口——但它是个赌注，不是事实。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 GCM Grosvenor，按最保守的真实口径算（扣掉 SBC 后的自由现金流），公司一年替你赚 5.06 元；如果按 GAAP 完全转换口径，只有 3.71 元；如果按三年平均，只有 2.29 元。</strong></p>
+<p>这 5.06 元里，有多少真到你口袋？</p>
+<ul>
+<li><strong>股息：3.48 元。</strong> 每股年派 $0.48，TTM 派息 3,002 万美元。<strong>这是这家公司最实在的部分，而且连续五年在涨</strong>（$0.37 → $0.48）。</li>
+<li><strong>回购：约负数。</strong> TTM 回购 6,713 万，但同期发行 1.5415 亿，净发行 8,700 万，股本增加 3.82%。<strong>你的持股比例在缩小，不是变大。</strong></li>
+<li><strong>另有 1.42 亿现金</strong>从"其他融资活动"流向少数股东分配和 TRA 付款——<strong>这笔钱是内部人拿走的，跟你无关，但它消耗的是同一个现金池。</strong></li>
+<li><strong>留在公司里的部分很少</strong>，因为资本开支只有 1,181 万。这门生意几乎不需要再投资，赚的钱要么分掉、要么还债（TTM 净还债 6,938 万）。</li>
+</ul>
+<p>这个 5.06 元未来会变大还是变小？</p>
+<p><strong>变大的理由</strong>：管理费收入是锁死十年的，只要 AUM 不缩就一直收；私募市场业务在增长；2021–2022 年募的那批基金进入退出窗口，未来两三年 carry 可能集中兑现（这正是前瞻 PE 13.6 倍押的东西）；新兴管理人和基建工会条款这两个位置很难被复制；经营利润率从 2023 年的 -2.7% 一路修复到 27.3%，说明成本控制真的做到了。</p>
+<p><strong>变小的理由</strong>：ARS（对冲 FOF）业务结构性萎缩；整个 FOF 行业的费率被长期压缩，客户不断要求打折；carry 的兑现完全取决于并购和 IPO 市场，2023 年那种局面（经营亏损）随时可能重演；SBC 每两年翻一倍且已经超过公开股东的全部利润；股本每年稀释 3.8%；4.16 亿债务在利润归零的年份会变成真问题。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>26.9 倍买一家利润会在坏年份归零的资产管理公司，而三年平均口径是 43.6 倍——你付的是最好一年的价格。</strong></p>
+<p>这门生意有真东西：八百多亿美元的委托资产、锁死十年的管理费、553 个人做出 27% 的经营利润率、几乎不需要资本开支、3.48% 的股息连涨五年、以及"新兴管理人计划"和"工会友好的基建条款"这两个别人不太愿意也不太容易复制的位置。这不是一家有硬伤的公司。</p>
+<p>但你要接受三件事：</p>
+<p><strong>第一，你只是这门生意的小股东，而且是明确的配角。</strong> 71% 的利润归创始人和员工，光是给他们的分配和 TRA 付款一年就要 1.42 亿现金——是你那份利润的三倍多。这个结构本身是公开透明、市值也算全了的，不算欺骗；但它意味着治理权、以及税务好处的 85%，都不在你这边。</p>
+<p><strong>第二，你买的不是一条稳定的现金流，是一条锯齿波。</strong> 2023 年经营利润是负的，2024 年完全转换后每股只赚三分钱，TTM 每股五毛一。当期 26.9 倍看着还行，三年平均 43.6 倍才是这门生意的常态定价。</p>
+<p><strong>第三，发给员工的股票比分给你的利润还多，而且股本每年还在净增加 3.8%。</strong></p>
+<p><strong>不便宜。</strong> 五块钱的年回报里有三块五是股息（这部分是实的、值得尊重），剩下的一块半要靠 carry 兑现——那是市场给你定价的，不是公司能控制的。前瞻 13.6 倍那个故事如果成真，现在这个价当然值；如果 2027 年退出窗口不及预期、回到 2024 年那种利润水平，你手上就是一个五十倍的东西加 3.5% 的股息。</p>
+<p><strong>除非你明确愿意为"未来两年 carry 大爆发"下注，否则等 carry 真的兑现、或者等它跌回三年平均口径 30 倍以下再看。</strong></p>
+</div></body></html>

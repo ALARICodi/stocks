@@ -1,0 +1,384 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BBT · 灯塔金融（Beacon Financial Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BBT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔掉7331万合并费用真实PE12.6倍,股东回报9.2%,赌新英格兰商业地产不崩</div><h1>BBT · 灯塔金融（Beacon Financial Corporation）</h1>
+<p>市值 26.9 亿美元 ｜ 股价 $31.94 ｜ 行业：金融（美国东北部区域性商业银行）｜ 交易所 NYSE
+TTM 口径截止日：<strong>2026 年 6 月 30 日</strong>（最近四个季度滚动）</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分不用市盈率，改用市净率 PB / 有形账面市净率 P/TBV / ROE / ROTCE / 净息差 NIM / 拨备覆盖 / 资本充足率这一套口径。</strong> 原因很简单：银行的"营收"不是卖东西收的钱，而是利息差；银行的"资产"是别人欠它的贷款，一笔坏账就能吃掉一年利润。用市盈率给银行估值，等于用体重衡量一个人的健康——数字有，意义不大。真正决定银行值多少钱的是：<strong>它每一块净资产每年能生出多少钱（ROE），以及这块净资产是不是真的存在（有没有隐藏的坏账）。</strong></p>
+<p><strong>另一个必须先说的事：这份 TTM 报表横跨了一次大合并。</strong> 从财报能看到的硬证据：总资产从 FY2024 的 119 亿一年之内变成 FY2025 的 232 亿；营收 TTM 同比 +119.89%；其他无形资产从 1746 万暴涨到 1.90 亿（这是合并时给对方存款客户关系记的"核心存款无形资产"）；股本却从 8900 万股降到 8436 万股。这是 2025 年 Berkshire Hills Bancorp 与 Brookline Bancorp 合并、更名为 Beacon Financial 留下的痕迹，合并大约在 2025 年下半年完成。<strong>所以 TTM 这四个季度里，前两个月左右还是合并前的单体，后十个月才是合并后的新银行</strong>——TTM 的营收和费用都不是真实的年化水平，下面每一处我都会标出来。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>一家区域银行的生意，说穿了就是<strong>"用低成本拿到别人的钱，再用高一点的价格借出去，赚中间的差价，同时祈祷借出去的钱能收回来"</strong>。Beacon 的具体做法拆成三块。</p>
+<h3>生意一：吸收存款 —— 这是原材料，也是这家公司真正的资产</h3>
+<p><strong>具体是什么？</strong> Beacon 在马萨诸塞、康涅狄格、罗德岛、纽约州这一带有一百多家实体网点（合并前两家各有几十家）。附近的居民和小生意主把钱存在这里：老太太的定期存单、五金店老板的支票账户、一家牙医诊所的对公结算户。</p>
+<p><strong>怎么"收钱"？</strong> 它不收钱，它<strong>付钱</strong>——但付得比别人少，就是它的利润来源。TTM 它一共吸收了 <strong>184.86 亿美元存款</strong>，为此付了 <strong>3.56 亿利息</strong>，平均成本约 <strong>1.9%</strong>（TTM 平均余额估算口径）。同期美国联邦基金利率在 4% 上下，也就是说<strong>它拿到钱的成本比市场基准低两个百分点以上</strong>，这两个点乘以 185 亿，就是它每年凭空多出来的几个亿。</p>
+<p><strong>为什么它能付这么少？</strong> 因为存款里有 <strong>39.11 亿是完全不付利息的活期存款</strong>（占总存款 <strong>21.2%</strong>）——那是本地生意人拿来收付货款的结算账户，人家图的是方便，不是利息。<strong>这 39 亿的零成本资金，是这家公司最值钱的东西，而它在资产负债表上一分钱都不体现。</strong> 判断一家区域银行好不好，第一个要看的就是这个比例：低于 15% 是差的，20% 以上算不错，Beacon 21.2% 属于中上。</p>
+<h3>生意二：放贷 —— 178 亿贷款，重头在商业地产</h3>
+<p><strong>具体是什么？</strong> TTM 末总贷款 <strong>178.22 亿</strong>，一年收回 <strong>10.13 亿利息</strong>，平均收益率约 <strong>5.4%</strong>。这 178 亿主要放在四类客户上（合并前两家银行的资产结构决定的，具体分类比例这几张财报页不披露，以下是按两家银行历史结构的判断）：</p>
+<ol>
+<li><strong>商业地产（CRE）——占大头，也是最大的风险点。</strong> 一个开发商在波士顿郊区买下一栋 6 层的公寓楼，估值 3000 万，Beacon 借给他 2000 万，期限 7 年，利率 6.5%，用楼本身做抵押，每年收 130 万利息。Brookline 和 Berkshire 两家历史上都是 CRE 重仓行，合并后这个敞口只会更集中。<strong>这类贷款的问题在于：楼在的时候什么事都没有，租金一跌、估值一降，抵押物就不够了，而且是整片区域一起出事。</strong></li>
+<li><strong>工商业贷款（C&amp;I）。</strong> 一家有 80 个员工的塑料件加工厂要买一台注塑机，Beacon 借 200 万，5 年期，用设备和应收账款做抵押。</li>
+<li><strong>专项设备融资。</strong> 这是 Brookline 带过来的一门相当独特的小生意（子公司 Eastern Funding）：<strong>专门给洗衣店、干洗店、餐饮设备融资</strong>——一台商用洗衣烘干设备 8 万美元，小老板付两成首付，Beacon 出 6.4 万，5 年分期，年化利率 9–11%。这个利率比普通商业贷款高三四个点，因为客户是没法从大银行拿到钱的小个体户，而抵押物（洗衣机）又是能拉走再卖掉的标准设备。<strong>这门生意的收益率远高于平均，是它净息差里的隐形加分项。</strong></li>
+<li><strong>住宅按揭和消费贷。</strong> 本地居民的房贷、车贷，量不大，主要用来维系客户关系。</li>
+</ol>
+<h3>生意三：不用本钱的中间业务（非利息收入）</h3>
+<p>TTM 非利息收入 <strong>8824 万</strong>，占总收入约 11%。包含：<strong>信托与财富管理 1616 万</strong>（帮本地富裕家庭管钱，按资产规模每年抽 0.8–1%，这是最优质的一块——不占用一分钱资本，还年年复发）、账户服务费、商户收单手续费、保险代理佣金、以及卖贷款的价差。</p>
+<p>对区域银行来说，非利息收入占比越高越值钱，因为它不消耗资本、不承担信用风险。Beacon <strong>11% 的占比偏低</strong>（做得好的同行能到 20–30%），说明它本质上还是一家"老派的吃利差的银行"。</p>
+<h3>三门生意的钱（TTM，截至 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入</th>
+<th>占比</th>
+<th>同比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入（存款 + 放贷的差价）</td>
+<td>712.57</td>
+<td>89.0%</td>
+<td>+108.04%</td>
+<td>增速全部来自合并，非内生</td>
+</tr>
+<tr>
+<td>├ 利息收入</td>
+<td>1,111.16</td>
+<td>—</td>
+<td>—</td>
+<td>贷款 1,013 ＋ 投资 98</td>
+</tr>
+<tr>
+<td>└ 利息支出</td>
+<td>−398.43</td>
+<td>—</td>
+<td>—</td>
+<td>存款 356 ＋ 借款 42</td>
+</tr>
+<tr>
+<td>非利息收入（信托/手续费/保险）</td>
+<td>88.24</td>
+<td>11.0%</td>
+<td>+255.43%</td>
+<td>其中信托 16.16</td>
+</tr>
+<tr>
+<td><strong>拨备前总收入</strong></td>
+<td><strong>800.81</strong></td>
+<td><strong>100%</strong></td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>－ 贷款损失拨备</td>
+<td>−41.32</td>
+<td>—</td>
+<td>—</td>
+<td>占贷款 0.23%</td>
+</tr>
+<tr>
+<td><strong>＝ 财报口径"营收"</strong></td>
+<td><strong>759.50</strong></td>
+<td>—</td>
+<td>+119.89%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须说明：所有同比增速都被合并污染了，没有参考价值。</strong> 内生增长要等 2027 年才能看到干净的数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>银行的障眼法跟制造业不一样，要看的是另外几样东西。</p>
+<p><strong>一、最大的一项：7331 万美元的合并一次性费用。</strong></p>
+<p>这是全篇最重要的一个数字。财报里两行数并排放着：</p>
+<ul>
+<li><strong>剔除非常项目前的税前利润：293.07 百万</strong></li>
+<li><strong>实际税前利润：219.76 百万</strong></li>
+</ul>
+<p>中间差了 <strong>7331 万</strong>，全是合并相关的一次性支出——员工遣散、系统整合、并掉的分行租约、投行和律师费、以及合并时按会计准则必须一次性计提的"收购贷款预期损失"。</p>
+<p><strong>这一笔是真一次性吗？</strong> 我的判断是：<strong>基本是</strong>。理由是它有明确的事件对应（一次已经完成的合并），而且这类费用在合并完成后 4–6 个季度内会归零。但要诚实地说清楚两点风险：一、<strong>只看 TTM 单期，我无法从数据本身证明它不会年年发生</strong>——如果 Beacon 变成一家连续并购的银行，那"一次性"就变成常态了；二、合并整合的费用<strong>经常超预算并且拖尾</strong>，2027 年大概率还有一小截。</p>
+<p><strong>剔掉它以后</strong>：税前 2.9307 亿，按 27.29% 的实际税率算，<strong>正常化净利润约 2.13 亿，对应每股 2.53 美元</strong>——而 GAAP 报出来的是 1.88 美元。<strong>报表利润被压低了整整 35%。</strong></p>
+<p><strong>二、无形资产摊销 2902 万，这一项相反，应该在看有形回报时加回去。</strong></p>
+<p>合并给资产负债表凭空加了 <strong>1.90 亿的"其他无形资产"</strong>（主要是核心存款无形资产——就是对方那批不付利息的活期存款客户值多少钱），这东西要在未来 7–10 年里摊销掉，每年吃掉几千万利润，但<strong>一分钱现金都不出</strong>。所以看 ROTCE（有形股本回报）时要把税后的这部分加回来。</p>
+<p><strong>三、拨备够不够？这是银行最容易藏事的地方。</strong></p>
+<ul>
+<li>贷款损失准备金余额 <strong>2.38 亿</strong>，占总贷款 <strong>1.34%</strong>。这个覆盖率对一家 CRE 重仓的区域银行来说<strong>属于合格但不宽裕</strong>——同业普遍在 1.1–1.5% 区间，Beacon 在中位偏上。</li>
+<li>TTM 计提拨备 4132 万，占贷款 <strong>0.23%</strong>，是一个"太平年景"的水平。</li>
+<li><strong>值得注意的一个细节</strong>：准备金余额从 FY2025 末的 2.53 亿降到 TTM 末的 2.38 亿，减了 1465 万；同期总贷款也从 180.30 亿降到 178.22 亿。<strong>贷款和准备金同步小幅收缩</strong>，这通常是合并后主动清理不想要的资产（Berkshire 和 Brookline 重叠的客户、不达标的 CRE），是健康的，但也说明<strong>新银行目前是在缩表而不是在扩张</strong>。</li>
+</ul>
+<p><strong>四、股权激励</strong>：从"薪酬与员工福利 1.877 亿"这一行里看不出单独的 SBC 金额，这几张财报页也不单列。对区域银行来说 SBC 通常只占薪酬的 3–6%（约 600–1100 万），<strong>占正常化净利润 3–5%，属于噪音级别，不影响结论</strong>。这里按 GAAP 已扣除处理，不加回。</p>
+<p><strong>五、回购与稀释 —— 这一项非常亮眼。</strong></p>
+<p><strong>TTM 股本实际减少了 5.17%</strong>（8900 万股 → 8436 万股），回购收益率 5.17%。这不是"抵消员工发股"的假回购——员工发股撑死 0.5%，剩下 4.7 个点是真金白银注销的。再加上 <strong>3.97% 的股息率</strong>，<strong>股东总回报率 9.21%</strong>。</p>
+<p>一家刚做完大合并、还在花钱整合的银行，<strong>同时</strong>能维持 4% 股息和 5% 回购，这说明两件事：资本很充裕，而且管理层认为自己的股票便宜（在 1.06 倍账面价值回购，等于每买一股就给剩下的股东增厚一点账面价值）。</p>
+<p><strong>六、利润和现金流的差</strong>：TTM 净利润 1.60 亿、经营现金流 2.33 亿、自由现金流 2.16 亿。银行的现金流量表意义有限（存贷款变动会把它搅得面目全非），但两个数量级一致、经营现金流高于净利润，说明<strong>没有"有利润没现金"的问题</strong>。</p>
+<hr />
+<h2>第三部分：银行口径估值</h2>
+<p>市值 26.95 亿，股价 $31.94，股本 8436 万股。</p>
+<p><strong>先把净资产算清楚：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万）</th>
+<th>每股</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股东权益（账面净资产）</td>
+<td>2,540</td>
+<td>$30.10</td>
+</tr>
+<tr>
+<td>－ 商誉</td>
+<td>−357.36</td>
+<td>−$4.24</td>
+</tr>
+<tr>
+<td>－ 其他无形资产</td>
+<td>−172.91</td>
+<td>−$2.05</td>
+</tr>
+<tr>
+<td><strong>＝ 有形普通股权益（TCE）</strong></td>
+<td><strong>2,010</strong></td>
+<td><strong>$23.82</strong></td>
+</tr>
+</tbody>
+</table></div>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>31.94 ÷ 30.10</td>
+<td><strong>1.06 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>31.94 ÷ 23.82</td>
+<td><strong>1.34 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE（GAAP，被合并费用压低）</td>
+<td>159.79 ÷ 1,898（平均净资产）</td>
+<td><strong>8.42%</strong></td>
+<td>ROE ÷ PB = <strong>$7.94</strong></td>
+</tr>
+<tr>
+<td><strong>ROE（剔除合并一次性费用）</strong></td>
+<td>约 213 ÷ 1,898</td>
+<td><strong>约 11.2%</strong></td>
+<td>11.2% ÷ 1.06 = <strong>$10.57</strong></td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形股本回报，正常化）</strong></td>
+<td>（213 ＋ 2902 万税后摊销）÷ 2,010</td>
+<td><strong>约 11.7%</strong></td>
+<td>11.7% ÷ 1.34 = <strong>$8.72</strong></td>
+</tr>
+<tr>
+<td>ROA（资产回报，GAAP）</td>
+<td>159.79 ÷ 22,251</td>
+<td><strong>0.94%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROA（正常化）</td>
+<td>213 ÷ 22,251</td>
+<td><strong>约 0.96%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>净息差 NIM（估算）</td>
+<td>712.57 ÷ 约 19,400 平均生息资产</td>
+<td><strong>约 3.67%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>成本收入比（效率比率）</td>
+<td>466.43 ÷ 800.81</td>
+<td><strong>58.2%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>贷存比</td>
+<td>17,822 ÷ 18,486</td>
+<td><strong>96.4%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>拨备覆盖（准备金/贷款）</td>
+<td>238.19 ÷ 17,822</td>
+<td><strong>1.34%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形股本/总资产（TCE/TA）</td>
+<td>2,010 ÷ 22,251</td>
+<td><strong>9.03%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>CET1 一级资本充足率（<strong>估算</strong>）</td>
+<td>2,010 ÷ 约 17,800 风险加权资产</td>
+<td><strong>约 11.3%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2,695 ÷ 106.3（TTM 159.79、FY25 90.27、FY24 68.72 的均值）</td>
+<td><strong>25.4 倍</strong></td>
+<td>$3.94</td>
+</tr>
+<tr>
+<td>GAAP 市盈率（仅供参考）</td>
+<td>2,695 ÷ 159.79</td>
+<td>16.95 倍</td>
+<td>$5.90</td>
+</tr>
+<tr>
+<td><strong>剔除合并费用后的市盈率</strong></td>
+<td>2,695 ÷ 约 213</td>
+<td><strong>12.6 倍</strong></td>
+<td><strong>$7.92</strong></td>
+</tr>
+<tr>
+<td>券商一致预期的远期市盈率</td>
+<td>—</td>
+<td>10.05 倍</td>
+<td>$9.95</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>CET1 那一行是估算</strong>：这几张财报页不提供风险加权资产和监管资本，我用"有形普通股权益 ÷ 总资产的 80%"做了近似。真实数字要看季报的资本充足率表。9.03% 的 TCE/TA 是实数，这个指标本身已经说明资本是够的（同业健康线在 7–8%）。</p>
+</blockquote>
+<p><strong>三年平均利润口径 25.4 倍这一行怎么读？</strong> 这一行在这里的意义跟别的公司相反——它 <strong>25.4 倍</strong>，比当期的 16.95 倍<strong>贵得多</strong>，原因不是"现在是利润高点"，而是<strong>过去三年的利润属于两家更小的银行，规模不可比</strong>。这是全表唯一一个应该主动忽略的数字，我把它列出来只是为了不藏数据。</p>
+<p><strong>你现在投 100 块进去：</strong></p>
+<ul>
+<li>按 GAAP 报表口径，这家银行一年替你赚 <strong>5.90 美元</strong>（ROE 8.42% ÷ PB 1.06 = 7.94，两个算法差在净资产是期末还是平均，取保守的 5.90）。</li>
+<li><strong>按剔除合并一次性费用后的真实盈利能力，一年替你赚 7.92 美元。</strong></li>
+<li>按有形净资产口径（更保守，因为商誉和无形资产在真出事的时候一文不值），<strong>一年 8.72 美元</strong>。</li>
+<li><strong>这里面有多少真回到你口袋？</strong> 股息 3.97% ＋ 回购 5.17% ＝ <strong>9.21%</strong>。<strong>投 100 块，一年有 9.21 块以现金和股份注销的形式还给你。</strong> 注意这个数字<strong>高于</strong>它正常化的盈利能力（7.92），说明<strong>它现在还的钱超过它赚的钱</strong>——多出来的部分来自合并后释放的富余资本。这不可持续，一两年后回购力度会降下来。</li>
+<li><strong>这个回报建立在杠杆之上，经济下行时会剧烈缩水。</strong> 这句话对银行必须说清楚：Beacon 用 20.1 亿的有形自有资本，撬动了 222.5 亿的总资产，<strong>杠杆 11 倍</strong>。这意味着<strong>只要 178 亿贷款里坏掉 9%，它的有形净资产就全部归零</strong>。2008–2010 年，重仓商业地产的美国区域银行普遍出现 5–8% 的累计坏账率，2023 年硅谷银行倒闭那一轮，几家 CRE 集中度高的区域行股价一个月跌了 60%。<strong>这不是理论风险。</strong></li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一个"看起来贵、算清楚以后是公道价"的合并整合故事，值得放进观察名单，但不是可以闭眼买的便宜货。</strong></p>
+<p>表面数字（16.95 倍市盈率、8.42% 的 ROE）很难看，因为它被 7331 万的合并一次性费用压着。把这笔钱剔掉，真相是：<strong>一家 222 亿资产的新英格兰商业银行，正常化 ROE 约 11.2%、ROTCE 约 11.7%、净息差约 3.67%、成本收入比 58%、有形资本 9.03%，交易在 1.06 倍账面价值、1.34 倍有形账面价值，同时给你 3.97% 股息和 5.17% 的股份注销。</strong> 这套数字在美国区域银行里属于<strong>中规中矩偏好的一档</strong>——不惊艳，但不便宜也不贵，就是公道。</p>
+<p><strong>它的上行来自一件明确的事</strong>：合并的成本协同还没释放完。两家重叠网点的银行合并，通常能砍掉 25–30% 的重复费用，目前 58.2% 的成本收入比里还含着整合期的臃肿，如果 2027 年降到 52%，税前利润能再多出五千万，ROTCE 就上到 13–14%——那时候 1.34 倍有形账面价值就是明显便宜了。券商给的 10.05 倍远期市盈率赌的就是这个。</p>
+<p><strong>它的下行也来自一件明确的事</strong>：<strong>商业地产</strong>。这是一家 CRE 重仓的新英格兰银行，杠杆 11 倍，拨备覆盖 1.34% 只算合格，贷存比 96.4% 已经偏紧（没有多少富余流动性）。波士顿和纽约州的写字楼与多户住宅估值只要再跌一轮，这家银行的净资产就要重新估价。而<strong>合并本身放大了这个风险</strong>：两家 CRE 重仓行合并成一家更大的 CRE 重仓行，敞口是叠加的，不是分散的。</p>
+<p><strong>买它等于下一个具体的注：合并协同会在 2027 年兑现，而新英格兰的商业地产不会在此之前崩掉。</strong> 前半句大概率对（协同是可计算的），后半句谁也不知道。给你 9.21% 的年度现金回报，作为等待期间的补偿，这个交易是公道的——<strong>公道，但不是白捡。</strong></p>
+</div></body></html>

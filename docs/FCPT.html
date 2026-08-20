@@ -1,0 +1,383 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FCPT · Four Corners Property Trust（四角地产信托）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FCPT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">14.9倍FFO收5.6%租金，但每股FFO三年只涨4%，增长全被增发吃掉</div><h1>FCPT · Four Corners Property Trust（四角地产信托）</h1>
+<p><strong>市值</strong> 27.7 亿美元 ｜ <strong>企业价值</strong> 39.9 亿美元 ｜ <strong>股价</strong> 约 $25.2 ｜ <strong>行业</strong> REIT－零售/餐饮净租赁 ｜ <strong>TTM 截止日</strong> 2026 年 6 月 30 日 ｜ <strong>员工</strong> 496 人</p>
+<blockquote>
+<p><strong>这是一家 REIT（房地产信托），下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong> 原因很直接：REIT 的净利润里被扣掉了一大笔"折旧"，而折旧假设房子在一年年变得不值钱——现实中一栋出租给 Olive Garden 的独栋餐厅楼，二十年后往往比今天还值钱。会计上的折旧对 REIT 是<strong>假费用</strong>，所以行业统一用"净利润 + 折旧"这个叫 FFO 的口径来看真实赚钱能力。FCPT 的 GAAP 市盈率 22.9 倍，FFO 口径只有 14.9 倍，差的就是这笔折旧。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>FCPT 是 2015 年从达登餐饮（Darden，就是开 Olive Garden 橄榄园意面和 LongHorn 牛排馆的那家）分拆出来的。分拆的逻辑是：达登手里握着几百栋自己开餐厅用的独栋楼，这些楼的价值被埋在一家餐饮公司的报表里没人给估值；把楼单独拿出来成立一家 REIT，再回租给达登，楼的价值就被单独定价了。所以 FCPT 生下来就带着 400 多家 Olive Garden 和 LongHorn 的房产，以及一份和达登签好的长期租约。</p>
+<p>十一年过去，它做的其实是两件事，而且大小极其悬殊。</p>
+<h3>生意一：收房租（Real Estate Operations，占 89.5%）</h3>
+<p>这是全部。</p>
+<p>具体怎么运作：FCPT 在全美买下<strong>独栋的、单一租户的商业楼</strong>——绝大多数是路边那种带自己停车场的连锁餐厅，比如一栋 Chili's（辣椒餐厅）、一栋 Outback（澳拜客牛排）、一栋 Olive Garden。近几年它把手伸进了非餐饮：Caliber Collision（全美最大的汽车钣金喷漆连锁）、Mavis Tire（轮胎店）、Aspen Dental（连锁牙科诊所）、Novant Health 的急诊快诊中心——就在上个月它刚花 1170 万美元买下五家 Novant 的 urgent care 门店。</p>
+<p>买下来之后签的是<strong>三净租赁（triple-net lease）</strong>。这四个字是理解这门生意的钥匙：房产税、保险费、维修费，<strong>全部由租客出</strong>。FCPT 作为房东,除了每月收一笔租金进账,什么都不用管——屋顶漏了是 Chili's 自己掏钱修，地税涨了是 Chili's 自己交。租约一签十几年，里面写死了每年租金自动涨 1.5% 左右。</p>
+<p>一笔典型的交易长这样：某家 Chili's 的加盟商手里有一栋自己盖的餐厅楼，值 300 万，他想把钱抽出来再开三家新店。FCPT 用 300 万把楼买下来（对应的年租金约 21 万，也就是 7% 的资本化率），同时和他签一份 15 年的三净租约，租金每年涨 1.5%，15 年后他有权再续两个五年。加盟商拿到 300 万现金去扩张，FCPT 拿到一份未来 15 年基本旱涝保收的现金流。</p>
+<p>为什么租客愿意接受？因为对一家连锁餐厅来说，把 300 万押在一栋楼上是最糟的资本配置——同样 300 万拿去开新店的回报率远高于 7%。所以卖楼租回来（sale-leaseback）对双方都是划算的。</p>
+<p>风险也就藏在这里：<strong>这门生意的安全性，等于租客的生意的安全性。</strong> 一栋专门盖成 Olive Garden 样子的独栋楼，如果 Olive Garden 走了，很难找到下一个租客，改造成本很高。FCPT 的对冲办法是分散——现在它的租金来自一百多个品牌，达登系的占比已经从分拆时的 100% 降到不到一半，非餐饮也在往上加。出租率常年 99% 以上，这一点上它做得确实干净。</p>
+<h3>生意二：亲自开几家牛排馆（Restaurant Operations，占 10.5%）</h3>
+<p>这件事看着突兀，其实是分拆时的历史遗留。当年为了满足 REIT 的税务架构和达登的品牌协议，FCPT 保留了圣安东尼奥地区的一小撮 LongHorn Steakhouse，装在一家叫 Kerrow 的子公司里<strong>由自己经营</strong>——真的雇服务员、买牛肉、开门做生意的那种。</p>
+<p>TTM 营收 3220 万美元。但这是<strong>餐厅的流水</strong>，不是房租：卖一份 30 美元的牛排，30 美元全额计入营收，然后扣掉牛肉、人工、水电。餐饮的净利润率通常个位数，所以这 10.5% 的营收对利润的贡献大概只有 2%–3%。它存在的意义更多是历史包袱而非战略。顺带一提，公司 496 名员工里绝大多数是这几家餐厅的服务员和厨师——一家纯粹的净租赁 REIT，管一千多栋楼只需要二三十个人。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>上年同期（估算）</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收房租</td>
+<td>274.2</td>
+<td>约 249</td>
+<td>+10%</td>
+<td>89.5%</td>
+<td>约 60%</td>
+<td>约 165</td>
+</tr>
+<tr>
+<td>自营牛排馆</td>
+<td>32.2</td>
+<td>约 31</td>
+<td>+3%</td>
+<td>10.5%</td>
+<td>约 5–8%</td>
+<td>约 2</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>0.03</td>
+<td>—</td>
+<td>—</td>
+<td>0.01%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>306.4</strong></td>
+<td><strong>279.5</strong></td>
+<td><strong>+9.6%</strong></td>
+<td>100%</td>
+<td>55.7%（整体）</td>
+<td><strong>170.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部利润。上表的分部利润率是<strong>估算</strong>：整体经营利润 1.707 亿对应 3.064 亿营收，而餐厅那块基本不赚钱，所以房租业务的实际利润率必然在 60% 上下。上年同期营收也是<strong>估算</strong>（用 FY2024 和 FY2025 半年插值得出）。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 916 万美元，占净利润 7.7%。占比不高，而且 FFO 口径下这笔钱是<strong>扣掉了</strong>的（NAREIT 的 FFO 定义不把 SBC 加回）。但下面算 AFFO 时公司自己的口径会加回来，我这里<strong>不加回</strong>——员工拿走的股份是真的稀释了你。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 83 万美元的资产减值，金额小到可以忽略。TTM 期内没有房产出售收益（2022、2023 年各有 814 万和 234 万的处置收益，那种收益是真一次性的，好在这期没有）。整体来说这家公司的报表<strong>没有需要剥的东西</strong>，干净得反常——这是净租赁 REIT 的天然属性，业务简单到没什么可粉饰的。</p>
+<p><strong>资本化的支出</strong>：没有。它买的是房子，房子本来就该进资产负债表。TTM 花在收购房产上的 2.667 亿全部在投资活动里，没有伪装成费用或藏在别处。</p>
+<p><strong>税</strong>：TTM 只交了 29.3 万美元的税，有效税率 0.25%。这不是避税，是 REIT 的法定待遇——只要把 90% 以上的应税收入分给股东，公司层面就免税。代价是这笔税挪到了你身上：REIT 分红大部分按普通收入征税，税率高于合格股息。</p>
+<p><strong>回购与稀释——这是全篇最要命的一项</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>−1.93</td>
+</tr>
+<tr>
+<td><strong>发行股票</strong></td>
+<td><strong>+202.38</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>9.16</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+9.24%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购 193 万，同期 SBC 916 万，回购/SBC = <strong>0.21</strong>——连抵消员工发股都做不到。而真正的大数字在另一边：<strong>这一年它增发了 2.02 亿美元的新股，股本膨胀了 9.24%。</strong></p>
+<p>这不是财务困难，是它的<strong>商业模式本身</strong>。净租赁 REIT 想长大只有一条路：不停买楼。TTM 买楼花了 2.667 亿，钱从哪来？</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>资金来源</th>
+<th>金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流留存（扣完分红）</td>
+<td>约 +36</td>
+</tr>
+<tr>
+<td><strong>增发新股</strong></td>
+<td><strong>+202</strong></td>
+</tr>
+<tr>
+<td>净新增借款</td>
+<td>+50</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>约 288</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>分红完剩下的钱只够买楼开销的 13%，剩下 87% 靠向市场要钱。这就叫"外部融资驱动的增长"，也就解释了下面这个刺眼的对比。</p>
+<p><strong>利润和现金流的差</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>118.58</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+64.24</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+4.17</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+9.16</td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>+0.83</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−2.89</td>
+</tr>
+<tr>
+<td>± 其他营运资金及杂项</td>
+<td>+0.70</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>194.79</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>现金流比利润高出 7620 万美元，差额几乎全是折旧——正是 REIT 需要用 FFO 而非 PE 的原因。资本开支为零（买楼算投资不算资本开支），所以自由现金流 = 经营现金流 = 1.948 亿。</p>
+<hr />
+<h2>第三部分：估值，多口径（REIT 版）</h2>
+<p>先把三个口径算清楚（TTM 加权平均股本约 1.078 亿股）：</p>
+<ul>
+<li><strong>FFO</strong> = 净利润 118.58 + 折旧摊销 64.24 = <strong>182.8 百万</strong>，每股 <strong>$1.70</strong></li>
+<li><strong>AFFO（我的口径，不加回 SBC）</strong> = 经营现金流剔除营运资金波动 197.6 − SBC 9.16 = <strong>约 188.5 百万</strong>，每股 <strong>$1.75</strong>（估算）</li>
+<li><strong>三年平均 FFO 每股</strong> = 2023 年 $1.63、2024 年 $1.66、2025 年 $1.69 → <strong>$1.66</strong></li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率（<strong>对 REIT 无意义，仅列出</strong>）</td>
+<td>市值 ÷ 净利润</td>
+<td>22.9 倍</td>
+<td>$4.4</td>
+</tr>
+<tr>
+<td><strong>P/FFO</strong></td>
+<td>股价 ÷ 每股 FFO</td>
+<td><strong>14.9 倍</strong></td>
+<td><strong>$6.7</strong></td>
+</tr>
+<tr>
+<td><strong>P/AFFO（我的口径）</strong></td>
+<td>股价 ÷ 每股 AFFO</td>
+<td><strong>14.4 倍</strong></td>
+<td><strong>$6.9</strong></td>
+</tr>
+<tr>
+<td>三年平均 FFO 口径</td>
+<td>股价 ÷ 三年平均每股 FFO</td>
+<td>15.2 倍</td>
+<td>$6.6</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td>（市值＋净负债）÷ EBITDA</td>
+<td>17.0 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>市值 ÷ 账面净资产</td>
+<td>1.71 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>当前股息率</strong></td>
+<td>每股分红 $1.42 ÷ 股价</td>
+<td>—</td>
+<td><strong>$5.6 现金到手</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：你现在投 100 块进去，公司一年替你赚 6.9 块。</strong> 这 6.9 块里，<strong>5.6 块以现金分红的形式真的打进你账户</strong>（派息率占 AFFO 的 81%），剩下 1.3 块留在公司里继续买楼。</p>
+<p>关键问题是：<strong>这 6.9 块未来会变大还是变小？</strong> 答案藏在下面这四个数字里：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>每股 FFO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2023</td>
+<td>$1.63</td>
+</tr>
+<tr>
+<td>2024</td>
+<td>$1.66</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>$1.69</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>$1.70</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年时间，每股 FFO 从 1.63 涨到 1.70，年化 +1.4%。</strong> 而同期营收从 2.51 亿涨到 3.06 亿，年化 <strong>+10%</strong>。</p>
+<p>差的那 8.6 个百分点，全部被增发的新股吃掉了。公司确实在长大——楼越买越多、租金越收越多、总利润越来越高——但每一次买楼都要发新股，摊到每一股上的收益几乎原地踏步。<strong>你作为股东，享受不到"公司变大"这件事，你只能享受到租约里写死的每年 1.5% 提租。</strong></p>
+<p>还有一个数字把这件事说得更透：<strong>ROIC 5.91%，而 WACC（加权平均资本成本）7.31%。</strong> 翻译过来是：它投出去的每一块钱，赚回 5.9 分，而这块钱的融资成本是 7.3 分。<strong>它每买一栋楼，理论上都在毁灭一点点价值。</strong> 之所以看起来还在增长，是因为增长的分母（股本）也在同步变大，把这件事掩盖了。</p>
+<p>杠杆方面：净负债 12.2 亿，Debt/EBITDA 5.34 倍，利息保障倍数 3.22 倍。对净租赁 REIT 来说这是行业中性水平，不危险，但也没有余量——利率再往上走，它的融资成本会直接压到那个已经为负的利差上。</p>
+<p><strong>所以这笔投资的真实预期回报 ≈ 5.6% 分红 + 1.4% 每股增长 ≈ 7%/年</strong>，前提是不出事。这就是全部。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一份可靠的 7% 收益凭证，不是一只成长股——它的"增长"全被增发吃光了，别为增长付钱。</strong></p>
+<p>买 FCPT 你买到的是：99% 出租率、一百多个租客分散、租约十几年、账面干净得几乎没有会计花招、每年 5.6% 的现金分红覆盖率 81%。这些都是真的，14.9 倍 FFO 在净租赁 REIT 里也算公道价（同行大致 13–16 倍）。</p>
+<p>但你必须看清它的天花板：每股 FFO 三年只涨了 4%，ROIC 5.91% 低于 7.31% 的资本成本，公司靠不停向市场要钱来"长大"，而长大的好处并没有分到每股上。<strong>这笔钱的对手盘不是别的股票，是长期国债和信用债</strong>——如果十年期国债给到 5%，这 7% 的吸引力就所剩无几；如果利率下行，它会同时享受估值抬升和融资成本下降，那是它的高光时刻。</p>
+<p>值这个价，适合要现金流的人拿着收租，不适合指望它翻倍的人。</p>
+</div></body></html>

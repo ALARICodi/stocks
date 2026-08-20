@@ -1,0 +1,478 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRND · Grindr Inc.（同志社交软件 Grindr）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GRND</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">一流生意配掠夺式治理：两年借钱回购9亿、现金只剩650万、178人分6268万股票</div><h1>GRND · Grindr Inc.（同志社交软件 Grindr）</h1>
+<p>市值 $27.1 亿 | 股价 $15.59（2026-08-19 收盘）| 行业：应用软件 | TTM 截至 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>两件，而且是同一个池子里的两种捞钱方式：一件是向用户收订阅费，一件是向广告主卖免费用户的注意力。</strong></p>
+<p>财报把营收拆成 Direct（直接）和 Indirect（间接）两块：</p>
+<ul>
+<li><strong>Direct（订阅和内购）：$4.192 亿，占 82.2%</strong></li>
+<li><strong>Indirect（广告）：$0.906 亿，占 17.8%</strong></li>
+</ul>
+<p>只有 <strong>178 个员工</strong>，做出 $5.098 亿营收——<strong>人均创收 286 万美元</strong>。这个数字在整个美股里都属于顶尖档位（对比一下：Kyndryl 7.2 万人，人均 20.8 万）。这不是我夸它，这是这门生意的物理属性：软件写一次，全世界的手机都能装。</p>
+<h3>生意一：Direct —— 卖"看得更多、聊得更方便"的权限</h3>
+<p>Grindr 是一个免费下载的 app。打开它，屏幕上是一格一格的头像方阵，按<strong>离你的物理距离由近到远排列</strong>——最上面那一排可能是同一栋楼里的人，往下滑是同一条街的、同一个区的。这个"按距离排"的设计是 2009 年 Grindr 发明的，后来 Tinder 抄了它，全世界的约会软件都抄了它。</p>
+<p>免费用户能看到的东西是被<strong>故意做窄</strong>的：只能看最近的一小部分人（比如前 100 个），发消息有条数限制，看不到谁点开过你的头像，滑几下就弹一次全屏广告。</p>
+<p><strong>它卖的就是把这些限制一条条解开。</strong></p>
+<ul>
+<li><strong>Grindr XTRA</strong>（基础付费档）：免广告、能看更多人、能收藏、能设置多组筛选条件（年龄、身高、体型、角色）。月费大约在二十美元的量级，按年买便宜不少。</li>
+<li><strong>Grindr Unlimited</strong>（顶配档）：在 XTRA 之上，加上"看谁看过我"、无限收藏、隐身浏览、消息已读回执。月费大约是 XTRA 的两倍。</li>
+<li><strong>单次内购（à-la-carte）</strong>：这是最近几年增长最快的部分，也是理解 Grindr 的关键。它把功能拆成一次性小额消费卖：</li>
+<li><strong>Boost</strong>：花几美元，让你的头像在接下来 60 分钟里被强行推到附近所有人的第一排。逻辑跟"直播打赏上榜"一模一样。</li>
+<li><strong>Roam</strong>：把你的定位挪到别的城市。出差前一周先"落地"迈阿密，把人先约好。</li>
+<li><strong>Right Now</strong>：一个"现在就想见面"的即时模式，进这个池子要付费。</li>
+</ul>
+<p><strong>为什么这门生意的利润率能到 30%：因为它卖的不是商品，是稀缺性，而这个稀缺性是它自己用代码造出来的。</strong> 让免费用户少看 200 个人，成本是零；解锁这 200 个人，收 20 美元。中间没有原材料、没有物流、没有库存。</p>
+<p><strong>为什么用户非付不可：网络效应 + 用户身份的特殊性。</strong> 同志约会这个场景里，Grindr 在绝大多数城市是<strong>唯一有足够密度的那个 app</strong>——你换到竞品去，打开发现方圆五公里只有三个人在线，这个 app 对你就是废的。而这个人群比一般人群更需要一个"安全的、专属的、不会被同事刷到"的地方。这两条叠起来，就是一个非常硬的锁定：<strong>用户不是不想走，是无处可走。</strong></p>
+<h3>生意二：Indirect —— 把不付钱的人卖给广告主</h3>
+<p>剩下 17.8% 是广告。不付费的用户在 app 里滑动时会看到横幅广告和插屏广告，Grindr 通过程序化广告平台（Google AdMob、各类广告交易所）把这些展示位卖掉，按千次展示计费。</p>
+<p>这块 TTM 收入 9062 万，<strong>FY2025 同比增长 36.9%，比订阅业务（+25.9%）跑得还快</strong>。原因有两个：一是用户基数在涨，二是 Grindr 这几年在把广告位从"随便挂个联盟广告"升级成"直接卖给品牌方"——同一个展示位，直客广告的单价能比联盟高好几倍。</p>
+<p><strong>这块生意的天花板由一件事决定：广告主愿不愿意把品牌挂在一个同志约会软件旁边。</strong> 很多消费品牌的投放政策里，"约会 / 成人相关"是被排除的类别。这是 Grindr 广告业务永远打不开的一块玻璃天花板。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>增速（FY2025 vs FY2024）</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct（订阅+内购）</td>
+<td>$4.192 亿</td>
+<td>82.2%</td>
+<td>+25.9%</td>
+<td>未披露</td>
+</tr>
+<tr>
+<td>Indirect（广告）</td>
+<td>$0.906 亿</td>
+<td>17.8%</td>
+<td>+36.9%</td>
+<td>未披露</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$5.098 亿</strong></td>
+<td>100%</td>
+<td><strong>TTM 同比 +32.4%</strong></td>
+<td><strong>30.9%（整体）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润。</strong> 从常识判断，订阅业务要给苹果和谷歌交 15%~30% 的应用商店抽成，广告业务不用交但要跟广告平台分成，两边的毛利率不会差太远，都在 70%~80% 之间。<strong>这一栏是我的推断，不是财报数字。</strong></p>
+<h3>有一个数字必须单独拎出来说</h3>
+<p><strong>销售成本（Cost of Revenue）$1.278 亿，占营收 25.1%。</strong></p>
+<p>这几乎精准对应<strong>苹果 App Store 和谷歌 Play 的抽成</strong>。翻译成人话：<strong>你在 Grindr 上花的每 100 块钱，有 25 块在到达 Grindr 之前就被苹果和谷歌拿走了。</strong> 这不是 Grindr 能谈判的——它是这个生意里最硬的一条成本，而且是被两家跟它毫无关系的公司单方面定价的。</p>
+<p>这也是为什么所有 app 公司都在想办法把用户引到网页端付款。对 Grindr 来说，这一条能省下来的话，经营利润率能从 30.9% 直接跳到 40% 以上。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：6268 万，这是全篇最刺眼的数字</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>金额</th>
+<th>SBC 占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 股权激励</td>
+<td><strong>$6268 万</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>占营收</td>
+<td>$5.098 亿</td>
+<td><strong>12.3%</strong></td>
+</tr>
+<tr>
+<td>占经营利润</td>
+<td>$1.577 亿</td>
+<td><strong>39.7%</strong></td>
+</tr>
+<tr>
+<td>占归属普通股净利润</td>
+<td>$8568 万</td>
+<td><strong>73.2%</strong></td>
+</tr>
+<tr>
+<td>178 个员工人均</td>
+<td>—</td>
+<td><strong>每人每年 35.2 万美元的股票</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>178 个人，一年分掉 6268 万美元的股票。</strong> 这不是"一点点员工福利"，这是这家公司利润结构里的一根主梁。</p>
+<p>而且它在飞速膨胀：FY2021 是 260 万，FY2022 是 2842 万，FY2023 是 1582 万，FY2024 是 3727 万，FY2025 是 5452 万，TTM 是 6268 万。<strong>五年涨了 24 倍，而营收只涨了 3.5 倍。</strong></p>
+<p><strong>我的处理：全额当成真实的现金成本扣掉，不加回。</strong> 理由是最朴素的：公司发出去的每一股，都是从你手里稀释出来的。公司自己在"调整后利润"里会把这 6268 万加回去，然后告诉你利润是 1.38 亿而不是 8568 万——<strong>那个数字是假的</strong>。</p>
+<h3>一次性项目：小到可以忽略，但有一项年年都有</h3>
+<p>TTM 的非经常项目：重组费用 -160 万、法律和解 -146 万、其他异常 -286 万，<strong>合计 -592 万，占税前利润的 4.8%</strong>。</p>
+<p>值得单独说一句的是<strong>法律和解</strong>：FY2021 -191 万、FY2022 -172 万、FY2023 -234 万、FY2024 -119 万、FY2025 -146 万、TTM -146 万。<strong>六年，年年有，金额都在 120~240 万之间。</strong> 这不是"一次性"，这是这门生意的固定经营成本——一个处理数千万人私密位置数据和私密照片的平台，被起诉是常态。<strong>我不加回它。</strong></p>
+<p>真正能算一次性的只有重组 160 万和其他异常 286 万，合计 446 万税前，<strong>税后约 342 万，是个零头</strong>。</p>
+<h3>资本化的支出：1110 万，规模不大但性质要看清</h3>
+<p>现金流量表里"购买无形资产 -1110 万"——这是软件开发费用资本化。同时"其他摊销"每年 400~500 万。<strong>资本化的额度（1110 万）是摊销额度（493 万）的 2.25 倍</strong>，说明这个池子在变大，也就是说<strong>利润表被少扣了一部分开发成本</strong>。</p>
+<p>但金额很小：1110 万相对 5.098 亿的营收，是 2.2%。<strong>这一项不影响结论。</strong></p>
+<p>注意一个细节：stockanalysis 报的"自由现金流 1.540 亿"<strong>没有扣掉这 1110 万</strong>（它只扣了 46 万的固定资产采购）。<strong>真实的自由现金流应该是 1.545 亿 − 46 万 − 1110 万 = 1.429 亿。</strong> 我下面用后者。</p>
+<h3>回购与稀释：数字好看，故事复杂</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>$3.875 亿</strong></td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>$6268 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>6.2 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+0.71%</strong></td>
+</tr>
+<tr>
+<td>股本变化（环比一季度）</td>
+<td><strong>−3.31%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>6.2 倍，按标准看这是"真回购"档位。</strong>但同比股本还是<strong>涨了 0.71%</strong>——因为 FY2025 同时发了 3.159 亿的新股。</p>
+<p>把两年连起来看才看得懂：<strong>FY2025 回购 5.243 亿 + TTM 回购 3.875 亿 = 两年花了 9.12 亿美元买回自己的股票</strong>，而这家公司现在总市值才 27.1 亿。<strong>它用两年时间，花掉了三分之一个自己。</strong></p>
+<p>钱从哪来？看现金流量表就清楚了：
+- <strong>借债</strong>：TTM 净增债务 +1.039 亿，FY2025 +1.064 亿
+- <strong>发优先股</strong>：TTM 支付优先股股息 991 万（FY2025 也是 991 万），说明 2025 年发过一大笔优先股
+- <strong>把账上的钱花光</strong>：现金从 FY2025 年末的 8705 万，掉到现在的 <strong>650 万</strong></p>
+<p><strong>这是一次杠杆回购（leveraged recap），不是"公司赚了很多钱花不完所以回馈股东"。</strong> 性质完全不同：前者是把资产负债表榨干去托股价，后者才是真正的股东回报。</p>
+<h3>利润和现金流：对得上，没有猫腻</h3>
+<p>净利润 9559 万，经营现金流 1.545 亿，差 5890 万。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含优先股前）</td>
+<td>95.6</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+0.3</td>
+<td>几乎为零——这是纯软件公司，没有厂房</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+4.9</td>
+<td>资本化软件的摊销</td>
+</tr>
+<tr>
+<td><strong>+ 股权激励</strong></td>
+<td><strong>+62.7</strong></td>
+<td><strong>不花现金，加回。这一项就占了差额的全部</strong></td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+0.7</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+5.7</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−12.5</td>
+<td>广告主欠的钱（广告业务增长快，回款慢）</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+1.1</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>+3.2</td>
+<td>用户预付的年费还没确认成收入——这是好事</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>−8.3</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>154.5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：这 5890 万的差额里，6270 万全部来自股权激励。</strong> 报表本身没有任何粉饰痕迹，现金是真的收进来了。<strong>但"经营现金流 1.545 亿"这个数字，是建立在"发股票不算成本"的假设上的。</strong> 扣掉股权激励，真实的、属于股东的现金生成能力是 <strong>1.545 − 0.627 = 9180 万</strong>。</p>
+<h3>资产负债表：已经被榨干了</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现金</td>
+<td><strong>$650 万</strong></td>
+</tr>
+<tr>
+<td>总负债</td>
+<td><strong>$3.896 亿</strong></td>
+</tr>
+<tr>
+<td>净负债</td>
+<td>$3.831 亿</td>
+</tr>
+<tr>
+<td><strong>账面净资产</strong></td>
+<td><strong>−$1174 万（负数）</strong></td>
+</tr>
+<tr>
+<td>债务 / EBITDA</td>
+<td>2.42 倍</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td>6.76 倍</td>
+</tr>
+<tr>
+<td>流动比率</td>
+<td>1.10</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一家年收入 5.1 亿的公司，账上只剩 650 万现金。</strong> 这是四天的营收。</p>
+<p>杠杆本身（债务/EBITDA 2.42 倍）不算高，利息覆盖 6.76 倍也还行——因为这门生意现金流又稳又猛。<strong>但它没有任何缓冲。</strong> 一旦出现一次需要现金的意外（一笔大额和解、一次苹果政策变动、一次订阅收入下滑），它只能借钱或者发股。</p>
+<h3>还有一件必须说的事：这是一家被两个人控制的公司</h3>
+<ul>
+<li><strong>内部人持股 74.53%</strong></li>
+<li><strong>流通股只有 4428 万股，占总股本 25%</strong></li>
+<li><strong>空头 869 万股，占流通盘的 19.64%</strong></li>
+</ul>
+<p>翻译过来：<strong>你作为小股东，在这家公司里没有任何话语权。</strong> 大股东想做杠杆回购、想发优先股、想以什么价格把自己的股票卖回给公司，你都只能接受。前面说的"两年花 9.12 亿回购"，很大一部分正是<strong>从大股东手里买回来的</strong>——这种交易里，价格是不是公允，小股东没有制衡手段。</p>
+<p>流通盘只有 25%，而空头占流通盘的 19.6%——<strong>这个股票的价格是在一个非常薄的池子里形成的，波动会很剧烈，而且跟公司基本面的关系比正常股票弱。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>基础数字：市值 <strong>$27.1 亿</strong>，企业价值 <strong>$30.9 亿</strong>，股价 <strong>$15.59</strong>，摊薄股数 <strong>1.86 亿股</strong>，归属普通股净利润 <strong>$8568 万</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>27.1 亿 ÷ 0.857 亿</td>
+<td><strong>31.6 倍</strong></td>
+<td><strong>$3.16</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>27.1 亿 ÷ 约 1.383 亿（加回 SBC 和一次性）</td>
+<td><strong>19.6 倍</strong></td>
+<td><strong>$5.10</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>27.1 亿 ÷ 0.902 亿（SBC 照扣，只加回真一次性 446 万）</td>
+<td><strong>30.0 倍</strong></td>
+<td><strong>$3.33</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>27.1 亿 ÷ 1.429 亿（已扣无形资产采购）</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>$5.27</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流再扣掉 SBC 和优先股息</strong></td>
+<td>27.1 亿 ÷ 0.703 亿</td>
+<td><strong>38.5 倍</strong></td>
+<td><strong>$2.60</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>30.9 亿 ÷ 1.577 亿</td>
+<td><strong>19.6 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均自由现金流口径</strong></td>
+<td>27.1 亿 ÷ 1.296 亿</td>
+<td><strong>20.9 倍</strong></td>
+<td><strong>$4.78</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均自由现金流 = TTM $1.540 亿、FY2025 $1.408 亿、FY2024 $0.940 亿的均值。<strong>这里我没有用三年平均净利润，因为 FY2024 的 −1.31 亿全部来自 SPAC 认股权证的公允价值重估，是纯账面数字、跟经营毫无关系</strong>——用它算三年平均会得出 200 多倍这种毫无意义的结果。用现金流做三年平均是这家公司唯一诚实的做法。）</p>
+<h3>这张表在说什么</h3>
+<p><strong>公司想让你看 19.6 倍，GAAP 说 31.6 倍，把股权激励也当成真钱扣掉之后是 38.5 倍。</strong></p>
+<p>这三个数字的差，就是 6268 万股权激励在不同口径下被藏起来或者揪出来的结果。</p>
+<ul>
+<li>19.6 倍（公司口径）：假装发股票不花钱</li>
+<li>31.6 倍（GAAP）：股票按发放时的公允价值扣了一次</li>
+<li><strong>38.5 倍（最严口径）：从真金白银的自由现金流里，把股权激励和优先股股息都实打实扣掉</strong></li>
+</ul>
+<p>第三个才是"你这个普通股股东，一年真正能分到多少现金"。</p>
+<h3>你投 100 块，一年赚多少</h3>
+<p><strong>最保守的真实口径：$2.60。</strong></p>
+<p>这个 $2.60 是这么来的：Grindr 一年收上来 1.429 亿真实自由现金流，然后：
+- <strong>6268 万被员工以股票的形式拿走</strong>（不花现金，但稀释你）
+- <strong>991 万被优先股股东拿走</strong>（这是现金，而且排在你前面）
+- <strong>剩下 7033 万，才轮到普通股股东</strong></p>
+<p>而这 7033 万里，<strong>你一分钱现金都拿不到</strong>——Grindr 不派股息（TTM 普通股股息 = 0）。它全部拿去还债和回购了。所以严格说，你今年的现金回报是 <strong>$0</strong>，那 $2.60 是记在账上的、指望未来变成股价的东西。</p>
+<h3>这个 $2.60 未来会变大还是变小</h3>
+<p><strong>会变大，而且大概率变得不慢。</strong> 这是我对这家公司最正面的判断，理由很硬：</p>
+<ol>
+<li><strong>营收还在以 32% 的速度增长</strong>，而且是加速的（FY2023 +33%、FY2024 +32.7%、FY2025 +27.6%、TTM +32.4%）——这在一个已经运营 17 年的成熟 app 上很少见。</li>
+<li><strong>增长的方式是提价和加功能，不是烧钱买用户</strong>。销售管理费用占营收 31.6%，没有失控。</li>
+<li><strong>经营利润率从 FY2022 的 11.2% 一路涨到 30.9%</strong>，还在往上走。这门生意的边际成本接近零，每多收一块钱订阅费，有七毛五直接落到经营利润里。</li>
+<li><strong>股本环比已经在真实缩减了（−3.31%）</strong>，杠杆回购虽然性质不好听，但确实在做每股价值的加法。</li>
+</ol>
+<p>会变小的风险：</p>
+<ol>
+<li><strong>6268 万的股权激励还在以每年 15%~20% 的速度膨胀</strong>，如果它继续跑赢营收增速，它会把利润增长吃掉一大半。</li>
+<li><strong>苹果谷歌那 25% 的抽成</strong>是悬在头上的，任何政策变化都直接砸在利润率上。</li>
+<li><strong>650 万现金 + 3.9 亿债 + 负的净资产</strong>，没有容错空间。</li>
+<li><strong>平台风险</strong>：这是一个高度依赖单一 app、单一人群、单一场景的生意。一次严重的数据泄露、一次苹果下架、一个真正做得好的竞品，都可能造成不可逆的伤害。而它没有第二条腿。</li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意本身是一流的——178 个人做 5 亿营收、31% 的经营利润率、32% 的增速、用户想走也走不掉的网络效应；但管理层已经把这家公司的资产负债表榨到只剩 650 万现金和负的净资产，用来给大股东做杠杆回购，而员工每年从中拿走 6268 万股票。价格上，公司想让你按 19.6 倍买，实际是 38.5 倍。</strong></p>
+<p>我对这家公司的态度是分裂的，而且这个分裂本身就是结论：</p>
+<p><strong>看生意，我打高分。</strong> 74.9% 的毛利率、30.9% 的经营利润率、32% 的增速、32% 的 ROIC，用户被网络效应锁死——这套组合在美股里是稀缺的。<strong>它不是一门"还行"的生意，它是一门很好的生意。</strong></p>
+<p><strong>看这家公司怎么对待小股东，我打低分。</strong>
+- 两年花 9.12 亿回购（大部分来自大股东手里），钱是借的和发优先股来的，把现金花到只剩 650 万
+- 内部人持股 74.5%，你没有任何话语权
+- 178 个人一年分 6268 万股票，五年涨 24 倍
+- 优先股股息 991 万，排在你前面</p>
+<p><strong>价格上没有便宜可占。</strong> 真实口径 38.5 倍，三年平均自由现金流口径 20.9 倍。就算你完全相信 32% 的增长能再跑三年，你付的也是一个"一切顺利"的价格——<strong>没有为任何一件可能出错的事留出折扣</strong>，而这家公司可能出错的事一点都不少。</p>
+<p><strong>结论：好生意，坏公司治理，公道偏贵的价格。放进观察名单，等一次因为增速放缓或者一次和解案带来的下跌，跌到 $11 以下（真实口径 27 倍左右）再认真看。现在的 $15.59 不值得追。</strong></p>
+</div></body></html>
