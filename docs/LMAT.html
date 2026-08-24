@@ -1,0 +1,378 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LMAT · 勒迈特血管（LeMaitre Vascular, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LMAT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账干净得罕见，专挑大厂看不上的小池塘提价十几年，但28.5倍已付完款</div><h1>LMAT · 勒迈特血管（LeMaitre Vascular, Inc.）</h1>
+<p><strong>市值</strong> 18.62 亿美元 ｜ <strong>股价</strong> 81.86 美元 ｜ <strong>行业</strong> 医疗技术（血管外科器械） ｜ <strong>TTM 截止</strong> 2026年6月30日 ｜ <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>LeMaitre 是一家做<strong>血管外科手术用小器械</strong>的公司，全公司只有 655 个人，一年卖 2.62 亿美元的东西，人均创收 40 万美元。</p>
+<p>要理解这家公司，先得理解它挑生意的规矩，因为这条规矩就是它全部的护城河：</p>
+<blockquote>
+<p><strong>只做「大到值得做、小到大厂不屑于做」的产品。</strong></p>
+</blockquote>
+<p>意思是：一个产品全球一年只卖 5000 万到 1.5 亿美元。这个规模对美敦力（年营收 320 亿）、雅培（400 亿）来说，就算全吃下来也只占它营收的 0.3%，派一支销售队伍去卖根本不划算，产品线经理连开会都不会提。但对一家 2.6 亿营收的公司来说，一个 8000 万的品类就是三分之一的生意。</p>
+<p>结果就是：<strong>LeMaitre 在自己那十几个小池塘里，往往是唯一的、或者只有一个对手的玩家。</strong> 没有价格战，它可以每年提价 3–5%，提了十几年。这就是 71.87% 毛利率的来源——不是因为技术多难，而是因为没人跟它抢。</p>
+<h3>生意一：血管移植片和补片（人工血管，约占营收 40%，为估算）</h3>
+<p><strong>这是什么</strong>：一个 68 岁的糖尿病患者，腿部动脉被斑块堵死，脚趾开始发黑（临床上叫「重度肢体缺血」，不处理就得截肢）。血管外科医生把堵住的那一段动脉切掉，需要接上一段替代品。用患者自己腿上的静脉最好，但糖尿病人的静脉往往已经不能用了——这时候就要用人工的。</p>
+<p>LeMaitre 卖两种：
+- <strong>XenoSure</strong>：牛的心包膜（就是包在牛心脏外面那层薄膜）经过戊二醛处理、去掉免疫原性，做成一片一片的生物补片。医生用它来修补切开后的血管壁。一片售价约 <strong>600–1200 美元</strong>。
+- <strong>Artegraft / ProCol</strong>：整根牛颈动脉处理成一根管子，直接当血管接上去。这个是 2020 年花 7200 万美元收购 Artegraft 拿到的，主要用在做血液透析的肾衰患者身上——透析要每周三次扎针，普通血管扛不住，需要在手臂里做一个耐扎的通路。一根售价约 <strong>1500–3000 美元</strong>。
+- <strong>RestoreFlow</strong>：人体捐献的同种异体血管，低温保存，用于感染场景（人工材料在感染环境里会二次感染，只能用生物材料）。这块 LeMaitre 自己在马萨诸塞州开了组织库来处理捐献血管。</p>
+<p><strong>为什么医生非买不可</strong>：这类产品是「手术台上没有它就做不下去」的东西，占整台手术费用（往往两三万美元）的 5% 不到，医院对价格极不敏感。而且医生用惯了一个牌子的补片，手感、缝合特性都熟了，换牌子要重新适应——切换成本高。</p>
+<h3>生意二：手术器械耗材（取栓导管、分流管、缝线，约占营收 40%，为估算）</h3>
+<p><strong>这是什么</strong>：一个人腿上突然剧痛发凉，是心房颤动打出来的血栓卡在腿动脉里了。医生要在几小时内把血栓取出来，用的就是 <strong>取栓导管（embolectomy catheter）</strong>——一根细管子，头上有个可充气的小球囊。医生把管子从血栓下方穿过去，把球囊充起来，然后往回拉，血栓就被球囊像通下水道一样刮出来了。一根售价约 <strong>150–400 美元</strong>，用完就扔。这个产品的原始设计是 1963 年 Fogarty 医生发明的，六十多年没有本质变化——<strong>这正是 LeMaitre 喜欢的那种生意：技术成熟到不会被颠覆，市场小到大厂不来抢。</strong></p>
+<p>同类还有：
+- <strong>颈动脉分流管（carotid shunt）</strong>：做颈动脉内膜剥脱手术时，要临时夹住颈动脉，但大脑不能断血超过几分钟，就插一根细管子让血临时绕过去。售价约 <strong>200–500 美元</strong>。
+- <strong>血管夹、缝线、瓣膜刀（valvulotome）</strong>：瓣膜刀是把患者自己的静脉当动脉用时，需要把静脉里那些防止血液倒流的单向瓣膜割掉，否则装反了血流不过去。这是个只有血管外科才用得着的极小众工具，全球一年可能就卖几千万美元。</p>
+<p>这一门生意的特点是：单价低、用量稳、复购率 100%（一次性耗材）、几乎不受经济周期影响——腿要烂了的人不会因为经济不好就不做手术。</p>
+<h3>生意三：新收购和地理扩张（约占营收 20%，为估算）</h3>
+<p>LeMaitre 的另一条主线是<strong>买</strong>。它平均每一两年收购一个小产品线（TTM 花了 196 万、FY2025 花了 190 万做小收购），把它塞进自己现成的销售渠道里——因为销售代表本来就在血管外科手术室里跑，多背一个产品几乎零边际成本。</p>
+<p>同时它在做地理扩张：把美国已经卖开的产品带到欧洲和亚洲。财报按地区披露的数字能看出这条线在起作用：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美洲（主要是美国）</td>
+<td>164.44</td>
+<td>+13.7%</td>
+<td>62.7%</td>
+<td>基本盘，靠提价和新品</td>
+</tr>
+<tr>
+<td>欧洲/中东/非洲</td>
+<td>79.75</td>
+<td>+18.6%</td>
+<td>30.4%</td>
+<td><strong>增长最快</strong>，直销团队铺开中</td>
+</tr>
+<tr>
+<td>亚太</td>
+<td>18.25</td>
+<td>+14.0%</td>
+<td>7.0%</td>
+<td>最小、最早期</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>262.43</strong></td>
+<td><strong>+11.85%</strong></td>
+<td><strong>100%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只按地理披露营收，不按产品线披露利润，上面各门生意的营收占比是按公开产品结构估算的，不是披露数字。</strong> 但全公司整体的经营利润率 27.63% 是准确的，且各产品线毛利率差异不大（都在 65–78% 之间）。</p>
+</blockquote>
+<p><strong>这张表里最值得注意的是欧洲 +18.6%</strong>——比美国还快。这说明它「把美国验证过的产品搬到欧洲」这条路还没走完，未来几年还有增长空间。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这是我在任务1里见过的最干净的报表之一。</strong> 逐项过：</p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>786 万美元</strong>，占净利润 <strong>12.0%</strong>。这个比例在医疗器械行业属于<strong>正常偏低</strong>（科技公司经常做到 40–60%）。我在这里按 GAAP 口径把它当成真实成本全额扣掉了，不加回。786 万对应约 655 名员工，人均 1.2 万美元的股票薪酬——是「给中层加点长期激励」的水平，不是「用股票代替工资」的水平。</p>
+<p><strong>一次性项目</strong>：基本没有。TTM 里只有一笔 <strong>54 万美元的投资出售损失</strong>，以及 <strong>81 万的坏账计提</strong>，都是小到不影响判断的数字。没有诉讼和解、没有重组、没有资产减值。FY2023 和 FY2022 各有 49 万和 195 万的资产减值，之后就没了。</p>
+<p><strong>资本化的支出</strong>：没有异常。资本开支 TTM <strong>915 万</strong>，占营收 3.5%，主要是生产设备和厂房——这是个真正的制造业公司，不存在把研发费用资本化来美化利润的空间（医疗器械的研发投入本来就必须费用化）。</p>
+<p><strong>回购与稀释——这是全篇唯一的扣分项</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>169 万美元</td>
+<td></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>786 万美元</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.22</strong></td>
+<td><strong>远低于 1</strong></td>
+</tr>
+<tr>
+<td>员工行权带来的股票发行</td>
+<td>+748 万美元</td>
+<td></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+3.65%</strong></td>
+<td><strong>在增，不在减</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>2050 万美元</td>
+<td>真金白银</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这个 0.22 的含义要说透</strong>：理想状态下，一家公司回购的金额至少要能覆盖它发给员工的股票（比值 ≥1），否则股东的份额就在被稀释。LeMaitre 的回购只覆盖了 22%，剩下 78% 的稀释是股东实打实承担的。<strong>结果就是股本一年增加了 3.65%</strong>——你持有的每股，在公司里的份额缩水了 3.5%。</p>
+<p>不过要公平地说：LeMaitre 把钱主要花在<strong>分红</strong>上了（2050 万，是回购的 12 倍），而不是留着不发。分红是把现金直接给你，回购是替你在市场上买股票，两者都是回馈——只是分红要交税、回购不用。<strong>它选了对小股东税负更不友好、但更透明的那条路。</strong> 这不是造假，只是资本配置偏好。</p>
+<p><strong>利润和现金流的差——这一项是加分的</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>65.67</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+10.50</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+0.89</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+7.86</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+0.81</td>
+</tr>
+<tr>
+<td>+ 投资出售损失</td>
+<td>+0.54</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+4.93</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−0.53</td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−5.70</strong></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−1.03</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>−0.97</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>82.98</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−9.15</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>73.83</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要看的是两件事</strong>：</p>
+<p>第一，<strong>自由现金流 7383 万 &gt; 净利润 6567 万</strong>，比值 1.12。一家公司的现金流比账面利润还多，说明利润是真的、而且转化成现金的效率高。这是好生意的硬指标。</p>
+<p>第二，<strong>存货增加了 570 万，应收账款只增加 53 万</strong>。营收增长 11.85%（约 2780 万），而应收账款几乎没动——意思是<strong>它卖的东西是真的收到钱了</strong>，没有靠放宽账期给渠道压货来做营收。存货增加是因为它在为欧洲扩张备货，属于健康的增长性占用。（对比一下我在同批分析的 A10 Networks：营收增 3400 万，应收账款增了 1960 万，那种才叫收入质量差。）</p>
+<p><strong>一个必须说明的资产负债表变化</strong>：2024 年 LeMaitre 借了 <strong>1.6927 亿美元</strong>的长期债——这对一家历史上几乎零负债的公司很反常。同时它手里现金和投资涨到 <strong>3.76 亿</strong>，其中 TTM 又拿 5736 万去买了证券。所以现在的状态是：<strong>负债 1.90 亿、现金 3.76 亿、净现金 1.86 亿</strong>，而且税前利润（8473 万）比经营利润（7252 万）<strong>高出 1221 万</strong>——说明这堆现金产生的利息收入超过了借款利息，借的钱是净赚的。</p>
+<p>这笔操作最合理的解释是<strong>为一次大型收购准备弹药</strong>（利率环境下锁定长期低成本资金）。截至 TTM，这笔钱还躺在账上没花。<strong>对股东来说，这意味着市值里有约 1.86 亿（占 10%）是纯现金，主业实际只值 16.76 亿。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>18.62亿 ÷ 6567万</td>
+<td><strong>28.53 倍</strong></td>
+<td><strong>3.50 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>LeMaitre <strong>不发布调整后利润</strong>，只用 GAAP</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>18.62亿 ÷（6567万 − 54万投资损失回加后 6608万，SBC 已按 GAAP 扣除不加回）</td>
+<td><strong>28.18 倍</strong></td>
+<td><strong>3.55 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>18.62亿 ÷ 7383万</td>
+<td><strong>25.36 倍</strong></td>
+<td><strong>3.94 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>16.76亿 ÷ 7252万</td>
+<td><strong>23.25 倍</strong></td>
+<td><strong>4.30 元</strong></td>
+</tr>
+<tr>
+<td><strong>主业口径（剔除利息收入）</strong></td>
+<td>EV 16.76亿 ÷ 主业税后利润 5620万</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>3.35 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>18.62亿 ÷ 三年均值 5581万（6567/5773/4404）</td>
+<td><strong>33.36 倍</strong></td>
+<td><strong>3.00 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>「剔除障眼法后」那一行几乎等于 GAAP</strong> ——这是这家公司最值得称赞的地方：它的账上没有可以剥的东西。</p>
+<p><strong>主业口径那一行需要解释</strong>：税前利润 8473 万里有 1221 万是账上 3.76 亿现金和证券产生的利息收入，跟卖血管补片这门生意无关。把它剔掉、按 22.5% 税率算，纯主业税后利润是 5620 万。用剔除了现金的企业价值（16.76 亿）去除，得到 <strong>29.8 倍</strong>——<strong>这才是「你为它的生意本身付了多少钱」的答案</strong>。</p>
+<p><strong>三年平均利润口径 33.36 倍是全表最高的</strong>，比当期 28.53 倍高出 17%。这说明什么？说明<strong>当前利润处在历史高点</strong>：FY2024 净利只有 4404 万，FY2025 涨到 5773 万，TTM 6567 万——两年涨了 49%。这个爬坡是真的（利润率从 20.03% 提到 25.02%，靠提价和规模效应），但用三年平均来看，你付的价格对应的是一段还没稳定下来的利润曲线。</p>
+<h3>说人话：你现在投 100 块进去，一年发生什么</h3>
+<p><strong>按最保守的真实口径（三年平均利润），公司一年替你赚 3.00 块。按当期真实口径，是 3.55 块。</strong></p>
+<p>这 3.55 块的去向：
+- <strong>约 1.10 块以现金股息发到你手里</strong>（TTM 分红 2050 万，占净利 31%）；
+- <strong>约 0.09 块用于回购</strong>（169 万，杯水车薪）；
+- <strong>剩下约 2.36 块留在公司</strong>，其中大部分正在变成账上那堆现金（3.76 亿），等着做收购；
+- <strong>然后你要倒扣约 0.12 块的稀释</strong>（股本年增 3.65%）。</p>
+<p><strong>这个 3.55 块未来会变大还是变小？大概率缓慢变大。</strong> 理由：</p>
+<ol>
+<li><strong>提价能力是真的</strong>。毛利率从 FY2021 的 65.65% 一路提到 TTM 的 71.87%，营业利润率从 23.59% 提到 27.63%。在一个营收只增长 12% 的公司里，利润增长 39%——差额全部来自利润率扩张。这种扩张不可能永远持续，但「每年提价 3–5% 而客户不跑」这条能力目前没有动摇迹象。</li>
+<li><strong>欧洲增长 18.6%，比美国快</strong>，扩张的跑道还没走完。</li>
+<li><strong>手里 1.86 亿净现金没花</strong>。如果买到一个好资产（它历史上收购的 Artegraft 现在贡献了显著营收），利润会跳一级。如果买贵了，就是价值毁灭。<strong>这是一个 50/50 的赌注，而且赌注不小（占市值 10%）。</strong></li>
+</ol>
+<p><strong>变小的风险在哪</strong>：ROIC 24.25% 这么高的回报率，在一个自由市场里迟早会招来竞争。目前保护它的是「市场太小，大厂懒得来」——但如果某个品类突然长大到 3 亿美元，美敦力就会出现。另一个风险是它已经把提价这张牌打了十几年，弹性总有尽头。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门真正的好生意，账干净得罕见，但 28.5 倍的价格已经把「它是好生意」这件事付完了款——公道，谈不上便宜。</strong></p>
+<p>具体说：<strong>生意本身我给高分</strong>——71.87% 毛利、27.63% 营业利润率、24.25% 的投入资本回报率、自由现金流比净利润还多、应收账款几乎不增、没有一次性项目可剥、没有 Non-GAAP 可吹。这些指标凑在一起的公司在美股不多。它的护城河（专挑大厂看不上的小池塘、然后每年提价）是真实且可持续的。</p>
+<p><strong>价格上我给不出便宜的判断</strong>：当期 28.5 倍、主业口径 29.8 倍、三年平均口径 33.4 倍。对一个营收年增 12%、利润率已经从 20% 提到 25%（继续提的空间在收窄）的公司，这个倍数是把未来三年的利润增长提前付了钱。你投 100 块，一年拿回 3.0–3.55 块，其中 1.1 块是现金股息——<strong>这是一个「拿得住但不激动」的回报</strong>。</p>
+<p>唯二的扣分项：<strong>回购只覆盖了 22% 的股权激励，股本一年增 3.65%</strong>，股东在被温和稀释；以及账上那 1.86 亿净现金<strong>悬着一个未知的收购</strong>，买好了是惊喜，买贵了是白扔。</p>
+<p><strong>给谁买</strong>：想在医疗器械里找一家不会爆雷、能安心持有十年的公司，这家合格。<strong>不给谁买</strong>：想在这个价位上赚估值扩张的钱——28.5 倍已经不低，而且历史上它在 FY2024 曾经到过 47 倍（那时候更离谱），也曾在过去一年从高位跌了 18.4%。<strong>便宜的入场机会在过去一年出现过，现在不是。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com（TTM 截至 2026-06-30，数据由 S&amp;P Global Market Intelligence 提供）。所有利润、现金流、比率均为 TTM 口径。产品线营收占比为估算，财报仅按地理分部披露。</em></p>
+</div></body></html>

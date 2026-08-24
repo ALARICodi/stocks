@@ -1,0 +1,538 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IDT · IDT Corporation（IDT 公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IDT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">融化的冰块养三个长大的孩子，剔现金12.5倍EV/EBIT，ROIC 68%</div><h1>IDT · IDT Corporation（IDT 公司）</h1>
+<p><strong>市值</strong> 17.0 亿美元 ｜ <strong>股价</strong> 约 68.4 美元 ｜ <strong>行业</strong> 通信 / 金融科技 ｜ <strong>总部</strong> 美国新泽西州纽瓦克
+<strong>TTM 口径截止</strong> 2026 年 4 月 30 日（公司财年 7 月底结束，TTM 为最近四个季度滚动）
+<strong>员工</strong> 1,925 人 ｜ <strong>过去 52 周股价</strong> +9.3%</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>IDT 是这份任务里少有的<strong>分部披露非常细</strong>的公司——它把营收拆成八条线。但这八条线其实分成两堆，理解这家公司只需要理解这一件事：</p>
+<blockquote>
+<p><strong>一堆在快速融化（占营收 68%），另一堆在快速生长（占营收 32%）。整个投资逻辑就是：融化的那堆毛利极低，生长的那堆毛利极高，所以公司营收几乎不动，利润却在五年里翻了一倍。</strong></p>
+</blockquote>
+<p>先看数字，再一条条讲：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上一财年</th>
+<th>变化</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>【生长的】</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>32.5%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>BOSS Money（跨境汇款）</td>
+<td>1.524 亿</td>
+<td>1.398 亿</td>
+<td>+9.0%</td>
+<td>11.9%</td>
+<td>~55%</td>
+</tr>
+<tr>
+<td>National Retail Solutions（便利店收银系统）</td>
+<td>1.487 亿</td>
+<td>1.288 亿</td>
+<td><strong>+15.5%</strong></td>
+<td>11.7%</td>
+<td>~85%</td>
+</tr>
+<tr>
+<td>net2phone（云电话）</td>
+<td>0.945 亿</td>
+<td>0.879 亿</td>
+<td>+7.5%</td>
+<td>7.4%</td>
+<td>~78%</td>
+</tr>
+<tr>
+<td>其他金融科技</td>
+<td>0.186 亿</td>
+<td>0.148 亿</td>
+<td>+25.6%</td>
+<td>1.5%</td>
+<td>~60%</td>
+</tr>
+<tr>
+<td><strong>【融化的】</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>67.5%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>IDT Digital Payments（国际手机充值）</td>
+<td>4.223 亿</td>
+<td>4.163 亿</td>
+<td>+1.4%</td>
+<td>33.1%</td>
+<td>~18%</td>
+</tr>
+<tr>
+<td>IDT Global（批发话务）</td>
+<td>2.313 亿</td>
+<td>2.096 亿</td>
+<td>+10.3%</td>
+<td>18.1%</td>
+<td>~8%</td>
+</tr>
+<tr>
+<td>BOSS Revolution Calling（国际长途）</td>
+<td>1.854 亿</td>
+<td>2.112 亿</td>
+<td><strong>−12.2%</strong></td>
+<td>14.5%</td>
+<td>~40%</td>
+</tr>
+<tr>
+<td>其他传统通信</td>
+<td>0.224 亿</td>
+<td>0.231 亿</td>
+<td>−3.2%</td>
+<td>1.8%</td>
+<td>~35%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>12.76 亿</strong></td>
+<td><strong>12.31 亿</strong></td>
+<td><strong>+4.2%</strong></td>
+<td>100%</td>
+<td>37.3%（实际）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只按分部披露到营收，各分部的毛利率和经营利润公司不单独披露，上表的毛利率是我按行业结构和总毛利倒推的估算，用来说明结构，不要当精确数字用。</strong> TTM 与"上一财年"的对比不是严格的同比（TTM 截至 4 月、上一财年截至 7 月，有 9 个月重叠），只作趋势参考。</p>
+</blockquote>
+<p>下面把重要的几门讲透。</p>
+<h3>NRS：给纽约街角小卖部装收银机，然后把数据卖给可口可乐</h3>
+<p><strong>这是这家公司最值钱的东西，也是唯一一门真正有护城河的生意。</strong></p>
+<p>场景是这样的。美国有大约十五万家独立经营的小型便利店——纽约人叫 bodega，就是那种开在街角、卖啤酒香烟彩票三明治、老板通常是移民、二十四小时营业的小店。这些店太小，用不起 NCR 或者 Toast 那种给连锁餐厅设计的系统；但它们又需要收银、需要刷卡、需要管香烟库存。</p>
+<p>NRS 卖给它们的是一整套：一台带客显屏的安卓收银终端、条码枪、钱箱、收据打印机，<strong>硬件几乎白送</strong>，然后按月收订阅费（大约每月 40 到 60 美元）。装上之后 NRS 从这家店身上赚三笔钱：</p>
+<ol>
+<li><strong>订阅费</strong>——每月几十美元，稳定，粘性极强。收银机是一家店的中枢，装上去两年，所有的商品库、价格、会员、供应商记录都在里面，换一套的迁移成本高到没人愿意折腾。</li>
+<li><strong>支付分润</strong>——顺便做这家店的信用卡收单，每笔交易抽一点点。一家小店一年刷卡三十万美元，抽 0.3% 就是 900 美元。</li>
+<li><strong>广告和数据</strong>——这一笔是最妙的。收银机上那块朝着顾客的屏幕，NRS 拿来卖广告：百威想在布朗克斯的小店结账时推一个买二送一，就在 NRS 的网络上投；同时 NRS 把全网数万家店的<strong>逐笔交易数据</strong>脱敏汇总卖给消费品公司——可口可乐愿意付钱知道自己的新口味在纽约小店的真实动销速度，因为这个数据尼尔森抓不到（尼尔森只覆盖大连锁）。<strong>这一笔的边际成本接近零。</strong></li>
+</ol>
+<p>三笔钱叠起来，NRS 的毛利率非常高（我估在 85% 上下），TTM 营收 1.487 亿、增长 15.5%，而且<strong>它的增长是复利型的</strong>：装机量增长 → 数据网络更完整 → 广告和数据卖得更贵 → 每台机器贡献的收入变高。五年前这条线只有 2475 万美元营收，现在是 1.487 亿，五年六倍。</p>
+<h3>BOSS Money：帮墨西哥来的建筑工人给家里寄钱</h3>
+<p>美国有大量拉美、非洲、南亚来的劳工，每个月要往老家寄钱。传统上走西联（Western Union），费率高、要去实体网点排队。BOSS Money 做的是同一件事，但更便宜、可以在手机 App 上完成。</p>
+<p><strong>收钱方式</strong>：每笔汇款抽手续费（几美元到十几美元），加上汇率价差（换汇时给的汇率比银行间市场差一点，这个差就是收入）。一笔 300 美元的汇款，IDT 大概赚 4 到 8 美元。</p>
+<p>这门生意的门槛在<strong>收款端的网络</strong>：钱汇到墨西哥的一个小镇，收款人要能真的取到现金，就得在当地有合作银行或者代理网点。IDT 因为做了二十多年国际电信，在这些国家早就有本地关系，这是它进这行的原始优势。</p>
+<p>TTM 营收 1.524 亿，增长 9%。缺点是<strong>竞争极其惨烈</strong>——Remitly、Wise、Zelle 以及各国本地钱包都在抢同一批人，价格战没停过。</p>
+<h3>net2phone：卖给中小企业的云电话</h3>
+<p>一家有 40 个员工的诊所或者律所，需要一套电话系统：总机、分机、语音信箱、通话录音、转接。过去要在办公室装一台交换机（PBX），现在直接买云服务，一个分机每月 20 到 30 美元。net2phone 卖的就是这个，主战场在美国和<strong>拉丁美洲</strong>（这是它的差异化，拉美的 RingCentral / 8x8 竞争没那么激烈）。</p>
+<p>TTM 营收 0.945 亿、增长 7.5%，几乎全是订阅制经常性收入，毛利率高（估 78%）。</p>
+<h3>IDT Digital Payments：帮你给尼日利亚的妈妈手机充话费</h3>
+<p>营收最大的一块（4.22 亿，占 33%），但<strong>毛利率最低的一块之一</strong>。</p>
+<p>在很多发展中国家，手机是预付费的，话费用完就停机。所以在纽约打工的尼日利亚人，会定期给老家的妈妈充话费。IDT 做的就是这门生意：它跟全球几百家电信运营商签好批发协议，然后通过便利店（正好是 NRS 那批店）和自己的 App，把这些话费额度零售出去。</p>
+<p><strong>问题在于它本质是转卖</strong>：从运营商手里以 92 块钱买到 100 块钱的话费，卖 100 块，赚 8 块。营收记的是 100 块的全额，所以这条线<strong>营收很大但基本不赚钱</strong>。它 TTM 增长只有 1.4%，是一条走平的线。</p>
+<h3>BOSS Revolution Calling：正在被 WhatsApp 杀死的现金牛</h3>
+<p>这是 IDT 的老本行：卖国际长途。移民买一张预付卡或者往 App 账户充值，然后打电话回老家，按分钟扣费。</p>
+<p><strong>这门生意的死法一清二楚</strong>：WhatsApp、微信、Messenger 的语音通话是免费的，只要老家那头有智能手机和网。所以这条线以每年 10% 到 20% 的速度往下掉——FY2021 是 4.552 亿，TTM 只剩 1.854 亿，五年砍掉了六成。</p>
+<p>但它还有价值，因为<strong>它的毛利率不低</strong>（估 40%），而且<strong>它没有增长开支</strong>——不需要销售、不需要研发、不需要资本开支，剩下的客户是那些还在用功能机、或者往网络覆盖不好的地区打电话的人。<strong>这条正在融化的冰块，融化的过程中一直在往公司账上滴现金，那些现金被拿去养 NRS 和 BOSS Money。这就是 IDT 这家公司的全部结构。</strong></p>
+<h3>IDT Global：批发话务，几乎不赚钱</h3>
+<p>把话务分钟数批发给其他运营商。营收 2.313 亿，毛利率估计只有个位数百分比。这条线的存在意义主要是维持运营商关系和网络规模，<strong>在利润表上几乎可以忽略</strong>。</p>
+<h3>结构的意义</h3>
+<p>把上面这张表按毛利重新排一次，就能看懂这家公司为什么营收几乎不动、利润却在涨：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占营收</th>
+<th>估算毛利</th>
+<th>占毛利</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生长的四条线</td>
+<td>4.14 亿</td>
+<td>32.5%</td>
+<td>约 2.9 亿</td>
+<td><strong>约 61%</strong></td>
+</tr>
+<tr>
+<td>融化的四条线</td>
+<td>8.62 亿</td>
+<td>67.5%</td>
+<td>约 1.9 亿</td>
+<td>约 39%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>32% 的营收贡献了 61% 的毛利。</strong> 这就是为什么五年里营收从 14.47 亿掉到 12.76 亿（−12%），毛利却从 2.93 亿涨到 4.76 亿（+63%），经营利润从 0.56 亿涨到 1.16 亿（<strong>+108%</strong>）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>IDT 是这份任务里<strong>报表最干净的公司之一</strong>，这一部分会很短。</p>
+<h3>股权激励（SBC）：914 万美元，占净利润 11%</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 股权激励</td>
+<td>914 万美元</td>
+</tr>
+<tr>
+<td>TTM 净利润</td>
+<td>8181 万美元</td>
+</tr>
+<tr>
+<td><strong>SBC ÷ 净利润</strong></td>
+<td><strong>11.2%</strong></td>
+</tr>
+<tr>
+<td>SBC ÷ 营收</td>
+<td>0.7%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>11% 是个很低的比例</strong>，科技公司里 40%–70% 才是常态。而且 GAAP 利润里已经扣掉了。要注意的是 SBC 从 FY2025 的 307 万跳到 TTM 的 914 万，涨了三倍——绝对金额还小，但方向要盯着。</p>
+<h3>一次性项目：TTM 没有</h3>
+<p>TTM 期内没有诉讼和解、没有重组、没有资产减值、没有并购、没有投资处置损益。这一项是空白，<strong>没有</strong>。</p>
+<p>历史上有过：FY2022 有一笔 1896 万美元的投资处置损失，FY2021 有一笔 3647 万美元的其他非现金调整（那年净利润 9648 万，明显含有非经常性收益，所以 FY2021 那个数字不能用来做趋势对比）。TTM 干净。</p>
+<h3>资本化的支出：没有虚增</h3>
+<p>TTM 资本开支 2233 万美元，占营收 1.7%，跟过去五年（1677 万到 2196 万）在同一水平，<strong>没有突然增加</strong>。公司没有把研发或者内容制作费大规模资本化——"其他摊销"稳定在每年 1320 万，是老资产的正常摊销。</p>
+<h3>回购与稀释：这一项做得很好</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>1953 万美元</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td>914 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.14</strong></td>
+</tr>
+<tr>
+<td>派发股息</td>
+<td>628 万美元</td>
+</tr>
+<tr>
+<td>股本同比变化</td>
+<td>−0.97%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购是 SBC 的 2.14 倍。</strong> 按标准来说，接近 1 是"回购只在抵消员工发股"，大于 3 才是"真回购"——2.14 落在中间，意思是<strong>回购里大约一半在对冲稀释、一半是真正在替股东减少股份</strong>。股本一年净减 0.97%，配合 628 万美元的股息，一年通过回购加分红还给股东约 2580 万美元，相当于市值的 1.5%。力度不大，但方向是对的。</p>
+<p>内部人持股 17.7%（创始人 Howard Jonas 家族控股），跟股东利益一致。</p>
+<h3>利润和现金流的差：这是本篇唯一需要警惕的地方</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>81.81</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+8.16</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+13.20</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+9.14</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+6.09</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+6.00</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−1.32</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+12.30</td>
+</tr>
+<tr>
+<td>− 递延收入减少</td>
+<td>−1.98</td>
+</tr>
+<tr>
+<td><strong>− 其他净经营资产变动</strong></td>
+<td><strong>−55.73</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>77.67</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−22.33</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>55.33</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有一个 5573 万美元的洞，占净利润的 68%，必须搞清楚。</strong></p>
+<p>这一项在 FY2025 是 <strong>+1068 万</strong>、FY2024 是 <strong>+1092 万</strong>，都是正的；TTM 突然变成 <strong>−5573 万</strong>。结果就是：<strong>经营现金流 7767 万反而低于净利润 8181 万</strong>，自由现金流从 FY2025 的 1.063 亿掉到 5533 万，腰斩。</p>
+<p>这 5573 万最可能的去向是<strong>汇款业务的预付资金</strong>。BOSS Money 要在墨西哥、菲律宾、尼日利亚这些国家的合作银行账户里提前放一笔钱，客户在纽约按下"发送"、收款人当场在墨西哥取到现金，靠的就是这笔预置资金。汇款量涨 9%，预置资金池就得跟着变大。同理，NRS 做的商户垫资（给小店提供小额营运资金贷款）也会占用现金。</p>
+<p><strong>但这四张财报页拆不出这 5573 万的具体构成，我不能确定它是「增长带来的、以后每年都要投入的结构性占款」，还是「一次性的结算时点错配、下季度会转回来」。</strong> 这两种情况的含义完全不同：</p>
+<ul>
+<li>如果是结算时点问题 → 正常化后自由现金流应该在 1.1 亿左右，估值一下子变得很不一样；</li>
+<li>如果是增长必需的沉淀资金 → 那 BOSS Money 每增长一块钱营收就要占用一部分现金，这是真实的资本成本，报表上的 5533 万自由现金流才是对的。</li>
+</ul>
+<p><strong>这是买这只股票之前必须去 10-Q 里查清楚的一件事，也是全篇最重要的未解问题。</strong> 下面第三部分我会把两种情况都列出来。</p>
+<h3>资产负债表：几乎完美</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现金及投资</td>
+<td>2.514 亿美元</td>
+</tr>
+<tr>
+<td>总债务</td>
+<td><strong>138 万美元</strong>（基本为零）</td>
+</tr>
+<tr>
+<td>净现金</td>
+<td>2.500 亿美元（每股 10.05 美元，占股价 14.7%）</td>
+</tr>
+<tr>
+<td>债务 / 股东权益</td>
+<td>0.00</td>
+</tr>
+<tr>
+<td>流动比率</td>
+<td>1.92</td>
+</tr>
+<tr>
+<td><strong>投入资本回报率 ROIC</strong></td>
+<td><strong>68.24%</strong></td>
+</tr>
+<tr>
+<td>净资产收益率 ROE</td>
+<td>25.21%</td>
+</tr>
+<tr>
+<td>加权平均资本成本 WACC</td>
+<td>7.66%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>ROIC 68% 对 WACC 7.7%</strong>——每投进去一块钱，一年赚回六毛八，而这一块钱的成本只有七分七。这是这份任务里能见到的最高的一档资本效率。原因不复杂：这门生意几乎不需要投入资本，收银机成本低、汇款和云电话都是轻资产、传统通信业务的网络早就折旧完了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 17.0 亿美元，<strong>企业价值只有 14.5 亿美元</strong>——因为账上有 2.50 亿净现金，占市值的 14.7%。这个差额在下面的表里很重要。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>17.0 亿 ÷ 0.818 亿</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>4.81 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司主推分部调整后 EBITDA，不发布调整后每股收益</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，SBC 已在 GAAP 中扣除，无需调整</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>4.81 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表原值）</td>
+<td>17.0 亿 ÷ 0.553 亿</td>
+<td><strong>30.7 倍</strong></td>
+<td><strong>3.26 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（若那 5573 万营运资金占款是一次性的）</td>
+<td>17.0 亿 ÷ 1.110 亿</td>
+<td><strong>15.3 倍</strong></td>
+<td><strong>6.53 元</strong></td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td>14.5 亿 ÷ 1.156 亿</td>
+<td><strong>12.5 倍</strong></td>
+<td><strong>8.00 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>17.0 亿 ÷（0.818+0.761+0.645）/3 = ÷ 0.741 亿</td>
+<td><strong>22.9 倍</strong></td>
+<td><strong>4.36 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先说三年平均那一行</strong>：22.9 倍 vs 当期 20.8 倍，差距只有 10%，说明<strong>当前利润不是异常高点</strong>。更准确地说，这家公司的利润是<strong>逐年爬升</strong>的（6445 万 → 7609 万 → 8181 万），三年平均之所以偏高，是因为过去三年的利润比现在低——这跟大多数周期股正好相反，是加分项。</p>
+<p><strong>再说企业价值口径的 12.5 倍</strong>：这是全表最能反映真实定价的数字。20.8 倍的市盈率里，有 14.7% 的市值是账上不干活的现金；把现金剔掉，你实际是在用 14.5 亿美元买一门一年赚 1.16 亿经营利润的生意——<strong>12.5 倍</strong>。对一门 ROIC 68%、零负债、利润五年翻倍的生意来说，12.5 倍并不贵。</p>
+<p><strong>最后说自由现金流那两行的巨大差异</strong>：30.7 倍还是 15.3 倍，完全取决于上面那笔 5573 万营运资金占款是不是一次性的。<strong>这是本篇最大的不确定性</strong>，也是我建议在下单之前先去查 10-Q 的原因。</p>
+<h3>你投 100 块，一年能拿回多少</h3>
+<p><strong>按最保守的真实口径（20.8 倍 GAAP 市盈率），公司一年替你赚 4.81 元。</strong></p>
+<p>但这个 4.81 元低估了实际情况，因为它没有考虑账上那 14.7 元的净现金。<strong>把现金剔掉重算：你实际付出 85.3 元买这门生意，它一年赚 4.81 元，实际收益率是 5.64%；如果用不受税率和利息影响的经营利润口径看（EV/EBIT 12.5 倍），是 8.00 元。</strong></p>
+<p>这笔钱里，回到你口袋的部分：<strong>股息 628 万 + 回购 1953 万 = 2581 万美元，相当于每 100 块市值还你 1.52 元。</strong> 剩下的 3.3 元留在公司里，去了三个地方——账上现金继续堆（净现金五年从 1.56 亿涨到 2.50 亿）、资本开支 2233 万（主要是 NRS 的收银终端和 net2phone 的平台）、以及被那笔 5573 万营运资金占款吃掉。</p>
+<p><strong>这个 4.81 元未来是变大还是变小？我判断会继续变大，理由是结构性的：</strong></p>
+<p>这不是一个"猜"的问题，而是一道算术题。融化的那一堆（占营收 68%、占毛利 39%）里，真正在快速掉的只有 BOSS Revolution Calling 一条线，一年掉大约 2500 万营收、对应大约 1000 万毛利。而生长的那一堆一年增加大约 4700 万营收、对应大约 3200 万毛利。<strong>只要这个差额保持正数，公司的毛利和利润就会继续往上走，即使总营收原地踏步。</strong> 过去五年就是这么走过来的：营收 −12%、毛利 +63%、经营利润 +108%。</p>
+<p><strong>风险有两条，都是真的：</strong></p>
+<ol>
+<li><strong>BOSS Money 所在的汇款行业是价格战修罗场。</strong> Remitly、Wise 以及各国本地钱包都在把费率往零打。IDT 的这条线目前还在 +9% 增长，但费率下行是长期趋势。</li>
+<li><strong>NRS 的天花板在哪不清楚。</strong> 美国独立便利店大约十五万家，NRS 已经装了相当一部分。装机饱和之后，增长要靠单店收入（广告和数据）继续提升——这条路可行，但比装新机器难。</li>
+</ol>
+<p>另外一条要看的是<strong>股价位置</strong>：现价约 68 美元，50 日均线 61.89、200 日均线 53.52，过去一年涨 9.3%，RSI 65.75。<strong>它正处在一段上涨趋势的中后段，不是在打折。</strong> 做空比例只有 2.06%，市场对它没有争议。</p>
+<p>顺便提一句这家公司的历史习惯：控股的 Jonas 家族有<strong>反复分拆子公司给股东</strong>的传统（Genie Energy、Rafael Holdings、Zedge、IDW Media 都是从 IDT 分出去的）。如果哪天他们决定把 NRS 单独分拆上市，那块资产按同行 SaaS 倍数定价，可能比现在整个 IDT 的市值还大——这是一个不能计入估值、但值得知道的可选项。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家「用一块正在融化的冰块养三个正在长大的孩子」的公司，而且养得相当成功：五年营收掉了 12%，毛利涨了 63%，经营利润翻了一倍；账上 2.5 亿净现金、几乎零负债、ROIC 68%、股权激励只占净利润 11%、回购是 SBC 的两倍多、TTM 报表里连一笔一次性项目都没有——干净得不像话。剔掉现金后 12.5 倍 EV/EBIT 买这样一门生意，不便宜也不贵，是公道价；真正需要在下单前搞清楚的是那笔让自由现金流腰斩的 5573 万营运资金占款到底是结算时点还是增长必需的沉淀资金，这一个数字决定了自由现金流口径是 15 倍还是 31 倍。股价正在上涨趋势的中后段，不着急，但这家公司值得放进名单里持续盯着。</strong></p>
+</div></body></html>

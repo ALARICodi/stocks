@@ -1,0 +1,548 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GLOB · Globant（格罗班特）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GLOB</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">6.9倍真实自由现金流，但AI正在攻击它按人头计费的乘数</div><h1>GLOB · Globant（格罗班特）</h1>
+<p><strong>市值</strong> 17.2 亿美元 ｜ <strong>股价</strong> 约 39.8 美元 ｜ <strong>行业</strong> 科技服务 · IT 咨询与数字工程 ｜ <strong>注册地</strong> 卢森堡（发家于阿根廷布宜诺斯艾利斯）
+<strong>TTM 口径截止</strong> 2026 年 6 月 30 日（利润表）／2026 年 3 月 31 日（现金流量表，公司现金流披露有一期滞后）
+<strong>员工</strong> 27,411 人 ｜ <strong>过去 52 周股价</strong> −41.4%</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>Globant 财报上只有一门生意：把两万七千名工程师按人头、按月租给大公司写软件。</strong> 它不按业务分部披露利润，只按客户所在地区拆营收。所以这一部分要讲的不是"几门生意"，而是<strong>这一门生意到底是怎么运转、怎么收钱的</strong>——这比地区拆分有用得多。</p>
+<h3>这是一家什么公司</h3>
+<p>2003 年四个阿根廷人在布宜诺斯艾利斯创立，最初就是接欧美公司的软件外包活。二十多年后它有 27,411 名员工（公司内部叫 "Globers"），主要分布在阿根廷、乌拉圭、哥伦比亚、墨西哥、印度、罗马尼亚，服务的客户在美国和西欧。</p>
+<p><strong>这门生意的经济学本质，用一个数字就能说透：营收 ÷ 员工数 = 每人每年 89,421 美元。</strong> 一个美国本土的软件工程师年薪就要 15 万美元起，而 Globant 一个工程师一整年<strong>创造的营收</strong>才 8.9 万。这意味着两件事：第一，它的工程师主要在拉美和东欧，成本大概是美国的三分之一；第二，客户付钱给 Globant 的唯一根本理由是<strong>同样的活，便宜</strong>。</p>
+<h3>它到底怎么收钱：Agile Pod（敏捷小队）</h3>
+<p>Globant 卖的不是软件产品，也不是按项目包干的合同，而是<strong>一支随时可以插进客户团队的小队</strong>。</p>
+<p>具体的样子是这样的。假设美国一家大型零售商决定重做它的手机 App——原来的 App 是十年前外包做的，加载慢、支付流程掉单率高，但他们自己的 IT 部门只有 20 个人，全在维护老系统，抽不出人。他们找到 Globant，Globant 派过来一个 <strong>Pod</strong>：8 个人，1 名技术负责人、4 名工程师、1 名 UX 设计师、1 名 QA、1 名 Scrum Master。这 8 个人坐在蒙得维的亚（乌拉圭）的办公室，跟客户的时区只差一到两小时，每天开站会，用客户的 Jira、客户的代码仓库，实际上就是客户团队的一部分，只是发工资的人是 Globant。</p>
+<p><strong>收钱方式：按人头按小时。</strong> 混合费率大概每小时 45–60 美元，一个 8 人 Pod 一个月约 6 万到 8 万美元，一年 80 万到 95 万美元。大客户往往不止一个 Pod——迪士尼、桑坦德银行、可口可乐、Electronic Arts、谷歌、西班牙足球甲级联赛这类客户，同时跑十几个甚至几十个 Pod，一年付 3000 万到 1 亿美元。</p>
+<p><strong>这个计费方式就是这门生意全部的机会和全部的脆弱所在</strong>：收入 = 人数 × 小时数 × 费率。想多赚钱只有三条路——多招人、让人干更多小时、涨价。前两条要花钱（招人有成本、干太多会离职），第三条要有议价权（客户随时可以换成印度的 Infosys、TCS 或者波兰的公司）。<strong>这是一门没有杠杆的生意：营收翻倍，人头也得差不多翻倍。</strong></p>
+<h3>上面那层包装：Studios 和"AI 平台"</h3>
+<p>Globant 在纯粹的人力外包之上做了两层包装，这是它比印度同行卖得贵一点的原因：</p>
+<p><strong>Studios（工作室）</strong>——把工程师按垂直能力分组："游戏 Studio"、"金融科技 Studio"、"体育娱乐 Studio"、"数据与 AI Studio"、"网络安全 Studio"等等。客户找上门时，卖给他的不是"8 个会写代码的人"，而是"做过 FIFA 和 LaLiga 数字化的体育 Studio"。这让它能在提案环节报比通用外包更高的费率，但<strong>底层交付的仍然是按小时计费的人</strong>。</p>
+<p><strong>订阅式 AI 平台</strong>——公司近年主推 Globant Enterprise AI 这类"平台"产品，按订阅收费而不是按人头。这是公司叙事里最重要的一块（也是它反复告诉投资人"我们不会被 AI 取代"的凭据），但<strong>从财报上看不出这块有多大</strong>：如果订阅收入真的成了规模，毛利率应该往上走，而实际毛利率从 FY2023 的 36.1% 一路降到 TTM 的 34.5%。所以到目前为止，这仍然是一家<strong>卖人时的公司</strong>。</p>
+<h3>钱从哪些地方来（按地区）</h3>
+<p>公司只披露到这一层：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>FY2025 营收</th>
+<th>上年</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>北美（不含美国）</td>
+<td>6.267 亿</td>
+<td>6.201 亿</td>
+<td>+1.1%</td>
+<td>25.5%</td>
+</tr>
+<tr>
+<td>美国</td>
+<td>7.067 亿</td>
+<td>7.279 亿</td>
+<td>−2.9%</td>
+<td>28.8%</td>
+</tr>
+<tr>
+<td>拉丁美洲</td>
+<td>4.925 亿</td>
+<td>5.313 亿</td>
+<td>−7.3%</td>
+<td>20.1%</td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>4.694 亿</td>
+<td>4.191 亿</td>
+<td>+12.0%</td>
+<td>19.1%</td>
+</tr>
+<tr>
+<td>新兴市场</td>
+<td>1.595 亿</td>
+<td>1.173 亿</td>
+<td>+36.0%</td>
+<td>6.5%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>24.55 亿</strong></td>
+<td><strong>24.16 亿</strong></td>
+<td><strong>+1.6%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到营收，各地区的利润没有拆分。</strong> 从结构上能看出来的是：最大的两块市场（美国、拉美）都在缩，撑住数字的是欧洲和新兴市场——而这两块的费率通常比美国低。</p>
+<h3>增长曲线塌掉的过程</h3>
+<p>这是全篇最该看的一组数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（亿美元）</td>
+<td>12.97</td>
+<td>17.80</td>
+<td>20.96</td>
+<td>24.16</td>
+<td>24.55</td>
+<td>24.51</td>
+</tr>
+<tr>
+<td>增速</td>
+<td>+59.3%</td>
+<td>+37.3%</td>
+<td>+17.7%</td>
+<td>+15.3%</td>
+<td><strong>+1.6%</strong></td>
+<td><strong>−1.3%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年时间，从 59% 的增长掉到负增长。</strong> 股价过去 52 周跌 41%，200 日均线 48.68、50 日均线 34.12——市场是在这一年里把这家公司重新定价的。21.8% 的流通股被做空。</p>
+<p>原因有两层。近的一层是<strong>客户砍预算</strong>：企业的"数字化转型"项目属于可选支出，利率高、经济不确定的时候第一个被砍。远的一层更要命——<strong>AI 写代码工具正在压缩"按小时计费"这件事本身</strong>。如果一个工程师用 AI 工具能干原来两个人的活，客户就会要求 Pod 从 8 个人减到 5 个人，而 Globant 的收入是按人头算的。这就是这只股票现在这个估值的全部理由。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：7568 万美元，吃掉净利润的 67%</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 股权激励</td>
+<td>7568 万美元（年度口径，公司只按年披露）</td>
+</tr>
+<tr>
+<td>TTM 净利润</td>
+<td>1.134 亿美元</td>
+</tr>
+<tr>
+<td><strong>SBC ÷ 净利润</strong></td>
+<td><strong>66.7%</strong></td>
+</tr>
+<tr>
+<td>SBC ÷ 营收</td>
+<td>3.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>好消息是 GAAP 利润里已经把这 7568 万扣掉了。</strong> 我们上面看到的 1.134 亿净利润、15.2 倍市盈率，都是扣完 SBC 之后的数字，这是干净的。</p>
+<p><strong>坏消息是公司自己不这么算。</strong> Globant 的"调整后每股收益"要把 SBC 加回去，还要把收购无形资产的摊销加回去。这就是为什么你在行情软件上看到<strong>滚动市盈率 15.35 倍、而前瞻市盈率只有 6.57 倍</strong>——中间那一倍多的差距不是因为明年利润要翻倍，是因为分母换成了一个"假装没发过股票、假装收购花的钱不算成本"的利润。</p>
+<p>只把 SBC 一项加回去（税后约 5670 万），净利润就从 1.134 亿变成 1.701 亿，市盈率从 15.2 倍变成 10.1 倍。<strong>看到 6.57 倍就觉得便宜的人，买的是这个算法，不是这家公司。</strong></p>
+<h3>一次性项目：有一块 1913 万美元的投资处置收益要剔掉</h3>
+<p>现金流量表里的调整项，逐条看：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>投资处置收益</td>
+<td><strong>−1913 万</strong>（净利润中的收益）</td>
+<td>卖掉持有的股权/证券赚的，跟主业无关，应剔除</td>
+</tr>
+<tr>
+<td>资产处置损失</td>
+<td>+377 万</td>
+<td>小额</td>
+</tr>
+<tr>
+<td>资产减值与重组费用</td>
+<td>+411 万</td>
+<td>小额</td>
+</tr>
+</tbody>
+</table></div>
+<p>1913 万美元的投资处置收益占净利润的 17%，<strong>这是主业之外的钱</strong>。往前看这一项每年都在摆动（FY2024 是亏 796 万、FY2023 是赚 3666 万），方向和大小都不稳定。<strong>单期口径无法判断这是否年年发生</strong>，但从五年数据看它每年都出现，只是符号不定——正确处理是在算真实盈利能力时把当期这块剔掉，而不是当成可持续利润。</p>
+<p>减值和重组费用只有 411 万，对一家 24 亿营收的公司微不足道，不予调整。</p>
+<h3>资本化的支出：一年 7026 万美元被藏进了投资活动</h3>
+<p>这一项<strong>被主流的自由现金流口径漏掉了，值得单独说</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>FY2025</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资本开支（买电脑、办公室）</td>
+<td>1922 万</td>
+</tr>
+<tr>
+<td><strong>购买/资本化无形资产</strong></td>
+<td><strong>7026 万</strong></td>
+</tr>
+<tr>
+<td>并购花的现金</td>
+<td>5477 万</td>
+</tr>
+</tbody>
+</table></div>
+<p>那 7026 万"无形资产"是自研软件开发费用和购买的技术授权。会计上它不进当期费用，而是记成资产分若干年摊销。<strong>但这是实打实每年都要花的现金</strong>——过去五年分别是 3487 万、4837 万、8169 万、8589 万、7026 万，年年不落。</p>
+<p>行情软件上的自由现金流口径是"经营现金流 − 资本开支"，<strong>它把这 7026 万漏掉了</strong>。真实的自由现金流要再减这一块（下面第三部分会用真实口径重算）。</p>
+<h3>商誉：19 亿美元，比公司市值还大</h3>
+<p>这是这家公司资产负债表上最刺眼的东西：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td><strong>0.80 倍</strong></td>
+<td>市值低于账面净资产</td>
+</tr>
+<tr>
+<td>有形账面价值市净率 P/TBV</td>
+<td><strong>8.40 倍</strong></td>
+<td>市值是有形净资产的 8.4 倍</td>
+</tr>
+<tr>
+<td>推算：账面净资产</td>
+<td>约 21.5 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>推算：有形净资产</td>
+<td>约 2.05 亿</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>推算：商誉 + 无形资产</strong></td>
+<td><strong>约 19.4 亿</strong></td>
+<td>占账面净资产的 90%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>90% 的账面净资产是收购留下的商誉和无形资产。</strong> 过去五年 Globant 花在收购上的现金是 9.36 亿美元（163.93 + 148.61 + 267.63 + 301.07 + 54.77），还不算用股票支付的部分。</p>
+<p>市净率 0.80 表面上像是"跌破净资产的便宜货"，实际含义正相反：<strong>市场认为那 19.4 亿商誉不值 19.4 亿。</strong> 支撑这个怀疑的是 ROIC——投入资本回报率 7.46%，而加权平均资本成本 8.55%。<strong>投进去的每一块钱赚回来的比它的成本还低，这些收购在毁灭价值。</strong></p>
+<h3>回购与稀释：这一项是真的干净</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票（FY2025）</td>
+<td>5613 万美元</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td>7568 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.74</strong></td>
+</tr>
+<tr>
+<td>股本同比变化</td>
+<td><strong>−2.65%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购除以 SBC 是 0.74，按标准来说"接近 1 说明回购只是在抵消员工发股"。但股本实际减少了 2.65%，说明回购的力度略微超过了实际的净增发（SBC 的授予和归属有时间差）。<strong>这不算真回购，但也不是纯粹的稀释掩护——比多数科技公司好。</strong> 公司不发股息。</p>
+<h3>利润和现金流的差：逐项对账</h3>
+<p>（TTM 截至 2026 年 3 月 31 日，公司现金流披露比利润表滞后一期）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>109.26</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+178.74</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+6.36</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+75.68</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>+3.77</td>
+</tr>
+<tr>
+<td>＋ 减值与重组</td>
+<td>+4.11</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−19.13</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−0.11</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+26.67</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+36.24</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−6.55</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−14.30</td>
+</tr>
+<tr>
+<td>− 其他净经营资产变动</td>
+<td>−60.82</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>339.92</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−19.22</td>
+</tr>
+<tr>
+<td><strong>＝ 常规口径自由现金流</strong></td>
+<td><strong>约 320.7</strong></td>
+</tr>
+<tr>
+<td>− 资本化的无形资产</td>
+<td>−70.26</td>
+</tr>
+<tr>
+<td><strong>＝ 真实自由现金流</strong></td>
+<td><strong>约 250.4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说了三件事：</strong></p>
+<ol>
+<li><strong>经营现金流 3.40 亿是净利润 1.09 亿的三倍多，差额 2.31 亿里，光"折旧摊销 + 股权激励"就贡献了 2.61 亿。</strong> 折旧摊销 1.79 亿中的绝大部分是收购来的客户关系、品牌之类无形资产的摊销——那些钱在收购当年已经真金白银付出去了，只是分几年记账。所以把它加回来算"现金流"，在数学上正确，在经济上是在说"过去花的钱不算数"。</li>
+<li><strong>应收账款 TTM 减少 3624 万是个好消息但也是个坏消息</strong>——好在收款变快了，坏在营收在缩水时应收账款自然会降，这不可持续。前面三年应收账款分别增加了 9302 万、10432 万、4430 万、11306 万，那些年现金流被应收账款吃掉了一大截。</li>
+<li><strong>真实自由现金流约 2.50 亿</strong>（扣掉每年都要花的 7026 万资本化无形资产），比行情软件显示的 3.21 亿低 22%。</li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 17.2 亿美元，企业价值 20.7 亿美元（含净债务 3.49 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>17.2 亿 ÷ 1.134 亿</td>
+<td><strong>15.2 倍</strong></td>
+<td><strong>6.59 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 7568 万（税后约 5670 万）+ 收购无形资产摊销</td>
+<td><strong>约 10.1 倍</strong>（仅加回 SBC）／行情软件前瞻 PE <strong>6.57 倍</strong></td>
+<td><strong>9.90 元 / 15.22 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>17.2 亿 ÷（1.134 亿 − 0.191 亿投资处置收益）= ÷ 0.943 亿</td>
+<td><strong>18.2 倍</strong></td>
+<td><strong>5.48 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（行情软件）</td>
+<td>17.2 亿 ÷ 3.21 亿</td>
+<td><strong>5.3 倍</strong></td>
+<td><strong>18.73 元</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化无形）</strong></td>
+<td>17.2 亿 ÷ 2.50 亿</td>
+<td><strong>6.9 倍</strong></td>
+<td><strong>14.51 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>20.7 亿 ÷ 2.479 亿</td>
+<td><strong>8.4 倍</strong></td>
+<td><strong>11.98 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>17.2 亿 ÷（1.134+1.029+1.657）/3 = ÷ 1.274 亿</td>
+<td><strong>13.5 倍</strong></td>
+<td><strong>7.41 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的是「真实市盈率 18.2 倍」和「真实自由现金流口径 6.9 倍」之间那个 2.6 倍的鸿沟。</strong></p>
+<p>差在哪？差在每年 1.79 亿美元的折旧摊销。这一大块是收购来的无形资产在摊销，它不花现金，所以现金流看起来是利润的三倍。但它对应的钱<strong>过去五年真的花掉了 9.36 亿现金</strong>。所以：</p>
+<ul>
+<li>如果你相信 Globant 从此不再做收购，那么这 1.79 亿摊销确实是"过去的沉没成本"，6.9 倍的现金流口径是对的，这只股票很便宜。</li>
+<li>如果你认为它还得继续买公司才能维持规模（过去五年年年在买），那么这笔钱就是变相的资本开支，18.2 倍的利润口径才是对的，这只股票只是普通。</li>
+</ul>
+<p><strong>同样值得注意的是三年平均口径 13.5 倍反而比当期 15.2 倍低。</strong> 这在这份任务里很少见——大多数公司的当期利润是高点，三年平均一算倍数就飙上去。Globant 相反：<strong>它现在的利润是三年里最差的</strong>（FY2024 是 1.657 亿，现在只有 1.134 亿）。这说明当前的估值不是建立在利润高点上，而是建立在利润低点上——如果生意能恢复到 2024 年的水平，同样的股价对应的市盈率只有 10.4 倍。</p>
+<h3>你投 100 块，一年能拿回多少</h3>
+<p><strong>按最保守的真实口径（剔除投资处置收益的 18.2 倍），公司一年替你赚 5.48 元。按真实自由现金流口径，一年产生 14.51 元现金。</strong></p>
+<p>这两个数字都对，差别在于你怎么看那 1.79 亿摊销。取一个折中的、我认为最诚实的口径：<strong>把每年必须继续花的 7026 万资本化无形和大约 5000 万的维持性收购当成真实成本，那么可持续的股东盈余大概是每年 1.3 亿到 1.5 亿，对应 12–13 倍，投 100 块一年赚 7.8 到 8.3 元。</strong></p>
+<p>这 8 块钱里，回到你口袋的部分：<strong>0 分红</strong>，回购一年 5613 万（相当于市值的 3.3%），股本净减少 2.65%。剩下的钱去了两个地方——还债（净债务从 FY2023 的净现金 4691 万变成现在的净负债 3.49 亿，主要是买公司买出来的）和继续做小规模收购。</p>
+<p><strong>这个 8 块钱未来是变大还是变小？这是全篇唯一真正的问题，而且没有确定答案。</strong></p>
+<p><strong>看空的理由（现在市场给的就是这个价）：</strong>
+- 营收已经转负（−1.3%），四年从 59% 增长掉到负增长；
+- 收入 = 人头 × 小时 × 费率，AI 编码工具直接压缩「小时」这个乘数；
+- 客户最大的两块市场（美国、拉美）都在缩；
+- 毛利率三年连降（36.1% → 34.5%），说明它在用价格换单；
+- ROIC 7.46% 低于 WACC 8.55%，收购在毁灭价值；
+- 21.8% 的流通股在做空。</p>
+<p><strong>看多的理由：</strong>
+- 6.9 倍真实自由现金流、8.4 倍 EV/EBIT，这个价格已经隐含了"生意会持续萎缩"的假设；
+- 资产负债表不差：债务/EBITDA 只有 1.22 倍，利息保障 6.99 倍，不存在破产风险；
+- SBC 已经在 GAAP 利润里扣干净了，不像很多软件公司那样靠加回 SBC 撑估值；
+- 27,411 个工程师和一批做了十年的客户关系（迪士尼、桑坦德、EA）不会一夜消失；
+- 当前利润是三年低点，不是高点。</p>
+<p><strong>我的判断是这个 8 块钱短期还会变小、中期看它能不能把「按人头卖」转成「按结果卖」。</strong> AI 对 IT 外包的影响不是"取代"这么简单——历史上每一次生产力工具（离岸外包、云、低代码）都同时降低了单位成本和放大了总需求。真正的分水岭是 Globant 能不能在费率下降的同时接更多的活。<strong>这件事今天看不出来，需要再看四到六个季度的营收。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>统计上便宜是真的——6.9 倍真实自由现金流、8.4 倍 EV/EBIT、当期利润还是三年低点、资产负债表干净、股权激励老老实实扣在了 GAAP 里；但便宜的原因也是真的：这是一门「收入 = 人头 × 小时 × 费率」的生意，四年之内增速从 59% 掉到 −1.3%，19 亿商誉压在一个 ROIC（7.5%）低于资本成本（8.6%）的收购堆上，而 AI 恰好在攻击「小时」这个乘数。这个价格已经把坏消息算进去大半，值得放进观察名单盯着营收拐点——但请把行情软件上那个 6.57 倍前瞻市盈率忘掉，那是加回股权激励和收购摊销算出来的数字，真实口径是 18 倍利润 / 12–13 倍股东盈余。</strong></p>
+</div></body></html>

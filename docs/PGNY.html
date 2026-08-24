@@ -1,0 +1,310 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PGNY · Progyny（普罗金尼）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PGNY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">11倍FCF是假的，扣掉1.07亿股权激励后是25倍买5%增长</div><h1>PGNY · Progyny（普罗金尼）</h1>
+<p><strong>市值</strong> 19.6 亿美元 ｜ <strong>股价</strong> 25.65 美元 ｜ <strong>行业</strong> 商业服务（雇主福利管理 / 生育医疗）｜ <strong>数据口径</strong> TTM，截至 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Progyny 做的是一件在中国几乎没有对应物、但在美国刚好卡住一个巨大痛点的生意：<strong>替大公司管「生孩子」这项员工福利</strong>。</p>
+<p>在美国做一次试管婴儿（IVF），自费大概 2 万到 3 万美元一个周期，还不一定成，很多人要做两三次。传统的医疗保险公司（联合健康、安泰这些）对这块的处理方式是「给你一个终身 2 万美元的额度上限，用完拉倒」，而且流程极其难走——要先证明你不孕，要走一堆前置的、便宜的、成功率低的治疗（比如先做几轮人工授精 IUI），走完了才准你做 IVF。结果是员工花了一年时间、烧完了额度、还没怀上，公司花了钱、员工还骂娘。</p>
+<p>Progyny 的做法是把这块从传统保险公司手里整个切出来单独管。它有两门生意：</p>
+<h3>生意 A：生育福利服务（Fertility Benefit Services）</h3>
+<p><strong>这是主业，占营收约 65%。</strong></p>
+<p>它怎么运作：假设亚马逊、微软、谷歌这样一家有 10 万员工的公司，想给员工提供体面的生育福利。它不去找保险公司加个条款，而是直接和 Progyny 签一份合同。Progyny 卖的不是「一笔钱的额度」，而是<strong>「Smart Cycle」——按疗程卖</strong>。雇主买的是「每位员工 2 个 Smart Cycle」这样的包，一个 Smart Cycle 大致对应一次完整的取卵-培养-移植流程，或者拆成几次冻胚移植。</p>
+<p>关键区别在于：Progyny 不设「先做便宜的、失败了再升级」这种阶梯，员工第一次上门就可以直接做成功率最高的方案。它还给每位员工配一个叫 <strong>Patient Care Advocate（PCA）</strong> 的专人——一个真人护士，全程电话/短信跟着，帮你挑诊所、约号、解释报告、处理保险扯皮。</p>
+<p>Progyny 自己不开诊所。它维护一张全美约 1000 家生殖中心的网络，这些诊所是被筛过的——<strong>Progyny 会拿实打实的成功率数据把差诊所踢出去</strong>，这也是它敢按疗程收费的底气：网络里的诊所平均成功率比全国均值高一截，所以一个 Smart Cycle 就怀上的比例更高，Progyny 赚的就是这个差额。</p>
+<p>收钱方式：雇主按员工人头付一笔管理费（PEPM，per employee per month），再按实际用掉的 Smart Cycle 付治疗费。一家 10 万人的公司一年可能给 Progyny 付几千万美元，其中大头是治疗费——Progyny 收到钱后再付给诊所，中间那层差价加管理费就是它的毛利。所以你会看到它的<strong>毛利率只有 24.6%</strong>——因为营收里绝大部分是「代付给诊所的钱」流水，这不是软件公司的那种毛利率。</p>
+<p>客户是谁：财富 500 强里的大公司，科技、金融、咨询、大型零售。截至 TTM 大约 550 家客户、覆盖约 690 万名参保人。<strong>客户为什么非买不可</strong>——招人。硅谷和华尔街抢 30 岁上下的高学历女性员工，生育福利是简历比较里排得进前五的东西；同时公司算过账，Progyny 那套「一次做对」的模式实际上比传统保险的「反复试」总花费更低，还能减少多胞胎（多胞胎的新生儿 ICU 账单是天文数字，最后也是雇主的自保计划买单）。</p>
+<h3>生意 B：药房福利服务（Progyny Rx）</h3>
+<p><strong>占营收约 35%。</strong></p>
+<p>IVF 不只是手术，前面要打两三周的促排卵针，药费一个周期 4000 到 8000 美元，而且是特种药、要冷链、要教病人自己在家扎针。Progyny 干脆把这块也接过来：员工用 Progyny 的处方渠道拿药，Progyny 和药厂、专业药房谈批量价，药送到家，护士视频教注射。</p>
+<p>雇主可以只买 A 不买 B，但买了 A 的客户大部分会加买 B——因为分开管的话，治疗方案在 A 手里、药在保险公司手里，中间断档最容易出事（药没到、周期废掉、这一次的钱白花）。</p>
+<p>这门生意的毛利率比 A 更薄（本质是药品代购加转手），但它几乎不需要额外的人力，是纯粹加在已有客户身上的增量。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收（百万美元）</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生育福利服务</td>
+<td>850.2</td>
+<td>约 800</td>
+<td>约 +6%</td>
+<td>65%</td>
+<td>估算约 10%</td>
+</tr>
+<tr>
+<td>药房福利服务 Progyny Rx</td>
+<td>约 460.8（倒算）</td>
+<td>约 442</td>
+<td>约 +4%</td>
+<td>35%</td>
+<td>估算约 7%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,311</strong></td>
+<td>1,242</td>
+<td><strong>+5.5%</strong></td>
+<td>100%</td>
+<td>9.1%（整体实际值）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>两点必须说明：<strong>（1）</strong> stockanalysis 的分部表里 TTM 药房营收显示为 570.45，但它和生育业务的 850.22 相加是 1,420.7，对不上总营收 1,311——这一格是数据错位，我按「总营收减生育营收」倒算出 460.8。<strong>（2）</strong> 公司只按分部披露营收，不披露分部利润，上表利润率是按整体 9.14% 经营利润率结合两块业务毛利结构估算的，<strong>不是财报数字</strong>。</p>
+</blockquote>
+<p><strong>真正要盯的是那个 +5.5%。</strong> 这家公司 2021 年营收增长 45%、2022 年 57%、2023 年 38%——它是被当成超高速成长股买进来的。2024 年掉到 7.2%，TTM 只剩 5.5%。原因不是行业不行了，是<strong>它丢了大客户</strong>：一个体量巨大的科技客户在 2024 年把这块业务收回自管，一次性砍掉了相当大一块营收基数。这暴露了这门生意最根本的软肋——<strong>福利管理商是可替换的</strong>。合同一般 3 年一签，大客户续约时有充分的议价权，甚至可以自己搭一套。Progyny 的护城河（诊所网络质量 + 数据 + PCA 人力）是真的，但它挡不住一家自己有几万 HR 和数据团队的巨头说「我们自己来」。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.0717 亿美元，<strong>占 GAAP 净利润 7863 万的 136%</strong>。也就是说，这家公司一年发给员工的股票，比它一年赚的钱还多 36%。这是全篇最重要的一个数字。GAAP 已经把它当费用扣了，所以下面所有基于 GAAP 净利润的口径都是干净的；但公司自己讲故事时会用 Adjusted EBITDA，把这 1.07 亿全部加回去——那个数字不能信。</p>
+<p><strong>一次性项目</strong>：基本没有。TTM 里资产处置损失 58 万、投资处置收益 33 万，都是零头。没有大额诉讼、重组或减值。</p>
+<p><strong>资本化的支出</strong>：TTM 资本开支 2286 万，比 FY2024 的 541 万暴涨了四倍多——这不是买楼，是在自建技术平台（把原来外包/租用的理赔和临床数据系统换成自己的），这部分开发费被资本化进了资产负债表、没有走当期损益。这是唯一一处需要留个心眼的地方：如果这个平台建成后每年还得持续投两千多万，那它其实是经常性成本，只是被记在了折旧里慢慢摊。</p>
+<p><strong>坏账</strong>：TTM 计提 1969 万。对一家营收 13 亿的公司来说是 1.5%，正常。</p>
+<p><strong>回购与稀释</strong>：这一项 Progyny 做得<strong>很漂亮</strong>。TTM 回购 2.48 亿美元，同期 SBC 1.07 亿，<strong>回购 / SBC = 2.3 倍</strong>——超过 1 意味着回购不只是在抵消员工发股，2.3 倍是实打实在减少股本。实际效果：<strong>流通股一年减少 4.01%</strong>，最近一个季度就减了 3.08%（在加速）。要注意的是，2.48 亿回购超过了 1.78 亿的自由现金流，差额是靠卖掉手里的短期证券（投资活动净流入 8852 万）补的——它在动用账上的存量现金买回自己的股票。账上还剩 2.37 亿现金、负债只有 2250 万，净现金 2.14 亿（占市值 11%），这么干撑得住，但不能无限撑。</p>
+<p><strong>利润和现金流的差</strong>：净利润 7863 万，经营现金流 2.0125 亿，差了 1.23 亿，差额很大，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>78.63</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>5.74</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td><strong>107.17</strong></td>
+</tr>
+<tr>
+<td>＋ 坏账计提（非现金）</td>
+<td>19.69</td>
+</tr>
+<tr>
+<td>＋ 资产/投资处置净额</td>
+<td>0.25</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−7.25</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−5.34</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>11.39</td>
+</tr>
+<tr>
+<td>− 其他净营运资产</td>
+<td>−9.04</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>201.25</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−22.86</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>178.38</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚了：<strong>净利润到经营现金流之间那 1.23 亿的差，八成七来自股权激励这一项</strong>。这就是为什么它的 P/FCF 只有 11 倍看着极便宜——因为自由现金流里塞了 1.07 亿「用股票代替现金发工资」省下来的钱。这笔钱确实没从公司账上流出去，但它从<strong>你这个股东的持股比例</strong>里流出去了。所以真要看现金回报，得用「自由现金流 − SBC」＝ 1.784 − 1.072 = <strong>7120 万</strong>，这才是股东能拿到手而不被稀释的现金。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 19.58 亿，企业价值 17.44 亿（扣掉 2.14 亿净现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（市值口径）</td>
+<td>1,958 ÷ 78.63</td>
+<td><strong>24.9 倍</strong></td>
+<td>4.02 元</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（每股口径）</td>
+<td>25.65 ÷ 0.91</td>
+<td>28.3 倍</td>
+<td>3.54 元</td>
+</tr>
+<tr>
+<td>公司/卖方口径「Forward PE」</td>
+<td>加回 SBC 后的调整 EPS</td>
+<td>11.8 倍</td>
+<td>8.50 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,958 ÷（78.63 − 0.33 + 0.58），SBC 已按 GAAP 扣除不加回</td>
+<td><strong>24.8 倍</strong></td>
+<td><strong>4.03 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>1,958 ÷ 178.38</td>
+<td>11.0 倍</td>
+<td>9.09 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣 SBC 后）</strong></td>
+<td>1,958 ÷ 71.21</td>
+<td><strong>27.5 倍</strong></td>
+<td><strong>3.64 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,744 ÷ 119.83</td>
+<td>14.6 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV / 净利润</td>
+<td>1,744 ÷ 78.63</td>
+<td>22.2 倍</td>
+<td>4.51 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,958 ÷ [(78.63+58.52+54.34)/3 = 63.83]</td>
+<td><strong>30.7 倍</strong></td>
+<td><strong>3.26 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>那个 11.8 倍的「Forward PE」是全表最有毒的数字。它之所以只有 GAAP 口径的一半不到，不是因为公司明年利润要翻倍，而是因为卖方分析师用的是<strong>加回股权激励的调整后 EPS</strong>。同一家公司、同一年，GAAP 每股 0.91 美元，调整后就成了 2 块多。你如果拿 11.8 倍去和别的公司的真实市盈率比，等于被骗了一倍。</p>
+<p><strong>说人话：你现在投 100 块进 Progyny，按最保守的真实口径（三年平均利润）算，公司一年替你赚 3.26 块；按当期真实口径算，一年 4 块出头。</strong></p>
+<p>这 4 块钱里，有多少真回到你口袋？Progyny 不分红，一分钱股息都没有。但它 TTM 回购了 2.48 亿——按 19.58 亿市值算，<strong>回购收益率高达 12.7%</strong>，远超它 4% 的盈利收益率。这是个很不寻常的组合：它在用账上的存量现金和历史积累，以远超当期赚钱速度的节奏回购自己的股票。好处是股本一年缩 4%，你什么都不做持股比例就在涨；隐患是这个速度不可持续——净现金只剩 2.14 亿，按 TTM 这个烧法一年多就见底，之后回购规模必须降到自由现金流以内（扣掉 SBC 后大约 7000 万，对应回购收益率 3.6%）。</p>
+<p>剩下的钱留在公司里干什么？主要两处：一是那笔涨了四倍的资本开支（自建技术平台），二是小额并购（FY2025 花了 934 万）。它没有大规模再投资的去处——这门生意本身几乎不吃资本，<strong>ROIC 高达 32.7%，ROE 16.2%</strong>，这是它作为一门生意最亮的地方。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong> 中性偏正面，但幅度有限。营收增速 5.5% 且已经连续两年下台阶；利润率倒是在稳步上行（经营利润率从 FY2022 的 2.97% 一路走到 TTM 的 9.14%），这是规模效应加药房业务占比提升的结果，还有一点空间但不多——它的成本大头是付给诊所的钱，压不下去。所以未来几年利润增长大概率来自「利润率再提两三个点 + 营收个位数增长 + 股本每年缩 3–4%」，合起来每股收益可能有 10% 上下的年化增长。前提是<strong>不再丢一个大客户</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜。</strong> 表面上 11 倍自由现金流、11.8 倍前瞻市盈率，看着像捡钱——但那两个数字都是把「一年发出去 1.07 亿股票」这件事当成不存在算出来的；老老实实扣掉之后，它是一家 25 倍市盈率、三年平均口径 31 倍、营收只增长 5.5% 的公司，投 100 块一年替你赚 3 到 4 块。</p>
+<p>生意本身是好的：ROIC 32.7%、几乎不用资本、账上净现金占市值 11%、没有债务、回购是真回购（2.3 倍于 SBC，股本一年实缩 4%）。但它的护城河建立在「大公司懒得自己做」上，而 2024 年那次大客户流失已经证明了这堵墙可以被推倒——增速从 38% 砸到 5%，就是那一下砸出来的。</p>
+<p>25 倍买一个增长 5.5%、客户高度集中、随时可能再被抽走一块基数的生意，<strong>你付的是「它能重新加速」的钱，拿到手的是「它维持现状」的东西</strong>。真要买，等它掉到 15 倍附近、或者等它连续几个季度证明客户数量在净增长再说。现在这个价格，是公道偏贵那一档，不是机会。</p>
+</div></body></html>

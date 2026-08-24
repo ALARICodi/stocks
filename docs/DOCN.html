@@ -1,0 +1,403 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DOCN · 数字海洋（DigitalOcean Holdings, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DOCN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">净利润含6077万假税收优惠，一年稀释16%，ROIC低于资本成本</div><h1>DOCN · 数字海洋（DigitalOcean Holdings, Inc.）</h1>
+<p>市值 128.5 亿美元 / 当前股价约 109 美元（流通股 1.176 亿股）/ 行业：科技服务 — 云计算基础设施 / TTM 截止日期：2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>DigitalOcean 是<strong>给小开发者和中小公司用的亚马逊 AWS</strong>。</p>
+<p>先说它为什么存在。你要上线一个网站或者 App，需要一台服务器。理论上你可以去 AWS 租，但 AWS 是给企业 IT 部门设计的：控制台里有 200 多个产品、几十种实例规格、账单按小时按 GB 按请求次数分成十几行，一个人搞不明白，账单也永远算不准。一个三人的小团队、一个做独立产品的程序员、一家印度或巴西的小软件公司，需要的其实是：<strong>一台服务器，每月固定 6 美元，五分钟开好，账单一眼看懂。</strong></p>
+<p>DigitalOcean 做的就是这件事。具体产品：</p>
+<ul>
+<li><strong>Droplet（虚拟服务器）</strong>：这是它的招牌。点几下鼠标，一台 1 核 1G 内存 25G 硬盘的 Linux 服务器就开好了，<strong>每月 6 美元固定价</strong>，不用担心某天被流量打爆之后收到一张四位数的账单。往上有 4 核 8G 每月 48 美元、8 核 16G 每月 96 美元，价目表就一页纸。AWS 上同等配置不但更贵，而且你得先搞懂 VPC、安全组、EBS、弹性 IP 这四个东西才能开机。</li>
+<li><strong>托管数据库</strong>：帮你把 PostgreSQL、MySQL、Redis 装好、自动备份、自动打补丁。一个月 15 美元起。小团队没有专职 DBA，这个功能等于省了半个人。</li>
+<li><strong>Spaces（对象存储）</strong>：存图片视频的，每月 5 美元给 250GB 空间加 1TB 流量。对标 AWS 的 S3，但 S3 的流量费是出了名的贵。</li>
+<li><strong>App Platform</strong>：更省事的一层——你把代码推到 GitHub，它自动帮你打包部署上线，你连服务器都不用管。</li>
+<li><strong>Cloudways</strong>：2022 年花 3.5 亿美元买来的，专门做<strong>托管 WordPress</strong>。全球有海量的小企业官网、博客、外贸站跑在 WordPress 上，站长自己不会运维，Cloudways 帮他们托管，每月几十美元。这是一条完全不同的获客渠道——客户不是程序员，是开网店和做外贸的人。</li>
+<li><strong>GPU 云（Gradient / 前身 Paperspace）</strong>：2024 年买 Paperspace 来的，租英伟达 H100、H200 这类 AI 显卡给人训模型和跑推理，按小时计费。<strong>这是现在整个股价故事的核心，下面会重点讲。</strong></li>
+</ul>
+<p><strong>它的护城河是什么</strong>：说实话，很浅。技术上没有 AWS 做不到的事，价格上也不是最低的。它真正的资产是<strong>十几年攒下来的开发者口碑和文档</strong>——DigitalOcean 的技术教程（"如何在 Ubuntu 上配置 Nginx"这一类）是全世界搜索量最大的运维文档之一，无数程序员是通过搜到它的教程第一次注册的。加上迁移麻烦（数据搬家、IP 换了、配置重写），客户一旦跑起来就懒得动。这是"低摩擦 + 惰性"，不是"不可替代"。</p>
+<p>财报按客户规模分层披露，但<strong>披露得不完整</strong>（FY2025 全年，单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>客户层</th>
+<th>FY2025 营收</th>
+<th>占总营收</th>
+<th>这是谁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Builders（建造者）</td>
+<td>252.1</td>
+<td>28.0%</td>
+<td>每月花 50—500 美元的，小团队、独立开发者</td>
+</tr>
+<tr>
+<td>Scalers+（大规模用户）</td>
+<td>231.1</td>
+<td>25.6%</td>
+<td>每月花几万美元的，公司里最值钱的一群</td>
+</tr>
+<tr>
+<td>Learners、Testers 及其他</td>
+<td>96.9</td>
+<td>10.8%</td>
+<td>每月花几美元的学生和试用者</td>
+</tr>
+<tr>
+<td><strong>上述三项之外</strong>（含中量级 Scalers 等）</td>
+<td>321.4</td>
+<td>35.7%</td>
+<td>财报未单列</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>901.4</strong></td>
+<td><strong>100%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM（截止 2026 年 6 月）总营收 <strong>10.11 亿美元，同比 +21.4%</strong>，公司未按上述分层披露 TTM 数字。注意增速在<strong>加速</strong>：FY2024 +12.7% → FY2025 +15.5% → TTM +21.4%。加速的来源基本可以确定就是 GPU 租赁。</p>
+<p>财报<strong>不披露分部利润</strong>，上面各层的利润率无法估算——但可以说一句有把握的话：<strong>GPU 业务的毛利率一定显著低于传统云业务</strong>，因为显卡是买来的硬资产，折旧极重，而虚拟服务器是软件切分出来的。TTM 整体毛利率从 FY2025 的 59.86% 降到 <strong>57.22%</strong>，这 2.6 个百分点的下滑就是证据。</p>
+<p><strong>所以这家公司实质上正在变成两门生意</strong>：一门是十几年的老本行——卖便宜易用的虚拟服务器给小开发者，稳定、高毛利、增长十几个点；另一门是刚开张两年的 GPU 租赁——增速快、毛利低、吃钱如虎、对手是 AWS、CoreWeave 和一堆新玩家。第二门生意正在吃掉第一门生意赚的所有现金。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是本篇的重点。<strong>DigitalOcean 的 TTM 报表看起来比实际情况好得多，而且好得不是一点点。</strong></p>
+<p><strong>第一处：净利润比经营利润还高。</strong></p>
+<p>TTM 经营利润 1.497 亿，税前利润 1.745 亿，<strong>净利润却是 2.352 亿</strong>。正常公司是经营利润 &gt; 税前利润 &gt; 净利润（要付利息、要交税），它反过来。原因：</p>
+<ul>
+<li>税前 &gt; 经营：营业外净收益 +2,480 万。它的可转债票息极低，账上现金反而在生息，加上回购可转债产生的账面收益。</li>
+<li><strong>净利润 &gt; 税前：所得税是 −6,077 万，也就是不但没交税，还"退"了 6,077 万。</strong> 这不是真退钱，是<strong>递延所得税资产估值备抵的转回</strong>——公司过去亏损攒下一堆可抵扣亏损，会计上原本因为"不确定将来能不能用上"没入账，现在开始盈利了就入账，一次性做成一笔巨额税收收益。</li>
+</ul>
+<p><strong>这笔 6,077 万是纯账面数字，一分现金都没有。</strong> 现金流量表上"其他经营活动 −1.384 亿"这一行就是在把它（连同相关递延项）扣回去。剥掉它，TTM 真实的税后利润大约是 1.745 亿 × (1 − 21%) ≈ <strong>1.38 亿</strong>，而不是 2.35 亿。<strong>报表上的净利润比真实盈利能力虚高了约 70%。</strong></p>
+<p><strong>第二处：股权激励占比极高。</strong></p>
+<p>TTM SBC 9,503 万，占 GAAP 净利润 2.352 亿的 <strong>40.4%</strong>，占剥掉税收优惠后的真实利润 1.38 亿的 <strong>69%</strong>，占自由现金流 1,608 万的 <strong>591%</strong>。这跟前面两家半导体设备公司（SBC 只占利润 6.4%）完全不是一个物种。本文一律把它当真实成本，GAAP 里已扣，不加回。</p>
+<p><strong>第三处，也是最严重的一处：回购与稀释完全倒过来了。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 回购股票</td>
+<td>5,445 万</td>
+</tr>
+<tr>
+<td>TTM SBC</td>
+<td>9,503 万</td>
+</tr>
+<tr>
+<td>回购 ÷ SBC</td>
+<td><strong>0.57 倍</strong></td>
+</tr>
+<tr>
+<td><strong>TTM 发行新股募资</strong></td>
+<td><strong>8.975 亿美元</strong></td>
+</tr>
+<tr>
+<td><strong>股本一年变化</strong></td>
+<td><strong>+15.95%</strong>（单季 +13.08%）</td>
+</tr>
+</tbody>
+</table></div>
+<p>回购连员工发的股票都盖不住（0.57 倍，健康的标准是大于 3 倍），更要命的是公司在这一年<strong>增发了近 9 亿美元的新股</strong>，导致股本一年膨胀 <strong>16%</strong>。翻译成人话：<strong>如果你一年前持有这家公司 1% 的股份，什么都不做，现在只剩 0.86%。</strong> 股东收益率是 <strong>−15.95%</strong>——这是本篇最刺眼的数字，前面两家公司这个数字分别是 +1.84% 和 +2.83%。</p>
+<p>这笔钱去哪了？去买显卡了。</p>
+<p><strong>第四处：自由现金流几乎归零。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>经营现金流</th>
+<th>资本开支</th>
+<th>自由现金流</th>
+<th>FCF 利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>2.35 亿</td>
+<td>−1.19 亿</td>
+<td>1.16 亿</td>
+<td>16.7%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>2.83 亿</td>
+<td>−1.78 亿</td>
+<td>1.05 亿</td>
+<td>13.4%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>3.10 亿</td>
+<td>−2.56 亿</td>
+<td>0.54 亿</td>
+<td>6.0%</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>3.10 亿</strong></td>
+<td><strong>−2.94 亿</strong></td>
+<td><strong>0.16 亿</strong></td>
+<td><strong>1.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营现金流两年没涨（3.10 亿 → 3.10 亿），资本开支从 1.19 亿涨到 2.94 亿，自由现金流从 1.16 亿掉到 1,608 万——三年蒸发 86%。</strong> 这就是 GPU 生意的真面目：显卡是要真金白银买的，一台 H100 服务器几十万美元，买回来放三年折旧完，期间必须租得出去才回本。</p>
+<p>完整的现金对账（TTM，单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>235.2</td>
+<td>起点（含 6,077 万假的税收收益）</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+159.0</td>
+<td>服务器和显卡的折旧，不花钱</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+13.1</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+95.0</td>
+<td>发股票不是发现金</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+17.5</td>
+<td>小客户跑单，计提但还没核销</td>
+</tr>
+<tr>
+<td><strong>− 其他经营活动</strong></td>
+<td><strong>−138.4</strong></td>
+<td><strong>主要就是把上面那笔递延税收益扣回去</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−51.4</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+21.9</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>+41.8</td>
+<td>GPU 客户预付的钱</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−83.8</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>310.0</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−293.9</td>
+<td><strong>几乎和经营现金流一样多</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>16.1</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>第五处：负债表。</strong> 总债务 19.78 亿，现金 7.67 亿，<strong>净负债 12.11 亿</strong>——而公司账面净资产只有 9.31 亿，负债权益比 2.13。这些债主要是可转债。债务 ÷ 自由现金流 = <strong>123 倍</strong>。虽然可转债的近期到期压力已经通过再融资推后，但这是一张有真实杠杆的表，跟前面两家净现金的公司完全不同。</p>
+<p><strong>一次性项目</strong>：除了那笔税收优惠（我认为它不算"经营性一次性收益"，而是纯粹的会计确认，已在上面单独处理），资产减值和重组费用只有 5 万美元，可以忽略。TTM 里没有诉讼和解、没有大额并购费用。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 128.5 亿，企业价值 140.6 亿（净负债 12.1 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>128.5 ÷ 2.352 亿</td>
+<td><strong>54.6 倍</strong></td>
+<td><strong>1.83 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 和摊销，调整后净利约 3.3 亿（估算）</td>
+<td>约 38.9 倍</td>
+<td>2.57 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>128.5 ÷ [税前 1.745 亿 × (1−21%) = <strong>1.38 亿</strong>]，SBC 按 GAAP 已扣不加回</td>
+<td><strong>93.2 倍</strong></td>
+<td><strong>1.07 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>128.5 ÷ 0.161 亿</td>
+<td><strong>799 倍</strong></td>
+<td><strong>0.13 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>140.6 ÷ 1.497 亿</td>
+<td><strong>93.9 倍</strong></td>
+<td><strong>1.06 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>128.5 ÷ [(2.352+2.593+0.845)/3 = 1.930 亿]</td>
+<td><strong>66.6 倍</strong></td>
+<td><strong>1.50 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>注意最后一行的三年平均口径这次<strong>不能像前两家那样直接用</strong>：FY2025 的 2.593 亿净利润里同样含有大额递延税收益（当年税前利润率 22.93%、净利润率 28.76%，同样是净利大于税前），所以这个 66.6 倍<strong>仍然是被美化过的</strong>。按真实税负还原，三年平均真实净利润大约 1.3 亿出头，对应 <strong>95 倍以上</strong>。</p>
+<p><strong>说人话</strong>：你现在投 100 块进 DigitalOcean，按最诚实的口径（剥掉假的税收优惠、按正常税率还原）算，公司一年替你赚 <strong>1.07 元</strong>。而如果按"真正落到公司口袋、可以自由支配的现金"算，一年只有 <strong>1 毛 3</strong>。</p>
+<p>这 1 块钱里有多少回到你口袋？<strong>一分没有，还倒贴。</strong> 公司不分红，回购 5,445 万还盖不住 SBC，同时增发了 8.98 亿新股。<strong>股东收益率 −15.95%</strong>——你的持股比例在被稀释，你不是在收钱，你是在被摊薄。</p>
+<p>钱都留在公司里再投资了：TTM 资本开支 2.94 亿，几乎等于全部经营现金流。这些钱变成了机房里的显卡和服务器。</p>
+<p>未来这个数字变大还是变小？<strong>市场自己的答案写在数字里：远期市盈率 81 倍，比当期的 54.6 倍还高。</strong> 意思是分析师预期未来 12 个月的每股收益<strong>要下降</strong>——原因很清楚，今年的税收优惠不会重来，而股本还在膨胀。PEG 高达 46.22，这个数字基本等同于"用增长来解释估值这条路已经走不通了"。</p>
+<p>支撑股价的完全是另一个故事：分析师给的三年营收复合增速预期是 40% 以上。这要求 GPU 业务从一个小配角变成主角，且规模化之后毛利能撑住。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家还不错的小生意，正在用股东的钱去打一场它未必打得赢的仗，而股价已经按打赢来定价了。</strong></p>
+<p>先说好的：老本行是真生意。给中小开发者卖便宜易用的服务器，57% 毛利、客户黏性靠惰性和口碑、经营现金流一年 3.1 亿、营收增速还在加速到 21%。在云计算这个巨头林立的赛道里，能在"小客户"这个夹缝活十几年并盈利，本身就是本事。</p>
+<p>但把报表拆开之后，问题一个比一个大：</p>
+<ol>
+<li><strong>2.35 亿的净利润有 6,077 万是假的</strong>——是递延所得税估值备抵转回，一分现金没有，明年不会再有。剥掉之后真实市盈率从 54.6 倍变成 <strong>93 倍</strong>。</li>
+<li><strong>自由现金流三年蒸发 86%</strong>，从 1.16 亿掉到 1,608 万，P/FCF <strong>799 倍</strong>。经营现金流两年原地踏步，全部被 GPU 资本开支吃光。</li>
+<li><strong>一年稀释了 16% 的股份</strong>——增发 8.98 亿新股，回购连 SBC 的一半都盖不住。你什么都不做，手里的份额少了七分之一。</li>
+<li><strong>ROIC 只有 7.89%</strong>，低于它自己 11.52% 的加权资本成本。也就是说，<strong>它现在每投一块钱进去，创造的回报低于这一块钱的成本</strong>——这是价值毁灭，不是价值创造。前面两家公司这个数字是 66.75% 和 38.24%。</li>
+<li><strong>净负债 12.1 亿，超过账面净资产</strong>，债务 ÷ 自由现金流 123 倍。</li>
+</ol>
+<p>最要命的是这几件事的组合方式：<strong>它在用增发和举债，去买一堆三年折旧完的显卡，跟 AWS、微软、CoreWeave 这些手里有几百亿现金的对手抢同一批 AI 客户，而它自己的规模优势、电价谈判力、显卡采购优先级样样不如人。</strong> GPU 租赁最终会变成一门比拼资本成本的重资产生意——这恰恰是 DigitalOcean 最弱的一环。它当初能活下来，靠的是"轻、简单、便宜"；现在正在主动放弃这三个特征。</p>
+<p>而这只股票<strong>过去 52 周涨了 246.6%</strong>，市销率 13.45 倍。同期营收只涨 21%。涨幅里绝大部分是估值扩张，是市场把"AI 云"四个字贴到它身上的结果。</p>
+<p><strong>不值这个价，而且不是贵一点。</strong> 93 倍真实市盈率、799 倍自由现金流、ROIC 低于资本成本、一年稀释 16%——这四个数字任何一个单独出现都够让人退避，四个同时出现在一家 128 亿市值的公司身上，意味着你付的价格已经把一个尚未验证、且它未必有资格赢的 AI 故事，当作既成事实算完了。</p>
+</div></body></html>

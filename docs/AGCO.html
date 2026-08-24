@@ -1,0 +1,392 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AGCO · 爱科农业机械</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AGCO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">14.9倍是假的，2.5亿卖股权收益撑的；真实22倍，周期底部</div><h1>AGCO · 爱科农业机械</h1>
+<p><strong>市值</strong> 76.4 亿美元 ｜ <strong>股价</strong> 约 109 美元 ｜ <strong>行业</strong> 生产制造 / 农业机械 ｜ <strong>交易所</strong> NYSE
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AGCO 是全世界第三大农机厂，前面是约翰迪尔（John Deere）和凯斯纽荷兰（CNH）。它不做建筑机械、不做卡车、不做发动机外卖，就做一件事——<strong>把机器卖给种地的人</strong>。</p>
+<p>它的财报只按<strong>地区</strong>披露收入，不按产品线披露。所以下面先讲清楚它实质上在做的三门生意（这部分是业务实质），再给出财报真正披露的地区表（这部分是硬数据）。</p>
+<h3>生意一：卖整机（占收入的绝大头，估算七成半）</h3>
+<p>AGCO 手上有三个互相不打架的拖拉机品牌，故意做成三个价位段：</p>
+<p><strong>Fendt（芬特，德国）</strong>——这是 AGCO 的命根子，农机界的保时捷。一台 Fendt 1050 Vario 大马力拖拉机在欧洲开票价 50 万欧元上下，比同马力的迪尔贵两三成，但德国、法国的大农场主还是买它，因为它有个叫"无级变速"的传动（Vario），开起来像开自动挡轿车，一天干十四小时不累人，而且二手车残值高得离谱——用五年卖掉还能收回六成多的钱。对一个种 800 公顷小麦的德国农户来说，买机器算的不是车价，是"每小时每公顷的作业成本"，Fendt 在这个账上赢。AGCO 这些年干的最重要的一件事，就是把 Fendt 从"欧洲品牌"往北美和南美推，因为同样一台机器贴 Fendt 的标能多赚一大截。</p>
+<p><strong>Massey Ferguson（麦赛福格森）</strong>——中端主力，全球销量最大的那种红色拖拉机，100–200 马力居多，一台十几万到三十万美元。买家是巴西的大豆农场、非洲的合作社、美国中西部的中型家庭农场。这个牌子在很多发展中国家等于"拖拉机"这三个字本身。</p>
+<p><strong>Valtra（瓦尔特拉，芬兰）</strong>——北欧的林农两用机，卖给同时种地和伐木的农户，特点是可以按订单改装（比如把驾驶室反转 180 度倒着开去操作后面的机具）。</p>
+<p>除了拖拉机还有联合收割机（Fendt IDEAL 系列，一台八九十万美元，收麦季一天能收 300 吨）、打捆机、喷药机、播种机。</p>
+<p><strong>这门生意的要害是：它是彻头彻尾的周期生意。</strong> 农民什么时候买新机器？粮价高、手里有闲钱、又赶上税务上要抵扣的那一年。2021–2023 年全球粮价大涨，农民排着队买，AGCO 收入从 111 亿冲到 144 亿；2024 年粮价一跌，订单立刻断崖，收入砸回 117 亿，2025 年再跌到 101 亿。<strong>三年时间收入掉了 30%，这不是经营出问题，这就是这门生意本来的样子。</strong></p>
+<h3>生意二：精准农业 PTx（估算一成出头，但是利润率最高的一块）</h3>
+<p>这是 AGCO 最近几年砸钱最狠的方向，包含两块收购来的东西：</p>
+<p><strong>Precision Planting</strong>——卖"改装件"。一个爱荷华的农民有一台用了八年的旧播种机，还能用，但播种时每颗种子的深度和间距控制不准，出苗不齐。他不用换整台播种机（那要 40 万美元），花 6–8 万美元买一套 Precision Planting 的电控排种单元装上去，播种精度立刻追上新机器，出苗率提上去，一亩地多收百来斤玉米。<strong>关键在于：这套件装在迪尔的机器上也能用。</strong> 所以 AGCO 靠这块生意，把手伸进了竞争对手的存量车队里去收钱。</p>
+<p><strong>PTx Trimble</strong>——2024 年花了约 20 亿美元（现金流量表上 FY2024 那笔 19.04 亿的"Cash Acquisitions"就是它）从 Trimble 手里买过来的合资公司，做的是自动驾驶和导航：拖拉机顶上那个白色天线，让机器沿着 2.5 厘米误差的直线自己走，农民坐在驾驶室里只管调头。还包括农场管理软件——哪块地施了多少肥、产量多少，都存在云端，按年收订阅费。</p>
+<p>这块生意好在两点：毛利率比卖整机高得多（软件和电子件），而且<strong>订阅费是每年都收的</strong>，能对冲整机那边的周期性。坏在一点：这 20 亿买贵了，2024 年就为它计提了大额商誉减值（下面第二部分会说）。</p>
+<h3>生意三：配件与售后（估算一成多，是全公司最赚钱、最稳的现金牛）</h3>
+<p>一台拖拉机卖出去后要用十五年，这十五年里要换滤芯、皮带、刀片、液压件。农忙时机器一趴窝，一天损失几万美元，所以农民不会为了省钱去买副厂件，必须找经销商买原厂件，AGCO 在这上头的毛利率能到整机的两三倍。<strong>卖了三十年机器攒下的保有量，就是这块生意的护城河。</strong> 收入跟当年新机销量关系不大，跟"地里跑着多少台 AGCO 的机器"关系大——所以整机跌 30% 的这两年，配件基本没怎么跌。</p>
+<h3>财报真正披露的：按地区</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收（百万美元）</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>占比（FY2025）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>欧洲 / 中东</td>
+<td>6,965</td>
+<td>6,737</td>
+<td>6,712</td>
+<td>66.8%</td>
+</tr>
+<tr>
+<td>北美</td>
+<td>未单独披露</td>
+<td>1,666</td>
+<td>2,298</td>
+<td>16.5%</td>
+</tr>
+<tr>
+<td>南美</td>
+<td>未单独披露</td>
+<td>1,116</td>
+<td>1,209</td>
+<td>11.1%</td>
+</tr>
+<tr>
+<td>亚太 / 非洲</td>
+<td>592.4</td>
+<td>564.2</td>
+<td>626.3</td>
+<td>5.6%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>10,349</strong></td>
+<td><strong>10,082</strong></td>
+<td><strong>11,662</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 同比增速 +1.7%，是三年来第一次转正——从 -19.1%（FY2024）、-13.6%（FY2025）里爬出来了一点。</p>
+<p><strong>这张表最重要的信息是：AGCO 是一家"注册在美国、实际上是欧洲公司"的企业。</strong> 三分之二的钱来自欧洲和中东，主要是德国和法国的 Fendt。所以它的命运更多绑在欧洲农业补贴、欧元汇率和乌克兰局势上，而不是美国玉米带。北美两年从 2,298 掉到 1,666（-27.5%），是全球跌得最惨的一块。</p>
+<p>财报只披露到地区营收，不披露各地区或各产品线的经营利润，上面三门生意的收入占比是按行业惯例和公司公开说法估算的，不是审计数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：干净得罕见</h3>
+<p>TTM 股权激励 <strong>3,840 万美元</strong>，占净利润 533.4 的 <strong>7.2%</strong>，占收入的 0.37%。这在美股里属于<strong>极低</strong>的水平——科技股动辄发掉净利润的三成到全部。原因也简单：农机厂的工程师不吃这一套，AGCO 2.2 万名员工大部分在德国、芬兰、巴西的工厂里，工资是现金发的。</p>
+<p><strong>这一项不需要防。</strong> 它已经在 GAAP 利润里扣掉了，金额也小到不影响任何结论。</p>
+<h3>一次性项目：TTM 里藏着一笔 2.52 亿的大额收益，这是全篇最关键的一个数字</h3>
+<p>现金流量表上，TTM 有一行 <strong>"Loss (Gain) From Sale of Investments −251.9"</strong>——负号表示这是一笔<strong>收益</strong>，意思是净利润 533.4 里，有 <strong>2.519 亿美元（税前）来自卖掉一项投资</strong>，不是卖机器赚的。这笔钱同时出现在 FY2025 那一列，说明发生在 2025 年下半年，是 AGCO 处置其长期持有的印度农机公司 TAFE 股权带来的一次性了结收益。</p>
+<p>按 24.65% 的实际税率折成税后，是 <strong>约 1.90 亿美元</strong>。</p>
+<p><strong>换句话说：TTM 的 5.334 亿净利润里，有 1.90 亿（35.6%）是一次性的，卖完就没了。真正靠卖农机赚到的，是 3.44 亿左右。</strong></p>
+<p>除此之外 TTM 的重组和减值只有 420 万，可以忽略。</p>
+<p>要提醒一句：<strong>只看 TTM 这一期，分不清"真一次性"和"年年都有的一次性"。</strong> 但从往前看三年的记录判断，AGCO 这类项目确实是散着来的大额事件，不是年年重复——FY2024 那一年就是反方向的大额一次性：<strong>资产出售损失 5.073 亿 + 减值与重组 3.695 亿</strong>，加起来把当年做成了 -4.248 亿的亏损年（那年卖掉了 Grain &amp; Protein 谷物蛋白业务，收回 6.307 亿现金，同时对花 20 亿买来的 PTx Trimble 计提了商誉减值）。</p>
+<p><strong>所以：这家公司连续两年，利润表都被一次性项目主导——去年被砸下去，今年被抬起来。</strong> 谁只看当期市盈率，谁就会两次都判断错。</p>
+<h3>资本化的支出：有，但披露不到明细</h3>
+<p>现金流量表上折旧摊销 3.398 亿，远高于资本开支 2.593 亿。差额里有一部分是收购 PTx Trimble 形成的无形资产摊销（这是买来的，不是花钱花出来的），属于"账上有成本、当期没现金流出"的项目。这对 AGCO 是<strong>有利</strong>的一项：它意味着经营现金流会系统性高于净利润。四条财报页面不披露软件开发资本化的单独金额，不做进一步猜测。</p>
+<h3>回购与稀释：这是全篇第二个亮点</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>6.079 亿美元</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>0.384 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>15.8 倍</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>0.852 亿美元</td>
+</tr>
+<tr>
+<td>股本变化（一年）</td>
+<td><strong>−2.01%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>15.8 倍是一个非常高的比值。</strong> 参照标准：接近 1 倍说明回购只是在抵消员工发股，是给员工发工资不是给股东回报；大于 3 倍才算真回购。AGCO 这 6.08 亿几乎全部是净减股本，一年真实注销掉 2.01% 的股份。加上 0.85 亿分红，<strong>TTM 一共有 6.93 亿美元现金真金白银回到了股东手里，相当于 76.4 亿市值的 9.1%。</strong></p>
+<p>但要立刻打个折：这 6.93 亿的现金，很大程度上就是卖 TAFE 股权和卖 Grain &amp; Protein 收回来的钱转手发掉的，不是经营挣出来的（TTM 自由现金流只有 3.30 亿，还不到分掉的一半）。<strong>这是一次性的现金回吐，不是可持续的年度回报率。</strong></p>
+<h3>利润和现金流的差：逐项对账</h3>
+<p>TTM 净利润 5.334 亿，经营现金流 5.896 亿，两者只差 5,600 万，看起来很干净。但拆开看，里面互相抵消的项目非常大：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td><strong>533.4</strong></td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+339.8</td>
+<td>账上扣了钱但没花出去</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+38.4</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>− 卖投资的收益</td>
+<td><strong>−251.9</strong></td>
+<td><strong>把 TAFE 那笔一次性收益扣掉</strong>（现金记在投资活动里）</td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−22.5</td>
+<td>联营公司账面收益，没收到现金</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+4.2</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 卖资产损益</td>
+<td>−1.5</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td><strong>−132.3</strong></td>
+<td>主要是养老金、递延税、经销商融资等</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−54.2</td>
+<td>卖了货还没收到钱</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td><strong>+85.2</strong></td>
+<td><strong>把仓库里的机器卖出去了，回血</strong></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−17.8</td>
+<td>提前付给供应商</td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>+68.8</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>589.6</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−259.3</td>
+<td>建厂、买设备</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>330.3</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说明两件事：</strong></p>
+<ol>
+<li><strong>利润的质量不算差但也不算好。</strong> 3.30 亿自由现金流对 3.44 亿"扣掉一次性后的真实净利润"，比值 0.96，基本一比一，没有那种"报表赚钱、口袋没钱"的毛病。</li>
+<li><strong>但 FCF 比去年腰斩了（740.2 → 330.3，−51.9%）。</strong> 主因是 FY2025 靠大幅去库存（+2.375 亿）挤出了现金，那是把仓库清空的一次性回血，今年清完了就没了。<strong>去库存能救一次现金流，救不了第二次。</strong></li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 76.4 亿，企业价值（EV）99.6 亿（多出来的 23.2 亿是净负债——28.9 亿总债务减 5.7 亿现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>76.4 亿 ÷ 5.334 亿</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>7.0 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>剔除重组和 TAFE 收益后的调整口径，约 3.5 亿</td>
+<td>约 21.8 倍</td>
+<td>约 4.6 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>76.4 亿 ÷（5.334 − 1.90 税后一次性收益 + 0.03 重组）= 3.46 亿</td>
+<td><strong>22.1 倍</strong></td>
+<td><strong>4.5 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>76.4 亿 ÷ 3.303 亿</td>
+<td><strong>23.1 倍</strong></td>
+<td><strong>4.3 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>99.6 亿 ÷ 6.718 亿经营利润</td>
+<td><strong>14.8 倍</strong></td>
+<td><strong>6.8 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（未调整）</strong></td>
+<td>76.4 亿 ÷（FY23 11.71 + FY24 −4.25 + FY25 7.27）/3 = 4.91 亿</td>
+<td><strong>15.6 倍</strong></td>
+<td><strong>6.4 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（剔除一次性后）</strong></td>
+<td>76.4 亿 ÷（11.71 + 2.33 + 5.37）/3 = 6.47 亿</td>
+<td><strong>11.8 倍</strong></td>
+<td><strong>8.5 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>七个数字散在 11.8 倍到 23.1 倍之间，差了整整一倍。搞清楚这个差是从哪来的，就搞清楚了这家公司的全部投资逻辑。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 AGCO，按最保守的真实口径（22.1 倍）算，公司一年替你赚 4.5 块。</strong> 按自由现金流算是 4.3 块，两个数对得上，说明这个 4.5 块不是纸面利润，是真现金。</p>
+<p><strong>但 14.3 倍那个"便宜"的表象是假的</strong>——它把卖印度合资公司股权的 1.9 亿一次性收益当成了年年都有的经营利润。这笔钱卖完就没了，2027 年的利润表上不会再出现。<strong>谁按 14.3 倍买入，就是在为一笔一次性的股权处置收益，付一个永续的估值。</strong></p>
+<p>这 4.5 块里有多少真回到你口袋？TTM 分红 0.85 亿 + 回购 6.08 亿 = 6.93 亿，摊到 76.4 亿市值上是 9.1 元。<strong>这个数字远高于 4.5 元的真实盈利，也就是说公司在拿卖资产的钱分给股东，这是在吃老本，不可持续。</strong> 正常年份能指望的是：分红约 1.1% 股息率 + 每年回购 2–3% 股本，合计 3–4 元的现金回报，剩下的一点点留在公司里投精准农业。</p>
+<h3>这个 4.5 块，未来大概率变大还是变小？</h3>
+<p><strong>大概率变大，而且这是买它唯一的理由。</strong></p>
+<p>原因是最后那一行：<strong>剔除一次性后的三年平均真实利润是 6.47 亿，而 TTM 只有 3.46 亿——现在的盈利只有正常水平的一半多一点。</strong> AGCO 正处在全球农机周期的谷底：收入从 144 亿跌到 101 亿，经营利润率从 11.9% 压到 6.5%。农机厂的固定成本重（工厂、研发、经销商网络），收入跌 30% 会让利润跌 60%——所以现在这个 3.46 亿是周期底部的数字，不是常态。</p>
+<p>TTM 收入增速已经翻正到 +1.7%（前两年是 −19% 和 −14%），存货去化基本完成，这些都是见底的信号。如果周期回到 FY2023 的水平，利润回到 10 亿以上，那么按今天 76.4 亿的市值算就是 7.6 倍，投 100 块一年赚 13 块。</p>
+<p><strong>反过来的风险也很实在：</strong>
+- <strong>28.9 亿债务、净负债 23.2 亿、Debt/FCF 8.75 倍</strong>——按现在的自由现金流水平，要 8.75 年才能还清债。周期底部背这么多债，日子不好过。
+- <strong>PTx Trimble 那 20 亿买贵了，已经减值过一次，可能还有第二次。</strong>
+- <strong>ROIC 只有 7.50%，低于自己的加权资本成本 8.20%。</strong> 这句话的含义很不客气：<strong>过去一年里，AGCO 每投一块钱进这门生意，创造的回报还不够付资金的成本，是在毁灭价值。</strong> 周期底部的 ROIC 天然难看，但这个数字提醒你：这不是一门"放着不管也能复利"的生意，它必须靠周期回升才能证明自己。
+- <strong>三分之二的收入来自欧洲</strong>，欧元兑美元的每一次波动都直接打在利润上。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>14.9 倍是个假便宜，22 倍才是真价格；但周期底部的 22 倍，本来就该跟别的公司的 22 倍分开看。</strong></p>
+<p>这不是一家可以按当期市盈率买的公司——它当期的利润里三分之一是卖股权的一次性收益，剩下三分之二是周期谷底的数字，两个方向的失真叠在一起。真正的价格标尺是最后那行：<strong>按剔除一次性后的三年平均利润算 11.8 倍，投 100 块一年 8.5 块</strong>，这个价格对一家全球第三、手握 Fendt 这种高端品牌、股本每年真实注销 2% 的农机厂，<strong>算是公道，谈不上便宜</strong>。</p>
+<p>买它就是在赌一件事：<strong>农机周期已经见底，欧洲农民会重新开始换车。</strong> 这个赌注有支撑（收入增速转正、库存去化完成），但它不便宜到能容错——ROIC 低于资本成本、Debt/FCF 8.75 倍、精准农业还可能再减值一次，任何一条出问题，你等的周期回升就会被拖到下一个五年。</p>
+<p><strong>结论：不便宜，属于合理偏贵那一档，值得放进观察名单等一个更差的报价，不值得现在追。</strong></p>
+</div></body></html>

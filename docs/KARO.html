@@ -1,0 +1,319 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KARO · Karooooo（Cartrack 车辆远程监控）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KARO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">零股权激励账最干净，ROIC31%，但营收涨21%利润只涨6%</div><h1>KARO · Karooooo（Cartrack 车辆远程监控）</h1>
+<p>市值 19.93 亿美元 ｜ 股价 $63.96 ｜ 行业：科技服务（车联网 SaaS）｜ TTM 截止 2026-05-31（财年 2 月底结束）</p>
+<p><strong>这家公司用南非兰特（ZAR）记账，在纳斯达克用美元交易。</strong> 全文两种货币都会出现，换算按 TTM 期内平均汇率 <strong>1 美元 = 16.20 兰特</strong>（用营收 57.66 亿兰特 = 3.5585 亿美元倒算出来的）。所有数字都是 TTM 口径。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<h3>主业：Cartrack —— 往车里塞一个盒子，然后按月收租</h3>
+<p>这是全公司 <strong>89.7%</strong> 的收入来源，也是理解这家公司的全部。</p>
+<p>生意本身极其简单：Cartrack 的技术员在你的车上装一个扑克牌大小的黑盒子，接在 OBD 接口或者直接接线到车的电路上。盒子里有 GPS、加速度计、一张物联网 SIM 卡。装好之后，这辆车的<strong>位置、速度、急刹、怠速、油量、发动机故障码、是谁在开</strong>，全部实时传回 Cartrack 的服务器，客户在手机或网页上能看到。</p>
+<p>然后每月收订阅费。南非的价格大概每车每月 <strong>150—200 兰特（约 10—12 美元）</strong>。<strong>盒子本身不卖，产权归 Cartrack</strong>——这一点后面会反复出现，因为它是理解这家公司财报的钥匙。</p>
+<p>买它的人分两类，动机完全不同：</p>
+<p><strong>第一类：车队客户。</strong> 比如一家在约翰内斯堡送饮料的物流公司，有 400 台货车。装了 Cartrack 之后，调度室的屏幕上 400 个点在地图上跑。系统自动告诉他：3 号车今天在一个加油站停了 40 分钟（司机在偷油）、17 号车有 12 次急刹（这司机迟早出事故，保险费要涨）、每台车的实际工时表自动生成，不用司机自己填。<strong>这些东西直接换算成钱</strong>：燃油支出降 8%—12%、保险保费能谈下来、事故率下降、员工不敢再私用公车。一台车每月 12 美元，省下来的油钱不止这个数——<strong>所以这笔钱客户是算得过账的，不是可有可无的软件预算。</strong></p>
+<p><strong>第二类：南非的私家车主。</strong> 这一类的逻辑更硬：<strong>南非是全世界劫车（hijacking）最严重的国家之一。</strong> 车被抢了，Cartrack 有自己的 24 小时监控中心、自己的追车队伍、跟警方有对接。装了盒子的车，找回率九成以上。更关键的是，<strong>南非很多车险公司直接把「装追踪器」写进保单条件</strong>——不装，保费高一大截甚至不给保。也就是说，对相当一部分南非车主来说，<strong>这是准强制消费。</strong></p>
+<p>这就是 Cartrack 最深的那条护城河：它不是一个「有了更好」的效率工具，在南非它是<strong>保险行业的基础设施</strong>。加上他们养着自己的实体追车队伍——这不是软件公司抄一抄就能复制的，要在一个国家一个国家地建控制中心、招人、跟警方打关系。</p>
+<p>规模上，Cartrack 目前有<strong>两百多万个订阅车辆</strong>。地理分布：南非最大（约三分之二），其余是非洲其他国家、欧洲（葡萄牙、西班牙）、东南亚（新加坡、马来西亚、泰国、印尼、菲律宾），美国有很小的存在感。</p>
+<p><strong>关于「盒子归 Cartrack」这件事的财务后果</strong>：装一台车的硬件成本要先花出去，记成公司的固定资产，然后按四五年折旧。所以你会在报表上看到一个很反常的东西——<strong>一家毛利率 68% 的「软件公司」，资本开支占营收 20%</strong>。这不是浪费，这是它的商业模式：<strong>先垫硬件，再收五年租金。</strong> 订阅越多，前期垫的钱越多，账面自由现金流就越难看。</p>
+<h3>副业：Karooooo Logistics —— 帮零售商管最后一公里</h3>
+<p>收入占 10.3%。原来叫 Picup，做的是「配送调度」：一家南非零售商要给几千个订单派车，用这套系统自动排路线、派给自己的车或者平台上的临时司机、给收货人发追踪链接。<strong>这门生意毛利率低得多</strong>，一部分收入实质上是把运费转手，不是软件费。它长得快（+28.5%），但<strong>它长得越快，公司整体的利润率就被拖得越低</strong>——这解释了下面那个很刺眼的现象。</p>
+<h3>两门生意的账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万兰特）</th>
+<th>折美元</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cartrack</strong></td>
+<td>5,170</td>
+<td>$319M</td>
+<td>+19.1%</td>
+<td>89.7%</td>
+<td>~28%（估算）</td>
+</tr>
+<tr>
+<td><strong>Karooooo Logistics</strong></td>
+<td>596.2</td>
+<td>$36.8M</td>
+<td>+28.5%</td>
+<td>10.3%</td>
+<td>接近盈亏平衡（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td>5,766</td>
+<td>$355.9M</td>
+<td>+21.1%</td>
+<td>100%</td>
+<td>25.5%（这个是实数）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>增速用的是完整财年 FY2026 对 FY2025 的比较</strong>，因为 TTM 没有可比的上年同期分部数。<strong>分部经营利润财报只披露到营收，上面两个利润率是我按整体 25.5% 的经营利润率和两门生意的结构倒推的估算，不是财报数字。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分会很短，因为几乎没有可剥的。这本身就是一个重要发现。</strong></p>
+<h3>① 股权激励（SBC）：<strong>零</strong></h3>
+<p>现金流量表上<strong>根本没有股权激励这一行</strong>。一家在纳斯达克上市、被市场当成 SaaS 看的科技公司，TTM 股权激励是 0。</p>
+<p>这值得多说两句。美股科技公司的标准套路是：GAAP 净利润很难看 → 公司发布「调整后利润」把股权激励加回来 → 数字瞬间漂亮 → 而员工手里的股票在真实地稀释你。<strong>Karooooo 完全没有这套东西</strong>，员工拿现金工资，股份数一年没有变化，也没有回购（因为不需要回购去抵消什么）。</p>
+<p>原因也不难猜：创始人 Zak Calisto 持有 <strong>57.14%</strong>，公司是新加坡注册、南非运营，不玩硅谷那一套。<strong>这是全篇最干净的一个数字。</strong></p>
+<h3>② 一次性项目</h3>
+<p>TTM 只有一笔 304 万兰特（约 19 万美元）的资产处置收益，可以忽略。FY2025 有过一笔 4,360 万兰特的减值，但已经滚出 TTM 窗口了。<strong>没有。</strong></p>
+<h3>③ 资本化的支出</h3>
+<p>有，而且很大，但<strong>它不是障眼法，是商业模式本身</strong>：
+- 资本开支 <strong>11.58 亿兰特（$71.5M）</strong>，占营收 20.1%——绝大部分是装在客户车上的那些盒子
+- 无形资产（软件开发）资本化 <strong>6,167 万兰特（$3.8M）</strong>，很小，不构成问题</p>
+<p>判断它是不是障眼法的方法是看<strong>折旧有没有跟上</strong>：TTM 折旧摊销 8.56 亿 + 其他摊销 1.94 亿 = <strong>10.50 亿兰特</strong>，对比资本开支 11.58 亿。<strong>折旧覆盖了资本开支的 91%</strong>——说明公司没有靠「把成本推到未来」来美化当期利润，这些硬件在以接近购买的速度被计提损耗。<strong>干净。</strong></p>
+<h3>④ 回购与稀释</h3>
+<ul>
+<li>TTM 回购：<strong>0</strong></li>
+<li>TTM 股权激励：<strong>0</strong></li>
+<li>股份数变化：<strong>0</strong>（3,089 万股，一年没动）</li>
+</ul>
+<p><strong>回购 ÷ SBC 这个比值在这里没有意义，因为分子分母都是零。</strong> 这是好事——不需要用回购去堵股权激励的窟窿。</p>
+<p>它把钱以另一种方式还给股东：<strong>TTM 分红 6.936 亿兰特（约 4,280 万美元）</strong>，股息率约 <strong>2.15%</strong>，占净利润 68%。这是实打实的现金进你口袋，比绝大多数科技股强。</p>
+<h3>⑤ 利润和现金流的差 —— 唯一需要警惕的地方</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万兰特）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,024</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>855.8</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>194.2</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−3.0</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>106.5</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−6.1</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−1.9</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>138.9</td>
+</tr>
+<tr>
+<td>＋ 预收款增加</td>
+<td>78.5</td>
+</tr>
+<tr>
+<td><strong>− 其他经营性净资产变化</strong></td>
+<td><strong>−524.6</strong> ←</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,862</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,158</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>704.4（约 $44.0M）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两件事要指出来：</p>
+<p><strong>第一，那笔 −5.246 亿兰特的「其他经营性净资产变化」。</strong> 它在 FY2026 是 −3.17 亿，FY2025 是 −2.23 亿，<strong>TTM 一下子跳到 −5.25 亿，一个季度就多吃掉两个亿</strong>。这一行在财报页上没有明细，最可能的构成是<strong>分期付款销售的应收款和资本化的合同获取成本（销售佣金）</strong>——也就是说，Cartrack 在用更宽松的付款条件去换新增订阅。这不是造假，但<strong>它是一个「增长质量在下降」的早期信号，值得下个季度专门盯</strong>。</p>
+<p><strong>第二，自由现金流只有净利润的 69%</strong>（4,400 万 vs 6,320 万美元），而分红要花 <strong>4,280 万美元</strong>——<strong>分红几乎吃掉了全部自由现金流（97%）</strong>。公司账上净现金只剩 217 万美元（现金 6,842 万，负债 6,624 万），三年前净现金还有 7.84 亿兰特。<strong>这个分红水平不是不能维持，但已经没有余量了；要么增长带来的资本开支放缓，要么分红得停止增长。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>净利润 <strong>6,320 万美元</strong>，TTM 无股权激励调整、无一次性项目，所以<strong>「剔除障眼法后的真实净利润」跟 GAAP 净利润是同一个数</strong>——这在美股里很罕见。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>19.93 亿 ÷ 0.632 亿</td>
+<td><strong>31.5×</strong></td>
+<td><strong>$3.17</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司只披露调整后 EBITDA，不做调整后净利</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>同 GAAP（无 SBC、无一次性）</td>
+<td><strong>31.5×</strong></td>
+<td><strong>$3.17</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>19.93 亿 ÷ 0.440 亿</td>
+<td><strong>45.3×</strong></td>
+<td><strong>$2.21</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>19.90 亿 ÷ 0.907 亿</td>
+<td><strong>21.8×</strong></td>
+<td><strong>$4.60</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>19.93 亿 ÷ 0.605 亿</td>
+<td><strong>33.0×</strong></td>
+<td><strong>$3.03</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行用的是 TTM 10.24 亿、FY2026 9.94 亿、FY2025 9.21 亿兰特的平均值 9.797 亿兰特（约 6,050 万美元）。</p>
+<h3>这几个数字在说什么</h3>
+<p><strong>当期 31.5 倍 vs 三年平均 33.0 倍，几乎没有差别（差 5%）。</strong> 这跟上一家 EZCORP 正好相反——<strong>Karooooo 现在的利润不在周期高点上，它就是它的常态水平。</strong> 用三年平均口径重新审视也不会发现隐藏的雷，这是好事。</p>
+<p>但它也说明了另一件事，而且是坏消息：<strong>这家公司的利润三年来几乎没怎么长。</strong> 净利润从 9.21 亿兰特到 10.24 亿兰特，三年累计只涨了 11%，<strong>年化 3.6%</strong>。同期营收从 45.67 亿涨到 57.66 亿，涨了 26%。</p>
+<p><strong>营收涨 26%，利润只涨 11%——这就是那个刺眼的现象。</strong> 每股收益 TTM 只增长 <strong>6.28%</strong>，而营收增长 21.07%。经营利润率从 FY2025 的 28.7% 掉到现在的 25.5%。原因前面说过：低毛利的 Logistics 业务占比在上升，同时 Cartrack 为了在东南亚和欧洲扩张，前期投入的销售和硬件成本先发生、订阅收入后来才到。</p>
+<p><strong>估值上，31.5 倍是它自己历史区间的上沿</strong>：FY2024 是 19.96 倍、FY2023 是 24.16 倍、FY2026 是 23.34 倍。<strong>市净率 8.93 倍更是明显的高位</strong>（三年前 4.91 倍）。股价一年涨 26%，而利润涨 6%。</p>
+<h3>你投 100 块，一年到底拿回多少</h3>
+<p><strong>按最保守的真实口径（也就是 GAAP，因为没有可剥的），公司一年替你赚 3.17 美元。</strong></p>
+<p>这 3.17 美元里，<strong>2.15 美元以现金分红的形式真正回到你口袋</strong>（股息率 2.15%），剩下约 1 美元留在公司。留下的这 1 块钱去哪了？看投资活动：全部变成了装在新客户车上的黑盒子。</p>
+<p><strong>这个再投资是划算的</strong>——ROIC <strong>31.49%</strong>，加权资本成本 9.06%，<strong>利差 22 个百分点</strong>。每留 1 块钱在公司，能创造出远超 1 块钱的价值。这是全篇最有说服力的数字：<strong>Karooooo 是一门真正高回报的生意，不是靠杠杆、不是靠会计。</strong></p>
+<p>未来这个 3.17 美元会变大还是变小？<strong>中期大概率变大，但速度不快，而且路上有三个坑</strong>：
+1. <strong>汇率</strong>。收入九成来自兰特，股价是美元。兰特兑美元长期贬值是常态（十年跌了约 40%）。<strong>兰特每贬 10%，你的美元回报直接少 9%</strong>，跟公司经营好坏无关。
+2. <strong>利润率还在往下走</strong>。低毛利的 Logistics 增长更快，东南亚扩张还在烧钱。营收 21% 增速换来 6% 的每股收益增速，这个转换效率如果不改善，31.5 倍就撑不住。
+3. <strong>流动性极差</strong>。57.14% 在创始人手里，实际流通只有 <strong>1,094 万股</strong>，日均成交 10.2 万股。买卖大一点的仓位会显著推动股价，出事的时候没人接盘。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门非常好的生意，账干净得罕见，但现在的价格已经把「重新加速增长」这件还没发生的事提前付掉了。</strong></p>
+<p>好的部分不含糊：南非的劫车追踪几乎是准强制消费，保险公司帮它锁客；ROIC 31.5% 对 WACC 9%；<strong>零股权激励、零回购粉饰、零一次性项目、折旧覆盖资本开支 91%——这是我在美股见过最干净的一张报表之一</strong>；还给你 2.15% 的真金白银分红。</p>
+<p>麻烦的部分也不含糊：<strong>营收涨 21% 而每股收益只涨 6.3%</strong>，经营利润率两年掉了 3 个百分点，自由现金流只有净利润的 69% 且被分红吃掉 97%，账上净现金归零，「其他经营性净资产」一个季度多流出两亿兰特。这些是同一件事的不同侧面——<strong>它在花钱买增长，而增长还没有变回利润。</strong></p>
+<p>31.5 倍市盈率、8.9 倍市净率，是它自己六年历史的上沿，对应你一年 3.17 美元的回报。<strong>如果利润增速恢复到 20%，这个价格合理；按现在 6% 的实际增速，这个价格贵。</strong> 我倾向后者，因为利润率下滑是结构性的（业务组合变了），不是一次性的。</p>
+<p><strong>好公司，价格不便宜；跌回 20—24 倍（历史中枢）再看。</strong></p>
+</div></body></html>

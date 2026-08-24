@@ -1,0 +1,322 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TER · 泰瑞达（Teradyne, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TER</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">一年涨210%，三年平均口径74倍，买在利润翻倍的极端年</div><h1>TER · 泰瑞达（Teradyne, Inc.）</h1>
+<p>市值 552 亿美元 / 当前股价约 353 美元（流通股 1.563 亿股）/ 行业：电子科技 — 半导体自动测试设备 / TTM 截止日期：2026 年 6 月 28 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>泰瑞达做的事，一句话说清：<strong>芯片造完了，通电挨个考一遍，把不合格的挑出来。</strong></p>
+<p>前面分析过的 KLA 是"生产过程中的质检"，泰瑞达是"出厂前的期末考试"。一片晶圆切成几百上千颗裸芯片，每一颗都要插进机器，灌进去几百万个测试向量（就是各种输入信号的组合），看它输出的结果对不对、在高温低温下还对不对、跑到 5GHz 还对不对、功耗超没超标。合格的打上标签装机，不合格的直接扔掉——一颗英伟达的 GPU 成本几千美元，装进服务器之后才发现是坏的，代价是几十倍。</p>
+<p>财报按三个分部披露。以最新一个季度（2026 年 Q2，营收 13.29 亿美元）的实际结构来看：</p>
+<h3>1. 半导体测试（Semiconductor Test）—— 季度营收 11.22 亿，占 84%</h3>
+<p>这是泰瑞达的命根子，本身又分三块：</p>
+<p><strong>SoC 测试（季度 8.43 亿）</strong>：SoC 就是"片上系统"，手机主芯片、AI 加速卡、汽车芯片都属于这一类。泰瑞达的旗舰机型叫 UltraFLEXplus，一台售价 200 万到 400 万美元，长得像一排冰箱，中间是测试头，机械臂把芯片一颗颗送进去。这块生意的客户是台积电这样的代工厂、日月光这样的封测厂，以及苹果、英伟达、博通这些自己管测试的芯片设计公司。<strong>收费逻辑是"每颗芯片测多少秒"</strong>：AI 芯片的晶体管数量是手机芯片的几十倍、测试项多几个数量级，一颗要测好几分钟，而手机芯片几秒钟就完事。所以 AI 芯片浪潮对泰瑞达是双重利好——芯片数量在涨，每颗占用的测试时间也在暴涨，同样的产量需要买更多台机器。</p>
+<p>这块生意全球基本上是<strong>两家公司分</strong>：泰瑞达和日本的爱德万（Advantest）。爱德万在最高端 AI 芯片测试上这两年占了上风（英伟达主要用爱德万），泰瑞达在苹果、汽车、通用 SoC 上更强，同时正在往 AI ASIC（谷歌 TPU、亚马逊 Trainium 这类定制芯片）里挤。两家合计占了全球 SoC 测试机 90% 以上。为什么进不来第三家？因为测试机不只是硬件——客户的测试程序、良率数据库、几千个针脚的接口板（叫"测试座"）全部是围绕某一家的机器写的，换品牌等于把整个测试工程团队推倒重来。</p>
+<p><strong>存储器测试（季度 2.12 亿，创纪录）</strong>：专门测 DRAM 和 HBM。HBM 是 AI 服务器上那圈贴着 GPU 的高带宽内存，它是把 8 到 12 层 DRAM 裸片叠起来、用几千根微型铜柱打穿连接的——这种堆叠结构一旦有一层坏了整颗就废，而且要在堆叠之前、之后各测一遍。所以 HBM 的测试强度是普通 DRAM 的好几倍，这块营收从"配角"直接干到了历史新高。</p>
+<p><strong>IST（智能系统测试，季度 0.67 亿，同比 +94%）</strong>：芯片装到板子上、板子装进系统之后再测一次的设备，AI 服务器整机厂在买。</p>
+<h3>2. 产品测试（Product Test）—— 季度营收 1.07 亿，占 8%</h3>
+<p>一堆杂项的集合：硬盘和固态硬盘的量产测试（数据中心扩容时买）、电路板生产线上的在线测试（汽车电子、工业控制在用）、军工和航空航天的老旧电子系统测试（美国国防部的合同，几十年的存量装备要定期检修）、还有 LitePoint 的无线测试（手机出厂前测 Wi-Fi 和蓝牙信号强度）。同比 +26%，是个稳定但没什么想象力的现金业务。</p>
+<h3>3. 机器人（Robotics）—— 季度营收 1.00 亿，占 7.5%</h3>
+<p>泰瑞达十年前花大钱买的两家丹麦公司：Universal Robots（协作机械臂，就是那种可以直接放在工人旁边、不用围安全笼的橙色机械臂，一台两三万美元，装配、拧螺丝、上下料）和 MiR（自主移动机器人，工厂里自己认路运货的小车）。</p>
+<p><strong>这块生意是泰瑞达过去五年最大的失败。</strong> 收购时的故事是"工业自动化第二增长曲线"，实际是：欧洲制造业疲软、中国本土协作机器人厂商（节卡、遨博、优傲的中国对手）把价格打到了三分之一、公司自己的渠道又是靠经销商没法直销。营收常年在 3—4 亿美元原地踏步，好几年是亏损的。这个季度 +33% 是个不错的信号（人形机器人和物流自动化带动），但要提醒一句：<strong>1 亿的季度营收，就算利润率做到 15%，一年也就 6000 万，对一家赚 11.5 亿的公司不构成变量。</strong> 它更像一个还没证伪也还没证实的期权。</p>
+<p>TTM 全年口径（截止 2026 年 6 月 28 日，单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品销售</td>
+<td>3,910</td>
+<td>2,660（FY2025 全年）</td>
+<td>+47%（近似）</td>
+<td>87.6%</td>
+</tr>
+<tr>
+<td>服务与备件</td>
+<td>554</td>
+<td>530（FY2025 全年）</td>
+<td>+5%（近似）</td>
+<td>12.4%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>4,464</strong></td>
+<td><strong>2,827（上年同期 TTM）</strong></td>
+<td><strong>+57.9%</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+<tr>
+<td>按分部（按 Q2 结构推算，估算）</td>
+<td>半导体测试 ≈ 84%、产品测试 ≈ 8%、机器人 ≈ 8%</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到分部营收，<strong>不披露分部经营利润</strong>。整体经营利润率 30.74%，考虑到半导体测试毛利最高、机器人多年微利甚至亏损，实际情况大概是半导体测试贡献了 95% 以上的利润。</p>
+<p><strong>一句话</strong>：这就是一家半导体测试公司，另外背着两个小包袱。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 7,393 万美元，占 GAAP 净利润 11.50 亿的 <strong>6.4%</strong>。跟 KLA 一样干净。半导体设备公司普遍不靠发股票发工资，这跟软件公司是两个世界。本文当作真实成本，已在 GAAP 里扣除，不加回。</p>
+<p><strong>一次性项目</strong>：TTM 里没有大额的。有 1,496 万的"股权投资损失"（投出去的少数股权减值）和 927 万的"投资处置收益"，两项加起来影响不到净利润的 0.5%，可以忽略。历史上 FY2024 有过 5,712 万的资产处置收益（卖掉了一块接口业务），FY2025 也有股权投资损失——<strong>这类小额扰动在泰瑞达属于年年都有一点，但金额小到不改变结论</strong>。</p>
+<p><strong>资本化的支出</strong>：没有软件开发费资本化的迹象，研发直接进损益。资本开支 2.65 亿，占营收 5.9%，比 KLA 略高（在扩产能）。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 5.01 亿，SBC 0.74 亿，<strong>比值 6.8 倍</strong>——真回购，不是给员工擦屁股。股本一年实际减少 <strong>2.69%</strong>，这是本篇最扎实的股东回报证据。分红只有 0.78 亿（股息率 0.15%，聊胜于无），公司明确把钱放在回购上。两项合计 5.8 亿，占自由现金流 8.0 亿的 72%。</p>
+<p><strong>利润和现金流的差</strong>：净利润 11.50 亿，经营现金流 10.65 亿，<strong>利润比现金多 0.85 亿</strong>，跟 KLA 是同一个病因。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1,150</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+133</td>
+<td>账面费用，不花钱</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+74</td>
+<td>发股票不是发现金</td>
+</tr>
+<tr>
+<td>＋ 股权投资损失</td>
+<td>+15</td>
+<td>减值，不花钱</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−9</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营项</td>
+<td>−21</td>
+<td>杂项</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−657</strong></td>
+<td><strong>本期最大的一个洞</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−13</td>
+<td>存货几乎没涨，这点很关键</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+314</td>
+<td>欠供应商的钱多了</td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>+90</td>
+<td>客户订金</td>
+</tr>
+<tr>
+<td>＋ 应交税金增加</td>
+<td>+93</td>
+<td>税还没缴</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−103</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1,065</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−265</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>800</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>关键看应收账款那一行：<strong>一年多出 6.57 亿的应收，而全年营收才 44.6 亿</strong>。也就是说，多出来的营收里有很大一块钱还在客户手里没收回来。这不奇怪——Q2 单季营收同比翻倍（13.29 亿 vs 6.5 亿），季度末刚发出去的货自然还在账期内。而且要注意一个正面信号：<strong>存货几乎没增加（只涨了 1,257 万）</strong>，说明这不是"造了一堆卖不掉压在仓库"，而是"造出来立刻发走了"。这两个数字放在一起看，是需求真实旺盛的证据，不是渠道压货。</p>
+<p>代价是自由现金流利润率只有 17.9%，比净利率 25.8% 低了近 8 个百分点。<strong>你看到的 8 亿自由现金流是被营运资金压过的数字</strong>，如果增速放缓、应收回笼，现金流会追上来。</p>
+<p><strong>资产负债表</strong>：总债务 1.0 亿，现金及投资 5.17 亿，净现金 4.17 亿。几乎零负债，利息保障倍数 121 倍。这是一张没有任何财务风险的表。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 551.9 亿，企业价值 547.7 亿（净现金 4.2 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>551.9 ÷ 11.50 亿</td>
+<td><strong>48.0 倍</strong></td>
+<td><strong>2.08 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>剔除并购摊销、重组，净利约 12.1 亿（估算）</td>
+<td>约 45.6 倍</td>
+<td>2.19 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>本期无重大一次性项目，SBC 按 GAAP 已扣，≈ GAAP</td>
+<td><strong>48.0 倍</strong></td>
+<td><strong>2.08 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>551.9 ÷ 8.00 亿</td>
+<td><strong>69.0 倍</strong></td>
+<td><strong>1.45 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>547.7 ÷ 13.72 亿</td>
+<td><strong>39.9 倍</strong></td>
+<td><strong>2.50 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>551.9 ÷ [(11.50+5.54+5.42)/3 = 7.49 亿]</td>
+<td><strong>73.7 倍</strong></td>
+<td><strong>1.36 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话</strong>：你现在投 100 块进泰瑞达，按最保守的真实口径（三年平均利润 73.7 倍）算，公司一年替你赚 <strong>1.36 元</strong>。按最宽松的 EV/EBIT 口径也才 2.50 元。</p>
+<p>这点钱里有多少回到你口袋？回购收益率 2.69% + 股息率 0.15% = <strong>股东总回报率 2.83%</strong>，实际上高于按利润算的回报率——因为泰瑞达把自由现金流的七成都拿去买自己的股票了。剩下的钱一部分投在扩产能（资本开支 2.65 亿），一部分用于并购（TTM 花了 1.66 亿收购）。</p>
+<p>未来这个数字变大还是变小？<strong>短期确定变大，长期不确定。</strong> 分析师给的远期 PE 是 36.2 倍，PEG 只有 1.05——意味着市场预期未来一年利润还要再涨三成以上。逻辑是成立的：AI 芯片的测试时间需求还在膨胀，HBM 从 8 层往 12 层、16 层走会进一步推高测试强度，泰瑞达在 AI ASIC 上正从爱德万手里抢份额。</p>
+<p><strong>但三年平均口径 73.7 倍 vs 当期 48.0 倍这个 54% 的缺口，是全篇最要命的一句话。</strong> 它明明白白告诉你：<strong>当前 11.5 亿的净利润是一个极端值，不是常态。</strong> 看历史就懂了——FY2023 净利润 4.49 亿、FY2024 5.42 亿、FY2025 5.54 亿，三年趴在 5 亿附近纹丝不动，然后 TTM 一下子跳到 11.5 亿。这不是复利成长，这是一根被 AI 资本开支垂直拉起来的柱子。半导体测试的历史周期性比 KLA 还要剧烈：FY2022 营收掉 14.8%、FY2023 又掉 15.2%，连着两年负增长是常态而不是意外。</p>
+<p>还有一个更刺眼的数字：<strong>这只股票过去 52 周涨了 209.6%——翻了三倍。</strong> 同期营收涨 57.9%、净利润涨约 108%。也就是说，股价涨幅里大约一半来自公司真的多赚了钱，另一半纯粹是市场愿意为同样的利润多付钱。市场给它的 PE 从大约 30 倍提到了 48 倍。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意本身是硬的，价格已经把最好的剧本演完了。</strong></p>
+<p>泰瑞达的底子挑不出毛病：全球 SoC 测试双寡头之一，客户换供应商的转换成本极高，毛利率 59%、ROIC 38%、净现金 4.2 亿、几乎零负债，SBC 只占利润 6.4%、回购是 SBC 的近 7 倍、股本一年实缩 2.7%，本期营运资金被吃掉是因为发货太猛而不是存货积压——所有硬指标都是干净的。机器人业务是个持续多年的败笔，但它太小了，撑死也就影响个位数百分点的利润。</p>
+<p>问题只在价格，而且比 KLA 更极端。48 倍当期、<strong>74 倍三年平均</strong>、69 倍自由现金流，而这个"当期"是把 FY2023—FY2025 三年 5 亿净利润的平台，一年之内拉到 11.5 亿的极端年份。股价一年翻三倍，其中一半是估值扩张。你今天买入，赌的是：AI 测试需求不但要维持，还得在明年再涨三成（把远期 36 倍变成现实），且这轮上行没有下一次"连续两年营收负增长"。</p>
+<p><strong>这是一家好公司在一个非常糟糕的时点。</strong> 它比 KLA 的价格更贵（74 倍 vs 60 倍三年平均），周期弹性更大（净利润两年翻一倍多，跌起来也会一样快），52 周涨幅 210% 意味着任何一次订单指引不及预期都会有腰斩级别的回撤。想拥有它，等一次 AI 资本开支的坏消息，那时候它会以完全不同的价格出现。</p>
+</div></body></html>

@@ -1,0 +1,419 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SONO · 声美（Sonos, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SONO</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">三个算法都指向30倍,SBC占净利111%,三年才赚这一年</div><h1>SONO · 声美（Sonos, Inc.）</h1>
+<p>市值 18.6 亿美元 / 当前股价 $15.73（2026-08-24）/ 行业：消费耐用品（联网音响）/ TTM 截止日 <strong>2026-06-27</strong>（公司财年 9 月底结束）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>先说一件事：Sonos 的财报只按地理区域披露营收，不按产品线披露。</strong> 所以下面讲每件生意时，产品的具体形态和收钱方式是实的，但每条产品线的营收数字财报里没有，我不会编。</p>
+<p>本质上这是<strong>一门生意</strong>：卖能联网、能互相组队的家用音箱。但它值得拆成四类东西来看，因为它们在整个飞轮里的角色完全不同。</p>
+<h3>生意一：无线音箱 —— 这是"入坑装置"</h3>
+<p>一个 Sonos Era 100 卖 249 美元，比同尺寸的普通蓝牙音箱贵三四倍。它凭什么？</p>
+<p>关键不在音质（虽然音质确实好），在于<strong>它插电、连 Wi-Fi，不连手机</strong>。普通蓝牙音箱是手机的附属品：手机走出房间音乐就断，接个电话音乐就停，两个音箱没法一起放。Sonos 是反过来的——音箱自己联网、自己去 Spotify 拉流，手机只是个遥控器。你把手机关机，音乐照放。</p>
+<p>这带来一个具体到日常的差别：你在厨房做饭放着音乐，走到客厅，掏出手机点一下"客厅"，客厅那台立刻接上继续放<strong>同一首歌、同一个进度</strong>，厨房那台可以关掉也可以继续，两台完全同步、没有回声。这个"多房间同步"是 Sonos 二十年来的技术核心——不同房间的音箱要在毫秒级别对齐，差 20 毫秒人耳就听出回声了。</p>
+<p><strong>它真正卖的不是音箱，是"下一个音箱"。</strong> 典型的用户路径是：先买一台放厨房 → 用了半年觉得好 → 给卧室加一台 → 发现看电影时电视声音太薄 → 买一根回音壁 → 觉得低音不够 → 加一个低音炮。<strong>一个家庭的终身消费经常是 1500–3000 美元，而不是 249 美元。</strong> 这就是 Sonos 的商业模式。</p>
+<h3>生意二：家庭影院 —— 现在的营收主力，也是单价最高的</h3>
+<p>一根 Sonos Arc Ultra 回音壁卖 999 美元，加一个 Sub 4 低音炮 799 美元，再加两个 Era 100 当后置环绕 498 美元——一套 2300 美元的家庭影院，全部无线，接一根 HDMI 线到电视就完事。</p>
+<p>为什么有人买？因为传统家庭影院要在墙里穿五根喇叭线、买一台 AV 功放、调试半天，装修完了才能干，租房的人根本没法做。Sonos 把这套东西变成"买回来插上电、用手机 App 点两下，五分钟搞定"。它牺牲了一部分极致音质（发烧友会嘲笑它），换来了 99% 的普通人能用。</p>
+<p>这块是它现在的现金奶牛，也是它跟索尼、Bose 正面打的战场。</p>
+<h3>生意三：组件和耳机 —— 边缘尝试</h3>
+<ul>
+<li><strong>Amp / Port</strong>：给已有的传统音响系统装个"联网大脑"，几百到上千美元一台，卖给已经有好喇叭的人。量不大，但利润高。</li>
+<li><strong>Ace 耳机</strong>：2024 年推出的头戴降噪耳机，449 美元，正面撞 AirPods Max 和 Bose。<strong>这是一次到目前为止不算成功的品类扩张</strong>——耳机是个人产品，跟"多房间"的核心优势毫无关系，Sonos 在这个市场没有任何结构性优势。</li>
+</ul>
+<h3>生意四：软件（不直接收钱，但决定生死）—— 而且它在 2024 年把这件事搞砸了，砸得很惨</h3>
+<p>Sonos App 是整个系统的操作台：所有音箱在这里分组、调音量、切音源、连 Spotify/Apple Music。App 不收费，但它是护城河的实体——正是这个 App 把二十台设备粘成一个系统，让你换品牌的成本高到不可接受。</p>
+<p><strong>2024 年 5 月，Sonos 推了一个重写的新 App，成了整个消费电子行业当年最著名的事故。</strong> 新版本砍掉了闹钟、播放队列编辑、本地音乐库这些老用户天天用的功能，还大面积崩溃、连不上设备。花了 2000 美元的用户打开手机发现自己家的音箱变砖了。</p>
+<p>后果不是"口碑受损"这种软性的东西，是<strong>具体的财务塌方</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th><strong>TTM</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万美元）</td>
+<td>1,752</td>
+<td>1,655</td>
+<td>1,518</td>
+<td>1,443</td>
+<td><strong>1,490</strong></td>
+</tr>
+<tr>
+<td>同比</td>
+<td>+2.07%</td>
+<td>−5.54%</td>
+<td>−8.29%</td>
+<td>−4.93%</td>
+<td><strong>+5.64%</strong></td>
+</tr>
+<tr>
+<td>净利润（百万美元）</td>
+<td>67.38</td>
+<td><strong>−10.27</strong></td>
+<td><strong>−38.15</strong></td>
+<td><strong>−61.14</strong></td>
+<td><strong>+56.91</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连跌三年，连亏三年</strong>，营收从 17.5 亿掉到 14.4 亿。新品（Arc Ultra、Ace）为了修 App 一再延期，CEO Patrick Spence 于 2025 年 1 月下台，前 Pandora 首席技术官 Tom Conrad 接任。</p>
+<p><strong>而 TTM 这一栏，是三年来第一次转正</strong>——营收 +5.64%，净利润从亏 6114 万变成赚 5691 万。这是整份财报唯一重要的问题：<strong>这个转正是真的修好了，还是砍成本砍出来的？</strong></p>
+<h3>钱的分布（TTM，截止 2026-06-27，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>上一完整年（FY2025）</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>880.99</td>
+<td>855.74</td>
+<td>59.1%</td>
+</tr>
+<tr>
+<td>欧洲中东非洲 EMEA</td>
+<td>464.31</td>
+<td>441.18</td>
+<td>31.2%</td>
+</tr>
+<tr>
+<td>亚太</td>
+<td>86.28</td>
+<td>79.16</td>
+<td>5.8%</td>
+</tr>
+<tr>
+<td>美洲其他</td>
+<td>58.77</td>
+<td>67.20</td>
+<td>3.9%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,490</strong></td>
+<td><strong>1,443</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只披露到地理区域，不披露分地区利润，也不披露分产品线营收。</strong> 上表的"占比"是营收占比，不是利润占比。整体经营利润率 5.92%（88.20 ÷ 1490）。</p>
+</blockquote>
+<p>值得注意：<strong>九成营收来自美国和欧洲</strong>，亚太只有 5.8%。这是一家发达国家中产阶级的产品，在中国、印度基本没有存在感——增长空间受限于一个已经买得差不多的市场。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：6316 万美元 —— 这是本文最重要的一个数字。</strong></p>
+<p><strong>Sonos 一年发出去的股票（6316 万），比它一年赚的钱（5691 万）还多，占净利润的 111%。</strong></p>
+<p>换句话说：这家公司 GAAP 上赚的每一分钱，都不够付给员工的股票。GAAP 报表里这笔已经扣掉了（这是对的），但公司自己吹的"调整后利润"会把它加回来，把 5691 万变成一亿两千多万，市盈率从 33 倍变成 15 倍——<strong>那个 15 倍是假的，因为你的股份被真真切切地稀释了。</strong></p>
+<p>规模上要有个概念：6316 万相当于市值的 3.4%。也就是说<strong>每年有 3.4% 的公司无偿转移给员工</strong>。对比上一家分析的 EPAC，SBC 只占净利 13.8%，Sonos 是它的八倍。</p>
+<p><strong>一次性项目：资产减值与重组费用 669 万。</strong> 金额不大（占净利 11.8%）。但注意历史：FY2025 是 1192 万、FY2024 是 220 万、FY2023 是 553 万——<strong>这家公司年年都有"一次性"重组</strong>。单看 TTM 一期分不清这是真一次性还是常态开支，但从这个序列看，它更像是常态。我倾向于不把它加回利润。</p>
+<p><strong>资本化的支出：需要留意。</strong> 折旧摊销 4639 万 + 其他摊销 420 万，而当期资本开支只有 2194 万——<strong>折旧是资本开支的两倍多</strong>。这说明公司正在消化前几年（FY2023–24 资本开支每年五千万以上）投下去的东西，同时大幅收缩新投入。资本开支从 FY2024 的 5525 万砍到 TTM 的 2194 万，<strong>砍掉了六成</strong>。省钱是真省了，但一家硬件公司把研发相关的投入砍掉六成，两三年后产品线会不会出现空档，是个必须记在心里的问题。</p>
+<p><strong>回购与稀释：花了大钱，效果一般。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>1.412 亿美元</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>0.632 亿美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.24 倍</strong></td>
+</tr>
+<tr>
+<td>员工行权发新股（现金流入）</td>
+<td>0.250 亿美元</td>
+</tr>
+</tbody>
+</table></div>
+<p>标准是：接近 1 说明回购只在填坑，<strong>大于 3 才算真回馈股东</strong>。<strong>2.24 倍是"填完坑还剩一点"</strong>——1.41 亿的回购里，有大约 6300 万只是在抵消发给员工的股票，另外 2500 万被员工行权新发的股票抵消掉，真正让老股东受益的部分不到一半。</p>
+<p>统计页显示流通股一年"增加了 1.05%"，但按每股净现金反推（净现金 2.042 亿 ÷ 每股 1.73 = 约 1.18 亿股，上一财年是 1.208 亿股），股本实际是<strong>小幅减少</strong>的。两个口径打架，我不采信任何一个的精确值，但<strong>结论是稳的：花了相当于 7.6% 市值的钱去回购，最终股本只减少了个位数百分点甚至没减少。</strong> 钱大部分喂给了员工的股票。</p>
+<p><strong>利润和现金流的差：现金流 1.47 亿 vs 净利润 0.57 亿，高出 158%。逐项对账（百万美元）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>56.91</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>46.39</td>
+<td>没花现金</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>4.20</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>6.69</td>
+<td>账面减值，没花现金</td>
+</tr>
+<tr>
+<td><strong>＋ 股权激励 SBC</strong></td>
+<td><strong>63.16</strong></td>
+<td><strong>加回来是因为发的是股票不是现金——但你的股份被稀释了，这不是白来的钱</strong></td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>10.24</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应收账款增加</td>
+<td>−26.47</td>
+<td>客户欠的钱变多，出血</td>
+</tr>
+<tr>
+<td>＋ 存货增加</td>
+<td>−43.19</td>
+<td>备货占用现金（在为新品铺货？）</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>46.92</td>
+<td>拖着供应商的货款没付，<strong>输血</strong></td>
+</tr>
+<tr>
+<td>＋ 递延收入变动</td>
+<td>−1.86</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变动</td>
+<td>−15.90</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>147.09</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−21.94</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>125.15</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表读出两件要命的事：</strong></p>
+<p><strong>第一，1.47 亿经营现金流里，有 6316 万（43%）是加回的 SBC。</strong> 这笔钱不是公司赚来的，是股东用股权换来的。<strong>扣掉它，真实的自由现金流只有 6199 万，不是 1.25 亿——直接腰斩。</strong></p>
+<p><strong>第二，应付账款贡献了 4692 万的正流入，同时应收和存货合计吃掉 6966 万。</strong> 应付账款增加意味着"欠供应商的钱变多了"，这是一次性的营运资金腾挪，不可持续（供应商不会让你无限期地欠下去）。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 18.6 亿美元、企业价值 16.6 亿美元（有 2.04 亿净现金，无负债压力）计算。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>18.60亿 ÷ 0.5691亿</td>
+<td><strong>32.7 倍</strong></td>
+<td><strong>3.06 元</strong></td>
+</tr>
+<tr>
+<td>公司会吹的 Non-GAAP</td>
+<td>加回 SBC 0.632亿 ＋ 重组 0.067亿 ≈ 1.268亿</td>
+<td>14.7 倍</td>
+<td>6.82 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>只加回真一次性重组（税后约 0.054亿），<strong>SBC 不加回</strong></td>
+<td><strong>29.9 倍</strong></td>
+<td><strong>3.35 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>18.60亿 ÷ 1.2515亿</td>
+<td>14.9 倍</td>
+<td>6.72 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC 后）</strong></td>
+<td>18.60亿 ÷ 0.6199亿</td>
+<td><strong>30.0 倍</strong></td>
+<td><strong>3.33 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>16.60亿 ÷ 0.8820亿</td>
+<td><strong>18.8 倍</strong></td>
+<td>5.32 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>FY2023 亏1027万、FY2024 亏3815万、FY2025 亏6114万，<strong>三年平均是亏损 3652 万</strong></td>
+<td><strong>无法计算（分母为负）</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后那一行是全表最重要的一行，也是这只股票的真相：过去三个完整财年，这家公司一分钱没赚，累计亏了 1.096 亿美元。</strong></p>
+<p>TTM 这一期赚的 5691 万，是<strong>三年里唯一赚钱的一年</strong>。你现在买的，是"这一年不是昙花一现"这个假设。</p>
+<p><strong>说人话：你现在投 100 块进去，公司一年替你赚多少？</strong></p>
+<p><strong>按最保守也最诚实的口径：3.35 元。</strong>（GAAP 利润，SBC 当成真实成本扣掉，只把当期重组加回来）</p>
+<p>对照一下：<strong>扣掉 SBC 的自由现金流口径也是 3.33 元，两个完全独立的算法互相印证到小数点后一位。</strong> 这说明 3.3 元这个数字是可靠的，不是巧合。</p>
+<p>而公司自己和卖方分析师会给你看的那个 <strong>6.82 元（14.7 倍市盈率）</strong>，靠的就是把 6316 万的 SBC 加回来——<strong>那 6316 万是你的股份被稀释掉的部分，把它当成利润是自欺欺人。</strong></p>
+<p><strong>这 3.35 块里，有多少真回到你口袋？</strong></p>
+<p><strong>分红：零。</strong>（无股息，Ex-Dividend Date 显示 n/a）</p>
+<p><strong>回购：TTM 花了 1.412 亿。</strong> 按 18.6 亿市值算是 7.6%，听起来很高。但如上文所述，其中约 6300 万只是在填 SBC 的坑，另有 2500 万被员工行权新股抵消——<strong>真正落到你头上的净回购大约是 3%–4%。</strong></p>
+<p><strong>留在公司里的部分效率如何？</strong> ROIC 高达 <strong>35.99%</strong>，这个数字很亮眼，原因是 Sonos 是轻资产模式（产品全部外包代工，自己不建厂），资本占用很少。但要注意它的 <strong>WACC 是 14.45%</strong>（因为 beta 高达 1.93，市场认为这只股票风险极大）——即使 ROIC 远高于 WACC，这个高资金成本本身就是市场在说"我不相信这个回报能稳定"。</p>
+<p><strong>这个 3.35 元未来会变大还是变小？</strong> 这是个真正的两边下注：</p>
+<p><strong>变大的理由</strong>：营收三年来首次转正（+5.64%）；毛利率从 FY2025 的 43.9% 修到 46.6%；成本结构被大幅压缩（资本开支砍六成）；新 CEO 上任后主要精力在修 App 和产品线；账上 2.04 亿净现金、几乎无债，撑得住。<strong>这门生意的底子——多房间同步、系统粘性、25 年积累的品牌——没有被那次 App 事故摧毁，只是被打伤了。</strong></p>
+<p><strong>变小的理由</strong>（我认为权重更大）：</p>
+<ol>
+<li><strong>利润转正主要是砍出来的，不是长出来的。</strong> 营收 14.9 亿，还比三年前的 17.5 亿低 15%。经营利润率只有 5.92%，是一个薄得吓人的数字——营收再掉 5%，它立刻回到亏损。</li>
+<li><strong>对手是不打算赚钱的巨头。</strong> 苹果 HomePod、亚马逊 Echo、谷歌 Nest，对它们来说音箱是把用户绑进生态的引流品，可以贴钱卖。Sonos 必须靠硬件本身赚钱，这是结构性的劣势。</li>
+<li><strong>市场已经饱和。</strong> 九成营收来自美欧，亚太只有 5.8%。已经买了 Sonos 的家庭还会加音箱，但<strong>新家庭从哪来</strong>是个没有好答案的问题。</li>
+<li><strong>SBC 是永久性的。</strong> 6316 万一年，占市值 3.4%。这不是一次性的，是每年都要付的"隐形工资"，且不随利润下降而下降。</li>
+<li><strong>8.2% 的流通股被做空</strong>，做空比例在美股里属于偏高，市场里有一批人明确在赌它还会跌回去。</li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一个 15 倍市盈率的复苏故事，是一个 30 倍市盈率的赌注。</strong></p>
+<p>真实的账是这样的：GAAP 32.7 倍，把当期重组加回来算真实口径 29.9 倍，扣掉股权激励的自由现金流口径 30.0 倍。<strong>三个独立算法都指向 30 倍。</strong> 而这 30 倍买的是什么——是一家营收比三年前低 15%、经营利润率只有 5.9%、过去三个完整财年一分钱没赚过、每年还要把 3.4% 的公司无偿发给员工的硬件公司。</p>
+<p>你会看到的那个"14.7 倍、很便宜"的说法，全部建立在把 6316 万股权激励加回利润这一个动作上。这个动作在数学上成立、在现实里是骗人的：<strong>那 6316 万确确实实从你的持股比例里被拿走了。</strong></p>
+<p>Sonos 这门生意本身不烂——多房间同步是真本事，"买一个然后买第二个"的飞轮是真的，二十五年的品牌是真的，账上 2.04 亿净现金没有负债是真的。它值得存在，也大概率不会死。</p>
+<p>但它现在的价格已经把"复苏成功"当成既成事实来定价了。真正谨慎的做法，是等它连着两三个季度证明营收增长不是一次性的补库存，同时把股权激励从占净利 111% 压到 40% 以下——<strong>在那之前，30 倍买一家 5.9% 经营利润率、还在跟苹果亚马逊贴身肉搏的硬件公司，赔率不划算。</strong></p>
+</div></body></html>

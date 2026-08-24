@@ -1,0 +1,345 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EPAC · 恩派克工具集团（Enerpac Tool Group Corp.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EPAC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账干净得少见,回购是SBC的9.8倍,但20倍买4%增长不便宜</div><h1>EPAC · 恩派克工具集团（Enerpac Tool Group Corp.）</h1>
+<p>市值 19.0 亿美元 / 当前股价 $37.38（2026-08-24）/ 行业：工业制造（高压液压工具）/ TTM 截止日 <strong>2026-05-31</strong>（公司财年 8 月底结束，所以这个 TTM 是 2025年6月–2026年5月）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只分两个部分：<strong>Industrial Tool &amp; Services（工业工具与服务，简称 IT&amp;S）</strong> 和 <strong>Other</strong>。后者只占 4%，所以说白了，这就是一家只做一件事的公司。</p>
+<h3>生意一：高压液压工具 —— 卖"能被一个人拎着走、却能顶起 100 吨"的家伙</h3>
+<p>Enerpac 做的是 <strong>700 bar（10000 psi）级别的液压工具</strong>。普通汽修千斤顶大概是 200 bar，它做的是这个压力的 3.5 倍。压力高的直接后果是：设备可以做得极小。它的一个标准液压缸，直径跟一个饭盒差不多，重十几公斤，一个工人单手拎得动，但推力是 100 吨——相当于顶起 70 辆家用轿车。</p>
+<p>这东西卖给谁、用在哪，举几个真实场景：</p>
+<p><strong>场景一，炼油厂大修拆螺栓。</strong> 一座炼油厂的反应塔法兰上有几十根手臂粗的螺栓，几年高温高压下来锈死在一起，扳手根本拧不动，硬拧就是把螺纹拧断，一根断了整个法兰要重做。Enerpac（这块用的是它买来的 HYDRATIGHT 品牌）卖的是<strong>液压螺栓拉伸器</strong>：套在螺母上，靠液压把螺栓轴向拉长零点几毫米，螺母瞬间就松了，用手都能转。一整套设备十几万到几十万美元，但炼厂停工检修一天的损失是几百万美元——所以采购部门在这上面从来不砍价，只问"能不能保证按时开工"。</p>
+<p><strong>场景二，风电塔筒上螺栓。</strong> 一台风机塔筒每一节法兰有 100 多根 M48 螺栓，扭矩要求 5000 牛米以上，还必须每根一样、误差 3% 以内（否则受力不均，几年后疲劳断裂）。人力扳手做不到，用的是 Enerpac 的<strong>液压扭矩扳手</strong>：接上电动泵，设定压力，一根一根打，每根扭矩误差能控制在 ±3%。一把扳手加泵几千到两三万美元，一个风场建设方要买几十套，而且是易损件，每几年换一批。</p>
+<p><strong>场景三，桥梁顶升和整体平移。</strong> 一座公路桥要换橡胶支座，需要把几千吨重的桥面整体顶起 20 毫米，还必须<strong>每个支点同步</strong>——差 3 毫米桥面就会开裂。Enerpac 卖的是<strong>同步举升系统</strong>：几十个液压缸接到一台带电脑控制的泵站上，传感器实时反馈，误差控制在 ±1 毫米。这类"重型吊装解决方案"一单能到几百万美元，还经常连人带设备一起租出去。船厂下水、把整栋历史建筑平移几百米、核电站更换蒸汽发生器，用的都是这套东西。</p>
+<p><strong>它是怎么收钱的，分三层：</strong></p>
+<ol>
+<li><strong>卖断工具</strong>（大头）：通过全球工业品经销商网络卖，单价从一个几百美元的手动泵，到一套几万美元的扭矩扳手系统。经销商拿货加价卖给终端工厂。</li>
+<li><strong>卖耗材和配件</strong>：液压软管、密封件、专用接头。工具能用十年，密封件一两年就得换。这部分毛利最高，是典型的"剃须刀-刀片"结构。</li>
+<li><strong>租赁 + 现场服务</strong>：一次性的大活儿（比如某个电厂十年一次的大修）客户不会买整套设备，就租，甚至连 Enerpac 的技师一起请去现场干。这块营收波动大但利润率不低。</li>
+</ol>
+<p><strong>它的护城河是什么？</strong> 不是技术专利——液压缸的原理一百年没变过。是两样东西：<strong>品牌等于"不会出事"</strong> ——工具在 700 bar 下失效意味着高压油喷射伤人或者几千吨的东西掉下来，采购的人不敢省这个钱；<strong>经销商网络</strong> ——全球几千家工业品分销商的货架上摆着 Enerpac 的蓝色工具箱，一个新品牌要挤进去得花十年。结果就是 50% 的毛利率，一个卖钢铁疙瘩的公司做出软件公司才有的毛利。</p>
+<h3>生意二：Other —— 4% 的边角料</h3>
+<p>财报只写"Other"，不细分。这块主要是工业绳缆/合成缆索类的非核心业务（Cortland 那条线），用于海洋工程系泊、深水吊装。历史上这块从 FY2023 的 4303 万一路缩到 FY2024 的 1836 万——公司在陆续卖掉/关掉不赚钱的部分，TTM 反弹到 2507 万。对整个公司的估值来说，这部分基本可以忽略。</p>
+<h3>钱的分布（TTM，截止 2026-05-31，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比增速</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工业工具与服务 IT&amp;S</td>
+<td>609.01</td>
+<td>约 +4%（估算）</td>
+<td>96.0%</td>
+<td>约 23%（估算）</td>
+<td>约 140</td>
+</tr>
+<tr>
+<td>Other（绳缆等）</td>
+<td>25.07</td>
+<td>约 +19%（估算）</td>
+<td>4.0%</td>
+<td>约 0%（估算）</td>
+<td>约 0</td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −3</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>634.08</strong></td>
+<td><strong>+4.27%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>21.67%</strong></td>
+<td><strong>137.40</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>说明：<strong>财报只按分部披露营收，不披露分部利润</strong>，上表的利润率和贡献利润是按整体 21.67% 经营利润率、结合 IT&amp;S 是核心高毛利业务反推的<strong>估算值</strong>，不是财报原文数字。分部同比增速也是拿 TTM 与上一完整财年对比的近似值，只有合计的 +4.27% 是财报口径的真同比。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：1289 万美元，占净利润 13.8%。</strong> 数字不大，但<strong>这里当成真实成本全额扣掉</strong>——它稀释你手里的股份。好消息是这家公司的 SBC 占比在美股里算克制的（很多科技公司这个比例是 50%+），而且 GAAP 净利润里已经扣过了，我们不用再动手。</p>
+<p><strong>一次性项目：TTM 基本没有。</strong> 现金流表里"资产减值与重组费用"这一行 TTM 是 <strong>0</strong>（对比 FY2022 是 241 万、FY2021 是 559 万）。也就是说 2022–2023 年那轮叫 ASCEND 的重组已经走完了，现在这个利润是干净的经营利润，不需要往回调。这是个加分项——很多公司的"一次性重组"年年都有。</p>
+<p><strong>资本化的支出：没有。</strong> 这是家造铁疙瘩的公司，没有软件开发费资本化、没有内容制作费。资本开支 1222 万，只占营收 1.9%，全部是实打实的厂房设备。</p>
+<p><strong>回购与稀释：这一项是全篇最亮眼的地方。</strong></p>
+<ul>
+<li>TTM 回购金额 <strong>1.259 亿美元</strong></li>
+<li>TTM 股权激励 <strong>1289 万美元</strong></li>
+<li><strong>回购 ÷ SBC = 9.8 倍</strong></li>
+</ul>
+<p>标准是：接近 1 说明回购只是在填员工发股挖的坑，大于 3 才算真回馈股东。<strong>9.8 倍是真回购里的真回购。</strong> 印证在股本上：流通股一年从约 53.0 百万股降到 <strong>51.14 百万股，减少 3.58%</strong>。你什么都不做，手里这份股票占公司的比例一年自动涨 3.7%。</p>
+<p>分红只有 212 万，股息率 0.1%，可以忽略——这家公司明确选择了"全部用回购还给你"这条路。</p>
+<p><strong>利润和现金流的差：现金流比利润多 33%，差在哪里，逐项对账（单位：百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>93.32</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>18.10</td>
+<td>厂房设备的账面损耗，没真花钱</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>0.59</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>12.89</td>
+<td>发的是股票不是现金，现金流里加回（但股份被稀释了，这不是白来的）</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>1.70</td>
+<td>账面上计提的呆账，暂时没真损失</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>−3.56</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>7.18</td>
+<td>收回了客户欠的钱</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>4.21</td>
+<td>库存卖掉变成了现金</td>
+</tr>
+<tr>
+<td>＋ 应付账款减少</td>
+<td>−8.28</td>
+<td>付给供应商的钱多了，出血</td>
+</tr>
+<tr>
+<td>＋ 所得税相关变动</td>
+<td>12.06</td>
+<td>税暂时缓交，是<strong>时间差不是白赚</strong>，未来要还</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产变动</td>
+<td>−13.67</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>124.52</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−12.22</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>112.30</strong></td>
+<td><strong>比净利润高出 20%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看完这张表要抓住两点：<strong>第一</strong>，现金流高于利润的主要来源是折旧摊销（18.1）和 SBC（12.9）这两项"没花现金的费用"，这是正常且健康的；<strong>第二</strong>，其中 1206 万来自"所得税相关变动"——这笔是<strong>缓交的税，早晚要还</strong>，不能当成可持续的现金创造能力。把它剔掉，真实可持续的 FCF 更接近 <strong>1.0 亿美元</strong>。后面算估值我会两个数都给。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 19.02 亿美元计算（股价 $37.38 × 5114 万股）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>19.02亿 ÷ 0.9332亿</td>
+<td><strong>20.4 倍</strong></td>
+<td><strong>4.90 元</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>财报页未单独披露；TTM 无重组无减值，与 GAAP 差距估在 3% 以内</td>
+<td>约 19.8 倍</td>
+<td>约 5.05 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无真一次性损益可剔，SBC 已按 GAAP 扣除不加回</td>
+<td><strong>20.4 倍</strong>（同 GAAP）</td>
+<td><strong>4.90 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>19.02亿 ÷ 1.123亿</td>
+<td><strong>16.9 倍</strong></td>
+<td><strong>5.90 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流（剔掉缓交税）</td>
+<td>19.02亿 ÷ 1.00亿</td>
+<td>19.0 倍</td>
+<td>5.26 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（19.02亿 + 0.69亿净负债）÷ 1.374亿</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>6.97 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>19.02亿 ÷ FY23–25 三年平均净利 0.7502亿</td>
+<td><strong>25.4 倍</strong></td>
+<td><strong>3.95 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：你现在投 100 块进去，公司一年替你赚多少？</strong></p>
+<p>按最保守的<strong>三年平均口径是 3.95 元</strong>，按当期 GAAP 是 <strong>4.90 元</strong>，按自由现金流是 <strong>5.90 元</strong>。</p>
+<p>这三个数字差得挺开，得解释清楚哪个更接近真相：</p>
+<p><strong>三年平均口径的 3.95 元被人为压低了。</strong> 因为 FY2023 那年净利润只有 4656 万——那年公司在做 ASCEND 重组，税前利润率被压到 11.5%（现在是 19.4%）。那是转型阵痛，不是常态。所以 25.4 倍这个数字不代表"现在利润在高点"，恰恰相反，它说明<strong>过去三年利润是一路往上爬的</strong>（4656 万 → 8575 万 → 9275 万 → TTM 9332 万）。这跟 NVDA 那种"当期便宜、三年平均贵一倍"的周期高点是完全相反的形态。</p>
+<p><strong>我倾向以 GAAP 的 4.90 元 和 EV/EBIT 的 6.97 元 之间作为真实答案。</strong> EV/EBIT 之所以显著更高，是因为它算的是"整个公司的经营利润"，没扣税和利息——对一个只有 6900 万净负债、几乎零杠杆的公司来说，这两者的差距主要就是 24% 的所得税。税是躲不掉的，所以以 <strong>GAAP 的 4.9 元</strong>为准更诚实。</p>
+<p><strong>这 4.9 块钱，有多少真回到你口袋？</strong></p>
+<p>TTM 里公司拿出 <strong>1.259 亿回购 + 212 万分红 = 1.28 亿</strong>，而自由现金流是 1.123 亿——<strong>它还回来的钱比它赚的现金还多</strong>，超出部分是动用了账上现金（现金从 1.52 亿降到 1.16 亿）。换算过来，按 19 亿市值算，<strong>股东回报率约 6.7%（回购 6.6% + 分红 0.1%）</strong>，比 4.9 元的会计利润还高。</p>
+<p>代价是账上现金在减少，净负债从 −6203 万扩到 −6911 万。不过负债/EBITDA 只有 <strong>1.07 倍</strong>，这个杠杆水平在工业股里属于极低，还有很大空间。</p>
+<p><strong>这个 4.9 元未来会变大还是变小？</strong></p>
+<p>大概率<strong>缓慢变大</strong>，理由有三条：
+1. <strong>股本每年少 3.5%</strong> —— 就算公司利润一分不涨，每股收益也自动涨 3.6%。
+2. <strong>ROIC 21.05%，WACC 8.21%</strong> —— 每留在公司里再投一块钱，能赚 21 分，远高于 8.2 分的资金成本。这是判断"利润留在公司里比分给你更划算"的硬标准，EPAC 明确达标。
+3. <strong>终端市场在扩张</strong> —— 风电运维、老基建翻修、炼化设施延寿，都是它工具的用武之地。</p>
+<p>风险是它的营收增速只有 <strong>4.27%</strong>，这是个<strong>慢公司</strong>。工业维修工具跟着工业资本开支周期走，经济一衰退，工厂就会把大修往后拖一年，营收能瞬间掉 10%（看 FY2023 的 −1.45% 和 FY2022 那年 2.75% 的惨淡净利率就知道）。股价过去 52 周跌了 11.2%，市场担心的正是这个。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家干净得少见的小工业公司，估值也基本公道，但没有便宜可占。</strong></p>
+<p>优点是真实的：50% 毛利、21% 的 ROIC、几乎零一次性项目、SBC 只占净利 14%、回购是 SBC 的 9.8 倍、账上几乎没有杠杆——这份财报里我找不到任何一处需要打折的地方，这在美股里不常见。</p>
+<p>问题在于价格已经把这些优点算进去了。20.4 倍市盈率对一个营收只增长 4%、且跟工业周期强绑定的公司，是<strong>合理，不是便宜</strong>。你付的 20 倍里，大约有 15 倍是买它现在的生意，剩下 5 倍是买"股本每年缩 3.5%"这个复利机器。这个逻辑成立，但需要时间兑现，而且中途一定会遇到工业衰退把营收打回去。</p>
+<p>值得买的价格大概在 16–17 倍（也就是股价 30 美元附近，接近它的自由现金流口径估值）。现在 37 块，是"看着挺好，但不着急"的位置。</p>
+</div></body></html>

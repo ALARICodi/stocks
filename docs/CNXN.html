@@ -1,0 +1,339 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CNXN · PC Connection（康耐信 / 品牌名 "Connection"）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CNXN</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">账干净净现金占17%，但20倍买3%增长的搬箱子生意，该给13倍</div><h1>CNXN · PC Connection（康耐信 / 品牌名 "Connection"）</h1>
+<p><strong>市值</strong> 19.5 亿美元 ｜ <strong>股价</strong> 约 77.3 美元 ｜ <strong>行业</strong> 科技服务（IT 产品分销与集成）｜ <strong>数据口径</strong> TTM，截至 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先把这家公司是干什么的说清楚，因为它的名字很有迷惑性——<strong>它不生产任何东西，一台电脑都不造</strong>。</p>
+<p>Connection 是一家 1982 年在美国新罕布什尔州成立的 <strong>IT 转售商兼系统集成商</strong>（行业黑话叫 VAR，value-added reseller）。它的角色是站在惠普、戴尔、联想、思科、微软、苹果、英伟达这些厂商和「需要买 IT 设备的公司」中间。</p>
+<p>为什么中间需要一个人？举个具体的例子：</p>
+<p>一家有 400 人的律师事务所，笔记本用了四年该换了。它不会打电话给戴尔说「给我 400 台」——因为它需要的不是 400 个纸箱。它需要的是：有人比较戴尔、联想、惠普三家同档次机型的实际报价（同一台机器给不同渠道商的价格能差 8%）；有人把 400 台机器在出厂后、送到员工手上之前，<strong>统一装好这家所里的系统镜像</strong>（Windows 加域、装好法律检索软件、装好加密盘、禁掉 USB 口）；有人贴好资产标签、录进这家所的 IT 资产台账；有人按每个律师的家庭住址分别直邮（疫情后大量公司不再集中发放）；有人在之后三年里，某台机器坏了的时候负责跟戴尔扯皮走保修，而不是让所里的两个 IT 人员自己打电话排队。</p>
+<p>Connection 干的就是这些。它在俄亥俄州 Wilmington 有一个约 30 万平方英尺的配置中心（Technology Integration and Distribution Center），机器从厂商直发到这里，装机、贴标、打包、再发出去。</p>
+<p><strong>它怎么收钱</strong>：硬件按进价加价卖（毛利率通常 6%–12%，大单更薄），配置服务按台收费（一台装机配置大约 25–75 美元），另外还卖自己的托管服务、云服务转售（微软 365、AWS 的分销佣金）、以及少量咨询。整体毛利率 <strong>18.89%</strong>——这个数字对一家转售商来说其实偏高（纯搬箱子的毛利率只有 12%–14%），高出来的部分就是服务和高毛利的小客户业务。</p>
+<p>它按客户类型分三门生意：</p>
+<h3>生意 A：企业解决方案（Enterprise Solutions）——最大的一门</h3>
+<p>卖给财富 1000 强这类大公司。TTM 营收 13.74 亿，占 46%。</p>
+<p>这门生意的特点是<strong>单子大、利润薄</strong>。一家大银行一年可能在 Connection 这里花 8000 万美元买服务器、交换机、终端。这种客户有专业采购部门，会拿三家渠道商的报价互相压，毛利率大概只有 13%–15%。但它的好处是<strong>黏性极强</strong>：一旦 Connection 的系统接进了客户的采购流程（客户的员工直接在一个定制的下单页面上选型号，价格是事先谈好的合同价，走客户自己的审批流），换一家的迁移成本很高。</p>
+<p>TTM 增长 +7.2%（12.82 亿 → 13.74 亿），是三块里增长最快的。驱动力是企业换 AI 相关基础设施——GPU 服务器、配套的网络和存储、以及为了跑 AI 应用而提前更新的终端。</p>
+<h3>生意 B：商业解决方案（Business Solutions）——最赚钱的一门</h3>
+<p>卖给 1000 人以下的中小企业。TTM 营收 11.50 亿，占 38%，增长 +6.3%。</p>
+<p>这门生意靠的是<strong>电话销售</strong>。Connection 养着几百个客户经理，一个人手里管几十上百家小公司，靠打电话和邮件维系。小公司没有专业采购、没有 IT 部门（或者只有一两个人），它不比价，它要的是「我打一个电话，明天这台服务器就到我办公室，坏了你来修」。所以<strong>毛利率是三块里最高的，大概 21%–23%</strong>。</p>
+<p>这是 Connection 最有价值的一块资产——不是技术，是那份客户名单和几十年打出来的人际关系。</p>
+<h3>生意 C：公共部门解决方案（Public Sector Solutions）——正在萎缩的一门</h3>
+<p>卖给联邦政府、州政府、地方政府，以及 K-12 学校和大学。TTM 营收 4.64 亿，占 16%。</p>
+<p><strong>这块 TTM 下滑了 8.8%</strong>（5.08 亿 → 4.64 亿），而且不是第一年下滑了（FY2024 5.72 亿 → FY2025 5.08 亿 → TTM 4.64 亿，两年跌掉了 19%）。两个原因叠加：一是疫情期间那波「给每个学生发一台 Chromebook」的联邦补贴（ESSER 基金）已经花完了，学校端的设备采购回到常态；二是联邦政府这两年在削减 IT 采购预算。</p>
+<p>政府生意的毛利率介于前两者之间，但回款慢、投标成本高。这一块继续缩，会持续拖累整体。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收（百万美元）</th>
+<th>FY2025</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>企业解决方案 Enterprise</td>
+<td>1,374</td>
+<td>1,282</td>
+<td><strong>+7.2%</strong></td>
+<td>46%</td>
+<td>估算约 2.5%</td>
+</tr>
+<tr>
+<td>商业解决方案 Business</td>
+<td>1,150</td>
+<td>1,082</td>
+<td><strong>+6.3%</strong></td>
+<td>38%</td>
+<td>估算约 7%</td>
+</tr>
+<tr>
+<td>公共部门 Public Sector</td>
+<td>463.6</td>
+<td>508.5</td>
+<td><strong>−8.8%</strong></td>
+<td>16%</td>
+<td>估算约 3%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,988</strong></td>
+<td>2,873</td>
+<td><strong>+3.2%</strong></td>
+<td>100%</td>
+<td>4.13%（实际值）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收和毛利，不披露分部经营利润，上表的利润率是按各块已知的毛利结构减去分摊后的销售管理费用估算的，<strong>不是财报数字</strong>。</p>
+</blockquote>
+<p>注意合计增速只有 +3.2%，明显低于前两块的 6%–7%——那 4 个百分点全被萎缩的公共部门吃掉了。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的账<strong>非常干净</strong>，几乎没有什么可剥的。这本身就是一个信息：家族控股、经营了 44 年、没有并购冲动的老公司，通常不需要靠会计花活撑估值。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 997 万美元，占净利润 9584 万的 <strong>10.4%</strong>。这是一个很低的比例（对比一下：本批另一家 Progyny 是 136%）。997 万分摊到 2525 名员工，人均不到 4000 美元一年——它是一家用现金发工资的公司，不是用股票。这一项按 GAAP 已经全额扣除，下面所有口径都不需要再调。</p>
+<p><strong>一次性项目</strong>：没有。TTM 里最大的非经常项目是投资处置损失 80 万美元，零头。没有诉讼、没有重组、没有减值、没有并购费用。</p>
+<p><strong>资本化的支出</strong>：几乎没有。TTM 资本开支只有 797 万美元——占营收的 0.27%。这家公司不建厂、不搞大型自研软件资本化。折旧摊销 1127 万，比资本开支还高，说明它连维持性投入都在收缩（配置中心已经建好了，不用再投）。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 2202 万美元，同期 SBC 997 万，<strong>回购 / SBC = 2.2 倍</strong>——超过 1，是真回购。股本一年实减 3.13%。不过要说明：这个 3.13% 主要是 FY2025 那笔 7931 万大额回购的滞后效果，TTM 的回购力度（2202 万）已经明显放缓了，最近一个季度股本甚至回升了 0.23%。另外它还发股息，TTM 派了 1766 万，按 19.5 亿市值算股息率约 <strong>0.9%</strong>（每股约 0.70 美元）。</p>
+<p>回购加股息合计 3968 万，占市值 2.0%，占净利润的 41%。剩下 59% 留在公司里——但公司又没什么资本开支，所以这些钱其实就是堆在账上（现金 3.41 亿）和被营运资金吃掉了。这是这家公司资本配置上最大的问题：<strong>它没有明确的钱的去处</strong>。</p>
+<p><strong>利润和现金流的差</strong>：这里出了大问题，必须细看。净利润 9584 万，经营现金流只有 <strong>4203 万</strong>——现金流不到利润的一半。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>95.84</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>11.27</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>9.97</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>2.60</td>
+</tr>
+<tr>
+<td>＋ 资产/投资处置损失</td>
+<td>0.90</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>3.99</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−92.39</strong></td>
+</tr>
+<tr>
+<td><strong>− 存货增加</strong></td>
+<td><strong>−71.61</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+74.04</td>
+</tr>
+<tr>
+<td>＋ 其他净营运资产</td>
+<td>+7.42</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>42.03</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−7.97</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>34.05</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看清楚这三行</strong>：应收账款一年增加了 9239 万，存货增加了 7161 万，应付账款只增加了 7404 万来对冲——净营运资金吞掉了 8996 万现金。</p>
+<p>这个数字的严重性在于：<strong>营收一年只增加了 1.15 亿（2,873 → 2,988），但应收账款就增加了 9239 万</strong>。也就是说每多做 1 块钱生意，有 8 毛钱变成了还没收回来的账。正常情况下，应收账款的增长应该和营收增长同比例——3.2% 的营收增长对应的应收增长应该是一两千万，而不是九千多万。存货同理，涨了 7161 万，而存货周转率是 14.3 次/年，意味着这批多出来的货相当于 25 天的销量。</p>
+<p><strong>这是好事还是坏事？单看 TTM 一期的数据判断不了，两种解释都成立</strong>：</p>
+<ul>
+<li><strong>良性解释</strong>：企业级 AI 基础设施订单（GPU 服务器机柜）单笔金额巨大、交付周期长、客户账期长（大企业普遍 60–90 天）。同时厂商供货紧张，Connection 必须提前锁货备库存。这是「为了接大单而垫钱」，等这批单子交付回款，现金会回来。企业分部 +7.2% 的增长和这个解释是吻合的。</li>
+<li><strong>恶性解释</strong>：为了做出增长而放宽了账期和信用，或者压了一批卖不掉的货。</li>
+</ul>
+<p>我倾向前者（坏账计提只有 260 万、占营收 0.09%，没有恶化迹象；而且这家公司 40 多年从没出过应收爆雷），<strong>但必须承认单期数据无法证实</strong>，这是持有这家公司要盯的第一个数字：下两个季度经营现金流有没有回来。</p>
+<p>顺便，这也解释了为什么它的 <strong>P/FCF 高达 57.8 倍</strong>——不是因为它不赚钱，是因为这一年赚的钱全变成了仓库里的货和客户的欠条。用 FY2023、FY2024 那两年（自由现金流 1.88 亿、1.66 亿）做参照，正常年份它的自由现金流应该在 1.2–1.7 亿之间。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 19.50 亿，账上现金 3.41 亿、负债只有 755 万，<strong>净现金 3.33 亿（占市值 17%）</strong>，所以企业价值只有 16.20 亿。</p>
+<p>还有一点要先扣掉：TTM 税前利润 1.3024 亿，而经营利润只有 1.2324 亿，中间那 700 万是<strong>账上现金产生的利息收入</strong>——那不是它做生意赚的。剔除后的「核心业务税后净利」＝ 1.2324 亿 × (1 − 26.41%) ＝ <strong>9074 万</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（市值口径）</td>
+<td>1,950 ÷ 95.84</td>
+<td><strong>20.3 倍</strong></td>
+<td>4.92 元</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（每股口径）</td>
+<td>77.3 ÷ 3.78</td>
+<td>20.6 倍</td>
+<td>4.86 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不报调整后利润，无此口径</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,950 ÷（95.84 ＋ 0.90 处置损失）</td>
+<td><strong>20.2 倍</strong></td>
+<td><strong>4.96 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>1,950 ÷ 34.05</td>
+<td>57.3 倍</td>
+<td>1.75 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（剔除营运资金异常）</td>
+<td>1,950 ÷ 132 (＝34.05＋89.96 营运资金回补)</td>
+<td>14.8 倍</td>
+<td>6.76 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,620 ÷ 123.24</td>
+<td><strong>13.1 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV / 核心税后净利</strong></td>
+<td>1,620 ÷ 90.74</td>
+<td><strong>17.9 倍</strong></td>
+<td><strong>5.60 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,950 ÷ [(95.84+83.72+87.10)/3 = 88.89]</td>
+<td><strong>21.9 倍</strong></td>
+<td><strong>4.56 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均口径 21.9 倍 vs 当期 20.3 倍——两个数字很接近，说明<strong>当前这个利润不是周期高点，就是它的常态</strong>。这一点和很多科技股不一样（比如那些当期 30 倍、三年平均 70 倍的），Connection 的利润非常平稳：FY2021 到 TTM 六年，净利润在 7000 万到 9600 万之间来回，营收在 28 亿到 31 亿之间来回。<strong>这是一家不增长但也不缩水的公司。</strong></p>
+<p><strong>说人话：你现在投 100 块进 Connection，按最保守的真实口径（三年平均）算，公司一年替你赚 4.56 块；如果先扣掉账上那 17% 的净现金再算，剩下的钱一年替你赚 5.6 块。</strong></p>
+<p>这笔钱里有多少真回到你口袋？股息 0.9% ＋ 回购 1.1%（TTM 口径）＝ <strong>约 2%</strong>。剩下的 3 个百分点留在公司里——但公司没有需要投钱的地方（资本开支只占营收 0.27%），所以这些钱要么继续堆在银行账户里吃 4% 的利息，要么被应收账款和存货吃掉（TTM 就是被后者吃掉的）。<strong>这是它作为投资标的最大的效率损失：赚来的钱有一半以上没有为股东产生任何额外回报。</strong></p>
+<p><strong>这个数字未来会变大还是变小？</strong> 大概率略微变大，但很慢。企业和中小企业两块加起来占 84%、都在 6%–7% 增长；公共部门 16% 在两位数下滑，但它的基数在缩小，拖累会逐年减轻——大约再过两年，整体增速会从 3% 回到 5% 左右。毛利率在稳步爬（16.06% → 18.89%，五年涨了近 3 个点），因为服务和高毛利的中小企业占比在提升。经营利润率 4.13% 也是六年新高。所以每股收益的年化增长可能在 6%–9%（含 2%–3% 的股本缩减）。</p>
+<p><strong>但有两个结构性的天花板必须说</strong>：第一，它的命脉握在上游手里——戴尔、惠普、联想什么时候想砍渠道返点就能砍，什么时候想直销大客户就能绕过它，Connection 对此毫无还手之力。第二，这门生意在被两头挤压：上面是亚马逊、CDW 这样规模大十倍的对手（CDW 营收 200 多亿，采购议价能力碾压），下面是厂商官网直销和云服务替代硬件采购本身。</p>
+<p>还有一个交易层面的事实要提醒：<strong>创始人家族持股 55.97%，真正在市场上流通的股票只有 1095 万股</strong>（占总股本 43%）。这意味着（a）你永远不可能靠外部收购或激进股东来改变这家公司的资本配置，（b）成交极度清淡（20 日均量 15.9 万股，按 77 美元算一天只有 1200 万美元成交额），大额进出会明显冲击股价。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜，虽然它看起来应该便宜。</strong></p>
+<p>这是一家账干净得挑不出毛病的公司：净现金 3.33 亿占市值 17%、几乎零负债、股权激励只占利润 10%、回购是真回购、44 年没出过事、家族自己拿着一半股份。这些都是真的好。</p>
+<p>但你要为此付 20.3 倍市盈率、21.9 倍三年平均市盈率，买的是一家<strong>净利率 3.2%、营收年增 3.2%、ROE 只有 10.4% 的 IT 搬箱子公司</strong>。搬箱子这门生意历史上就该给 12–15 倍，Connection 现在这个价格是它自己五年来的估值上沿——股价过去一年涨了 20.4%，而同期净利润只涨了 14.8%，<strong>多出来的那部分是市场情绪，不是业绩</strong>。</p>
+<p>再加上两件当下的具体麻烦：一是经营现金流从 1.74 亿塌到 4200 万，全被应收账款和存货吃掉了，虽然大概率是接 AI 大单垫的钱，但单期数据没法证实；二是占 16% 的公共部门业务两年跌掉近两成，还没见底。</p>
+<p>好公司，一般价格，<strong>没有便宜可占</strong>。要买的话，等它回到 60 美元出头（对应 16 倍左右、剔净现金后 13 倍），那才是这门生意该有的价钱。</p>
+</div></body></html>

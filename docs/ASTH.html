@@ -1,0 +1,412 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ASTH · Astrana Health（阿斯特拉纳健康，前身 Apollo Medical / 美国医疗）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ASTH</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">49倍买1%净利率，借5.4亿买营收，利息覆盖只有1.55倍</div><h1>ASTH · Astrana Health（阿斯特拉纳健康，前身 Apollo Medical / 美国医疗）</h1>
+<p><strong>市值</strong> 19.9 亿美元 ｜ <strong>股价</strong> 约 38.9 美元 ｜ <strong>行业</strong> 健康服务（价值医疗 / 医生集团管理）｜ <strong>数据口径</strong> TTM，截至 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NASDAQ</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Astrana 是一家总部在加州蒙特雷公园（华人聚居区）的医疗公司，前身叫 Apollo Medical Holdings，2024 年改的名。它的创始班底和核心客户群都和南加州华裔、亚裔社区高度绑定。</p>
+<p>要理解它，得先理解美国医保里一个叫 <strong>「按人头包干」（capitation）</strong> 的机制——这是它全部生意的地基。</p>
+<p>正常情况下，医院和医生是<strong>按项目收钱</strong>的：你去看一次门诊，医生开一张单子给保险公司，保险公司付一次钱。这种模式下医生做得越多赚得越多，所以美国医疗费用失控。</p>
+<p>「按人头包干」把这件事反过来：保险公司（比如一家 Medicare Advantage 计划，也就是政府出钱、私营公司经办的老年医保）对 Astrana 说——<strong>「这 1 万个老人交给你了，我每人每月付你 1200 美元，一年 1.44 亿。这一年里他们看门诊、住院、做手术、吃药、进急诊，所有的钱你出。」</strong></p>
+<p>于是 Astrana 就变成了一个<strong>实质上的小型保险公司</strong>：如果这 1 万个老人一年实际花了 1.3 亿，Astrana 赚 1400 万；如果流感季来了、住院暴增，花了 1.5 亿，Astrana 亏 600 万。它赚的是「把病人管好、少住院、少进急诊」这件事省下来的钱。</p>
+<p>明白这一点，你就明白了它的报表为什么长成那样：<strong>它 38 亿美元的「营收」不是它的服务费，而是它替保险公司代管的整笔医疗预算。它真正的收入是那 10.46% 的「毛利」。</strong></p>
+<p>它把业务分成三块：</p>
+<h3>生意 A：Care Partners（合作医生网络）——占绝对主体</h3>
+<p>TTM 营收 36.33 亿，是全部生意的九成以上。</p>
+<p>这块就是上面说的包干业务。Astrana 自己不雇那些医生——它旗下有一堆 <strong>IPA（独立医生协会）</strong>，也就是把散在社区里开诊所的独立医生组织起来的松散联盟。Astrana 收购或者签约这些 IPA，把它们打包成一张网络，然后拿这张网络去和保险公司谈包干合同。</p>
+<p>具体运作：一位在洛杉矶开个人诊所的家庭医生，加入 Astrana 旗下的 IPA。他的病人里有 300 个是某 Medicare Advantage 计划的会员。这 300 个人的包干费进到 Astrana 手里，Astrana 每月按约定给这位医生付一笔管理费和绩效分成，同时接管这 300 个人的<strong>转诊审批</strong>（要做核磁？先申请，Astrana 的医疗管理部门批不批）、<strong>用药管理</strong>、<strong>慢病随访</strong>（护士定期打电话确认糖尿病人有没有按时吃药，因为一次糖尿病酮症酸中毒住院要花 3 万美元）。</p>
+<p>Astrana 管的会员规模在 120 万人上下，覆盖加州为主，也扩到了内华达、得州、亚利桑那。付钱给它的保险公司主要是几家 Medicare Advantage 计划、加州的 Medicaid（当地叫 Medi-Cal，覆盖低收入人群）计划，以及一部分商业保险。</p>
+<p><strong>为什么保险公司愿意这么干</strong>：保险公司自己管不了几万个散兵游勇式的社区医生，交给 Astrana 打包，成本可预测（一口价），而且 Astrana 比它更懂怎么让华裔老人按时复诊。</p>
+<p><strong>为什么医生愿意加入</strong>：单干的社区医生根本上不了保险公司的谈判桌，进了 Astrana 的网络才有议价能力和稳定客源，还能用它的 IT 系统省掉自己请人做理赔。</p>
+<h3>生意 B：Care Delivery（自营医疗机构）</h3>
+<p>TTM 营收 3.39 亿。这块是 Astrana <strong>真正自己开的</strong>：初级保健诊所、多专科门诊、急诊快诊（urgent care）、门诊手术中心（ASC，做白内障、内窥镜、小骨科这类不用住院的手术）。</p>
+<p>它开这些的目的不只是赚门诊费，更是<strong>把包干病人的就医行为引导到自己手里</strong>——同一台内窥镜检查，病人去医院做要 3000 美元（从包干预算里出），去 Astrana 自己的手术中心做只要 900 美元，省下的 2100 美元就是它的利润。这是垂直整合的经典打法。</p>
+<h3>生意 C：Care Enablement（技术与运营输出）</h3>
+<p>TTM 营收 3.40 亿。把自己管病人那套东西<strong>卖给别的医生集团</strong>：人群健康管理软件、转诊审批的外包服务、理赔处理、医生资质认证、数据分析。</p>
+<p>这块理论上是最值钱的（软件毛利高、不承担医疗风险），实际上很大一部分是内部交易——Care Enablement 和 Care Delivery 卖给 Care Partners 的部分，在合并报表时被抵消掉了。<strong>TTM 内部抵消高达 4.67 亿</strong>，占三块加总的 11%，说明外部客户的规模远小于表面数字。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收（百万美元）</th>
+<th>上年同期（估算）</th>
+<th>同比</th>
+<th>占比（抵消前）</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Care Partners 合作医生网络</td>
+<td>3,633</td>
+<td>约 2,305</td>
+<td><strong>约 +58%</strong></td>
+<td>84%</td>
+<td>估算约 2%</td>
+</tr>
+<tr>
+<td>Care Delivery 自营机构</td>
+<td>338.7</td>
+<td>约 180</td>
+<td>约 +88%</td>
+<td>8%</td>
+<td>估算约 5%</td>
+</tr>
+<tr>
+<td>Care Enablement 技术输出</td>
+<td>339.5</td>
+<td>约 186</td>
+<td>约 +83%</td>
+<td>8%</td>
+<td>估算约 12%</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>−466.8</td>
+<td>约 −252</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,844</strong></td>
+<td>2,419</td>
+<td><strong>+58.9%</strong></td>
+<td>100%</td>
+<td>2.91%（实际值）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报不披露分部经营利润，上表利润率为估算，<strong>不是财报数字</strong>。「上年同期」也是估算——公司只披露财年分部数据，我按 FY2024 与 FY2025 线性插值再按总营收校准得出，用来看增长量级，不要当精确值。</p>
+</blockquote>
+<p><strong>这张表最要命的地方不是增长，而是增长和利润的背离。</strong> 看这组数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万）</td>
+<td>774</td>
+<td>1,144</td>
+<td>1,387</td>
+<td>2,035</td>
+<td>3,182</td>
+<td><strong>3,844</strong></td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>22.97%</td>
+<td>17.43%</td>
+<td>15.50%</td>
+<td>13.34%</td>
+<td>10.73%</td>
+<td><strong>10.46%</strong></td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>12.69%</td>
+<td>9.11%</td>
+<td>6.10%</td>
+<td>4.39%</td>
+<td>3.08%</td>
+<td><strong>2.91%</strong></td>
+</tr>
+<tr>
+<td>净利润（百万）</td>
+<td>68.9</td>
+<td>45.2</td>
+<td>60.7</td>
+<td>43.2</td>
+<td>22.5</td>
+<td><strong>40.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年时间营收涨了 5 倍，净利润反而从 6890 万跌到 4060 万。</strong> 毛利率从 23% 一路掉到 10.5%，经营利润率从 12.7% 掉到 2.9%。</p>
+<p>这里面有两个原因，必须拆开：</p>
+<ol>
+<li><strong>一部分是机械性的</strong>。业务从「收服务费」转向「全额承担风险的包干」时，营收会被大幅做大（整笔医疗预算都记成营收），毛利率自然被稀释。这部分不是变差，是口径变了。</li>
+<li><strong>另一部分是真的变差了</strong>。2024 年以来整个美国 Medicare Advantage 行业的医疗使用率大幅上升（老人疫情后集中释放的择期手术、GLP-1 减肥药、更贵的癌症用药），而政府给保险公司的费率涨得跟不上，保险公司又把压力转嫁给 Astrana 这样的包干方。包干方的处境是最惨的——它的收入是锁死的，成本是敞开的。</li>
+</ol>
+<p>怎么区分这两部分？看<strong>经营利润的绝对额</strong>：FY2021 是 9818 万，TTM 是 1.1188 亿。<strong>五年里营收涨了 397%，经营利润只涨了 14%。</strong> 口径变化解释不了这个。这门生意在规模化的过程中，几乎没有产生规模效应。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司要剥的东西很多。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 4076 万美元，<strong>占 GAAP 净利润 4055 万的 100.5%</strong>。它一年发给员工的股票，恰好等于它一年赚的全部钱。GAAP 已经扣了，但公司自己的「调整后 EBITDA」会把它加回去。</p>
+<p><strong>一次性项目</strong>：TTM 里没有单列的大额一次性损益。但这家公司 TTM 花了 <strong>5.5234 亿美元现金做并购</strong>，收购产生的整合费用、法律费用、留任奖金通常散在管理费用里，公司会在 Non-GAAP 里把它们当「一次性」加回来。对一个<strong>每年都在买公司</strong>的连续并购方，这类「一次性」是年年发生的经营性成本——<strong>单期口径无法判断具体金额，但方向上要警惕：它的所谓一次性并购费用，本质上是它的增长成本。</strong></p>
+<p><strong>资本化的支出与摊销</strong>：这是全篇最需要盯的一项。TTM 折旧摊销 6303 万 ＋ 其他摊销 459 万 ＝ <strong>6762 万</strong>，而同期资本开支只有 <strong>1349 万</strong>。折旧摊销是资本开支的 5 倍。</p>
+<p>为什么？因为这 6762 万里绝大部分不是设备折旧，而是<strong>收购来的无形资产摊销</strong>——买 IPA 时付的钱，一部分被分配成「医生网络关系」「保险合同」这类无形资产，然后在 5–10 年里摊销掉。</p>
+<p>这里有个经典陷阱：连续并购方会说「这些摊销是非现金的会计项目，加回去看真实盈利」。<strong>这个说法在 Astrana 身上不成立</strong>——因为它必须持续花真金白银买新的 IPA 才能维持增长（TTM 花了 5.52 亿），摊销正是这些真实现金支出的滞后确认。把摊销加回去、同时又不把并购支出算进资本开支，是在两头占便宜。</p>
+<p><strong>回购与稀释：这一项是不及格的。</strong> TTM 回购 2319 万，同期 SBC 4076 万，<strong>回购 / SBC = 0.57 倍</strong>——<strong>连抵消员工发股都不够</strong>。实际结果：<strong>流通股一年增加 1.73%，最近一个季度还在加速（+1.48%）</strong>。也就是说你持有这只股票，什么都不做，手里的份额每年在缩水。这和前面两家（Progyny 2.3 倍、Connection 2.2 倍）形成鲜明对比。</p>
+<p>它还派了 185 万美元股息（几乎可以忽略，前几年派得多，现在停了）。</p>
+<p><strong>利润和现金流的差</strong>：净利润 4055 万，经营现金流 1.0787 亿，差 6700 万，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>40.55</td>
+</tr>
+<tr>
+<td>＋ 折旧与无形资产摊销</td>
+<td>63.03</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>4.59</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>40.76</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−5.31</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−9.42</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−6.99</td>
+</tr>
+<tr>
+<td>＋ 所得税变动</td>
+<td>+5.33</td>
+</tr>
+<tr>
+<td>− 其他净营运资产</td>
+<td>−24.66</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>107.87</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−13.49</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>94.38</strong></td>
+</tr>
+<tr>
+<td><strong>− 现金并购支出</strong></td>
+<td><strong>−552.34</strong></td>
+</tr>
+<tr>
+<td><strong>= 真实的现金去向</strong></td>
+<td><strong>−457.96</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>最后两行是我加的，也是全篇最重要的两行。表面上它有 9438 万自由现金流、P/FCF 只有 21 倍，看着不贵。但<strong>这门生意的增长完全靠买</strong>——TTM 花了 5.52 亿现金收购，而这笔钱它没有，是借的：<strong>TTM 净新增债务 5.3944 亿</strong>。</p>
+<p>现金流量表的三段合起来讲的故事是：经营赚 1.08 亿 → 投资花掉 5.45 亿（几乎全是并购）→ 融资借进 5.02 亿。<strong>这是一家用债务买营收的公司。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 19.90 亿。账上现金 4.01 亿，<strong>有息负债 9.79 亿，净负债 5.79 亿</strong>，所以企业价值 25.70 亿——比市值高出 29%。</p>
+<p>TTM 经营利润 1.1188 亿，税前利润只有 6010 万，中间蒸发的 <strong>5178 万全是利息支出</strong>。也就是说，<strong>它经营赚到的钱里有 46% 直接交给了债主。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（市值口径）</td>
+<td>1,990 ÷ 40.55</td>
+<td><strong>49.1 倍</strong></td>
+<td>2.04 元</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（每股口径）</td>
+<td>38.9 ÷ 0.82</td>
+<td>47.4 倍</td>
+<td>2.11 元</td>
+</tr>
+<tr>
+<td>卖方口径「Forward PE」</td>
+<td>加回 SBC 与并购摊销后的调整 EPS</td>
+<td>23.4 倍</td>
+<td>4.27 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,990 ÷ 40.55（TTM 无可剔除的真一次性项，SBC 已按 GAAP 扣除不加回）</td>
+<td><strong>49.1 倍</strong></td>
+<td><strong>2.04 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>1,990 ÷ 94.38</td>
+<td>21.1 倍</td>
+<td>4.74 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣 SBC 后）</strong></td>
+<td>1,990 ÷ 53.62</td>
+<td><strong>37.1 倍</strong></td>
+<td><strong>2.70 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,570 ÷ 111.88</td>
+<td><strong>23.0 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV / 净利润</strong></td>
+<td>2,570 ÷ 40.55</td>
+<td><strong>63.4 倍</strong></td>
+<td><strong>1.58 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,990 ÷ [(40.55+22.49+43.15)/3 = 35.40]</td>
+<td><strong>56.2 倍</strong></td>
+<td><strong>1.78 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均口径 56.2 倍高于当期 49.1 倍——说明<strong>当前这个利润不但不是高点，还是三年里最好的一年</strong>（FY2025 只赚了 2249 万）。这一点和很多周期股相反：它的问题不是「现在利润太高撑不住」，而是「利润一直很低，而且低得没有规律」。</p>
+<p>那个 23.4 倍的「Forward PE」是全表最需要警惕的数字。它比 GAAP 口径低一半多，靠的是两笔加回：股权激励 4076 万，以及并购产生的无形资产摊销（数千万级）。前面已经论证过，<strong>对一家必须持续花 5 亿现金买公司才能增长的企业，这两笔都不该加回。</strong></p>
+<p><strong>说人话：你现在投 100 块进 Astrana，按最保守的真实口径（三年平均）算，公司一年替你赚 1.78 块；按当期最宽松的、把股权激励也当成不存在的口径算，最多 4.74 块。而同期美国十年期国债给你 4 块出头，还不用承担任何风险。</strong></p>
+<p>这点钱里有多少回到你口袋？<strong>负数。</strong> 它不派有意义的股息（TTM 185 万，股息率 0.09%），回购 2319 万还不够抵消 4076 万的股权发放，你的持股比例一年被稀释 1.73%。<strong>你作为股东，从这家公司拿回的现金是零，同时份额还在变少。</strong></p>
+<p>赚来的钱去了哪？全部、以及远超全部地，投进了并购。TTM 经营现金流 1.08 亿，并购花了 5.52 亿，缺口靠借。</p>
+<p><strong>这个数字未来会变大还是变小？</strong> 有两种走向，我认为坏的那种概率更高：</p>
+<p><strong>多头的逻辑</strong>（也是那个 23.4 倍前瞻市盈率背后的假设）：2026–2027 年 Medicare Advantage 的政府费率在补涨（弥补前两年的成本超支），包干方的利润会明显回弹；同时过去两年买的那批 IPA 完成整合、成本协同释放；营收基数已经到 38 亿，利润率哪怕从 2.91% 回到 4.5%，经营利润就是 1.73 亿，涨 55%。</p>
+<p><strong>空头的逻辑</strong>（我认为更站得住的）：
+- <strong>ROIC 只有 6.24%，而它的加权平均资本成本是 7.76%。</strong> 这是一个直白的判决：<strong>它每投一块钱进去，创造的回报低于这一块钱的成本，也就是每做一笔并购都在毁灭价值。</strong> ROE 6.90% 也远低于它自己的资本成本。
+- <strong>利息保障倍数只有 1.55 倍。</strong> 经营利润是利息的 1.55 倍——这意味着<strong>经营利润只要下滑 35%，它就付不起利息</strong>。而一个包干医疗集团的经营利润下滑 35% 需要什么？只需要它管的 120 万会员的医疗成本上升 1 个百分点。它 TTM 的毛利率只有 10.46%，医疗成本每涨 1%，毛利就少 3800 万，直接吃掉经营利润的三分之一。<strong>这个杠杆结构和这个业务的波动性根本不匹配。</strong>
+- <strong>负债 / EBITDA 约 5.1–5.6 倍</strong>，对一家利润率 1% 的公司来说这是高危区间。
+- <strong>有形账面价值是负的</strong>（网站上 P/TBV 直接显示 n/a）——扣掉商誉和收购无形资产之后，这家公司的净资产是负数。它账面上 8.5 亿的权益，全是买来的商誉。<strong>如果哪天某笔收购要减值，冲掉的就是全部权益。</strong>
+- <strong>政策风险高度集中</strong>：主要市场是加州，主要付款方是 Medicare Advantage 和 Medi-Cal。加州州政府近两年在削减 Medi-Cal 预算；联邦层面对 Medicare Advantage 的风险调整评分（RAF）审计在收紧，而 RAF 评分正是包干费率的定价基础——一次审计追缴就能吃掉好几年利润。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>贵得没道理，而且不只是贵的问题。</strong></p>
+<p>49 倍当期市盈率、56 倍三年平均市盈率、63 倍企业价值倍数，买的是一家<strong>净利率 1.05%、ROIC 6.2%（低于自己 7.8% 的资本成本）、利息保障倍数只有 1.55 倍、有形净资产为负、股本还在被稀释</strong>的公司。股价过去 52 周涨了 35.2%，而净利润的三年平均值是在往下走的。</p>
+<p>它那个 58.9% 的营收增速非常唬人，但那不是长出来的，是<strong>用 5.52 亿现金、借 5.39 亿债买回来的</strong>。五年营收涨 5 倍、经营利润只涨 14%、净利润反而腰斩——这不是「规模化中的阵痛」，这是<strong>一台把股东的钱和银行的钱换成营收数字、但换不出利润的机器</strong>。</p>
+<p>生意本身的模式（把社区医生组织起来做价值医疗）是有道理的，某些人做得很好。但 Astrana 现在的样子是：一个用高杠杆做保险风险生意的连续并购方，账上没有一点缓冲，10.46% 的毛利率意味着任何一次医疗成本超支都会直接击穿经营利润，而经营利润本身只够付 1.55 倍的利息。</p>
+<p><strong>这不是「好公司坏价格」，这是「有硬伤的公司 + 离谱的价格」。</strong> 就算你相信 Medicare Advantage 费率回暖的多头故事，也应该等它先证明两件事：经营利润的绝对额真的能随营收一起涨、以及它能停下并购靠自己产生现金。在那之前，49 倍是在为一个尚未被证明的转折付全款。</p>
+</div></body></html>

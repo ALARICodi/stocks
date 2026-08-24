@@ -1,0 +1,486 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EVCM · EverCommerce（艾弗商业）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EVCM</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">网站16倍FCF是假象，3254万软件开发资本化没扣，真实29倍</div><h1>EVCM · EverCommerce（艾弗商业）</h1>
+<p><strong>市值</strong> $16.7 亿 | <strong>股价</strong> 约 $9.45 | <strong>行业</strong> 软件服务（垂直行业 SaaS） | <strong>TTM 截止</strong> 2026 年 6 月 30 日 | <strong>全榜名次</strong> 887</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司做<strong>一件事，但卖给三类完全不同的人</strong>：给那些「一个人或几十个人的服务型小生意」提供一整套让他们能开门做买卖的软件——<strong>排班、派单、开发票、收钱、发提醒短信、管客户名单</strong>。财报按会计口径只把营收分成「订阅与交易费」（5.757 亿）和「其他」（0.224 亿），这个分法对理解生意毫无帮助。真正该看的是它自己划的三个垂直行业。</p>
+<h3>EverPro —— 卖给上门服务的手艺人（最大的一块）</h3>
+<p><strong>具体是这样一门生意：</strong> 一个在丹佛开水管修理店的老板，手下五个师傅。以前他怎么干活？客户打电话来，他记在便利贴上；派谁去，靠脑子；活干完了手写一张单子，客户说「回头给你寄支票」，钱经常拖两个月才到；到了报税季，一整年的收据装在一个鞋盒里交给会计。</p>
+<p>用了 EverCommerce 旗下的 Kickserv 或 Joist 之后：客户来电，直接在手机上开一张工单，系统自动看谁离得近、谁有空，派过去；师傅到现场，用手机拍照、选材料、软件自动算出报价单让客户当场在屏幕上签字；活干完，<strong>当场刷卡收钱</strong>——这一步是关键。</p>
+<p><strong>钱怎么收的（两层）：</strong></p>
+<p>第一层是<strong>订阅费</strong>，这家水管店按每个师傅每月 $49 付，五个师傅一年 $2940。这层收入稳定但不大。</p>
+<p>第二层是<strong>支付抽成，这才是真正的引擎</strong>。客户刷 $800 的维修费，EverCommerce 从中抽 2.6% + $0.30，也就是约 $21。这家店一年做 300 万美元流水，光支付这一项就贡献约 <strong>7.8 万美元</strong>——<strong>是订阅费的 26 倍</strong>。而且这层收入有个天然的杠杆：<strong>水管店涨价、多干活、生意变好，EverCommerce 的收入自动跟着涨，不用重新谈合同、不用卖任何新东西。</strong></p>
+<p><strong>为什么客户跑不掉？</strong> 这是全篇最需要理解的一点。软件本身不难，Jobber、Housecall Pro、ServiceTitan 都能做类似的事。但那个水管店老板一旦把三年的客户记录、所有工单历史、报价模板、师傅排班、和银行账户的绑定全放进这套系统，<strong>换一家的成本高得离谱</strong>——要重新导数据（多半导不干净）、要重新培训五个不太用电脑的师傅、要重新走一遍支付通道的商户审核（可能卡两周收不到钱）。他一个月省下的那 $50 完全不值得冒这个险。<strong>这是典型的「小客户、低单价、高黏性」生意：单个客户一年只贡献几千到几万，但流失率极低。</strong></p>
+<h3>EverHealth —— 卖给独立诊所</h3>
+<p>同样的逻辑换个行业。一个自己开业的家庭医生，两个前台一个护士。她需要：电子病历（EHR）、给保险公司提交理赔（billing）、患者在线预约、看诊前自动发提醒短信、远程问诊视频。旗下的 DrChrono、Updox、iSalus 干的就是这个。</p>
+<p><strong>这块比水管工那块还黏。</strong> 病历数据受 HIPAA 法规约束，迁移要走合规流程；医生用惯了一套开药和记录的界面，换系统等于让她每天多花一小时；最要命的是<strong>理赔通道</strong>——诊所 70% 的收入来自保险公司打款，一旦断了就是断了现金流。换软件？没人愿意冒这个险。</p>
+<h3>EverWell —— 卖给美发沙龙、Spa、健身工作室</h3>
+<p>一个开美甲店的老板，需要在线预约、会员卡、员工提成计算、无接触收款。逻辑同上，黏性略低（这行开开关关的店多）。</p>
+<h3>还有一件正在做的事：<strong>换血</strong></h3>
+<p>2026 年这家公司做了三笔动作，方向非常明确：
+- <strong>卖掉</strong>营销技术业务（$4500 万），公司自己的说法是它「拖累增长也拖累可预测性」；
+- <strong>卖掉</strong>健身软件业务给 Jonas Software（原本占营收不到 4%）；
+- <strong>买入</strong> ZyraTalk（$3600 万），一个 AI 客户互动平台——目的是让水管店的电话在半夜自动被 AI 接起来、自动排上明天的工单。</p>
+<p><strong>翻译一下：过去五年这家公司的模式是「见到垂直行业软件就买」，现在改成「砍掉不赚钱的、往核心三块塞 AI」。</strong> 从一个收购机器变成一个经营型公司，这个转型是 2026 年的主线。</p>
+<h3>钱的分布（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>对比 FY2025</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅与交易费</td>
+<td>$5.757 亿</td>
+<td>$5.669 亿</td>
+<td>+1.6%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>$0.224 亿</td>
+<td>$0.220 亿</td>
+<td>+1.8%</td>
+</tr>
+<tr>
+<td><strong>总营收</strong></td>
+<td><strong>$5.981 亿</strong></td>
+<td>$5.889 亿</td>
+<td><strong>+4.2%</strong></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>$4.654 亿</td>
+<td>—</td>
+<td>毛利率 <strong>77.8%</strong></td>
+</tr>
+<tr>
+<td>营业利润</td>
+<td>$0.598 亿</td>
+<td>$0.598 亿</td>
+<td>持平（利润率 10.0%）</td>
+</tr>
+<tr>
+<td>客户数</td>
+<td>超过 74.5 万家</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报不按三个垂直行业披露利润，只披露到营收合并数。<strong>估算</strong>：EverPro 因为支付渗透率最高，利润率应在 15%–20%；EverHealth 因为合规和支持成本重，利润率较低；EverWell 规模小。以上是估算，不是财报数字。</p>
+</blockquote>
+<p><strong>77.8% 的毛利率是真软件公司的水平</strong>，这一点毫无水分。但 <strong>4.2% 的营收增速对一家 SaaS 来说是慢的</strong>——注意这个数字里还含了剥离业务造成的减项，同口径的内生增速会高一些，但也高不到哪去。这不是一家高增长公司。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这家公司的财报有一个藏得很深的东西，是本篇最重要的发现，放在第三条。</strong></p>
+<p><strong>第一条，股权激励（SBC）</strong>：TTM 2487 万，占归母净利润（3405 万）的 <strong>73%</strong>。这个比例听着吓人，但要注意 EVCM 的 GAAP 净利润被巨额收购摊销压得极低（见下条），所以用净利润当分母会放大失真。换个分母：SBC 占营收 4.2%，占自由现金流 24%——<strong>对软件行业来说属于正常偏低</strong>。而且它在<strong>下降</strong>：FY2025 是 2843 万，FY2024 是 2649 万。SBC 绝对额下降，这在软件股里是好事。</p>
+<p><strong>第二条，折旧摊销正在大幅退潮，这解释了 52 倍市盈率的假象。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>折旧摊销</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>$9774 万</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>$1.051 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>$9487 万</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$8065 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$6723 万</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$5453 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这些摊销的绝大部分是<strong>收购来的无形资产</strong>——2020–2021 年这家公司花了 3.6 亿美元买了一堆软件公司，会计上要把买来的客户关系、技术、商标按 5–7 年摊销掉。<strong>这笔摊销不花一分现金，但它每年从利润表里扣掉一大块。</strong> 四年时间摊销从 1.05 亿降到 5453 万，<strong>少扣了 5000 万</strong>——这就是为什么公司从年年亏几千万变成 TTM 赚 3405 万。</p>
+<p><strong>这是理解 EVCM 估值的钥匙：当期市盈率 52 倍、前瞻市盈率只有 12.55 倍，两者差 4 倍，靠的不是业务爆发，而是这个摊销退潮的机械过程。</strong> 这个过程是真实的、可预测的、不需要任何假设——2021 年那批收购的摊销期在 2026–2028 年陆续到期。</p>
+<p><strong>第三条（本篇最重要）：资本开支只有 272 万，但资本化的软件开发有 3254 万。</strong></p>
+<p>看现金流量表的投资活动部分：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资本开支（Capital Expenditures）</td>
+<td><strong>−$272 万</strong></td>
+</tr>
+<tr>
+<td><strong>购买无形资产（Sale/Purchase of Intangibles）</strong></td>
+<td><strong>−$3254 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>标准的自由现金流算法是「经营现金流 − 资本开支」= 10694 − 272 = <strong>1.042 亿</strong>。所有财经网站上 EVCM 的自由现金流都是这个数，P/FCF 16.34 倍看起来非常便宜。</p>
+<p><strong>但那 3254 万「购买无形资产」是什么？是自己写的软件的开发成本被资本化了。</strong> 工程师的工资本来该进利润表当费用，会计准则允许把其中一部分（进入「技术可行性」之后的开发阶段）记成一项资产，然后分几年摊销。<strong>这笔钱是真真正正花掉的现金，只是不走「资本开支」那一栏。</strong> 而且它在涨：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>资本化的软件开发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>$2004 万</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>$1745 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>$2963 万</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>$3254 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>所以真实的自由现金流是：10694 − 272 − 3254 = $7168 万，不是 1.042 亿。差了 31%。</strong></p>
+<p>这不是造假，是完全合规的会计处理，但<strong>如果你按网站上的 16.34 倍 P/FCF 判断「这公司好便宜」，你就少算了三分之一的钱</strong>。后面第三部分我会把两个口径并列，你自己看差别。</p>
+<p><strong>第四条，一次性项目</strong>：TTM 只有资产减值 50 万、资产出售损失 3 万，合计 <strong>53 万</strong>——<strong>干净得可以忽略</strong>。对比 FY2024 有 640 万商誉减值 + 357 万资产出售损失 + 250 万减值，说明前几年的历史包袱基本清完了。这是个加分项。</p>
+<p><strong>另有终止经营收益 +565 万</strong>（卖掉营销技术和健身业务的收益），这<strong>是真一次性</strong>，估值时应该剔除：持续经营利润是 <strong>2840 万</strong>，不是 3405 万。</p>
+<p><strong>第五条，回购与稀释——这一项是全篇最漂亮的数字。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>$8947 万</strong></td>
+</tr>
+<tr>
+<td>同期 SBC</td>
+<td>$2487 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>3.60</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−1.15%</strong></td>
+</tr>
+<tr>
+<td>股本变化（环比一季度）</td>
+<td>−0.90%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购是 SBC 的 3.6 倍，远超「大于 3 才算真回购」的门槛。</strong> 而且回购金额（8947 万）占市值的 <strong>5.4%</strong>——公司每年拿超过市值 5% 的钱在市场上买自己的股票。股本实实在在减少了 1.15%。<strong>（对比刚做完的 TPB：回购/SBC = 0.18，股本一个季度就稀释 3.5%。同一批里两家公司，对股东的态度是天壤之别。）</strong></p>
+<p>不过这里有个必须提的背景：<strong>EverCommerce 的自由流通股只有 1203 万股，占 1.767 亿总股本的 6.8%。</strong> 绝大部分股份握在私募股权大股东手里。这意味着两件事：一、股价波动会被极小的流动性放大；二、回购的实际效果部分是在帮大股东提高持股比例。做空比例占流通盘 <strong>15.03%</strong>（占总股本只有 1.02%），也是这个结构的产物。</p>
+<p><strong>第六条，利润和现金流的差</strong>：净利润 3405 万 vs 经营现金流 1.069 亿，差 7000 多万。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+34.05</td>
+</tr>
+<tr>
+<td>减：终止经营收益（非持续）</td>
+<td>−5.65</td>
+</tr>
+<tr>
+<td><strong>加：折旧摊销</strong></td>
+<td><strong>+54.53</strong></td>
+</tr>
+<tr>
+<td>加：其他摊销</td>
+<td>+10.96</td>
+</tr>
+<tr>
+<td><strong>加：股权激励 SBC</strong></td>
+<td><strong>+24.87</strong></td>
+</tr>
+<tr>
+<td>加：坏账计提</td>
+<td>+5.53</td>
+</tr>
+<tr>
+<td>减：投资出售收益</td>
+<td>−4.86</td>
+</tr>
+<tr>
+<td>加：资产处置与减值</td>
+<td>+0.54</td>
+</tr>
+<tr>
+<td>加：其他经营活动</td>
+<td>+6.43</td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−8.97</td>
+</tr>
+<tr>
+<td>加：应付账款增加</td>
+<td>+6.63</td>
+</tr>
+<tr>
+<td>减：递延收入减少</td>
+<td>−2.40</td>
+</tr>
+<tr>
+<td>减：其他经营性资产增加</td>
+<td>−18.95</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+106.94</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−2.72</td>
+</tr>
+<tr>
+<td><strong>= 报告口径自由现金流</strong></td>
+<td><strong>+104.22</strong></td>
+</tr>
+<tr>
+<td><strong>减：资本化的软件开发</strong></td>
+<td><strong>−32.54</strong></td>
+</tr>
+<tr>
+<td><strong>= 真实自由现金流</strong></td>
+<td><strong>+71.68</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>差额的两个主角是折旧摊销（5453 万）和 SBC（2487 万），加起来 7940 万，几乎解释了全部差距。</strong> 前者是不花钱的会计扣减（真实的好消息），后者是花股份不花现金（真实的成本，已在 GAAP 扣除）。</p>
+<p>需要留意的一行是「递延收入减少 −240 万」。递延收入是客户预付但还没交付的服务费，<strong>对订阅制公司来说这是先行指标</strong>——它在减少（虽然幅度很小），说明预收的钱没有增长。配合 4.2% 的营收增速看，这是个温和的负面信号。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 16.7 亿 ÷ 净利 0.3405 亿</td>
+<td><strong>49.0 倍</strong></td>
+<td><strong>$2.04</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>市值 ÷ 持续经营利润 0.2840 亿（剔除 565 万剥离收益）</td>
+<td><strong>58.8 倍</strong></td>
+<td><strong>$1.70</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（<strong>网站的、被美化的</strong>）</td>
+<td>市值 ÷ FCF 1.042 亿</td>
+<td>16.0 倍</td>
+<td>$6.24</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化软件后的真实数）</strong></td>
+<td>市值 ÷ 0.7168 亿</td>
+<td><strong>23.3 倍</strong></td>
+<td><strong>$4.29</strong></td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/真实 FCF</strong></td>
+<td>（市值 + 净债 4.0 亿）÷ 0.7168 亿</td>
+<td><strong>28.9 倍</strong></td>
+<td><strong>$3.46</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>20.7 亿 ÷ 0.5983 亿</td>
+<td>35.2 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td></td>
+<td>17.1 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>市值 ÷ 三年平均净利（FY23 −4562 万、FY24 −4109 万、FY25 +1760 万 = <strong>年均亏 2304 万</strong>）</td>
+<td><strong>无意义（三年平均是亏的）</strong></td>
+<td><strong>负</strong></td>
+</tr>
+<tr>
+<td><strong>前瞻市盈率（分析师预期）</strong></td>
+<td>股价 ÷ 未来 12 个月预期 EPS</td>
+<td><strong>12.6 倍</strong></td>
+<td>$7.97</td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td></td>
+<td>2.38 倍</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先说三年平均那一行为什么是负的，它比看起来重要。</strong> 过去三年这家公司平均每年<strong>亏 2304 万</strong>，只有最近这一年才转正。所以「三年平均利润口径」在这里不是「看当前利润是不是高点」，而是在告诉你另一件事：<strong>EVCM 的 GAAP 盈利能力是刚刚才出现的，没有历史可以验证。</strong> 它转正靠的是摊销退潮（机械过程，可信）加上剥离亏损业务（一次性），而不是营业利润的改善——营业利润 TTM 5983 万，FY2025 是 5984 万，<strong>一年一分钱没涨</strong>。</p>
+<p><strong>再说那两行自由现金流的差别，这是全篇最该记住的对比。</strong> 网站上写着 P/FCF 16.34 倍，年回报 $6.24，看起来是全场最便宜的软件股之一。把资本化的 3254 万软件开发费扣掉，变成 23.3 倍，年回报 $4.29。<strong>再把 4 亿净负债算进去（你买股票的同时也继承了这笔债），EV 口径 28.9 倍，年回报 $3.46。</strong> 从 $6.24 到 $3.46，同一家公司，差了 45%。哪个对？<strong>EV/真实 FCF 那个对</strong>，因为它同时反映了「钱真的花出去了」和「债真的要还」。</p>
+<p><strong>前瞻 12.6 倍是不是白捡的便宜？</strong> 部分是真的。摊销从 1.05 亿降到 5453 万，还会继续降——假设两年后降到 3000 万，光这一项就给净利润加 2450 万（税后约 2200 万），净利润从 2840 万变成 5000 万以上，市盈率自动从 58.8 倍降到 33 倍。<strong>这个过程不需要业务增长，是会计上的必然。</strong> 但注意：摊销退潮<strong>不产生任何新的现金</strong>——现金流早就在那儿了（经营现金流三年稳定在 1.05–1.13 亿）。<strong>摊销退潮改变的是账面利润，不是你能拿到的钱。</strong> 真正决定你回报的是那 7168 万真实自由现金流，而它没有在增长（FY2025 是 1.092 亿报告口径 − 2963 万资本化 = 7957 万，TTM 反而<strong>降了 10%</strong>）。</p>
+<h3>说人话：你投 100 块，一年得到多少</h3>
+<p><strong>按最保守的口径（企业价值 ÷ 真实自由现金流），公司一年替你赚 $3.46。</strong> 按市值 ÷ 真实自由现金流是 $4.29。按 GAAP 会计利润只有 $2.04——但这个数被摊销扭曲了，不必太当真。</p>
+<p>这 $3.46–4.29 里，回到你口袋的部分：</p>
+<ul>
+<li><strong>股息</strong>：<strong>零</strong>。公司不分红。</li>
+<li><strong>回购</strong>：TTM 回购 8947 万，占市值 <strong>5.4%</strong>。扣掉 SBC 的稀释后净减少股本 1.15%。<strong>这是唯一的、但也是相当实在的股东回报通道</strong>——公司把绝大部分自由现金流（7168 万里的 8947 万，超过 100%，差额靠账上现金和经营现金流补）都拿去回购了。</li>
+</ul>
+<p><strong>换句话说：真实自由现金流 7168 万，全部、甚至超额地拿去回购股票了。</strong> 一分钱没留给分红，也几乎没留给还债（TTM 只还了 550 万本金）。</p>
+<p><strong>剩下的钱去哪了？</strong> 除了回购，还有两笔投资动作：花 3577 万买 ZyraTalk（AI 客服），同时卖掉营销技术业务收回 3714 万——<strong>一进一出基本打平</strong>。加上 3254 万的软件开发资本化，公司的钱基本就是三个去向：<strong>回购、买 AI、自己写软件</strong>。</p>
+<p><strong>这个数未来会变大还是变小？</strong> 我的判断是<strong>温和变大，但幅度有限，而且有一个明确的下行风险</strong>：</p>
+<p><strong>变大的理由：</strong> 一、支付抽成有自动杠杆，74.5 万个小商户只要生意在做，流水涨、抽成就涨，不需要新增销售；二、回购每年消掉 1%–5% 的股本，同样的现金流分给更少的股份；三、摊销退潮会让 GAAP 利润和净利率好看很多，这对估值倍数有实际影响；四、AI 接电话这类功能是<strong>可以直接加价</strong>的——给水管店每月多收 $30 让 AI 半夜接单，边际成本极低。</p>
+<p><strong>变小的风险，主要是一条：营收增速只有 4.2%，而 ROIC 只有 4.79%，低于 8.03% 的资金成本。</strong> 直白说：<strong>这家公司过去把钱投出去（收购）产生的回报，低于它借钱和融资的成本——按这个口径，历史上的收购是在毁灭价值的。</strong> 现在管理层显然也意识到了这点，才开始卖资产、聚焦、做 AI。但<strong>转型能不能让增速回到两位数，目前没有任何证据</strong>。营业利润一年零增长，递延收入在小幅下滑，这两个数字都不支持乐观。</p>
+<p>另外，杠杆不低：净负债 4 亿，债务/EBITDA 4.13 倍，利息覆盖倍数只有 2.17——<strong>营业利润只够付利息的两倍出头</strong>。软件公司这个杠杆水平偏高，如果营收真的转负，压力会很快显现。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家生意本身相当扎实、对股东也算慷慨的公司，但网站上那个「16 倍自由现金流」是个假象，扣掉资本化的软件开发和 4 亿净债之后，29 倍配 4% 的增长，谈不上便宜。</strong></p>
+<p>好的地方是真的好：77.8% 的毛利率、74.5 万个换不了软件的小商户、支付抽成这条能跟着客户一起长大的收入线、回购是 SBC 的 3.6 倍且股本真的在减少、财报干净得几乎没有一次性项目、SBC 绝对额在下降。<strong>在做过的这几百家公司里，一年拿出市值 5.4% 去回购、同时不发一分钱股息的公司不多，这是把钱还给股东的一种诚实做法。</strong></p>
+<p>不好的地方也很清楚。第一，<strong>那 3254 万资本化的软件开发费，让所有财经网站上的自由现金流虚高了 31%</strong>，而且这个数字三年里从 2004 万涨到 3254 万——虚高的幅度还在扩大。第二，<strong>营业利润一年一分钱没涨</strong>（5984 万 → 5983 万），营收增速 4.2%，递延收入在缩——增长引擎实际上是停的。第三，<strong>ROIC 4.79% 低于 WACC 8.03%</strong>，过去五年那 3.6 亿的收购按这个口径是在毁灭价值，公司现在做的所有事（卖资产、聚焦、买 AI）都是在补这个课。第四，杠杆 4.13 倍 EBITDA、利息覆盖只有 2.17 倍，没有犯错的余地。第五，流通盘只占总股本 6.8%，流动性风险实实在在。</p>
+<p><strong>前瞻市盈率 12.6 倍是真的会兑现的</strong>——但兑现的方式是账面摊销退潮，不是现金变多。<strong>你能拿到的现金早就是那 7000 多万，一分不多。</strong></p>
+<p><strong>结论：好生意，价格公道偏贵，没有便宜可占。</strong> 股价 52 周跌了 11.9%，RSI 35.8 已经接近超卖，如果继续跌到 EV/真实自由现金流 20 倍以内（约 $6.5–7 的股价），凭它的客户黏性和回购力度会是一笔不错的买卖。<strong>现在这个价，等。</strong></p>
+</div></body></html>

@@ -1,0 +1,468 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ATEN · A10 网络（A10 Networks, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ATEN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">涨47%全是估值，利润反跌14%，SBC吃掉54%利润，赌一个微软单子</div><h1>ATEN · A10 网络（A10 Networks, Inc.）</h1>
+<p><strong>市值</strong> 18.61 亿美元 ｜ <strong>股价</strong> 26.12 美元 ｜ <strong>行业</strong> 技术服务（网络与安全设备） ｜ <strong>TTM 截止</strong> 2026年6月30日 ｜ <strong>交易所</strong> NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>A10 Networks 全公司 494 个人，一年做 3.1 亿美元营收，人均创收 62.8 万美元。它卖的东西可以用一句话概括：<strong>放在互联网入口处的那个「守门+分流」的盒子（和跑在盒子上的软件）。</strong></p>
+<h3>生意一：应用交付与流量分发（Thunder ADC，约占产品营收的一半）</h3>
+<p><strong>这是什么，讲具体点</strong>：</p>
+<p>一家日本的手机运营商，有 4000 万用户。晚上八点，几百万人同时打开手机看视频、刷社交、打游戏，这些请求全都涌向运营商的机房。机房里不是一台服务器，是几百台。<strong>谁来决定这一次请求该交给哪台服务器？</strong> 这就是 A10 的 Thunder ADC（应用交付控制器）干的活。</p>
+<p>它是一个 2U 高的机架式设备（也可以是纯软件跑在虚拟机上），插在服务器集群前面。每一个进来的请求，它在几十微秒内决定：第 47 号服务器现在负载 30%、离用户最近、健康检查通过——就发给它。同时它还顺手做三件事：
+- <strong>把 HTTPS 加密解开再重新加密</strong>（叫 SSL 卸载）。加解密极其耗 CPU，让每台业务服务器自己干，等于每台都要为加密浪费 40% 的算力；集中到 A10 这台专用硬件上（里面有专门的加密芯片），业务服务器就解放了。
+- <strong>压缩和缓存</strong>，减少发出去的流量。
+- <strong>发现某台服务器挂了，立刻把流量转走</strong>，用户完全无感。</p>
+<p><strong>怎么收钱</strong>：一台 Thunder 硬件设备卖 <strong>3 万到 25 万美元</strong>，看吞吐量档位（从 10Gbps 到 400Gbps）。一家中型运营商的一个机房要买 2 台（主备），全国十几个机房就是几百万美元的单子。软件版本按吞吐量订阅，一年几万到几十万。</p>
+<p><strong>客户为什么非买不可</strong>：一旦这个盒子部署进网络的核心路径，换掉它意味着要在深夜做割接、重新配置几千条规则、承担业务中断风险。运营商的网络工程师宁愿多付 30% 也不愿意冒这个险。<strong>这就是它的护城河——不是技术领先，是切换成本。</strong></p>
+<h3>生意二：DDoS 攻击防护（Thunder TPS，A10 最强的产品线）</h3>
+<p><strong>这是什么</strong>：某个游戏公司的服务器突然收到每秒 800Gbps 的垃圾流量——是有人租了一个僵尸网络（几十万台被入侵的摄像头、路由器）在攻击它，目的可能是勒索，也可能是竞争对手雇的。这些垃圾流量会把机房的入口带宽塞满，正常玩家一个都进不来。</p>
+<p>A10 的 Thunder TPS 是插在网络入口的清洗设备：它在几秒内识别出「这 780Gbps 是垃圾、这 20Gbps 是真用户」，把垃圾丢掉，真流量放行。判断依据是行为特征——真用户的请求有节奏、有会话状态，攻击流量往往是机械重复的。</p>
+<p><strong>怎么收钱</strong>：一台高端 TPS 设备 <strong>15 万到 60 万美元</strong>。买家主要是电信运营商（它们不光自己要防，还把「防 DDoS」当成增值服务卖给自己的企业客户，一个月收几千美元）和大型云服务商、游戏公司、金融机构。</p>
+<p><strong>这是 A10 最有竞争力的产品线</strong>——在运营商级 DDoS 防护这个细分市场，全球能打的只有 A10、Radware、NetScout、华为几家。</p>
+<h3>生意三：服务与订阅（TTM 占营收 39%）</h3>
+<p>设备卖出去之后，客户每年要续：
+- <strong>维保合同</strong>：硬件坏了 24 小时换新、软件版本升级、7×24 电话支持。通常是设备售价的 <strong>15–20%/年</strong>。一台 20 万的设备，每年续 3–4 万。
+- <strong>安全威胁情报订阅</strong>：DDoS 攻击的特征库要天天更新（新的僵尸网络、新的攻击手法），这个订阅一年几万美元。
+- <strong>专业服务</strong>：帮客户做部署、调优、迁移。</p>
+<p><strong>这一门生意才是 A10 的现金牛</strong>：几乎零边际成本、续约率极高（不续就没人管你的设备了）、收入可预测。</p>
+<h3>钱是怎么分布的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算，百万美元）</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>产品（硬件+软件许可）</strong></td>
+<td>约 189</td>
+<td><strong>约 +21%</strong></td>
+<td><strong>61%</strong></td>
+<td>估算 12–15%</td>
+</tr>
+<tr>
+<td><strong>服务与订阅</strong></td>
+<td>约 121</td>
+<td>约 +3%</td>
+<td>39%</td>
+<td>估算 25–30%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>310.17</strong></td>
+<td><strong>+12.2%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>16.56%（披露值）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>上表的营收拆分基于公司 2026 年二季度披露的产品/服务占比（Q2 产品 4900 万占 61%、服务 3110 万占 39%）推算到 TTM，<strong>分部经营利润率是估算，财报不按分部披露利润</strong>。全公司 16.56% 的经营利润率是准确的披露数字。</p>
+</blockquote>
+<p><strong>这张表最重要的一行是增速差：产品 +21%、服务只有 +3%。</strong> 意思是这一年的增长几乎全部来自卖新硬件，而不是来自订阅收入的滚雪球。硬件销售是<strong>批次性的、不可预测的</strong>——今年一个大客户扩容你就好看，明年他不扩容你就难看。这跟软件订阅那种「今年的收入是明年的地板」完全是两种生意质量。</p>
+<h3>一个必须单独讲的事：钱是从哪个地区来的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收（百万美元）</th>
+<th>上年同期</th>
+<th>变化</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>美国</strong></td>
+<td><strong>190.69</strong></td>
+<td>160.53</td>
+<td><strong>+30.16（+18.8%）</strong></td>
+<td><strong>61.5%</strong></td>
+</tr>
+<tr>
+<td>亚太日本</td>
+<td>64.90</td>
+<td>70.52</td>
+<td><strong>−5.62（−8.0%）</strong></td>
+<td>20.9%</td>
+</tr>
+<tr>
+<td>欧洲中东非洲</td>
+<td>39.52</td>
+<td>44.85</td>
+<td><strong>−5.33（−11.9%）</strong></td>
+<td>12.7%</td>
+</tr>
+<tr>
+<td>美洲其他</td>
+<td>15.07</td>
+<td>14.65</td>
+<td>+0.42</td>
+<td>4.9%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>310.17</strong></td>
+<td>290.56</td>
+<td>+19.61</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读这张表要读出来的东西</strong>：全公司 1961 万的营收增长，是美国增了 3016 万、海外减了 1095 万拼出来的。<strong>海外两大区同时在缩，缩幅还不小（−8% 和 −11.9%）。</strong></p>
+<p>而美国增长的原因，公司在二季度电话会上说明了：<strong>跟微软签了一个多年期的规模化部署协议</strong>。这就是这只股票过去一年涨 47% 的全部原因。</p>
+<p><strong>这件事的两面性必须说清楚</strong>：好的一面是拿下微软这种客户是实打实的能力证明，而且是多年协议、有持续性。坏的一面是——<strong>一家 3.1 亿营收的公司，增长完全依赖一个客户，而这个客户是微软</strong>。微软的采购部门是全世界最会压价的采购部门之一，多年协议到期时的续约谈判会是什么局面，可以想象。同时，本来的基本盘（日本运营商，A10 的传统腹地）在萎缩 8%。</p>
+<h3>2026 年 6 月完成的收购：TrojAI</h3>
+<p>A10 在 2026 年 6 月买下了 TrojAI——一家做 <strong>AI 模型运行时防护</strong>的公司。做的事是：企业部署了大模型对外提供服务，有人会用提示词注入（骗模型说出不该说的话）、模型窃取（大量提问反推模型参数）、投毒等方式攻击它。TrojAI 的产品挡在模型前面，识别并拦截这类请求。</p>
+<p>TTM 现金流量表里 <strong>3468 万美元的收购支出</strong>主要就是这笔（FY2025 另有 1910 万的收购）。逻辑上说得通——A10 本来就是「挡在入口的那个盒子」，多挡一种流量是自然延伸。但截至 TTM，这块收入几乎为零，<strong>目前它是成本，不是利润</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分是这份分析里最重要的部分，因为 A10 的报表有一个大问题。</strong></p>
+<h3>股权激励（SBC）：这是最大的一处</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权激励 SBC</td>
+<td><strong>2339 万美元</strong></td>
+</tr>
+<tr>
+<td>GAAP 净利润</td>
+<td>4297 万美元</td>
+</tr>
+<tr>
+<td><strong>SBC ÷ 净利润</strong></td>
+<td><strong>54.4%</strong></td>
+</tr>
+<tr>
+<td>SBC ÷ 营收</td>
+<td>7.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话</strong>：A10 一年赚 4297 万，同时发出去了价值 2339 万的股票给员工。这 2339 万在 GAAP 利润里已经扣掉了（所以上面那个 4297 万是扣过的），但公司在自己的新闻稿里一定会用「调整后利润」把它加回去，然后告诉你「我们其实赚了 6600 万」。</p>
+<p><strong>那是骗人的。</strong> 员工拿到的股票是真的股票，它稀释你的份额，公司要么接受稀释、要么花真金白银去市场上买回来。这笔钱躲不掉。<strong>我在这份分析里全程按 GAAP 口径处理，不加回。</strong></p>
+<p>494 个员工分 2339 万，人均 4.7 万美元的股票薪酬——这是硅谷科技公司的水平，说明它的工资结构里有很大一块是用股票发的。</p>
+<h3>回购与稀释：核心指标是 0.98</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>2282 万美元</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>2339 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.98</strong></td>
+</tr>
+<tr>
+<td>员工行权发行新股</td>
+<td>+338 万美元</td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−1.19%</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>1724 万美元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这个 0.98 是全篇最需要理解的数字。</strong> 它的含义是：<strong>A10 花在回购上的每一分钱，都刚好被它发给员工的股票抵消掉了。</strong></p>
+<p>公司会在财报里宣传「我们回购了 2282 万美元的股票，回馈股东」。但实际上股本只减少了 1.19%——2282 万对应 18.61 亿市值是 1.23%，也就是说这 2282 万里，绝大部分只是在填 SBC 挖的坑，真正减少股东份额的部分接近于零。</p>
+<p><strong>教科书标准是：回购÷SBC 接近 1 = 回购只是在抵消员工发股，不是回馈股东；大于 3 才叫真回购。</strong> A10 是 0.98，卡在最典型的位置上。</p>
+<p>真正回馈股东的是那 <strong>1724 万分红</strong>（每股 0.24 美元，股息率 0.94%）——但要注意，这个每股股息从 FY2023 到现在<strong>四年一分钱没涨</strong>（一直是 0.24）。</p>
+<h3>一次性项目</h3>
+<p>TTM 里没有大额的诉讼、重组或减值。历史上 FY2021 有一笔 <strong>6250 万的「其他经营活动」负数</strong>（对应当年净利润高达 9489 万、利润率 37.95%）——那是一次性的递延所得税资产确认（会计上把过去累积的亏损可抵扣额转成资产，一次性做大利润），<strong>不是真的赚了那么多钱</strong>。所以拿 FY2021 的 13.55 倍市盈率跟现在比是错的，那个分母是假的。</p>
+<p><strong>用单期 TTM 口径无法判断 TrojAI 收购相关的费用有多少、是否会重复发生</strong>——A10 在 FY2025 和 TTM 连续两期都有收购支出（1910 万、3468 万），说明「收购」对这家公司正在变成常态而不是一次性事件。</p>
+<h3>利润和现金流的差：这里有实质性的恶化</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>42.97</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+15.70</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+0.50</td>
+</tr>
+<tr>
+<td>+ <strong>股权激励 SBC</strong></td>
+<td><strong>+23.39</strong></td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+4.71</td>
+</tr>
+<tr>
+<td>− 坏账计提转回</td>
+<td>−0.40</td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−19.59</strong></td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−11.73</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+17.13</td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>+10.22</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>−6.04</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>76.86</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−15.92</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>60.94</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要盯住三行</strong>：</p>
+<p><strong>第一行是 SBC +23.39。</strong> 经营现金流 7686 万里，有 2339 万（30%）是「把股票当工资发」省下来的现金。如果 A10 用现金给员工发这部分薪酬，经营现金流立刻变成 5347 万。<strong>所以不要看着 7686 万的经营现金流就觉得这家公司很能造血——三成是员工替股东垫的。</strong></p>
+<p><strong>第二行是应收账款 −19.59。</strong> 营收一年增长了 1961 万，而应收账款增加了 1959 万——<strong>几乎一比一</strong>。说白了：这一年新增的收入，钱基本还没收回来，全挂在账上。这可能是因为微软那种大客户的账期长（大企业 90 天账期很常见），也可能是季度末为了做数字而放宽了确认条件。单看一期分不清是哪种，但<strong>这是收入质量下降的明确信号</strong>。</p>
+<p><strong>第三行是存货 −11.73。</strong> 存货增加 1173 万，可能是为微软的部署备货（合理），也可能是货压在渠道没卖出去（不合理）。</p>
+<p><strong>这三项合起来的后果</strong>：自由现金流从 FY2024 的 7822 万降到 TTM 的 <strong>6094 万，下降 22%</strong>，而同期营收增长了 18.5%。<strong>营收在涨、现金在缩，这是这份报表最刺眼的地方。</strong></p>
+<h3>债务：2025 年发了 2.25 亿可转债</h3>
+<p>FY2025 A10 发行了 <strong>2.25 亿美元长期债券</strong>（从条款结构和一家现金充裕公司的融资动机看，几乎可以确定是可转换债券）。拿到钱之后：
+- 花 <strong>1.878 亿买了证券</strong>（放着生息）
+- 花 <strong>3468 万做收购</strong>（TrojAI）</p>
+<p>现在账上现金和投资 <strong>3.5735 亿</strong>、负债 <strong>2.2608 亿</strong>、净现金 <strong>1.3126 亿</strong>。</p>
+<p><strong>可转债对股东的意义是一个「延迟的稀释」</strong>：如果股价涨过转换价，债主会把债转成股票，股本就增加了；如果股价不涨，公司到期要还 2.25 亿现金。股价过去一年已经涨了 47%——<strong>转换的可能性在上升，也就是说未来的稀释风险在上升</strong>，而这部分稀释目前还没有体现在任何一个「每股」指标里。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>18.61亿 ÷ 4297万</td>
+<td><strong>44.19 倍</strong></td>
+<td><strong>2.26 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 2339 万 SBC 后约 6636 万</td>
+<td>约 28.0 倍</td>
+<td>3.57 元（<strong>别信</strong>）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>18.61亿 ÷ 4297万（SBC 按 GAAP 已扣不加回，TTM 无大额真一次性项目可剥）</td>
+<td><strong>44.19 倍</strong></td>
+<td><strong>2.26 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>18.61亿 ÷ 6094万</td>
+<td><strong>30.46 倍</strong></td>
+<td><strong>3.28 元</strong></td>
+</tr>
+<tr>
+<td><strong>现金调整后的 FCF 口径</strong></td>
+<td>18.61亿 ÷（6094万 − 2339万 SBC）</td>
+<td><strong>49.6 倍</strong></td>
+<td><strong>2.02 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>17.30亿 ÷ 5138万</td>
+<td><strong>33.57 倍</strong></td>
+<td><strong>2.98 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>18.61亿 ÷ 三年均值 4508万（4297/4214/5014）</td>
+<td><strong>41.28 倍</strong></td>
+<td><strong>2.42 元</strong></td>
+</tr>
+<tr>
+<td>市场预期的远期市盈率</td>
+<td>分析师一致预期</td>
+<td><strong>23.46 倍</strong></td>
+<td>4.26 元（<strong>是预测不是事实</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有三个要说清楚的地方</strong>：</p>
+<p><strong>1. Non-GAAP 那一行为什么别信。</strong> 加回 2339 万 SBC 就能把市盈率从 44 倍降到 28 倍——一半的「便宜」是这么变出来的。但员工手里的股票不会因为公司在新闻稿里加回它就消失。</p>
+<p><strong>2.「现金调整后的 FCF 口径」49.6 倍是最保守的真相。</strong> 自由现金流 6094 万看起来对应 30 倍，还算合理。但这 6094 万里有 2339 万是靠发股票代替现金工资省下来的。<strong>把这部分真实成本还原回去，实际的股东可分配现金只有 3755 万，对应 49.6 倍。</strong></p>
+<p><strong>3. 44.19 倍 vs 23.46 倍远期，差了 88%。</strong> 这是整份分析里最大的一个信息。市场认为 A10 明年的每股收益会从 0.58 涨到约 1.11 美元——<strong>接近翻倍</strong>。这个预期建立在微软协议全面放量、TrojAI 开始贡献收入、以及产品毛利率维持在 79% 三件事同时发生上。</p>
+<p><strong>三年平均口径 41.28 倍</strong>跟当期 44.19 倍差不多，说明当前利润不算历史高点也不算低点（TTM 4297 万、FY2025 4214 万、FY2024 5014 万，三年是持平略降的）。<strong>注意 FY2024 的利润比现在还高</strong>——也就是说，这两年营收从 2.617 亿涨到 3.102 亿（+18.5%），净利润却从 5014 万降到 4297 万（−14.3%）。营收涨了、利润跌了。</p>
+<h3>说人话：你现在投 100 块进去，一年发生什么</h3>
+<p><strong>按最保守的真实口径（把 SBC 当现金成本还原回去），公司一年替你赚 2.02 块。按 GAAP 市盈率算，是 2.26 块。</strong></p>
+<p>这 2.26 块的去向：
+- <strong>0.93 块以现金股息发到你手里</strong>（股息率 0.94%，且这个每股股息四年没涨过）；
+- <strong>1.23 块用于回购，但其中约 1.2 块只是在抵消员工发股</strong>，真正减少你份额的部分接近于零；
+- <strong>剩下的留在公司</strong>，正在变成账上的证券和收购款。</p>
+<p><strong>这个 2.26 块未来会变大还是变小？这是一个赌注，不是一个判断。</strong></p>
+<p><strong>变大的情形（市场正在押的）</strong>：微软协议按计划放量、美国营收继续 +19%、TrojAI 带来 AI 安全的新增长曲线 → 每股收益翻倍到 1.1 美元，现价对应 23 倍，回头看就是便宜。</p>
+<p><strong>变小的情形（报表已经在提示的）</strong>：
+1. 亚太 −8%、欧洲 −11.9%，两个传统市场同时在萎缩，靠一个客户在撑；
+2. 应收账款几乎跟营收等额增长，自由现金流已经掉了 22%；
+3. FY2024 到现在利润是净下降的，营收增长没有变成利润增长；
+4. 2.25 亿可转债悬在头上，股价越涨转换稀释的概率越高；
+5. <strong>10.49% 的流通股被做空</strong>——这是一个相当高的比例，说明有相当规模的资金在赌上面这些问题会兑现。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>44 倍买一家营收在涨、利润在跌、现金流在缩、增长靠一个大客户撑着的硬件公司，这个价格不值。</strong></p>
+<p>把话说透：A10 的<strong>生意本身是合格的</strong>——79.38% 的毛利率、44.18% 的投入资本回报率、切换成本构成的真护城河、DDoS 防护这条产品线在全球是数得着的几家之一。这不是一家烂公司。</p>
+<p>但<strong>这个价格买的不是现在的 A10，是市场想象中明年的 A10</strong>。现价 44 倍对应的是 TTM 每股 0.58 美元的实际盈利；市场用 23.46 倍的远期市盈率告诉你，它假设这个数字明年变成 1.11 美元。而报表上的实际情况是：<strong>过去两年营收涨了 18.5%，净利润跌了 14.3%，自由现金流跌了 22%，应收账款和营收增量几乎一比一。</strong></p>
+<p>三处硬伤，逐一点名：
+1. <strong>股权激励占净利润 54.4%</strong>，而回购只有 SBC 的 0.98 倍——员工在分走一半利润，股东拿到的回购只够填坑。
+2. <strong>增长全靠美国一个客户</strong>，日本和欧洲两个传统腹地同时在两位数萎缩。微软既是这只股票涨 47% 的原因，也是它最大的单点风险。
+3. <strong>2.25 亿可转债</strong>是一颗延迟引爆的稀释弹，股价越涨越容易转股。</p>
+<p><strong>股价过去 52 周涨了 47%，而利润是下降的——涨的全是估值。</strong> 市盈率从 FY2025 年底的 30.11 倍抬到现在的 44.19 倍，这 47% 的涨幅里，一分钱都不是利润涨出来的。10.49% 的做空比例说明市场里已经有一大批钱在赌这件事站不住。</p>
+<p><strong>我的判断：好公司，坏价格。想买的人，等它把微软那笔单子真的变成利润表上的数字、并且自由现金流重新往上走的时候再看。现在这个位置，你付的是想象力的钱。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com（TTM 截至 2026-06-30，数据由 S&amp;P Global Market Intelligence 提供）、A10 Networks 2026 年二季度财报电话会。所有利润、现金流、比率均为 TTM 口径。分部经营利润率为估算，财报不按分部披露利润。</em></p>
+</div></body></html>
