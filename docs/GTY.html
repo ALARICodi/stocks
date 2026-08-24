@@ -1,0 +1,403 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GTY · 盖蒂地产(Getty Realty Corporation)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GTY</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">5.77%股息+三重净租赁零维护费，但8%买入配6.5%融资，价差薄到1.5个点</div><h1>GTY · 盖蒂地产(Getty Realty Corporation)</h1>
+<p>市值 20.5 亿美元 / 当前股价约 33.1 美元 / 行业:金融 — 净租赁 REIT(不动产投资信托)/ TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家 REITs(不动产信托),下面第三部分用 FFO / AFFO 口径而不是市盈率。</strong>
+原因很直接:GAAP 会计要求它每年把房产按几十年直线折旧掉,TTM 折旧摊销 6160 万美元,占了净利润的 64%。但<strong>加油站底下那块地不会磨损、不会贬值,加油站本身也只是个铁棚子加几个油罐,真实维护开支远低于账面折旧</strong>。用净利润算市盈率,等于承认这些地产每年在凭空消失一大块价值,那是假的。所以行业统一用 FFO(把折旧加回、把卖楼的一次性收益减掉)和 AFFO(再扣掉直线租金等非现金项)来衡量真实赚钱能力。</p>
+</blockquote>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p><strong>这家公司只做一件事:当房东,而且是最省事的那种房东。</strong> 全公司只有 <strong>31 名员工</strong>,人均创收 752 万美元——这个数字本身就说明它不"经营"任何东西。</p>
+<h3>它到底怎么赚钱:三重净租赁(triple-net lease)</h3>
+<p>具体场景:纽约长岛有一块街角地,上面是一家加油站带便利店。经营这家加油站的是一个连锁运营商,比如 APRO(7-Eleven 的特许经营商)或者 Global Partners。<strong>这块地和这栋房子的产权归 Getty,运营商每年付租金。</strong></p>
+<p>关键在"三重净"这三个字——<strong>房产税、保险费、维修费,全部由租客自己出,不由房东出</strong>。房东唯一要做的事就是每月收租。所以:</p>
+<ul>
+<li>租约期限通常 <strong>15—20 年</strong>,还带几个 5 年续约选择权;</li>
+<li>租约里写死了<strong>每年自动涨租 1.5%—2%</strong>,不用谈判;</li>
+<li>屋顶漏了、油罐要换、地面要重铺——<strong>租客自己掏钱</strong>;</li>
+<li>房产税涨了——<strong>租客自己承担</strong>。</li>
+</ul>
+<p><strong>这就是 31 个人能管住十几亿美元资产的原因。</strong> Getty 的员工不用巡店、不用修水管、不用跟保险公司扯皮,他们只做两件事:<strong>收租,和用收来的钱去买更多的地。</strong></p>
+<h3>它买的是哪些地</h3>
+<p>Getty 的资产大约 1100—1200 处物业,横跨美国 40 多个州,分四类租客:</p>
+<p><strong>1. 加油站 + 便利店(最大的一块,历史根基)</strong>
+Getty 的前身就是 Getty Petroleum 的地产部门,1997 年分拆成 REIT。核心资产是全美各地位置极好的街角加油站——<strong>这类地皮的价值不在于卖油,在于它是"红绿灯路口右转第一个能停车的地方"</strong>。租客是 7-Eleven、Circle K、Global Partners 这类连锁便利店运营商。一处物业年租金大概 12—25 万美元。</p>
+<p><strong>2. 洗车行(近几年扩张的重点)</strong>
+Mister Car Wash、Whistle Express 这类连锁快洗。一个洗车场投入约 400—600 万美元建设,Getty 买下来再租回给运营商,年租金 30—45 万美元。<strong>洗车这门生意租客愿意签超长租约</strong>,因为他们的设备投入沉没在那块地上,搬不走。</p>
+<p><strong>3. 汽车快修与保养</strong>
+Valvoline Instant Oil Change、Take 5 Oil Change 这类"不下车换机油"的连锁。同样是标准化小店面,租约 15 年起。</p>
+<p><strong>4. 快餐得来速(drive-thru QSR)</strong>
+Taco Bell、Wendy's 这类带车道窗口的独栋快餐店。</p>
+<h3>它怎么增长:一台"用别人的钱买地"的机器</h3>
+<p>这是理解这家公司的<strong>唯一一件重要的事</strong>。它的增长完全不靠"涨租金"(每年只涨 1.5—2%),而靠<strong>不断买入新物业</strong>。</p>
+<p>TTM 的实际动作:
+- <strong>花出去买地产 3.4166 亿美元</strong>
+- <strong>同期发行新股融来 1.5129 亿美元</strong>(通过 ATM 增发,即在市场上一点点卖新股)
+- <strong>同期净增借款 1.4787 亿美元</strong>
+- 两项合计 2.99 亿,加上留存现金,凑出了那 3.42 亿</p>
+<p>Getty 买入的资产<strong>收益率(cap rate)大约 8%</strong>——花 100 万买一处物业,一年收 8 万租金。而它融钱的成本:发新股相当于让新股东按 7.1% 的 AFFO 收益率入伙,借债利率约 5.5%,一半一半混起来大概 <strong>6.5%</strong>。</p>
+<p><strong>8% 减 6.5% = 1.5 个百分点的价差,这就是它全部的增长来源。</strong></p>
+<p>用具体数字:TTM 买入 3.42 亿的资产,每年新增租金约 2730 万;为此付出的资金成本约 1880 万(股权 1.51 亿 × 7.1% + 债务 1.48 亿 × 5.5%)。<strong>净增厚约 850 万美元,相当于 AFFO 的 5.8%。</strong></p>
+<p>这台机器的致命特征是:<strong>它的运转速度完全取决于自家股价</strong>。股价高 → AFFO 收益率低 → 发股票便宜 → 价差大 → 买得多、增长快;股价跌 → 发股票贵 → 价差被压没 → 增长停摆。<strong>所以对净租赁 REIT 来说,股价不只是结果,股价是生产资料。</strong></p>
+<h3>一张表看清</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025 全年</th>
+<th>方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>租金收入(百万美元)</td>
+<td>233.04</td>
+<td>221.73</td>
+<td>↑ +10.93%</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>64.11%</td>
+<td>57.48%</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>全年买入地产(百万美元)</td>
+<td>341.66</td>
+<td>278.18</td>
+<td>↑</td>
+</tr>
+<tr>
+<td>员工数</td>
+<td>31</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报<strong>不分部披露</strong>——公司自己就把整体当成一个业务线管,四类租客的营收拆分不在标准财报里。上表是全公司口径。营收增长 10.9% 几乎全部来自新买入的物业,不是同店涨租。</p>
+</blockquote>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<h3>股权激励(SBC):624 万美元,占净利润 6.5%</h3>
+<p>TTM SBC 624 万美元。<strong>这个数字在 REITs 里算正常偏高</strong>(31 个员工分 624 万,人均 20 万美元的股票)——但绝对值很小,不影响判断。</p>
+<p><strong>注意行业惯例的一个坑:REITs 在计算 AFFO 时通常会把 SBC 加回去</strong>,理由是"非现金"。<strong>本文不加回</strong>——它稀释你的股份,是真实的价值转移。下面第三部分的 AFFO 已经把 SBC 扣着,所以我算出来的 AFFO 会比公司自己公布的略低,这是故意的。</p>
+<h3>一次性项目:两项,方向相反,基本对冲</h3>
+<ul>
+<li><strong>资产处置收益 +723 万美元</strong>(卖掉了 2169 万美元的物业,赚了 723 万)。这是<strong>真一次性</strong>,在 FFO 计算里必须减掉——否则等于把"卖地"算成"收租"。</li>
+<li><strong>资产减值 −517 万美元</strong>。这是某些物业(多半是被环保污染问题拖累的老加油站)按更低价值重估。</li>
+</ul>
+<p>把历史摊开看:资产处置收益 FY2025 是 308 万、FY2024 是 46 万、FY2022 是 1103 万;减值 FY2025 是 282 万、FY2024 是 397 万。<strong>两项都是年年都有、金额在几百万级别波动的项目</strong>,不是罕见事件。所以<strong>单期口径无法判断今年这 723 万处置收益是否高于常态</strong>——从五年序列看略偏高,但在同一量级内。</p>
+<h3>资本化的支出:REITs 的这一栏天然特殊</h3>
+<p>Getty 的"资本开支"不出现在常规 capex 行里(所以 FCF = OCF,都是 1.3882 亿),而是记在投资活动里的<strong>「购置房地产资产 3.4166 亿」</strong>。这不是障眼法——买楼本来就是投资不是费用。</p>
+<p>但<strong>有一件事要提防:环保修复支出</strong>。Getty 手上很多是老加油站,地下油罐渗漏是这个行业几十年的历史遗留问题。这类修复责任在报表上通常挂成负债准备金,实际掏钱时冲减负债、不进利润表。TTM「其他经营性资产变动 −2720 万」和「其他经营活动 −883 万」里,大概率含有这部分现金流出。<strong>这是它和普通净租赁 REIT(比如租给药店、租给便利店的)最大的差别,也是最容易被忽略的隐性成本。</strong></p>
+<h3>回购与稀释:方向和上一家完全相反</h3>
+<ul>
+<li>TTM <strong>回购 25 万美元</strong>(基本等于零,大概率只是员工行权代扣税)</li>
+<li>TTM <strong>发行新股 1.5129 亿美元</strong></li>
+<li><strong>股本一年增加 6.57%,单季增加 1.37%</strong></li>
+<li><strong>回购 ÷ SBC = 0.25 ÷ 6.24 = 0.04 倍</strong></li>
+</ul>
+<p>按本文的标准这是最低一档。<strong>但对 REITs 来说,这个指标要换个读法。</strong></p>
+<p>REIT 按法律必须把 90% 以上的应税收入分掉,<strong>它没有留存利润可以用来增长</strong>,所以想买新楼就只能发新股或借钱。<strong>发新股本身不是罪</strong>——问题在于<strong>发的这些新股买回来的资产,回报率有没有高过新股东要求的回报率</strong>。</p>
+<p>前面算过:买入 cap rate 约 8%,新股成本约 7.1%,<strong>价差不到 1 个百分点</strong>(债务那部分价差更宽一点,混起来 1.5 个百分点)。<strong>这个价差是薄的。</strong> 对比疫情前 Getty 能以 5% 的股权成本买 7.5% 的资产,当时价差 2.5 个百分点。<strong>利率上来之后,这台机器的马力少了一半。</strong></p>
+<p>一句话:<strong>股本一年多 6.57%,而 AFFO 每股只增长个位数——这意味着增长的大部分被稀释吃掉了。</strong></p>
+<h3>利润和现金流的差:逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM(百万美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>96.25</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>61.60</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>1.53</td>
+</tr>
+<tr>
+<td>+ 资产减值</td>
+<td>5.17</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−7.23</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>6.24</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>8.50</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−0.55</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动(含环保修复、直线租金)</td>
+<td>−27.20</td>
+</tr>
+<tr>
+<td>− 其他经营活动(含直线租金调整)</td>
+<td>−8.83</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>138.82</strong></td>
+</tr>
+<tr>
+<td>维护性资本开支</td>
+<td>0(三重净租赁,由租客承担)</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>138.82</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最值得看的是「其他经营性资产变动 −2720 万」这一行。</strong> 它是净利润和现金流之间最大的一道口子,而它在 FY2024 只有 −326 万、FY2023 −844 万。<strong>TTM 突然放大到 −2720 万</strong>,这里面装的是直线租金调整(会计上把 20 年租约的租金平均化,前期确认的收入高于实收现金)和环保修复的实际付款。</p>
+<p><strong>这意味着一件事:今年账上确认的 9625 万净利润里,有相当一块是「已确认但还没收到现金的未来租金」。</strong> 这在净租赁 REIT 里是常态,但金额从几百万跳到 2720 万,是这份报表里最值得盯的一处。</p>
+<p>另外,<strong>三重净租赁不需要维护性资本开支</strong>——屋顶、油罐、地面全归租客修。所以 FCF = OCF,这是这门生意最漂亮的地方,也是它值得给溢价的原因。</p>
+<hr />
+<h2>第三部分:REITs 口径 —— FFO / AFFO,不是市盈率</h2>
+<p>先把三个数算出来:</p>
+<p><strong>FFO(运营资金)= 净利润 + 房地产折旧摊销 + 减值 − 资产处置收益</strong>
+= 96.25 + 61.60 + 5.17 − 7.23 = <strong>1.558 亿美元</strong> → 每股 <strong>2.52 美元</strong></p>
+<p><strong>AFFO(调整后运营资金,估算)= FFO − 直线租金等非现金收入调整 − 债务费用摊销</strong>
+≈ 155.8 − 8.83 − 1.53 ≈ <strong>1.454 亿美元</strong> → 每股 <strong>2.35 美元</strong></p>
+<blockquote>
+<p><strong>AFFO 是估算值。</strong> 公司自己公布的 AFFO 会略高于这个数,因为行业惯例会把 SBC(624 万)加回去,而本文按"SBC 是真实成本"的原则不加回。另外直线租金的确切金额财报未单列,这里用「其他经营活动 −883 万」作为代理。<strong>误差大约在每股 ±0.10 美元。</strong></p>
+</blockquote>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市值 ÷ FFO</strong></td>
+<td>20.5 亿 ÷ 1.558 亿</td>
+<td><strong>13.2 倍</strong></td>
+<td><strong>7.60 元</strong></td>
+</tr>
+<tr>
+<td><strong>市值 ÷ AFFO(估算,最保守)</strong></td>
+<td>20.5 亿 ÷ 1.454 亿</td>
+<td><strong>14.1 倍</strong></td>
+<td><strong>7.09 元</strong></td>
+</tr>
+<tr>
+<td>市值 ÷ GAAP 净利润(<strong>仅供参考,不适用</strong>)</td>
+<td>20.5 亿 ÷ 0.9625 亿</td>
+<td>21.3 倍</td>
+<td>4.70 元</td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>20.5 亿 ÷ 11.2 亿账面净资产</td>
+<td>1.83 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值 ÷ EBITDA</td>
+<td>31.3 亿 ÷ 2.11 亿</td>
+<td>14.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均 FFO 口径</td>
+<td>20.5 亿 ÷ 1.36 亿(TTM/FY25/FY24 均值,估算)</td>
+<td><strong>15.1 倍</strong></td>
+<td><strong>6.63 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关键的其他指标:</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么看</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>股息率</strong></td>
+<td><strong>5.77%</strong>(TTM 每股约 1.91 美元)</td>
+<td>派息 1.1532 亿 ÷ 市值</td>
+</tr>
+<tr>
+<td><strong>派息率(占 AFFO)</strong></td>
+<td><strong>81%</strong></td>
+<td>净租赁 REIT 的正常水平(70—85%),不算勉强</td>
+</tr>
+<tr>
+<td><strong>净负债 / EBITDA</strong></td>
+<td><strong>5.06 倍</strong></td>
+<td>行业上限一般看 6 倍,还有空间但不宽裕</td>
+</tr>
+<tr>
+<td><strong>利息保障倍数</strong></td>
+<td><strong>3.11 倍</strong></td>
+<td>中等偏紧,比上一家的 2.59 好,但远不算安全</td>
+</tr>
+<tr>
+<td><strong>ROE</strong></td>
+<td>9.46%</td>
+<td>因为 GAAP 折旧压低了利润,失真,别信</td>
+</tr>
+<tr>
+<td><strong>ROIC</strong></td>
+<td>4.53% vs WACC 6.72%</td>
+<td><strong>这是全篇最刺眼的一个对比,下面单讲</strong></td>
+</tr>
+<tr>
+<td>出租率</td>
+<td>财报未在这四页披露,历史一贯 99%+</td>
+<td>净租赁 REIT 的常态</td>
+</tr>
+</tbody>
+</table></div>
+<h3>说人话:你投 100 块进去,一年得到什么</h3>
+<p><strong>按最保守的 AFFO 口径:你投 100 块,这家公司一年替你赚 7.09 元。</strong></p>
+<p>这 7.09 元的去向非常清楚,而且比绝大多数公司都干净:
+- <strong>5.77 元以现金分红的形式直接打进你账户</strong>(每季度派一次);
+- <strong>剩下 1.32 元留在公司</strong>,用来付一小部分新买楼的钱。</p>
+<p><strong>但这里有一个必须点破的东西:留下的这 1.32 元根本不够买楼。</strong> TTM 它买了 3.42 亿的地产,留存现金只有约 2350 万——<strong>差的那 3.2 亿是发新股和借钱来的。</strong> 所以你拿到的 5.77% 股息是真的,但<strong>你手里股份的占比每年被稀释 6.57%</strong>。</p>
+<p>净效果怎么算?<strong>股息 5.77% + 每股 AFFO 增长(约 2—4%)= 总回报 8—10%</strong>,前提是那台"8% 买入 / 6.5% 融资"的机器还转得动。</p>
+<h3>ROIC 4.53% 低于 WACC 6.72%,这意味着什么</h3>
+<p>这是本篇最该警惕的一个数字。它字面意思是:<strong>这家公司投出去的每一块钱,赚回来的回报低于它的资金成本——理论上它每买一栋楼,都在毁灭价值。</strong></p>
+<p>要公平地看这个数,得说清楚三件事:
+1. <strong>分子被 GAAP 折旧压低了。</strong> NOPAT 里扣了 6160 万的折旧,而真实的房产磨损远没这么多。按 FFO 口径重算,资产回报率接近 7%,和 WACC 打平。
+2. <strong>分母是历史成本。</strong> Getty 手上很多加油站是 1997 年分拆时带过来的,账面值是三十年前的价格,实际市值高得多。这会让 ROIC 显得<strong>偏高</strong>而非偏低——所以这一条反而不能替它开脱。
+3. <strong>但方向是对的。</strong> 无论怎么调,<strong>这门生意的资本回报率和它的资金成本只在同一个量级上,没有明显超额。</strong> 一台价差只有 1.5 个百分点的机器,本来就不该指望它有高 ROIC。</p>
+<p><strong>这就是净租赁 REIT 的本质:它不是一门好生意,它是一个「用低成本资金去买稳定现金流」的套利结构。</strong> 它的全部价值取决于利率环境。利率降,它的融资成本下来、价差变宽、股价涨;利率不降,它就是一只 5.77% 的债券替代品,再无别的故事。</p>
+<h3>这个 7.09 元未来会变大还是变小</h3>
+<ul>
+<li><strong>变大的理由</strong>:租约里写死每年涨租 1.5—2%;买入 cap rate 8% 在净租赁行业里属于偏高(说明加油站资产不受追捧,反而给了它价差);贝塔只有 0.76,抗跌;转向洗车和快修,把资产从"卖油"往"服务"迁移,是对的方向。</li>
+<li><strong>变小的理由</strong>:股本一年增 6.57%,增长被稀释吃掉大半;净负债/EBITDA 已经 5.06 倍,借钱空间在收窄;做空比例高达流通股的 13.11%,说明有一批人赌它撑不住;<strong>最根本的一条是电动车</strong>——加油站资产的终局风险不在明年,但在十年维度上是真的,而 Getty 一半以上的资产还压在这上面。管理层显然知道,所以在猛买洗车行和快修——<strong>洗车和换机油这两件事,电动车一样要做</strong>,这个转向的逻辑是通的,但速度够不够快,现在没人知道。</li>
+</ul>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>一台运转正常但马力被利率削掉一半的收租机器:5.77% 的股息是真的、账是干净的、三重净租赁让它一分钱维护费都不用出,但 14 倍 AFFO、8% 买入配 6.5% 的融资成本,价差薄到只剩 1.5 个百分点,增长的大部分被每年 6.57% 的股本稀释吃掉。</strong></p>
+<p>它值这个价,但<strong>买它就是买一只带 2% 增长的 5.77% 债券</strong>,别指望更多。真正的判断分岔点只有一个:<strong>你怎么看利率</strong>。利率下行,它的融资成本降、价差回到 2.5 个百分点,那台机器重新提速,股价能到 40 以上;利率停在这儿,你就一直拿 5.77% 的股息,每年多 2% 的每股 AFFO,总回报 8% 左右——不难看,但也没有便宜可占。</p>
+<p>至于电动车这件事,<strong>十年内不构成威胁(便利店和洗车才是租客的利润来源,油泵只是引流),但它是这只股票永远给不了高估值的原因</strong>,也是做空比例常年在 12% 以上的原因。管理层往洗车和快修转的方向是对的,值得盯着看这个比例每年挪多少。</p>
+<p><strong>公道价,生意本身站得住,是可以留着观察的那一类——但它的天花板也很清楚。</strong></p>
+</div></body></html>

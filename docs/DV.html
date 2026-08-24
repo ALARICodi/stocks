@@ -1,0 +1,446 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DV · DoubleVerify（双重验证控股）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DV</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">12.85倍市现率是假的，SBC占净利174%，真实35倍配7.6%增长</div><h1>DV · DoubleVerify（双重验证控股）</h1>
+<p><strong>市值</strong> 20.6 亿美元 · <strong>股价</strong> $13.31（2026-08-21 收盘） · <strong>行业</strong> 科技服务 / 广告验证 · <strong>交易所</strong> NYSE
+<strong>财报口径</strong> TTM（最近四个季度滚动），截止 <strong>2026 年 6 月 30 日</strong>
+<strong>全榜名次</strong> 第 839 名（按市值从高到低，共 1236 家）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>DoubleVerify 做的是一件听起来很抽象、但一说例子就秒懂的事：<strong>替广告主检查，他们花的广告费到底有没有花到活人眼睛上。</strong></p>
+<p>举个具体的场景。可口可乐一年在网上投 5 亿美元广告。这 5 亿投出去，会发生几件让市场部总监睡不着觉的事：</p>
+<ol>
+<li><strong>有的广告根本没被人看到。</strong> 网页很长，广告位在页面最底下，用户翻到一半就关了。广告服务器记了一次「展示」，钱照扣，但没人看见。</li>
+<li><strong>有的「用户」是机器人。</strong> 一个服务器农场里的脚本每秒刷新一万次页面，制造出海量假流量，卖给广告平台。可口可乐的钱付给了一台服务器。</li>
+<li><strong>有的广告出现在了不该出现的地方。</strong> 可口可乐的广告出现在一个报道空难的新闻页面旁边，或者出现在一个种族主义论坛上。第二天推特上就炸了。</li>
+<li><strong>有的广告投到了错的国家。</strong> 买的是美国流量，实际展示在越南。</li>
+</ol>
+<p>DoubleVerify 的技术就是在广告展示的那一瞬间（或者之前）判断这四件事。它的营收按<strong>在广告交易链条的哪个位置收费</strong>分成三块，这是财报真实披露的分部。</p>
+<h3>生意 A：Activation（激活）—— 事前拦截，占营收 56%</h3>
+<p><strong>这是 DV 最大也最赚钱的一块。</strong></p>
+<p>怎么运作：可口可乐的广告代理商在 The Trade Desk（一个程序化广告购买平台）上设置投放。每当有一个广告位要竞拍时，交易平台会在<strong>竞价之前的几毫秒内</strong>问 DV 一句：「这个广告位怎么样？」DV 回答「安全，可买」或者「这是个机器人流量／这是个仇恨言论页面，别买」。代理商的系统据此决定出不出价。</p>
+<p>关键在于<strong>「事前」</strong>。事前拦截意味着钱压根没花出去，比事后发现钱白花了有价值得多。DV 的核心产品叫 Authentic Brand Safety，还有一个叫 Scibids 的 AI 出价优化工具（2023 年收购）——它不只是拦截，还主动告诉你「这个广告位虽然安全，但历史转化率低，别出高价」。</p>
+<p>怎么收钱：<strong>按检查次数收费</strong>，行业术语叫 CPM（每千次展示）。典型价格是每千次审核 0.05 到 0.15 美元。可口可乐一年 500 亿次广告展示，全部过一遍 DV，账单大约 250 万到 750 万美元。<strong>这个定价方式意味着 DV 的营收直接绑定在客户的广告投放量上——客户砍预算，DV 立刻掉收入。</strong></p>
+<p>客户为什么非买不可？两个原因。一是<strong>责任转移</strong>：市场部总监买了 DV，广告出事时可以说「我们用了行业标准的第三方验证工具」，这是职业保险。二是<strong>广告主协会的强制</strong>：媒体评级委员会（MRC）认证的验证服务在大品牌的采购流程里基本是必选项。</p>
+<h3>生意 B：Measurement（测量）—— 事后审计，占营收 34%</h3>
+<p><strong>事前拦截是买保险，事后测量是查账。</strong></p>
+<p>可口可乐投完广告，DV 出一份报告：这个季度你买了 500 亿次展示，其中 88.3% 真的被人看到了（可见率）、1.2% 是机器人流量、0.4% 出现在了不合适的内容旁边、地理位置匹配率 96%。这份报告是可口可乐跟 Meta、Google、亚马逊结算和吵架的依据——<strong>如果 DV 说有 3% 是无效流量，可口可乐就拿这个去要退款。</strong></p>
+<p>这块的关键价值是<strong>中立性</strong>：它必须是第三方。让 Meta 自己报告自己的广告质量，谁信？所以 DV 的商业模式本质上是「被大平台允许存在的裁判」。这句话后面会变成一个大问题。</p>
+<p>怎么收钱：也是 CPM，但价格更低（每千次 0.02–0.06 美元），因为事后测量的技术门槛低于事前拦截。</p>
+<h3>生意 C：Supply-Side（供给侧）—— 卖给卖广告的那一方，占营收 10%</h3>
+<p>前面两块的客户是花钱的（广告主）。这一块的客户是收钱的（媒体、发行商、广告交易所）。</p>
+<p>具体是什么：一家做新闻网站的公司，想向广告主证明「我的流量是干净的、我的广告位是真的能被看到的」，于是它自己买 DV 的认证，把 DV 的报告放进销售材料里。或者一家广告交易所买 DV 的工具，在自己平台上先把垃圾流量清掉，这样广告主才愿意来买。</p>
+<p>怎么收钱：多为<strong>订阅制 + 用量分层</strong>，一家中型发行商一年可能付 10 万到 50 万美元。<strong>这块增长最快（FY2025 同比 +25.4%），但盘子最小。</strong></p>
+<h3>钱的分布（TTM，截止 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速（估算）</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A Activation 激活</td>
+<td>431.42</td>
+<td>~+8%</td>
+<td>56.1%</td>
+<td>~16%（估算）</td>
+<td>~69</td>
+</tr>
+<tr>
+<td>B Measurement 测量</td>
+<td>261.96</td>
+<td>~+10%</td>
+<td>34.1%</td>
+<td>~12%（估算）</td>
+<td>~31</td>
+</tr>
+<tr>
+<td>C Supply-Side 供给侧</td>
+<td>75.44</td>
+<td>~+18%</td>
+<td>9.8%</td>
+<td>~−4%（估算）</td>
+<td>~−3</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>768.82</strong></td>
+<td><strong>+7.64%（财报真实数）</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>12.67%（财报真实数）</strong></td>
+<td><strong>97.38</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润。</strong> 上表的分部利润率是按「Activation 技术含量最高定价最高、Supply-Side 还在投入期」的常识估算的，<strong>不是财报数字</strong>。分部同比增速也是估算（财报只给年度数，TTM 与上年同期 TTM 的分部对比不可得），总营收增速 +7.64% 是财报真实数。</p>
+<h3>增长曲线是全篇第一个警报</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收增速</td>
+<td>+36.4%</td>
+<td>+36.0%</td>
+<td>+26.6%</td>
+<td>+14.7%</td>
+<td>+13.9%</td>
+<td><strong>+7.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年时间，增速从 36% 一路降到 7.6%。</strong> 这不是一次性的波动，是一条平滑向下的线。一家 SaaS 类公司的增速掉进个位数，意味着市场在跟它说：<strong>这门生意已经从「新品类扩张」进入「存量竞争」了。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>1. 股权激励（SBC）：1.0265 亿美元 —— <strong>这是全篇最重要的一个数字</strong></h3>
+<p>TTM 股权激励 <strong>1.0265 亿美元</strong>。</p>
+<p>对比一下：
+- TTM 净利润 5886 万 → <strong>SBC 是净利润的 1.74 倍</strong>
+- TTM 营收 7.688 亿 → <strong>SBC 占营收 13.4%</strong>
+- TTM 经营利润 9738 万 → <strong>SBC 比经营利润还大</strong></p>
+<p>这个数字的含义是：<strong>DoubleVerify 每年发给员工的股票，价值超过它赚的全部利润。</strong> 如果它不发股票改发现金，GAAP 报表上它的净利润会从 5886 万变成大约 5886 − 10265×(1−0.375) = <strong>−530 万</strong>，也就是亏损。</p>
+<p><strong>我一律把 SBC 当成真实的现金成本。</strong> 理由很直接：这些股票是从你手里稀释出来的，公司发出去的每一股都让你原有的股份缩水一点。GAAP 已经在净利润里扣了它，这是对的；公司在「调整后 EBITDA」和「Non-GAAP 每股收益」里把它加回来，那是骗人的。</p>
+<p>顺便说一句这个 SBC 的走势：FY2021 是 2189 万、FY2022 4231 万、FY2023 5924 万、FY2024 9066 万、FY2025 1.0423 亿、TTM 1.0265 亿。<strong>四年翻了将近五倍，而同期营收只翻了 2.3 倍。</strong> 好消息是最近一年终于止住了（TTM 略低于 FY2025）。</p>
+<p>高税率也是这个原因：TTM 有效税率 <strong>37.46%</strong>，远高于 21% 的法定税率。因为很大一部分股权激励费用在税法上不能抵扣，账面上有费用、税上没有，税率就被顶高了。<strong>这个 37.46% 的税率本身就是 SBC 是真实成本的铁证</strong>——税务局不认它是「非现金调整」。</p>
+<h3>2. 一次性项目：基本没有</h3>
+<p>TTM 利润表里没有大额诉讼和解、重组或减值。有 410 万的坏账计提（Provision &amp; write-off of bad debts），这个规模对 7.7 亿营收来说是正常经营损耗，不是一次性项目。FY2022 有过 151 万的资产减值和重组，早已过去。<strong>这家公司的报表在这个维度上是干净的。</strong></p>
+<h3>3. 资本化的支出：有，而且需要看一眼</h3>
+<p>TTM 资本开支 <strong>4377 万美元</strong>，而这家公司几乎没有厂房设备——它的「资本开支」绝大部分是<strong>资本化的自研软件开发费</strong>。也就是说，工程师写代码的工资没有当期计入费用，而是变成了资产，然后分几年摊销。</p>
+<p>这本身是 GAAP 允许的，但它有一个效果：<strong>当期利润被垫高了。</strong> 对应地，TTM 折旧摊销 4619 万 + 其他摊销 1573 万 = <strong>6192 万</strong>，这里面包含了往年资本化软件的摊销和收购来的无形资产摊销。</p>
+<p>好在资本开支（4377 万）小于折旧摊销（6192 万），说明<strong>它现在摊销的比资本化的还多</strong>，这个口径没有在恶化。不构成造假，但要记住：自由现金流里那个「资本开支只有 4377 万」的数字，代表的是真实的研发投入被搬到了资产负债表上。</p>
+<h3>4. 回购与稀释：<strong>这是这家公司唯一让人真心称赞的地方</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>−1.6266 亿</td>
+</tr>
+<tr>
+<td>发行股票（员工行权）</td>
+<td>+369 万</td>
+</tr>
+<tr>
+<td>净债务偿还</td>
+<td>−635 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>1.6266 ÷ 1.0265 = 1.58 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购 / SBC = 1.58 倍。</strong> 按标准：接近 1 说明回购只是抵消员工发股；大于 3 才是真回馈。DV 的 1.58 倍处在中间——<strong>它不只是在填坑，确实有一小部分是净回馈，但主要功能仍是对冲稀释。</strong></p>
+<p>实际效果验证：<strong>股本一年减少 4.28%</strong>（154.99M 股，YoY −4.28%，QoQ −3.79%）。<strong>这是实打实的</strong>——每年你手里的份额自动增值 4.3%，这在小盘股里是很扎实的股东回报。而且回购在加速（QoQ 的年化速度比 YoY 更快），说明管理层在股价 13 块这个位置认为便宜。</p>
+<p>用现金流量表交叉验证：TTM 融资活动净流出 1.6533 亿，其中回购占 1.6266 亿。<strong>公司把绝大部分自由现金流（1.6055 亿）全部用来回购了</strong>，比例超过 100%。没有分红，没有大额收购（TTM 收购支出为 0，FY2025 花了 8258 万买 Rockerbox）。</p>
+<h3>5. 利润和现金流的差 —— 差得极大，必须逐项对账</h3>
+<p>TTM 净利润 5886 万，经营现金流 <strong>2.0432 亿</strong>，自由现金流 <strong>1.6055 亿</strong>。<strong>经营现金流是净利润的 3.5 倍。</strong> 这种巨大的差额必须拆开看：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+<th>是不是真的钱</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>58.86</td>
+<td>是</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+46.19</td>
+<td>非现金，但对应过去花掉的真钱</td>
+</tr>
+<tr>
+<td>＋ 其他摊销（收购无形资产）</td>
+<td>+15.73</td>
+<td>非现金，对应过去付的收购款</td>
+</tr>
+<tr>
+<td><strong>＋ 股权激励</strong></td>
+<td><strong>+102.65</strong></td>
+<td><strong>❌ 非现金但是真成本，稀释了你</strong></td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+4.10</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+15.94</td>
+<td>混杂项</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>+0.01</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−31.48</strong></td>
+<td>真金白银没收回来</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+0.04</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−7.72</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>204.32</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 资本开支（大部分是资本化软件）</strong></td>
+<td><strong>−43.77</strong></td>
+<td>真金白银花出去了</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>160.55</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看那一行 +102.65。</strong></p>
+<p>自由现金流 1.6055 亿里，<strong>1.0265 亿（64%）来自把股权激励加回来</strong>。也就是说：DV 的「强劲现金流」有接近三分之二，是因为它用股票而不是现金付工资。这笔钱确实没从银行账户流出去，但它从<strong>你的所有权比例</strong>里流出去了。</p>
+<p>把 SBC 减掉，得到<strong>真实的股东自由现金流</strong>：</p>
+<p><strong>1.6055 亿 − 1.0265 亿 = 5790 万美元。</strong></p>
+<p>这个数字几乎正好等于 GAAP 净利润（5886 万）。<strong>这不是巧合——它说明 GAAP 净利润才是这家公司真实的赚钱能力，而那个漂亮的 1.6 亿自由现金流是会计幻觉。</strong></p>
+<p>这一点直接摧毁了 DV 最流行的多头论据。市面上关于 DV 的看多逻辑基本都是「12.85 倍市现率，太便宜了」。<strong>12.85 倍是把员工工资当成不存在算出来的。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 20.63 亿，企业价值 EV = 19.6 亿（净现金 9834 万）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>20.63 亿 ÷ 5886 万</td>
+<td><strong>35.0 倍</strong></td>
+<td><strong>2.86 元</strong></td>
+</tr>
+<tr>
+<td>（按股价/EPS 口径，网站显示）</td>
+<td>13.31 ÷ 0.35</td>
+<td>37.7 倍</td>
+<td>2.65 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>20.63 亿 ÷ ~1.16 亿（加回税后 SBC 等）<strong>估算</strong></td>
+<td><strong>~17.8 倍</strong></td>
+<td>5.62 元（<strong>假的</strong>）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>20.63 亿 ÷ 5886 万（无重大一次性项，SBC 按 GAAP 已扣不加回）</td>
+<td><strong>35.0 倍</strong></td>
+<td><strong>2.86 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>20.63 亿 ÷ 1.6055 亿</td>
+<td><strong>12.85 倍</strong></td>
+<td>7.78 元（<strong>误导</strong>）</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC 后的真实值）</strong></td>
+<td>20.63 亿 ÷ 5790 万</td>
+<td><strong>35.6 倍</strong></td>
+<td><strong>2.81 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>19.6 亿 ÷ 9738 万</td>
+<td><strong>20.1 倍</strong></td>
+<td>4.97 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>20.63 亿 ÷ 5525 万（FY24 5623 万、FY25 5065 万、TTM 5886 万的平均）</td>
+<td><strong>37.3 倍</strong></td>
+<td><strong>2.68 元</strong></td>
+</tr>
+<tr>
+<td>券商 Forward PE</td>
+<td>一致预期</td>
+<td>12.24 倍</td>
+<td>8.17 元（<strong>是 Non-GAAP 预测</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三个口径的对照说明了一切</h3>
+<ul>
+<li>公司会告诉你：<strong>17.8 倍</strong>（Non-GAAP）</li>
+<li>券商会告诉你：<strong>12.24 倍</strong>（Forward Non-GAAP）</li>
+<li>财经网站会告诉你：<strong>12.85 倍</strong>（P/FCF）</li>
+<li><strong>真实的是：35 倍。</strong></li>
+</ul>
+<p>三个漂亮数字用的是同一个手法——把那 1.03 亿的股权激励当成不存在。<strong>这三个数字和 35 倍之间的差，就是员工每年从股东手里拿走的那一块。</strong></p>
+<p>三年平均口径 37.3 倍略高于当期 35.0 倍，说明<strong>当前利润不在历史高点，而是刚从 FY2025 的低谷（5065 万）恢复过来</strong>。这一点跟很多周期高点股不一样，是个中性偏正面的信号——DV 现在的利润不虚。</p>
+<h3>大白话说清楚</h3>
+<p><strong>你现在花 100 块买 DV，按最保守的真实口径（三年平均利润），公司一年替你赚 2.68 块。</strong></p>
+<p>按当期真实口径（GAAP 净利润，或者扣掉 SBC 后的自由现金流，两个数字几乎一样），是 <strong>2.81 到 2.86 块</strong>。</p>
+<p><strong>这 2.8 块里，有多少真正回到你口袋？</strong> 这是 DV 的加分项：</p>
+<ul>
+<li><strong>分红：0。</strong> 公司不分红。</li>
+<li><strong>回购：几乎全部。</strong> TTM 回购 1.6266 亿。但要用真实口径看——真实股东自由现金流只有 5790 万，它却回购了 1.63 亿。<strong>多出来的 1.05 亿是从哪来的？就是从 SBC 那一头来的：公司发 1.03 亿股票给员工，同时花 1.63 亿现金从市场买回股票。</strong>净效果是股本减少 4.28%，账上现金从 3.10 亿降到 2.10 亿。</li>
+<li><strong>留在公司再投资：4377 万资本开支（资本化软件），TTM 无收购。</strong></li>
+</ul>
+<p>所以真实图景是：<strong>公司把赚到的钱、加上账上的存货现金，全部用来对冲员工发股并小幅缩股本。</strong> 你拿到的回报形式是「每年多占公司 4.3% 的份额」，而不是现金。</p>
+<p><strong>加起来的股东年回报大概是：2.8% 的真实盈利收益率 + 7.6% 的营收增长 ≈ 10% 左右</strong>，前提是利润率不掉。这不算差，但也绝对不便宜。</p>
+<h3>这个 2.8 块未来会变大还是变小？</h3>
+<p><strong>往上的力量：</strong>
+1. <strong>股本每年少 4.3%。</strong> 这是复利的，五年下来同样的利润对应的每股利润会多 24%。这是 DV 最硬的一块回报。
+2. <strong>SBC 终于开始降了</strong>（TTM 1.0265 亿 &lt; FY2025 1.0423 亿）。如果这个趋势持续，真实利润会跑得比营收快。
+3. <strong>零售媒体和 CTV（联网电视）是新战场。</strong> 亚马逊、沃尔玛、Instacart 的广告网络在爆炸式增长，这些新渠道同样需要第三方验证，而且比开放网络更混乱、更需要裁判。DV 在 CTV 上的渗透率还很低。
+4. <strong>净现金 9834 万，零财务风险。</strong> 债务权益比 0.10，利息覆盖 55 倍。这家公司不会因为资产负债表死掉。</p>
+<p><strong>往下的力量，而且更结构性：</strong>
+1. <strong>增速从 36% 掉到 7.6%。</strong> 这是最硬的事实，五年一条下行直线。7.6% 的增长撑不起 35 倍。
+2. <strong>裁判被球队收编的风险。</strong> DV 的整个商业模式建立在「大平台允许第三方验证」之上。Google 和 Meta 早就在推自己的品牌安全工具，亚马逊在建自己的测量体系。<strong>只要哪个大平台决定把验证内化，DV 就少一块地盘，而且它没有任何还手之力。</strong> 这不是竞争风险，是存在性风险。
+3. <strong>竞争对手贴身肉搏。</strong> Integral Ad Science（IAS）产品几乎一模一样，Zefr 在 CTV 和社交上更专，Moat（甲骨文）虽然已关停但市场教育已完成。<strong>这是一个高度同质化的市场，价格战已经开始</strong>——DV 营收增速 7.6%，但客户数量在增长，说明单价在跌。
+4. <strong>CPM 定价的天花板。</strong> 收费按检查次数算，而全球数字广告展示量的增长本身就在放缓，DV 只能靠提渗透率和涨价，两条路都在变窄。
+5. <strong>ROE 只有 5.39%，ROIC 6.09%，而 WACC 是 9.15%。</strong> <strong>投入资本回报率低于资本成本。</strong> 这在数学上意味着：公司每留存一块钱再投资，都在毁灭价值。这也解释了为什么管理层把钱全拿去回购而不是扩张——他们自己心里清楚。
+6. <strong>股价 52 周跌了 14.24%</strong>，而且从 200 日均线 10.69 反弹到 13.31（RSI 69.46，已经偏热）。<strong>这轮反弹是估值修复，不是基本面改善。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>DoubleVerify 是一家真实赚钱、账上净现金、每年缩股本 4.3% 的干净公司，但它的「便宜」是假的——12.85 倍市现率和 12.24 倍的券商 Forward PE，都是把每年 1.03 亿的员工股票当成不存在算出来的；把这笔钱当成本扣回去，它是 35 倍，而它只有 7.6% 的增长和一个正在被 Google、Meta、亚马逊逐步内化的商业模式。</strong></p>
+<p>更要命的是 <strong>ROIC 6.09% &lt; WACC 9.15%</strong>——这家公司再投资是在毁灭价值，管理层用「把钱全拿去回购」的行为承认了这一点。一门自己都不值得追加投资的生意，凭什么值 35 倍？</p>
+<p>它不会破产，不会出事，每年还会替你缩 4% 的股本，长期持有大概能拿到 8–10% 的年化。<strong>但那是「不亏钱」的水平，不是「便宜」。</strong> 真正让人不安的是那个存在性风险：DV 是被大平台允许存在的裁判，而裁判从来没有跟球队谈判的筹码。</p>
+<p><strong>没有便宜可占。等它跌回 10 块以下（真实市盈率 26 倍）、或者等增速重新回到两位数再看。</strong></p>
+</div></body></html>

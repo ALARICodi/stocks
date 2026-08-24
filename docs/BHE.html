@@ -1,0 +1,348 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BHE · Benchmark Electronics（基准电子）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BHE</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">净利率1.9%的代工厂卖49倍，ROIC 6.1%还低于资金成本10.6%</div><h1>BHE · Benchmark Electronics（基准电子）</h1>
+<p>市值 26.1 亿美元 / 股价约 72.7 美元 / 行业：电子科技 — 电子制造服务（EMS 代工） / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说结论：<strong>Benchmark 只做一门生意——替别人造电子设备</strong>。它在财报里按三个地区（美洲、亚洲、欧洲）拆营收，但那是拆工厂位置，不是拆生意。生意只有一门，只是分成三道工序卖。</p>
+<h3>这门生意具体是怎么回事</h3>
+<p>世界上有一大批公司，设计能力很强，但不想自己开工厂。比如一家做半导体刻蚀机的设备商、一家做核磁共振仪的医疗器械商、一家做军用雷达的国防承包商。它们的产品单价高（几十万到几百万美元一台）、批量小（一年几百台）、变化快，自己建一条产线既不划算也养不起熟练工。</p>
+<p>Benchmark 就是接这些活的。客户把物料清单（BOM，就是"这台机器需要哪些零件、各要几个"）和设计图纸交过来，Benchmark 负责：<strong>去买料 → 把芯片焊到电路板上 → 测试 → 把板子和金属结构件装成整机 → 贴上客户的牌子发货</strong>。客户收到的是可以直接卖给终端用户的成品，上面印的是客户的商标，没人知道是 Benchmark 造的。</p>
+<p><strong>怎么收钱：成本加成。</strong> 这是理解这家公司全部财务特征的钥匙。假设一台刻蚀机的子系统里有 40 块控制板、一套真空气路、一个铝合金腔体，元器件成本 25 万美元。Benchmark 先自己掏钱把这 25 万的料买回来（这笔钱压在它的存货和应收账款里），加工完按 28 万美元卖给客户——<strong>它赚的是那 3 万，不是那 28 万</strong>。但营收记的是 28 万。</p>
+<p>这就解释了为什么这家公司 TTM 营收 28.18 亿美元，毛利只有 2.90 亿——<strong>毛利率 10.3%</strong>。因为营收里九成是转手的元器件钱，那不是它的生意，是它替客户垫的钱。</p>
+<h3>它实际卖三样东西</h3>
+<p><strong>一、工程设计服务（Engineering Solutions）</strong>
+客户有个想法但没有工程队，Benchmark 帮它画电路图、选元器件、做样机、跑 EMC 电磁兼容认证和 FDA 医疗认证。这块单价最高、毛利率也最高（通常 20–30%），但规模小。它真正的价值是<strong>抢入场券</strong>：帮客户设计了产品，后面的量产订单几乎必然落到自己手里——因为设计图是自己画的，换代工厂要重新做一遍认证，客户不愿意折腾。</p>
+<p><strong>二、印制电路板组装（PCBA）</strong>
+主体业务。就是把电阻、电容、芯片、连接器用贴片机焊到裸板上，再做 X 光检查和功能测试。这道工序全世界有几百家厂能干，纯粹拼产能利用率和良率，毛利率在 8–12% 之间。</p>
+<p><strong>三、精密机加工与整机集成（Precision Technologies / Systems Integration）</strong>
+用五轴机床加工铝合金真空腔体、焊接高纯度气体管路、把电路板 + 结构件 + 线束装成一整台可以出厂的设备。这块比纯贴片值钱一些，因为半导体设备的真空腔体对表面粗糙度和洁净度要求极高，能干的厂不多。</p>
+<h3>终端市场</h3>
+<p>Benchmark 自己对外讲的是六个终端市场：半导体设备（Semi-Cap）、医疗、航空国防、先进计算（跟 AI 服务器沾边）、下一代通信、工业。<strong>过去一年股价涨 90%，主要就是买"先进计算 + 半导体设备"这两个 AI 沾边的标签。</strong> 但请注意下面的数字：营收只涨了 8.87%，净利润 5314 万美元。</p>
+<h3>按地区的钱（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收（百万美元）</th>
+<th>上一完整财年 FY2025</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美洲</td>
+<td>1,302</td>
+<td>1,229</td>
+<td>+5.9%</td>
+<td>46.2%</td>
+<td>约 4%（估算）</td>
+<td>约 52（估算）</td>
+</tr>
+<tr>
+<td>亚洲</td>
+<td>1,244</td>
+<td>1,167</td>
+<td>+6.6%</td>
+<td>44.1%</td>
+<td>约 4.5%（估算）</td>
+<td>约 56（估算）</td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>357.7</td>
+<td>352.6</td>
+<td>+1.4%</td>
+<td>12.7%</td>
+<td>约 2%（估算）</td>
+<td>约 7（估算）</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>-85.4</td>
+<td>-89.6</td>
+<td>—</td>
+<td>-3.0%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,818</strong></td>
+<td><strong>2,659</strong></td>
+<td><strong>+8.9%</strong></td>
+<td>100%</td>
+<td><strong>3.74%（实际）</strong></td>
+<td><strong>105.35（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分地区营收，不披露分地区利润。</strong> 上表的地区利润率是按整体经营利润率 3.74% 加上"亚洲人工便宜、欧洲规模小"这两条常识摊出来的估算值，只用来看结构，别拿去算账。合计那一行的 105.35 是财报实际数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 1908 万美元，占净利润的 35.9%。</strong>
+一家净利润只有 5314 万的公司，一年发出去 1908 万的股票给员工。这笔钱 GAAP 已经扣了，我不加回。但要记住它的分量：<strong>每 3 块钱净利润里，就有 1 块钱是靠发新股省下来的现金。</strong></p>
+<p><strong>一次性项目：资产减值与重组 1110 万美元。</strong>
+TTM 里有 1110 万的资产减值和重组费用，全部发生在 FY2025，FY2024 是零，FY2023 是 108 万。这看起来像真一次性。但代工厂关停并转是家常便饭（FY2021 也有 436 万），<strong>只看当期一年无法判断这是不是隔几年就来一次的"常规一次性"</strong>。另有 319 万的资产处置收益（卖厂房设备赚的），这是真一次性收益，往下算真实利润时要扣掉。</p>
+<p><strong>资本化的支出：几乎没有。</strong> TTM 购买无形资产 327 万，相对 28 亿营收可以忽略。代工厂没有软件开发费资本化那套把戏。</p>
+<p><strong>回购与稀释：TTM 回购 2548 万，SBC 1908 万，比值 1.34。</strong>
+这个比值是判断"回购到底是回馈股东还是抵消员工发股"的核心指标——接近 1 说明公司买回来的股票基本刚够填上发给员工的窟窿，大于 3 才算真回购。<strong>Benchmark 是 1.34，属于勉强填平、略有剩余。</strong> 股本实际减少 1.42%，配上 2433 万股息，一年真正回到股东口袋的现金是 2548 + 2433 = 4981 万，对应 26.1 亿市值的股东回报率 1.9%。</p>
+<p><strong>利润和现金流的差：这是本篇最重要的一段。</strong></p>
+<p>净利润 5314 万，经营现金流 17699 万，自由现金流 12698 万。现金流是利润的 3.3 倍，看起来极健康。<strong>但拆开看，一大半是欠供应商的钱。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>53.14</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>42.56</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>5.17</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>19.08</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>11.10</td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>0.41</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>-3.19</td>
+</tr>
+<tr>
+<td>− 其他经营调整</td>
+<td>-4.66</td>
+</tr>
+<tr>
+<td><strong>小计：不含营运资金的经营现金</strong></td>
+<td><strong>123.61</strong></td>
+</tr>
+<tr>
+<td>± 应收账款变化</td>
+<td><strong>-104.34</strong></td>
+</tr>
+<tr>
+<td>± 存货变化</td>
+<td>-13.61</td>
+</tr>
+<tr>
+<td>± 应付账款变化</td>
+<td><strong>+186.60</strong></td>
+</tr>
+<tr>
+<td>± 预收款变化</td>
+<td>-2.14</td>
+</tr>
+<tr>
+<td>± 所得税变化</td>
+<td>+3.49</td>
+</tr>
+<tr>
+<td>± 其他营运资产</td>
+<td>-16.61</td>
+</tr>
+<tr>
+<td><strong>营运资金净贡献</strong></td>
+<td><strong>+53.39</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>176.99</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚这两行：<strong>应收账款多占了 1.04 亿（客户欠它更多钱了），应付账款多欠了 1.87 亿（它欠供应商更多钱了）。</strong> 一进一出，净流入 5339 万。</p>
+<p>这 5339 万占了经营现金流的 30%。它不是赚来的，是<strong>账期腾挪出来的</strong>——今年多拖供应商三十天货款，现金流就好看一截，明年拖不动了就还回去。对一家营收 28 亿的公司，1.87 亿的应付款增加相当于账期拉长了约 24 天。这种事不能年年干。</p>
+<p><strong>把营运资金腾挪剔掉，结构性的经营现金流是 1.236 亿，减去 5001 万资本开支，真实自由现金流约 7360 万</strong>——不是账面的 1.27 亿。这个差别在下一节直接决定估值贵不贵。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 26.09 亿，企业价值 25.90 亿（账上现金 3.15 亿，总负债 2.92 亿，<strong>净现金 2300 万</strong>，负债结构干净，这是它为数不多的优点）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2609 ÷ 53.14</td>
+<td><strong>49.1 倍</strong></td>
+<td><strong>2.04 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>2609 ÷ 65.4（加回减值重组与无形摊销的税后额）</td>
+<td>39.9 倍</td>
+<td>2.51 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2609 ÷ 59.0（GAAP + 减值重组税后 8.3 − 处置收益税后 2.4）</td>
+<td><strong>44.2 倍</strong></td>
+<td><strong>2.26 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>2609 ÷ 126.98</td>
+<td>20.6 倍</td>
+<td>4.85 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔掉账期腾挪）</strong></td>
+<td>2609 ÷ 73.6</td>
+<td><strong>35.5 倍</strong></td>
+<td><strong>2.82 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2590 ÷ 105.35</td>
+<td>24.6 倍</td>
+<td>4.07 元（税前）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>2609 ÷ 46.37（TTM 53.14、FY2025 24.85、FY2024 61.13 的均值）</td>
+<td><strong>56.3 倍</strong></td>
+<td><strong>1.78 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Non-GAAP 那一行是估算值：公司自己发布的调整后净利润我没有直接数据，是按"加回资产减值重组 1110 万和其他摊销 517 万的税后影响"倒推的，仅供参考。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Benchmark，按最保守的真实口径（44.2 倍）算，公司一年替你赚 2.26 元。</strong></p>
+<p>这 2.26 元里，真正回到你口袋的是 1.9 元（回购 2548 万 + 股息 2433 万，摊到 26.1 亿市值）；剩下的留在公司里，主要花在 5001 万的资本开支上（买贴片机、扩泰国的产能）。</p>
+<p><strong>关键是最后那一行：三年平均口径 56.3 倍，比当期的 49.1 倍还贵。</strong> 这说明现在这个 5314 万的净利润<strong>不是高点，是刚从坑里爬出来</strong>——FY2025 只赚了 2485 万，FY2024 赚 6113 万，FY2023 赚 6894 万。三年下来利润是往下走的，营收也是（FY2022 28.86 亿 → FY2025 26.59 亿）。</p>
+<p>这个 2.26 元未来会变大还是变小？<strong>大概率变大一点，但涨不到能撑住 49 倍的地步。</strong> 理由是：</p>
+<p>一、公司的远期市盈率（Forward PE）是 22.76，市场预期未来一年 EPS 从 1.46 涨到约 3.2，翻一倍多。这个预期建立在半导体设备和 AI 服务器订单回暖上。就算全实现，22.76 倍买一家净利率 2% 的代工厂也不算便宜。</p>
+<p>二、<strong>这门生意的天花板是结构性的。</strong> 成本加成模式意味着毛利率永远锁死在 10% 左右，客户随时可以把订单挪给伟创力、捷普、新美亚——转换成本存在但不高。营收要涨，得先垫更多的钱买料，所以营收增长必然伴随现金流恶化，上一节那张对账表已经演示了这一点。</p>
+<p>三、<strong>最扎眼的一个数字：投入资本回报率（ROIC）6.12%，加权平均资本成本（WACC）10.55%。</strong> 翻译成人话：<strong>这家公司每投一块钱进去，赚回来的比它借这一块钱的代价还低。</strong> 它每扩张一分产能，就在毁灭一分股东价值。这不是我的判断，是它自己财务比率算出来的。</p>
+<p>四、有效税率 36.49%，明显高于美国 21% 的法定税率——多国经营、部分海外利润无法抵扣，这部分税负是长期的，不会消失。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Benchmark 是一家净利率 1.9% 的电子代工厂，过去一年股价涨了 90%，利润却比三年前低，现在要你出 49 倍市盈率（真实口径 44 倍，三年平均口径 56 倍）买它——这个价格不值。</strong></p>
+<p>账面上那个 20.6 倍的自由现金流估值是个陷阱，其中三成来自多欠供应商 1.87 亿货款，剔掉之后是 35.5 倍。真正致命的是 ROIC 6.12% 低于 WACC 10.55%：这门生意越做越大，股东越亏。</p>
+<p>它的优点是真的——净现金 2300 万、负债率低、账目干净、没有资本化把戏、回购略多于股权激励。但<strong>账干净不等于值钱</strong>。你花 49 倍买的是一家帮别人垫钱买元器件、赚 3% 加工费、且这个 3% 还跟着半导体设备周期上下摆动的公司。</p>
+<p>如果你想赌 AI 服务器和半导体设备的下一轮上行周期，直接买设备商或芯片厂，不要买给它们代工的。代工厂在景气周期里分到的利润最薄，在下行周期里第一个被砍单。</p>
+</div></body></html>

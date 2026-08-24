@@ -1,0 +1,337 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRDN · Guardian Pharmacy Services（守护者药房服务）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GRDN</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">ROIC28.7%的好生意，但40倍买5.88%利润率的报销通道，没余地</div><h1>GRDN · Guardian Pharmacy Services（守护者药房服务）</h1>
+<p><strong>市值</strong> 24.0 亿美元 ｜ <strong>企业价值</strong> 23.5 亿美元 ｜ <strong>当前股价</strong> 约 $37.89 ｜ <strong>行业</strong> 零售/医疗服务 · 长期照护药房 ｜ <strong>交易所</strong> NYSE ｜ <strong>上市日</strong> 2024-09-26
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Guardian 的财报<strong>只有一个分部</strong>——它真的就只做一件事，而且做得很专注。下面我把这件事讲透，再说它靠哪几种方式把这件事做大。</p>
+<h3>这件事到底是什么：给"住在养老院里的老人"送药</h3>
+<p><strong>先描述一个具体场景。</strong> 俄亥俄州郊区有一家 90 床的辅助生活社区（assisted living，就是那种住着能自理但需要人看着的老人的地方，不是重症护理院）。这里的住户平均每人每天吃 <strong>9 种药</strong>——降压药、他汀、二甲双胍、抗凝药、抗抑郁药、眼药水、维生素。</p>
+<p><strong>没有 Guardian 的时候是这样的</strong>：社区的护理员开车去镇上的 CVS，排队等，抱回来 90 个人的一堆药瓶子。然后每天早中晚三次，一个"用药技术员"坐在推车前，对着一张纸质表格，从瓶子里数药片放进小杯子——90 个人 × 9 种药 × 3 次 = 每天要数上千次。数错一次就是一次医疗事故，也是州卫生检查（survey）扣分的头号来源。护理员流失率一年 50%，新人上手就要重学一遍。</p>
+<p><strong>Guardian 接手之后是这样的</strong>：
+1. <strong>分装</strong>。每个住户的药，在 Guardian 的本地药房里按"日期 + 时间点"打包好——周二早上 8 点该吃的四片药，封在同一个小袋子里，袋子上印着住户姓名、照片、药名、剂量、时间。护理员撕开袋子倒进杯子，完事。
+2. <strong>每天送货，免费</strong>。包括半夜两点新入住的住户要临时配药，也送。
+3. <strong>eMAR（电子给药记录）</strong>。护理员用平板扫一下药袋条码、再扫一下住户手环，系统自动记录"谁在几点几分吃了什么"。<strong>这份电子记录就是这家社区应付州检查的法定证据</strong>，纸质表格被彻底替掉了。
+4. <strong>顾问药师</strong>。每月一次，Guardian 的药师上门把每个住户的用药清单过一遍，查重复用药、查相互作用、查该停没停的药，出一份书面报告。<strong>这项在多数州是法规强制要求的</strong>，社区必须找人做。</p>
+<p><strong>Guardian 怎么收钱</strong>：这是这门生意最关键、也最反直觉的地方——<strong>上面这四项服务，Guardian 一分钱都不向养老社区收</strong>。分装、每日配送、eMAR 系统、药师顾问，全部免费。</p>
+<p>它赚的是<strong>药本身的钱</strong>：它拿到这 90 个住户的处方权之后，向<strong>住户的医保付款方</strong>开账单——大部分是 Medicare Part D（联邦老人处方药保险）计划，一部分是州 Medicaid，少数是商业保险或住户自费。</p>
+<p>所以这门生意的商业逻辑一句话：<strong>用一整套免费的重服务，去换一栋楼里所有人的处方药销售权。</strong></p>
+<p><strong>平均每个住户每月给 Guardian 带来 500–600 美元的营收</strong>（<strong>这是我按 14.63 亿营收倒推的估算，不是披露值</strong>），倒算下来 Guardian 服务的在册住户大约在 <strong>20 万人上下</strong>。</p>
+<p><strong>社区为什么不换供应商</strong>：换一次的代价是——90 个住户的处方全部要转移到新药房、护理员要重新培训一套 eMAR、药车要重新配置、而这一切最好别撞上州检查周期。这是<strong>真实但不算巨大</strong>的转换成本，大概相当于"换银行"的麻烦程度，不是"换 ERP"那种级别。</p>
+<h3>它专门挑"低照护强度"的客户，这是一个聪明的定位</h3>
+<p>长期照护药房这个行业里，最大的两家 Omnicare（CVS 旗下）和 PharMerica（BrightSpring 旗下）主攻<strong>专业护理院</strong>（skilled nursing facility，SNF，就是重症、卧床、住院后康复的那种）。Guardian 刻意避开它们，专攻三类<strong>低照护强度</strong>的场所：</p>
+<ul>
+<li><strong>辅助生活社区</strong>（assisted living）——能自己走路吃饭、只需要人看着；</li>
+<li><strong>行为健康机构</strong>（behavioral health）——精神类疾病的住院和半住院场所，用药复杂且长期；</li>
+<li><strong>群体家庭</strong>（group homes）——智力与发育障碍人士的住所，很多住户从二十几岁住到六十几岁，<strong>用药周期以几十年计</strong>。</li>
+</ul>
+<p>为什么这个定位好：SNF 的住户平均只住 20–30 天（住院后康复完就走），客户流失快、Medicare A 段打包付费、给药房的钱被医院攥着；而辅助生活和群体家庭的住户<strong>平均住好几年甚至几十年</strong>，用的是住户自己的 Part D 保险，付款方更分散、议价更弱。<strong>同样是送药，后者的客户生命周期长一个数量级。</strong></p>
+<h3>它靠哪三种方式长大</h3>
+<p>财报没有把增长拆开披露，但从数据能看出三条腿（<strong>以下占比为估算</strong>）：</p>
+<ol>
+<li><strong>同店住户增长</strong>（约贡献一半增速）——老客户社区自己的入住率在涨（美国辅助生活入住率从疫情低点一路回升），加上从竞争对手手里抢新社区。</li>
+<li><strong>新开本地药房</strong>——Guardian 的模式是"本地药房 + 全国规模"：每个本地药房有自己的总裁，这位总裁<strong>持有这家本地药房的股权</strong>。进一个新州就派人从零开一家。这套激励结构是它的组织特色，也是它敢说自己服务比大公司好的底气。</li>
+<li><strong>收购小药房</strong>——TTM 花了 450 万，FY2025 花了 1342 万，FY2024 花了 1471 万。<strong>规模很小</strong>，说明增长主要是内生的，不是买来的（这一点比多数"整合者"故事干净）。</li>
+</ol>
+<p>另外还有一条不算本事的腿：<strong>药价通胀</strong>。药涨价，Guardian 的营收自动涨，但毛利几乎不动（成本同步涨）——<strong>营收增速里有一部分是虚的</strong>。</p>
+<h3>钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM 截至 2026-06-30）</th>
+<th>数字</th>
+<th>上年同期 FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>14.63 亿</strong></td>
+<td>14.49 亿</td>
+<td><strong>+10.31%（同比口径）</strong></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>3.166 亿（毛利率 <strong>21.63%</strong>）</td>
+<td>2.927 亿（20.21%）</td>
+<td>毛利率 +1.4 个点</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>0.860 亿（经营利润率 <strong>5.88%</strong>）</td>
+<td>0.803 亿（5.54%）</td>
+<td>+0.3 个点</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>0.659 亿（净利率 4.50%）</td>
+<td>0.492 亿</td>
+<td>+33.9%</td>
+</tr>
+<tr>
+<td>自由现金流</td>
+<td>0.798 亿</td>
+<td>0.807 亿</td>
+<td>持平</td>
+</tr>
+<tr>
+<td>净现金</td>
+<td><strong>+0.505 亿</strong></td>
+<td>+0.209 亿</td>
+<td>变厚</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营收连续六年增长</strong>：7.92 → 9.09 → 10.46 → 12.28 → 14.49 → 14.63 亿（FY2021 至 TTM），<strong>中间穿过了疫情、通胀、劳动力短缺，没有一年掉过</strong>。这是这家公司最硬的一个事实。</p>
+<p><strong>但要看清这门生意的经济结构</strong>：每 100 块营收里，<strong>78.4 块是买药的成本</strong>（药是从批发商手里买来的，价格不由 Guardian 决定）。剩下 21.6 块要付药师和药房技师工资、送货司机工资、药房场地、分装设备、eMAR 系统的开发维护。最后剩下 <strong>5.88 块经营利润</strong>。</p>
+<p><strong>这个 5.88% 就是全部的安全垫。</strong> 意思是：<strong>如果医保付款方（PBM/CMS）把报销单价往下压 2 个百分点，这家公司的经营利润就少掉三分之一。</strong> 而 Guardian 对这个价格<strong>没有任何定价权</strong>。这是全篇最重要的一个风险，后面还会回来说。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>1023 万</strong>，占净利润的 15.5%，占营收 0.7%。<strong>对上市公司来说这是个很克制的数字</strong>，我一分不加回。</p>
+<p>但历史上有一笔巨兽必须解释：<strong>FY2024 的 SBC 是 1.3149 亿美元</strong>——比当年整个公司的营收利润还大，直接把当年做成了 <strong>−1.1005 亿的净亏损</strong>。这不是经营出了问题，是 2024 年 9 月 IPO 时把本地药房总裁们持有的旧股权工具一次性转换成上市公司股票，会计上一次性确认了全部费用。<strong>这是真一次性</strong>（FY2025 已经回落到 1385 万，TTM 1023 万，两年数据都验证了）。所以看 FY2024 那个亏损数字不用慌，但下面第三部分算三年平均时必须把它处理掉，否则三年平均是废的。</p>
+<p><strong>一次性项目</strong>：除了上面那笔 IPO 股权费用，<strong>TTM 没有其他大额一次性项目</strong>。没有诉讼、没有减值、没有重组。报表干净。</p>
+<p><strong>资本化的支出</strong>：没有软件资本化的猫腻。资本开支 TTM 1907 万，占营收 <strong>1.3%</strong>——极低，钱主要花在药房自动分装机器人和送货车上。<strong>这是一门轻资产生意</strong>，资产周转率 3.66 倍。</p>
+<p><strong>坏账准备</strong>：TTM 计提 552 万，占营收 0.38%，稳定（FY2025 458 万、FY2024 637 万）。健康，没有靠松准备金调利润的迹象。</p>
+<p><strong>回购与稀释——这一项有个必须点破的把戏</strong>：</p>
+<p>现金流量表上写着：<strong>回购股票 −3028 万，发行股票 +3028 万</strong>。</p>
+<p><strong>两个数字一分不差地相等。</strong> 这不是回购，这是员工股权归属时的"净额结算"——员工的限制性股票到期，公司代扣个人所得税，在账上表现为"公司发了股票，同时买回一部分抵税"。<strong>这笔钱没有一分是回馈股东的。</strong></p>
+<p>按机械算法，回购 ÷ SBC = 3028 ÷ 1023 = <strong>2.96 倍</strong>，看着像个不错的数。<strong>但这个比值在这里是假的</strong>，真实的股东回报是 <strong>0</strong>。</p>
+<p>证据是股本：<strong>在外股本一年增加了 1.91%</strong>。加上公司<strong>不分红</strong>（上市前每年分 3500–3800 万给老股东，上市后停了），<strong>股东现在从这家公司拿到的现金回报是零，而且每年被稀释近 2%。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利 6591 万，经营现金流 9886 万，自由现金流 7979 万。<strong>自由现金流是净利润的 121%</strong>，这是好现象。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>65.91</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+23.36</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+10.23</td>
+</tr>
+<tr>
+<td>＋ 坏账计提（非现金）</td>
+<td>+5.52</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>+4.37</td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−15.02</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−5.48</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+4.60</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>+5.37</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>98.86</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−19.07</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>79.79</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表完全对得上，没有一分钱说不清。</strong> 唯一值得盯的是应收账款——<strong>营收涨 10.3%，应收账款多占了 1502 万现金</strong>。做医保结算的生意，应收账款就是命门（Part D 计划、Medicaid、PBM 的回款周期各不相同），只要这一项的增速持续快过营收增速，就要警惕。目前还没到那个程度。</p>
+<p><strong>还有一处必须说的</strong>：经营利润 8604 万，但税前利润 <strong>9582 万</strong>——中间多出 <strong>978 万非经营性收益</strong>，占税前利润的 <strong>10.2%</strong>。公司账上净现金才 5054 万，利息收入撑不起这个数，财报页面也没拆开这一项是什么（可能是或有对价的公允价值变动、或收购本地药房剩余股权产生的收益）。<strong>不管是什么，它不是卖药赚的</strong>，下面算"真实市盈率"时我会把它剔掉。</p>
+<p><strong>一个结构性提醒</strong>：股本这里有个复杂结构——"当前股份类别 4980 万股"，但"在外总股本 6334 万股"，内部人持股 18.03%，<strong>自由流通股只有 3201 万股（占总股本的一半）</strong>。这是本地药房总裁持股换股的 Up-C 类结构造成的。实际后果是：<strong>流通盘小、波动会被放大</strong>，而且未来这批人换股会持续带来卖压。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th><strong>投 100 块年回报</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 24.00 亿 ÷ 净利 0.659 亿</td>
+<td><strong>36.4×</strong></td>
+<td>$2.75</td>
+</tr>
+<tr>
+<td>加回股权激励（公司爱用的口径）</td>
+<td>24.00 亿 ÷ 0.730 亿</td>
+<td>32.9×</td>
+<td>$3.04</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>24.00 亿 ÷ 0.591 亿〔剔掉那 978 万非经营收益的税后部分〕</td>
+<td><strong>40.6×</strong></td>
+<td><strong>$2.46</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>24.00 亿 ÷ 0.798 亿</td>
+<td>30.1×</td>
+<td>$3.32</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>23.50 亿 ÷ 0.860 亿</td>
+<td>27.3×</td>
+<td>EBIT 收益率 3.66%</td>
+</tr>
+<tr>
+<td><strong>三年平均利润（原始）</strong></td>
+<td>TTM 0.659、FY2025 0.492、FY2024 <strong>−1.101</strong>，平均仅 0.017 亿</td>
+<td><strong>约 1420×，无意义</strong></td>
+<td>≈ $0.07</td>
+</tr>
+<tr>
+<td><strong>三年平均（把 2024 那笔 1.31 亿 IPO 股权费用加回）</strong></td>
+<td>0.659、0.492、0.214，平均 0.455 亿</td>
+<td><strong>52.7×</strong></td>
+<td><strong>$1.90</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先说哪个数不能用</strong>：原始三年平均那一行是废的——它被 FY2024 那笔 IPO 一次性股权费用彻底污染了。但我还是把它列出来，因为如果你在任何一个免费网站上看到"GRDN 三年平均市盈率"，看到的就是这种没处理过的垃圾数字。</p>
+<p><strong>该看的是 40.6 倍和 52.7 倍这两个。</strong></p>
+<p><strong>大白话结论</strong>：你现在投 100 块进 Guardian，按最保守的真实口径（剔掉非经营收益的 40.6 倍）算，公司一年替你赚 <strong>2.46 块</strong>。用三年平均的口径算，只有 <strong>1.90 块</strong>。用自由现金流的口径算，好一些，<strong>3.32 块</strong>。</p>
+<p><strong>这里面有多少回到你口袋？答案是 0 块。</strong> 不分红，回购是假的（3028 万买回、3028 万发出，正好抵消），股本一年还多了 1.91%。</p>
+<p><strong>剩下的钱去哪了？</strong> 看现金流：TTM 投资活动净流出 2273 万（资本开支 1907 万 ＋ 收购小药房 450 万），融资活动净流出 513 万（还了 486 万债）。<strong>7979 万的自由现金流，只花掉了 2786 万，剩下 5000 多万堆在银行——账上现金从 656 万（FY2024 年底）涨到 8981 万。</strong></p>
+<p>这说明一件事：<strong>Guardian 现在最缺的不是钱，是可以把钱花出去的地方。</strong> 它的增长是靠一个一个社区去谈、一个一个药房去开的，这种增长吃人不吃资本。好消息是 ROIC 高达 <strong>28.73%</strong>、ROCE 29.72%；坏消息是<strong>资本回报率这么高却投不出去，说明扩张速度受限于组织能力和销售周期，不受限于钱</strong>——你没法靠多砸钱让它长得更快。</p>
+<p><strong>这 2.46 块未来变大还是变小？</strong></p>
+<p><strong>变大的力量</strong>：需求端几乎是确定的——美国 80 岁以上人口在未来十年会增长 40% 以上，老人越老吃药越多，这个不需要论证。行业极度分散，除了两家大的之外全是几十家小药房，整合空间大。毛利率还在缓慢改善（19.9% → 20.2% → 21.6%），说明规模效应在起作用。经营杠杆也在起作用（营收 +10.3%，净利 +33.9%）。</p>
+<p><strong>变小的风险，只有一个但足够大</strong>：<strong>报销价格</strong>。Guardian 卖的是药，药价由 Medicare Part D 计划和它们背后的 PBM（药品福利管理商）定，Guardian 只是个通道。2025 年起《通胀削减法案》重构了 Part D 的责任分摊和 DIR 费用机制，付款方自身的成本压力最终都会传导到药房端的报销单价上。<strong>在一门经营利润率只有 5.88% 的生意里，报销单价压 2 个点，利润就少三分之一。</strong> 这不是假设，这是过去二十年零售药房行业反复发生的事——Rite Aid 破产、Walgreens 私有化，根子都在这里。</p>
+<p>Guardian 的缓冲垫是：它服务的辅助生活/群体家庭场景，付款方比 SNF 分散，且它提供的免费服务（eMAR、顾问药师）是社区离不开的，有一定的议价余地。<strong>但缓冲垫不是护城河。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门做得很扎实的好生意，但 40 倍的价格是按"这份好可以永远持续"定的，而它的利润率薄到经不起一次报销政策的调整。</strong></p>
+<p>好的部分我不含糊：连续六年营收增长、穿越疫情没断过；ROIC 28.7%、ROCE 29.7%，这是真正的高资本回报；净现金 5054 万、几乎没有债务、利息保障倍数 136 倍；自由现金流是净利润的 121%，利润是真现金；报表干净得不需要猜（除了 FY2024 那笔一次性 IPO 股权费用，而那笔已经用两年数据验证过是真一次性）；管理层没有靠收购堆增长（TTM 只花了 450 万在收购上）；需求端有人口结构托底，这是极少数不需要预测就能看清的顺风。<strong>这是一家我愿意长期持有的公司。</strong></p>
+<p>不好的部分同样不含糊：<strong>你要为此付 40.6 倍的真实市盈率、30 倍的自由现金流、27 倍的 EV/EBIT，换来的是 10% 的营收增速和 5.88% 的经营利润率。</strong> PEG 1.74，不便宜。你的现金回报是零——不分红，那个"回购"是员工代扣税的账面动作，股本每年还实实在在多 1.91%。上市不满两年，只有两个完整年度的公开财报，管理层还没经历过一次真正的行业逆风。流通股只占总股本一半，Up-C 结构下的换股卖压是持续的。<strong>而最根本的问题是：这家公司在一条自己完全无法定价的链条上赚 5.88 分钱的加工费。</strong></p>
+<p>股价 52 周涨了 45.6%，六家分析师全是"强烈买入"，目标价 $48.83。<strong>当所有人都是强烈买入、而生意本身只有 5.88% 的利润率缓冲时，这个价格没有留任何犯错的余地。</strong></p>
+<p><strong>如果它回到 25 倍以下（约 $26 一股），我会认真买。现在的 $37.89，是把未来三年的顺利执行提前付掉了。</strong></p>
+<p><strong>价格档：偏贵。质量档：好生意。</strong></p>
+</div></body></html>

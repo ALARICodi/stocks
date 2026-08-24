@@ -1,0 +1,430 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FIVN · Five9 公司（Five9, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FIVN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">SBC是净利润2.2倍，回购1.5亿股本反增5.2%，增速五年从40%掉到8.9%</div><h1>FIVN · Five9 公司（Five9, Inc.）</h1>
+<p><strong>市值</strong> 24.47 亿美元 ｜ <strong>当前股价</strong> 32.75 美元 ｜ <strong>行业</strong> 科技服务（云呼叫中心 SaaS）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>Five9 只做一件事：把企业的客服呼叫中心搬到云上，按坐席收月费。</strong> 它的财报只按地理分（美国 89%、国际 11%），不按产品分，因为确实就是一门生意。所以这一部分我不拆分部，改成把这门生意讲透——它比看上去复杂，而且它正站在一个生死路口上。</p>
+<h3>传统的呼叫中心是什么样</h3>
+<p>假设一家保险公司有 2000 名客服坐席。在云出现之前，它要做这些事：</p>
+<ul>
+<li>买一套 Avaya 或思科的电话交换机（PBX），装在自己的机房，硬件加软件一次性投入两三百万美元；</li>
+<li>再买一套坐席软件、一套录音系统、一套排班系统、一套质检系统，通常来自不同厂商，互相不通；</li>
+<li>养一支 IT 团队维护它们；</li>
+<li>想加 500 个坐席？重新采购硬件，等三个月。</li>
+</ul>
+<p>这套东西又贵又僵硬，而且疫情期间彻底暴露了它的死穴：<strong>坐席在家上班，接不了机房里那台交换机的电话。</strong></p>
+<h3>Five9 卖的是什么</h3>
+<p>Five9 把上面所有东西变成一个网页。<strong>一名客服打开浏览器登录，就是一个完整的坐席。</strong> 企业按人头付月费——<strong>每个坐席每月大约 149 到 229 美元</strong>，取决于买的是基础版（只有语音）还是全功能版（语音＋在线聊天＋邮件＋短信＋社交媒体＋AI）。</p>
+<p>那家 2000 坐席的保险公司签 Five9，按每人每月 175 美元算，<strong>一年付 420 万美元</strong>。它买到的是：</p>
+<ul>
+<li><strong>智能路由</strong>：一通电话打进来，系统先查来电号码对应的保单，判断这是车险理赔，就把电话转给最擅长车险理赔且当前空闲的坐席，而不是随便找一个人。</li>
+<li><strong>IVR 语音菜单</strong>：「查保单请按 1」那套东西，Five9 让业务人员用拖拽方式配置，不需要写代码。</li>
+<li><strong>坐席桌面弹屏</strong>：电话接通的同一秒，坐席屏幕上自动弹出这个客户的保单、上次通话记录、有没有投诉过。这一条直接决定通话时长，而通话时长直接决定人力成本。</li>
+<li><strong>外呼拨号器</strong>：催缴保费时，系统自动同时拨 5 个号码，谁先接通就转给空闲坐席，坐席不用听 40 秒的忙音。这能让一名催收员的日产能翻两三倍。</li>
+<li><strong>录音、质检、报表</strong>：所有通话自动录音转文字，主管可以搜索「哪些通话里客户提到了『投诉』」。</li>
+<li><strong>弹性</strong>：黑五要临时加 800 个坐席？在后台改个数字，当天生效，用完就退。</li>
+</ul>
+<p><strong>为什么客户非买不可？</strong> 因为换掉它极其痛苦。呼叫中心是企业和客户接触的最前线，一旦切换系统，几千名坐席要重新培训，路由规则要重配，跟 CRM（Salesforce）的对接要重做，中间任何一天的故障都意味着客户投诉爆炸。所以 Five9 的客户流失率历史上一直很低——<strong>这就是它的护城河：不是技术领先，是迁移成本。</strong></p>
+<h3>生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>10.64 亿</td>
+<td>+9.4%</td>
+<td>89%</td>
+</tr>
+<tr>
+<td>国际</td>
+<td>1.40 亿</td>
+<td>+9.6%</td>
+<td>11%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>12.04 亿</strong></td>
+<td><strong>+8.87%</strong></td>
+<td>100%</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>6.63 亿（毛利率 <strong>55.1%</strong>）</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>0.81 亿（经营利润率 <strong>6.7%</strong>）</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报按地理披露，不披露地区利润；且这本来就是一门生意，拆开无意义。毛利率 55% 对 SaaS 来说偏低——因为语音要真实的电信线路成本，每分钟通话它都要付钱给运营商，这部分成本压着毛利率上不去（纯软件 SaaS 通常是 75%–85%）。</p>
+</blockquote>
+<h3>必须看的一组数字：增长在系统性熄火</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>2021</th>
+<th>2022</th>
+<th>2023</th>
+<th>2024</th>
+<th>2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收增速</td>
+<td>40.2%</td>
+<td>27.8%</td>
+<td>16.9%</td>
+<td>14.4%</td>
+<td>10.3%</td>
+<td><strong>8.87%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>连续五年减速，从 40% 掉到 8.87%，每年砍掉三分之一。</strong> 对一家还在按 SaaS 标准估值的公司来说，这是最要命的一张表。</p>
+<h3>房间里的大象：AI 到底是机会还是掘墓人</h3>
+<p>Five9 现在把 AI 放在所有营销材料的最前面——<strong>AI Agents</strong>：用大模型直接接电话，处理「我的包裹到哪了」「帮我改个地址」这类简单问询，全程不转人工。按解决的对话数收费，而不是按坐席数。</p>
+<p><strong>这件事对 Five9 有两面，而且两面都极端：</strong></p>
+<ul>
+<li><strong>好的一面</strong>：如果 AI 处理的每通电话它都能收到钱，那它的市场从「全球有多少客服坐席」（一个有限且在萎缩的数字）变成了「全球有多少次客户交互」（大得多）。</li>
+<li><strong>坏的一面，也是更要紧的一面</strong>：<strong>Five9 的整个商业模式是按人头收费的。</strong> 一家企业用 AI 把 2000 个坐席减到 800 个，Five9 的坐席收入立刻掉 60%。它必须让 AI 那块的新增收入跑得比坐席流失更快——而且是在客户明确知道「上 AI 就是为了省人力成本」的前提下去谈这个价。</li>
+</ul>
+<p>同时它的对手不轻松：NICE 和 Genesys 是同量级的老对手；<strong>亚马逊的 Amazon Connect 按分钟计价、几乎不要软件费</strong>，是结构性的价格杀手；微软和 Salesforce 都在把客服功能塞进自己的大套件里当赠品。</p>
+<p><strong>这是这只股票唯一真正重要的问题，而且今天没人知道答案。</strong> 市场对此的态度写在一个数字上：<strong>12.4% 的流通股被卖空</strong>——这是一个非常高的比例，说明有相当一部分聪明钱在赌 AI 会吃掉它。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分是全篇的核心。这家公司的报表本身不造假，但 GAAP 利润和「股东真正能拿到的钱」之间隔着一道 1.3 亿美元的墙。</strong></p>
+<h3>股权激励（SBC）—— 这一项决定一切</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权激励 SBC</td>
+<td><strong>1.326 亿美元</strong></td>
+</tr>
+<tr>
+<td>GAAP 净利润</td>
+<td>0.595 亿美元</td>
+</tr>
+<tr>
+<td><strong>SBC ÷ 净利润</strong></td>
+<td><strong>223%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>它发给员工的股票，价值是它赚到的利润的 2.2 倍。</strong> 换个说法：这家公司一年创造的经济价值里，员工先拿走了大头，剩下的才轮到股东。</p>
+<p>公司当然在 Non-GAAP 里把这 1.326 亿全部加回去，于是「调整后利润」变成两亿多，前瞻市盈率就成了漂亮的 <strong>9.07 倍</strong>。<strong>这是骗人的</strong>——那些股票是从你手里稀释出去的，跟发现金没有区别，只是这笔钱从你的持股比例里出，而不是从公司账上出。<strong>本文所有计算一律不加回 SBC。</strong></p>
+<p>好消息是这个数字在下降：FY2023 是 2.063 亿，现在是 1.326 亿，两年砍掉 36%。管理层确实在控制。但它仍然是净利润的两倍多。</p>
+<h3>回购与稀释 —— 一个刺眼的矛盾</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>1.500 亿</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td>1.326 亿</td>
+</tr>
+<tr>
+<td>回购 ÷ SBC</td>
+<td>1.13</td>
+</tr>
+<tr>
+<td><strong>股本变化（一年）</strong></td>
+<td><strong>+5.24%</strong></td>
+</tr>
+<tr>
+<td>股本变化（一季度）</td>
+<td>−0.95%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>它花了 1.5 亿真金白银回购，股本反而增加了 5.24%。</strong> 这个矛盾必须解释：一是 SBC 每年发出的新股在持续稀释；二是它 FY2024 发过 7.31 亿的可转债，转股会产生额外稀释。1.5 亿的回购只够抵消 SBC，抵不住可转债那一块。</p>
+<p>最近一个季度股本在减（−0.95%），说明回购开始起效。但<strong>过去一年持有这只股票的人，持股比例被稀释了 5.24%——这相当于股价先跌 5% 才回到原点。</strong></p>
+<h3>有效税率只有 10.6% —— 一笔借来的利润</h3>
+<p>TTM 税前利润 6652 万，交税只有 705 万，<strong>有效税率 10.6%</strong>。正常美国公司是 21%–25%。差额来自过去几年累积的巨额亏损（FY2021–FY2024 连亏四年，累计亏损约 2.4 亿），这些亏损在抵今天的税。</p>
+<p><strong>这是一笔会用完的红利。</strong> 等递延所得税资产耗尽，税率回到正常水平，同样的税前利润只能剩下约 5100 万净利润，而不是 5947 万——<strong>GAAP 利润会凭空少掉 14%，跟经营好坏无关。</strong></p>
+<h3>一次性项目</h3>
+<p>TTM 有 852 万的资产减值与重组（FY2025 只有 84 万，FY2024 是 220 万，所以这一期确实偏大），以及 486 万的投资收益。金额都不大，不影响判断。</p>
+<h3>资本化的支出</h3>
+<p><strong>这里有一笔要留意</strong>：TTM「购买无形资产」3888 万，加上资本开支 3964 万，合计 7852 万——占营收 6.5%。购买无形资产这一项在 FY2023 只有 954 万，两年翻了四倍。这通常是资本化的内部软件开发成本，意思是<strong>一部分本该计入费用的研发人工，被记成了资产分期摊销，从而抬高了当期利润</strong>。同时看「其他摊销」这一行：从 FY2021 的 3001 万涨到 TTM 的 9653 万，翻了三倍多。这两件事是一枚硬币的两面——今天资本化得越多，未来几年摊销就越重。</p>
+<h3>利润和现金流的差</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>59.5</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>91.5</td>
+</tr>
+<tr>
+<td>+ 其他摊销（含资本化软件）</td>
+<td>96.5</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>8.5</td>
+</tr>
+<tr>
+<td>− 投资收益</td>
+<td>−4.9</td>
+</tr>
+<tr>
+<td><strong>+ 股权激励 SBC</strong></td>
+<td><strong>+132.6</strong></td>
+</tr>
+<tr>
+<td>+ 坏账准备</td>
+<td>1.3</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>3.1</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−15.0</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>7.2</td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>5.8</td>
+</tr>
+<tr>
+<td><strong>− 其他净经营资产变化</strong></td>
+<td><strong>−137.4</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>248.8</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有两笔各超过 1.3 亿的数字在互相抵消</strong>，理解它们是理解这家公司的关键：</p>
+<ol>
+<li><strong>SBC +1.326 亿</strong>：因为发股票不花现金，所以加回来。账面上现金流变好看了 1.3 亿，但股东被稀释了同样多的价值。</li>
+<li><strong>「其他净经营资产变化」−1.374 亿</strong>：这一项历年稳定存在且逐年扩大（−0.89 → −0.97 → −1.05 → −1.13 → −1.15 → <strong>−1.37</strong> 亿），主要是资本化的销售佣金（销售员签下三年合同拿的提成，先记成资产再分期摊）和经营租赁。<strong>它不是一次性的，是这门生意持续的现金消耗。</strong></li>
+</ol>
+<p><strong>结论：自由现金流 2.09 亿看起来非常漂亮（P/FCF 只有 11.7 倍），但这个数字是靠把 1.326 亿的 SBC 加回去撑起来的。</strong> 把 SBC 当成它本来的样子——真实成本——<strong>真正属于股东的自由现金流是 2.09 − 1.33 = 0.765 亿美元。</strong> 这个数字才是下面估值的基准。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 24.47 亿，企业价值 26.36 亿（净负债 1.89 亿，杠杆不高）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>24.47 亿 ÷ 0.5947 亿</td>
+<td><strong>47.7 倍</strong></td>
+<td><strong>2.10 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（加回 SBC 与摊销）</td>
+<td>市场用的前瞻口径</td>
+<td>约 9.1 倍</td>
+<td>11.03 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 不加回，税率正常化到 23%，加回减值、剔除投资收益 → 约 0.541 亿</td>
+<td><strong>45.2 倍</strong></td>
+<td><strong>2.21 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>24.47 亿 ÷ 2.091 亿</td>
+<td>11.7 倍</td>
+<td>8.55 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC，真实股东现金）</strong></td>
+<td>24.47 亿 ÷ 0.765 亿</td>
+<td><strong>32.0 倍</strong></td>
+<td><strong>3.13 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>26.36 亿 ÷ 0.8095 亿</td>
+<td><strong>32.6 倍</strong></td>
+<td>3.07 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>24.47 亿 ÷ 0.287 亿（0.595／0.394／−0.128 均值）</td>
+<td><strong>85.3 倍</strong></td>
+<td><strong>1.17 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去，按最保守的三年平均口径算，公司一年替你赚 1.17 块。按当期真实利润算是 2.21 块。按扣掉股权激励后真正属于股东的现金算，是 3.13 块。</strong></p>
+<p><strong>3.13 块是本篇最诚实的数字</strong>，因为它同时做对了三件事：用现金而不是利润（避开了会计估计）、扣掉了 SBC（承认稀释是真成本）、不受历史亏损税率的影响。</p>
+<p>对比一下：<strong>美国 10 年期国债现在给你的回报，不需要承担任何生意风险。</strong> Five9 给你 3.13 块，还要你承担一门增速已经掉到 8.87% 且面对 AI 颠覆的生意的全部风险。</p>
+<p>那个诱人的 <strong>11.03 元（Non-GAAP 口径）是幻觉</strong>，它建立在「员工的股票不算钱」这个前提上。而 <strong>85.3 倍的三年平均口径</strong>也不必太当真——它把 FY2024 的亏损算进去了，而那一年公司确实在转型期。<strong>真实的区间在 32 到 45 倍之间。</strong></p>
+<p><strong>这些钱有多少回到你口袋？</strong>
+- 分红：<strong>零</strong>，而且看不到会分的迹象。
+- 回购：1.5 亿，看起来慷慨（占账面 FCF 的 72%），但它<strong>只够抵消 SBC 的稀释，股本一年反而增加了 5.24%</strong>。也就是说，实际回到你口袋的是<strong>零</strong>。
+- 剩下的钱：还了 2080 万的债、花了 3888 万买无形资产、买了 3240 万的证券。</p>
+<p><strong>这个 3.13 块未来会变大还是变小？</strong> 有两股方向相反的力量：</p>
+<p><strong>变大的力量（真实存在）</strong>：SBC 两年降了 36%，如果继续降到营收的 5%（约 6000 万），股东现金会多出 7000 万，回报直接翻倍；经营杠杆开始显现，营收涨 8.87% 而经营利润从 −2940 万变成 +8095 万，说明成本控制住了；净负债只有 1.89 亿，财务压力小。</p>
+<p><strong>变小的力量（同样真实）</strong>：增速已经掉到 8.87% 且五年连降，减速趋势没有任何停止的迹象；税率正常化会自动砍掉 14% 的 GAAP 利润；资本化的软件和佣金越堆越高，未来摊销会加重；<strong>最要命的是 AI——它按坐席收费的模式，正被一项让坐席变少的技术冲击，而这项技术恰恰是它自己在卖的。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>47.7 倍 GAAP 市盈率买一家增速只剩 8.87% 的公司，还要接受员工每年拿走两倍于利润的股票——不值。</strong></p>
+<p>这门生意本身不烂。它有 12 亿真实营收、55% 毛利、极高的客户迁移成本、终于转正的经营利润、不算重的负债、还在下降的 SBC。经营杠杆正在起效——营收只涨 8.87%，经营利润从三年前的亏 9858 万变成赚 8095 万，管理层这活干得不错。</p>
+<p>但价格已经把这些好事全算进去了，还多算了不少：</p>
+<ul>
+<li>你付 <strong>47.7 倍 GAAP 利润</strong>，买 <strong>8.87% 的增长</strong>——这个组合本身就说不通；</li>
+<li>那个 <strong>9.07 倍的前瞻市盈率是把 1.326 亿 SBC 当作不存在算出来的</strong>，把它当真等于同意自己每年被稀释一次；</li>
+<li>公司花了 <strong>1.5 亿回购，股本还是增加了 5.24%</strong>——这一年里，回到股东口袋的钱是零；</li>
+<li>10.6% 的税率是借来的，<strong>用完就要还</strong>，GAAP 利润会自动少 14%；</li>
+<li>股价过去一年涨了 <strong>27.2%</strong>，而营收增速在同一年从 10.3% 掉到 8.87%——<strong>涨的是估值，不是生意</strong>。</li>
+</ul>
+<p><strong>最后是那个无法回避的问题</strong>：它按人头收费，而它自己在卖的 AI 正在让人头变少。管理层的赌注是「AI 收入增长快过坐席流失」，这个赌注可能赢，但今天没有任何数据能证明它正在赢——<strong>能看到的只有营收增速连续五年下滑，和 12.4% 的流通股被卖空。</strong></p>
+<p><strong>判断：很贵。</strong> 不是「有点贵、跌一跌可以考虑」的那种贵，是<strong>估值假设和生意现实之间存在结构性错位</strong>的那种贵。如果 AI 的赌注赢了，今天这个价可能回头看还算便宜；如果输了，一家增长停滞、员工分走两倍利润的公司值不了 24 亿。<strong>这不是投资，是押注，而赔率并不站在你这边。</strong></p>
+</div></body></html>

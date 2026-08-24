@@ -1,0 +1,335 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DBD · 迪堡多富（Diebold Nixdorf）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DBD</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">21倍不用打折，一年回购8.9%市值，但ATM主业在萎缩</div><h1>DBD · 迪堡多富（Diebold Nixdorf）</h1>
+<p>市值 23.7 亿美元 | 股价约 69.9 美元 | 行业：电子科技（银行与零售自助设备）| TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>开篇必须先说的一件事</h2>
+<p>这家公司<strong>在 2023 年 6 月申请了破产保护（美国第 11 章），8 月完成重组</strong>。重组的结果是：约 27 亿美元的债务被一笔勾销，<strong>老股东的股票被清零，公司的股权交给了当时的债权人</strong>。今天在市场上买 DBD 的人，买到的是重组后的新公司；今天的大股东，就是当年那批债主。</p>
+<p>这件事有一个直接的会计后果，看财报时必须知道：<strong>FY2023 那一行 13.76 亿美元的"净利润"（每股 21.38 美元）不是赚来的钱，是债务被豁免产生的账面收益。</strong>那一年公司实际上在亏损。凡是把 FY2023 算进平均值的估值都是错的。</p>
+<p>破产之后到今天正好三年，公司确实缓过来了：连续两年正的自由现金流、经营利润率从 0.70% 修到 8.98%、总债务从 27.3 亿压到 11.1 亿。下面所有的分析都建立在"这家公司刚从 ICU 出来"这个前提上。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报干净地拆成两块，业务逻辑清楚。</p>
+<h3>第一门：银行自助设备与服务（Banking）</h3>
+<p>TTM 营收 27.44 亿美元，占 71%。<strong>这是主业，也是这家公司的历史身份。</strong>Diebold 1859 年在俄亥俄州创立，一开始做保险柜——芝加哥大火之后，唯一没被烧穿的保险柜是 Diebold 的，这家公司靠这条广告出的名。后来做 ATM，1980 年代到 2000 年代是全球两强之一。2016 年它并购了德国的 Wincor Nixdorf，成了全球最大的 ATM 厂商，也是那次并购借的债最终把它拖进了破产。</p>
+<p>具体在卖什么、怎么收钱，拆成三层：</p>
+<p><strong>一是卖机器。</strong>DN Series 系列 ATM，一台从 2 万到 6 万美元不等。不只是取钱那种老机器——现在主推的是"循环机"（recycler），你存进去的钞票机器会点验、消毒、码好，直接给下一个人取走。这对银行意义很大：传统 ATM 要靠押运车定期送钞，一次上门几百美元，一个网点一周跑两三次；换成循环机以后，居民存的钱直接被别人取走，押运车的频次能砍掉一半以上。<strong>这就是替银行省钱的账，很好算，也是循环机能在现金使用下降的时代还卖得动的原因。</strong></p>
+<p><strong>二是卖软件。</strong>Vynamic 系列——管着 ATM 的操作系统、交易路由、反欺诈、远程监控。银行买了以后按机器台数付年费。软件本身不贵，但它把银行的 IT 系统和 Diebold 的设备绑在一起，换供应商要重做整套集成。</p>
+<p><strong>三是卖服务，这才是真正赚钱的一层，占银行分部营收的六成左右。</strong>一家有 3,000 台 ATM 的区域银行，跟 Diebold 签一份多年期维保合同：机器坏了 4 小时内到现场、耗材（打印纸、读卡器）包了、软件升级包了、合规改造（比如换新的芯片卡读头）包了。按台按年收费，一台一年一两千美元，3,000 台就是几百万美元，<strong>每年自动续，收入极稳</strong>。</p>
+<p>最新的形态是 <strong>ATM 即服务（ATM-as-a-Service）</strong>：银行连机器都不买了，Diebold 出钱买机器、装在银行网点、负责一切运维，银行按月付一笔固定费用。对银行来说资本开支变成了运营费用，对 Diebold 来说一次性的设备买卖变成了多年期的经常性收入。这是公司当前最重要的战略方向。</p>
+<p><strong>这门生意 TTM 是 274.4 亿……是 27.44 亿美元，对比 FY2025 的 27.97 亿，下降约 1.9%（TTM 对完整财年的近似口径）。</strong>方向是往下的，原因不用猜：全世界现金使用率在下降，银行在关闭实体网点，ATM 的装机总量长期看是萎缩的。服务收入的稳定性能对冲一部分，但对冲不了全部。</p>
+<h3>第二门：零售自助设备与服务（Retail）</h3>
+<p>TTM 营收 11.21 亿美元，占 29%。<strong>这门在增长，是当下的亮点。</strong></p>
+<p>卖的东西：<strong>自助结账机</strong>（超市里那排你自己扫码付款的机器）、<strong>收银台系统</strong>（POS 终端 + 后台软件）、<strong>电子货架标签</strong>（货架上那种小电子屏，总部改一次价格全店几万个标签同时变，不用再派人一张张换纸标签）、以及配套的服务合同。</p>
+<p>客户是欧洲和美国的大型连锁超市——家乐福、Tesco 这一类。为什么它们非买不可：欧美超市收银员的工资一年三四万美元，一台自助结账机十几万人民币能顶大半个收银员且不休假，两三年就回本；再加上疫情之后消费者习惯了自己扫码。<strong>这是一门"人工越贵越好卖"的生意，而欧美的人工只会越来越贵。</strong></p>
+<p>TTM 11.21 亿对比 FY2025 的 10.09 亿，<strong>增长约 11.1%</strong>（同样是 TTM 对财年的近似口径）。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速（近似）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>银行（Banking）</td>
+<td>2,744</td>
+<td>−1.9%</td>
+<td>71.0%</td>
+<td>约 11%（估算）</td>
+<td>约 302</td>
+</tr>
+<tr>
+<td>零售（Retail）</td>
+<td>1,121</td>
+<td>+11.1%</td>
+<td>29.0%</td>
+<td>约 4%（估算）</td>
+<td>约 46</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,865</strong></td>
+<td>—</td>
+<td>100%</td>
+<td><strong>8.98%</strong></td>
+<td><strong>347.9</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部利润财报没有披露，上面两行是估算</strong>——依据是银行分部服务占比更高、毛利率更好，零售分部硬件占比高、竞争更激烈（对手是 NCR Voyix 和东芝）。整体口径 TTM 营收 38.72 亿（含少量未分配），经营利润 3.479 亿是财报数字。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：TTM 只有 1,320 万美元，占净利润 1.112 亿的 11.9%，占营收 0.34%。</strong></p>
+<p>这个数字<strong>极其干净</strong>。放在今天的美股里几乎是异类——Peloton 的 SBC 是净利润的 314%，UFP Technologies 是 14.3%，DBD 只有 11.9%。原因是这是一家 2 万人的老派工业公司，员工拿工资不拿股票，而且刚从破产里出来，没有本钱大方发股。<strong>这意味着 GAAP 净利润基本不需要为发股打折。</strong></p>
+<p><strong>一次性项目：TTM 干干净净，没有。</strong>没有资产减值、没有重组费用、没有诉讼和解、没有资产处置损益。对比 FY2022 有 1.118 亿的减值（那是崩溃前夜）、FY2023 有那笔 13.76 亿的破产重组收益，<strong>TTM 这一期是重组完成后第一个真正"正常"的完整年度</strong>，数字可以直接用。</p>
+<p><strong>资本化的支出：有，而且藏得比较深。</strong>资本开支只有 3,490 万，看起来很轻——但现金流量表的投资活动里还有一行"购买无形资产 −2,610 万"，<strong>这基本就是资本化的软件开发费</strong>（Vynamic 那套软件的开发投入）。这笔钱当年不进利润表，以后按几年摊销。所以真实的资本投入是 3,490 + 2,610 = <strong>6,100 万</strong>，不是 3,490 万。市面上按"FCF = 经营现金流 − 资本开支"算出来的 2.381 亿，<strong>严格说应该再扣 2,610 万，真实自由现金流约 2.12 亿。</strong></p>
+<p><strong>回购与稀释：这是本篇最亮眼的一项。</strong></p>
+<p>TTM 回购 <strong>2.12 亿美元</strong>，同期 SBC 1,320 万美元。<strong>回购 ÷ SBC = 16.1 倍。</strong></p>
+<p>对比一下这个数字的分量：规矩是"接近 1 说明回购只是抵消员工发股，大于 3 才是真回购"。<strong>16.1 倍是我在任务1 里见过的最高档之一。</strong>股本一年实际减少 <strong>3.60%</strong>，季度环比减少 1.12%——这是实打实地把股东的份额买回来。</p>
+<p>而且这 2.12 亿的回购，是在市值只有 23.7 亿的公司身上做的，<strong>相当于一年回购了 8.9% 的市值</strong>。公司不分红（Ex-Dividend 显示 n/a），所以回购是股东拿到现金的唯一渠道，而这条渠道是通的、量还很大。</p>
+<p><strong>利润和现金流的差：净利润 1.112 亿，经营现金流 2.73 亿，差了 1.6 亿。</strong>逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>111.2</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>+113.3</td>
+</tr>
+<tr>
+<td>＋其他摊销（租赁、无形资产）</td>
+<td>+17.9</td>
+</tr>
+<tr>
+<td>＋股权激励 SBC</td>
+<td>+13.2</td>
+</tr>
+<tr>
+<td>−其他经营项目（递延税、养老金等）</td>
+<td>−36.5</td>
+</tr>
+<tr>
+<td><strong>小计（未扣营运资金）</strong></td>
+<td><strong>219.1</strong></td>
+</tr>
+<tr>
+<td>＋应收账款减少</td>
+<td>+19.3</td>
+</tr>
+<tr>
+<td>−存货增加</td>
+<td>−22.7</td>
+</tr>
+<tr>
+<td>＋<strong>应付账款增加</strong></td>
+<td><strong>+83.4</strong></td>
+</tr>
+<tr>
+<td>−预收款减少</td>
+<td>−25.7</td>
+</tr>
+<tr>
+<td>−所得税项</td>
+<td>−13.5</td>
+</tr>
+<tr>
+<td>＋其他经营资产</td>
+<td>+13.1</td>
+</tr>
+<tr>
+<td><strong>营运资金合计贡献</strong></td>
+<td><strong>+53.9</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>273.0</strong></td>
+</tr>
+<tr>
+<td>−资本开支</td>
+<td>−34.9</td>
+</tr>
+<tr>
+<td><strong>＝ 账面自由现金流</strong></td>
+<td><strong>238.1</strong></td>
+</tr>
+<tr>
+<td>−资本化的软件开发</td>
+<td>−26.1</td>
+</tr>
+<tr>
+<td><strong>＝ 真实自由现金流</strong></td>
+<td><strong>约 212.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表里有一项要盯着：<strong>应付账款增加了 8,340 万，贡献了经营现金流的 31%。</strong>应付账款增加的意思是"我欠供应商的钱变多了、还没付"——这是在占用供应商的资金来美化自己的现金流。这一项是不可持续的，明年不可能再来一次同样规模。剔掉它，经营现金流的可持续水平大概在 1.9 亿而不是 2.73 亿。</p>
+<p><strong>最重要的一个数：经营利润 3.479 亿，税前利润只有 1.604 亿，中间蒸发了 1.875 亿。</strong></p>
+<p>这 1.875 亿是什么？主要是<strong>利息支出 + 外汇损失 + 养老金成本</strong>。总债 11.09 亿，就算按 8% 的利率也只有约 9,000 万利息，所以另外的九千万左右来自汇兑损失（公司一半以上收入在欧洲，欧元兑美元波动直接砸进损益）和德国那边留下来的养老金义务（Wincor Nixdorf 的遗产）。</p>
+<p><strong>换个说法：公司辛辛苦苦赚的 3.479 亿经营利润，54% 被"经营之外的东西"吃掉了。</strong>利息覆盖率 3.87 倍——比 Peloton 的 1.72 好得多，但离舒适（一般看 6 倍以上）还有距离。净负债 8.416 亿，比去年的 6.903 亿还<strong>增加了 1.5 亿</strong>，原因就是那 2.12 亿的回购是借着钱做的。这一点要明确说：<strong>公司在用增加净负债的方式回购股票。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 23.7 亿，企业价值 32.2 亿（加上 8.42 亿净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>23.7 亿 ÷ 1.112 亿</td>
+<td><strong>21.3 倍</strong></td>
+<td><strong>4.69 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（调整后 EBITDA 4.61 亿口径）</td>
+<td>23.7 亿 ÷ 4.61 亿</td>
+<td>5.1 倍</td>
+<td>19.53 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（无一次性项目可剔，SBC 不加回）</td>
+<td>23.7 亿 ÷ 1.112 亿</td>
+<td><strong>21.3 倍</strong></td>
+<td><strong>4.69 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面 FCF 2.381 亿）</td>
+<td>23.7 亿 ÷ 2.381 亿</td>
+<td>10.0 倍</td>
+<td>10.03 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化软件后 2.12 亿）</strong></td>
+<td>23.7 亿 ÷ 2.12 亿</td>
+<td><strong>11.2 倍</strong></td>
+<td><strong>8.94 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>32.2 亿 ÷ 3.479 亿</td>
+<td><strong>9.2 倍</strong></td>
+<td>10.81 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年净利润 +1.112 / +0.946 / −0.165 亿，均值 <strong>0.631 亿</strong></td>
+<td><strong>37.6 倍</strong></td>
+<td><strong>2.66 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先说最后一行，它是这张表里最重要的一行。</strong>三年平均口径给出 37.6 倍，是当期 21.3 倍的 1.8 倍——差距很大。含义是：<strong>今天这个 1.112 亿的利润，是这家公司三年来的最好水平，前两年一年只有 9,460 万、一年还是亏 1,650 万。</strong></p>
+<p>但这个数要<strong>双向解读</strong>，不能像 NVDA 那样直接当成"利润虚高"的证据。DBD 的情况是：三年前它刚从破产里爬出来，那两年的低利润是<strong>修复期的低点</strong>，不是正常状态的中枢。所以 37.6 倍反映的与其说是"当前利润虚高"，不如说是"这家公司还没有足够长的正常年份可供平均"。<strong>中肯的说法：正常化利润大概在 9,000 万到 1.1 亿之间，对应 21–26 倍市盈率。</strong></p>
+<p><strong>GAAP 21.3 倍和"剔除障眼法"21.3 倍是同一个数</strong>——因为 TTM 里根本没有一次性项目可剔，SBC 又只有 1,320 万。这是罕见的情况：<strong>报表说什么就是什么，不需要打折。</strong>这本身是一个重要的加分项。</p>
+<p><strong>所以：你现在投 100 块进去，按最保守的真实口径（21.3 倍），公司一年替你赚 4 块 6 毛 9。按扣干净的自由现金流口径，8 块 9 毛 4。按包含了债务的企业价值口径，10 块 8。</strong></p>
+<p><strong>这几块钱里，有多少真正回到你口袋？相当大的一部分。</strong>没有分红，但 TTM 回购 2.12 亿 ÷ 市值 23.7 亿 = <strong>8.9% 的股东回报率</strong>，股本实实在在减少了 3.60%。这是这家公司最大的亮点——<strong>它赚的钱不是躺在账上，也不是发给员工，是买回你的股份。</strong></p>
+<p>代价要说清楚：这 2.12 亿的回购不是从当年自由现金流里挤出来的（真实 FCF 只有 2.12 亿，正好打平，但同期还花了 2,450 万做收购），净负债因此从 6.9 亿涨到 8.42 亿。<strong>管理层在用加杠杆的方式回购</strong>——一家三年前刚被债务压垮的公司这么做，胆子不小。股价便宜的时候这是聪明的资本配置，但它把安全垫又薄了一层。</p>
+<p>剩下的钱去了：3,490 万资本开支、2,610 万软件开发、2,450 万小型收购。</p>
+<p><strong>这个数未来变大还是变小？</strong></p>
+<p><strong>往上的力量</strong>：前瞻市盈率只有 10.94 倍，市场预期明年利润接近翻倍——主要来自债务重组后利息负担的持续下降；零售分部增长 11%，人工成本上升是长期顺风；ATM 即服务把一次性设备销售变成经常性收入，会同时提高收入稳定性和利润率；ROIC 13.80% 明显高于 WACC 9.11%，公司投出去的每一块钱都在创造价值；如果回购按这个节奏持续，光是股本减少每年就贡献 3–4% 的每股收益增长；PEG 只有 0.73。</p>
+<p><strong>往下的力量</strong>：银行分部（71% 的营收）在萎缩，现金使用率下降是不可逆的长期趋势；那 1.875 亿的"经营之外的支出"里有一大块是欧元汇兑，不受公司控制，欧元一波动利润就晃；净负债在回购推动下反向上升；有形账面价值是负的（P/TBV 显示 n/a），账上的净资产主要是重组时重新估值出来的商誉；应付账款贡献了 31% 的经营现金流，这是借来的、要还的；破产才过去三年，管理层和董事会的资本配置纪律还没有经过一个完整周期的检验。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真的便宜，而且便宜得有道理可讲——但你得接受它的主业在慢慢萎缩，且它三年前刚破过产。</strong></p>
+<p>正面的证据非常扎实：21.3 倍的市盈率不需要打任何折扣（SBC 只占净利 11.9%，一次性项目为零，这是全场最干净的几张利润表之一）；EV/EBIT 只有 9.2 倍；一年回购掉 8.9% 的市值、股本真实减少 3.6%，这不是做样子；ROIC 13.8% 稳稳高于 9.1% 的资金成本；前瞻市盈率 10.94 倍、PEG 0.73。<strong>这些数字放在一起，指向的是"市场还在用破产公司的眼光看它，而它的报表已经不是破产公司的报表了"。</strong></p>
+<p>反面的东西也不该回避：占七成营收的 ATM 生意每年掉一两个百分点，这个方向改不了，公司能做的只是用服务和自助结账机去补；经营利润有 54% 被利息和汇兑吃掉；回购的钱是借来的，净负债一年涨了 1.5 亿；有形净资产为负。股价刚从 80 块跌到 70 块（RSI 38.4），市场显然对某件事不满意。</p>
+<p><strong>综合判断：值得放进观察名单。</strong>这是一门平庸但真实的生意，配上一个明显偏低的价格和一个愿意大手笔回购的管理层。一年 4 块 7 到 8 块 9 的真实回报，其中 8.9% 通过回购直接兑现给股东——这比很多"好公司高价格"的组合实在得多。要盯的只有两件事：<strong>银行分部的下滑速度会不会加快，以及净负债会不会继续往上爬。</strong>这两件事只要有一件走坏，便宜就会变成陷阱。</p>
+</div></body></html>

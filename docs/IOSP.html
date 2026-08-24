@@ -1,0 +1,375 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IOSP · 英诺斯派（Innospec Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IOSP</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">真实16.7倍，零负债、8.8%市值现金，油田那块还在塌</div><h1>IOSP · 英诺斯派（Innospec Inc.）</h1>
+<p><strong>市值</strong> 23.1 亿美元 ｜ <strong>股价</strong> 约 93.8 美元（2463 万股）｜ <strong>行业</strong> 特种化工（Process Industries）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ 全量榜第 823 名 ｜ 当前 PE 19.1</p>
+<p>一家你从没听过、但你今天大概率已经用过它产品的公司。你早上洗头用的洗发水里那个起泡的东西、你昨天加的那箱汽油里防止喷油嘴结焦的添加剂，很可能都是它做的。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Innospec 财报按三个分部披露，实质上就是三门完全不同的生意，共用一个化工研发和生产平台。</p>
+<h3>生意一：燃料添加剂（Fuel Specialties）—— 最赚钱的那门</h3>
+<p><strong>这件事具体是什么。</strong> 汽油、柴油、船用燃油从炼厂出来时，是"半成品"。直接烧会有一堆问题：喷油嘴积碳、油箱里长细菌、冬天柴油结蜡堵住油路、船用重油在储罐里分层沉淀。Innospec 卖的就是往这些油里加的那一小瓶东西——按吨卖的化学品，加进去的比例通常只有百万分之几百到千分之一。</p>
+<p><strong>怎么收钱，一单多少钱。</strong> 客户是壳牌、BP、埃克森这类炼厂和石油贸易商，还有各国的燃油分销商。典型的合作形态是：壳牌要在东南亚推一款"高端汽油"，宣传能清洁发动机，就找 Innospec 定制一个配方包；Innospec 的实验室做出配方、跑发动机台架试验拿出数据（欧洲有一套 CEC 台架测试标准，一次跑下来几十万美元），然后按吨供货。一家中等炼厂一年可能买几百吨到几千吨添加剂，单价通常在每吨三千到八千美元，一年合同金额从几百万到几千万美元不等。</p>
+<p><strong>客户为什么非买不可。</strong> 三个理由，一个比一个硬：第一，法规逼的——欧盟、美国 EPA、国际海事组织（IMO）对硫含量、颗粒物排放的规定越来越严，炼厂不加剂就不达标；第二，配方一旦通过认证就换不动了——车企（比如宝马、通用）要对某个品牌的汽油背书"符合 TOP TIER 标准"，那套配方是在发动机上一轮轮试出来的，换供应商要重新认证一遍，没人愿意折腾；第三，成本占比极低——添加剂在一升汽油的成本里可能只占千分之几，客户对涨价不敏感，但对"出问题"极其敏感。</p>
+<p>这就是为什么这门生意的利润率能常年维持在接近 20%，而且这几年营收下滑的时候利润率还在往上走。</p>
+<p>TTM 营收 733.4 百万，其中"炼厂与性能"（大宗燃油添加剂）525.4，"其他燃油特化品"（船用、军用、特种）208.0。</p>
+<h3>生意二：个人与家庭护理化学品（Performance Chemicals）—— 增长最好的那门</h3>
+<p><strong>这件事具体是什么。</strong> 你手里那瓶洗发水，能起泡是因为里面有表面活性剂；能让头发顺滑是因为有阳离子调理剂；洗衣液能把油污从布料上拽下来靠的也是这类分子。Innospec 不做洗发水，它做的是洗发水厂商买的那些原料桶——比如一类叫"甜菜碱"的温和起泡剂、一类叫"季铵盐"的调理剂。</p>
+<p><strong>怎么收钱。</strong> 客户是联合利华、宝洁、拜尔斯道夫这些日化巨头，还有一大堆区域性的自有品牌代工厂。收钱方式很直接：按吨供货，一辆罐车或一批 200 升铁桶。一个大客户一年可能采购几千万美元。这门生意的实际差异化在于两点：一是能不能提供"天然来源""可生物降解""无硫酸盐"这些标签——欧美消费者这几年愿意为这些标签多付钱，品牌方就必须找到能供货的原料商；二是配方支持——一家二线品牌想推一款"氨基酸洗发水"，自己没有实验室，Innospec 直接把配方连原料一起给它。</p>
+<p>这门生意 TTM 营收 698.9 百万，是三门里唯一在稳定增长的（个人护理 TTM 412.6 对 FY2024 的 390.0，两年多涨了 5.8%；家庭护理 TTM 119.1 对 FY2024 的 106.6，涨了 11.7%）。利润率不如燃油添加剂——大概只有一半左右——因为原料成本占比更高，客户（日化巨头）压价能力更强。</p>
+<h3>生意三：油田服务化学品（Oilfield Services）—— 正在塌的那门</h3>
+<p><strong>这件事具体是什么。</strong> 页岩油井要压裂，就是把几万吨水加沙子高压打进地层把岩石压碎。这水里要加一堆化学品：减阻剂（让水在管子里流得动，不然摩擦力太大泵不进去）、杀菌剂（防止地下细菌产生硫化氢腐蚀管道）、破乳剂（把采出来的油水混合物分开）。Innospec 卖这些。</p>
+<p><strong>怎么收钱。</strong> 客户是斯伦贝谢、哈里伯顿这类油服公司，以及直接的页岩油生产商。一口井的压裂用量能到几十万美元的化学品，按井计价或按吨计价，跟着钻井活动走。</p>
+<p><strong>问题在哪。</strong> 这门生意的营收轨迹是：FY2023 的 691.3 → FY2024 的 490.6 → FY2025 的 395.1 → TTM 的 409.8。两年半塌了 41%。原因不复杂：美国页岩油钻井数量在 2023 年见顶后一路下滑，油价八十多美元的时候大家疯狂钻井，跌到六十多就停手；同时这门生意的产品差异化远不如另外两门——减阻剂本质上是聚丙烯酰胺，谁都能做，就是拼价格。</p>
+<p>公司在 TTM 期内对这块业务计提了 <strong>4200 万美元的资产减值和重组费用</strong>，等于是承认这块资产之前买贵了/建大了。TTM 的 409.8 相比 FY2025 的 395.1 略有回稳，但很难说是反转还是季度噪音。</p>
+<h3>三门生意合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>TTM vs FY2025</th>
+<th>占总营收</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>燃油添加剂</td>
+<td>733.4</td>
+<td>701.5</td>
+<td>701.1</td>
+<td>+4.5%</td>
+<td>39.8%</td>
+<td>~19.5%</td>
+<td>~143</td>
+</tr>
+<tr>
+<td>个人与家庭护理</td>
+<td>698.9</td>
+<td>681.4</td>
+<td>653.7</td>
+<td>+2.6%</td>
+<td>37.9%</td>
+<td>~10.5%</td>
+<td>~73</td>
+</tr>
+<tr>
+<td>油田服务</td>
+<td>409.8</td>
+<td>395.1</td>
+<td>490.6</td>
+<td>+3.7%</td>
+<td>22.2%</td>
+<td>~2%</td>
+<td>~8</td>
+</tr>
+<tr>
+<td>公司总部费用</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>~−33</td>
+</tr>
+<tr>
+<td><strong>合计（剔除减值前）</strong></td>
+<td><strong>1,842</strong></td>
+<td><strong>1,778</strong></td>
+<td><strong>1,845</strong></td>
+<td><strong>+3.6%</strong></td>
+<td>100%</td>
+<td>~10.4%</td>
+<td><strong>~191</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报只披露到分部营收，不披露分部经营利润，上表的利润率和贡献利润是我按整体利润率、产品结构和行业惯例估算的，不是财报数字。</strong> 唯一可以确认的锚点是：剔除 4200 万减值前的总经营利润约 191 百万，与上表估算之和吻合。方向性结论（燃油添加剂贡献了大部分利润、油田服务几乎不赚钱）是可靠的；具体到小数点不可靠。</p>
+</blockquote>
+<p>一句话概括这家公司的形状：<strong>两门稳定的高质量小生意，扛着一门正在萎缩的大生意。</strong> 燃油添加剂占营收 40%、占利润估计 75%；油田服务占营收 22%、占利润估计不到 5%。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分的结论可以先说：<strong>Innospec 是我在这个榜单上见过账最干净的公司之一。</strong> 逐项看：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 7.8 百万，占 GAAP 净利润 121.5 的 <strong>6.4%</strong>。这个比例低得罕见——同榜的科技公司普遍在 30%–100%。一律当真实成本扣，GAAP 里已经扣了，我不加回。这 780 万对估值的影响可以忽略。</p>
+<p><strong>一次性项目</strong>：有一笔大的——TTM 内 <strong>4200 万美元的资产减值与重组费用</strong>，对应油田服务业务。这笔钱是非现金的（现金流量表里作为加项调回来了），但它代表的是真实的价值毁灭：之前投进去的产能和商誉不值那么多钱了。</p>
+<p>单看 TTM 一期<strong>无法判断这是不是"年年都有的一次性"</strong>。有利的证据是 FY2021–FY2024 这四年该科目全是零；不利的证据是油田服务的下滑还没停，如果 2027 年继续跌，再来一笔减值不奇怪。我在第三部分会同时给出"加回"和"不加回"两种口径。</p>
+<p>另有一笔历史包袱值得提一句：FY2024 净利润只有 35.6 百万，远低于前后两年，主因是当年一笔约 1.1 亿美元的养老金结算费用（现金流量表 FY2024 的"其他经营活动 +116"就是把它加回来的痕迹）。那笔是真正意义上的一次性——公司把英国的固定收益养老金计划买断转给保险公司，从此不再背这个包袱。<strong>这件事对未来是好事，但它把 FY2024 的账面利润砸出一个坑，直接影响"三年平均利润"这个口径。</strong></p>
+<p><strong>资本化的支出</strong>：TTM 购买无形资产 19.5 百万（FY2025 是 25.2）。这块主要是配方、专利和客户关系的购买，规模不大，不属于"把当期费用藏进资产负债表"的那种操作。资本开支 55.5 百万，比折旧摊销 41.5 高出 34%，说明公司在净投资、不是在吃老本。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 24.1 百万，SBC 7.8 百万，<strong>回购/SBC = 3.1 倍</strong>。这是真回购，不是给员工发股票擦屁股。对照实际效果：股本一年减少 1.09%，确实在减。另外派息 44.3 百万，股息率约 1.9%，且连续多年提升（28.8 → 31.7 → 35.1 → 38.8 → 42.4 → 44.3）。回购加分红合计 68.4 百万，几乎等于全部自由现金流 68.8 百万。</p>
+<p><strong>利润和现金流的差 —— 这是本篇最需要看清楚的一张表。</strong></p>
+<p>GAAP 净利润 121.5，经营现金流只有 124.3，自由现金流只有 68.8。这三个数之间的落差很大，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td><strong>121.5</strong></td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+41.5</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>+42.0</td>
+<td>非现金，就是上面那笔油田减值</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+7.8</td>
+<td>非现金（但是真成本，只是不花现金）</td>
+</tr>
+<tr>
+<td>＋ 资产处置损益</td>
+<td>0</td>
+<td>无</td>
+</tr>
+<tr>
+<td>− 其他经营活动调整</td>
+<td>−34.5</td>
+<td>递延税、养老金等零碎项的反向调整</td>
+</tr>
+<tr>
+<td><strong>小计（未算营运资金）</strong></td>
+<td><strong>178.3</strong></td>
+<td>这才是这门生意一年真正的"造钱能力"</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td><strong>−77.5</strong></td>
+<td><strong>最大的一个坑，见下</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−5.3</td>
+<td>小</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+28.3</td>
+<td>小幅回补</td>
+</tr>
+<tr>
+<td>＋ 所得税负债变化</td>
+<td>+8.3</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−7.8</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>124.3</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−55.5</td>
+<td>建产能、换设备</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>68.8</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最重要的信息是那个 −77.5。</strong> 应收账款一年增加了 7750 万美元，而同期营收只增加了约 6400 万。也就是说，营收涨了 3.6%，但客户欠的钱涨得比营收快得多。这只有两种解释：要么是给客户放宽了账期去换订单（销售质量在下降），要么是期末的发货集中在最后一个月（时点问题，下期会回来）。</p>
+<p><strong>这个数是把 FCF 从 146 压到 68.8 的元凶。</strong> 如果没有这一笔，自由现金流本该在 1.4 亿以上，P/FCF 会是 16 倍而不是 33 倍。我倾向于认为这里面有相当一部分是时点问题（因为存货和应付都没有出现同方向的异常），但<strong>它也可能是油田服务业务为了保住订单而在赊销</strong>——这是需要下一期财报去验证的事，现在无法证实也无法证伪。</p>
+<p>不管怎么解释，一个诚实的结论是：<strong>用 TTM 这一期的自由现金流去给这家公司估值，会显著低估它；但用它剔除减值后的账面利润去估值，又会略微高估它。真相在两者之间。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 23.1 亿美元，净现金 2.023 亿美元（现金 2.502 亿，债务只有 4790 万，负债率低到几乎可以忽略），企业价值 21.0 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2,310 ÷ 121.5</td>
+<td><strong>19.1 倍</strong></td>
+<td><strong>5.23 元</strong></td>
+</tr>
+<tr>
+<td>公司口径（调整后，估算）</td>
+<td>2,310 ÷ 157.2（加回税后减值 35.7）</td>
+<td><strong>14.7 倍</strong></td>
+<td><strong>6.80 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2,310 ÷ 138.1（见下方算法）</td>
+<td><strong>16.7 倍</strong></td>
+<td><strong>5.98 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2,310 ÷ 68.8</td>
+<td><strong>33.6 倍</strong></td>
+<td><strong>2.98 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,100 ÷ 149.4</td>
+<td><strong>14.1 倍</strong></td>
+<td><strong>7.10 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径（账面）</td>
+<td>2,310 ÷ 97.1</td>
+<td><strong>23.8 倍</strong></td>
+<td><strong>4.20 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径（剔养老金一次性）</td>
+<td>2,310 ÷ 131.9</td>
+<td><strong>17.5 倍</strong></td>
+<td><strong>5.71 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>"真实市盈率"是怎么算出来的。</strong> 两步：第一步，把 4200 万的油田减值当作真一次性损失加回税前利润，142.1 + 42 = 184.1；第二步，把税率normalize——TTM 的实际税率只有 14.78%，这个数低得不正常（公司常年在 22%–26%），说明当期有一笔一次性的税务优惠，不该当成可持续的。按 25% 的正常税率算，184.1 × 0.75 = <strong>138.1</strong>。这个数比 GAAP 的 121.5 高、比公司自己会吹的 157.2 低，我认为它最接近这门生意一年真正赚到的钱。</p>
+<p><strong>三年平均那两行的差别，是全表信息量最大的地方。</strong> 按账面算，FY2023 的 139.1、FY2024 的 35.6、FY2025 的 116.6 平均下来只有 97.1，对应 23.8 倍——看起来"当前利润是高点"。但 FY2024 那个 35.6 是被养老金买断一次性砸出来的坑，把那笔约 1.1 亿的费用还原回去，FY2024 的真实经营利润在 1.4 亿左右，三年平均变成 131.9，对应 17.5 倍。<strong>17.5 倍和当期的 16.7 倍几乎一样——这说明 Innospec 现在的利润不是周期高点，就是它的常态水平。</strong> 这跟很多化工股"周期顶点用低 PE 骗人"的情况正好相反。</p>
+<h3>所以，投 100 块进去，一年赚多少</h3>
+<p>按最保守的可持续口径（剔除减值加回、税率归正的 138.1 百万），<strong>你投 100 块，公司一年替你赚 5.98 元。</strong></p>
+<p>这 6 块钱里，钱去了哪：</p>
+<ul>
+<li><strong>分红 1.9 元</strong>：TTM 派息 44.3 百万 ÷ 市值 2310 = 1.92%，直接打到你账上，而且这家公司连涨了十几年股息。</li>
+<li><strong>回购 1.0 元</strong>：TTM 回购 24.1 百万 = 市值的 1.04%，通过减少股本变成你手里每股权益的增厚。</li>
+<li><strong>合计真金白银回到你口袋：约 3 元。</strong></li>
+<li><strong>剩下约 3 元留在公司里</strong>：主要去了两个地方——资本开支 55.5 百万（比折旧多花 1400 万，是在扩产能不是在维持）和买无形资产 19.5 百万；另外账上还在净积累现金（净现金 2.02 亿，占市值的 8.8%）。</li>
+</ul>
+<p><strong>这 6 块钱未来会变大还是变小？</strong> 我的判断是<strong>大概率小幅变大，但有一个明确的下行风险点。</strong></p>
+<p>看好的理由：燃油添加剂这门生意（占利润估计 75%）的护城河是真的——法规驱动、认证锁定、成本占比低。全球船用燃油的低硫化改造、以及新兴市场汽油品质升级，这两件事还有十年可做。个人护理那门在稳定增长，天然/温和配方的趋势对它有利。这两门加起来占营收 78%，且都在涨。</p>
+<p>风险点只有一个，但很具体：<strong>油田服务。</strong> 这门生意两年半塌了 41%，公司刚为它计提了 4200 万减值。如果美国钻井活动继续下滑，还会有第二笔减值，而且这块 4 亿美元的营收如果继续缩水，会一直拖累整体增速——虽然它几乎不贡献利润，但它占用产能、占用资本、占用管理层注意力。最坏情况是公司最终把它剥离或关停，那会再来一次性损失，但对长期利润是好事。</p>
+<p>另一个需要盯的：那个 −77.5 的应收账款变动。如果下一期财报里应收账款没有回落，那就不是时点问题，而是销售质量真的在恶化。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>16.7 倍买一家账干净、没负债、还有 8.8% 市值现金、两门核心生意有真护城河、每年把一半赚的钱还给你的特种化工公司——这个价不便宜，但值。</strong></p>
+<p>多说三句：</p>
+<p>它不是那种"捡便宜"的机会。19 倍的账面 PE 和 33 倍的 P/FCF 摆在那里，任何只看筛选器数字的人都会直接跳过它。要看到 16.7 倍这个真实数字，你得同时想明白三件事：4200 万减值是一次性的、14.78% 的税率是不可持续的、−7750 万的应收账款大概率会回来。这三件事筛选器都不会告诉你。</p>
+<p>它也不是那种"必须现在买"的机会。油田服务这块的下滑还没见底，2027 年再来一笔减值的概率我看有三成以上。真等到那笔减值出来、股价被砸一下，那才是好价格。</p>
+<p>但如果你的问题是"这家公司本身是不是一门好生意"——是的，而且是那种你可以拿十年不用天天看的好生意：<strong>24 亿市值、只有 4790 万债务、2.5 亿现金、连续十几年提股息、回购是 SBC 的 3 倍、CEO 不吹 Non-GAAP。</strong> 这种公司在美股 1236 家的筛选池里不到二十家。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com 财务页、现金流量表、统计页。TTM 口径截止 2026 年 6 月 30 日。分部利润率为估算，已在文中标注。</em></p>
+</div></body></html>

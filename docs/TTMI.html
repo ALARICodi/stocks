@@ -1,0 +1,450 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TTMI · TTM 科技（TTM Technologies, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TTMI</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">AI服务器板真在爆发，但自由现金流连续两年为负，49倍要利润翻2.8倍才撑得住</div><h1>TTMI · TTM 科技（TTM Technologies, Inc.）</h1>
+<p>市值 116.5 亿美元 | 股价约 110.6 美元 | 行业：电子科技（印刷电路板制造） | TTM 截止 2026 年 6 月 29 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>它只做一样东西——<strong>印刷电路板（PCB）</strong>，就是电子产品里那块绿色的板子，芯片和电容焊在上面、铜线路把它们连起来。但它把这一样东西卖给五类完全不同的客户，这五类客户今天的处境天差地别，所以必须分开讲。</p>
+<p>先说清楚<strong>它做的不是普通 PCB</strong>。你手机充电器里那块板子成本几毛钱，那种生意 TTM 不碰。它做的是<strong>高层数、高频、高可靠性</strong>的板子，一块的售价从几百美元到上万美元。</p>
+<p>差别在哪？普通板子两层铜，上下各一面走线。TTM 做的板子<strong>要把三十到四十层铜箔和绝缘层像千层饼一样压在一起</strong>，每层之间用直径几十微米的孔连通，四十层的孔位对齐误差不能超过几十微米——相当于把四十张 A4 纸叠起来，用针从上到下扎一个洞，每一张纸上的洞都要落在同一个点上。压完还要控制每根线路的<strong>阻抗</strong>，因为跑在上面的信号是几十 GHz 的高频，线宽差 5%，信号就废了。</p>
+<p>良率低、周期长（一块高端板从投料到出货要六到八周）、报废了就是几千美元打水漂。这就是为什么它能卖那么贵——<strong>不是材料贵，是做得出来的厂不多</strong>。</p>
+<h3>1. 航空与国防 —— 13.62 亿美元，占 40%</h3>
+<p><strong>这是公司最大、最稳、也最值钱的一块。</strong></p>
+<p>具体做什么：军用雷达的射频板、导弹制导组件、卫星通信、电子战设备。</p>
+<p>举个具体例子：一部现代相控阵雷达（比如宙斯盾系统或 F-35 的机载雷达）不是一个旋转的大锅，而是由<strong>几千个独立的收发单元</strong>排成一面墙，每个单元靠电子方式改变信号相位来"扫描"。每一个收发单元底下是一小块射频 PCB，基材不能用普通的玻璃纤维板（会吸收微波），要用罗杰斯（Rogers）的特氟龙类材料，介电常数必须逐批测量控制。一块这样的板子几百到几千美元，一部雷达上几千块，<strong>光 PCB 就是几百万美元的货值</strong>。</p>
+<p>为什么客户跑不掉，有三层原因：</p>
+<ol>
+<li><strong>认证锁定</strong>：军品要过 AS9100 航空质量体系、要通过每一个具体武器项目的鉴定试验。换供应商要重走流程，几年时间。</li>
+<li><strong>法规锁定</strong>：美国国防部对涉密和关键武器系统的 PCB 要求<strong>必须在美国本土制造</strong>（ITAR 和"可信供应商"制度）。全世界能同时满足"做得出四十层射频板"和"厂在美国境内"的公司，一只手数得过来。TTM 在威斯康星州 Chippewa Falls 和纽约州 Syracuse（2021 年花 3 亿收购 Anaren 得来）有本土厂，正在扩产。</li>
+<li><strong>周期锁定</strong>：一个武器项目服役三十年，期间备件照买。</li>
+</ol>
+<p>这一块从 FY2021 的 7.28 亿一路涨到 TTM 的 13.62 亿，<strong>五年 +87%</strong>，而且没有一年下滑。北约扩军、乌克兰和中东的弹药消耗、美国国防预算，这三件事至少还要撑几年。</p>
+<h3>2. 数据中心计算 —— 6.83 亿美元（FY2025），占约 24%</h3>
+<p><strong>这是股价一年涨 176% 的唯一原因。</strong></p>
+<p>具体做什么：AI 服务器的主板、加速卡底板、交换机背板。</p>
+<p>举个例子：英伟达 GB200 NVL72 这种整机柜方案里，八块 GPU 装在一块叫 OAM 底板的东西上，这块板要在三十多层结构里同时跑几十路 224G 的高速信号，还要承受几千瓦的发热。材料要用最低损耗的那一档（M8/M9 级），一块板的售价在<strong>几千美元</strong>，而良率可能只有七八成。谁能量产谁就有定价权。</p>
+<p>这一块 FY2023 是 3.13 亿，FY2024 5.01 亿，FY2025 <strong>6.83 亿</strong>——<strong>两年翻了 1.2 倍</strong>，且 FY2025 单年 +36%。</p>
+<h3>3. 医疗 / 工业 / 仪器 —— 4.09 亿美元（FY2025），占约 14%</h3>
+<p>CT 和 MRI 的控制板、示波器和频谱仪的主板、半导体设备（刻蚀机、光刻机）里的板卡。这类客户量小、单价高、验证周期长，属于"稳定的老关系"。FY2025 +22%，跟着半导体设备的资本开支周期走。</p>
+<h3>4. 汽车 —— 3.02 亿美元（FY2025），占约 10%，<strong>在萎缩</strong></h3>
+<p>ADAS 毫米波雷达板、车载娱乐系统。从 FY2022 的 4.28 亿掉到 FY2025 的 3.02 亿，<strong>三年 −29%</strong>。原因是欧美电动车放缓、中国本土 PCB 厂（深南电路、沪电股份）在这个价格段把它挤了出去。</p>
+<h3>5. 网络 —— 2.30 亿美元（FY2025），占约 8%，<strong>在萎缩</strong></h3>
+<p>电信运营商的路由器、基站设备。从 FY2022 的 3.31 亿掉到 2.30 亿，<strong>三年 −31%</strong>。5G 建设潮过去了。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>FY2025 全年</th>
+<th>FY2024</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>航空/国防</td>
+<td><strong>13.62</strong></td>
+<td>12.82</td>
+<td>11.31</td>
+<td>+13%（FY25 vs FY24）</td>
+<td>40%</td>
+<td>约 12%（估算）</td>
+<td>约 1.6</td>
+</tr>
+<tr>
+<td>数据中心计算</td>
+<td>未单独披露</td>
+<td>6.83</td>
+<td>5.01</td>
+<td><strong>+36%</strong></td>
+<td>约 24%</td>
+<td>约 14%（估算）</td>
+<td>约 1.1</td>
+</tr>
+<tr>
+<td>医疗/工业/仪器</td>
+<td>未单独披露</td>
+<td>4.09</td>
+<td>3.35</td>
+<td>+22%</td>
+<td>约 14%</td>
+<td>约 8%（估算）</td>
+<td>约 0.4</td>
+</tr>
+<tr>
+<td>汽车</td>
+<td>未单独披露</td>
+<td>3.02</td>
+<td>3.15</td>
+<td><strong>−4%</strong></td>
+<td>约 10%</td>
+<td>约 4%（估算）</td>
+<td>约 0.1</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>未单独披露</td>
+<td>2.30</td>
+<td>1.60</td>
+<td>+43%（低基数反弹）</td>
+<td>约 8%</td>
+<td>约 5%（估算）</td>
+<td>约 0.1</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>33.77</strong></td>
+<td><strong>29.06</strong></td>
+<td><strong>24.43</strong></td>
+<td><strong>+27.6%（TTM）</strong></td>
+<td>100%</td>
+<td><strong>9.9%（实际）</strong></td>
+<td><strong>3.36</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三点说明：</p>
+<p><strong>第一，TTM 口径下财报只单独披露了航空/国防一块（13.62 亿），其余四块的 TTM 数字未拆分</strong>，上表用 FY2025 全年数据代替，占比按 FY2025 结构推算。</p>
+<p><strong>第二，财报完全不披露分部利润</strong>，上表利润率是我按整体 9.9% 的经营利润率、结合各终端市场的定价能力估算的，<strong>不是财报数字</strong>。</p>
+<p><strong>第三，也是最重要的一点：这家公司的整体毛利率只有 21.2%，经营利润率 9.9%。</strong> 前面讲的技术门槛都是真的，但它本质上仍然是<strong>代工厂</strong>——客户拿着设计图来，它按图生产。对比同批分析过的 RBC Bearings（做轴承的）毛利率 46%，TTM 的技术难度不见得更低，但它<strong>赚的是加工费，不是设计费</strong>。这个差别决定了它天花板在哪。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：6134 万美元，占净利润 25.9%，而且在暴涨</h3>
+<p>这是本篇第一个红灯。</p>
+<ul>
+<li>TTM SBC：<strong>6134 万美元</strong></li>
+<li>占 TTM 净利润 2.368 亿的 <strong>25.9%</strong></li>
+<li>一年前（FY2025）是 4167 万，<strong>一年 +47%</strong></li>
+<li>五年前（FY2021）是 1771 万，<strong>五年 +246%</strong></li>
+</ul>
+<p>同期收入五年 +50%、净利润五年 +335%。SBC 的增速介于两者之间，但<strong>四分之一的净利润是用发新股付掉的员工工资</strong>，这个比例在制造业里非常高。</p>
+<p>按规矩，SBC 全额当现金成本扣掉，不加回。后面第三部分公司自己的 Non-GAAP 口径会把这 6134 万加回去，那是骗人的——<strong>它没花现金，但它花掉了你的股份</strong>。</p>
+<h3>一次性项目：TTM 干净，但历史上年年有</h3>
+<p>TTM 期间资产减值和重组费用是 <strong>0</strong>，资产处置损益也是 0。<strong>这一期确实没有可剥的东西。</strong></p>
+<p>但往回看：FY2024 有 3260 万重组费用、FY2023 有 4410 万、FY2022 有 5180 万的资产处置收益。<strong>过去四年里三年都有大额"一次性"项目。</strong> 单看 TTM 这一期无法判断这是真的告一段落，还是下一笔还没到时候。按经验，一家在四个国家关停和新建工厂的制造企业，重组费用更像是常态科目。</p>
+<h3>资本化的支出：正常，但金额巨大</h3>
+<p>TTM 资本开支 <strong>3.38 亿美元，占收入 10.0%</strong>——而同期折旧只有 1.53 亿。<strong>它今年花的钱是折旧的 2.2 倍</strong>，也就是说这不是维护性支出，是实打实的扩产：马来西亚槟城的新厂（为了给客户提供"非中国产能"）、威斯康星 Chippewa Falls 的国防产能扩建、以及数据中心用超高层板的产线。</p>
+<p>这笔钱花得有没有道理，两三年后才知道。但它有一个立刻的后果，见下。</p>
+<h3>回购与稀释：这一项直接归零</h3>
+<ul>
+<li><strong>TTM 回购金额：0 美元</strong>（FY2025 还有 1788 万，TTM 停了）</li>
+<li><strong>TTM 股权激励：6134 万美元</strong></li>
+<li><strong>回购 ÷ SBC = 0</strong></li>
+<li><strong>股本一年变化：+2.22%</strong></li>
+<li><strong>股息：0</strong></li>
+</ul>
+<p>不用算了：<strong>公司一分钱没还给股东，你的股份被稀释了 2.22%。</strong></p>
+<p>为什么停了回购？因为<strong>它没钱</strong>——见下一节。</p>
+<h3>利润和现金流的差：这是全篇最该看的一张表</h3>
+<p>净利润 2.368 亿，经营现金流 3.229 亿，看起来现金流比利润还多，是好事。<strong>但把每一行拆开，故事完全不同：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>236.78</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+153.03</td>
+<td>厂房设备的账面折旧，不花现金</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+2.23</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+61.34</td>
+<td>发股票付工资，不花现金（但稀释了你 2.22%）</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+28.37</td>
+<td>递延税等</td>
+</tr>
+<tr>
+<td><strong>− 应收账款增加</strong></td>
+<td><strong>−395.85</strong></td>
+<td><strong>客户欠的货款一年多了 3.96 亿</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−57.63</td>
+<td>压在原材料和在制品里的钱</td>
+</tr>
+<tr>
+<td><strong>+ 应付账款增加</strong></td>
+<td><strong>+283.70</strong></td>
+<td><strong>它自己欠供应商的钱一年多了 2.84 亿</strong></td>
+</tr>
+<tr>
+<td>+ 预收款增加</td>
+<td>+24.64</td>
+<td>客户先付的定金</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−13.69</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>322.91</strong></td>
+<td>分毫对上</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里"应收账款增加 3.96 亿"这一行，比全年净利润还大 67%，必须单独讲。</strong></p>
+<p>TTM 收入 33.77 亿，比上年多了 7.31 亿。同期应收账款多了 <strong>3.96 亿</strong>——<strong>新增收入里 54% 到今天还是一张白条。</strong></p>
+<p>这不一定是坏事：AI 服务器的客户是超大型科技公司和 ODM 厂，账期本来就长（60–90 天），订单在爆发式增长时应收必然跟着涨。但<strong>这个比例已经高到必须盯住</strong>——如果哪天下游需求转向，这 3.96 亿新增白条里有多少收得回来，是个未经检验的问题。</p>
+<p>而公司应对的办法写在下一行：<strong>应付账款也增加了 2.84 亿</strong>。它把客户欠自己的钱，转手变成了自己欠供应商的钱。<strong>这条链子上任何一环断掉，中间夹着的就是 TTM。</strong></p>
+<h3>自由现金流：连续两年为负</h3>
+<p>这是本篇最硬的一个事实：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>经营现金流</th>
+<th>资本开支</th>
+<th><strong>自由现金流</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>2.73 亿</td>
+<td>−1.03 亿</td>
+<td><strong>+1.70 亿</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>1.87 亿</td>
+<td>−1.60 亿</td>
+<td>+0.27 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>2.37 亿</td>
+<td>−1.86 亿</td>
+<td>+0.51 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>2.92 亿</td>
+<td>−2.93 亿</td>
+<td><strong>−0.07 亿</strong></td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>3.23 亿</strong></td>
+<td><strong>−3.38 亿</strong></td>
+<td><strong>−0.15 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>账面净利润 2.37 亿，实际自由现金流是负 1514 万。</strong></p>
+<p>这就是为什么统计网站上它的"市销率""市盈率"都有，唯独 <strong>P/FCF 那一栏写着 n/a</strong>——分母是负数，算不出来。</p>
+<p>用大白话说：<strong>这家公司今年赚的每一分钱，加上多借的 5395 万债，全部投回工厂了，一分钱没剩下、更没有一分钱到股东手里。</strong></p>
+<p>这本身不是罪。一家处在需求爆发期的制造企业，把利润全部投回扩产是理性的——<strong>前提是新增产能的回报率高于资金成本</strong>。而这个前提，下一节的数字说它不成立。</p>
+<h3>有效税率只有 10.17%，这是个不能忽略的窟窿</h3>
+<p>TTM 所得税 2682 万，有效税率 <strong>10.17%</strong>。美国联邦企业所得税率是 21%，加上州税和海外税，一家跨国制造企业的正常税率在 18–25%。</p>
+<p>10% 从哪来？TTM 的主要产能在<strong>中国（珠海、广州、东莞）和马来西亚</strong>，这些地方有高新技术企业税收优惠和投资抵免；加上历史亏损结转的递延所得税资产。</p>
+<p>这些优惠<strong>都有期限</strong>。如果税率正常化到 21%，同样的税前利润，净利润会从 2.368 亿掉到约 <strong>2.08 亿</strong>，市盈率从 49 倍变成 <strong>56 倍</strong>。这一行我在下面的表里单列出来了。</p>
+<h3>ROIC 12.04%，WACC 15.04%</h3>
+<p>和上面"自由现金流为负"配在一起看：<strong>它每投一块钱进去，一年赚回 12 分，而筹这一块钱的代价是 15 分。</strong> 它今年投了 3.38 亿。</p>
+<p>（Beta 高达 2.16 是 WACC 被推到 15% 的主因——市场认为这只股票的风险远高于平均。）</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>116.5 亿 ÷ 2.368 亿</td>
+<td><strong>49.2 倍</strong></td>
+<td><strong>2.03 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 6134 万 + 无形摊销（税后约 0.32 亿，估算）</td>
+<td>35.3 倍</td>
+<td>2.83 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>116.5 亿 ÷ 2.368 亿（TTM 无一次性项，SBC 按 GAAP 已扣不加回）</td>
+<td><strong>49.2 倍</strong></td>
+<td><strong>2.03 元</strong></td>
+</tr>
+<tr>
+<td><strong>税率正常化口径（21%）</strong></td>
+<td>116.5 亿 ÷ 2.082 亿</td>
+<td><strong>56.0 倍</strong></td>
+<td><strong>1.79 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>116.5 亿 ÷（<strong>−0.15 亿</strong>）</td>
+<td><strong>算不出（分母为负）</strong></td>
+<td><strong>−0.13 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>122.4 亿 ÷ 3.355 亿</td>
+<td><strong>36.5 倍</strong></td>
+<td><strong>2.74 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>116.5 亿 ÷ 1.568 亿（TTM 2.37、FY2025 1.77、FY2024 0.56 的均值）</td>
+<td><strong>74.3 倍</strong></td>
+<td><strong>1.35 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（"Non-GAAP"一行的无形摊销是我从折旧与资本开支的结构估算的，公司未单独披露；实际 Non-GAAP 口径可能还会加回重组费用等，倍数会更低。）</p>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 2.03 元。如果把那 10% 的税收优惠正常化，只剩 1.79 元。如果按三年平均利润算，只剩 1.35 元。</strong></p>
+<p>这 2.03 元里，有多少回到你口袋？</p>
+<p><strong>一分没有，而且是负的。</strong> 股息 0，回购 0，股本一年增 2.22%。<strong>你的份额每年缩水，而公司还在往外借钱（TTM 净增债务 5395 万）投工厂。</strong></p>
+<p>钱去哪了？看投资活动现金流就一件事：<strong>资本开支 3.38 亿</strong>，全砸在马来西亚新厂、威斯康星国防产能和高层数板产线上。</p>
+<h3>这个 2.03 元未来会变大还是变小？</h3>
+<p><strong>几乎肯定变大——问题是市场已经假设它变大多少。</strong></p>
+<p>看一个数字：<strong>Forward PE 是 17.66，Trailing PE 是 49.2。</strong></p>
+<p>翻译过来：<strong>分析师们预期这家公司未来 12 个月的利润会是过去 12 个月的 2.8 倍。</strong> 从 2.37 亿涨到约 6.6 亿。</p>
+<p>这个预期不是凭空来的。支撑它的东西是真实的：
+- 数据中心那块两年翻了 1.2 倍，AI 服务器板的需求还在往上
+- 航空国防五年零下滑，扩军周期没结束
+- 3.38 亿新产能明后年开始贡献收入，而摊销已经先计提了
+- 经营杠杆确实存在：收入 +27.6% 带来经营利润 +25%（FY25 到 TTM）</p>
+<p>但要兑现 2.8 倍利润增长，需要<strong>所有事情同时顺利</strong>：AI 资本开支不退潮、新厂按期量产且良率达标、那 3.96 亿应收如数收回、汽车和网络两块（合计 18% 收入、都在萎缩）不继续拖后腿、中国工厂不被关税或出口管制波及。</p>
+<p><strong>而地缘政治这一条特别值得说清楚。</strong> 这家公司的处境是分裂的：一半身份是美国国防部的"可信供应商"，在威斯康星做武器系统的板子；另一半身份是在珠海、广州、东莞开厂的中国制造商。这两个身份在今天的环境里越来越难同时维持——马来西亚新厂就是在花钱买这个问题的答案，而钱已经花了，答案还没出来。</p>
+<p>最后看价格本身走过什么：<strong>过去 52 周股价涨了 175.94%</strong>，从约 40 美元涨到 8 月初的 150 多，现在回落到 110.6（50 日均线 151.85、200 日均线 117.65，RSI 34.93）。<strong>已经从高点跌了 27%，但仍是一年前的 2.75 倍。</strong> Beta 2.16 意味着它的波动是大盘的两倍多——<strong>上去多快，下来就有多快。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是真在变好，价格是真的贵，而且贵在一个自由现金流为负的时刻。</strong></p>
+<p>好的部分不含糊：航空国防 13.6 亿收入、五年 +87%、零下滑，靠的是"美国本土 + 四十层射频板"这个全世界没几家能做的组合；数据中心两年翻 1.2 倍，AI 服务器主板是眼下最硬的需求。<strong>这两块加起来 64% 的收入，方向都对。</strong></p>
+<p>但把价格标签翻过来看，上面写的是：<strong>49.2 倍当期市盈率、56 倍税率正常化后、74.3 倍三年平均、自由现金流连续两年为负（P/FCF 那一栏干脆是 n/a）、四分之一的净利润用发股票支付且一年涨了 47%、应收账款一年暴增 3.96 亿比全年净利润还多 67%、投入资本回报率 12% 低于 15% 的资金成本、股息和回购都是零、股本还每年稀释 2.22%。</strong></p>
+<p><strong>投 100 块，一年替你赚 2 块，一分不给你，你的份额还缩水 2.2%。</strong></p>
+<p>要让今天这个价格说得通，公司利润必须在一年内变成 2.8 倍（这就是 Forward PE 17.66 的含义）。<strong>这不是不可能，AI 这波确实凶。但它是一个必须全部押对的赌注：AI 资本开支不退、新厂良率达标、4 亿应收全收回、中国产能不出事——四件事错一件，49 倍就没有安全垫。</strong></p>
+<p><strong>Beta 2.16、一年涨 176%、已经从高点回撤 27% 还在 49 倍。这不是投资标的，这是 AI 服务器景气度的高杠杆代理券。看得懂这个周期、并且愿意承担它掉头时的跌幅，才谈得上买；想要一家"便宜的国防 PCB 公司"，这不是它。</strong></p>
+</div></body></html>

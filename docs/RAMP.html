@@ -1,0 +1,368 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RAMP · LiveRamp（LiveRamp Holdings, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RAMP</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">15.5倍是负所得税假象，真实27倍，云厂商在挤它的位置</div><h1>RAMP · LiveRamp（LiveRamp Holdings, Inc.）</h1>
+<p><strong>市值</strong> 22.8 亿美元 ｜ <strong>股价</strong> 约 37.5 美元（6079 万股）｜ <strong>行业</strong> 科技服务（数据基础设施）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ 全量榜第 824 名 ｜ 筛选器显示 PE 15.5</p>
+<p>先说一句话，省得你读完才发现：<strong>筛选器上那个 15.5 倍是假的。</strong> 这家公司 TTM 的所得税是 <strong>负 4416 万美元</strong>——不是交税，是账上凭空多出来一笔 4400 万的"利润"。把这笔一次性的税务红利拿掉，真实市盈率在 27 倍左右。下面详细拆。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>LiveRamp 财报只按地区披露营收（美国 779.9、欧洲 43.4、亚太 6.6、其他 2.2，美国占 93.7%），不按业务分部披露。所以这一部分我按它实际在卖的两样东西来讲，营收拆分是估算，我会标出来。</p>
+<h3>先讲清楚它到底解决什么问题</h3>
+<p>这是理解这家公司的关键，值得花点篇幅。</p>
+<p>假设你是可口可乐的市场总监。你手上有一份客户名单——一千万个邮箱地址、手机号，来自你的会员系统。现在你想干一件事：<strong>去 Disney+ 上给这一千万人投广告</strong>，因为你知道这批人复购率最高。</p>
+<p>问题来了。Disney+ 那边有它自己的用户，用的是另一套邮箱和手机号。你不能把你的一千万条个人信息直接发给 Disney——那违反加州的 CCPA、欧洲的 GDPR，法务第一个不同意；Disney 也不敢收，收了就要承担泄露责任。而且就算敢给，两边的数据格式也对不上：你的库里是 "zhangsan@gmail.com"，Disney 的库里是 "Zhang San, 上海"，同一个人对不上号。</p>
+<p><strong>LiveRamp 干的就是把这两边接起来，而且全程双方都看不到对方的原始数据。</strong></p>
+<p>它的做法是：你把你的一千万条记录上传给 LiveRamp，LiveRamp 用一套算法把每个真人识别出来，给他分配一个叫 <strong>RampID</strong> 的假名编号（比如 <code>XY7f2a...</code>）；Disney 那边也把自己的用户库上传，同样换成 RampID。然后两边比对的是这串编号，不是邮箱手机号。结果是：LiveRamp 告诉 Disney"这 380 万个 RampID 在你的用户里也存在，去给他们投广告"，但 Disney 从头到尾不知道这些人是谁的客户、叫什么名字。</p>
+<p>这套东西行业里叫"数据洁净室"（data clean room），LiveRamp 自称"数据协作平台"。</p>
+<h3>生意一：订阅（Subscription）—— 约占营收 78%，估算</h3>
+<p><strong>卖的是什么。</strong> 上面那套身份识别和匹配能力，按年订阅。客户签的是"一年内可以做多少次匹配、可以接入多少个平台"的额度合同。</p>
+<p><strong>一单多少钱。</strong> 典型的大客户（一家全国性零售商、一家汽车品牌、一家银行）年费在 50 万到 300 万美元之间；LiveRamp 常年披露自己有 100 家以上的客户年付超过 100 万美元。中型客户在 10 万到 50 万美元。合同一般是多年期，续约率（含扩张）常年在 100% 上下——意思是老客户第二年花的钱跟第一年差不多或更多。</p>
+<p><strong>客户为什么非买不可。</strong> 这是这门生意最值得琢磨的地方。原因不是技术难——匹配两个名单在技术上不算高深；原因是 <strong>网络效应加合规背书</strong>。LiveRamp 已经接进去了几百个"目的地"：Google、Meta、Amazon、Trade Desk、Netflix、Roku、几乎所有主流有线电视和流媒体的广告系统，还有几百家数据提供商。你作为一个品牌，如果自己去跟这几百家一个个谈数据对接、一个个过法务，要花好几年；买 LiveRamp 就是一个接口通到所有地方。反过来，那些媒体平台也愿意支持 RampID，因为品牌方的钱都是通过它流过来的。</p>
+<p>合规那层同样重要：LiveRamp 花了很多年建立"我们不碰原始个人信息、我们有隐私审计"的声誉。企业法务部门认这个，这在企业采购里是很硬的门槛。</p>
+<p><strong>这门生意的经济特征极好</strong>：毛利率约 70.8%，几乎不需要资本开支（TTM 资本开支只有 174 万美元，占营收 0.2%——这是个几乎不需要买设备的生意），收入递延、可预测。</p>
+<h3>生意二：市场与其他（Marketplace &amp; Other）—— 约占营收 22%，估算</h3>
+<p><strong>卖的是什么。</strong> 一个数据交易市场。第三方数据公司（比如某家掌握"美国哪些家庭最近在看新车"的数据商）把数据挂在 LiveRamp 的市场上，广告主来买，LiveRamp 从中抽成，抽成比例通常在 20%–35%。</p>
+<p><strong>怎么运作。</strong> 你是福特的广告代理，想投"未来 6 个月打算换 SUV 的家庭"。你在 LiveRamp 的市场上找到一家提供这个人群的数据商，付比如 2 美元/千次曝光的数据费，LiveRamp 分走其中五六毛。整个过程可以在几小时内完成，不需要跟数据商签合同。</p>
+<p><strong>这门生意质量明显不如订阅</strong>：它是"过路费"型的，收入随广告投放量波动，毛利率更低（因为大部分钱要分给数据提供商），而且客户粘性弱得多——广告主随时可以换数据源。它的存在意义更多是"把客户拉进生态、然后卖订阅"。</p>
+<h3>两门加起来的账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（截至 2026年6月）</th>
+<th>FY2026（截至2026年3月）</th>
+<th>FY2025</th>
+<th>TTM 同比增速</th>
+<th>毛利率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td><strong>832.1</strong></td>
+<td>812.9</td>
+<td>745.6</td>
+<td><strong>+8.85%</strong></td>
+<td>70.8%</td>
+</tr>
+<tr>
+<td>├ 订阅（估算 ~78%）</td>
+<td>~649</td>
+<td>~634</td>
+<td>~582</td>
+<td>~+9%</td>
+<td>~75%</td>
+</tr>
+<tr>
+<td>└ 市场与其他（估算 ~22%）</td>
+<td>~183</td>
+<td>~179</td>
+<td>~164</td>
+<td>~+8%</td>
+<td>~55%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td><strong>107.5</strong></td>
+<td>88.5</td>
+<td>13.4</td>
+<td>—</td>
+<td>12.9%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>上表只有"总营收"和"经营利润"是财报数字；订阅/市场的拆分是我按公司长期披露的结构比例估算的，财报的那四页只披露地区拆分，不披露产品线拆分。</strong> 方向性结论（订阅占绝大多数、订阅毛利率明显更高）可靠，具体数字不可靠。</p>
+</blockquote>
+<p><strong>营收增速这条线值得单独看一眼</strong>：FY2022 +19.3% → FY2023 +12.9% → FY2024 +10.6% → FY2025 +13.0% → FY2026 +9.0% → TTM +8.85%。<strong>在减速，而且已经跌破 10%。</strong> 这对一家自称处在"隐私新时代最大受益者"位置的公司来说，是个不太好解释的事实。</p>
+<p>真正的解释可能是：第三方 Cookie 的死亡曾经是 LiveRamp 最大的叙事引擎——浏览器不让追踪了，大家就都得用 RampID。但 Google 在 2024–2025 年反复推迟并最终放弃了强制废除 Cookie，这个紧迫性被抽走了一大半。同时，Snowflake、Databricks、AWS、Google 自己都推出了原生的洁净室功能——<strong>你的数据本来就存在 Snowflake 里，Snowflake 说"你直接在我这儿跟你的合作伙伴做匹配，不用再买第三方"</strong>，这是对 LiveRamp 最直接的威胁。LiveRamp 的反击是"我们是中立的、跨云的、连接的目的地最多"，这个说法有道理，但它守的是连接的广度，不是技术壁垒。</p>
+<p><strong>经营利润率的改善是真的，而且很猛</strong>：FY2023 还亏 9048 万，FY2024 转正到 2310 万，FY2025 是 1340 万，FY2026 跳到 8845 万，TTM 到 1.075 亿。营收两年涨了 25%，经营利润从负数变成一个亿。这不是靠涨价，是靠裁员和降本——员工数 1300 人，人均创收 64 万美元，这个效率在软件公司里算高的。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司有一个大问题和一个中等问题，其余都干净。</p>
+<h3>大问题：那 4416 万的负所得税</h3>
+<p>TTM 税前利润 110.39 百万，净利润 <strong>155.72</strong> 百万。净利润比税前利润还高 45 百万——因为所得税是 <strong>−44.16 百万</strong>。</p>
+<p>这是怎么回事：LiveRamp 过去很多年在亏损（FY2023 亏 1.19 亿、FY2022 亏 3383 万），累积了大量的税务亏损结转（NOL）。按会计规则，当你还在亏钱、看不清未来能不能赚钱时，这些"未来可以少交税的权利"必须打上"估值备抵"（valuation allowance），不能计入资产。<strong>一旦公司连续盈利、审计师认为未来大概率赚得到钱，这个备抵就要释放——那一刻，账上会突然冒出一大笔"所得税收益"。</strong></p>
+<p>这就是 TTM 这 4400 万的来源。现金流量表上"其他经营活动 −57.65"正是把这笔非现金的税务红利从经营现金流里减掉的痕迹（FY2025 同项只有 −2.14，FY2024 −2.25，突变发生在 FY2026）。</p>
+<p><strong>结论很明确：净利润 155.72 里有大约 45 百万是一次性的会计红利，不是这门生意赚来的。任何用 155.72 去算市盈率的做法都是在骗自己。</strong></p>
+<p>（顺带说一句好消息：备抵释放虽然是会计动作，但它背后的 NOL 是真的——LiveRamp 未来几年的<strong>现金</strong>税负会显著低于名义税率。这一点在自由现金流口径里是真实的加分，我在第三部分会区分开。）</p>
+<h3>中等问题：股权激励占了利润的一半</h3>
+<p>TTM 股权激励 <strong>78.52 百万</strong>，占营收 9.4%，占税前利润 110.39 的 <strong>71%</strong>。</p>
+<p>按规矩，这是真实成本，GAAP 里已经扣掉了，我不加回。但要看清它的量级：这家公司一年经营利润 1.075 亿，同期给员工发了 7852 万的股票。也就是说，<strong>如果不发股票改发现金，经营利润会腰斩。</strong> 这不是造假，是软件行业的常态，但它意味着"自由现金流 2 亿"这个数字必须打折——那 2 亿里有 7852 万是靠稀释股东实现的。</p>
+<p>好消息是这个数在下降：FY2023 是 125.8 百万，FY2025 是 107.98，FY2026 是 82.99，TTM 78.52。<strong>三年降了 38%，同时营收涨了 40%。</strong> 管理层确实在收缩这块。</p>
+<h3>干净的部分</h3>
+<p><strong>一次性项目</strong>：除了上面那笔税，几乎没有。资产减值与重组 TTM 只有 0.34 百万（FY2023 曾有 27.55，那轮重组已经结束）。并购：TTM 零收购，上一次大动作是 FY2024 花 1.703 亿买了 Habu（一家洁净室软件公司）。</p>
+<p><strong>资本化的支出</strong>：<strong>LiveRamp 不资本化软件开发费用</strong>（资本开支 TTM 只有 174 万，折旧摊销 13.34 百万，capex 只有 D&amp;A 的 13%）。这是个很重要的干净信号——很多软件公司把工程师工资资本化成资产、分五年摊销，从而虚增当期利润，LiveRamp 没这么干。这也解释了为什么它的自由现金流几乎等于经营现金流。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>201.71 百万</strong>，SBC 78.52，<strong>回购/SBC = 2.57 倍</strong>。这是真回购。实际效果也确认了：股本一年减少 <strong>3.52%</strong>，单季减少 2.42%。没有股息。</p>
+<p>值得注意的是，公司 TTM 回购花掉的 2.017 亿，超过了当年全部自由现金流 2.0 亿——它在动用账上的现金余额回购（现金从 420.8 → 387.1 → 371.0）。在股价一年涨了 41% 的时候这么干，我不确定是好事。</p>
+<p><strong>利润和现金流的差</strong>：这次是现金流<strong>高于</strong>利润，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td><strong>155.72</strong></td>
+<td>起点（含 45 的税务红利）</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+13.34</td>
+<td>很小，这是个轻资产生意</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+78.52</td>
+<td>非现金，但真实稀释了你</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+1.02</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>+0.34</td>
+<td>可忽略</td>
+</tr>
+<tr>
+<td><strong>− 其他经营活动</strong></td>
+<td><strong>−57.65</strong></td>
+<td><strong>就是把那笔非现金税务红利减掉</strong></td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+1.90</td>
+<td>健康</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+1.63</td>
+<td></td>
+</tr>
+<tr>
+<td>− 递延收入减少</td>
+<td>−6.46</td>
+<td>略微不好，预收的钱在减少</td>
+</tr>
+<tr>
+<td>＋ 所得税负债变化</td>
+<td>+7.42</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他</td>
+<td>+4.48</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>201.77</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1.74</td>
+<td>几乎为零</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>200.03</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要读出两件事。</strong> 第一，那个 −57.65 证明了净利润里的税务红利是纯会计、不产生现金——现金流量表自己承认了。第二，自由现金流 2 亿里有 7852 万是因为工资用股票付的；<strong>真正属于股东的"业主盈余"是 200.03 − 78.52 = 121.5 百万。</strong> 这个 1.215 亿，是我认为最接近真相的一个数字。</p>
+<p>另有一处小瑕疵：递延收入（预收的订阅费）TTM 减少了 646 万，而 FY2025 是增加 1490 万。对订阅模式的公司，递延收入转负通常是订单转弱的早期信号。金额不大，但值得下一期盯一眼。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 22.8 亿，净现金 3.379 亿（现金 3.71 亿、债务只有 3312 万），企业价值 19.5 亿。<strong>净现金占市值 14.8%，这是个不能忽略的缓冲。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（<strong>有毒</strong>）</td>
+<td>2,280 ÷ 155.72</td>
+<td><strong>15.5 倍</strong></td>
+<td>6.45 元</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（估算）</td>
+<td>2,280 ÷ ~180（把 SBC 加回去那种）</td>
+<td>~12.7 倍</td>
+<td>7.87 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2,280 ÷ 83.9（税前 110.39 × 76%）</td>
+<td><strong>27.2 倍</strong></td>
+<td><strong>3.68 元</strong></td>
+</tr>
+<tr>
+<td>真实市盈率（扣掉净现金）</td>
+<td>(2,280 − 338) ÷ 83.9</td>
+<td><strong>23.1 倍</strong></td>
+<td><strong>4.33 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>2,280 ÷ 200.03</td>
+<td>11.4 倍</td>
+<td>8.77 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC，扣掉净现金）</strong></td>
+<td>(2,280 − 338) ÷ 121.5</td>
+<td><strong>16.0 倍</strong></td>
+<td><strong>6.25 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,950 ÷ 107.53</td>
+<td><strong>18.1 倍</strong></td>
+<td>5.52 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2,280 ÷ 52.3（145.95、−0.81、11.88 的均值）</td>
+<td><strong>43.6 倍</strong></td>
+<td>2.29 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有四个数需要解释。</strong></p>
+<p><strong>15.5 倍是假的</strong>，理由上面说透了：负所得税。忽略这一行。</p>
+<p><strong>12.7 倍那行更假</strong>——公司自己的调整口径会把 7852 万 SBC 加回去当"非现金费用"。发股票稀释你的股份是真实的成本，这个口径可以直接无视。</p>
+<p><strong>27.2 倍是账面口径的真相</strong>：税前利润 110.39，按正常 24% 税率算，真实净利润 83.9。这是把 SBC 全额扣除、把税务红利全部拿掉之后的数字。</p>
+<p><strong>16.0 倍是现金口径的真相，也是这家公司最有力的一个数字</strong>：把净现金 3.38 亿从市值里扣掉，用"自由现金流减去股权激励"这个业主盈余去除，得到 16 倍。为什么现金口径比账面口径（23.1 倍）便宜这么多？因为那笔 NOL——<strong>未来几年 LiveRamp 交的现金税会远低于 24% 的名义税率</strong>，这个好处是真的、能持续好几年，只是会计上不体现在损益表里。</p>
+<p><strong>最后一行 43.6 倍，是全表唯一提醒你"这家公司刚学会赚钱"的数字。</strong> FY2024 净利润 1188 万、FY2025 净利润 −81 万、FY2026 净利润 1.459 亿。三年里两年基本不赚钱。它的盈利能力不是十年验证过的常态，是过去 18 个月刚做出来的。这个转折的可持续性，是这笔投资最大的未知数——如果是靠一次性裁员降本做出来的，那就到顶了；如果是运营杠杆真的开始起作用，那还能往上走。</p>
+<h3>所以，投 100 块进去，一年赚多少</h3>
+<p><strong>按最保守的账面口径（真实净利润 83.9 百万），你投 100 块，公司一年替你赚 3.68 元。</strong>
+<strong>按现金口径（业主盈余 1.215 亿、扣掉手里的现金），这个数是 6.25 元。</strong></p>
+<p>真相在这两个数之间，而且随着 NOL 逐年用完，会从 6.25 往 3.68 的方向靠。</p>
+<p>这几块钱里，钱去了哪：<strong>几乎全部通过回购回到你口袋。</strong> TTM 回购 2.017 亿，占市值 8.8%，股本实际减少 3.52%。没有分红。资本开支只有 174 万，等于不需要留钱做投资——<strong>这是这门生意最漂亮的一点：它赚到的钱几乎不需要再投回去。</strong></p>
+<p><strong>这个数未来会变大还是变小？</strong> 我的判断是<strong>短期变大，中期不确定，因为它取决于一件我不能预判的事。</strong></p>
+<p>短期看好的理由很扎实：经营杠杆还在释放（营收 +8.85%、经营利润 +翻倍级），SBC 在逐年下降（三年降了 38%），股本每年缩 3.5%，NOL 让现金税负低。这四条加起来，即便营收只涨 8%，每股业主盈余涨 15% 是可能的。</p>
+<p>中期的不确定在于一件事：<strong>云厂商的原生洁净室会不会把 LiveRamp 变成一层可有可无的中间件。</strong> 你的数据存在 Snowflake，你的合作伙伴的数据也存在 Snowflake，Snowflake 说"你们俩直接在我这儿匹配吧，不用出去"——这个场景已经发生了。LiveRamp 的防线是"中立、跨云、连接的目的地最多"，这个防线不是技术性的，是关系性的，可以守很久，但不是护城河那种守法。营收增速从 19% 一路掉到 8.85%，很可能就是这件事的第一层影响。</p>
+<p>还有一个不算小的信号：<strong>6.39% 的流通股被做空</strong>（近 390 万股），空头比例远高于市场平均。市场上有一群人在赌这个故事讲不下去。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是筛选器上那个 15.5 倍的便宜货——真实价格是账面 27 倍、现金口径 16 倍，对一门增速已经掉到 8.85% 且护城河正在被云厂商侵蚀的生意来说，这个价没有便宜可占。</strong></p>
+<p>补三句：</p>
+<p>第一，<strong>它是一门真生意，不是估值陷阱。</strong> 70.8% 毛利率、几乎零资本开支、100% 上下的净留存率、3.38 亿净现金、真金白银 2.6 倍于 SBC 的回购、股本每年缩 3.5%、管理层三年把 SBC 砍了 38%——这些都是硬指标，做不了假。如果你只是问"这家公司会不会出事"，答案是短期内不会。</p>
+<p>第二，<strong>但它的估值已经不给容错空间了。</strong> 股价一年涨了 41%，靠的是"扭亏为盈"这个叙事，而扭亏里有 4400 万是会计红利。当市场发现下一年的净利润因为要正常交税而"下滑"时，那个 15.5 倍会突然变成 27 倍——<strong>同一个公司，同样的生意，PE 翻倍，纯粹因为税率恢复正常。</strong> 这种事发生的时候，市场通常不会耐心听解释。</p>
+<p>第三，<strong>它的核心风险不是估值，是位置。</strong> LiveRamp 站在广告主和媒体之间收连接费，而它两边的巨头（Google、Amazon、Meta 那边，Snowflake、Databricks 这边）都在往它的位置上挤。它现在的护城河是"接得最全"，而"接得最全"这件事在数据基础设施史上很少能守超过十年。</p>
+<p>一句话给用户：<strong>留在观察名单里可以，等它下一次因为"利润下滑"（其实是税率归正）被砸的时候再看。现在这个价，你付的是转折点的溢价，而不是转折已经完成的确认。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com 财务页、现金流量表、统计页。TTM 口径截止 2026 年 6 月 30 日。产品线营收拆分为估算，已在文中标注。</em></p>
+</div></body></html>

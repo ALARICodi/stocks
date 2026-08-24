@@ -1,0 +1,336 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CMPR · Cimpress plc（原 Vistaprint 母公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CMPR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">网站11.6倍P/FCF是陷阱，扣掉年年6700万软件资本化后18.3倍</div><h1>CMPR · Cimpress plc（原 Vistaprint 母公司）</h1>
+<p>市值 21.35 亿美元 / 股价约 87.7 美元 / 行业：商业服务（大规模定制印刷）/ TTM 截止 2026 年 6 月 30 日（该公司财年就在 6 月底结束，所以本篇 TTM = 完整的 FY2026）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Cimpress 是一家注册在爱尔兰、总部实际在荷兰和美国两头的印刷公司。它做的事说穿了只有一句：<strong>把成千上万个小客户的小订单，攒到一张大纸上一起印。</strong></p>
+<p>这句话是整家公司存在的理由，值得展开讲清楚。你在里昂开了家面包店，想印 500 张名片。找街角的印刷店，人家要为你一个人开机、调墨、试印、洗版，一套下来两三个钟头，所以他要收你 120 欧。而你在 Vistaprint 上传 logo、选个模板、付 19 欧，订单进了 Cimpress 在荷兰芬洛的工厂排产系统；系统会等上几个钟头，把你这 500 张名片和另外三四百个客户的名片、优惠券、贴纸<strong>拼版拼到同一张大印张上</strong>，一次开机印几千张，然后激光切割机按坐标把每个人的那一份切下来、分拣、装袋、贴上不同的地址标签发走。你付了 19 欧，它的边际成本可能只有 6 欧。</p>
+<p>所以这门生意的护城河不是设计、不是纸、也不是品牌，是<strong>订单密度</strong>。同样一台印刷机，一天接 5000 个小单和一天接 50 个小单，单位成本差好几倍。这也解释了为什么它的毛利率能到 46%——街边印刷店做不到——同时经营利润率只有 6.7%：省下来的钱大部分又花回到获客广告上去了。</p>
+<p>财报把它拆成五块，其实是"同一套本事，卖给五种人、在五个地方"：</p>
+<p><strong>1. Vista（TTM 营收 19.34 亿，占 51.8%）</strong>
+就是原来的 Vistaprint。面向全世界最小的那批客户：个体户、刚注册的小公司、婚礼筹备的新人、社区球队。卖名片、传单、横幅、T 恤、马克杯、邀请函、招牌、贺卡。客单价通常几十美元。它是纯线上自助模式——客户自己传图、自己排版、自己下单，没有销售员介入。这块也是 Cimpress 唯一有真正"品牌"的地方，Vistaprint 在美国小微企业里认知度很高。TTM 增长 6.0%，是五块里最慢的，因为盘子最大、也因为它在美国这个成熟市场被 Canva、Shutterfly 之类的对手咬着。</p>
+<p><strong>2. Printbrothers（TTM 8.23 亿，占 22.0%）</strong>
+德语区和荷比卢的三个牌子：德国的 WIRmachenDRUCK、奥地利的 Druck.at、荷兰的 Printdeal。客户不是面包店老板，而是<strong>中小企业的采购和本地广告公司</strong>。订单更大、更专业：一家连锁健身房要 8 万张开业传单、一个市政项目要 200 块防水指示牌、一场展会要 30 米长的桁架喷绘。单笔金额从几百欧到几万欧。TTM 增长 23.0%，是全公司最快的一块——但要打个折扣看，这里面有相当一部分是欧元对美元升值带来的换算收益，不是真的多印了 23% 的东西。</p>
+<p><strong>3. The Print Group（TTM 4.46 亿，占 11.9%）</strong>
+意大利的 Pixartprinting、法国的 Exaprint 和 Easyflyer。客户是<strong>平面设计师和印刷经销商</strong>——也就是"专业买印刷的人"。这批人自己会排版、懂纸张克重、懂专色，不需要模板，只需要一个便宜可靠的后端工厂。所以这块的商业模式接近"B2B 印刷代工批发"：网站界面很硬核，全是纸张规格和交期选项，没有花哨的设计工具。TTM 增长 17.5%。</p>
+<p><strong>4. National Pen（TTM 4.47 亿，占 12.0%）</strong>
+唯一一块不靠网站获客的生意。它做<strong>印 logo 的促销品</strong>——签字笔、钥匙扣、保温杯、日历、鼠标垫——通过邮寄目录和电话外呼卖给美欧的小企业主。典型订单是"500 支印着你公司名和电话的圆珠笔，299 美元"。这是一门老派、劳动密集、获客成本高的生意，Cimpress 2016 年花 2.18 亿美元买下来的，多年来一直是全公司利润率最低、最让管理层头疼的一块。TTM 增长 9.7%。</p>
+<p><strong>5. All Other（TTM 2.58 亿，占 6.9%）</strong>
+主要是美国的 BuildASign（定制招牌、横幅、画布照片墙——疫情期间靠"祝贺毕业"草坪牌大赚过一笔）和设计众包平台 99designs（你出 299 美元发个 logo 需求，全球几十个设计师投稿，你选一个）。TTM 增长 13.3%。</p>
+<p>各块之间还有 1.72 亿的内部抵消——这个数字三年翻了五倍（FY2024 只有 0.52 亿），说明各家工厂之间互相代工的比例在快速上升，这本身是好事，是"订单密度"策略在起作用。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vista</td>
+<td>19.34 亿</td>
+<td>18.25 亿</td>
+<td>+6.0%</td>
+<td>51.8%</td>
+<td>估算 10–12%</td>
+</tr>
+<tr>
+<td>Printbrothers</td>
+<td>8.23 亿</td>
+<td>6.69 亿</td>
+<td>+23.0%</td>
+<td>22.0%</td>
+<td>估算 6–8%</td>
+</tr>
+<tr>
+<td>The Print Group</td>
+<td>4.46 亿</td>
+<td>3.79 亿</td>
+<td>+17.5%</td>
+<td>11.9%</td>
+<td>估算 6–8%</td>
+</tr>
+<tr>
+<td>National Pen</td>
+<td>4.47 亿</td>
+<td>4.07 亿</td>
+<td>+9.7%</td>
+<td>12.0%</td>
+<td>估算 0–3%</td>
+</tr>
+<tr>
+<td>All Other</td>
+<td>2.58 亿</td>
+<td>2.28 亿</td>
+<td>+13.3%</td>
+<td>6.9%</td>
+<td>估算 3–5%</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>−1.72 亿</td>
+<td>−1.05 亿</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>37.37 亿</strong></td>
+<td><strong>34.03 亿</strong></td>
+<td><strong>+9.8%</strong></td>
+<td>100%</td>
+<td><strong>6.7%（实际数）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只按分部披露到营收，<strong>利润率一列是我按整体 6.7% 的经营利润率和各块业务性质估算的，不是财报数字</strong>。全公司真实的经营利润是 2.504 亿美元。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 6138 万美元，相当于 GAAP 净利润 9587 万的 <strong>64%</strong>。这是很大一块。GAAP 已经扣了它，我不加回来——员工拿走的股票是你被稀释掉的所有权，是实打实的成本。</p>
+<p><strong>一次性项目</strong>：TTM 这一期资产减值和重组费用一栏是空的，没有大额一次性项目。往前看 FY2023 有 561 万的重组，规模不大。这家公司没有靠一次性项目粉饰的习惯。</p>
+<p><strong>资本化的支出（这一条是重点）</strong>：现金流量表投资活动里有一行"购买无形资产 −6705 万"，这是自研软件（网站、排版引擎、订单调度系统）的开发费被资本化了。它年年都有：FY2022 是 6530 万、FY2023 是 5779 万、FY2024 是 5831 万、FY2025 是 6409 万、TTM 6705 万——<strong>这不是投资，这是维持运转的日常开销</strong>，只是被记成了资产然后慢慢摊销。而 stockanalysis 网站算自由现金流时只减了"资本开支 10024 万"，没减这 6705 万。这直接导致它显示的 P/FCF 只有 11.6 倍，看起来很便宜。下一节我会把这笔钱扣回去。</p>
+<p>对应地，利润表上有一行"其他摊销 6655 万"，正好就是往年资本化的这些软件在摊销。所以<strong>利润表没被骗，被骗的是现金流量表口径</strong>。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 6939 万，同期 SBC 6138 万，<strong>比值 1.13</strong>。也就是说，公司花在回购上的每一块钱里，有 8 毛 8 只是用来抵消发给员工的股票，真正回馈股东的只有 1 毛 2。实际股本一年减少了 1.21%——聊胜于无。历史上 FY2024 曾大手笔回购 1.73 亿（那年股价低），FY2025 回购 9971 万，现在股价一年涨了 46.6%，回购随之降到 6939 万。管理层是看价格回购的，这点比多数公司强。</p>
+<p><strong>利润和现金流的差</strong>：净利润 9587 万，经营现金流 28371 万，差了 1.88 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>95.87</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>85.29</td>
+</tr>
+<tr>
+<td>＋ 其他摊销（往年资本化软件）</td>
+<td>66.55</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>61.38</td>
+</tr>
+<tr>
+<td>－ 其他经营项目</td>
+<td>−14.00</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>−1.06</td>
+</tr>
+<tr>
+<td>－ 存货增加</td>
+<td>−19.97</td>
+</tr>
+<tr>
+<td>－ 应付账款减少</td>
+<td>−0.02</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>9.66</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>283.71</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>−100.24</td>
+</tr>
+<tr>
+<td><strong>＝ 网站显示的自由现金流</strong></td>
+<td><strong>183.46</strong></td>
+</tr>
+<tr>
+<td>－ 购买无形资产（自研软件资本化）</td>
+<td>−67.05</td>
+</tr>
+<tr>
+<td><strong>＝ 我认的真实自由现金流</strong></td>
+<td><strong>116.41</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>差额没有猫腻，全是折旧摊销和 SBC 这些非现金项。但<strong>最后两行是关键：真实自由现金流是 1.16 亿，不是网站上那个 1.83 亿。</strong></p>
+<p><strong>还有一件事不是障眼法，但更要命：净负债 15.40 亿美元。</strong> 总债务 17.88 亿、现金 2.49 亿。TTM 利息支出约 9750 万（经营利润 2.504 亿 − 税前利润 1.529 亿）。<strong>债主一年从这家公司拿走 9750 万，股东拿走 9587 万——债主拿得比股东还多。</strong> 债务/EBITDA 4.81 倍，利息保障倍数 2.37 倍，都在偏危险的区间。账面净资产是 <strong>−3.98 亿</strong>（负数），是多年回购加上 FY2022–FY2023 连亏两年吃掉的。</p>
+<p>有效税率 36.48%，明显高于美国和爱尔兰的名义税率——原因是它在几十个国家运营，亏损的地区的亏损不能抵扣盈利地区的税。这不是一次性的，年年如此。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 21.35 亿美元、企业价值 36.70 亿美元计算。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>21.35 亿 ÷ 0.959 亿</td>
+<td><strong>22.3 倍</strong></td>
+<td><strong>4.49 元</strong></td>
+</tr>
+<tr>
+<td>公司主推口径（EBITDA）</td>
+<td>21.35 亿 ÷ 3.357 亿 EBITDA</td>
+<td>6.4 倍</td>
+<td>15.72 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无真一次性项目，SBC 已按 GAAP 扣除</td>
+<td><strong>22.3 倍</strong></td>
+<td><strong>4.49 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（网站口径）</td>
+<td>21.35 亿 ÷ 1.835 亿</td>
+<td>11.6 倍</td>
+<td>8.59 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化软件）</strong></td>
+<td>21.35 亿 ÷ 1.164 亿</td>
+<td><strong>18.3 倍</strong></td>
+<td><strong>5.45 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>36.70 亿 ÷ 2.504 亿</td>
+<td>14.7 倍</td>
+<td>6.82 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>21.35 亿 ÷ 0.948 亿（FY24–FY26 平均）</td>
+<td><strong>22.5 倍</strong></td>
+<td><strong>4.44 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>第二行那个 6.4 倍是纯粹的谎话，列出来是为了让你知道"EBITDA 倍数低"这种话有多不值钱：它假装公司不用付 9750 万利息、不用花 1.67 亿买设备和写软件、不用交 5578 万的税。这三样加起来 3.9 亿，比 EBITDA 本身的 3.36 亿还多。</p>
+<p>三年平均口径 22.5 倍和当期 22.3 倍几乎一样，说明<strong>当前的利润不是靠一个好年份撑起来的</strong>——这点跟 NVDA 那种当期 34 倍、三年平均 73.5 倍的情况完全不同。不过要注意这个"平均"里包含了 FY2025 只赚 1495 万的糟糕一年和 FY2024 赚 1.74 亿的好年，波动极大，说明这门生意的利润很不稳定。</p>
+<p><strong>说人话：你现在投 100 块钱进 Cimpress，按最保守的真实口径算，公司一年替你赚 4 块 5 毛。</strong></p>
+<p>这 4 块 5 里，有多少真正回到你口袋？<strong>几乎没有。</strong> 公司不分红，一分钱都不分。TTM 回购 6939 万，看着是市值的 3.25%，但其中 6138 万只是在填 SBC 的坑，净下来股本只减少 1.21%——折算成回到你口袋的钱大约是 <strong>每 100 块 1 块 2 毛</strong>。剩下的钱去了哪？看投资活动：1.00 亿买设备、0.67 亿写软件、0.32 亿做小并购，另外 6 万美元多借了一点债。也就是说，你赚的这 4 块 5，有 3 块 3 留在公司里再投入了。</p>
+<p>这个 4 块 5 未来是变大还是变小？我倾向于<strong>慢慢变大，但被债务卡着脖子</strong>。理由是：营收在以 9.8% 增长（虽然有汇率水分），订单密度提高会让毛利率结构性改善（内部代工抵消额三年翻五倍就是证据），ROIC 11.56% 高于 WACC 9.46% 说明每新投一块钱是划算的。但只要净负债还是 15.4 亿、利息还是每年 9750 万，利润表上任何改善都要先分一大半给债主。管理层的公开目标一直是"最大化每股自由现金流"，做法就是借钱回购——这在股价低的时候是聪明的，在股价一年涨了 46.6% 之后就不那么聪明了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门真本事撑起来的生意，但现在这个价格没有便宜可占——你付 22 倍市盈率买的，是一家 6.7% 经营利润率、净负债是市值七成、利息吃掉一半利润、不分红、账面净资产为负的印刷厂。</strong></p>
+<p>网站上那个 11.6 倍的 P/FCF 是个陷阱，扣掉每年 6700 万必须花的软件开发费之后是 18.3 倍，自由现金流回报率 5.5%——而这 5.5% 里绝大部分还不会回到你手上，会被用来还债和再投资。股价一年涨了 46.6%，市场已经把"订单密度终于开始变现"这个故事提前算进去了。生意本身站得住（Vista 的品牌是真的，拼版规模优势是真的，ROIC 高于资金成本是真的），但它同时被 4.81 倍的 EBITDA 杠杆绑着，2023 年那种亏 1.86 亿的年份一旦重演，股东权益本来就是负的，就没有缓冲了。</p>
+<p>想买的话，等它回到 60 美元以下再说，或者等净负债降到 10 亿以内。现在这个价，劝等。</p>
+</div></body></html>

@@ -1,0 +1,386 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ADUS · 阿达斯居家护理（Addus HomeCare Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ADUS</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">14倍P/FCF是假便宜,收购才是真资本开支;零分红零回购,ROIC9.7%仅高过资金成本0.8点</div><h1>ADUS · 阿达斯居家护理（Addus HomeCare Corporation）</h1>
+<p><strong>市值</strong> 22.1 亿美元 ｜ <strong>股价</strong> 约 $121 ｜ <strong>行业</strong> 医疗服务 / 居家护理 ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动）｜ 最近一次财报 2026 年 8 月 3 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Addus 是一家<strong>派人上门的公司</strong>。它不开医院、不开诊所、没有一张病床。它有 50,659 名员工——注意这个数字，年营收 14.76 亿除以 5 万人，人均创收只有 2.9 万美元，这是全美股最"人力密集"的商业模式之一。这五万人里绝大多数是时薪制的护工，公司的全部生意就是：招到人、把人派到病人家里、按小时或按天向政府开账单、收钱。</p>
+<p>财报按三个分部披露，且<strong>这三门生意的付款人、定价机制、利润率完全不同</strong>，必须拆开看。</p>
+<h3>生意一：个人护理（Personal Care）—— 占营收 77%</h3>
+<p>这是主业。服务对象是<strong>因年老或残疾无法独立生活、但还没到需要住院或养老院程度的人</strong>。护工上门做的事很具体：给老人洗澡、穿衣服、做饭、买菜、打扫、提醒吃药、开车带去看医生。这是"非医疗"服务——护工不是护士，不打针不换药。</p>
+<p><strong>怎么收钱，举个具体例子</strong>：伊利诺伊州一位 78 岁独居老人，通过州老龄部门评估后被批准每周 20 小时居家照护。州里把这个案子派给 Addus。Addus 派一名护工每周去五次、每次 4 小时。<strong>州 Medicaid（美国穷人医保）按小时付钱给 Addus，费率大约每小时 27–28 美元</strong>，这个费率不是谈出来的，是州议会立法定的。Addus 付给护工大约每小时 16–17 美元，再加雇主要缴的工资税和工伤保险，实际人工成本约 20–21 美元。差出来的六七块钱，减掉当地分公司的房租、调度员工资、招聘费用，剩下的才是利润。</p>
+<p>这门生意的毛利率大约 <strong>27%–28%</strong>（这是我按分部结构倒推的估算，财报披露到分部毛利但取数页不提供）。听起来薄，但它有一个巨大的优点：<strong>几乎不需要资本</strong>。一间小办公室、一套排班软件、一部电话，就能覆盖一个县。TTM 全公司资本开支只有 763 万美元，占营收 0.5%。</p>
+<p><strong>客户为什么非用它不可</strong>：其实老人和家属不是客户，<strong>州政府才是客户</strong>。老人自己不掏钱（掏钱的是 Medicaid），也基本没有挑选服务商的动力。真正决定 Addus 能不能拿到这个案子的，是它<strong>有没有这个州的执照、有没有跟州系统对接的计费通道、能不能在那个县招到足够的护工</strong>。所以护城河不在服务质量，在<strong>牌照 + 招人能力 + 规模</strong>。全美这个行业极度分散，有几千家几十人的小机构，Addus 靠一家家买下来做成了全国前几。</p>
+<p><strong>这条腿的风险也全在这里</strong>：付钱的是州议会。伊利诺伊州一家就占公司营收相当大的一块（历史上超过四分之一）。州里财政紧张时可以做三件事伤害 Addus：冻结小时费率（人工成本还在涨，利差被挤掉）、延迟付款（州政府拖欠账款是常态，Addus 得垫资发工资）、或者改变资格标准让被批准的小时数变少。这不是理论风险，是这个行业每隔几年就要经历一次的事。</p>
+<h3>生意二：临终关怀（Hospice）—— 占营收 18%</h3>
+<p>这是利润率最高的一门。服务对象是<strong>被医生判定预期生存期不足六个月、且主动放弃治愈性治疗的病人</strong>。团队上门提供的是止痛、控制症状、心理和宗教慰藉，以及对家属的支持。</p>
+<p><strong>怎么收钱，这是关键</strong>：Medicare（美国老人医保）付的<strong>不是按小时，是按天包干</strong>——病人只要还在这个项目里，不管当天来了三个人还是没人来，Medicare 都付一个固定的日费，居家常规护理档大约每天 220 美元左右。</p>
+<p>这个机制决定了这门生意的经济学：<strong>收入完全由"人数 × 天数"决定，成本却由实际投入的护理量决定</strong>。一个病人在项目里待 90 天，公司收 90 天的钱；病人前 60 天状况稳定、护理投入很轻，最后几周才需要密集照护。所以<strong>平均住院天数（length of stay）是这门生意最重要的变量</strong>——待得越久，日均利润越高。行业里估算毛利率能到 <strong>45%–50%</strong>（估算）。</p>
+<p>反过来，Medicare 对这门生意盯得很紧，有一套"总额上限"（aggregate cap）规则：一个机构一年从 Medicare 拿的钱不能超过"病人数 × 一个法定上限值"，超了要退钱。这是为了防止机构专门去收那些还能活很久的病人来套日费。</p>
+<p>TTM 营收 2.69 亿，FY2025 相比 FY2024 增长 15.1%，是三门生意里增长最健康的。</p>
+<h3>生意三：家庭健康（Home Health）—— 占营收 4.7%</h3>
+<p>这是唯一一门有"医疗"含量的：<strong>注册护士和理疗师上门</strong>。典型场景是一位 72 岁的老人做完髋关节置换出院，接下来六周需要有人上门换药、观察伤口感染、教他做康复动作、核对他吃的七种药有没有冲突。Medicare 按 <strong>30 天为一个疗程包干付费</strong>，一个疗程大概两千多美元，不管这 30 天里护士上门 4 次还是 12 次。</p>
+<p>这门生意 Addus 做得不大也没做起来：TTM 6865 万，FY2025 比 FY2024 只增长 1.3%，基本停滞。原因是这个赛道里 Amedisys、Enhabit、UnitedHealth 旗下的 LHC 都是大玩家，Addus 的规模不占优势。管理层的定位是把它当成<strong>配菜</strong>——同一个县里，个人护理的老人身体一旦恶化，可以转成家庭健康；家庭健康的病人一旦进入终末期，可以转成临终关怀。三门生意在同一个地理区域里互相导流，这是它的"全周期照护"故事。</p>
+<h3>钱怎么分</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>占比</th>
+<th>上一财年同比增速</th>
+<th>毛利率（估算）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人护理 Personal Care</td>
+<td>1,139</td>
+<td>77.2%</td>
+<td><strong>+27.1%</strong></td>
+<td>约 27%</td>
+<td>增速主要来自收购，非内生</td>
+</tr>
+<tr>
+<td>临终关怀 Hospice</td>
+<td>268.9</td>
+<td>18.2%</td>
+<td>+15.1%</td>
+<td>约 49%</td>
+<td>利润率最高的一门</td>
+</tr>
+<tr>
+<td>家庭健康 Home Health</td>
+<td>68.7</td>
+<td>4.7%</td>
+<td>+1.3%</td>
+<td>约 45%</td>
+<td>基本停滞，规模不占优</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,476（+15.88%）</strong></td>
+<td>100%</td>
+<td></td>
+<td><strong>32.36%（真实数）</strong></td>
+<td>经营利润率 10.12%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>说明：分部增速一列用的是 FY2025 对 FY2024 的年度口径——取数页不提供上年同期的 TTM 分部拆分。分部毛利率是估算（按三门生意的行业典型值凑出总毛利率 477.75/1,476 = 32.36% 校验通过），财报有披露但取数页不提供。</p>
+</blockquote>
+<p><strong>一句话概括这家公司的实质：它 90% 以上的收入来自政府（州 Medicaid + 联邦 Medicare），价格由立法机构单方面决定，成本由劳动力市场单方面决定，公司自己两头都说不上话。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1822 万美元，占净利润 1.053 亿的 <strong>17.3%</strong>。这个比例中等偏高。更要命的是<strong>公司完全不回购股票</strong>——见下面那一项。SBC 按 GAAP 已经扣在利润里了，我不加回去。</p>
+<p><strong>一次性项目</strong>：TTM 干净，没有列出重组、减值或诉讼科目（FY2024 有 497 万的资产减值和重组，已经翻篇）。但有一项数字值得单独拎出来：现金流量表里的"<strong>其他经营活动 +1771 万</strong>"。这是一笔纯非现金加回项，规模等于净利润的 17%，科目名称是个筐，看不出具体是什么（通常是递延所得税、经营租赁的非现金摊销、或收购相关的或有对价重估）。<strong>只看 TTM 一期，我无法判断这是年年都有的常规项还是本期特有</strong>——参考 FY2025 是 1789 万、FY2024 是 1323 万，看起来是年年都有且在变大的常规项，所以它不构成对自由现金流的虚增。</p>
+<p><strong>资本化的支出</strong>：软件、内容这类资本化花招没有。但<strong>这家公司有一个远比软件资本化重要的"隐藏资本开支"</strong>，见下面第四项。</p>
+<p><strong>回购与稀释</strong>：这一项是全篇最差的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>员工行权带来的股票发行</td>
+<td>+277 万</td>
+</tr>
+<tr>
+<td>同期 SBC</td>
+<td>1822 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.0 倍</strong></td>
+</tr>
+<tr>
+<td>实际股本变化（一年）</td>
+<td><strong>+0.79%（增加）</strong></td>
+</tr>
+<tr>
+<td>现金分红</td>
+<td><strong>0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按规格里的标准，这个比值接近 1 说明回购只是在抵消员工发股，大于 3 才算真回购——<strong>这里是 0</strong>。公司一分钱都不回购、一分钱都不分红，股本每年还多 0.79%。你作为股东从这家公司拿到的现金回报是 <strong>0</strong>，而且份额每年被稀释一点。网站给的"股东收益率 −0.79%"就是这个意思：是负的。</p>
+<p>公司的辩护理由是"钱都拿去收购了"，这个理由成不成立，看下一项。</p>
+<p><strong>利润和现金流的差 —— 以及那笔看不见的真实资本开支</strong>：</p>
+<p>净利润 1.053 亿，经营现金流 1.624 亿，自由现金流 1.548 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>105.31</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+16.71</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+1.31</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>+18.22</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+1.64</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（非现金，科目不透明）</td>
+<td>+17.71</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−4.88</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+0.84</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产净变化</td>
+<td>+5.55</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>162.41</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−7.63</td>
+</tr>
+<tr>
+<td><strong>＝ 账面自由现金流</strong></td>
+<td><strong>154.77</strong></td>
+</tr>
+<tr>
+<td><strong>− 收购支出（这才是这家公司真正的资本开支）</strong></td>
+<td><strong>−40.41</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 真实可分配现金</strong></td>
+<td><strong>114.36</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最重要的一行是最后两行。</strong> 传统公司的增长靠盖厂房、买设备，这些钱走"资本开支"，会被扣进自由现金流。Addus 的增长靠<strong>买公司</strong>——买下一家家几十人的地方护理机构——这些钱走"投资活动/收购"，<strong>不会</strong>被扣进自由现金流。结果就是账面 P/FCF 只有 14.28 倍，看起来很便宜，但那个 FCF 是虚的。</p>
+<p>把时间拉长看这个问题有多大（这是全篇最关键的一组数字）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>累计自由现金流（账面）</th>
+<th>累计收购支出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021 至 TTM（约五年半）</td>
+<td><strong>约 6.03 亿</strong></td>
+<td><strong>约 6.69 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年半里，这家公司花在收购上的钱比它挣出来的自由现金流还多 6600 万。</strong> 差额靠什么补的？靠借债（FY2024 净借入 9665 万）和 <strong>FY2024 那次 1.79 亿美元的增发股票</strong>。也就是说，所谓"钱都拿去收购了所以不回购不分红"是真的——但更准确的说法是：<strong>钱不够拿去收购，还得管股东再要</strong>。</p>
+<p>这也解释了为什么 <strong>ROIC 只有 9.69%，而加权平均资本成本 WACC 是 8.91%</strong>——两者只差 0.78 个百分点。这家公司做收购创造的价值，勉强覆盖资金成本，几乎没有富余。原因不难理解：这个行业里买一家地方护理机构，卖方也知道行情，价格是公开竞价出来的，没有便宜可捡。</p>
+<p><strong>资产负债表的一个警报</strong>：市净率 PB 1.92，但<strong>有形账面市净率 P/TBV 高达 54.29</strong>。反推：股东权益约 11.5 亿，其中<strong>有形资产净值只有约 4100 万，剩下的 11.1 亿全是商誉和无形资产</strong>——也就是历年买公司时付出的超过净资产的溢价。这不必然是坏事（轻资产服务业本来就没什么有形资产），但它意味着：如果哪天 Medicaid 费率被砍、被收购机构的盈利能力下滑，那 11.1 亿商誉里会有相当一部分要减值。FY2024 那 497 万的减值只是个小样本。</p>
+<p><strong>债务</strong>：现金 9957 万，总债务 1.088 亿，净负债仅 925 万——基本是零净负债。债务/EBITDA 只有 0.60，利息覆盖倍数 15.03。这一项是健康的，公司过去一年净还债 1.087 亿，把 FY2024 收购 Gentiva 时借的钱基本还清了。Altman Z 分 5.74，安全。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>22.1 亿 ÷ 1.053 亿</td>
+<td><strong>21.2 倍</strong></td>
+<td><strong>4.72 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司主推调整后 EBITDA（TTM 约 1.66 亿）和调整后 EPS，但取数页不提供；调整项主要是收购交易费用和重组</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已按 GAAP 扣除不加回；TTM 无重大一次性项目需剔除</td>
+<td><strong>21.2 倍</strong></td>
+<td><strong>4.72 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>22.1 亿 ÷ 1.548 亿</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>6.99 元</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉收购这个真实资本开支）</strong></td>
+<td>22.1 亿 ÷ 1.144 亿</td>
+<td><strong>19.3 倍</strong></td>
+<td><strong>5.18 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>22.2 亿 ÷ 1.494 亿</td>
+<td><strong>14.9 倍</strong></td>
+<td><strong>6.73 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>22.1 亿 ÷ [(1.053 + 0.959 + 0.736) ÷ 3 = 0.916 亿]</td>
+<td><strong>24.1 倍</strong></td>
+<td><strong>4.14 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你现在投 100 块进 Addus，按<strong>最保守的三年平均利润口径</strong>算，公司一年替你赚 <strong>4.14 元</strong>；按当期 GAAP 口径算，赚 <strong>4.72 元</strong>。</p>
+<p><strong>看三年平均那一行</strong>：当期 21.2 倍、三年平均 24.1 倍，差 14%。这说明<strong>当前利润确实高于过去三年的平均水平，但幅度温和</strong>——净利润从 FY2024 的 7360 万涨到 TTM 的 1.053 亿，增长 43%，主要是 FY2024 底完成的 Gentiva 个人护理业务收购在 FY2025 全年并表的结果。这不是周期高点带来的虚高，是真实并购带来的规模跃升，所以我不认为 14% 的差距构成"利润在顶点"的警告。</p>
+<p><strong>这 4.72 元里，有多少真回到你口袋？零。</strong> 不分红、不回购，一分钱都没有。这在美股 20 倍出头的公司里是少见的——大多数这个估值区间的公司至少有 2%–3% 的股东现金回报。<strong>这 4.72 元全部留在公司里，而且全部拿去买下一家护理机构了</strong>（TTM 投资活动净流出 4801 万，其中 4041 万是收购）。</p>
+<p>那么关键问题是：<strong>留在公司里再投资，比还给你更划算吗？</strong> 数据给的答案是"勉强划算"：</p>
+<ul>
+<li>支持的一面：EPS 从 FY2021 的 2.81 涨到 TTM 的 5.71，<strong>五年翻了一倍</strong>，年化约 15%。同期股本只增加了约 14%。所以每股价值确实是被创造出来的，收购整合是有效的。</li>
+<li>反对的一面：ROIC 9.69% 对 WACC 8.91%，价值创造的利差只有 0.78 个百分点，薄得几乎在误差范围内。而且这个增长必须持续买公司才能维持——一旦停止收购，个人护理业务的内生增长率大概只有中个位数（分析师预测未来三年营收年增 5.54%，远低于过去五年的 15.88%）。</li>
+</ul>
+<p><strong>这个 X 未来会变大还是变小</strong>：分析师预测未来三年 EPS 年增 8.65%，营收年增 5.54%。也就是市场认为内生增长会显著放缓，只靠一点运营杠杆和小额收购往上走。远期市盈率 16.76 倍反映的就是这个预期。</p>
+<p>风险在两个具体的地方，都值得盯：</p>
+<ol>
+<li><strong>州 Medicaid 费率</strong>。这是唯一能一夜之间改变这家公司命运的变量。个人护理毛利率只有 27%，也就是说每收 100 块州里给的钱，73 块要付出去。<strong>费率哪怕只冻结两年而最低工资继续涨，那 27 个点会被吃掉三分之一</strong>。伊利诺伊一个州就占相当大一块营收，集中度是实实在在的。</li>
+<li><strong>护工招不到人</strong>。这是个时薪十六七块的岗位，直接跟仓库、快餐、零售抢人。招不到人的直接后果不是成本上升（费率是固定的，涨工资就是自己亏），是<strong>批下来的案子接不了</strong>——收入直接消失。这个行业的护工年流失率长期在 60%–80%。</li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意成立，价格公道，但它便宜得没有看上去那么便宜，而且你一分钱现金都拿不到。</strong></p>
+<p>先说好的：人口老龄化是实打实的顺风（美国 80 岁以上人口未来十年增速是全人口的四倍多），居家照护比养老院和医院便宜得多，<strong>各州都有把人从机构挪回家里的财政动机</strong>，这是长期结构性的需求。公司几乎零净负债，收购整合的执行力经得起检验——EPS 五年翻倍、稀释只有 14%，这是真本事。21 倍 GAAP、14.9 倍 EV/EBIT，对一门还在两位数增长的服务业来说不贵。</p>
+<p>再说要打折的地方，三条：</p>
+<p>第一，<strong>那个 14.3 倍的 P/FCF 是假便宜</strong>。这家公司的增长引擎是收购，而收购支出不进自由现金流。把它算进去，真实口径是 19.3 倍——跟 21 倍的市盈率是一致的，没有折扣。五年半累计收购 6.69 亿、累计 FCF 6.03 亿、外加一次 1.79 亿的增发，这就是全部证据。</p>
+<p>第二，<strong>你的现金回报是零、稀释是持续的</strong>。不分红不回购、股本每年多 0.79%。管理层用你的钱去做 ROIC 9.69% 的收购，而资金成本 8.91%——这个利差太薄，薄到只要买贵一家、或者被收购机构的费率环境一变，就变成负的。</p>
+<p>第三，<strong>这家公司的定价权是零</strong>。收入端由州议会定，成本端由劳动力市场定，中间那 27 个百分点的空间不是它挣来的，是别人留给它的。这不是护城河，是别人还没决定要不要收窄的一条河道。</p>
+<p><strong>该怎么对待它</strong>：这是一家可以放进观察名单、但不必急着出手的公司。等两个信号：一是<strong>看到主要州（尤其伊利诺伊）的新一轮费率决议落地</strong>，费率跟得上最低工资就说明利差安全；二是<strong>看到公司开始回购或分红</strong>——那意味着管理层承认收购机会不如自家股票便宜了，那通常也是股价真正便宜的时候。现在这个价，是在为"收购整合能一直做下去"付全价。</p>
+</div></body></html>

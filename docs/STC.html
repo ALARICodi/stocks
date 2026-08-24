@@ -1,0 +1,314 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STC · Stewart Information Services（斯图尔特信息服务）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">STC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">银行强制买的收费生意，账干净；但股本一年增发5.4%，吃掉3%股息</div><h1>STC · Stewart Information Services（斯图尔特信息服务）</h1>
+<p>市值 21.12 亿美元 / 股价约 69.2 美元 / 行业：金融（产权保险 Title Insurance）/ TTM 截止 2026 年 6 月 30 日</p>
+<p><strong>关于口径的说明</strong>：这家公司行业归类在"金融—保险"，但<strong>下面我仍然用市盈率而不是内含价值/综合成本率</strong>，原因是产权保险在经济实质上根本不是保险，而是收费服务。理由在第一部分讲清楚了：它的赔付率只有 4–5%，保费的九成以上是花在"事前把问题查出来并解决掉"的人工上，浮存金规模微不足道，总资产只有营收的 0.93 倍（资产周转率 1.08）——这是一家劳动密集的服务公司的资产表，不是一家银行或寿险公司的资产表。我会在表里补上市净率和 ROE 作为交叉验证。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<h3>生意一：产权保险与过户服务（TTM 营收 26.80 亿，占 82.0%）</h3>
+<p>要理解这门生意，得先知道美国房产制度的一个特殊之处：<strong>美国没有中国那样的全国统一不动产登记簿。</strong> 房子的所有权凭证是一份份历史文件——地契、抵押登记、法院判决、遗嘱、离婚协议、税务留置权、施工方欠款留置权——分散躺在几千个县的档案馆里，有的还是一百年前手写的。</p>
+<p>结果就是：你买一套房，卖家未必真的能干干净净地把它卖给你。可能三十年前的某次转让里有个继承人没签字；可能上一任房主欠了装修公司 8000 块，公司在房子上挂了留置权；可能有人伪造签名过户过一次；可能邻居的车库有一角压在你的地界上。这些问题一旦在你买下之后冒出来，你可能要花几万美元打官司，最坏的情况是房子不是你的。</p>
+<p><strong>Stewart 干的就是这件事</strong>：交易约定后，它派人（或者它授权的本地代理）去县档案馆把这套房过去几十年的所有相关文件翻一遍，做成一份"产权报告"，把发现的问题一条条列出来；然后在过户之前把这些问题<strong>解决掉</strong>——去找那个漏签的继承人补签、逼卖家还清装修欠款、办理错误登记的更正。全部清干净之后，它出具一份保单，收一次性保费，<strong>从此对"我们没查出来的问题"负终身责任</strong>。</p>
+<p>具体到钱：得州一套 40 万美元的房子，业主保单加贷款人保单的保费大约 1800–2400 美元，在过户当天一次性付清，之后永远不用再交。买家往往不知道自己有得选，因为放贷银行强制要求必须有产权保险才肯放贷——<strong>这是这门生意最硬的一层保护：需求不是可选项，是法定/合约必需品。</strong></p>
+<p>它还顺带做<strong>过户结算（escrow/closing）</strong>：房子成交那天，买家的首付和银行的贷款打进 Stewart 的第三方托管账户，Stewart 核对所有文件、结清卖家的旧贷款、扣掉中介佣金和地税、把余额打给卖家、把新地契送去县里登记。这项服务另收几百到一千多美元手续费。</p>
+<p><strong>利润结构和一般保险完全相反</strong>：普通财险公司收 100 块保费要赔出去 60–70 块，靠剩下的钱和投资收益赚钱。产权保险收 100 块保费只赔出去 <strong>4–5 块</strong>，因为几乎所有风险在承保前就被人工排除了。那另外 95 块去哪了？两条路：
+- <strong>直营渠道</strong>：Stewart 自己的办公室、自己的产权检查员和过户员做完全程，保费全归自己，但人力成本全自己扛。
+- <strong>代理渠道</strong>：全美几千家独立的本地小产权公司用 Stewart 的牌照和资本承保，它们干活、收保费，然后<strong>只把大约 15–20% 汇给 Stewart</strong>，剩下 80% 多是它们的佣金。所以代理渠道贡献很大营收、很小利润。</p>
+<p>这就解释了一个看起来奇怪的数字：<strong>32.7 亿营收，只有 2.21 亿经营利润，利润率 6.75%</strong>。营收里有一大块从进门那一刻就注定是要付给代理的。</p>
+<p>TTM 这块营收 26.80 亿，比上年的 24.82 亿增长 8.0%。驱动它的只有一件事：<strong>美国有多少套房子成交、多少笔贷款重做</strong>。这是一门 100% 靠交易笔数吃饭的生意，房价高低影响不大（保费按房价走但不成比例），成交量才是命门。</p>
+<h3>生意二：房地产解决方案（TTM 营收 5.87 亿，占 18.0%）</h3>
+<p>这块是把"我们本来就在替银行干的杂活"打包成产品卖给贷款机构，主要三样：</p>
+<ul>
+<li><strong>评估管理（AMC）</strong>：银行放贷前必须找独立评估师给房子估值，法规又要求银行不能直接指挥评估师（2008 年后的规定）。Stewart 就当这个中间层——银行下单，它从全国评估师网络里派单、跟进、质检、交付，每单抽几十到一两百美元。</li>
+<li><strong>信贷与收入核验</strong>：给贷款机构调借款人的三大征信报告、核验就业和收入、查税务记录，按次收费，一笔贷款几十美元。</li>
+<li><strong>数据与估值分析</strong>：把它几十年积累的产权数据卖给大型贷款机构和不良资产服务商，做批量估值模型、房产画像、留置权检索。这块偏订阅制和 API 调用，是全公司毛利率最高、最不受成交量周期影响的部分。</li>
+</ul>
+<p>TTM 营收 5.87 亿，比上年 4.38 亿<strong>增长 34.0%</strong>——但这个增速很大程度上是买来的：TTM 现金收购花掉了 <strong>3.893 亿美元</strong>（上年 3.70 亿）。这是管理层过去两年最明确的战略动作：拿钱把周期性弱、利润率高的服务型业务并进来，稀释掉产权主业的周期性。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产权保险与过户</td>
+<td>26.80 亿</td>
+<td>24.82 亿</td>
+<td>+8.0%</td>
+<td>82.0%</td>
+</tr>
+<tr>
+<td>房地产解决方案</td>
+<td>5.87 亿</td>
+<td>4.38 亿</td>
+<td>+34.0%</td>
+<td>18.0%</td>
+</tr>
+<tr>
+<td>公司总部</td>
+<td>0.01 亿</td>
+<td>0.01 亿</td>
+<td>—</td>
+<td>0.0%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>32.68 亿</strong></td>
+<td><strong>29.22 亿</strong></td>
+<td><strong>+11.8%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（利润表口径的总营收是 32.72 亿，与分部合计 32.68 亿有 400 万的口径差，可忽略。财报只按分部披露到营收，不披露分部利润，我不编。）</p>
+<p><strong>这门生意的周期长什么样，看这组数就够了</strong>：FY2021 营收 32.99 亿、每股收益 <strong>11.90 美元</strong>（疫情期间零利率，全美疯狂再融资）；FY2023 营收 22.57 亿、每股收益 <strong>1.11 美元</strong>（利率飙到 7%，交易冻结）；TTM 营收回到 32.72 亿，每股收益却只有 <strong>4.52 美元</strong>。营收回到了 2021 年的水平，利润只有当年的 38%——因为 2021 年的营收里塞满了高毛利的再融资保单，现在的营收里更多是低毛利的代理业务和刚并购进来的服务业务，同时人员和技术成本基数变大了。<strong>别拿 2021 年当锚，那是四十年一遇的年份。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1816 万美元，占净利润 13.5%。规模温和，GAAP 已扣，不加回。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>978 万美元的投资处置收益</strong>（卖债券赚的），这是实打实的一次性利得，应该从利润里剔掉。按 21.76% 的有效税率折算，税后约 766 万。剔掉之后真实净利润约 <strong>1.271 亿</strong>。其他没看到大额减值或重组。不过要说明：单看一期分不清"卖债券赚钱"是不是年年都有——它 FY2024 赚了 1373 万、FY2025 赚了 707 万、FY2022 反倒亏了 364 万，所以更准确的说法是<strong>这一栏年年都有、金额随利率波动、方向不定</strong>，我按谨慎原则剔掉。</p>
+<p><strong>资本化的支出</strong>：资本开支从 FY2023 的 3779 万一路涨到 TTM 的 <strong>8823 万</strong>，两年翻了一倍多，主要是产权检索自动化和数据平台的技术投入。这些以后会以折旧的形式回到利润表（TTM 折旧摊销 6509 万）。目前资本开支（8823 万）已经明显高于折旧（6509 万），说明还在净投入期——<strong>这意味着未来两三年的折旧还会往上走，会压住报表利润</strong>。这不是障眼法，但是个需要记住的伏笔。</p>
+<p><strong>回购与稀释——这是这家公司最难看的一条</strong>：TTM 回购 574 万美元，同期 SBC 1816 万，<strong>比值 0.32</strong>——回购连 SBC 的三分之一都没盖住。更关键的是，TTM <strong>发行了 1.484 亿美元的新股</strong>（用来给那笔 3.89 亿的收购凑钱），结果是<strong>股本一年增加了 5.36%</strong>。</p>
+<p>同期 TTM 分红 6331 万，折合每股 2.08 美元，股息率 3.0%。所以真实情况是：<strong>公司左手给你发了 3.0% 的现金股息，右手把你的所有权稀释了 5.4%——净下来你今年在这家公司里的份额是缩水的。</strong> 稀释换来的是 3.89 亿的收购资产，这笔交易划不划算要看未来，但当下的持有人是先付了钱。</p>
+<p><strong>利润和现金流的差</strong>：净利润 1.347 亿，经营现金流 2.382 亿，差 1.03 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>134.72</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>65.09</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>18.16</td>
+</tr>
+<tr>
+<td>－ 投资处置收益（非经营）</td>
+<td>−9.79</td>
+</tr>
+<tr>
+<td>＋ 递延所得税变动</td>
+<td>15.26</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>−32.98</td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>11.15</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>17.28</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>238.20</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>−88.23</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>149.97</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>没有猫腻，差额基本就是折旧摊销和 SBC 这两项非现金支出，减去应收账款随营收增长而占用的 3298 万。现金流质量是干净的——<strong>这一点比前面两家公司都强</strong>。</p>
+<p><strong>资产负债表</strong>：总债务 7.71 亿、现金及投资 3.05 亿、净债务 5.13 亿。债务/权益 0.46，利息保障倍数 8.63 倍，流动比率 1.85。这是一张健康的表，跟 Cimpress 那种利息吃掉一半利润的情况完全不同。账面净资产 16.7 亿，每股账面价值 54.63 美元。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 21.12 亿美元、企业价值 26.32 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>21.12 亿 ÷ 1.347 亿</td>
+<td><strong>15.7 倍</strong></td>
+<td><strong>6.38 元</strong></td>
+</tr>
+<tr>
+<td>公司主推口径（EBITDA）</td>
+<td>21.12 亿 ÷ 2.86 亿</td>
+<td>7.4 倍</td>
+<td>13.55 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>21.12 亿 ÷ 1.271 亿（剔除税后投资收益 766 万）</td>
+<td><strong>16.6 倍</strong></td>
+<td><strong>6.02 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>21.12 亿 ÷ 1.500 亿</td>
+<td>14.1 倍</td>
+<td>7.10 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>26.32 亿 ÷ 2.209 亿</td>
+<td>11.9 倍</td>
+<td>8.39 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>21.12 亿 ÷ 1.079 亿（TTM/FY25/FY24 平均）</td>
+<td><strong>19.6 倍</strong></td>
+<td><strong>5.11 元</strong></td>
+</tr>
+<tr>
+<td>含周期低谷的四年平均（补充）</td>
+<td>21.12 亿 ÷ 0.885 亿（加上 FY2023 的 3044 万）</td>
+<td>23.9 倍</td>
+<td>4.19 元</td>
+</tr>
+<tr>
+<td>市净率 PB（金融口径交叉验证）</td>
+<td>21.12 亿 ÷ 16.7 亿</td>
+<td>1.27 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE ÷ PB 换算（金融口径）</td>
+<td>9.61% ÷ 1.27</td>
+<td>—</td>
+<td>7.57 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>第二行 7.4 倍的 EBITDA 口径依然是话术：它假装公司不用花 6509 万折旧（而实际资本开支还比折旧高 2314 万）、不用付 2930 万利息、不用交 4169 万的税。</p>
+<p><strong>三年平均口径 19.6 倍 vs 当期 15.7 倍，这个差距是这份分析里最值得盯的数字。</strong> 它说明当前这个 1.35 亿的利润<strong>高于最近三年的常态</strong>。再往回加一年，把 FY2023 交易冻结时只赚 3044 万的那年也算进去，倍数就到了 23.9 倍。</p>
+<p>但公平地说，另一个方向的论据也在：美国的二手房成交量目前仍处在历史低位（年化约 400 万套，2021 年是 600 多万套），按揭利率还在 6% 上方。也就是说<strong>当前利润并不在周期高点，反倒更接近中段偏下</strong>。把这两点放一起，我的判断是：15.7 倍是"周期中段的价格"，不是抄底价，也不是泡沫价。</p>
+<p><strong>说人话：你现在投 100 块钱进 Stewart，按最保守的真实口径算，公司一年替你赚 6 块。</strong></p>
+<p>这 6 块里有多少回到你口袋？<strong>表面上 3 块（股息 3.0%），但净下来是负的。</strong> 因为同一年它增发了 1.484 亿的新股，股本增加 5.36%，你原有的每一股被摊薄的幅度大于你收到的股息。回购只有 574 万，可以忽略不计。剩下的钱去了哪？看投资活动：3.893 亿现金收购、8823 万资本开支，靠 1.999 亿新增借款和 1.484 亿新发股票补足。<strong>这是一家正在用股东的稀释和银行的钱做扩张的公司</strong>，不是在给你分钱的公司。</p>
+<p>这个 6 块未来是变大还是变小？我倾向于<strong>变大，但幅度取决于两件不受它控制的事</strong>。有利的：房地产解决方案增长 34%，是周期性弱、利润率高的业务，占比已经从三年前的 11.7% 升到 18.0%；技术投入正在把产权检索自动化（这门生意的最大成本就是人工翻档案，能自动化多少直接决定利润率）；美国成交量在历史低位，只要利率下行一个台阶，营收和利润会同时跳升，因为增量保单的边际利润率极高。不利的：ROIC 只有 7.11%，<strong>低于 7.81% 的加权资金成本</strong>——这意味着它这几年花的 7.6 亿收购款，暂时还没证明是划算的；折旧还在往上爬；行业前四家（Fidelity National、First American、Old Republic、Stewart）占了八成份额，Stewart 是老四，规模劣势导致它的利润率长期落后前两家 2–4 个百分点。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门有硬需求、账干净、周期性很强的收费生意，价格公道，不便宜也不贵——可以放进观察名单，但别指望它给你分钱。</strong></p>
+<p>我认可它的地方是实在的：产权保险是法律和银行强制的，需求不会消失；赔付率只有 4–5%，本质是服务费不是承保风险；现金流干净，净利润到经营现金流的每一分差额都能对上折旧和 SBC；资产负债表健康，利息保障 8.63 倍；房地产解决方案这块正在把周期性稀释掉，34% 的增速是真的。</p>
+<p>我不喜欢的地方也很实在：15.7 倍看着便宜，但三年平均是 19.6 倍、加上周期低谷那年是 23.9 倍，说明现在的利润高于常态；投入资本回报率 7.11% 低于资金成本 7.81%，过去两年花掉的 7.6 亿收购钱还没证明自己；股本一年增发 5.36%，把 3% 的股息完全吃掉还倒欠；作为行业老四，它的利润率结构性落后于前两名，这个位置不是靠努力能改的。</p>
+<p>所以我的态度是：<strong>这不是一笔会让你赚大钱的投资，是一笔在美国房地产成交量回暖时能跟着涨一波的中庸筹码。</strong> 6 块钱的真实年回报、1.27 倍的市净率、一张干净的资产负债表——这个组合值这个价，但没有任何安全边际上的便宜可占。如果美国按揭利率明显下行、成交量恢复到年化 500 万套以上，它的利润有翻倍的空间；如果利率维持在 6% 以上再拖两年，它就是一只每年赚 6% 却被稀释 5% 的死钱。留着看，别追。</p>
+</div></body></html>

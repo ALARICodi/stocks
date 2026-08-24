@@ -1,0 +1,525 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRC · 戈曼-鲁普（The Gorman-Rupp Company）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GRC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">账最干净的老牌泵企，但股价一年涨89%利润只涨20%，全是估值扩张</div><h1>GRC · 戈曼-鲁普（The Gorman-Rupp Company）</h1>
+<p><strong>市值</strong> 20.6 亿美元 · <strong>股价</strong> $78.09（2026-08-21 收盘） · <strong>行业</strong> 生产制造 / 工业泵 · <strong>交易所</strong> NYSE
+<strong>财报口径</strong> TTM（最近四个季度滚动），截止 <strong>2026 年 6 月 30 日</strong>
+<strong>全榜名次</strong> 第 840 名（按市值从高到低，共 1236 家）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Gorman-Rupp 成立于 1933 年，总部在俄亥俄州曼斯菲尔德，<strong>九十多年来只做一件事：造泵。</strong> 具体点说，是造那种「把水或者别的液体从一个地方弄到另一个地方」的机器。</p>
+<p>它的财报<strong>只披露一个经营分部</strong>（管理层把整个公司作为一个业务单元管理），只按地区拆：美国 5.353 亿（76.2%）、海外 1.668 亿（23.8%）。所以下面这几门生意是按它的产品线和终端市场拆的，<strong>营收占比是估算</strong>，不是财报数字。这一点我会反复标注。</p>
+<p>先讲清楚一件事：<strong>泵这个东西，为什么是门好生意。</strong></p>
+<p>一台工业泵卖 5000 到 5 万美元不等，本身不算贵。但它装在一个污水处理厂里、一个化工厂里、一栋 40 层写字楼的消防系统里。<strong>这台泵坏了，整个系统就停了。</strong> 污水处理厂停了，城市污水直接排河里，市政要吃环保罚单；写字楼消防泵坏了，消防验收过不了，整栋楼不能开业。所以买泵的人的决策逻辑不是「哪个便宜」，而是「哪个不会坏、坏了能多快修好、备件好不好买」。</p>
+<p>这就形成了三层护城河：
+1. <strong>规范锁定（spec-in）。</strong> 一个污水处理厂设计的时候，设计院在图纸上写死了「使用 Gorman-Rupp T 系列自吸泵」。这个规范一旦写进去，用二十年都不会改，因为改了要重新做水力计算和验收。
+2. <strong>备件的现金牛。</strong> 泵的叶轮、机械密封、耐磨板是消耗品，两三年换一次。<strong>卖出去一台泵，就锁定了二十年的备件生意，而备件的毛利率远高于整机。</strong>
+3. <strong>经销商网络。</strong> 泵坏了要 24 小时内有人上门，靠的是全美几百家经销商和库存点。新进入者从零建这个网络要十年。</p>
+<h3>生意 A：市政水与污水泵 —— <strong>估算占营收 30%</strong></h3>
+<p><strong>这是 Gorman-Rupp 最核心、最稳的一块，也是它名气最大的地方。</strong></p>
+<p>具体产品：Gorman-Rupp 的 T 系列「自吸泵」（self-priming pump）。什么叫自吸？普通离心泵要先灌满水才能启动，如果泵放在水面上方（比如放在地面上抽地下污水井），就抽不上来。自吸泵能自己把管道里的空气排掉、把水吸上来。<strong>这个技术是 Gorman-Rupp 1933 年发明的，公司就是靠它起家的。</strong></p>
+<p>用在哪：全美几乎每一个城市的污水提升泵站里。污水管道靠重力流，但地势总有低点，到了低点就需要泵把水抬上去继续流。一个中等城市有几十上百个这样的泵站，每个泵站两三台泵（一用一备）。这些泵抽的是混着卫生纸、抹布、湿巾的污水，最怕堵塞——<strong>Gorman-Rupp 的卖点就是「堵了不用把泵拆开，打开前盖清一下就行」，这在半夜三点污水漫出来的时候值很多钱。</strong></p>
+<p>怎么收钱：一台市政级自吸泵 1.5 万到 6 万美元。一个新泵站的整套设备包（泵 + 控制柜 + 管路）合同额 20 万到 80 万美元。销售通道是设计院指定 + 经销商投标。<strong>市政订单的特点是慢但极稳</strong>——它跟房地产周期无关，跟联邦的水基础设施拨款有关，而美国的污水管网普遍超龄五十年，换新需求是一个几十年的长坡。</p>
+<h3>生意 B：Fill-Rite / Tuthill 燃油与流体输送 —— <strong>估算占营收 22%</strong></h3>
+<p><strong>这是 2022 年花 5.28 亿美元收购来的，是公司历史上最大的一笔交易，也是理解现在这份财报的关键。</strong></p>
+<p>具体产品：Fill-Rite 是加油泵和流量计的品牌。想象一个农场，有一个 1000 加仑的柴油储罐，用来给拖拉机加油。罐子旁边那个手摇或电动的加油枪、带数字显示的流量表——那就是 Fill-Rite。还有建筑工地的移动油罐、卡车车队的自用加油站、化学品分装。</p>
+<p>为什么这笔收购有意义：Gorman-Rupp 原来的生意是「重资产工业泵」，单价高、周期长、经销商专业。Fill-Rite 是「小型标准化产品」，单价 300 到 2000 美元，走五金渠道和农资渠道，<strong>毛利率明显更高（这类小型标准品通常 40% 以上，而工业泵 28–32%）</strong>，而且量大、周转快。</p>
+<p><strong>这笔收购把公司整体毛利率从 25.13%（FY2022）拉到了 31.82%（TTM）。</strong> 这不是猜的——看数据：FY2021 毛利率 25.35%、FY2022（收购当年，只并表几个月）25.13%、FY2023 跳到 29.76%、FY2024 30.97%、FY2025 31.05%、TTM 31.82%。<strong>收购完成后毛利率跳了将近 5 个百分点，然后一路缓慢爬升。这是一笔明显成功的收购。</strong></p>
+<p>代价是：为了买它，公司借了 4.57 亿美元的债，从一家零负债公司变成了一家净负债 4.33 亿的公司。<strong>过去四年财务上发生的所有事，本质上都是在还这笔债。</strong></p>
+<h3>生意 C：消防泵（Patterson Pump）—— <strong>估算占营收 18%</strong></h3>
+<p>一栋高层建筑必须有消防喷淋系统，喷淋要有水压，水压来自消防泵。这台泵一年可能一次都不启动，但每个月要试运行，每年要消防部门验收。<strong>它是纯粹的合规产品——不是买来用的，是买来通过验收的。</strong></p>
+<p>Patterson Pump 是 Gorman-Rupp 的子公司，做 UL/FM 认证的消防泵（UL 和 FM 是两家保险公司背景的认证机构，没有它们的认证，保险公司不承保这栋楼）。<strong>这个认证本身就是护城河</strong>：拿一个新泵型的 UL 认证要两三年和上百万美元测试费。</p>
+<p>怎么收钱：一台消防泵加控制柜 3 万到 15 万美元，随高层建筑和数据中心的开工量走。<strong>数据中心是这块近年的新增长点</strong>——一个超大规模数据中心的消防系统比一栋写字楼复杂得多。</p>
+<h3>生意 D：工业、农业、建筑、石油 —— <strong>估算占营收 30%</strong></h3>
+<p>一堆分散的终端市场：化工厂输送腐蚀性液体的泵、农业灌溉泵、建筑工地的排水泵（基坑积水要抽走）、石油行业的输油泵、National Pump 品牌的深井泵（打到地下几百米抽地下水灌溉）。</p>
+<p>这块最杂、最周期，跟大宗商品价格和农业收入挂钩。<strong>也是四块里最不稳的一块。</strong></p>
+<h3>钱的分布（TTM，截止 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算）</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+<th>特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 市政水与污水</td>
+<td>~2.11 亿</td>
+<td>~30%</td>
+<td>~30%</td>
+<td>最稳，规范锁定，备件长尾</td>
+</tr>
+<tr>
+<td>B Fill-Rite 流体输送</td>
+<td>~1.54 亿</td>
+<td>~22%</td>
+<td>~42%</td>
+<td>最赚钱，2022 收购来的</td>
+</tr>
+<tr>
+<td>C 消防泵 Patterson</td>
+<td>~1.26 亿</td>
+<td>~18%</td>
+<td>~30%</td>
+<td>合规刚需，认证护城河</td>
+</tr>
+<tr>
+<td>D 工业/农业/建筑/石油</td>
+<td>~2.11 亿</td>
+<td>~30%</td>
+<td>~26%</td>
+<td>最周期</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>7.02 亿</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>31.82%（财报真实数）</strong></td>
+<td>同比 <strong>+4.18%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>只有合计行和 31.82% 是财报原文，四块的拆分和毛利率是估算，公司只披露一个分部。</strong></p>
+<h3>增长很慢，但利润在跑</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>5.21 亿</td>
+<td>6.60 亿</td>
+<td>6.60 亿</td>
+<td>6.82 亿</td>
+<td><strong>7.02 亿</strong></td>
+</tr>
+<tr>
+<td>营收增速</td>
+<td>+37.7%</td>
+<td>+26.6%</td>
+<td><strong>+0.02%</strong></td>
+<td>+3.44%</td>
+<td><strong>+4.18%</strong></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>0.39 亿</td>
+<td>0.85 亿</td>
+<td>0.90 亿</td>
+<td>0.96 亿</td>
+<td><strong>1.05 亿</strong></td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>7.5%</td>
+<td>13.0%</td>
+<td>13.6%</td>
+<td>14.1%</td>
+<td><strong>15.0%</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>0.11 亿</td>
+<td>0.35 亿</td>
+<td>0.40 亿</td>
+<td>0.53 亿</td>
+<td><strong>0.62 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看懂这张表就看懂了 GRC 的全部故事：</strong> 2022–2023 的营收暴涨是并表 Fill-Rite 带来的（一次性），之后营收基本躺平（+0.02%、+3.4%、+4.2%）。<strong>但净利润从 3495 万涨到 6236 万，涨了 78%。</strong></p>
+<p>利润是从哪来的？两个地方，都不是靠卖更多泵：
+1. <strong>毛利率爬升</strong>（29.76% → 31.82%），Fill-Rite 整合 + 提价。
+2. <strong>还债省下的利息。</strong> 债务从 4.41 亿（FY2022）降到 2.75 亿（现在），<strong>四年还掉 1.66 亿</strong>。TTM 利息覆盖倍数 5.06 倍，而 FY2022 那会儿是勉强够。</p>
+<p>这两条都是<strong>真实的、可持续的、但也是有尽头的</strong>改善。等债还完了、毛利率提到头了，利润增长就只能靠营收，而营收在以 4% 的速度爬。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>总结先说在前面：这家公司的报表是我在任务1里见过最干净的那一类。</strong> 下面逐项。</p>
+<h3>1. 股权激励（SBC）：405 万美元 —— <strong>几乎可以忽略</strong></h3>
+<p>TTM 股权激励 <strong>405 万美元</strong>。</p>
+<ul>
+<li>占净利润（6236 万）：<strong>6.5%</strong></li>
+<li>占营收（7.02 亿）：<strong>0.58%</strong></li>
+</ul>
+<p><strong>这是一个真正意义上「不重要」的 SBC 数字。</strong> 对比刚分析完的 DoubleVerify（SBC 是净利润的 174%），差距是二十六倍。原因很简单：这是一家俄亥俄的老牌制造企业，工程师和车间工人拿的是工资，不是股票期权。管理层持股 21.21%（Gorman 和 Rupp 两个创始家族至今仍在董事会），他们不需要靠发股票给自己发钱。</p>
+<p>按 GAAP 已扣，不加回。<strong>这一项对估值的影响接近于零。</strong></p>
+<h3>2. 一次性项目：没有</h3>
+<p>TTM 利润表里没有诉讼和解、没有重组、没有资产减值、没有并购费用。有一笔 84 万的资产处置收益（卖了些旧设备），规模可以忽略。</p>
+<p>现金流量表里有一项「其他经营活动 +1428 万」——这个数字对 6236 万的净利润来说不算小（占 23%），而且科目名字含糊。历史上它一直存在（FY2022 是 +2456 万、FY2023 +917 万、FY2024 +174 万、FY2025 +1513 万），<strong>说明它是年年都有的常规调整项</strong>（通常是递延所得税、养老金精算调整、汇兑损益的合集），不是一次性的操纵。<strong>但它波动很大，会让单年现金流看起来忽高忽低，这是下面对账表里要留意的一行。</strong></p>
+<h3>3. 资本化的支出：正常，但资本开支低于折旧</h3>
+<p>TTM 资本开支 <strong>1926 万</strong>，折旧摊销 <strong>2785 万 + 118 万其他摊销 = 2903 万</strong>。</p>
+<p><strong>资本开支只有折旧的 66%。</strong> 这有两种解读：
+- 好的解读：这是一家轻资产的成熟制造商，工厂已经建好了，维护性资本开支就够了，多出来的现金可以还债分红。
+- 需要警惕的解读：<strong>长期资本开支低于折旧，等于在慢慢消耗产能。</strong> 如果这个状态持续五年十年，设备老化会反噬毛利率。</p>
+<p>历史数据：FY2021 975 万、FY2022 1799 万、FY2023 2084 万、FY2024 1432 万、FY2025 1738 万、TTM 1926 万。<strong>基本一直低于折旧。</strong> 但要注意，其中 2903 万的折旧里有相当一部分是<strong>收购 Fill-Rite 产生的无形资产摊销</strong>（客户关系、品牌、技术），那部分是纯会计数字，不需要用资本开支去「补」。<strong>扣掉这部分，真实的设备折旧大概在 2000 万左右，跟资本开支基本持平。所以这一项是正常的，不构成隐患。</strong></p>
+<h3>4. 回购与稀释：<strong>这家公司不回购，它还债和分红</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>−265 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>265 ÷ 405 = 0.65 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（YoY）</td>
+<td><strong>+0.35%</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>−1989 万</td>
+</tr>
+<tr>
+<td><strong>净偿还债务</strong></td>
+<td><strong>−6300 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购 / SBC = 0.65 倍，不到 1。</strong> 按标准这意味着「回购连员工发股都没抵消完」。股本一年增加 0.35%——<strong>你被稀释了，虽然幅度很小。</strong> 那 265 万的「回购」大概率只是员工行权时代扣税款的股份回收，不是主动回购。</p>
+<p><strong>但这不是缺点，是选择。</strong> 看资金去向就明白了：TTM 自由现金流 1.0054 亿，用途是——<strong>还债 6300 万 + 分红 1989 万 = 8289 万</strong>，占自由现金流的 82%。</p>
+<p><strong>在净负债 2.32 亿、利息覆盖 5 倍的情况下，先还债后回购是完全正确的资本配置。</strong> 每还 100 块债，股东权益就增加 100 块，效果和回购一样，而且降低了风险。等债还完了（按现在 6300 万/年的速度，再有三四年），这 6300 万就会转成分红或回购。</p>
+<p><strong>分红是 GRC 的传统：</strong> 每股 0.76 美元，股息率 0.97%。分红金额从 FY2021 的 1659 万一路增到 TTM 的 1989 万，<strong>年年增加，从未减少</strong>。Gorman-Rupp 是标普高股息成就指数的成员，连续五十多年提高股息。<strong>股息率不到 1% 说明它不是收息股，但「五十年不间断增加」这件事本身是对现金流稳定性的最强证明——熬过了 2008、2020 和 2022 那次加杠杆收购。</strong></p>
+<h3>5. 利润和现金流的差 —— 差得不大，而且能说清楚</h3>
+<p>TTM 净利润 6236 万，经营现金流 <strong>1.198 亿</strong>，自由现金流 <strong>1.0054 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+<th>是不是真的钱</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>62.36</td>
+<td>是</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+27.85</td>
+<td>非现金（含 Fill-Rite 无形资产摊销）</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+1.18</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td><strong>+4.05</strong></td>
+<td><strong>非现金但是真成本（金额很小）</strong></td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−0.84</td>
+<td>剔除非经营性收益</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+14.28</td>
+<td>混杂项（递延税/养老金/汇兑）</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−9.48</td>
+<td>真金白银没收回来</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+5.70</td>
+<td><strong>卖掉了库存，好事</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+2.16</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 预收款增加</td>
+<td>+3.69</td>
+<td>客户先付钱，好事</td>
+</tr>
+<tr>
+<td>＋ 所得税相关变化</td>
+<td>+4.34</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他净经营资产</td>
+<td>+4.51</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>119.80</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−19.26</td>
+<td>真金白银花出去了</td>
+</tr>
+<tr>
+<td>＋ 处置固定资产</td>
+<td>+1.86</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>100.54</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最值得说的是它有多平淡。</strong> 经营现金流是净利润的 1.92 倍，差额几乎全部来自折旧摊销（2903 万，其中一大块是收购无形资产的纯会计摊销）和那笔 1428 万的混杂调整项。<strong>营运资金整体是净流入 +1092 万</strong>——应收增加了 948 万（营收涨 4%，正常），但存货减少 570 万、预收增加 369 万、应付增加 216 万都是好方向。</p>
+<p><strong>没有任何一行让人不安。</strong> 对比刚看完的 DoubleVerify（自由现金流的 64% 来自加回股权激励），GRC 的自由现金流里 SBC 只占 4%。</p>
+<p><strong>把 SBC 减掉，真实的股东自由现金流 = 1.0054 亿 − 405 万 = 9649 万。</strong> 跟表面数字只差 4%。<strong>这就是「干净报表」的定义。</strong></p>
+<p>不过有一点要诚实指出：<strong>经营现金流一年跳了 40.41%（8523 万 → 1.198 亿），而净利润只涨了 17.6%。</strong> 多出来的部分来自存货释放和税项时点，<strong>这类营运资金红利是一次性的，不会年年有。</strong> 用 1.0054 亿去做长期估值会略微高估——更保守的「可持续自由现金流」大概在 8500 万到 9000 万。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 20.62 亿，<strong>企业价值 EV = 22.9 亿</strong>（市值 + 净负债 2.32 亿）。注意这里跟前两家相反：<strong>GRC 有净负债，所以 EV 大于市值，企业价值口径会比市盈率口径更贵，而不是更便宜。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>20.62 亿 ÷ 6236 万</td>
+<td><strong>33.1 倍</strong></td>
+<td><strong>3.02 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>20.62 亿 ÷ ~7300 万（加回收购无形资产摊销，<strong>估算</strong>）</td>
+<td><strong>~28.2 倍</strong></td>
+<td>3.54 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>20.62 亿 ÷ 6236 万（无重大一次性项，SBC 已按 GAAP 扣除不加回）</td>
+<td><strong>33.1 倍</strong></td>
+<td><strong>3.02 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>20.62 亿 ÷ 1.0054 亿</td>
+<td><strong>20.5 倍</strong></td>
+<td>4.88 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣 SBC，且用可持续 FCF ~8800 万）</strong></td>
+<td>20.62 亿 ÷ 8800 万</td>
+<td><strong>23.4 倍</strong></td>
+<td><strong>4.27 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>22.9 亿 ÷ 1.0536 亿</td>
+<td><strong>21.7 倍</strong></td>
+<td>4.60 元</td>
+</tr>
+<tr>
+<td>EV/EBITDA</td>
+<td>22.9 亿 ÷ 1.33 亿</td>
+<td>17.2 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>20.62 亿 ÷ 5183 万（FY24 4012 万、FY25 5302 万、TTM 6236 万的平均）</td>
+<td><strong>39.8 倍</strong></td>
+<td><strong>2.51 元</strong></td>
+</tr>
+<tr>
+<td>券商 Forward PE</td>
+<td>一致预期</td>
+<td>26.4 倍</td>
+<td>3.79 元（是预测）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>大白话说清楚</h3>
+<p><strong>你现在花 100 块买 GRC，按最保守的真实口径（三年平均利润），公司一年替你赚 2.51 块。</strong></p>
+<p>按当期 GAAP 利润算是 <strong>3.02 块</strong>。按自由现金流算是 <strong>4.27 到 4.88 块</strong>——这是最乐观的口径，之所以比利润口径高这么多，是因为财报上有 2903 万的折旧摊销不是真的花钱（尤其是 Fill-Rite 收购形成的无形资产摊销），而实际维护设备只花了 1926 万。</p>
+<p><strong>注意三年平均口径（39.8 倍）明显比当期（33.1 倍）贵。</strong> 这说明<strong>当前的利润处在一个上升过程的顶端，而不是常态</strong>。FY2024 净利润才 4012 万，TTM 是 6236 万，两年涨了 55%。买 33 倍，赌的是这个利润能守住并继续涨；如果它回落到三年平均水平，你付的就是 40 倍。</p>
+<h3>这 2.5 到 3 块，有多少回到你口袋？</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>TTM 金额</th>
+<th>占自由现金流</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>分红（真回到你口袋）</strong></td>
+<td>1989 万</td>
+<td>19.8%</td>
+</tr>
+<tr>
+<td><strong>还债（增加股东权益，等同回购）</strong></td>
+<td>6300 万</td>
+<td>62.7%</td>
+</tr>
+<tr>
+<td>回购（几乎为零）</td>
+<td>265 万</td>
+<td>2.6%</td>
+</tr>
+<tr>
+<td>再投资（资本开支）</td>
+<td>1926 万</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>直接落袋的现金股息只有 0.97% 的收益率</strong>（每股 0.76 美元 / 78.09 美元）。剩下的 62.7% 拿去还债了——这笔钱你摸不到，但它实实在在让你这份股权更值钱：债从 4.41 亿降到 2.75 亿，等于股东权益凭空多了 1.66 亿（相当于市值的 8%）。</p>
+<p><strong>这是一个非常保守的资本配置：不搞大收购、不搞激进回购、稳步降杠杆、每年小幅提股息。</strong> 对一家家族仍持股 21% 的九十年老企业来说完全合理，但也意味着<strong>你别指望它给你惊喜</strong>。</p>
+<h3>这个 2.5–3 块未来会变大还是变小？</h3>
+<p><strong>往上的力量：</strong>
+1. <strong>还债的红利还没吃完。</strong> 债务还剩 2.75 亿，按 6300 万/年的速度再有四年还清。假设平均利率 6%，全部还清后每年省下约 1650 万税前利息，<strong>相当于净利润增加 20%，而且是白捡的。</strong>
+2. <strong>美国水基础设施的长坡。</strong> 全美污水管网平均服役五十年以上，联邦《基础设施投资和就业法案》拨了 550 亿美元给水系统。市政订单不受经济周期影响，只受拨款节奏影响，这是十年以上的能见度。
+3. <strong>数据中心带来的消防泵需求。</strong> 超大规模数据中心的消防系统复杂度和单价都远高于普通建筑，Patterson 是受益方。
+4. <strong>Fill-Rite 还在提毛利率。</strong> 从 29.76% 一路爬到 31.82%，整合红利尚未见顶。
+5. <strong>ROIC 11.93% &gt; WACC 10.74%。</strong> <strong>这是一家再投资能创造价值的公司</strong>（虽然优势只有 1.2 个百分点，不宽裕）。这一点跟 DoubleVerify（ROIC 6.09% &lt; WACC 9.15%）正好相反。
+6. <strong>定价权真实存在。</strong> 营收只涨 4% 而毛利率还在升，说明涨价的部分没有被销量下滑吃掉。</p>
+<p><strong>往下的力量：</strong>
+1. <strong>营收基本不长了。</strong> 剔除收购，过去三年真实增速是 0.02%、3.44%、4.18%。<strong>这是一家 4% 增长的公司，市场却按 33 倍给它定价。</strong>
+2. <strong>股价一年涨了 89.4%。</strong> 这是全篇最扎眼的数字。<strong>净利润同期涨 20.3%，股价涨 89.4%——差的那 69 个百分点，全是估值扩张。</strong> 200 日均线 65.94，现价 78.09，50 日均线 82.69（现价已经跌破 50 日线，RSI 40.84 走弱）。<strong>买它的人买的是「水基建 + 数据中心」的故事，不是 4% 的增长。</strong>
+3. <strong>三年平均口径 39.8 倍 &gt; 当期 33.1 倍。</strong> 当前利润是近三年最高点，向下的空间比向上的大。
+4. <strong>周期性还在。</strong> 生意 D（工业/农业/建筑/石油，估算占 30%）跟大宗商品和农业收入挂钩。FY2022 净利润只有 1120 万，说明这门生意是能被打趴下的。
+5. <strong>股本每年微增 0.35%。</strong> 不回购，还轻微稀释。
+6. <strong>规模太小，海外只占 23.8%。</strong> 一家 7 亿美元营收的公司，在一个由 Xylem（营收 85 亿）、Grundfos、Flowserve 主导的市场里，规模劣势是长期的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门真正的好生意配一个已经被喊到位的价格。</strong></p>
+<p>Gorman-Rupp 九十年只做泵，账本干净得像教科书——股权激励只占净利润 6.5%、没有一次性项目、自由现金流扣掉 SBC 只缩水 4%、ROIC 高于资本成本、连续五十多年提高股息、家族持股 21%。它靠着「设计院把型号写死在图纸上」和「备件二十年的长尾」，在一个不起眼的角落里稳稳赚钱。2022 年那笔 5.28 亿的 Fill-Rite 收购到今天回头看是成功的：毛利率涨了 5 个百分点，借的债已经还掉三分之一。<strong>这些都是真的，也都值得给溢价。</strong></p>
+<p>问题在于<strong>你现在付的溢价太满了</strong>：33 倍市盈率（三年平均口径 39.8 倍）、21.7 倍 EV/EBIT，买的是一家营收年增 4%、股息率不到 1% 的公司。过去 52 周股价涨了 89.4%，净利润只涨 20.3%——<strong>多出来的六十多个百分点是市场把「水基建」和「数据中心」两个热门叙事贴到它身上的结果，不是这家公司自己挣来的。</strong></p>
+<p>真实的年化回报大概是：3% 的盈利收益率 + 4–6% 的增长 + 还债带来的每年 2% 左右的权益增值 ≈ <strong>9–11%</strong>。这不算糟，但对一个把利润全押在「还完债之后能省下利息」的故事上的 4% 增长股来说，<strong>没有留任何安全边际</strong>。</p>
+<p><strong>好公司，坏价格。等它回到 55–60 美元（真实市盈率 24 倍左右）再看，那个价位上这门生意是值得长期持有的。</strong></p>
+</div></body></html>
