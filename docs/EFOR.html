@@ -1,0 +1,406 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EFOR · 恒进（Everforth, Inc.，原 ASGN Incorporated）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EFOR</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">17%自由现金流收益率是真的，但主业派工四年缩39%，AI正在吃它</div><h1>EFOR · 恒进（Everforth, Inc.，原 ASGN Incorporated）</h1>
+<p>市值 13.0 亿美元 | 股价约 $31.8 | 行业：科技服务（IT 人力与咨询）| NYSE
+TTM 口径截止：2026 年 6 月 30 日（自然年财年）</p>
+<blockquote>
+<p>这家公司原名 ASGN Incorporated，旗下主力品牌是 Apex Systems 和 ECS Federal。2026 年改名 Everforth、换代号 EFOR。<strong>改名不改生意</strong>：它就是一家把技术人员租给别人用的公司。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报口径 2025 年二季度改过一次，现在的披露是：商业端分<strong>派工（Assignment）</strong>和<strong>咨询（Consulting）</strong>两类收入，联邦政府端按客户类型拆成四块。合起来是三门本质不同的生意。</p>
+<h3>生意一：派工（Assignment）—— 按小时把工程师租出去</h3>
+<p><strong>这是最古老、最简单、也正在崩塌的那门生意。</strong></p>
+<p>一家中西部的保险公司要上一套新的理赔系统，内部只有 12 个程序员，缺 40 个人手干 9 个月。招正式员工？流程要半年、还得给股权和长期福利、项目结束了又不好裁。于是它打给 Apex Systems（Everforth 的商业品牌）。</p>
+<p>Apex 手上有一个几十万人的技术人才库和一支几百人的招聘团队。三周之内，它交付 40 份简历、面试、背调，把人招进 <strong>Apex 自己的编制</strong>——这些人是 Apex 的员工，Apex 发工资、上社保、买保险——然后派到保险公司的办公室或者远程干活。</p>
+<p><strong>钱是这么算的</strong>：保险公司按小时付 Apex，比如一个中级 Java 工程师 <strong>$95/小时</strong>；Apex 付这个工程师 <strong>$70/小时</strong>，中间 $25 是毛利，毛利率约 26%。40 个人 × 每周 40 小时 × 39 周 = 62,400 小时，这单合同营收 <strong>593 万美元</strong>，Apex 赚毛利约 <strong>156 万</strong>。项目结束，人就撤走，合同归零。</p>
+<p>这门生意的要害是：<strong>没有任何续约保证，收入等于"在岗人数 × 小时费率"</strong>。客户砍预算，第二天就能让人走。</p>
+<p><strong>它正在以肉眼可见的速度萎缩：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>派工营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>24.76 亿</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>20.79 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>17.41 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>15.00 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年跌掉 39%。</strong> 三个原因叠在一起：疫情后的技术招聘大冻结、企业把这类岗位挪到印度和拉美（同样的活 $30/小时）、以及最近两年 AI 编程工具让"多招 40 个人写增删改查"这件事本身需求变少。<strong>这三条没有一条是周期性的，都是结构性的。</strong></p>
+<h3>生意二：咨询（Consulting）—— 卖结果，不卖人头</h3>
+<p>同样是派技术人员，但商业模式完全不同：<strong>签的是交付成果，不是小时数。</strong></p>
+<p>一家区域银行想把 20 年的老数据仓库搬到云上。它不知道要几个人、要多久，它只知道"我要 2027 年底之前能在云上跑报表"。Everforth 报一个固定价：<strong>14 个月、600 万美元、分 5 个里程碑付款</strong>。团队怎么配、加班到几点、用了 8 个人还是 15 个人，客户不管——做不完是 Everforth 自己的成本。</p>
+<p><strong>毛利率因此更高（约 30–32%，比派工高 5–6 个点），而且更黏</strong>：数据平台迁完了，接下来是治理、是 AI 模型上线、是持续运维，一个客户能连着签好几年。</p>
+<p>这块从 FY2021 的 6.41 亿长到 FY2025 的 12.90 亿，翻了一倍。<strong>但要看清楚：增长的很大一部分是买来的</strong>——TTM 花了 2.816 亿现金收购，FY2025 花了 3.041 亿，FY2022 花了 4.846 亿。买的是有咨询交付能力的中小公司，然后并进来。</p>
+<h3>生意三：联邦政府（ECS Federal）—— 卖给五角大楼和情报机构</h3>
+<p>这块以 ECS Federal 品牌运作，客户是政府，合同长、门槛高、需要安全许可。</p>
+<p><strong>具体长什么样</strong>：陆军某司令部要一套全天候的网络防御监控——7×24 的安全运营中心、威胁情报分析、事件响应。招标后签一个 <strong>5 年 8,000 万美元</strong>的 IDIQ 合同，Everforth 派 60 个持有"绝密"级安全许可的分析师驻场，按成本加固定费用（cost-plus）或者固定单价结算。这类合同的护城河不在技术，在<strong>人的安全许可</strong>——一个持 TS/SCI 许可的分析师要背调一到两年才能上岗，市场上就那么多人，抢不到人就投不了标。</p>
+<p>TTM 拆分：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>政府客户</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国防部与情报机构</td>
+<td>5.09 亿</td>
+<td>5.26 亿</td>
+<td>−3.2%</td>
+</tr>
+<tr>
+<td>国家安全</td>
+<td>3.27 亿</td>
+<td>3.10 亿</td>
+<td>+5.6%</td>
+</tr>
+<tr>
+<td>联邦文职部门</td>
+<td>2.11 亿</td>
+<td>2.25 亿</td>
+<td>−6.2%</td>
+</tr>
+<tr>
+<td>其他联邦</td>
+<td>1.32 亿</td>
+<td>1.29 亿</td>
+<td>+2.2%</td>
+</tr>
+<tr>
+<td><strong>政府合计</strong></td>
+<td><strong>11.80 亿</strong></td>
+<td>11.90 亿</td>
+<td>−0.9%</td>
+</tr>
+</tbody>
+</table></div>
+<p>政府端整体基本持平。<strong>唯一在增长的是"国家安全"（+5.6%）</strong>，那是网络战、情报分析这类真正在扩预算的方向；文职部门（−6.2%）在被削。</p>
+<h3>钱：三门生意的 TTM 数字</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>毛利率</th>
+<th>贡献毛利</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商业派工</td>
+<td>约 14.5 亿（估算）</td>
+<td>−8%</td>
+<td>37%</td>
+<td>约 26%（估算）</td>
+<td>约 3.8 亿</td>
+</tr>
+<tr>
+<td>商业咨询</td>
+<td>约 13.4 亿（估算）</td>
+<td>+6%</td>
+<td>34%</td>
+<td>约 31%（估算）</td>
+<td>约 4.2 亿</td>
+</tr>
+<tr>
+<td>联邦政府</td>
+<td>11.80 亿</td>
+<td>−0.9%</td>
+<td>30%</td>
+<td>约 26%（估算）</td>
+<td>约 3.1 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>39.67 亿</strong></td>
+<td><strong>−0.95%</strong></td>
+<td>100%</td>
+<td><strong>28.5%</strong></td>
+<td><strong>11.32 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报改口径后不再单独披露 TTM 的派工/咨询拆分，也从不披露分部利润；上表商业端的拆分和全部毛利率均为按上年结构和行业惯例估算，不是财报数字。</strong> 确定的只有合并数：营收 39.67 亿、毛利 11.32 亿（28.5%）、经营利润 2.348 亿（5.9%）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>5,190 万美元</strong>，占净利润 8,300 万的 <strong>62.5%</strong>。这是个大数字——公司赚的每 10 块钱里，有 6 块多是发给员工的股票。<strong>但这一项在这家公司身上不构成障眼法，理由见下面回购那条。</strong></p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：TTM 现金收购 2.816 亿，相关的交易和整合费用混在 SG&amp;A 里拆不出来。<strong>单期口径无法判断这是否年年发生</strong>——但看五年记录（4.85 亿 / 2.23 亿 / 0 / 0 / 3.04 亿 / 2.82 亿），收购是它的常规动作，不是偶发事件，所以这类费用<strong>不该加回</strong>。另有"其他经营项目" 5,300 万的非现金加回，性质不明，保守起见不视为可持续利润。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：没有明显的软件资本化。资本开支 TTM 只有 3,580 万，占营收 0.9%——<strong>这是一门几乎不需要资产的生意，它的资产是人。</strong></p>
+</li>
+<li>
+<p><strong>回购与稀释 —— 这一项是全篇最亮的地方</strong>：</p>
+</li>
+<li>TTM 回购股票：<strong>1.661 亿美元</strong></li>
+<li>TTM SBC：5,190 万美元</li>
+<li><strong>回购 ÷ SBC = 3.2 倍</strong></li>
+<li>股本一年<strong>减少 5.06%</strong>，最近一季再减 0.97%</li>
+</ul>
+<p><strong>3.2 倍远高于"1 倍才刚抵消发股"的及格线，是真回购。</strong> 而且股本实打实少了 5%——不是账面游戏。这意味着：<strong>那 5,190 万的 SBC 已经被现金买回来了，你的股份没有被稀释，反而变多了。</strong> 五年记录也一致（1.97 亿 / 2.98 亿 / 2.91 亿 / 3.43 亿 / 1.79 亿 / 1.66 亿），这家公司常年把大部分自由现金流拿去回购。</p>
+<p><strong>唯一的问题是：回购的金额在逐年下降</strong>（3.43 亿 → 2.91 亿 → 1.79 亿 → 1.66 亿），因为钱被挪去做收购了。</p>
+<ul>
+<li><strong>利润和现金流的差</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>83.0</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>105.6</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>12.8</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>51.9</td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>53.0</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−58.1</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>30.4</td>
+</tr>
+<tr>
+<td>− 所得税相关</td>
+<td>−9.6</td>
+</tr>
+<tr>
+<td>− 其他经营性资产净增</td>
+<td>−12.1</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>256.9</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−35.8</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>221.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>差额很大（净利润 8,300 万 → 自由现金流 2.211 亿，2.7 倍），但差得干净</strong>：主要是折旧摊销 1.056 亿和 SBC 5,190 万。折旧摊销里绝大部分是<strong>收购形成的无形资产摊销</strong>——买来的客户关系、品牌，每年按会计规则摊一笔，但不花现金。所以 GAAP 净利润被这笔非现金费用严重压低了，这也是"追踪 PE 16.1 倍、前瞻 PE 只有 8.0 倍"的原因之一。</p>
+<p><strong>但自由现金流有个更要命的趋势</strong>：4.17 亿（FY2023）→ 3.65 亿 → 2.88 亿 → <strong>2.21 亿（TTM）</strong>。<strong>三年掉了 47%。</strong> 这不是会计问题，是生意在缩。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>13.0 亿 ÷ 0.83 亿</td>
+<td><strong>15.7 倍</strong></td>
+<td><strong>$6.38</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回无形资产摊销（税后约 4,100 万）</td>
+<td>约 10.5 倍</td>
+<td>约 $9.52</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 已扣 SBC，收购费用属常态不加回</td>
+<td><strong>15.7 倍</strong></td>
+<td><strong>$6.38</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>13.0 亿 ÷ 2.211 亿</td>
+<td><strong>5.9 倍</strong></td>
+<td><strong>$17.01</strong></td>
+</tr>
+<tr>
+<td>自由现金流（再扣 SBC 保守口径）</td>
+<td>13.0 亿 ÷ 1.692 亿</td>
+<td>7.7 倍</td>
+<td>$13.00</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>26.4 亿 ÷ 2.348 亿</td>
+<td><strong>11.2 倍</strong></td>
+<td><strong>$8.90</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>13.0 亿 ÷ 1.239 亿</td>
+<td><strong>10.5 倍</strong></td>
+<td><strong>$9.52</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先看三年平均这一行</strong>：过去三期净利润 8,300 万、1.135 亿、1.752 亿，平均 1.239 亿，对应 <strong>10.5 倍</strong>——<strong>比当期的 15.7 倍还便宜</strong>。这说明当前利润处在<strong>低点</strong>，不是高点（跟上一家 GOLD 正好相反）。</p>
+<p><strong>再看最刺眼的那行：自由现金流口径 5.9 倍，也就是 17% 的自由现金流收益率。</strong> 一家公司市值 13 亿，一年产生 2.21 亿真金白银——不到 6 年就能把买它的钱赚回来。市净率 <strong>0.71</strong>，意思是<strong>你花 71 分买公司账上 1 块钱的净资产</strong>（虽然那里面有不少是收购形成的商誉）。</p>
+<p><strong>你现在投 100 块进去，按最保守的口径算：</strong>
+- 用 GAAP 利润算，公司一年替你赚 <strong>6.38 块</strong>；
+- 用真实现金（自由现金流再扣掉全部股权激励）算，一年 <strong>13 块</strong>；
+- 用包含 13.4 亿净负债的企业价值算，一年 <strong>8.90 块</strong>。</p>
+<p><strong>这 13 块里有多少回到你口袋？</strong> TTM 回购 1.661 亿 ÷ 市值 13.0 亿 = <strong>12.8%</strong>——按现在的节奏，八年就能把整个公司买下来退市。不分红。剩下的现金流去了两个地方：收购花 2.816 亿（超过了全年自由现金流），借新债 2.304 亿补窟窿。</p>
+<p><strong>这个数未来是变大还是变小？我的判断是：先变小，然后取决于一件事。</strong></p>
+<p>变小的理由摆在那儿：自由现金流三年腰斩、营收连续四年下滑、派工业务四年掉 39%、净负债从 9.0 亿升到 13.4 亿、利息保障倍数只有 3.28 倍、投入资本回报率 5.08% 对上资本成本 4.84%——<strong>它每投一块钱只赚回 5 分，等于白忙。</strong></p>
+<p><strong>取决的那件事是：AI 到底是它的敌人还是朋友。</strong>
+- 是敌人的版本：企业用 AI 少招 30% 的合同工，派工业务继续每年掉 8–10%，咨询增长补不上，2.21 亿的自由现金流三年后变成 1.5 亿，债务压力上升，被迫停回购。
+- 是朋友的版本：企业不知道怎么把 AI 用起来，找 Everforth 做数据治理、模型落地、政府侧的 AI 安全——咨询和国家安全两块加速增长，把派工的窟窿填上，前瞻 PE 8.0 倍变成现实。</p>
+<p>市场现在明确押的是第一个版本：<strong>股价一年跌了 40.6%，做空比例占流通股 11.2%。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>统计上便宜得晃眼，商业上正踩在一个说不清的悬崖边。</strong></p>
+<p>17% 的自由现金流收益率、0.71 倍市净率、三年平均 10.5 倍、常年 3 倍于股权激励的真回购、股本一年真减 5%——<strong>这些都是真的，而且质量很高</strong>，比大多数"便宜股"干净得多。管理层拿钱的方式也没毛病：不发纸股票稀释你，是用现金回购。</p>
+<p><strong>但它最大的那块生意（占三成营收的派工）四年缩水 39%，自由现金流三年腰斩 47%，同时净负债涨到市值的 103%，利息只够覆盖 3.3 次。</strong> 便宜的原因不是市场犯傻，是市场在给一个正在被 AI 和离岸外包同时侵蚀的临时人力生意打折。</p>
+<p><strong>买它等于下一个具体的注：赌咨询和国防两块（合计占七成）的增长能在派工彻底塌掉之前接住盘。</strong> 这个赌注不是没道理——国家安全那块 +5.6%、咨询翻倍——但它是个赌注，不是一门可以放着不看的好生意。</p>
+<p>我的定档：<strong>价格便宜是真的，生意有硬伤也是真的。</strong> 它属于"便宜但有坑"那一类，值得盯着财报看派工什么时候止跌，不该闭着眼买。</p>
+</div></body></html>

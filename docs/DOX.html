@@ -1,0 +1,403 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DOX · Amdocs（阿姆多克斯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DOX</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">14.5倍真便宜、回购是SBC的5倍，但营收零增长且每年漏掉2成经营利润</div><h1>DOX · Amdocs（阿姆多克斯）</h1>
+<p>市值 66.0 亿美元 / 股价 $62.25 / 行业：技术服务（电信运营商 IT 系统）/ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Amdocs 是一家专门伺候<strong>电信运营商</strong>的软件公司。它的客户名单很短：AT&amp;T、Vodafone、T-Mobile、软银、Telefónica、加拿大的 Rogers、澳洲的 Telstra——全世界能叫上名字的大运营商就那么几十家，Amdocs 服务了其中大半。它不做任何面向普通消费者的东西，你手机里不会有它的 App，但你每个月收到的话费账单，很可能是它的系统算出来并打印的。</p>
+<p>财报把收入切成两块：<strong>Managed Services（托管服务）</strong>和 <strong>Other Services（其他服务，主要是软件许可+项目实施）</strong>。这个切法有点抽象，说人话是这样：</p>
+<h3>生意 A：托管服务——「把你的 IT 部门整个包给我」（TTM 30.43 亿，占 65.4%）</h3>
+<p>这是 Amdocs 的主业，也是它真正的护城河所在。</p>
+<p>具体怎么运作：假设 Vodafone 在德国有 3000 万手机用户。每一个用户的套餐、每一通电话的计费、每一次换套餐、每一张账单、每一笔催缴、每一次投诉工单——这一整套东西背后是一个极其庞大复杂的系统，行业里叫 BSS（Business Support System，业务支撑系统）。这套系统一旦停机十分钟，全德国的 Vodafone 用户就打不了电话、充不了值，第二天上新闻。</p>
+<p>Vodafone 可以自己养一支 2000 人的 IT 队伍来维护它。但它选择了另一条路：把这套系统连同维护它的人<strong>整个外包给 Amdocs</strong>，签一份 5 到 7 年的合同，每年付一笔固定的费用。Amdocs 派几百上千个工程师（大部分在印度和以色列，人力成本低）7×24 小时盯着，系统出问题它负责修，运营商要上新套餐它负责改代码，5G 来了它负责升级。</p>
+<p>一份这种合同有多大？以 Amdocs 最大的客户 AT&amp;T 为例，公开信息里的多年期托管合同规模在<strong>十亿美元级别</strong>，摊到每年一两亿美元。全公司 26,969 名员工，人均创收 17.25 万美元、人均创利 1.69 万美元——这个数字直接告诉你这是一门<strong>人力密集</strong>的生意，不是那种一份代码卖一万遍的软件生意。</p>
+<p>客户为什么不能换？因为换一次 BSS 系统是一场持续三到五年、可能失败的手术。运营商 CIO 换系统失败是要丢工作的，所以除非旧系统实在撑不住，没人愿意动。这就是 Amdocs 的护城河：<strong>不是技术领先，是更换成本高到令人绝望。</strong></p>
+<p>代价是这门生意几乎不增长。TTM 30.43 亿，去年同期 29.96 亿，<strong>涨了 1.6%</strong>。运营商自己就是一个不增长、还在到处砍成本的行业。</p>
+<h3>生意 B：软件许可与项目实施——「我卖你一套新系统，再帮你装上」（TTM 16.10 亿，占 34.6%）</h3>
+<p>这块是一次性或阶段性的：运营商决定上一个新系统（比如从 4G 计费迁到 5G，或者上一套新的客户自助 App），Amdocs 卖软件许可证，再派一个项目组进场做实施、做数据迁移、做定制开发，按项目里程碑收钱。</p>
+<p>这块波动极大，也是过去两年出血的地方：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>其他服务营收（亿）</td>
+<td>16.10</td>
+<td>15.37</td>
+<td><strong>21.00</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>FY2024 到 FY2025 掉了 26.8%，一年蒸发 5.6 亿美元营收。原因是 Amdocs 在 2025 年剥离/退出了一部分低利润的业务（主要是给运营商做的一些非核心外包），加上几个大项目结束后没有接上。这是全公司营收 FY2024 的 50.05 亿掉到 FY2025 的 45.33 亿（-9.4%）的直接原因。</p>
+<p>TTM 已经止跌回升到 16.10 亿，但离两年前还差得远。</p>
+<h3>两块合起来的账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>托管服务</td>
+<td>30.43</td>
+<td>+1.6%</td>
+<td>65.4%</td>
+<td>约 20%（估算）</td>
+<td>约 6.1 亿</td>
+</tr>
+<tr>
+<td>其他服务</td>
+<td>16.10</td>
+<td>+4.7%</td>
+<td>34.6%</td>
+<td>约 14%（估算）</td>
+<td>约 2.3 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>46.53</strong></td>
+<td><strong>+0.14%</strong></td>
+<td>100%</td>
+<td>17.91%</td>
+<td>8.33 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到营收，不披露分部利润。</strong> 上表的利润率是按整体 17.91% 的经营利润率、结合托管合同通常利润率更高这一行业常识估算的，不是财报数字。</p>
+<p>全公司 TTM 营收 46.53 亿，同比增长 <strong>0.14%</strong>——四舍五入是零。这是理解这家公司的第一件事。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM 1.10 亿美元，占 GAAP 净利润 4.54 亿的 <strong>24.3%</strong>。这个比例在软件公司里算克制的（同行常见 40%-60%）。GAAP 已经把它扣掉了，本文全篇不加回。</p>
+<h3>一次性项目</h3>
+<p>TTM 没有单独披露的大额重组或诉讼和解。有一笔 1.62 亿美元的投资出售损失（现金流表加回项），金额不大。</p>
+<h3>资本化的支出</h3>
+<p>Amdocs 没有把软件开发费大规模资本化的痕迹。资本开支 1.10 亿，只占营收 2.4%，是正常的办公和数据中心投入。这一点比同行干净。</p>
+<h3>回购与稀释——这一项是全篇最漂亮的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>5.63 亿</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>1.10 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>5.10 倍</strong></td>
+</tr>
+<tr>
+<td>现金分红</td>
+<td>2.32 亿</td>
+</tr>
+<tr>
+<td>股本实际变化（一年）</td>
+<td><strong>−3.53%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购是 SBC 的 5.1 倍，股本一年实实在在少了 3.53%。这不是「回购只是在抵消员工发股」，这是真回购。加上分红，一年返还给股东 <strong>7.96 亿美元</strong>，占 66.0 亿市值的 <strong>12.1%</strong>。</p>
+<h3>利润和现金流的差——这里藏着最大的问题</h3>
+<p>经营现金流 7.49 亿，净利润 4.54 亿，差 2.95 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>4.54</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>2.09</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>1.10</td>
+</tr>
+<tr>
+<td>＋ 投资出售损失</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>0.25</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−0.80</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>0.36</td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>0.07</td>
+</tr>
+<tr>
+<td>＋ 所得税项变化</td>
+<td>0.11</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−0.26</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>7.49</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表完全对得上，没有任何猫腻——差额几乎全部是折旧摊销和 SBC 这两项非现金成本。现金流质量很好。</p>
+<p><strong>但真正的问题不在这张表里，在利润表的中段。</strong> 看这一串：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润率</td>
+<td>17.91%</td>
+<td>17.92%</td>
+<td>15.18%</td>
+<td>14.83%</td>
+</tr>
+<tr>
+<td>税前利润率</td>
+<td>12.54%</td>
+<td>15.29%</td>
+<td>11.81%</td>
+<td>13.02%</td>
+</tr>
+<tr>
+<td><strong>中间漏掉了</strong></td>
+<td><strong>5.37pp</strong></td>
+<td>2.63pp</td>
+<td>3.37pp</td>
+<td>1.81pp</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 的经营利润是 <strong>8.33 亿</strong>，税前利润只剩 <strong>5.84 亿</strong>——<strong>从经营利润走到税前利润，2.50 亿美元不见了，相当于经营利润的 30%。</strong></p>
+<p>这笔钱去哪了？财报把它塞在「利息与其他支出净额」一行里，不再细拆。能确定的构成：一是利息支出（净负债 8.81 亿，年利息大概四五千万）；二是汇兑损益——Amdocs 总部在以色列、研发中心在印度，收入却大部分是美元，谢克尔和卢比一动就吃利润；三是对少数股权投资的估值变动。</p>
+<p><strong>关键判断：这不是一次性的。</strong> 从上表看，这一项 FY2023 吞掉 0.88 亿、FY2024 吞掉 1.69 亿、FY2025 吞掉 1.19 亿，三年平均 1.25 亿。TTM 的 2.50 亿是常态的<strong>两倍</strong>，超额部分约 1.25 亿。所以正确的看法是：这是一笔<strong>年年都要交、金额还不稳定的税</strong>，只是 TTM 这一期交得格外多。</p>
+<p>单期口径无法判断超额那一半是暂时的汇率波动还是永久性的恶化。下面估值表里我按「不加回」处理，另给一个回归常态的敏感度。</p>
+<h3>资产负债表的一个变化</h3>
+<p>净负债从一年前的 5.01 亿涨到 <strong>8.81 亿</strong>——一年多欠了 3.8 亿。原因很直白：TTM 花掉的钱（回购 5.63 + 分红 2.32 + 收购 2.43 = 10.38 亿）超过了自由现金流（6.39 亿），差额 4 亿靠新发 2.8 亿债务和消耗现金补上。收购支出 2.43 亿是往年（0.86 亿）的近三倍。</p>
+<p>不过绝对水平仍然安全：净负债/EBITDA 只有 0.85 倍，利息覆盖 14.4 倍。这不是一家有债务风险的公司，只是它正在<strong>用借来的钱回购股票</strong>，这个节奏不能永远持续下去。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 65.97 亿，企业价值 74.78 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>65.97 ÷ 4.54</td>
+<td><strong>14.5 倍</strong></td>
+<td><strong>$6.88</strong></td>
+</tr>
+<tr>
+<td>市场前瞻市盈率（Non-GAAP）</td>
+<td>数据源给的 Forward PE</td>
+<td>7.9 倍</td>
+<td>$12.66</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 净利，SBC 不加回，无重大一次性可剔</td>
+<td><strong>14.5 倍</strong></td>
+<td><strong>$6.88</strong></td>
+</tr>
+<tr>
+<td>敏感度：若「其他支出」回归三年常态</td>
+<td>净利加回 0.98 亿（税后）</td>
+<td>12.0 倍</td>
+<td>$8.35</td>
+</tr>
+<tr>
+<td>自由现金流口径（原样）</td>
+<td>65.97 ÷ 6.39</td>
+<td>10.3 倍</td>
+<td>$9.69</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC）</strong></td>
+<td>65.97 ÷ (6.39 − 1.10)</td>
+<td><strong>12.5 倍</strong></td>
+<td><strong>$8.01</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>74.78 ÷ 8.33</td>
+<td>9.0 倍</td>
+<td>$11.14（税前）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>65.97 ÷ (4.54+5.65+4.93)/3</td>
+<td><strong>13.1 倍</strong></td>
+<td><strong>$7.64</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>关于那个 7.9 倍的前瞻市盈率：它对应的每股收益是 $7.86，而 TTM 的 GAAP 每股收益只有 $4.20。<strong>没有任何迹象表明 Amdocs 的利润能在一年内涨 87%</strong>，所以这个数字用的一定不是 GAAP 口径（多半是加回了收购无形资产摊销和股权激励的公司自定义口径）。<strong>不要用这个 7.9 倍做任何判断。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Amdocs，按最保守的真实口径（GAAP 14.5 倍）算，公司一年替你赚 6.88 块。</strong></p>
+<p>这 6.88 块里，钱是这样分的：</p>
+<ul>
+<li><strong>分红</strong>：TTM 派息 2.32 亿，占市值 3.5%——每 100 块里有 <strong>3.5 块</strong>现金打进你账户；</li>
+<li><strong>回购</strong>：TTM 回购 5.63 亿，占市值 8.5%。扣掉发给员工的股票稀释后，你的持股比例一年实实在在多了 <strong>3.53%</strong>；</li>
+<li>分红加回购合计 <strong>12.1%</strong>，<strong>超过了公司赚的钱（6.88%）</strong>——差额是靠借钱和消耗现金补的。</li>
+</ul>
+<p>这就带出核心问题：<strong>这个 6.88 块未来是变大还是变小？</strong></p>
+<p>变大的理由：Amdocs 在收缩低毛利业务、把毛利率从 34.5% 一路提到 38.3%，经营利润率从 13.96% 提到 17.91%。同样的营收赚出了更多利润。ROIC 15.4%，远高于 6.2% 的资本成本。</p>
+<p>变小的理由更重：<strong>营收零增长</strong>。TTM 同比 +0.14%，FY2025 还跌了 9.4%。利润率提升是有天花板的，砍到一定程度就砍不动了，那时候没有营收增长托底，利润就只能横着走。而客户——全球电信运营商——本身就是一个用户数见顶、ARPU 下滑、资本开支收缩的行业。<strong>Amdocs 的天花板就是它客户的天花板。</strong></p>
+<p>再加上那笔年年吞掉一两亿、TTM 吞掉 2.5 亿的「其他支出」，以及 12.35% 的做空比例（市场上有相当一批人在赌它继续跌），这不是一家可以闭眼买的公司。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真的：14.5 倍 GAAP、12.5 倍扣完股权激励的自由现金流、9 倍 EV/EBIT，账目干净、回购是 SBC 的 5 倍、一年返还股东 12% 的市值，这些都不是装出来的。</strong></p>
+<p>但你买的是一门<strong>不增长的生意</strong>——TTM 营收涨 0.14%，客户是全球最没活力的行业之一。它便宜不是因为市场犯傻，是因为市场给「零增长 + 客户集中 + 一笔每年吞掉 20%-30% 经营利润的说不清楚的其他支出」定了一个折价。这个折价合不合理，取决于你信不信它能靠继续压成本和收缩股本，把每股收益托住。</p>
+<p>股价一年跌了 28.6%，如果它真能维持每年 3.5% 的股本收缩加 3.5% 的分红，什么都不做也有 7% 的年回报打底。<strong>这个价格值得买，但别指望它成长——它是一张收益率 7% 的债券，附带一个业务下滑的期权。</strong></p>
+</div></body></html>

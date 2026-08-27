@@ -1,0 +1,379 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NAT · Nordic American Tankers（北欧美国油轮）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NAT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">运价顶点上真实36.6倍,卖船+借钱在派股息,3倍市净率</div><h1>NAT · Nordic American Tankers（北欧美国油轮）</h1>
+<p>市值 13.81 亿美元 / 股价约 6.52 美元 / 行业：运输（原油海运）/ TTM 截止 2026 年 3 月 31 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>这家公司只做一件事，而且做得极其单纯：它有 18 条一模一样的船，出租给别人拉原油，按天收钱。</strong> 全公司岸上员工只有 18 个人——一条船配一个人。财报没有分部披露，因为确实没什么可分的。</p>
+<h3>这门生意的具体样子</h3>
+<p>NAT 拥有的是 <strong>Suezmax 型油轮</strong>。这是一个尺寸规格：船长约 275 米，能装大约 100 万桶原油，名字的意思是"能满载通过苏伊士运河的最大船型"。比它大一号的是 VLCC（装 200 万桶），比它小一号的是 Aframax（装 70 万桶）。Suezmax 的典型活儿是：从西非尼日利亚装原油运到欧洲鹿特丹，从中东经苏伊士运河运到地中海，或者从美国墨西哥湾运到欧洲。</p>
+<p>生意怎么做的？举个具体例子：某家石油贸易商（比如 Vitol 或者一家炼厂）在西非买了 100 万桶原油，需要运到法国。它到船舶经纪市场上询价，NAT 的租船部门报一个价，谈成之后签一份"程租合同"——<strong>这一趟，从装货港到卸货港，收多少钱</strong>。行业里把这笔钱换算成"等价期租日租金"（TCE，Time Charter Equivalent），也就是<strong>扣掉这趟烧的油钱和港口费之后，平摊到每天赚多少</strong>。</p>
+<p>2026 年一季度，NAT 全船队的平均 TCE 是<strong>每天 47,600 美元</strong>。二季度更猛——公司公告说约 <strong>90% 的船期已经以每天约 68,000 美元锁定</strong>。而每条船每天的运营成本（船员工资、伙食、保养、保险、备件）大约 <strong>9,000 美元</strong>。</p>
+<p><strong>所以这门生意的算式简单到可以在餐巾纸上写完：</strong></p>
+<blockquote>
+<p>（日租金 − 9,000 美元）× 18 条船 × 一年可用天数 = 毛利</p>
+</blockquote>
+<p>按 TTM 实际数字倒推：TTM 毛利 1.558 亿美元 ÷（18 条船 × 365 天 × 约 95% 出租率 = 6,241 船天）= 每天约 <strong>24,960 美元</strong>的毛利，加回 9,000 的成本，<strong>说明过去 12 个月的平均 TCE 大约是每天 34,000 美元</strong>。</p>
+<h3>为什么 2026 年租金这么高</h3>
+<p>三件事叠在一起：一是<strong>俄罗斯制裁把航线拉长了</strong>——欧洲不买俄油，改从中东和美国买，同样一桶油要多在海上漂很多天，等于凭空吃掉了一批运力；二是<strong>制裁名单上的"影子船队"陆续被扣</strong>，合规船队的可用运力更紧；三是<strong>新船订单少</strong>，造一条 Suezmax 要三年，现在想加运力也来不及。</p>
+<h3>这门生意最需要理解的一点</h3>
+<p><strong>它没有客户关系、没有品牌、没有转换成本、没有定价权。</strong> 船东手里的 Suezmax 和竞争对手手里的 Suezmax 在贸易商眼里是同一件东西，谁报价低用谁。它是一门纯粹的<strong>大宗商品生意</strong>，价格由全球运力和贸易流量的供需决定，个体船东只是价格的接受者。</p>
+<p>这也意味着：<strong>NAT 的利润不是"公司经营得好不好"的结果，是运价周期的结果。</strong> 看它历年的净利润就明白了（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>2021</th>
+<th>2022</th>
+<th>2023</th>
+<th>2024</th>
+<th>2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td><strong>−171.3</strong></td>
+<td>+15.1</td>
+<td><strong>+98.7</strong></td>
+<td>+46.6</td>
+<td>+12.3</td>
+<td><strong>+54.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>五年之内从巨亏 1.7 亿到大赚 9870 万再回落到 1200 万，然后又反弹。<strong>同一批船，同一个管理层，同一个 18 人的办公室。</strong></p>
+<h3>TTM 的钱账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+<th>同比（对 FY2025）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收入</td>
+<td>331.99</td>
+<td>+13.5%</td>
+<td>含转嘱的燃油和港口费</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>155.80</td>
+<td>+34.8%</td>
+<td>扣掉航次成本和船舶运营成本</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>66.73</td>
+<td>+124.5%</td>
+<td>毛利率 46.9%，经营利润率 20.1%</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>54.32</td>
+<td>+342.7%</td>
+<td>其中含卖旧船的收益 1662 万</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意最后一行的括号</strong>：TTM 那 5432 万净利润里，有 <strong>1662 万是卖船赚的一次性收益</strong>（现金流量表"资产处置收益 −16.62"）。剔掉之后，靠开船赚的钱是 <strong>3770 万</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>好消息是：<strong>这家公司的报表是本批三家里最干净的。</strong> 18 个员工，没有商誉，没有复杂的收入确认，没有关联方交易。坏消息在别处。</p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>零</strong>。上一年也只有 185 万。对一家上市公司来说罕见地低——18 个员工确实发不了多少股票。<strong>这一项没有障眼法。</strong></p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>1662 万美元的卖船收益</strong>。这不是造假，但需要理解它的性质：卖船是把一项会折旧的资产换成现金，卖得的价钱高于账面净值就记成收益。<strong>问题在于船是有限的</strong>——卖一条少一条，这条路走不了几次。TTM 同时买船花了 1.2094 亿、卖船收回 7385 万，是在做船队更新。只看单期口径<strong>无法判断卖船收益是否年年都有</strong>，但从结构上看它不是可持续的利润来源。</p>
+<p><strong>资本化支出</strong>：没有软件或内容资本化。船就是船，按 25 年折旧。TTM 折旧摊销 <strong>5849 万</strong>，18 条船平摊每条每年约 325 万美元。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>零</strong>，SBC 也是零，比值不适用。股本一年增加 0.30%（几乎没变）。但这是短期的画面——<strong>拉长看 NAT 是美股里稀释最凶的公司之一</strong>：股本从多年前的一亿股出头膨胀到现在的 <strong>2.1175 亿股</strong>。它的历史打法就是运价好的时候增发股票买船，运价差的时候增发股票发股息。<strong>TTM 没增发，只是因为运价太好、暂时不需要。</strong></p>
+<p><strong>利润和现金流的对账</strong>（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+54.32</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+58.49</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+0.75</td>
+</tr>
+<tr>
+<td>− 卖船收益（非经营性，冲回）</td>
+<td>−16.62</td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−29.26</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−2.88</td>
+</tr>
+<tr>
+<td>− 存货（燃油）增加</td>
+<td>−9.00</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−2.59</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−2.79</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+50.41</strong></td>
+</tr>
+<tr>
+<td>− 资本开支（买船）</td>
+<td><strong>−120.94</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−70.53</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表是本篇最关键的东西，请慢慢看。</strong></p>
+<p>公司在运价创纪录的一年里，经营现金流 5041 万，资本开支 1.2094 亿（买船），自由现金流 <strong>负 7053 万</strong>。然后<strong>分红派掉了 9952 万</strong>。</p>
+<p>钱从哪来的？现金流量表写得清清楚楚：卖旧船收回 <strong>7385 万</strong>，净新增借款 <strong>7623 万</strong>。</p>
+<p><strong>翻译成大白话：过去 12 个月，NAT 一边卖船一边借钱，来支付一笔它自己赚不出来的股息。</strong> 而这还是在运价处于多年高位的一年。</p>
+<p><strong>分红覆盖率</strong>：TTM 分红 9952 万 ÷ 净利润 5432 万 = <strong>183%</strong>；÷ 经营现金流 5041 万 = <strong>197%</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1381 ÷ 54.32</td>
+<td><strong>25.4 倍</strong></td>
+<td>3.94 元</td>
+</tr>
+<tr>
+<td>公司/市场预期的前瞻市盈率</td>
+<td>按二季度 68,000 美元/天外推</td>
+<td><strong>9.1 倍</strong></td>
+<td>11.0 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1381 ÷（54.32 − 16.62 卖船收益）</td>
+<td><strong>36.6 倍</strong></td>
+<td><strong>2.73 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 −7053 万</td>
+<td><strong>无意义（负）</strong></td>
+<td>负</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1720 ÷ 66.73</td>
+<td><strong>25.8 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1381 ÷ [(54.32+12.27+46.64)/3]</td>
+<td><strong>36.6 倍</strong></td>
+<td><strong>2.73 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两个 36.6 倍是从完全不同的路径算出来的，却撞在一起——这不是巧合，是同一件事的两个侧面：</strong> 剔掉卖船收益后的当期利润，恰好就等于过去三年的平均利润。也就是说，<strong>运价创纪录的今天，NAT 靠开船赚的钱只有它三年平均水平</strong>，因为它一边挣着高运价，一边为高运价付出了买船的代价。</p>
+<p><strong>周期敏感度——这是给这家公司估值时唯一真正要算的东西。</strong></p>
+<p>用前面那条餐巾纸算式（固定成本基数：折旧 5849 万 + 管理费用约 3060 万 + 净利息约 1237 万 ≈ <strong>每年 1.014 亿美元</strong>），可以把日租金直接换算成利润：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>日租金 TCE</th>
+<th>年毛利（估算）</th>
+<th>净利润（估算）</th>
+<th>对应市盈率</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>68,000 美元（二季度已锁定水平）</td>
+<td>3.68 亿</td>
+<td><strong>2.67 亿</strong></td>
+<td><strong>5.2 倍</strong></td>
+<td>19.3 元</td>
+</tr>
+<tr>
+<td>47,600 美元（一季度实际）</td>
+<td>2.41 亿</td>
+<td>1.40 亿</td>
+<td>9.9 倍</td>
+<td>10.1 元</td>
+</tr>
+<tr>
+<td>34,000 美元（TTM 平均）</td>
+<td>1.56 亿</td>
+<td>0.54 亿</td>
+<td>25.4 倍</td>
+<td>3.94 元</td>
+</tr>
+<tr>
+<td>30,000 美元（历史中周期附近）</td>
+<td>1.31 亿</td>
+<td><strong>0.30 亿</strong></td>
+<td><strong>46.5 倍</strong></td>
+<td>2.15 元</td>
+</tr>
+<tr>
+<td><strong>25,000 美元</strong></td>
+<td>1.00 亿</td>
+<td><strong>约 0</strong></td>
+<td><strong>盈亏平衡</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td>20,000 美元（周期底部）</td>
+<td>0.69 亿</td>
+<td><strong>−0.35 亿</strong></td>
+<td>亏损</td>
+<td>负</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>（毛利按「(TCE − 9,000) × 18 条船 × 365 天 × 95% 出租率」估算；固定成本基数取自 TTM 实际，属估算而非财报披露数字）</em></p>
+<p><strong>这张表说清楚了一切。</strong> 5.2 倍到"亏损"，中间只隔着日租金从 6.8 万掉到 2 万——而 Suezmax 的日租金在过去十年里<strong>这两个数字都出现过</strong>。2021 年 NAT 亏了 1.71 亿，就是最左边那种年份。</p>
+<p><strong>再看一个更硬的数字：这家公司要维持它现在的股息，需要多高的运价？</strong></p>
+<p>固定成本 1.014 亿 + 股息 9952 万 = <strong>每年 2.009 亿美元</strong>。回推得出：<strong>日租金必须达到约 41,200 美元，NAT 才能不借钱、不卖船地派出当前的股息。</strong> 二季度锁定的 6.8 万远高于此，所以短期没问题。但 Suezmax 的长期平均运价明显低于 4.1 万——<strong>这个股息在结构上是需要好行情才能维持的</strong>，历史上 NAT 也确实一再削减或用增发来填补。</p>
+<p><strong>资产账怎么看？</strong> 市净率 <strong>3.03 倍</strong>（净资产 4.559 亿，市值 13.81 亿）。有人会说船的账面价值被折旧压低了、市价远高于账面——这话对，但请算一下：<strong>就算船的市价是账面净值的两倍</strong>（这在 2026 年这种火热的二手船市场里已经是乐观假设），重估后的净资产约为 9.1 亿美元，<strong>市值仍然是它的 1.5 倍</strong>。也就是说，你现在买 NAT，付的是<strong>明显高于把船拆开卖掉能拿回的钱</strong>。（此处船舶市价倍数为估算，非财报数据。）</p>
+<p><strong>所以：你现在投 100 块进去，按最保守的真实口径（剔除卖船收益、或按三年平均）算，公司一年替你赚 2.73 元。</strong> 按二季度已锁定的运价外推，这个数字可以是 19.3 元。<strong>这两个数字相差 7 倍，而它们说的是同一家公司、同一个季度。</strong> 这就是买周期股的全部难处。</p>
+<p>这 2.73 元里有多少回到你口袋？<strong>全部，甚至超过。</strong> 分红 0.47 美元/股，按 6.52 美元的股价是 <strong>7.2% 的股息率</strong>——但你现在知道了，这个股息的一部分是卖船和借钱付的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门诚实的生意配上一个不诚实的价格。</strong></p>
+<p>报表干净、没有股权激励、没有商誉、18 个人管 18 条船，商业模式一句话能说完——这些都是优点。运价确实在多年高位，二季度 6.8 万美元/天的锁定水平也是真金白银。</p>
+<p>但账要这么算：<strong>剔掉卖船的一次性收益，NAT 在史上最好的行情之一里，真实市盈率是 36.6 倍，和它过去三年的平均利润水平一模一样。</strong> 自由现金流是负 7053 万，股息是分红 9952 万——中间的窟窿靠卖船 7385 万加借钱 7623 万补上的。市净率 3.03 倍，即便把船按两倍账面重估，市值仍是重估净资产的 1.5 倍。股价过去 12 个月涨了 116.61%，涨的是运价预期，不是资产。</p>
+<p>买周期股的正确时点是<strong>运价低迷、公司亏钱、市盈率显示为"无穷大"或者荒唐地高的时候</strong>——那时船的价格便宜，市净率跌到 0.5 倍。现在是反过来的：运价接近周期顶、公司在赚钱、前瞻市盈率显示 9 倍很"便宜"。<strong>前瞻市盈率在周期股身上永远是陷阱，因为它默认今天的运价会持续下去。</strong></p>
+<p><strong>不值这个价。</strong> 这不是说公司不好，是说买它的时机不对——你在为一个已经反映在价格里的好行情付溢价，同时承担运价回到 2.5 万美元/天就归零的风险。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（利润表 / 现金流量表 / 估值指标，TTM 截止 2026-03-31），Nordic American Tankers 2026 年一季度业绩与运价公告</em></p>
+</div></body></html>

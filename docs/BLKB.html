@@ -1,0 +1,484 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BLKB · Blackbaud（黑鲍德）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BLKB</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">6.4倍FCF是假的，还原股权激励和资本化工资后11.5倍；订阅主业已见顶</div><h1>BLKB · Blackbaud（黑鲍德）</h1>
+<p>市值 21.5 亿美元 / 股价 $47.09 / 行业：技术服务（非营利机构管理软件）/ TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Blackbaud 卖软件给一类特殊客户：<strong>非营利组织</strong>——大学、教会、医院基金会、动物救助站、艺术馆、社区慈善机构、K-12 私立学校。全美国大概有 180 万家非营利组织，Blackbaud 服务了其中约 4 万家。</p>
+<p>这是一个几乎没人愿意进入的市场：客户又穷又碎、决策慢、IT 能力差、预算年年砍。但也正因如此，一旦占住了就极难被赶走。Blackbaud 在这个市场做了 40 多年，是事实上的行业标准。</p>
+<p>财报按<strong>收费方式</strong>把收入切成三块，这个切法比按产品切更能说明它的生意本质：</p>
+<h3>生意 A：合同订阅费（TTM 7.35 亿，占 64.0%）——地基</h3>
+<p>这是每年固定收的软件订阅费。核心产品是 <strong>Raiser's Edge NXT</strong>——一套「捐赠人关系管理系统」。</p>
+<p>具体是什么样：假设一所大学的校友募捐办公室，手里有 15 万名校友的名单。哪个校友 2009 年毕业、在哪工作、上次捐了 500 块、参加过哪次校友会、家里有几个孩子也在这上学、他太太的名字叫什么——这些全部存在 Raiser's Edge 里。募捐主管要办一场晚宴，系统能筛出「过去五年累计捐过 1 万美元以上、住在纽约、且从没被拒绝过邀请」的 340 个人，自动生成邀请函、追踪谁回复了、晚宴后自动记录谁又捐了多少。</p>
+<p>这所大学一年为此付 Blackbaud <strong>3 万到 15 万美元</strong>，取决于用户数和模块数。旁边还有 Financial Edge（非营利专用的财务记账，能按每一笔限定用途的捐款单独记账，这是普通会计软件做不到的）、Blackbaud Education Management（私立学校的招生、成绩、家长通讯）、YourCause（帮大企业管理员工慈善捐赠配捐）。</p>
+<p><strong>客户为什么不换？</strong> 因为要换走，得把 15 万条含 20 年历史的捐赠人记录、几百套自定义报表、跟财务系统的对接、以及全办公室 15 个人的肌肉记忆全部搬走。这些机构常常只有一两个 IT 人员，换系统的失败风险他们承担不起。行业里衡量这个的指标是净收入留存率，Blackbaud 长期在 100% 上下。</p>
+<p><strong>但这块在流失：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合同订阅收入（亿）</td>
+<td><strong>7.35</strong></td>
+<td>7.22</td>
+<td><strong>7.75</strong></td>
+<td>7.38</td>
+</tr>
+</tbody>
+</table></div>
+<p>FY2024 到 FY2025 掉了 6.8%（−5300 万），TTM 只回升了 1.8%。<strong>公司最稳的一块收入在两年前见了顶。</strong> 部分原因是 2024 年剥离了 EVERFI（见下文），部分是客户在续约时砍模块。</p>
+<h3>生意 B：交易抽成（TTM 3.93 亿，占 34.3%）——增长引擎</h3>
+<p>这块是按流水抽成的。核心是 <strong>Blackbaud Merchant Services</strong> 和 <strong>JustGiving</strong>：当一个捐赠人在教会官网点「捐款 200 美元」，这笔钱走的是 Blackbaud 的支付通道，Blackbaud 从里面抽走大约 <strong>2.2%–3%</strong>（其中约 1.8% 要付给信用卡网络，Blackbaud 净留大概 0.5%–1%）。</p>
+<p>还有 <strong>Blackbaud Tuition Management</strong>（私立学校学费代收，家长分期付学费，学校为此付手续费）和票务、活动报名的抽成。</p>
+<p>一家中型教会一年线上收 300 万美元奉献，Blackbaud 抽 2.5% 就是 7.5 万美元——<strong>这笔钱不用签合同、不用谈判、随捐款自动到账</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>交易抽成收入（亿）</td>
+<td><strong>3.93</strong></td>
+<td>3.84</td>
+<td>3.54</td>
+<td>3.33</td>
+</tr>
+</tbody>
+</table></div>
+<p>四年从 3.33 涨到 3.93，<strong>这是公司唯一在增长的部分</strong>，年复合约 5.7%。它也是利润率最高的部分——支付通道一旦建成，多处理一笔交易的边际成本接近零。</p>
+<h3>生意 C：一次性服务（TTM 0.20 亿，占 1.7%）——在消失</h3>
+<p>上线实施、数据迁移、培训、定制开发。四年从 4689 万掉到 1980 万，砍掉了 58%。Blackbaud 在主动放弃这块——它利润率低、要养人、还拖累整体估值。这是<strong>好事</strong>。</p>
+<h3>三块合起来的账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（亿美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合同订阅</td>
+<td>7.35</td>
+<td>+1.8%</td>
+<td>64.0%</td>
+<td>约 18%（估算）</td>
+<td>约 1.32 亿</td>
+</tr>
+<tr>
+<td>交易抽成</td>
+<td>3.93</td>
+<td>+2.4%</td>
+<td>34.3%</td>
+<td>约 26%（估算）</td>
+<td>约 1.02 亿</td>
+</tr>
+<tr>
+<td>一次性服务</td>
+<td>0.20</td>
+<td>−10.8%</td>
+<td>1.7%</td>
+<td>约 −25%（估算）</td>
+<td>约 −0.05 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>11.48</strong></td>
+<td><strong>+0.65%</strong></td>
+<td>100%</td>
+<td>20.01%</td>
+<td>2.30 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到营收，不披露分部利润</strong>，上表利润率按整体 20.01% 结合三类收入的成本结构估算，不是财报数字。</p>
+<p>全公司 TTM 营收 11.48 亿，同比 <strong>+0.65%</strong>。跟 DOX 一样，这是一家零增长公司。</p>
+<p><strong>但利润率的变化是惊人的：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+<th>FY2022</th>
+<th>FY2021</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（亿）</td>
+<td>11.48</td>
+<td>11.28</td>
+<td>11.55</td>
+<td>11.07</td>
+<td>10.58</td>
+<td>9.28</td>
+</tr>
+<tr>
+<td><strong>经营利润（亿）</strong></td>
+<td><strong>2.30</strong></td>
+<td>2.20</td>
+<td>1.79</td>
+<td>1.05</td>
+<td><strong>0.33</strong></td>
+<td>0.32</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>20.0%</td>
+<td>19.5%</td>
+<td>15.5%</td>
+<td>9.5%</td>
+<td><strong>3.2%</strong></td>
+<td>3.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年时间，营收只涨了 24%，经营利润涨了 7 倍。</strong> 这不是增长故事，是一个<strong>成本压缩故事</strong>：砍掉低毛利服务、砍人（从三年前的 3600 人减到 2800 人）、砍掉赔钱的收购业务。这是真实的价值创造，但它有终点。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）——占净利润 60%</h3>
+<p>TTM <strong>9007 万美元</strong>，占 GAAP 净利润 1.507 亿的 <strong>59.8%</strong>。这个比例很高。</p>
+<p>好消息是它在下降：FY2023 是 1.278 亿，现在 9007 万，砍了 30%。GAAP 已经扣掉，本文不加回。</p>
+<h3>一次性项目——2024 年那 4.07 亿</h3>
+<p>FY2024 的净利润是 <strong>−2.995 亿美元</strong>，罪魁祸首是现金流表里那笔 <strong>4.0705 亿的资产处置损失</strong>。</p>
+<p>这是什么：Blackbaud 在 2022 年花了约 <strong>7.5 亿美元</strong>收购 EVERFI（一家做「数字社会责任教育」的公司——给企业做合规培训、给中学做金融素养课程）。两年后，2024 年 12 月，Blackbaud 把 EVERFI 剥离出去，几乎全额减记。</p>
+<p><strong>7.5 亿美元买回来的东西，两年后归零。</strong> 而公司现在的整个市值才 21.5 亿。这是一次教科书级的资本配置灾难，也是理解「为什么现在管理层只回购不收购」的关键背景——TTM 收购支出只有 <strong>70 万美元</strong>。</p>
+<p>TTM 本身没有大额一次性项目，利润是干净的。</p>
+<h3>资本化的支出——这一项被普遍忽略，但它改变结论</h3>
+<p>现金流量表投资活动里有一行：<strong>「无形资产购买 −5258 万美元」</strong>。</p>
+<p>这是<strong>资本化的软件开发费</strong>：Blackbaud 把工程师写代码的工资，一部分不计入当期费用，而是记成一项资产，再分 3–5 年慢慢摊销。对应地，经营活动里的「其他摊销」TTM 是 <strong>4870 万</strong>，正是在摊销以前年份资本化的那些。</p>
+<p><strong>为什么重要：</strong> 数据源计算自由现金流时，只减了 1057 万的「资本开支」（买电脑和办公设备），<strong>完全没减这 5258 万</strong>。可这 5258 万是真金白银付给工程师的工资，不付这笔钱产品就停止迭代。</p>
+<p>这就是为什么 Blackbaud 的 P/FCF 显示 <strong>6.40 倍</strong>——看起来是全市场最便宜的软件股之一。这个数字是假的。</p>
+<h3>回购与稀释</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>2.527 亿</td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>0.901 亿</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.81 倍</strong></td>
+</tr>
+<tr>
+<td>股本实际变化（一年）</td>
+<td><strong>−4.16%</strong></td>
+</tr>
+<tr>
+<td>股本变化（上季度）</td>
+<td>−3.17%</td>
+</tr>
+<tr>
+<td>分红</td>
+<td><strong>无</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>2.81 倍，刚好卡在「真回购」的门槛上（≥3 倍算真回购）。股本一年真实减少 4.16%，回购确实在给股东创造价值，不只是抵消员工发股。</p>
+<p>TTM 回购 2.527 亿，占市值 <strong>11.8%</strong>——公司把几乎全部现金都拿去买自己的股票了。</p>
+<p><strong>但这里有个副作用：股东权益被回购掏空了。</strong> 负债/权益比 <strong>17.27 倍</strong>，反推出账面股东权益只剩约 <strong>6700 万美元</strong>，市净率 <strong>31.5 倍</strong>。所谓 194% 的净资产收益率是这么来的——分母快没了。这不是造假，但它意味着<strong>资产负债表上已经没有任何缓冲垫</strong>。</p>
+<h3>利润和现金流的差</h3>
+<p>经营现金流 3.397 亿，净利润 1.507 亿，差 1.89 亿。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>1.507</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>0.379</td>
+</tr>
+<tr>
+<td><strong>＋ 其他摊销（摊以前资本化的软件）</strong></td>
+<td><strong>0.487</strong></td>
+</tr>
+<tr>
+<td><strong>＋ 股权激励 SBC</strong></td>
+<td><strong>0.901</strong></td>
+</tr>
+<tr>
+<td>＋ 坏账准备</td>
+<td>0.044</td>
+</tr>
+<tr>
+<td>＋ 其他经营调整</td>
+<td>0.114</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>0.066</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−0.083</td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>0.057</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>−0.073</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>3.397</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表分毫不差。<strong>但请看清楚它在说什么：3.4 亿的经营现金流里，有 0.90 亿是股权激励（真实成本，只是不用付现金）、0.49 亿是在摊销以前资本化的工资。</strong> 把这两项还原，现金流的成色就完全不同了。</p>
+<h3>债务与税率</h3>
+<p>净负债 <strong>11.23 亿</strong>，占 21.5 亿市值的 <strong>52%</strong>。债务/EBITDA 4.31 倍，利息覆盖 3.47 倍——不至于爆，但没有余地。年利息支出约 5860 万（从经营利润 2.30 亿到税前利润 1.71 亿的差额）。</p>
+<p>有效税率只有 <strong>11.94%</strong>（缴税 2043 万）。这靠的是研发税收抵免和股权激励行权带来的税务扣除，<strong>不可持续</strong>。按正常的 21% 算，净利润会少 1500 万。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 21.49 亿，企业价值 32.72 亿（净债 11.23 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>21.49 ÷ 1.507</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>$7.01</strong></td>
+</tr>
+<tr>
+<td>市场前瞻市盈率（Non-GAAP）</td>
+<td>数据源给的 Forward PE</td>
+<td>8.5 倍</td>
+<td>$11.80</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 净利，SBC 不加回，TTM 无一次性</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>$7.01</strong></td>
+</tr>
+<tr>
+<td>税率正常化（按 21% 而非 11.94%）</td>
+<td>21.49 ÷ 1.352</td>
+<td>15.9 倍</td>
+<td>$6.29</td>
+</tr>
+<tr>
+<td>自由现金流口径（<strong>数据源原样，失真</strong>）</td>
+<td>21.49 ÷ 3.29</td>
+<td>6.5 倍</td>
+<td>$15.31</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣 SBC 和资本化软件）</strong></td>
+<td>21.49 ÷ 1.865</td>
+<td><strong>11.5 倍</strong></td>
+<td><strong>$8.68</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>32.72 ÷ 2.30</td>
+<td><strong>14.2 倍</strong></td>
+<td>$7.03（税前）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>21.49 ÷ (1.507+1.150+1.075)/3</td>
+<td><strong>17.3 倍</strong></td>
+<td><strong>$5.79</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关于那个 6.5 倍的自由现金流估值</strong>——这是本文的核心发现。真实自由现金流应该这么算：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>3.397</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−0.106</td>
+</tr>
+<tr>
+<td><strong>− 资本化的软件开发费</strong>（数据源漏了）</td>
+<td><strong>−0.526</strong></td>
+</tr>
+<tr>
+<td><strong>− 股权激励</strong>（真实成本，只是不付现金）</td>
+<td><strong>−0.901</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 真实自由现金流</strong></td>
+<td><strong>1.865</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>从 3.29 亿变成 1.87 亿，估值从 6.5 倍变成 11.5 倍——差了 1.8 倍。</strong> 任何看到 P/FCF 6.4 就说 Blackbaud「白菜价」的人，都是在把员工工资当成零成本。</p>
+<p><strong>关于三年平均那 17.3 倍</strong>：FY2024 的账面净利是 −2.995 亿（EVERFI 减记），我按规格把这笔 4.07 亿的真一次性损失剔除后还原为 +1.075 亿。即便这样宽容处理，三年平均市盈率仍然是 <strong>17.3 倍，比当期的 14.3 倍高两成</strong>——说明<strong>当前这个利润是三年里最好的一期</strong>，不是常态。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Blackbaud，按最保守的真实口径（扣掉股权激励和资本化工资的自由现金流，11.5 倍）算，公司一年替你赚 8.68 块。</strong></p>
+<p>这 8.68 块怎么回到你口袋？</p>
+<ul>
+<li><strong>分红：0 块。</strong> Blackbaud 不分红，一分都不分。</li>
+<li><strong>回购：全部。</strong> TTM 回购 2.53 亿，占市值 11.8%，把真实自由现金流（1.87 亿）<strong>全花完还多花了 0.66 亿</strong>（缺口靠账上现金和债务腾挪，净现金一年减少 3081 万）。</li>
+<li>你的持股比例一年因此多了 <strong>4.16%</strong>。</li>
+</ul>
+<p>所以这是一家<strong>把赚的每一分钱、外加一点借来的钱，全部用来买自己股票</strong>的公司。这个策略在股价便宜时是股东的朋友，在股价贵时是慢性自杀——它已经把股东权益回购到只剩 6700 万了。</p>
+<p><strong>这个 8.68 块未来变大还是变小？</strong></p>
+<p>变大的理由：交易抽成业务（占 34%，年增 5.7%）利润率最高且还在涨；成本压缩还没走完；股本每年缩 4%，同样的利润摊到更少的股份上，每股收益能自动涨。</p>
+<p>变小的理由：<strong>合同订阅收入——占 64% 的地基——在 2024 年见了顶，两年过去还没回到那个水平</strong>。零增长的公司靠砍成本提利润，从 3.2% 提到 20.0% 已经提了七倍，剩下的空间越来越小。11.23 亿净债、3.47 倍利息覆盖、11.94% 的不可持续税率、被掏空的资产负债表，都是没有余量的信号。</p>
+<p>再加上 9.35% 的做空比例和股价一年 27.8% 的跌幅——市场对它的怀疑是明确的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它的护城河是真的——非营利机构换掉 Raiser's Edge 的痛苦大到几乎不会发生；它的利润改善也是真的——四年营收只涨 24%，经营利润涨了 7 倍。但它便宜得没有看起来那么多。</strong></p>
+<p>那个 6.4 倍的自由现金流估值是个统计幻觉：<strong>把 9000 万的股权激励和 5300 万的资本化工资还原回去，真实倍数是 11.5 倍</strong>；用三年平均利润看是 17.3 倍，说明当期利润是近年最好的一期而非常态。加上 11.2 亿净债（占市值一半）和一张被回购掏空到只剩 6700 万权益的资产负债表，安全边际比数字上看到的窄得多。</p>
+<p>而故事的核心矛盾是：<strong>占 64% 收入的订阅主业在 2024 年见了顶，两年没回来。</strong> 一家零增长公司靠砍成本把利润率从 3% 拉到 20%，这场戏已经演到第四幕，接下来靠什么？</p>
+<p><strong>14.3 倍 GAAP、11.5 倍真实自由现金流，对一门有真实转换成本、年缩股本 4% 的生意来说——这个价格值，但不是便宜货。想清楚你买的是「稳定的现金牛」还是「一个已经把成本砍到底、增长还没找到的壳」。</strong></p>
+</div></body></html>

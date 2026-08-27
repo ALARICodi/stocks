@@ -1,0 +1,426 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CBRL · Cracker Barrel Old Country Store（乡村老店）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CBRL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">经营亏损，净利润靠退税凑，50倍市盈率买翻身故事</div><h1>CBRL · Cracker Barrel Old Country Store（乡村老店）</h1>
+<p><strong>市值</strong> $12.7 亿 ｜ <strong>股价</strong> $56.88 ｜ <strong>行业</strong> 餐饮（休闲正餐连锁）｜ <strong>TTM 截止</strong> 2026 年 5 月 1 日 ｜ <strong>全榜名次</strong> 第 923 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Cracker Barrel 是一家 1969 年在田纳西州起家的公司，做的事情非常具体：<strong>在美国州际公路的出口旁边，开一家看起来像 1940 年代乡下杂货铺的餐厅，前半截是礼品店，后半截是餐厅，你必须穿过礼品店才能走到餐位。</strong></p>
+<p>这个"必须穿过礼品店"的动线设计，就是这家公司全部商业模式的核心，也是它财报上拆成两块生意的原因。</p>
+<h3>生意 A：餐厅（约占营收八成）</h3>
+<p>一家开在 I-40 高速出口的 Cracker Barrel，占地一万多平方英尺，门口一排摇椅，屋里烧着壁炉，墙上钉满农具和老照片。一天供三餐：早餐卖 12 美元的煎蛋加碎玉米粥和肉汁饼干；午餐晚餐卖 16 到 22 美元的炸鸡排、乡村火腿、肉卷、鲶鱼。客单价大约 15–17 美元，比 Applebee's、Chili's 这些休闲正餐略低，比麦当劳、Chick-fil-A 这些快餐高一倍。</p>
+<p><strong>它的客户是谁，非常清楚：</strong> 开车跑长途的家庭、退休的老两口、周日做完礼拜出来吃饭的一家人，年龄中位数明显高于全美餐饮业平均。它卖的不是食物，是<strong>"我小时候我奶奶做的那种饭"的怀旧感</strong>——这在美国中西部和南部是真金白银的东西，一家新开的门店不需要打广告，因为开车经过的人已经认识这块招牌四十年了。</p>
+<p>一家门店一年做大约 480 万美元营收，雇 110 到 120 个人（三餐制、全服务餐厅，人工极重）。全公司 <strong>76,730 名员工</strong>，人均创收只有 <strong>43,495 美元</strong>——这是一个高度劳动密集、几乎没有杠杆的行业数字。按此推算全美门店在 650–700 家之间（本次取数的四页财报未单独披露门店数）。</p>
+<h3>生意 B：礼品店（约占营收两成）</h3>
+<p>这是 Cracker Barrel 真正跟同行不一样的地方。你等位的时候（周末经常要等 40 分钟），只能站在礼品店里逛。里面卖：木头摇椅（99–199 美元）、季节性圣诞装饰、乡村风格的厨具、复古糖果、自家品牌的果酱和腌菜、儿童玩具、印着招牌的 T 恤。</p>
+<p><strong>为什么这块生意值钱：</strong> 礼品店的毛利率显著高于餐厅（卖一罐 8 美元的果酱，成本 3 块；卖一份 18 美元的炸鸡，食材加人工要 12 块以上），而且它<strong>不需要额外的人工</strong>——同一批店员管两摊。等位时间越长，礼品店卖得越多。这是一个把"排队的痛苦"直接变现的设计，四十年来没人抄成功过。</p>
+<p><strong>为什么这块生意现在是拖累：</strong> 礼品店卖的是可有可无的东西。经济一紧，人还会来吃饭，但不会顺手买摇椅。而且它占用大量库存和店面空间——公司的存货周转率 13.09 次/年，对一家餐厅来说慢得离谱（纯餐厅通常 30 次以上），因为一半的存货是卖不动的圣诞摆件。</p>
+<h3>钱：按业务拆</h3>
+<p><strong>财报只把两块合并报表，本次取数的四页里没有分部利润披露。</strong> 下表的营收拆分按行业惯例和本公司历史结构估算（约 80/20），利润率按整体水平反推，<strong>属于估算，不是财报数字</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算）</th>
+<th>占比</th>
+<th>TTM 同比</th>
+<th>经营利润率</th>
+<th>贡献经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>餐厅</td>
+<td>约 $26.7 亿</td>
+<td>约 80%</td>
+<td>−5% 左右</td>
+<td>微亏</td>
+<td>约 −$0.1 亿</td>
+</tr>
+<tr>
+<td>礼品店</td>
+<td>约 $6.7 亿</td>
+<td>约 20%</td>
+<td>−5% 左右</td>
+<td>微利</td>
+<td>约 +$0.1 亿</td>
+</tr>
+<tr>
+<td><strong>合计（财报数）</strong></td>
+<td><strong>$33.37 亿</strong></td>
+<td>100%</td>
+<td><strong>−4.92%</strong></td>
+<td><strong>−0.05%</strong></td>
+<td><strong>−$156 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最重要的不是拆分，是最后一行：整个公司 TTM 的经营利润是 −156 万美元。</strong></p>
+<p>一家做 33 亿营收的公司，把饭卖完、把摇椅卖完、把工资付完、把房租付完之后，<strong>经营层面是亏钱的</strong>。而且营收还在以每年 5% 的速度往下走。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是全篇最要紧的，因为 CBRL 的"净利润 2,623 万"这个数字，跟它的实际经营基本没有关系。</p>
+<h3>净利润是从哪儿来的：靠退税</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润（EBIT）</td>
+<td><strong>−$156 万</strong></td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>+$1,284 万</td>
+</tr>
+<tr>
+<td>所得税</td>
+<td><strong>−$1,338 万（是退回，不是缴纳）</strong></td>
+</tr>
+<tr>
+<td><strong>净利润</strong></td>
+<td><strong>+$2,623 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>读法是这样的：<strong>公司在经营上亏了 156 万；不知从哪儿来了 1,440 万的非经营性收益，把税前拉到 +1,284 万；然后税务上倒收回来 1,338 万，最后凑出 2,623 万的"净利润"。</strong></p>
+<p>两个必须点破的地方：</p>
+<ol>
+<li><strong>那 1,440 万非经营性收益，这四页财报没给明细。</strong> 而公司背着 11.48 亿总债务，利息支出本该是一大笔（利息保障倍数只有 −0.10，说明经营利润连利息都盖不住）。也就是说，非经营那一栏里有一笔<strong>规模不小的一次性收益</strong>，抵掉了利息还有剩。它是什么、明年还有没有，<strong>从这四页看不出来，不要假设它会重复</strong>。</li>
+<li><strong>税收优惠不会年年有。</strong> 一家税前只赚 1,284 万的公司拿到 1,338 万退税，有效税率是负的。这通常来自递延税项调整、门店关闭产生的税务损失结转、或者工作机会税收抵免（餐饮业常用，跟雇佣低收入员工挂钩）。<strong>按正常 22% 税率算，净利润应该是 1,000 万，不是 2,623 万。</strong></li>
+</ol>
+<h3>"一次性项目"：年年都有的一次性</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产减值与重组</td>
+<td>1,661 万</td>
+<td>1,977 万</td>
+<td>2,214 万</td>
+<td>1,169 万</td>
+</tr>
+<tr>
+<td>资产处置损失</td>
+<td>2,014 万</td>
+<td>2,133 万</td>
+<td>2,188 万</td>
+<td>1,934 万</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,675 万</strong></td>
+<td><strong>4,110 万</strong></td>
+<td><strong>4,402 万</strong></td>
+<td><strong>3,103 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这就是教科书级的"年年都有的一次性"。</strong> 连续四年，每年 3,100 万到 4,400 万的"减值 + 处置损失"，金额稳定得像一条固定开支。公司在业绩沟通里当然会把它当成非经常性项目剔掉，但<strong>连续四年出现的东西不是意外，是这门生意的真实成本</strong>——它意味着每年都有一批门店在关、在减值、在打折卖掉。</p>
+<p>这也解释了为什么"经营利润 −156 万"和门店层面的盈利感觉对不上：<strong>门店层面还在赚一点钱，但每年要拿出三四千万来处理关店和减值，两相抵消就归零了。</strong></p>
+<p>按分析模式的规矩，<strong>这两项不予剔除</strong>——它们是真实的、重复发生的成本。</p>
+<h3>股权激励（SBC）：687 万，唯一的好消息</h3>
+<p>TTM 股权激励只有 687 万，占营收 0.2%。餐饮业不靠发股票招人，这一项在这里几乎可以忽略。<strong>这是全篇唯一一个干净的数字。</strong></p>
+<h3>资本化的支出：没有异常</h3>
+<p>资本开支 1.36 亿，占营收 4.1%——对一家实体门店企业是正常水平（开新店、翻新旧店、换厨房设备）。<strong>但要注意：折旧摊销是 1.24 亿，资本开支 1.36 亿，两者接近，说明这 1.36 亿基本全是"维持性开支"，不是扩张。</strong> 这家公司现在花的钱只够把现有门店维持住，没有余力开新店。</p>
+<h3>回购与稀释：都停了，股息也砍了 80%</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>$196 万</td>
+<td>$161 万</td>
+</tr>
+<tr>
+<td>派发股息</td>
+<td><strong>$2,315 万</strong></td>
+<td><strong>$1.161 亿</strong></td>
+</tr>
+<tr>
+<td>股本变化</td>
+<td><strong>+0.48%（在稀释）</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>股息从每股约 5.20 美元砍到约 1.00 美元，砍掉 80%。</strong> 这是这份财报里最诚实的一个信号——董事会自己承认现金流撑不住原来的分红了。</p>
+<p>回购形同虚设（196 万，连 SBC 的 687 万都盖不住，<strong>回购 ÷ SBC = 0.29 倍</strong>），股本反而增加了 0.48%。按分析模式的标准，接近 1 才叫"只是抵消员工发股"，0.29 意味着<strong>连抵消都做不到，老股东在被稀释</strong>。</p>
+<h3>利润和现金流的差：现金流看着好，是因为折旧巨大</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（TTM，百万美元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>26.23</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>123.62</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>2.55</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失（非现金）</td>
+<td>20.14</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>16.61</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>6.87</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目</td>
+<td>57.70</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>4.34</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−11.24</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>9.89</td>
+</tr>
+<tr>
+<td>＋ 预收款增加</td>
+<td>2.07</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−2.94</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−46.07</td>
+</tr>
+<tr>
+<td>− 递延所得税等未单列项（倒轧）</td>
+<td>−15.04</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>194.73</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−135.55</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>59.18</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要这样读：经营现金流 1.95 亿看起来不错，但其中 1.24 亿是折旧摊销加回来的——那是过去几十年建门店花掉的钱，现在只是在账上还原。</strong> 加上 3,675 万的减值和处置损失（也是非现金），还有 5,770 万"其他经营项目"（餐饮业里通常是租赁相关的非现金调整）。</p>
+<p>真正的现金创造能力要看自由现金流：<strong>5,918 万</strong>。</p>
+<p>而 TTM 派息就用掉了 2,315 万，占自由现金流的 39%。<strong>剩下 3,600 万，要去还 11.48 亿的债。</strong> 按这个速度，光是还本就要三十年。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $12.7 亿，<strong>企业价值 $23.9 亿</strong>——因为净债务 11.22 亿，EV 差不多是市值的两倍。<strong>这一点极其重要：你以为你在用 12.7 亿买这家公司，实际上你买的是一个 23.9 亿的资产包，其中 11.2 亿是别人的钱。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>12.7 亿 ÷ 2,623 万</td>
+<td><strong>50.9 倍</strong></td>
+<td><strong>$1.97</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的口径（估算）</td>
+<td>加回减值和处置损失后税后约 3,870 万</td>
+<td>约 32.8 倍</td>
+<td>$3.05</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔除退税、按正常 22% 税率，减值与处置<strong>不剔除</strong>（年年都有）→ 约 1,000 万</td>
+<td><strong>约 127 倍</strong></td>
+<td><strong>$0.79</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>12.7 亿 ÷ 5,918 万</td>
+<td><strong>21.5 倍</strong></td>
+<td>$4.66</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>经营利润为负，<strong>此口径失效</strong>（EV/EBITDA = 19.9 倍）</td>
+<td><strong>不适用</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>12.7 亿 ÷ 3,785 万（TTM+FY25+FY24 平均）</td>
+<td><strong>33.6 倍</strong></td>
+<td><strong>$2.98</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>大白话</h3>
+<p><strong>你现在投 100 块进去，按最保守的真实口径算，这家公司一年替你赚 7 毛 9。</strong></p>
+<p>七毛九。同期把钱放在美国短期国债里，一年拿 4 块多，还不承担任何风险。</p>
+<p>即使用最宽松的口径——完全相信公司的调整、把每年都发生的减值当成一次性剔掉——也只有 3 块钱。用三年平均利润这个最能反映常态的口径，是 2 块 98。用自由现金流这个最不容易造假的口径，是 4 块 66，<strong>勉强跟无风险国债打平，但你要为此承担一家营收每年下滑 5%、经营层面已经亏损、负债率 4.79 倍 EBITDA 的餐饮连锁的全部风险。</strong></p>
+<p><strong>注意前瞻市盈率是 75.89 倍，比滚动的 50.87 倍还高。</strong> 意思是分析师预计明年每股收益从 1.15 美元继续掉到 0.75 美元。<strong>市场共识不是"这家公司要翻身"，是"它明年还要更差"。</strong></p>
+<h3>这点钱有多少回到你口袋</h3>
+<p>股息 TTM 每股约 1.00 美元，按 56.88 的股价算，<strong>股息率 1.8%</strong>。回购基本没有（196 万），股本还在轻微增加。</p>
+<p>也就是说：真实回报 7 毛 9，公司却在派 1 块 8 的息。<strong>它在派超过自己所赚的钱</strong>——用的是折旧回流的现金，本质上是在消耗资产。这也是为什么股息已经被砍了 80%，而且<strong>还有再砍的空间</strong>。</p>
+<h3>这个数字未来是变大还是变小</h3>
+<p>看得见的下行因素：</p>
+<ul>
+<li><strong>营收在负增长。</strong> TTM −4.92%，不是持平，是萎缩。休闲正餐这个赛道整体在被快餐和快休闲（Chipotle、Cava 那一类）挤压，Cracker Barrel 的核心客群年龄偏大，<strong>这个客群在自然流失</strong>。</li>
+<li><strong>经营杠杆是反向的。</strong> 33 亿营收对应 7.7 万名员工和几百家实体门店，固定成本极重。营收掉 5%，利润不是掉 5%，是掉到零以下——这已经发生了。</li>
+<li><strong>债务是硬约束。</strong> 净债务 11.22 亿，Debt/EBITDA 4.79 倍，流动比率 0.50（流动资产只够覆盖一半的流动负债），利息保障倍数 −0.10。<strong>这个组合意味着它没有犯错的余地：再来一年营收下滑 5%，就要考虑违反债务契约的问题。</strong></li>
+<li><strong>ROIC 是 −0.10%。</strong> 这家公司投入的每一分资本，回报率是负的。</li>
+</ul>
+<p>看得见的上行因素（要说，但不要放大）：</p>
+<ul>
+<li><strong>股价里有翻身预期。</strong> 现任 CEO 是 David Deno——一位餐饮业职业经理人（曾任 Bloomin' Brands CEO），属于外部空降的翻身任命。50 日均线 53.97、200 日均线 36.24、现价 56.88：这一年里股价先塌到 30 多，最近几个月又翻了上来，市场在给"新管理层能修好"定价。</li>
+<li><strong>做空比例 22.86%。</strong> 每五股流通股就有一股被做空。任何一个好于预期的季度都可能引发轧空，短期波动会很剧烈。<strong>但这是交易层面的事，跟这门生意值多少钱无关。</strong></li>
+<li><strong>资产是实的。</strong> 几百块高速公路出口旁的地皮和房子是真东西，清算价值托着一个底。市净率 2.81 倍——这个底不算特别厚，但确实存在。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>很贵，而且贵得不讲道理——一家经营利润为负、营收年年萎缩、净利润全靠退税凑出来、股息刚砍掉 80%、每五股就有一股被做空的餐饮连锁，市场给它 50 倍滚动市盈率、76 倍前瞻市盈率。</strong></p>
+<p>把话说得再直白一点：这只股票现在的价格，跟它的生意基本脱钩了。它在交易的是"新 CEO 能不能救活它"和"22.86% 的空头会不会被轧"，<strong>不是"它一年能替股东赚多少钱"</strong>。而后者的答案是：按真实口径，7 毛 9。</p>
+<p>我不否认翻身故事可能成立——餐饮连锁被职业经理人修好的先例是有的。但如果你相信这个故事，那你应该等它被修好之后再买，那时候利润会是真的、倍数会变得合理，你不会错过多少。<strong>现在买，是在为一件还没发生、失败了就要面对 4.79 倍杠杆的事情，付 50 倍的价钱。</strong></p>
+<p>最后说一句这门生意本身：<strong>"穿过礼品店才能吃到饭"这个设计是真聪明的，四十年没人抄成功。</strong> 但一个聪明的动线设计救不了一个客群在老去、成本在上升、债务在压顶的连锁体系。生意有硬伤，价格还离谱——两样占全了。</p>
+</div></body></html>

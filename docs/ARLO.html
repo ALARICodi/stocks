@@ -1,0 +1,380 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARLO · Arlo Technologies（阿洛科技）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ARLO</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">订阅是真的,46倍估值是假的,SBC吃光利润</div><h1>ARLO · Arlo Technologies（阿洛科技）</h1>
+<p><strong>市值</strong> 14.05 亿美元 ｜ <strong>股价</strong> 约 13.06 美元 ｜ <strong>行业</strong> 电子科技（家用安防硬件 + 订阅服务）
+<strong>TTM 口径截止</strong> 2026 年 6 月 28 日（最近四个季度滚动）｜ 全榜第 906 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Arlo 是 2018 年从网件（Netgear）拆分出来单独上市的公司，做家用无线安防摄像头。财报把收入切成<strong>两块</strong>：硬件（Products）和服务（Services）。但真正要看懂它，得知道这两块是<strong>同一件事的两个阶段</strong>——一个负责亏钱铺量，一个负责赚钱。</p>
+<p>公司在 2026 年二季度的电话会里说：服务收入 9,300 万美元，<strong>占当季总收入的 60%</strong>，同比增长 19%；付费账户总数 <strong>630 万个</strong>，当季净增约 30 万个。按这个节奏往前推四个季度，TTM 的服务收入大约在 <strong>3.4–3.5 亿美元</strong>（约占 5.87 亿总收入的 59%），硬件收入大约 <strong>2.4 亿美元</strong>。以下服务/硬件的拆分是这么估算出来的，财报没有直接给 TTM 分段数，我标明是估算。</p>
+<h3>生意一：卖摄像头（硬件，约 2.4 亿美元，41%）——<strong>这一块不赚钱，是故意的</strong></h3>
+<p>具体是什么东西：一个巴掌大的白色方块，装在门口、车库、后院栅栏上，里面是电池、摄像头、麦克风、喇叭、Wi-Fi 模块。有人走近，它拍下来，推送到你手机上，你可以按着说话跟门口的人对讲。产品线有几种：Essential 系列（最便宜，一个 60–80 美元）、Pro 系列（2K/4K 画质，带聚光灯，150–250 美元）、可视门铃（替换掉门口那个按铃的按钮，80–130 美元）、泛光灯摄像头（拧进门廊灯座，感应到人自动打开大灯并录像）、以及一整套的家庭安防系统（一个主机 + 几个门窗磁传感器 + 遥控钥匙扣，300 美元左右）。</p>
+<p><strong>卖给谁、怎么收钱</strong>：一半以上通过美国的百思买、亚马逊、沃尔玛、家得宝这些零售渠道卖给普通家庭；另一半卖给 OEM 大客户——欧洲的报警运营商、保险公司、宽带运营商，他们批量采购摄像头，贴自己的牌或者塞进自家的套餐里，再包月卖给他们的客户。财报披露的合作方名单里有 ADT、Allstate（保险）、Calix（宽带设备）、三星、Verisure。</p>
+<p><strong>为什么说它不赚钱</strong>：TTM 总毛利 2.62 亿美元。服务这块的毛利率按公司自己披露的口径大约 75%，3.45 亿 × 75% ≈ 2.59 亿。也就是说，<strong>2.4 亿美元的硬件收入，只贡献了大约 300 万美元毛利，毛利率约 1%</strong>。（这是我用总毛利倒推的估算，公司不单独披露分部毛利。）</p>
+<p>这不是做砸了，这是刀架和刀片的生意：一台 79 美元的摄像头基本按成本价卖出去，赌的是买它的人后面每个月交 5–15 美元的订阅费，交好几年。硬件是获客成本，账上却记成"收入"。</p>
+<h3>生意二：卖订阅（Arlo Secure，约 3.45 亿美元，59%）——<strong>全部利润在这里</strong></h3>
+<p>一台 Arlo 摄像头不订阅也能用，但只能看实时画面，录下来的视频只存本地或者干脆不存。订阅之后开出来的功能是：</p>
+<ul>
+<li><strong>云端存视频</strong>，30 天回看。半夜院子里响一声，第二天早上还能翻出来看</li>
+<li><strong>AI 识别</strong>：告诉你门口出现的是<strong>人、包裹、车、还是猫</strong>。这是最值钱的功能——不做识别的话，风吹树叶、路过的车、下雨，一天能给你推送两百条通知，用户三天就关掉了。识别之后一天只推 3 条，用户才会留下来</li>
+<li><strong>划定区域</strong>：你可以在画面上圈出"只监视这块地"，把马路排除掉</li>
+<li><strong>紧急呼叫</strong>：按一下手机上的按钮，直接接通配合的应急调度中心，对方能看到你的摄像头画面并联系警察/救护车</li>
+<li><strong>多摄像头联动</strong>：门口那台看到人，后院那台自动开始录</li>
+</ul>
+<p><strong>怎么收钱</strong>：单摄像头版每月 4.99 美元，全屋不限台数每月 17.99 美元，中间还有 12.99 美元的档。美国零售用户按月付给 Arlo；OEM 客户（比如欧洲那家报警运营商）是按台按月批发结算，单价低但量大、流失率低。</p>
+<p><strong>账</strong>：TTM 服务收入约 3.45 亿，630 万付费账户 —— 平均一个账户一年贡献 <strong>55–60 美元</strong>，合每月不到 5 美元。付费账户数还在以每季度 30 万的速度往上加。</p>
+<h3>第三件事其实不是"生意"，是<strong>地理集中度</strong></h3>
+<p>财报按国家拆收入，这张表比分部表更能说明问题：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 收入</th>
+<th>FY2025</th>
+<th>变化</th>
+<th>占 TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>3.500 亿</td>
+<td>3.288 亿</td>
+<td>+6.4%</td>
+<td>59.6%</td>
+</tr>
+<tr>
+<td><strong>西班牙</strong></td>
+<td><strong>1.289 亿</strong></td>
+<td>1.081 亿</td>
+<td><strong>+19.2%</strong></td>
+<td>21.9%</td>
+</tr>
+<tr>
+<td><strong>瑞典</strong></td>
+<td><strong>0.677 亿</strong></td>
+<td>0.468 亿</td>
+<td><strong>+44.7%</strong></td>
+<td>11.5%</td>
+</tr>
+<tr>
+<td>其他国家</td>
+<td>0.406 亿</td>
+<td>0.456 亿</td>
+<td>−11.0%</td>
+<td>6.9%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>5.872 亿</td>
+<td>5.293 亿</td>
+<td>+10.9%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>一家做家用摄像头的美国公司，<strong>在西班牙和瑞典两个国家拿到 1.97 亿美元、占总收入 33.5%</strong> —— 这不可能是零散卖给当地家庭的，只可能来自一个 OEM 大客户。Arlo 公开披露的最大合作方是欧洲报警运营商 Verisure（总部瑞士，发源于瑞典，最大市场在西班牙）。</p>
+<p>更要命的是增长的来源：TTM 比 FY2025 多出来的 5,790 万美元收入里，美国贡献 2,120 万，<strong>西班牙 + 瑞典合起来贡献 2,170 万</strong>，其他国家还倒退了 500 万。也就是说，<strong>增长的近四成来自这一个客户</strong>。这个客户如果换供应商，Arlo 的收入表会塌掉三分之一，而且塌得没有过渡期。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：<strong>这是全篇最重要的一个数字</strong></h3>
+<p>TTM 股权激励 <strong>7,178 万美元</strong>。对比一下：</p>
+<ul>
+<li>占总收入的 <strong>12.2%</strong> —— 这是纯软件公司的比例，而 Arlo 的毛利率只有 44.6%</li>
+<li>是当期经营利润（760 万）的 <strong>9.4 倍</strong></li>
+<li>是当期净利润（3,054 万）的 <strong>2.35 倍</strong></li>
+<li>是当期自由现金流（6,687 万）的 <strong>1.07 倍</strong></li>
+</ul>
+<p>GAAP 报表里这 7,178 万已经扣掉了，所以经营利润才只有 760 万。公司自己吹的 Non-GAAP 会把它加回来，那是骗人的——员工拿走的是真实的股份，你的持股比例被真实地稀释了。</p>
+<h3>稀释与回购：回购只是在给发股票堵漏，而且没堵住</h3>
+<ul>
+<li>TTM 回购 <strong>5,973 万美元</strong></li>
+<li>同期 SBC <strong>7,178 万美元</strong></li>
+<li><strong>回购 ÷ SBC = 0.83</strong></li>
+</ul>
+<p>这个比值接近 1 就说明回购不是回馈股东，只是把发给员工的股票从市场上买回来销毁、防止股本膨胀。0.83 意味着<strong>连堵都没堵住</strong>。</p>
+<p>实际结果：<strong>股本一年增加了 10.06%</strong>。这个跳幅比 SBC 本身还大，原因是公司刚刚从亏损转为盈利——亏损年份算每股收益时，未行权的期权和限制性股票是不计入分母的（会让亏损看起来更小，准则不允许），一旦转盈，这些潜在股份全部并进来。FY2024 亏损时分母 9,840 万股，FY2025 转盈后变成 10,660 万股，现在 10,761 万股。<strong>转盈这件事本身，一次性把 8% 的隐藏稀释暴露了出来。</strong></p>
+<h3>净利润 3,054 万是怎么来的：经营利润只有 760 万</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润（EBIT）</td>
+<td>760 万</td>
+</tr>
+<tr>
+<td>+ 投资处置收益、利息收入、其他非经营项</td>
+<td>+2,428 万</td>
+</tr>
+<tr>
+<td>= 税前利润</td>
+<td>3,188 万</td>
+</tr>
+<tr>
+<td>− 所得税</td>
+<td>−134 万（<strong>实际税率 4.2%</strong>）</td>
+</tr>
+<tr>
+<td>= 净利润</td>
+<td><strong>3,054 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两件事要说清楚：</p>
+<p><strong>第一，主营业务基本不赚钱。</strong> 5.87 亿收入做出 760 万经营利润，经营利润率 <strong>1.29%</strong>。净利润里有八成来自主业以外——现金流量表里明确有一笔 <strong>794 万美元的投资处置收益</strong>（卖掉持有的证券赚的），加上 1.41 亿现金的利息收入，剩下还有一部分其他项。</p>
+<p><strong>第二，税率 4.2% 不是能力，是历史亏损结转。</strong> Arlo 从 2018 年分拆到 2024 年累计亏了三亿多美元，这些亏损可以抵扣未来的应税所得，所以现在赚钱几乎不交税。这个盾牌是真金白银的资产，但<strong>会用完</strong>。用完之后按正常 21% 联邦税率，同样的税前利润只剩 2,519 万净利润。</p>
+<h3>一次性项目</h3>
+<p>TTM 期内有一笔 <strong>4,816 万美元的现金收购</strong>——2026 年 4 月买下了 Aloe Care Health，一家做老人跌倒检测和紧急呼叫的 AI 平台，目的是把 Arlo 的订阅业务从"看家"扩展到"看人"（居家养老监护）。这笔收购会带来一次性交易费用和后续的无形资产摊销。<strong>只看 TTM 一期，分不清哪些收购相关费用是真一次性、哪些会年年发生</strong>（Arlo 显然打算继续买），这里不下结论。</p>
+<p>资本化支出：TTM 资本开支 1,137 万，比 FY2024 的 269 万跳了四倍多，主要是收购带来的。折旧摊销 687 万。没有异常的软件开发费资本化操作。</p>
+<h3>利润 → 经营现金流 逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,054</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+687</td>
+</tr>
+<tr>
+<td><strong>+ 股权激励（非现金）</strong></td>
+<td><strong>+7,178</strong></td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>+224</td>
+</tr>
+<tr>
+<td>− 投资处置收益（非现金）</td>
+<td>−794</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>−409</td>
+</tr>
+<tr>
+<td>+ 应收账款变动</td>
+<td>−210</td>
+</tr>
+<tr>
+<td>+ 存货变动</td>
+<td>−1,537</td>
+</tr>
+<tr>
+<td>+ 应付账款变动</td>
+<td>−112</td>
+</tr>
+<tr>
+<td>+ 预收/递延收入变动</td>
+<td>+926</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产净变动</td>
+<td>−1,182</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>7,825</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,137</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>6,687</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表只有一行是重点</strong>：7,825 万经营现金流里，<strong>7,178 万是加回来的股权激励</strong>。把这一项还原成真实成本（因为它确实是成本，只是用股票支付的），Arlo 的自由现金流是 <strong>6,687 − 7,178 = −491 万，负数</strong>。</p>
+<p>也就是说：这家公司过去一年"产生"的全部自由现金流，还不够付它发给员工的股票。它看起来 4.7% 的自由现金流回报率，本质上是股东用被稀释的股份补贴出来的。</p>
+<p>存货那 1,537 万的增加也值得瞟一眼——收入涨 15.65%，存货涨得更快，硬件生意压货的老毛病。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 14.05 亿，企业价值 12.70 亿（账上净现金 1.35 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>14.05 亿 ÷ 3,054 万</td>
+<td><strong>46.0 倍</strong></td>
+<td><strong>2.17 元</strong></td>
+</tr>
+<tr>
+<td>公司吹的 Non-GAAP</td>
+<td>加回 SBC 7,178 万等，净利润约 1.0 亿</td>
+<td>约 14 倍</td>
+<td>7.14 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>剔除 794 万投资处置收益（税后约 761 万），SBC 按 GAAP 不加回 → 2,293 万</td>
+<td><strong>61.3 倍</strong></td>
+<td><strong>1.63 元</strong></td>
+</tr>
+<tr>
+<td>同上，再把税率还原到 21%</td>
+<td>税前 2,394 万 × 79% = 1,891 万</td>
+<td><strong>74.3 倍</strong></td>
+<td><strong>1.35 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>14.05 亿 ÷ 6,687 万</td>
+<td>21.0 倍</td>
+<td>4.76 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流再扣掉 SBC</strong></td>
+<td>6,687 − 7,178 = <strong>−491 万</strong></td>
+<td><strong>无意义（负）</strong></td>
+<td><strong>−0.35 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>12.70 亿 ÷ 760 万</td>
+<td><strong>167 倍</strong></td>
+<td>0.60 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>14.05 亿 ÷ [(3,054 + 1,493 − 3,050)/3 = 499 万]</td>
+<td><strong>282 倍</strong></td>
+<td><strong>0.35 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行需要解释：TTM 赚 3,054 万，FY2025 赚 1,493 万，FY2024 <strong>亏 3,050 万</strong>。三年平均下来一年赚 499 万。这不是在挑刺——它说明<strong>当期这个 3,054 万的利润，是这家公司自 2018 年分拆以来第一次像样的盈利，而且里面还掺着一次性投资收益和零税率</strong>。用它去乘一个 46 倍的估值，等于假设这个刚刚出现的利润水平既真实又能持续放大。</p>
+<h3>大白话：你投 100 块进去，一年能拿回多少</h3>
+<p><strong>按最保守的真实口径（剔除投资收益、税率还原正常）：一年 1.35 元。</strong> 定期存款都不止这个数。</p>
+<p>按 GAAP 那 2.17 元算也一样难看。而这 2 块钱里，<strong>没有一分钱以分红的形式回到你口袋</strong>——Arlo 不分红。回购倒是花了 5,973 万，但如前所述，那笔钱是去堵股权激励的漏，堵完股本还是涨了 10%。所以实际到手是 <strong>0 元</strong>，全部留在公司里，而公司拿这些钱去买了 Aloe Care、去压了存货。</p>
+<p>未来这个数字会变大还是变小？两股力量在拉锯：</p>
+<p><strong>往上拉的</strong>：订阅业务是真的。630 万付费账户、服务收入占比从两年前的不到 40% 涨到 60%、毛利率从 FY2024 的 36.7% 涨到 44.6%，这是结构性的改善，不是账面游戏。如果账户数按公司说的往 1,000 万走，服务收入还能再涨 60%，而服务的边际成本很低——多一个订阅用户，公司多花的只是几毛钱云存储费。届时经营利润率有可能从 1.3% 抬到两位数。</p>
+<p><strong>往下压的</strong>：一是 SBC 7,178 万这个基数不会自己缩小，服务收入多赚的钱要先填这个坑；二是税盾用完之后凭空多出 21% 的税；三是收入的三分之一和增长的近四成压在一个欧洲 OEM 客户身上，这个客户随时可以换供应商；四是硬件端的竞争对手是亚马逊 Ring 和谷歌 Nest——两家都可以把摄像头白送，靠别的地方赚钱。市场对此不是没有意见：<strong>10.9% 的流通股被做空</strong>，空头持仓要 10 天才能平完。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>订阅生意是真的，估值是假的。</strong></p>
+<p>Arlo 用七年时间和三亿美元亏损，换来了 630 万个每月付钱的家庭，服务收入现在占六成、毛利率 75%——这是一件实实在在做成了的事，不该被否定。</p>
+<p>但它今天的价格，要求你为一家<strong>经营利润率 1.29%、企业价值/经营利润 167 倍、扣掉股权激励后自由现金流为负、三分之一收入押在单一 OEM 客户、股本一年膨胀 10%</strong> 的公司付 46 倍市盈率。按最诚实的口径，投 100 块一年替你赚 1.35 元。</p>
+<p>这个价格不给你留任何犯错的余地：它已经假定 1,000 万付费账户会实现、假定 Verisure 不走、假定股权激励不再稀释、假定利润率能从 1.3% 一路走到两位数。四件事里错一件，都不用等业绩暴雷，估值自己就会掉一半。</p>
+<p><strong>不值这个价。生意可以留着看，股票现在不用碰。</strong></p>
+</div></body></html>

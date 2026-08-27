@@ -1,0 +1,358 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LZB · 乐至宝（La-Z-Boy Incorporated）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LZB</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">没真债、45%毛利、7.7%股东回报，买的是等房子解冻的期权</div><h1>LZB · 乐至宝（La-Z-Boy Incorporated）</h1>
+<p>市值 13.0 亿美元 | 股价约 $32.5 | 行业：耐用消费品（家具）| NYSE
+TTM 口径截止：2026 年 7 月 25 日（财年结束于每年 4 月底）</p>
+<blockquote>
+<p>卖躺椅的。美国人客厅里那张能整个人躺平、带脚踏板的单人沙发，"La-Z-Boy"这个牌子在美国基本等同于这个品类本身——就像"Xerox"之于复印机。1927 年创立，快一百年了。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报拆成三块：<strong>批发（Wholesale）</strong>、<strong>零售（Retail）</strong>、<strong>公司及其他（Corporate and Other）</strong>，中间有一大笔"分部间抵销"，是自己造的沙发卖给自己的门店那部分，要减掉。</p>
+<h3>生意一：批发 —— 自己开工厂造沙发，卖给别人的店</h3>
+<p><strong>这是公司的底盘：一家真正的制造企业。</strong></p>
+<p>它在墨西哥的拉莫斯、密西西比州、北卡罗来纳州开着几座大工厂，工人在流水线上做木架、缠弹簧、装那套让椅子能躺下去的钢制机械结构（这个机械结构是它一百年的看家专利活儿），然后蒙上布或者皮。</p>
+<p><strong>关键在于它是"接单再造"，不是"造好等卖"。</strong> 这一点跟大多数家具厂不一样，也是它最重要的竞争优势：</p>
+<p>一位太太走进匹兹堡一家 La-Z-Boy 门店，看中一款躺椅，但要藏青色的绒布、要加宽扶手、要电动而不是手拉。店员在平板上把这几项配置点完，订单当晚传到墨西哥的工厂，<strong>工厂按这一张订单开裁</strong>，大约四到六周后货直接送到她家客厅。</p>
+<p>这么干的好处是：<strong>几乎不用压成品库存</strong>——传统家具商要猜哪种颜色好卖、囤一仓库，猜错就得打折清仓。La-Z-Boy 只囤布料和零件，成品是零库存的。这也是为什么它的毛利率能做到 <strong>45.2%</strong>，而不是普通家具制造的 25–30%。</p>
+<p>批发的客户有三类：
+1. <strong>约一千家独立老板开的 "La-Z-Boy Furniture Galleries" 加盟店</strong>——挂它的招牌、只卖它的货，但店是别人的钱开的。一家店一次订 200 张躺椅，批发价大约 <strong>$500 一张</strong>，这张椅子在店里零售 <strong>$999</strong>。
+2. <strong>普通家具连锁和百货</strong>（比如区域性的家具城），只把 La-Z-Boy 当众多品牌之一摆在店里。
+3. <strong>England 品牌</strong>——它旗下另一个软体家具牌子，走中低价位，卖给完全不同的一批独立零售商，避免跟主品牌打架。加上加拿大、英国的国际业务。</p>
+<p>TTM 批发营收 <strong>14.52 亿</strong>，四年前是 17.69 亿。<strong>缩了 18%。</strong></p>
+<h3>生意二：零售 —— 干脆把加盟店买回来自己开</h3>
+<p><strong>这门生意是过去十年管理层最主要的动作，也是理解这家公司的关键。</strong></p>
+<p>同样一张躺椅，走批发只赚制造那一段（$500 批发价里的毛利），走自营店则<strong>制造和零售两段的钱都归自己</strong>（$999 全归自己）。所以它这些年一直在做一件事：<strong>把加盟商的店一家家买回来。</strong></p>
+<p>TTM 花了 <strong>1.014 亿美元现金做收购</strong>——买的基本都是加盟商手里的门店群。现在它自营 200 多家 La-Z-Boy Furniture Galleries。</p>
+<p>自营店和普通家具店不一样的地方在于<strong>店里有设计师</strong>：客人进来说"我客厅是这个样子"，掏出手机给店员看照片，店员用软件把沙发摆进去，配茶几、地毯、窗帘，一单从"买一张躺椅 $999"变成"整个客厅 $6,800"。这套打法（他们叫 Design Services）是自营店客单价高于加盟店的主要原因。</p>
+<p>TTM 零售营收 <strong>9.72 亿</strong>，四年前是 8.04 亿，<strong>涨了 21%</strong>——涨的部分基本来自"买回来"，不是来自同店增长。</p>
+<h3>生意三：公司及其他 —— Joybird</h3>
+<p><strong>Joybird</strong> 是 2018 年买下的线上直销品牌，做中世纪现代风（细腿、彩色、年轻人审美）的沙发，主要在网上卖，也开了少量体验店。TTM 营收 <strong>1.43 亿</strong>，四年前 1.96 亿，<strong>缩了 27%</strong>。这块历史上长期亏钱，是三门生意里最弱的一块。</p>
+<h3>钱：三门生意的 TTM 数字</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比（未抵销）</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>批发</td>
+<td>14.52 亿</td>
+<td>14.82 亿</td>
+<td>−2.0%</td>
+<td>69%</td>
+<td>约 8%（估算）</td>
+<td>约 1.16 亿</td>
+</tr>
+<tr>
+<td>零售</td>
+<td>9.72 亿</td>
+<td>9.51 亿</td>
+<td><strong>+2.3%</strong></td>
+<td>46%</td>
+<td>约 5%（估算）</td>
+<td>约 0.49 亿</td>
+</tr>
+<tr>
+<td>公司及其他（Joybird）</td>
+<td>1.43 亿</td>
+<td>1.44 亿</td>
+<td>−0.8%</td>
+<td>7%</td>
+<td>约 −4%（估算）</td>
+<td>约 −0.06 亿</td>
+</tr>
+<tr>
+<td>分部间抵销</td>
+<td>−4.57 亿</td>
+<td>−4.50 亿</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>21.10 亿</strong></td>
+<td>21.27 亿</td>
+<td><strong>+0.20%</strong></td>
+<td>100%</td>
+<td><strong>6.9%</strong></td>
+<td><strong>1.451 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润，上表的利润率是按行业结构估算的，不是财报数字。</strong> 确定的合并数是：营收 21.10 亿、毛利 9.53 亿（<strong>45.2%</strong>）、经营利润 1.451 亿（6.9%）。</p>
+<p><strong>一句话看懂全局</strong>：营收连续四年趴在 21–23 亿之间不动（FY2022 23.57 亿 → TTM 21.10 亿），而净利润从 1.50 亿掉到 0.815 亿——<strong>营收只跌了 10%，利润却腰斩。</strong> 原因是零售自营店的固定成本（房租、店员）刚性，销量一软，经营杠杆就反着打。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>1,520 万美元</strong>，占净利润 8,149 万的 <strong>18.7%</strong>。不算低但也不夸张，且下面回购那条会说明它已被现金买回。<strong>按 GAAP 已扣，不加回。</strong></p>
+</li>
+<li>
+<p><strong>一次性项目 —— 这一项是本篇最值得说的</strong>：TTM 有 <strong>2,464 万美元的"资产减值与重组费用"</strong>。公司在自己的 Non-GAAP 里通常会把这类东西加回去，让利润好看。</p>
+</li>
+</ul>
+<p><strong>但看历史：FY2026 是 1,997 万、FY2025 是 2,058 万、TTM 是 2,464 万——连续三年，每年两千万上下。</strong></p>
+<p>这不是一次性的，<strong>这是一门年年关店、年年计提的常规成本</strong>。它一边买加盟店（1.01 亿）一边关掉不赚钱的老店，重组是它商业模式的一部分。<strong>所以我不加回它。</strong> 这也解释了为什么经营利润 1.451 亿到税前利润只剩 1.108 亿——中间那 3,400 万缺口的主要部分就是这笔减值重组。</p>
+<ul>
+<li>
+<p><strong>资本化的支出</strong>：没有可疑项。资本开支 TTM 8,113 万（建新店、翻修工厂），同时出售了 3,342 万的房产设备（关店退租变现），净资本开支约 4,771 万。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：</p>
+</li>
+<li>TTM 回购股票：<strong>6,202 万美元</strong></li>
+<li>TTM SBC：1,520 万美元</li>
+<li><strong>回购 ÷ SBC = 4.1 倍</strong> ✅</li>
+<li>股本一年<strong>减少 2.56%</strong>，最近一季再减 2.27%（在加速）</li>
+<li>另外 TTM 分红 <strong>3,861 万</strong></li>
+</ul>
+<p><strong>4.1 倍是明确的真回购</strong>，员工发的股票被现金全额买回还有大幅富余，股本实打实在缩。加上分红，<strong>一年总共还给股东 1.006 亿美元，占市值 7.74%</strong>。这是一个很高的股东回报率。</p>
+<p><strong>但要算一笔账</strong>：全年自由现金流是 1.023 亿，还给股东 1.006 亿——<strong>等于把 98% 的自由现金流全发了</strong>。同时它还花了 1.014 亿买门店。钱从哪来？账上现金从 3.21 亿降到 2.73 亿，<strong>一年少了 4,800 万</strong>。<strong>回购 + 分红 + 收购，三件事同时干，是在吃老本，这个节奏撑不了太久，三件里必然要减一件。</strong></p>
+<ul>
+<li><strong>利润和现金流的差</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>81.5</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>136.1</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>24.6</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>15.2</td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>1.6</td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>5.6</td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>10.5</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>14.4</td>
+</tr>
+<tr>
+<td><strong>− 其他经营性资产净变动</strong></td>
+<td><strong>−123.0</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>183.5</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−81.1</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>102.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里唯一需要解释的是那 −1.23 亿的"其他经营性资产净变动"</strong>，而且它年年都在（−1.09 亿 / −0.92 亿 / −0.96 亿 / −1.80 亿）。这主要是<strong>门店租金的会计对冲</strong>：新租赁准则要求把 200 多家门店的租约做成"资产 + 负债"上表，租约资产的摊销被算进上面那 1.361 亿的折旧摊销里加回来，而每月实付的房租则从这一行减掉。两边大体抵消，<strong>所以经营现金流 1.835 亿没有被虚增，是干净的。</strong></p>
+<p>真正值得注意的是<strong>折旧摊销 1.361 亿远大于资本开支 0.811 亿</strong>。差额里大部分是租约摊销（对应的现金已在上面扣过），剩下的说明工厂和门店的账面折旧速度快于新投入——<strong>短期利好现金流，长期意味着资产在变老。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>13.0 亿 ÷ 0.815 亿</td>
+<td><strong>16.0 倍</strong></td>
+<td><strong>$6.27</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>加回 2,464 万重组（税后 1,838 万）</td>
+<td>约 13.0 倍</td>
+<td>约 $7.69</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>重组年年发生，<strong>不加回</strong>；SBC 已扣</td>
+<td><strong>16.0 倍</strong></td>
+<td><strong>$6.27</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>13.0 亿 ÷ 1.023 亿</td>
+<td><strong>12.7 倍</strong></td>
+<td><strong>$7.87</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>15.7 亿 ÷ 1.451 亿</td>
+<td>10.8 倍</td>
+<td>$9.24</td>
+</tr>
+<tr>
+<td>企业价值（剔除租赁负债口径）</td>
+<td>10.3 亿 ÷ 1.451 亿</td>
+<td><strong>7.1 倍</strong></td>
+<td><strong>$14.10</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>13.0 亿 ÷ 0.944 亿</td>
+<td><strong>13.8 倍</strong></td>
+<td><strong>$7.25</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>第五、六两行需要解释，因为这是这家公司被市场看漏的地方。</strong></p>
+<p>统计网站显示它"总负债 5.415 亿"，看起来负债不轻。<strong>但它的利息保障倍数是 233 倍</strong>——经营利润够付 233 次利息。<strong>这说明那 5.4 亿绝大部分不是借款，是 200 多家门店的租赁负债上表形成的。</strong> 佐证：TTM 实际偿还长期债务只有 <strong>91 万美元</strong>。</p>
+<p><strong>真实的资产负债表是：现金 2.73 亿，几乎没有真正的银行借款。</strong> 房租已经作为费用扣在经营利润里了，再把租赁负债算进企业价值就是重复计算。<strong>剔除租赁负债后，企业价值只有约 10.3 亿，EV/EBIT 7.1 倍。</strong></p>
+<p><strong>三年平均口径</strong>：过去三期净利润 8,149 万、1.02 亿、9,956 万，平均 9,435 万 → <strong>13.8 倍</strong>。比当期 16.0 倍便宜一点，说明<strong>当前利润略低于近三年正常水平，但没有低到"周期底部"的程度</strong>——真正的高点是 FY2022 的 1.50 亿，那是疫情期间全美国人在家换沙发的异常年份，不该当基准。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径（GAAP、重组不加回）算，公司一年替你赚 6.27 块。</strong></p>
+<p><strong>这 6.27 块里，有多少真回到你口袋？</strong> 答案是<strong>超过 100%</strong>：分红 3,861 万 + 回购 6,202 万 = 1.006 亿，占市值 <strong>7.74%</strong>。也就是说你投 100 块，一年拿回 7.74 块（其中 2.97 块是现金分红、4.77 块是回购帮你把每股价值做厚）。<strong>它发的比赚的还多，缺口靠账上现金垫。</strong></p>
+<p><strong>这个 X 未来是变大还是变小？我的判断是：大概率变大，但要等房子先动。</strong></p>
+<ul>
+<li><strong>变大的理由</strong>：躺椅是标准的<strong>住房周期后置消费品</strong>——先有人换房，几个月后才有人换沙发。美国住房成交量目前处在三十年低位，一旦利率下来、二手房开始换手，家具需求会跟着回来。届时经营杠杆会正着打：营收回到 23 亿，多出的 2 亿营收里毛利 45% 差不多有 9,000 万，工厂和门店的固定成本已经在那儿了，<strong>利润可能从 8,000 万跳回 1.4 亿</strong>——那就是 9 倍市盈率。前瞻 PE 显示为 12.94 倍，市场也在算这笔账。</li>
+<li><strong>变小的风险</strong>：关税。它的工厂在墨西哥和美国本土，相比把产能全放在越南、中国的同行，<strong>关税其实是它的相对优势</strong>——这一点常被忽略。真正的风险是需求再拖两年、同时它还在一边买店一边回购，把现金垫子吃光。</li>
+<li><strong>投入资本回报率 8.29% 对上资本成本 7.98%</strong>——刚刚好覆盖，不创造超额价值，也不毁灭价值。<strong>这是一门平庸但站得住的生意，不是一门好生意。</strong></li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家没有真债、45% 毛利率、每年把全部自由现金流还给股东、正卡在美国住房周期最低点的百年家具品牌——价格算公道，不算便宜。</strong></p>
+<p>它的好处非常实在：账上 2.73 亿现金、几乎零借款（那 5.4 亿是房租不是债）、剔除租赁后企业价值只有 7.1 倍经营利润、股东回报率 7.74%、回购是股权激励的 4.1 倍、股本一年真减 2.56%。<strong>"按单生产不压库存"这个模式在家具业里是真优势</strong>，是它毛利率能高出同行 15 个点的原因，也是关税战里它站得比越南产能同行稳的原因。</p>
+<p>它的问题同样实在：<strong>营收四年没长，利润四年腰斩，Joybird 缩了 27%，投入资本回报率只比资本成本高 0.31 个点，"一次性"重组连着三年每年两千万。</strong> 而且它现在同时在做三件花钱的事——买加盟店、回购、分红——现金一年少了 4,800 万，<strong>这个组合迟早要砍掉一件。</strong></p>
+<p><strong>16 倍的当期市盈率、13.8 倍的三年平均，买的是一个"等房子解冻"的期权。</strong> 这个期权不贵，也谈不上白送。如果你相信美国住房成交量迟早回到正常，那么现在这个价格上你不吃亏——<strong>在等待期间还有 7.74% 的股东回报付你利息</strong>，这比大多数"等周期"的股票厚道。但它不会自己变成一门好生意，它只会随着房子一起呼吸。</p>
+<p><strong>值这个价，但没有便宜可占。</strong></p>
+</div></body></html>

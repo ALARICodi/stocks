@@ -1,0 +1,369 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OMCL · 欧姆尼塞尔（Omnicell, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OMCL</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">护城河真、净现金真,但四年零增长+股权激励比净利润还多</div><h1>OMCL · 欧姆尼塞尔（Omnicell, Inc.）</h1>
+<p>市值 15.3 亿美元 / 股价约 $33.45 / 企业价值 14.3 亿美元（账上净现金 9,217 万）/ 行业：科技服务（医疗自动化）/ 交易所：NASDAQ
+<strong>全篇口径：TTM（最近四个季度滚动），截止 2026 年 6 月 30 日。</strong></p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Omnicell 在财报里<strong>只报一个分部</strong>（另按地区拆成美国 11.11 亿 / 海外 1.35 亿），所以要靠它的收入类型和产品线来理解：2026 年第二季度，<strong>产品收入 1.75 亿、服务收入 1.37 亿</strong>，56% 对 44%，服务那一半增长更快。</p>
+<p>实质上是三门生意。</p>
+<h3>生意一：医院走廊上那台"发药柜"（自动发药柜 / Connected Devices）</h3>
+<p><strong>这件事具体是什么。</strong></p>
+<p>你去过医院的护士站，会看到一台一人多高的钢柜，正面一块触摸屏。护士要给 302 床的病人打一针 5 毫克的羟考酮（一种阿片类止痛药），她刷工牌或按指纹，屏幕上跳出从医院 HIS 系统（Epic 或 Cerner）同步过来的今日医嘱，她点选那条医嘱，<strong>柜子里只有装着那一种药的那一个抽屉格会弹开</strong>，其余全部锁死。她取走一支，系统立刻记下"谁、几点、拿了几支、还剩几支"。</p>
+<p><strong>为什么医院非买不可，有三个理由，每一个单独拿出来都够了：</strong></p>
+<ol>
+<li><strong>防止医护偷阿片类药物。</strong> 这在美国是刑事案件级别的真实问题——护士给病人打生理盐水、把吗啡带回家，每年都有人被起诉。发药柜把每一次开柜、每一片药的去向全部留痕，配合后台的异常行为分析（某个护士开柜频率显著高于同事就会报警）。这是医院合规部门和 DEA（缉毒局）检查时的硬需求。</li>
+<li><strong>防止拿错药。</strong> 长得像、名字像的药在医院里是致死原因之一。抽屉只弹开对的那一格，物理上就取不出错的药。</li>
+<li><strong>药房知道库存。</strong> 全院几百台柜子实时回传数据，中心药房不用派人挨个楼层数瓶子。</li>
+</ol>
+<p><strong>怎么收钱。</strong> 一台柜子连安装大约三万到六万美元。一家 400 张床的医院要装六十到一百台，<strong>一次完整部署就是几百万美元的资本开支</strong>，通常五到八年换一轮，很多医院还要走融资租赁。</p>
+<p><strong>为什么客户换不掉它。</strong> 换发药柜意味着：全院几百台设备停机更换、几千名护士重新培训、跟 Epic 的接口重做、几年的用药审计数据要迁移。医院宁可忍受涨价。Omnicell 的柜子铺在美国相当大一部分急症医院里——<strong>这个装机量就是它的护城河，也是它唯一真正值钱的东西。</strong></p>
+<h3>生意二：药房里的机器人（中心药房 + 静脉配液）</h3>
+<ul>
+<li><strong>XR2 中心药房机器人</strong>：医院地下室药房里一间屋子那么大的机器，夜里自动把第二天全院每个病人每个时段的口服药，按人按次分装成带条码的小袋，护士早上直接推着车发。替代掉四五个药房技术员一整夜的手工分装。</li>
+<li><strong>静脉配液机器人（IVX Workflow / i.v.STATION）</strong>：化疗药和静脉输液袋的配制，传统上是药房技师在无菌间里拿注射器手工抽配。剂量错了病人可能死，而且技师本人长期接触化疗药有致癌风险。机器人用重量法逐步核验、每一步拍照留档。</li>
+</ul>
+<p>单台报价通常在几十万美元量级。这条线卖得远不如发药柜多，但它是"发药柜之外还能卖给同一批客户什么"的答案。</p>
+<h3>生意三：高级服务（Advanced Services）——真正的增长故事</h3>
+<p>这部分是软件和外包服务，按订阅或按分成收费，<strong>毛利率远高于卖铁盒子，而且是经常性收入</strong>。</p>
+<ul>
+<li><strong>340B 合规软件（340B Link）</strong>：美国有个联邦项目叫 340B，允许服务低收入人群的医院以大幅折扣价（常见便宜 25%–50%）采购处方药。但医院必须逐盒证明"这药确实开给了符合资格的病人"，一旦审计不过要全额退还并罚款。这个匹配工作繁琐到没法手工做。Omnicell 的软件自动做处方与资格的匹配、留痕、生成审计报告，<strong>通常按帮医院省下来的金额分成或按处方笔数收费</strong>。药价每年涨，这门生意就自然长。</li>
+<li><strong>专科药房服务（Specialty Pharmacy Services）</strong>：帮医院自己开专科药房，卖肿瘤药、自身免疫药这类一个月几千到上万美元的高价药。以前这些处方流到 CVS、Optum 手里，现在医院把它留在自己体系内。Omnicell 派人、给系统、管流程，按业绩分成。</li>
+<li><strong>Omnicell One / 库存优化</strong>：SaaS，用全网数据告诉医院哪些药囤多了、哪些要断货，帮它把几百万美元的库存压下来。</li>
+</ul>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万，估算）</th>
+<th>占比</th>
+<th>趋势</th>
+<th>毛利率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>连接设备（发药柜等硬件 + 软件许可）</td>
+<td>约 700</td>
+<td>约 56%</td>
+<td>2026 年复苏，但仍低于 2022 年峰值</td>
+<td>约 40%</td>
+</tr>
+<tr>
+<td>技术服务（维保、支持）</td>
+<td>约 300</td>
+<td>约 24%</td>
+<td>随装机量稳定增长</td>
+<td>约 45%</td>
+</tr>
+<tr>
+<td>高级服务（340B / 专科药房 / SaaS）</td>
+<td>约 250</td>
+<td>约 20%</td>
+<td>最快，是估值的支点</td>
+<td>约 55%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,247</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>+8.45%</strong></td>
+<td><strong>44.01%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>Omnicell 只报一个分部，上面的拆分是估算</strong>：产品/服务的 56/44 分法来自 2026 年第二季度业绩公告（产品 1.75 亿、服务 1.37 亿），服务内部再拆成技术服务和高级服务是按公司公开表述的结构推的，毛利率按整体 44.01% 结合品类常识分配。<strong>这三行数字不要当精确值用</strong>，但"硬件占一半多、服务占一半少且增长更快"这个结构是确定的。</p>
+</blockquote>
+<p><strong>必须点出来的一件事：营收还没回到四年前。</strong> 2022 财年 12.96 亿 → 2023 财年 11.47 亿（−11.5%）→ 2024 财年 11.12 亿（−3.0%）→ 2025 财年 11.85 亿 → TTM 12.47 亿。<strong>四年下来是负增长。</strong> 原因是新冠期间联邦给医院的救助资金催出了一轮资本设备抢购，钱花完之后医院冻结资本开支，Omnicell 卖铁盒子的生意连着两年掉。现在的 +8.45% 是从坑里爬出来，不是新高。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的报表<strong>需要剥的东西比前两家多得多</strong>，而且每一项都不小。</p>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>4,489 万美元</strong>，而全年净利润只有 3,908 万——<strong>SBC 是净利润的 115%</strong>。换句话说，这家公司发给员工的股票，比它替股东赚的钱还多。这笔钱按规矩当真实现金成本扣掉，GAAP 已经扣了，本文不加回。（历史上更夸张：2022 财年 6,825 万、2023 财年 5,530 万，现在已经在压缩。）</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：两处。
+  1. <strong>重组与并购费用 651 万</strong>——但翻一下历史：2021 财年 902 万、2022 财年 3,219 万、2023 财年 1,554 万、2024 财年 515 万、2025 财年 651 万。<strong>年年都有，这不是"一次性"，是常态成本，不予加回。</strong>
+  2. <strong>一笔约 1,400 万美元、财报页没有列出名目的税前收益。</strong> 算式对不上：经常性税前利润 5,365 万减去重组 651 万应该是 4,714 万，但实际税前利润是 6,114 万，<strong>多出约 1,400 万</strong>。同期现金流量表显示净还债 1.75 亿（提前清偿了可转债），<strong>最可能是折价回购债券产生的一次性收益</strong>（这是推断，财报页未列名目）。按 36% 税率折算约 <strong>900 万净利润，占 TTM 净利润的 23%</strong>。<strong>这一笔要剔除。</strong></p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：投资活动里有一行"购买无形资产 <strong>1,583 万</strong>"，这是资本化的软件开发费——<strong>它是真金白银花掉的现金，却不算在利润表里，也没有被主流网站算进自由现金流</strong>。同时利润表外还有一行"其他摊销 <strong>4,709 万</strong>"，主要是 2021 年那笔 3.54 亿美元收购（买下 340B 和专科药房相关业务）留下的无形资产在摊销。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>7,120 万</strong>，SBC 4,489 万，<strong>比值 1.59 倍</strong>。但要扣掉员工行权发新股的 1,646 万，净回购 5,474 万，<strong>净比值降到 1.22 倍</strong>。股本一年只减少 <strong>1.28%</strong>。
+  <strong>结论：这个回购基本上就是在抵消员工发股，勉强多回收了一点，谈不上回馈股东。</strong> 公司不分红。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：净利润 3,908 万，经营现金流 <strong>1.814 亿</strong>，差了 4.6 倍。这是全篇最需要看懂的一张表：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>39.08</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>39.49</td>
+</tr>
+<tr>
+<td>＋ 其他摊销（收购无形资产）</td>
+<td>47.09</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>44.89</td>
+</tr>
+<tr>
+<td>＋ 资产减值与处置</td>
+<td>1.04</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>11.76</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>5.37</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>8.90</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−12.73</td>
+</tr>
+<tr>
+<td>＋ 递延收入增加</td>
+<td>14.37</td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−17.81</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>181.44</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>1.42 亿的差额里，只有三样东西：折旧摊销 8,658 万、股权激励 4,489 万、营运资金净流入 −190 万。</strong></p>
+<p>这两块加回项的性质<strong>完全不同</strong>，混在一起看就会得出错误结论：</p>
+<ul>
+<li><strong>8,658 万的摊销确实不花现金</strong>，其中 4,709 万是 2021 年那笔收购的无形资产在摊——钱五年前已经花掉了，现在只是在账上分期扣。这部分自由现金流是真的。</li>
+<li><strong>4,489 万的 SBC 是真实成本</strong>，只不过付的不是现金而是你手里股份的比例。<strong>把它当"非现金"加回去，等于假装员工白干活。</strong></li>
+</ul>
+<p>所以要算股东真正能拿到的钱，必须两步走：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>自由现金流的三个版本</th>
+<th>金额（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主流网站口径（经营现金流 − 资本开支 41.27）</td>
+<td>140.17</td>
+</tr>
+<tr>
+<td>再扣掉资本化的软件开发 15.83</td>
+<td><strong>124.34</strong></td>
+</tr>
+<tr>
+<td><strong>再把 SBC 44.89 当成真实成本扣掉</strong></td>
+<td><strong>79.45</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后那 7,945 万，才是这家公司一年真正为股东创造的现金。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>15.26 亿 ÷ 0.391 亿</td>
+<td><strong>39.0 倍</strong></td>
+<td><strong>2.56 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>净利润加回 SBC 4,489 万 + 收购摊销 4,709 万 + 重组 651 万，按 25% 税率折 ≈ 1.13 亿</td>
+<td>13.5 倍</td>
+<td>7.41 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 净利润 3,908 万 − 一次性债务收益约 900 万（税后）= <strong>3,010 万</strong>；重组年年发生不加回；SBC 已按 GAAP 扣除不加回</td>
+<td><strong>50.7 倍</strong></td>
+<td><strong>1.97 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（主流）</td>
+<td>15.26 亿 ÷ 1.402 亿</td>
+<td>10.9 倍</td>
+<td>9.18 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣资本化软件）</td>
+<td>15.26 亿 ÷ 1.243 亿</td>
+<td>12.3 倍</td>
+<td>8.15 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（再把 SBC 当现金扣）</strong></td>
+<td>15.26 亿 ÷ 0.795 亿</td>
+<td><strong>19.2 倍</strong></td>
+<td><strong>5.21 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>14.30 亿 ÷ 0.505 亿</td>
+<td>28.3 倍</td>
+<td>3.53 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>FY23 −0.204 亿 / FY24 0.125 亿 / FY25 0.021 亿 → <strong>三年平均是 −193 万，负数，倍数无意义</strong>。改用 TTM + FY25 + FY24 三期平均 0.179 亿</td>
+<td><strong>85.3 倍</strong></td>
+<td><strong>1.17 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最刺眼的不是任何一个倍数，是三年平均那一行的注脚：Omnicell 在 2023、2024、2025 三个完整财年里，GAAP 净利润加起来是负数。</strong> 一家市值 15 亿的公司，连续三年基本没赚到钱。TTM 的 3,908 万是四年来第一次像样的利润。</p>
+<p>第二刺眼的是<strong>同一家公司，口径不同差 26 倍</strong>：公司自己的 Non-GAAP 说 13.5 倍（便宜），GAAP 说 39 倍（贵），剔完障眼法说 50.7 倍（很贵），三期平均说 85 倍（离谱）。差别几乎全部来自一件事——<strong>要不要把那 4,489 万的股权激励当成钱</strong>。</p>
+<p>第三点：2026 年第二季度公司报的 Non-GAAP 每股收益是 <strong>$0.94</strong>，市场预期只有 $0.42，<strong>单季就超过了 GAAP 全年的 $0.84</strong>。业绩公布当天股价反而下跌——市场对这个口径的信任度，从股价上就能读出来。</p>
+<p><strong>说人话：你现在投 100 块进 Omnicell，按最保守的真实口径（剔除一次性债务收益）算，公司一年替你赚 1.97 元。</strong></p>
+<p>如果你愿意接受"收购摊销确实不花钱"这个说法（我认为这个说法在很大程度上是对的），那就看<strong>把 SBC 当现金扣掉之后的自由现金流口径：19.2 倍，一年 5.21 元</strong>。<strong>这是我认为最诚实的那个数字。</strong></p>
+<p>这 5.21 元里回到你口袋的：<strong>没有分红；回购 7,120 万看着不少，但扣掉员工行权发的新股，一年只把股本压缩 1.28%</strong>，落到你身上约 0.43 元。其余的钱去了：4,127 万买设备、1,583 万开发软件、<strong>1.75 亿还债</strong>（这是 TTM 现金最大的去向，账上现金因此从 3.69 亿降到 2.92 亿，但换来了净现金 9,217 万的干净资产负债表）。</p>
+<p><strong>这个 5.21 元未来会变大还是变小？</strong> 我认为<strong>会变大，但变大的速度撑不住 39 倍的 GAAP 估值</strong>：</p>
+<ul>
+<li>变大的力量：经营利润从 2024 财年的 549 万 → 2025 财年 1,167 万 → TTM <strong>5,047 万</strong>，翻了九倍，这是实打实的复苏。营收 +8.45% 在加速。高级服务（340B、专科药房）是订阅和分成模式，随药价自然增长，毛利率更高，占比在提升。SBC 从 6,825 万压到 4,489 万，还在降。已经净还清债务，现在净现金 9,217 万，利息从支出变成净收入。装机量护城河是真的。</li>
+<li>压制的力量：<strong>营收四年零增长</strong>（12.96 亿 → 12.47 亿），复苏只是回到起点。<strong>ROIC 2.67%，资本成本 WACC 8.64%</strong>——公司投出去的每一块钱只赚回三分之一的资金成本，<strong>在毁灭价值</strong>。SBC 还是净利润的 115%。实际税率 36% 偏高（SBC 的税务抵扣缺口所致），进一步压低到手利润。7.61% 的股份被做空。医院的资本开支预算受政府医保支付政策直接影响，不在公司控制之内。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意是真的，转机是真的，但价格已经把转机算进去了，而且算得比事实更乐观。</strong></p>
+<p>美国相当一部分急症医院的走廊上装着 Omnicell 的柜子，这个装机量换不掉，衍生出来的维保、340B 软件、专科药房分成是高毛利的经常性收入，方向完全正确。经营利润一年翻九倍、还清全部债务转为净现金，这两件事都是硬的。</p>
+<p>但你得同时看清另外三件事：<strong>四年营收零增长，ROIC 2.67% 只有资本成本的三分之一，股权激励比净利润还多。</strong> 把最诚实的那个口径摆出来——扣掉资本化软件、把股权激励当成真实成本之后的自由现金流是 7,945 万，对应 <strong>19.2 倍、一年 5.21 元回报</strong>。对一个刚从坑里爬出来、增长 8% 的医疗设备公司，这个价格谈不上便宜，也算不上离谱。</p>
+<p><strong>偏贵。</strong> 它不是陷阱——净现金、护城河真实、拐点已经出现，所以不该被当成烂公司。但 39 倍 GAAP、50.7 倍剔除障眼法、85 倍三期平均，任何一个口径都不给你安全边际。<strong>要买，等它跌到把 SBC 扣掉之后的自由现金流 12–13 倍（对应市值 9.5 亿到 10.5 亿），或者等到看见连续两年的营收两位数增长把"四年零增长"这个标签摘掉——先满足哪个算哪个。</strong></p>
+</div></body></html>

@@ -1,0 +1,389 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CRSR · 海盗船游戏（Corsair Gaming, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CRSR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">资本回报3.9%低于资金成本13.2%，20倍买零增长不够便宜</div><h1>CRSR · 海盗船游戏（Corsair Gaming, Inc.）</h1>
+<p>市值 12.87 亿美元 · 股价约 $11.90 · 行业：科技服务（游戏硬件与外设）· 数据口径 TTM，截至 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Corsair 是打游戏的人最熟悉的那个「船锚」标志。它的生意可以按财报的分部拆成两门，但这两门的赚钱逻辑差别很大，值得分开讲透。</p>
+<h3>生意一：游戏组件与整机（Gaming Components and Systems）—— 卖装机零件，占营收 64%</h3>
+<p>这是 Corsair 的老本行，也是它 1994 年起家的地方。<strong>说白了就是：一个人要自己攒一台游戏电脑，除了 CPU 和显卡这两样它不做，剩下的几乎所有东西 Corsair 都卖。</strong></p>
+<p>具体是哪些东西、怎么收钱：</p>
+<p><strong>内存条（DRAM 模组）</strong>，这是它起家的产品。Corsair 自己不生产内存芯片——芯片来自三星、海力士、美光这三家。Corsair 做的是<strong>把别人的芯片买来，焊到自己设计的电路板上，套一个带 RGB 灯效的金属散热马甲，测试超频稳定性，然后贴上「Vengeance」或「Dominator」的牌子卖出去</strong>。一条 32GB 的 DDR5 内存，芯片成本可能是 90 美元，Corsair 卖 140 美元。为什么有人肯多付 50 块？因为<strong>攒机的人怕蓝屏</strong>——同样的芯片，经过筛选和超频验证、有终身保修、灯效能跟整机同步的那条，值这个溢价。</p>
+<p><strong>这门生意最要命的一点是：它的成本由三家内存芯片厂决定，而不是由 Corsair 决定。</strong> 2026 年 AI 数据中心把 DRAM 需求抽干，内存价格暴涨。芯片一涨价，Corsair 要么涨价（销量掉）、要么自己吃掉（毛利掉）。<strong>它在整条产业链上处在最没有议价权的位置。</strong></p>
+<p><strong>电源、机箱、水冷散热器</strong>。这几样的逻辑比内存好一些。一个 850 瓦金牌全模组电源卖 130 美元，Corsair 找台达、海韵这样的代工厂做，成本 80 美元左右。这里的护城河是<strong>信任</strong>——电源炸了会烧掉整台机器，所以攒机的人愿意为口碑付钱，不会为省 20 块去买杂牌。水冷散热器（iCUE H150i 这类）也一样，漏液就是灭顶之灾。</p>
+<p><strong>整机（Origin PC、Corsair One）</strong>。买来自己的零件 + 别人的 CPU 显卡，组装成整机卖两三千美元一台。<strong>这是毛利最低的一块</strong>——本质上是收一笔组装费和品控费，毛利率只有一成多。它存在的价值是消化自家零件的库存。</p>
+<p><strong>这门生意 TTM 做了 9.35 亿美元，但在往下走</strong>：全年 FY25 是 9.80 亿，TTM（截至 2026 年 6 月）年化下来是 9.35 亿，<strong>同比下滑约 4.7%</strong>。</p>
+<h3>生意二：玩家与创作者外设（Gamer and Creator Peripherals）—— 键鼠耳机和直播设备，占营收 36%</h3>
+<p>这门生意毛利更高、护城河更硬，也是现在唯一在增长的部分。</p>
+<p><strong>键盘鼠标耳机</strong>。一把 K70 机械键盘卖 170 美元，一只 Sabre 电竞鼠标卖 60 美元。看着是普通消费品，但<strong>电竞选手这个圈子有极强的从众效应</strong>——某个 CS 世界冠军用哪只鼠标，第二天论坛上就有一万个人跟着买。Corsair 常年赞助战队，本质上是在买这个"跟风"的入口。</p>
+<p><strong>SCUF 手柄</strong>。这是 Corsair 收购来的品牌，做的是<strong>高端定制主机手柄</strong>——在背面加四个「拨片」（paddle），让玩家用无名指按，不用把大拇指从摇杆上挪开。一只标准 Xbox 手柄卖 60 美元，一只 SCUF 卖 200–300 美元。买它的是主机竞技玩家，几百块换半秒反应时间，他们觉得值。</p>
+<p><strong>Elgato——这是整个公司里最好的一块资产</strong>。Elgato 做的是<strong>直播主播的全套装备</strong>：采集卡（把游戏主机的画面抓进电脑，一张卖 200 美元）、Stream Deck（一个带 15 个小屏幕按键的控制盒，按一下就切场景、放音效、开关麦克风，卖 150–250 美元）、补光灯、绿幕、麦克风。</p>
+<p><strong>Stream Deck 是这家公司唯一有"软件粘性"的产品。</strong> 一个主播花几十个小时把每个按键配置好——这个键切到游戏画面、那个键放"666"的音效、另一个键一键静音——<strong>配置好之后他不会再换牌子，因为换了要重来一遍</strong>。而且第三方开发者给它写了几千个插件（控制 OBS、Spotify、Philips 灯、甚至 Home Assistant）。这已经不是一个硬件，是一个小生态。</p>
+<p><strong>这门生意 TTM 做了 5.17 亿，年化增速约 +5%，是公司里唯一在长的部分。</strong></p>
+<p><strong>另外还有 Fanatec</strong>——2024 年收购的赛车模拟外设品牌（方向盘、踏板、直驱基座），一套认真的赛车模拟装备能卖到两三千美元。这块业务归在外设分部里，是这门生意增长的一部分来源。</p>
+<h3>把两门生意的钱摊开</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th style="text-align: right;">TTM 营收（百万美元）</th>
+<th style="text-align: right;">相对 FY25 年化</th>
+<th style="text-align: right;">占比</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>游戏组件与整机</td>
+<td style="text-align: right;">934.8</td>
+<td style="text-align: right;"><strong>−4.7%</strong></td>
+<td style="text-align: right;">64.4%</td>
+<td>毛利低，成本受内存芯片厂摆布</td>
+</tr>
+<tr>
+<td>玩家与创作者外设</td>
+<td style="text-align: right;">516.7</td>
+<td style="text-align: right;"><strong>+5.0%</strong></td>
+<td style="text-align: right;">35.6%</td>
+<td>毛利高，Elgato 有软件粘性</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>1,451.5</strong></td>
+<td style="text-align: right;"><strong>−1.4%</strong></td>
+<td style="text-align: right;">100%</td>
+<td></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td style="text-align: right;">443.1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">毛利率 <strong>30.5%</strong></td>
+<td>FY24 只有 25.2%，在改善</td>
+</tr>
+<tr>
+<td>减：研发、销售、管理费用</td>
+<td style="text-align: right;">−415.2</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营利润</strong></td>
+<td style="text-align: right;"><strong>27.9</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><strong>经营利润率 1.9%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润</strong>，所以上面没法拆到每门生意的赚钱情况。按行业常识估算：外设分部的毛利率大约在 35%–40%，组件与整机在 25% 左右——<strong>也就是说，占营收三分之一的外设，很可能贡献了一半以上的毛利。</strong></p>
+<p><strong>这张表最需要注意的一行是最后一行：经营利润率 1.9%。</strong> 一家做了 14.5 亿美元生意的公司，一整年的经营利润只有 2790 万美元。<strong>每卖 100 块钱的东西，最后剩不到 2 块。</strong> 这个利润率的水平，跟一家超市差不多，而不像一家有品牌的科技公司。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>1. 股权激励（SBC）：2708 万，是净利润的 81%</h3>
+<p><strong>这是全篇第一个要盯住的数字。</strong></p>
+<p>TTM 股权激励 2708 万美元，而 GAAP 净利润是 3330 万。<strong>员工拿走的股票，价值相当于股东所得利润的 81%。</strong></p>
+<p>按规矩，SBC 一律当真实成本，GAAP 已经扣了，我们不加回。但要理解它的含义：<strong>Corsair 每年发出去的股票，稀释掉了老股东约 2.3% 的持股</strong>（股本一年增加 2.29%）。这不是纸面游戏——你手里那 1% 的股份，一年后变成 0.977%。</p>
+<p>值得指出的是，同期它给出的自由现金流数字（8972 万）里，<strong>这 2708 万是被当作"非现金支出"加回去的</strong>。所以那个漂亮的自由现金流，有 30% 是靠不把员工薪酬算成成本得来的。这个后面还会再算一次。</p>
+<h3>2. 一次性项目：税前利润里有一笔 1850 万来路不明的非经营收益</h3>
+<p>把利润表的三个数摆在一起：</p>
+<ul>
+<li>经营利润：<strong>2787 万</strong></li>
+<li>利息费用（按利息保障倍数 3.68 反推）：约 <strong>−757 万</strong></li>
+<li>税前利润：<strong>3880 万</strong></li>
+</ul>
+<p>2787 − 757 = 2030 万，但实际税前利润是 3880 万。<strong>中间多出 1850 万，来自经营和利息之外的地方。</strong></p>
+<p><strong>从这四张财报页上无法确定这 1850 万的具体构成</strong>，最可能的两个来源是：收购 Fanatec 时约定的「业绩对赌款」（earnout）因为业绩没达标而被减记、或者外汇折算收益。无论是哪一种，<strong>它都不是卖键盘赚来的钱，明年不会重复。</strong></p>
+<p><strong>单看 TTM 一期，无法判断这类项目是否年年发生。</strong> 但可以确定的是：如果把这 1850 万剔掉，税前利润只剩 2030 万。</p>
+<h3>3. 所得税：有效税率 2.41%，不正常</h3>
+<p>TTM 交的税只有 <strong>93.7 万美元</strong>，税前利润 3880 万，有效税率 <strong>2.41%</strong>。正常的美国公司是 21% 起步。</p>
+<p>这么低的税率通常来自一件事：<strong>公司过去几年一直亏损（FY24 亏 9918 万、FY25 亏 1247 万），攒下了大量可抵扣的税务亏损额度，现在赚钱了先用这个额度抵掉。</strong></p>
+<p>这个便宜是真的，但<strong>是一次性的</strong>——额度用完就得按正常税率交税。把税率还原到 21%：净利润会从 3330 万降到约 <strong>3065 万</strong>。</p>
+<h3>4. 资本化的支出：<strong>没有明显问题</strong></h3>
+<p>Corsair 没有把研发费用资本化的迹象——资本开支只有 1603 万，占营收 1.1%，是正常的模具和设备投入。</p>
+<p>但资产负债表上有另一个东西要说：<strong>市净率 1.93 倍，但有形资产市净率是 6.37 倍。</strong> 这个巨大的差距说明：<strong>它 7 亿美元的账面净资产里，大约 5 亿是收购来的商誉和无形资产</strong>（Elgato、SCUF、Origin PC、Drop、Fanatec 这一串收购攒下来的）。这些东西不是厂房也不是现金，是「当年为品牌多付的钱」。FY24 它已经因此计提过一次大额减值（那年亏了 9918 万）——<strong>如果哪个被收购的品牌卖不动了，还会再来一次。</strong></p>
+<h3>5. 回购与稀释：回购 ÷ SBC = 0.22，纯粹象征性</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权激励发出去的股票</td>
+<td style="text-align: right;">27.08</td>
+</tr>
+<tr>
+<td>回购股票花的钱</td>
+<td style="text-align: right;"><strong>6.03</strong></td>
+</tr>
+<tr>
+<td>员工行权买股票交给公司的钱</td>
+<td style="text-align: right;">+8.71</td>
+</tr>
+<tr>
+<td><strong>净效果</strong></td>
+<td style="text-align: right;"><strong>公司还从股东手里净收进 2.68</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购 ÷ SBC = 0.22。</strong> 按标准来说，这个比值接近 1 才算"回购只是抵消员工发股"，大于 3 才算真回购。<strong>0.22 的意思是：连抵消员工发股的五分之一都不到。</strong></p>
+<p>结果就是股本一年增加 2.29%、上季度环比还增了 1.32%。<strong>这家公司不但没在回馈股东，还在持续稀释股东。</strong></p>
+<h3>6. 利润和现金流的差：现金流远好于利润，但要看清楚为什么</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td style="text-align: right;">33.3</td>
+</tr>
+<tr>
+<td>加：折旧与摊销</td>
+<td style="text-align: right;">+53.7</td>
+</tr>
+<tr>
+<td>加：股权激励（非现金）</td>
+<td style="text-align: right;">+27.1</td>
+</tr>
+<tr>
+<td>减：坏账拨备转回等</td>
+<td style="text-align: right;">−2.8</td>
+</tr>
+<tr>
+<td>减：其他经营调整</td>
+<td style="text-align: right;">−4.9</td>
+</tr>
+<tr>
+<td>加：应收账款回收</td>
+<td style="text-align: right;">+17.4</td>
+</tr>
+<tr>
+<td>加：<strong>存货释放</strong></td>
+<td style="text-align: right;"><strong>+31.0</strong></td>
+</tr>
+<tr>
+<td>减：<strong>应付账款支付</strong></td>
+<td style="text-align: right;"><strong>−77.7</strong></td>
+</tr>
+<tr>
+<td>加：其他营运资金</td>
+<td style="text-align: right;">+25.3</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td style="text-align: right;"><strong>105.7</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td style="text-align: right;">−16.0</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td style="text-align: right;"><strong>89.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表有三处值得停下来看：</strong></p>
+<p><strong>第一，折旧摊销 5365 万，几乎是经营利润的两倍。</strong> 一家资本开支只有 1603 万的公司，怎么会有 5365 万的折旧摊销？答案是：<strong>大部分不是厂房设备的折旧，而是收购来的无形资产的摊销</strong>——把当年收购 Elgato、SCUF、Fanatec 时付的品牌溢价，按年摊到利润表里。这笔钱当年已经花掉了，现在只是在账上分期确认。</p>
+<p><strong>从现金的角度看，加回它是对的</strong>（今年确实没花这笔钱）；<strong>但从生意的角度看，加回它是有问题的</strong>——因为 Corsair 是靠不断收购品牌来维持增长的，它每隔两三年就要再花几千万买一个新品牌。<strong>这不是一次性的，是这门生意的常态开销。</strong></p>
+<p><strong>第二，应付账款减少了 7772 万。</strong> 这意味着 Corsair 今年比去年多付了 7772 万给供应商——通常是因为供应商（内存芯片厂）在涨价周期里收紧了账期，或者它自己主动加快付款拿折扣。<strong>这是一笔实实在在的现金流出</strong>，而经营现金流依然做到 1.06 亿，说明底层的现金创造能力比看上去还强一些。</p>
+<p><strong>第三，把 SBC 从自由现金流里扣回去。</strong> 上面那 8972 万的自由现金流，是把 2708 万的股权激励当成"非现金"加回去算出来的。但员工的股票是真的成本——它稀释了你。</p>
+<p><strong>扣掉 SBC 之后的真实自由现金流 = 8972 − 2708 = 6264 万美元。</strong> 这个数字才是股东真正能拿走的钱。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th style="text-align: right;">倍数</th>
+<th style="text-align: right;">投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>12.87 亿 ÷ 3330 万</td>
+<td style="text-align: right;"><strong>38.4 倍</strong></td>
+<td style="text-align: right;"><strong>$2.60</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>通常把 SBC 2708 万 + 收购摊销加回，约 8000 万+</td>
+<td style="text-align: right;">约 16 倍</td>
+<td style="text-align: right;">$6.25</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong><br>（剔掉 1850 万非经营收益，税率还原到 21%）</td>
+<td>12.87 亿 ÷ 1604 万</td>
+<td style="text-align: right;"><strong>80.2 倍</strong></td>
+<td style="text-align: right;"><strong>$1.25</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>12.87 亿 ÷ 8972 万</td>
+<td style="text-align: right;"><strong>14.3 倍</strong></td>
+<td style="text-align: right;">$7.00</td>
+</tr>
+<tr>
+<td><strong>自由现金流（扣掉 SBC）</strong></td>
+<td>12.87 亿 ÷ 6264 万</td>
+<td style="text-align: right;"><strong>20.5 倍</strong></td>
+<td style="text-align: right;"><strong>$4.87</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>12.63 亿 ÷ 2787 万</td>
+<td style="text-align: right;"><strong>45.3 倍</strong></td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY23 +319 万、FY24 −9918 万、FY25 −1247 万，平均 <strong>−3615 万</strong></td>
+<td style="text-align: right;"><strong>三年平均是亏损的</strong></td>
+<td style="text-align: right;"><strong>负数</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行必须重视：Corsair 过去三年平均每年亏 3615 万美元。</strong> 五年里有三年是亏的（FY22 亏 6092 万、FY24 亏 9918 万、FY25 亏 1247 万）。TTM 这 3330 万的盈利，是它自 2021 年以来的第一个像样的正数。</p>
+<p><strong>换句话说：现在这个利润不是"高点"，而是"刚刚爬出坑"——但也远远说不上是可以外推的常态。</strong></p>
+<p>另一行也值得说：<strong>前瞻市盈率 15.2 倍</strong>，意味着市场预期明年每股收益从 $0.31 跳到 $0.78，翻 2.5 倍。这个预期建立在「内存涨价周期过去 + 外设继续增长 + 毛利率继续修复」三件事同时发生上。<strong>股价过去 52 周涨了 33%，涨的就是这个预期。</strong></p>
+<h3>你现在投 100 块进去，一年拿回多少？</h3>
+<p><strong>按最保守的真实口径，投 100 块，公司一年替你赚 1.25 元。</strong></p>
+<p>这个数字为什么这么低，值得重复一遍：剔掉那笔 1850 万来路不明的非经营收益，再把 2.41% 的异常低税率还原到正常的 21%，Corsair 一年真正靠卖东西赚到的、可持续的税后利润只有约 1600 万美元。<strong>一家 12.87 亿市值的公司，1600 万的可持续利润，就是 80 倍。</strong></p>
+<p>如果你觉得现金流才是硬道理，那用扣掉股权激励的自由现金流：<strong>投 100 块，一年赚 4.87 元，20.5 倍。</strong> 这是这家公司最有说服力的口径，我认为也是最应该采信的一个——因为那 5365 万的收购摊销确实不花今年的现金。</p>
+<p><strong>这 4.87 元里，有多少真的回到你口袋？几乎没有。</strong></p>
+<ul>
+<li><strong>分红：0。</strong> Corsair 从来没分过红。</li>
+<li><strong>回购：$0.47</strong>（TTM 回购 603 万 ÷ 市值 12.87 亿），而同期它发出去的股票价值是回购的 4.5 倍。<strong>净效果是你的持股比例每年缩水 2.3%。</strong></li>
+<li><strong>还债：$0.54</strong>（TTM 净还债 694 万）。这一条是实打实的股东价值——债务从 FY21 的 3.08 亿降到现在的 1.85 亿，<strong>净现金头寸在 2026 年上半年第一次转正（+737 万）</strong>，五年来头一回。这是管理层做对的一件大事。</li>
+<li><strong>剩下的全部留在公司里</strong>：填充存货、支付供应商、投研发。</li>
+</ul>
+<h3>这个数未来会变大还是变小？</h3>
+<p><strong>有变大的路径，但每一条都不在公司自己手里。</strong> 逐条说：</p>
+<p><strong>可能变大的理由：</strong>
+1. <strong>毛利率在真实改善</strong>——从 FY24 的 25.2% 修复到 TTM 的 30.5%，这是 5.3 个百分点、7700 万美元的毛利。原因是产品结构往高毛利的外设倾斜。<strong>这条趋势是真的，而且是管理层能控制的。</strong>
+2. <strong>杠杆效应巨大</strong>。营收 14.5 亿，经营利润才 2790 万——毛利率再往上 2 个点，就是 2900 万的利润，<strong>能让经营利润翻倍</strong>。这就是为什么市场敢给 15 倍的前瞻市盈率。
+3. <strong>债务问题解决了</strong>，净现金转正，利息负担会继续减轻。</p>
+<p><strong>可能变小的理由：</strong>
+1. <strong>内存价格。</strong> 这是最大的变量，而且完全不受它控制。AI 数据中心正在抢走全球 DRAM 产能，内存条成本涨了，Corsair 那 9.35 亿的组件业务要么涨价丢份额、要么吃掉毛利。<strong>它在这件事上没有任何谈判筹码。</strong>
+2. <strong>组件业务在萎缩</strong>（TTM 相对 FY25 年化 −4.7%），而它占营收的三分之二。外设增长 5% 抵不掉这个下滑，整体营收 TTM 是 −1.4%。
+3. <strong>税率红包会用完。</strong> 一旦亏损额度耗尽，税率从 2.4% 跳到 21%，等于净利润凭空少两成。
+4. <strong>ROIC 3.88%，WACC 13.15%。</strong> 这两个数字放在一起是很严重的：<strong>公司投入的每一块钱资本，赚回来的回报（3.88%）远低于它的资金成本（13.15%）。</strong> 从纯粹的资本配置角度看，<strong>这家公司过去这些年做的收购，整体上是在毁灭价值而不是创造价值</strong>——这也是 FY24 那 9918 万减值的来源。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一个真实存在的好品牌，装在一门赚不到钱的生意里——按能摸到的现金算是 20 倍，按可持续的真实利润算是 80 倍，而这家公司过去三年平均是亏损的。不便宜。</strong></p>
+<p>展开说两句为什么落在「偏贵」：</p>
+<p><strong>它确实有真东西。</strong> Elgato 的 Stream Deck 是全篇里唯一能称得上有软件粘性的产品——配置成本让用户换不动牌子，第三方插件生态在自我加厚。Corsair、SCUF、Fanatec 在各自的细分领域都是第一梯队的品牌，这不是空话。毛利率从 25% 修到 30.5% 是实打实的进步，五年负债从 3.08 亿压到净现金转正，管理层这几年的活干得不差。</p>
+<p><strong>但价格已经把这些好消息全算进去了，还多算了一截。</strong> 股价一年涨了 33%，涨的是「明年利润翻 2.5 倍」这个预期，而支撑这个预期的三件事——内存降价、外设继续增长、毛利继续修复——<strong>只有第三件跟管理层的能力有关，前两件都是运气。</strong> 与此同时，占三分之二营收的组件业务在萎缩，那笔 1850 万的非经营收益明年大概率不再有，2.4% 的税率红包也会用完。</p>
+<p><strong>真正让我把它归到"偏贵"而不是"公道"的，是那个 3.88% 的资本回报率对 13.15% 的资金成本。</strong> 这个差距的含义是：<strong>这家公司每多投一块钱，股东就少一点钱。</strong> 它过去十年靠不断收购品牌来撑营收，而这些收购整体上没有产生足够的回报——FY24 那笔 9918 万的减值就是账单。<strong>买一家资本回报率低于资金成本的公司，你需要它非常便宜；20.5 倍的真实自由现金流倍数，不够便宜。</strong></p>
+<p><strong>质量档我给「一般」而不是「有硬伤」</strong>：它的主业没有在坍塌（外设在增长），报表没有严重失真（现金流是真的，SBC 已按 GAAP 扣除），资产负债表在变好（净现金转正）。它的问题不是要死，是平庸——<strong>一家利润率 1.9%、资本回报率 3.9%、营收零增长的公司，本来就不该用 20 倍以上的价格买。</strong></p>
+<p><strong>给普通人的话</strong>：你熟悉这个牌子、也许桌上就摆着它的键盘，但<strong>好产品和好投资是两件事</strong>。Corsair 卖的每 100 块钱东西里只剩不到 2 块的利润，剩下的都被内存厂、代工厂和员工分走了。<strong>等它跌到 12 倍真实自由现金流（大约 $7 的股价），或者等内存周期见顶让它证明毛利率能站稳 32% 以上，再来看。</strong></p>
+</div></body></html>

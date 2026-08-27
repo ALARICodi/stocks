@@ -1,0 +1,390 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BVS · 拜欧文特斯（Bioventus）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BVS</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">挂牌17.9倍实则40倍，靠一次性税收益打扮，命悬CMS报销</div><h1>BVS · 拜欧文特斯（Bioventus）</h1>
+<p><strong>市值</strong> 11.57 亿美元 ｜ <strong>股价</strong> 约 $13.79 ｜ <strong>行业</strong> 医疗科技（骨科与疼痛治疗器械/生物制品）｜ <strong>TTM 截止</strong> 2026-06-27 ｜ <strong>交易所</strong> NASDAQ</p>
+<p>全篇所有数字都是 TTM 口径（2025年7月–2026年6月这最近四个季度滚动），除非另有标注。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Bioventus 卖的东西有个共同点：<strong>都是给骨头和关节用的，都不是药、也不是植入的金属件，卡在"器械"和"生物制品"之间的那条缝里。</strong> 这条缝是它整个生意的立身之本，也是它最大的风险来源——后面会讲为什么。</p>
+<p>数据源的财报页<strong>只按地理披露分部</strong>（美国 5.137 亿占 88.3%、国际 6814 万占 11.7%），不披露产品线营收。所以下面三门生意我讲清楚是什么、怎么收钱，<strong>但不给各自的营收数字</strong>——那四个数据页里没有，我不编。</p>
+<h3>生意一：疼痛治疗（关节腔注射玻璃酸钠）</h3>
+<p><strong>这是它最大的一块，也是最赚钱的一块。</strong></p>
+<p>具体是什么：一个 62 岁的人膝关节骨性关节炎，软骨磨掉了，走路疼，但还没严重到要换人工关节。医生给他往膝盖里打一针透明质酸钠（俗称"打玻璃酸"），相当于给磨损的关节补一点润滑液，能管三到六个月。产品叫 <strong>Durolane</strong>（一针打完，管半年）和 <strong>GELSYN-3</strong>（打三针，一周一次）。</p>
+<p>怎么收钱：这类产品在美国走的是 <strong>Buy-and-Bill</strong> 模式——不是病人去药房买，而是<strong>诊所先自己掏钱把货买进来，给病人打完，再拿着 CPT 代码去找 Medicare 或商业保险报销</strong>。Bioventus 卖给诊所的价格，一针大概 250 到 400 美元；诊所拿到的报销额度比这个高，中间的差价就是诊所打这一针的动力。一家骨科诊所一个月打几十针到几百针不等。</p>
+<p><strong>客户为什么非买不可</strong>：因为它是"换膝盖之前的最后一站"。换人工膝关节要花五六万美元、躺三个月，病人和保险公司都想拖。打一针几百块能拖半年，从谁的角度算都划算。所以只要保险还报，量就在。</p>
+<p><strong>这门生意最大的悬念不是竞争，是报销政策。</strong> Medicare 每年都在讨论"玻璃酸钠到底有没有效"——有几份大规模荟萃分析的结论是它跟安慰剂差别不大。真到哪一天 CMS（美国医保中心）决定不报了，这门生意一夜归零。这不是危言耸听，是这个品类过去十年一直悬在头上的事。BVS 自己的报销价格这几年一直在往下走。</p>
+<h3>生意二：修复治疗（超声骨愈合 + 外用生物制品）</h3>
+<p><strong>Exogen</strong> 是个巴掌大的塑料盒子，接一根探头贴在骨折处，每天用 20 分钟，发低强度脉冲超声波刺激骨头长。用在什么场景：一个人小腿骨折打了石膏，三个月了片子上还是没长上（医学上叫"骨不连"），要么开刀植骨，要么试试 Exogen。器械大约 3000–4000 美元一台，保险报销，用完通常就归病人了。</p>
+<p>这块还包括一系列外用的生物材料——比如从人体胎盘羊膜加工出来的膜片，铺在糖尿病足溃疡的创面上帮助愈合。这类产品的报销规则最近两年被 CMS 大改过，<strong>这是 BVS 这几年营收波动最大的来源</strong>。</p>
+<h3>生意三：手术方案（骨移植材料与超声手术器械）</h3>
+<p>卖给做脊柱融合、创伤修复手术的医院。主要是各种骨移植替代材料——脊柱融合手术要把两节椎骨长成一块，得往中间填东西，可以填病人自己的骨头（要多开一刀取骨，很痛），也可以填人工的骨传导材料。BVS 卖后者，一台手术的材料费几百到两三千美元。还有超声骨刀，用超声波切骨头而不伤旁边的神经和血管，一台设备几万美元，配套的刀头是一次性耗材，反复卖。</p>
+<h3>钱的账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>TTM（百万美元）</th>
+<th>FY2025 全年</th>
+<th>五年方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>513.71</td>
+<td>502.10</td>
+<td>↑ 从 3.876 亿涨到 5.137 亿</td>
+</tr>
+<tr>
+<td>国际</td>
+<td>68.14</td>
+<td>65.99</td>
+<td>↑ 从 0.434 亿涨到 0.681 亿</td>
+</tr>
+<tr>
+<td><strong>总营收</strong></td>
+<td><strong>581.85</strong></td>
+<td><strong>568.09</strong></td>
+<td>↑ 五年年均约 +6.2%</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>399.45（毛利率 68.65%）</td>
+<td>388.16</td>
+<td>↑ 毛利率从 64% 回到 68.7%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>60.61（利润率 10.42%）</td>
+<td>56.34</td>
+<td>↑ FY2022 还是 −3466 万</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>54.46</td>
+<td>22.73</td>
+<td>— 见下方，这个数字有问题</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>口径说明：TTM 截止 2026-06-27，右边一列是 FY2025 完整年度（截止 2025-12-31），两者重叠半年，<strong>不是严格同比</strong>。TTM 相对 FY2025 全年增长 3.14%。</p>
+</blockquote>
+<p><strong>这张表最该看的一行是经营利润率</strong>：FY2022 是 −6.77%，FY2023 是 0.40%，FY2024 是 6.39%，FY2025 是 9.92%，TTM 是 10.42%。<strong>从大幅亏损修到 10% 出头，四年时间。</strong> BVS 2022–2023 那两年是真的差点死掉——净亏损连着两年超过 1.5 亿美元，债务 4.36 亿压在头上，换了 CEO、砍了一堆业务、卖掉几条产品线。今天这家公司是那场手术之后活下来的版本。</p>
+<p><strong>但"修好了"和"是门好生意"是两回事</strong>，下面看账。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>一笔 2284 万的所得税收益，把净利润凭空抬高了近一倍</h3>
+<p><strong>这是本篇最重要的事，先说。</strong></p>
+<p>TTM 的账长这样：</p>
+<ul>
+<li>税前利润：<strong>3864 万</strong></li>
+<li>所得税：<strong>−2284 万</strong>（负号，是<strong>收益</strong>，不是费用）</li>
+<li>净利润：<strong>5446 万</strong></li>
+</ul>
+<p><strong>一家赚了 3864 万的公司，交完税变成赚 5446 万。</strong> 这不是印错，这是递延所得税资产的估值备抵转回——翻译成人话：BVS 前几年巨亏，亏损可以在未来抵税，但当时公司随时可能倒闭，会计准则要求把这笔"未来的抵税权"记成几乎不值钱（计提估值备抵）。现在公司活过来了、开始稳定盈利了，会计师说"这笔抵税权将来用得上"，于是把当年记掉的价值转回来，一次性计入利润。</p>
+<p><strong>这是纯粹的会计动作，一分钱现金没进公司，而且只能发生一次。</strong> 有效税率那一栏，数据源直接标的是 "n/a"——因为算出来是负数，没有意义。</p>
+<p>后果：<strong>stockanalysis 挂出来的 17.86 倍市盈率是假的。</strong> 按正常 25% 税率计算，真实税后净利润应该是 3864 万 × 75% ≈ <strong>2898 万</strong>，对应市盈率 <strong>40 倍</strong>。一倍多的差距，就藏在这一行里。</p>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>1492 万</strong>，占真实税后净利润（2898 万）的 <strong>51%</strong>，占经营利润的 24.6%。这个比例偏高。<strong>它在 GAAP 里已经扣掉了，本文不加回</strong>——但要注意它在自由现金流里被加回了（见下面对账表），所以<strong>用自由现金流估值时会高估</strong>。</p>
+<h3>一次性项目</h3>
+<p>TTM 很干净：资产减值与重组 <strong>0</strong>。但历史上一点都不干净——FY2024 减值 3636 万、FY2023 减值 7862 万、FY2022 减值 <strong>1.247 亿</strong>。三年合计减值掉 2.4 亿，主要是收购来的商誉和无形资产（其中相当一部分与 2023 年花 8500 万美元加对赌收购的 CartiHeal 有关）。<strong>按分析规矩，单期口径看不出这是否还会重来</strong>，但可以说：这家公司过去买贵了东西，已经认过三次账。</p>
+<h3>一笔 6734 万的"其他融资活动"</h3>
+<p>现金流量表的融资部分有一行 <strong>"其他融资活动 −6734 万"</strong>（FY2025 是 −8706 万）。它不是还债（还债单列 −8980 万）、不是回购（回购只有 −135 万）、不是分红（不分红）。<strong>数据源不说明名目。</strong></p>
+<p>按金额和时点推断，最可能是收购的或有对价（earn-out）支付——即当年买 CartiHeal 时约定"达到某个里程碑再付一笔"，现在到期付了。<strong>这是推断不是结论。</strong> 但无论名目是什么，有一件事是确定的：<strong>这 6734 万是真金白银流出去的现金，而它不出现在自由现金流的计算里</strong>（自由现金流只减资本开支）。所以下面那个 12.3 倍的 P/FCF，实际上没有反映这笔钱。</p>
+<h3>回购与稀释 —— 反着来的</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td><strong>135 万</strong></td>
+</tr>
+<tr>
+<td>同期 SBC</td>
+<td><strong>1492 万</strong></td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.09 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（一年）</td>
+<td><strong>＋5.97%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按分析规矩，这个比值接近 1 才叫"回购刚够抵消员工发股"，大于 3 才叫真回购。<strong>BVS 是 0.09 倍</strong>——几乎不回购，同时股本一年膨胀了 5.97%。</p>
+<p><strong>这意味着什么</strong>：假设公司整体价值一年不变，你手里的股份一年被稀释掉 5.97%。哪怕净利润涨了 6%，你的每股收益也是原地踏步。<strong>在算"投 100 块回报多少"的时候，必须把这个数减掉。</strong></p>
+<h3>利润和现金流的差 —— 逐项对账</h3>
+<p>真实税后净利润 2898 万（剔除税收益后），经营现金流 9687 万。差 6789 万。逐项拆：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润（起点）</td>
+<td><strong>54.46</strong></td>
+<td>含 2284 万一次性税收益</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+19.54</td>
+<td>主要是收购来的无形资产摊销</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+3.63</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+14.92</td>
+<td>发股票不是现金，但稀释你</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+0.56</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>+7.22</td>
+<td>含递延税项等非现金调整</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+13.58</td>
+<td><strong>卖库存换现金，一次性的</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−6.91</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−8.68</td>
+<td>还了供应商的钱</td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−1.44</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>96.87</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2.59</td>
+<td>极低，占营收 0.4%</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>94.29</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两个观察：</strong></p>
+<ol>
+<li><strong>资本开支只有 259 万，占营收 0.4%。</strong> 这在制造型医疗器械公司里低得反常——通常在 2%–4%。原因是 BVS 大量外包生产、且这几年在保现金不敢投。<strong>这个数字撑不了太久</strong>，未来资本开支回到正常水平，自由现金流会掉一截。</li>
+<li><strong>9687 万经营现金流里，1358 万来自"把库存卖掉"。</strong> 这是一次性的：存货腾出来的现金只能腾一次，明年腾不出第二次。同时"应付账款减少 868 万"是还欠款，也是现金流出。剔掉这两项营运资金的贡献，<strong>可持续的自由现金流大约是 8000 万出头，不是 9429 万</strong>。再扣掉 SBC 1492 万（因为它真实稀释你），<strong>真正属于股东的现金大约 6500 万</strong>。</li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 11.57 亿，企业价值 13.9 亿（含净负债 2.334 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>11.57亿 ÷ 5446万</td>
+<td><strong>21.2 倍</strong></td>
+<td>4.7 元</td>
+</tr>
+<tr>
+<td>数据源挂出的市盈率</td>
+<td>用摊薄 EPS $0.78 计算</td>
+<td>17.86 倍</td>
+<td>5.6 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>数据源未提供调整后净利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>11.57亿 ÷（税前 3864万 × 75% 正常税率 ＝ 2898万；SBC 已按 GAAP 扣除不加回）</td>
+<td><strong>39.9 倍</strong></td>
+<td><strong>2.5 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>11.57亿 ÷ 9429万</td>
+<td>12.3 倍</td>
+<td>8.1 元</td>
+</tr>
+<tr>
+<td><strong>调整后的自由现金流口径</strong></td>
+<td>11.57亿 ÷（9429万 − 存货释放1358万 − SBC 1492万 ＝ 约6600万）</td>
+<td><strong>17.5 倍</strong></td>
+<td><strong>5.7 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>13.9亿 ÷ 6061万</td>
+<td><strong>22.9 倍</strong></td>
+<td>4.4 元（对应全部资本）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>11.57亿 ÷（TTM 真实 2898万、FY2025 2273万、FY2024 −3613万＋减值 3636万 ≈ 23万，三年平均 1731万）</td>
+<td><strong>66.8 倍</strong></td>
+<td><strong>1.5 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行看着离谱，但它说的是实话：<strong>这家公司过去三年基本没挣到过钱。</strong> FY2024 剔除减值后接近盈亏平衡，FY2025 赚 2273 万，TTM 剔除税收益后赚 2898 万。<strong>盈利是最近 18 个月才刚刚出现的东西，还没经过一个完整周期的检验。</strong></p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 BVS，按最保守的真实口径算（剔掉那笔一次性税收益、按正常税率交税），公司一年替你赚 2.5 块钱。</strong> 按现金口径宽松一点算，剔掉存货释放和股权激励之后，一年替你赚 5.7 块钱。</p>
+<p>这 2.5 到 5.7 块钱，有多少回到你口袋？<strong>一分都没有。</strong> BVS 不分红（数据源显示除息日 n/a）、几乎不回购（135 万，聊胜于无）。而且<strong>股本一年还膨胀了 5.97%</strong>——所以严格算，你的每股权益不但没增加，还被摊薄了。</p>
+<p>钱去哪了？两个地方：</p>
+<ol>
+<li><strong>还债。</strong> TTM 净还债 2790 万，总债务从 3.114 亿降到 2.638 亿，五年从 4.361 亿一路降下来。这是好事——利息保障倍数从危险区回到 3.05 倍，Debt/EBITDA 从 5 倍以上降到 3.08 倍。<strong>债主先拿钱，股东排在后面。</strong></li>
+<li><strong>那笔 6734 万说不清名目的"其他融资活动"。</strong> 这笔比还债还多。</li>
+</ol>
+<p><strong>这个数字未来会变大还是变小？</strong></p>
+<p><strong>会变大的理由</strong>——经营杠杆是真的。毛利率 68.65%、资本开支极低、销售网络已经铺好，营收每多涨 1 块钱，能有五六毛落到经营利润里。营收还在 3% 上下的速度涨。债务在降，一年少付几百万利息。管理层把这家公司从 ICU 推出来了，执行力不能否认。</p>
+<p><strong>会变小的理由，而且更重的三条</strong>：</p>
+<p>一是<strong>税收益不会再来</strong>。今年 5446 万的净利润里有 2284 万是会计转回，明年这个基数就没了——所以远期市盈率 17.52 倍跟当前 17.86 倍几乎一样，分析师其实已经预期"明年利润和今年差不多"，也就是<strong>真实盈利要涨 88% 才能填上这个坑</strong>。</p>
+<p>二是<strong>报销政策是外生的</strong>。玻璃酸钠注射和外用生物制品这两块的收入，直接由 CMS 的报销规则决定。这几年 CMS 已经在收紧外用生物制品的报销，BVS 的国际业务只占 11.7%，几乎全部身家押在美国一个付款人的政策上。<strong>这不是"竞争风险"，这是"一纸文件风险"</strong>——护城河再深也挡不住。</p>
+<p>三是<strong>股本还在稀释</strong>。5.97% 的年稀释率，意味着公司自身价值必须每年增长 6% 以上，你手里的份额才不缩水。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>账面上 17.86 倍，实际上 40 倍。这不是一家便宜的公司，是一家被一笔一次性税收益打扮过的公司。</strong></p>
+<p>值得肯定的是这家公司确实从死亡边缘活回来了——经营利润率从 −6.8% 修到 10.4%，债务砍掉四成，毛利率 68.7% 说明产品本身是有定价权的。股价一年涨了 87.77%，市场已经为这场翻身付过钱了。</p>
+<p>但要为这个价格买单，你得同时接受三件事：真实市盈率 40 倍、三年平均口径 67 倍、股本每年被稀释 6%，而拿到手的分红是零。更要命的是，它最大的两块收入建立在美国医保愿意继续报销"往膝盖里打一针润滑液"这件事上——而这件事的医学证据本身就一直站不太稳。</p>
+<p><strong>这是一家修好了的公司，卖着一个已经把修好之后好几年都算进去的价格。翻身故事讲完了，估值还在按翻身正在发生的时候算。等一等更好——等它交出一份没有税收益垫底的年报，看看真实盈利到底是多少。</strong></p>
+</div></body></html>

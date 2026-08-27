@@ -1,0 +1,325 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SLVM · 西尔瓦莫（Sylvamo Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SLVM</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">周期底部价，但自由现金流为负、借钱发分红回购</div><h1>SLVM · 西尔瓦莫（Sylvamo Corporation）</h1>
+<p>市值 14.59 亿美元 | 股价约 $36.69 | 行业：加工工业（纸浆造纸） | TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Sylvamo 只做一件产品：<strong>未涂布无木浆纸</strong>（uncoated freesheet，行业里叫 UFS）。翻译成人话就是<strong>复印纸、打印纸、信纸、信封纸、书页纸</strong>——你办公室复印机里那包 500 张的 A4 纸，就是它的主力产品。</p>
+<p>它 2021 年 10 月从美国国际纸业（International Paper）分拆独立，等于是国际纸业把「办公用纸」这块被判了死缓的业务打包扔出来单独上市。分拆时给它塞了 14 亿美元的债一起带走。</p>
+<p>按地理分三门生意，本质是三套完全不同的成本结构：</p>
+<h3>生意一：北美（TTM 营收 16.98 亿，占 51.5%）</h3>
+<p>三家纸厂：纽约州的 <strong>Ticonderoga</strong>、南卡罗来纳州的 <strong>Eastover</strong>、以及 Sumter 的加工厂。</p>
+<p><strong>怎么赚钱</strong>：一吨复印纸出厂价大约 1,000–1,200 美元。16.98 亿美元营收对应大约 150 万吨纸。它不直接卖给你——卖给两类人：一类是 Staples、Office Depot、亚马逊这样的零售渠道；另一类是 Veritiv、Lindenmeyr 这样的纸张分销商，分销商再一箱一箱送到企业前台。一箱 10 包（5,000 张）在 Staples 货架上标价 50–60 美元，Sylvamo 拿到的大概是其中 35 美元。</p>
+<p><strong>品牌</strong>：最赚钱的一个安排是 <strong>HP Papers</strong>——它向惠普付授权费，用 HP 的商标卖纸。为什么值得付这个钱？因为买复印纸的人对纸一无所知，看见「HP」两个字就默认「惠普打印机配惠普的纸不会卡纸」，于是愿意多付 15%。另外还有 Accent Opaque（高端印刷纸，用来印企业年报、品牌宣传册那种厚实微黄的纸）和 Springhill。</p>
+<p><strong>客户为什么非买它不可</strong>：说实话，<strong>不是非买不可</strong>。复印纸是彻底的标准商品，同样克重同样白度，谁便宜买谁。它唯一的护城河是两条物理规律：一是纸很重，一卡车装不了多少钱的货，跨洲运输运费能吃掉全部利润，所以每家纸厂天然守着方圆几百英里的地盘；二是新建一家纸厂要 10 亿美元以上，在一个需求年年下滑的行业里没人会干这种事——<strong>这个行业的护城河不是「别人进不来」，是「别人不想进来」</strong>。</p>
+<h3>生意二：拉丁美洲（TTM 营收 9.04 亿，占 27.4%）</h3>
+<p><strong>这是全公司最值钱的部分</strong>，主要在巴西：Mogi Guaçu 和 Luiz Antônio 两家纸厂，外加自有的桉树人工林。</p>
+<p><strong>为什么最值钱</strong>：巴西的桉树 <strong>7 年就能砍</strong>，北美的松树要 25 年。同一块地，巴西的出材效率是北美的三倍多，而且 Sylvamo 自己拥有林地，等于自己给自己供应最便宜的原料。全球纸浆成本曲线上，巴西永远在最左边。</p>
+<p><strong>品牌</strong>：<strong>Chamex</strong> 是巴西复印纸市场的绝对老大，老到在巴西办公室里「给我拿包 Chamex」基本等同于「给我拿包纸」——这个词本身就是复印纸的代名词。另有 Pó de Ouro 等。</p>
+<p><strong>收钱方式</strong>：卖给巴西本土的文具连锁和分销商，也出口到智利、阿根廷、哥伦比亚等拉美邻国。</p>
+<h3>生意三：欧洲（TTM 营收 7.57 亿，占 23.0%）</h3>
+<p>法国的 <strong>Saillat</strong> 厂和瑞典的 <strong>Nymölla</strong> 厂。Nymölla 是 2023 年花 1.67 亿美元从芬兰的 Stora Enso 手里买来的（现金流量表上 FY2023 那笔 -1.67 亿收购款就是它）。主力品牌是 <strong>Rey</strong>，欧洲办公室里最常见的纸牌子之一。</p>
+<p>这是唯一还在增长的一块（7.57 亿 vs 上年同期 7.41 亿，+2.2%），增长几乎全部来自 Nymölla 并进来的产能，不是需求变好了。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>北美</td>
+<td>16.98 亿</td>
+<td><strong>−3.2%</strong></td>
+<td>51.5%</td>
+<td>主力，也是下滑最快的</td>
+</tr>
+<tr>
+<td>拉丁美洲</td>
+<td>9.04 亿</td>
+<td><strong>0.0%</strong></td>
+<td>27.4%</td>
+<td>利润率最高（桉树成本优势）</td>
+</tr>
+<tr>
+<td>欧洲</td>
+<td>7.57 亿</td>
+<td><strong>+2.2%</strong></td>
+<td>23.0%</td>
+<td>增长全靠收购 Nymölla</td>
+</tr>
+<tr>
+<td>内部抵销</td>
+<td>−0.62 亿</td>
+<td>—</td>
+<td>—</td>
+<td>分部之间互相卖纸</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>32.97 亿</strong></td>
+<td><strong>−7.13%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部经营利润。整体经营利润率 5.82%，按产品结构和纤维成本<strong>估算</strong>：拉美大约 10–13%、欧洲 4–6%、北美 2–4%。<strong>这三个数字是估算，不是财报数字。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>好消息是：<strong>这家公司的账几乎没有障眼法可剥</strong>。造纸是一门极其朴素的老生意，没什么可粉饰的空间。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 1,100 万美元，占净利润 14.5%。金额本身不大，但要注意分母——净利润只有 7,600 万，所以这 1,100 万的占比看着不低。按规矩它已经在 GAAP 里扣过了，本文全程当真实现金成本处理，<strong>不加回</strong>。</p>
+<p><strong>一次性项目</strong>：TTM 有 1,100 万美元的「资产减值与重组费用」。上一年（FY2025）也是 1,100 万，再往前三年都是零。<strong>只看单期无法判断这是新常态还是真一次性</strong>——一个营收年年下滑的行业，关厂减值大概率会反复出现，但目前数据不足以下结论。</p>
+<p><strong>资本化的支出</strong>：没有。造纸厂不资本化软件也不资本化内容，资本开支就是实打实的机器和厂房。</p>
+<p><strong>有效税率 46.1% —— 这是全表最异常的数字</strong>。税前赚 1.41 亿，交税 6,500 万。正常美国公司在 21–26%。原因是巴西的公司税率高（34%）加上跨国汇兑损益不能抵扣，导致合并税率被拉高。<strong>这不是障眼法，这是真金白银交出去的钱</strong>，而且短期内改不掉。它直接把税前 1.41 亿削成了净利 7,600 万。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 4,200 万，SBC 1,100 万，<strong>回购/SBC = 3.8 倍</strong>——按标准这是真回购，不是给员工发股票擦屁股。股本一年实际减少 <strong>4.2%</strong>，确实回到了股东手里。但下面这条要连着看。</p>
+<p><strong>利润和现金流的差——这里有大问题</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>76</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>178</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>11</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>11</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>−8</td>
+</tr>
+<tr>
+<td>+ 应收账款变动</td>
+<td>+21</td>
+</tr>
+<tr>
+<td>+ <strong>存货变动</strong></td>
+<td><strong>−90</strong></td>
+</tr>
+<tr>
+<td>+ 应付账款变动</td>
+<td>+25</td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>−15</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>209</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>−220</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−11</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>自由现金流是负的。</strong> 这是全篇最重要的一个数字。</p>
+<p>两处要看：</p>
+<ol>
+<li>
+<p><strong>存货占用了 9,000 万现金</strong>。一家营收在下滑 7% 的公司，存货反而增加了 9,000 万——纸卖不动，堆在仓库里。这不是好兆头。</p>
+</li>
+<li>
+<p><strong>资本开支 2.20 亿 &gt; 折旧 1.78 亿</strong>。它往一门营收每年萎缩的生意里，砸的钱比机器损耗还多 24%。管理层的说法是「投资于低成本产能和高回报项目」，但对一门融化中的生意，超额资本开支需要非常硬的理由。</p>
+</li>
+</ol>
+<p><strong>然后是最难看的一件事</strong>：TTM 自由现金流 −0.11 亿，同期却发了 <strong>0.73 亿分红 + 0.42 亿回购 = 1.15 亿</strong>。钱从哪来？现金流量表上写得明明白白：<strong>净新增借款 +1.41 亿</strong>。总债务从 FY2024 的 8.71 亿一路涨到现在的 <strong>10.31 亿</strong>，净负债 9.08 亿。</p>
+<p><strong>它在借钱给你发分红和做回购。</strong> 这不是回馈股东，这是把资产负债表挪到损益表上给你看。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 14.59 亿，净负债 9.08 亿，企业价值 23.7 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>14.59 亿 ÷ 0.76 亿</td>
+<td><strong>19.2 倍</strong></td>
+<td><strong>$5.21</strong></td>
+</tr>
+<tr>
+<td>公司口径（加回减值重组，税后约 0.06 亿）</td>
+<td>14.59 亿 ÷ 0.82 亿</td>
+<td>17.8 倍</td>
+<td>$5.62</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已扣不加回；减值重组无法确认是否年年发生，保守只加回一半</td>
+<td><strong>约 18.5 倍</strong></td>
+<td><strong>$5.41</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>14.59 亿 ÷ (−0.11 亿)</td>
+<td><strong>负数，无意义</strong></td>
+<td><strong>$0</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>23.7 亿 ÷ 1.92 亿</td>
+<td>12.3 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>14.59 亿 ÷ [(0.76+1.32+3.02)/3 = 1.70 亿]</td>
+<td><strong>8.6 倍</strong></td>
+<td><strong>$11.63</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>三年平均那一行是全表的题眼</h3>
+<p>三年真实净利润：TTM 0.76 亿、FY2025 1.32 亿、FY2024 3.02 亿。<strong>两年时间利润掉了 75%。</strong></p>
+<p>这意味着一件事：<strong>19.2 倍这个数字，不是因为股价贵，是因为分母塌了</strong>。股价过去一年跌了 18%，同期利润跌了 63%，所以 PE 反而涨了。这是典型的周期股「低点高 PE」现象。</p>
+<p>反过来，8.6 倍的三年平均口径也不能直接信——因为 FY2024 那 3.02 亿是纸价高峰期赚的，未必回得去。市场给的远期市盈率是 <strong>10.45 倍</strong>，说明分析师预期利润会从 0.76 亿反弹到大约 1.4 亿。</p>
+<h3>你投 100 块，一年拿回多少</h3>
+<p>按最保守的真实口径（18.5 倍），<strong>公司一年替你赚 5.41 美元</strong>。</p>
+<p>这 5.41 块的去向：
+- <strong>分红拿走 5.00 美元</strong>（TTM 分红 0.73 亿 ÷ 市值 14.59 亿 = 5.0% 股息率）
+- <strong>回购拿走 2.88 美元</strong>（0.42 亿 ÷ 14.59 亿）
+- 加起来 7.88 美元，<strong>比赚的 5.41 美元还多 2.47 美元</strong></p>
+<p><strong>多出来的这 2.47 美元是借的。</strong> 所以这个 5% 的股息率不是「公司赚钱分给你」，是「公司借钱分给你，同时资产负债表每年恶化一点」。</p>
+<p><strong>这个 5.41 未来会变大还是变小？</strong></p>
+<p>短期大概率变大。纸价在 2025–2026 走了一轮下行，行业停机检修集中，一旦价格回升，5.8% 的经营利润率有很大反弹空间——固定成本占比高的生意，价格涨 10% 利润能翻倍。远期 PE 10.45 倍押的就是这个。</p>
+<p>长期几乎确定变小。办公用纸需求每年结构性下降 2–4%，无纸化是不可逆的。这门生意的唯一希望是「关厂关得比需求跌得更快」——过去十年确实做到了，所以纸价撑住了。但那是在赌整个行业的其他玩家继续配合关厂。</p>
+<p>还有一个数字最能说明问题：<strong>ROIC 5.60%，WACC 5.98%</strong>。投入资本回报率低于资金成本，意味着<strong>它每投一块钱进去，创造的价值是负的</strong>。那 2.20 亿超过折旧的资本开支，按这个回报率算是在毁灭价值。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>周期底部的价格，但你买的是一块正在融化的冰，而且它在借钱给你发分红。</strong></p>
+<p>19 倍看起来不便宜、8.6 倍的三年平均看起来很便宜，这两个数字都对——它现在处在纸价周期的低谷，利润塌了 75%，估值倍数是被分母顶上去的。如果纸价明年反弹，10.45 倍的远期市盈率会兑现，股价有 40–50% 的空间。</p>
+<p>但有三根刺拔不掉：<strong>自由现金流是负的；债从 8.7 亿涨到 10.3 亿，1.15 亿的分红回购全靠新借的 1.41 亿撑着；ROIC 5.6% 低于 WACC 6.0%，越投资越亏。</strong> 再叠加 46% 的有效税率和一门每年萎缩 2–4% 的主业。</p>
+<p>这是一手周期赌注，不是一门可以放着不管的好生意。愿意赌纸价反弹的人可以赌，但别把 5% 的股息率当成安全垫——那是借来的。</p>
+</div></body></html>

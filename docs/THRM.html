@@ -1,0 +1,435 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>THRM · 捷温（Gentherm Inc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">THRM</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">营收五年+51%利润-25%，ROIC6.2%低于资金成本9.7%，46倍买一张跳票三年的期票</div><h1>THRM · 捷温（Gentherm Inc）</h1>
+<p><strong>市值</strong> 12.29 亿美元 ｜ <strong>股价</strong> $40.17 ｜ <strong>行业</strong> 生产制造（汽车零部件 · 热管理）｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止</strong> 2026 年 6 月 30 日（最近四个季度滚动）｜ <strong>全榜名次</strong> 第 932 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Gentherm 做的事可以用一句话概括：<strong>给东西加热和降温，主要是给汽车座椅。</strong> 财报分两个分部，但比例悬殊到几乎不用分：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY25 同比</th>
+<th>TTM 占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Automotive 汽车</td>
+<td>15.30 亿</td>
+<td>14.49 亿</td>
+<td>14.06 亿</td>
+<td>+3.1%</td>
+<td><strong>96.9%</strong></td>
+</tr>
+<tr>
+<td>Medical 医疗</td>
+<td>0.494 亿</td>
+<td>0.498 亿</td>
+<td>0.499 亿</td>
+<td>−0.1%</td>
+<td>3.1%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>15.80 亿</strong></td>
+<td><strong>14.99 亿</strong></td>
+<td><strong>14.56 亿</strong></td>
+<td><strong>+2.9%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>汽车（97%）—— 五件事，捆在一辆车的座椅里</h3>
+<p><strong>① 通风/制冷座椅（CCS, Climate Controlled Seats）—— 这是它的看家本领。</strong></p>
+<p>你在雷克萨斯、福特 F-150 高配、或者捷尼赛思里按下那个「座椅通风」按钮，坐垫下面有一台小风扇开始工作，把空气从真皮上的一排排小孔里抽过去，屁股就凉了。高配版本里还有一片<strong>热电模块</strong>——一块半导体三明治，通上电以后一面变冷一面变热（这叫帕尔帖效应），冷的那一面朝着座椅，于是吹出来的不只是风，是真正被制冷过的风。</p>
+<p>Gentherm 卖的不是零件，是<strong>一整个模块</strong>：热电片 + 鼓风机 + 坐垫里的导风泡沫层 + 控制电路，做成一个总成，交给李尔、安道拓、麦格纳这些座椅厂，由他们装进座椅、再整椅交给整车厂；有时候也直接供给整车厂。一辆车四个座位全配，单车价值大概 80–200 美元。</p>
+<p><strong>为什么整车厂非买不可：这是最便宜的一种「让车显得贵」的办法。</strong> 通风座椅印在配置表上，消费者为了带这一项的「舒适套装」愿意多付一两千美元，而整车厂的成本只有一百多。Gentherm 在 1990 年代末做出了第一套量产的通风座椅（2000 款林肯领航员），到今天在这个细分品类里全球份额仍然最大。</p>
+<p><strong>② 座椅加热垫、方向盘加热垫 —— 量最大、钱最少的一块。</strong></p>
+<p>原理没有任何玄机：一张薄薄的布，上面缝着蛇形排布的电阻丝，通电发热，贴在座椅面套下面。一个座椅的加热垫卖 10–25 美元。<strong>问题正在这里：这东西没有技术门槛。</strong> 韩国和中国的座椅件厂能做一模一样的，还便宜。整车厂每隔几年重新招标一次，价格只会往下走。<strong>这是全公司毛利率被拖垮的主要原因</strong>——毛利率从 2021 年的 29.0% 掉到现在的 24.0%，掉的这五个点大部分丢在这里。</p>
+<p><strong>③ 电池热管理与电芯连接系统（CCS, Cell Contacting Systems）—— 押了大注、押偏了的一块。</strong></p>
+<p>一个电动车的电池包里有几百上千颗电芯。要把它们串并联起来，还要实时知道每一颗的电压和温度，靠的是一张覆盖整个电池包顶面的柔性电路 + 铜排总成，激光焊接到每一颗电芯的极耳上。这就是 CCS。一个电池包的这套东西值几百美元，比座椅加热垫值钱得多。</p>
+<p>Gentherm 2022 年花 2.05 亿美元收购了一家做这个的公司，在北马其顿、乌克兰、墨西哥建了产能，拿下了几个欧洲整车厂的大单。<strong>赌的是欧洲电动车放量。</strong> 结果欧洲电动车销量远低于当年的规划，工厂开工率上不去，<strong>固定成本摊不掉，这块业务在亏钱</strong>。你在财报上看到的「营收还在涨、经营利润在跌」，这是主要原因之一。</p>
+<p><strong>④ ClimateSense —— 讲了很多年、还没赚到钱的故事。</strong></p>
+<p>思路很聪明：电动车冬天开暖风，要靠电加热整个车厢的空气，能吃掉 30% 的续航。ClimateSense 的主张是<strong>别加热空气，加热人</strong>——座椅、方向盘、扶手、头枕、脚部各有独立的加热/通风单元，一个控制器协同调节，让人感觉暖和，同时把空调开到最低。物理上完全成立，节省的续航是实打实的。但到今天，量产定点很少，还是一个 PPT 里的卖点多过订单里的收入。</p>
+<p><strong>⑤ 电缆和电子组件 —— 老收购留下来的边角料业务。</strong></p>
+<h3>医疗（3%）—— 全公司最好的生意，但它长不大</h3>
+<p>两个产品，都卖给医院：</p>
+<p><strong>Blanketrol</strong> —— 一台机器加一条带水道的毯子。病人在手术台上打了麻醉会失温（体温掉下去，术后感染和出血风险都上升），麻醉师就用这条毯子裹住病人、循环温水保温。同一台机器反过来还能制冷：心脏骤停抢救回来的病人，要在 24 小时内把体温降到 33°C 保护脑组织，用的也是它。机器卖一两万美元，<strong>真正赚钱的是那条一次性用的毯子</strong>——每台机器每年要消耗几百条。</p>
+<p><strong>Astopad</strong> —— 碳纤维导电加热垫，铺在手术台上，比水毯薄、不占空间。</p>
+<p><strong>这门生意的质地明显好过汽车那边</strong>：有 FDA 注册壁垒、有一次性耗材的复购、医院换设备要重新培训所以极黏。经营利润率估计有 15–20%，是汽车那边的三倍。</p>
+<p><strong>但它五年没长过。</strong> FY2021 是 4152 万，FY2022 4304 万，FY2023 4612 万，FY2024 4985 万，FY2025 4978 万，TTM 4945 万——爬到 5000 万就停在那了。占公司营收 3%，<strong>再好也救不了主业</strong>。</p>
+<blockquote>
+<p><strong>分部利润说明</strong>：财报（stockanalysis 口径）只披露分部营收，不披露分部利润。按整体 5.62% 的经营利润率和行业常识<strong>估算</strong>：医疗约 15–20%，汽车约 4–5%。<strong>这是估算，不是财报数字。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>1314 万美元</strong>，而净利润只有 <strong>2657 万</strong>——<strong>SBC 相当于净利润的 49.5%</strong>。公司每赚两块钱，就有一块钱的价值以股票形式发给了员工。这笔已经按 GAAP 在净利润里扣掉了，不加回，但要清楚地知道它有多大：这不是零头，这是半个公司的利润。</p>
+<p><strong>一次性项目</strong>：TTM 的资产减值与重组费用是空的（—）。往前看，FY2023 有 1951 万、FY2024 有 250 万、FY2022 有 629 万。<strong>这家公司几乎年年都有「一次性」重组费用</strong>——只是 TTM 这一期恰好没记。这正是「年年都有的一次性」的典型样子，不要因为这一期没有就以为它不会再来。</p>
+<p><strong>资本化支出</strong>：没有软件或研发资本化的异常。</p>
+<p><strong>回购与稀释</strong>：<strong>这是全篇最刺眼的一项。</strong> TTM 回购 <strong>238 万美元</strong>，同期 SBC <strong>1314 万</strong>——<strong>回购 ÷ SBC = 0.18</strong>。回购连员工发股的五分之一都抵消不掉。而且公司<strong>不分红</strong>（无除息日）。同期它做了什么？<strong>净新增借款 4809 万。</strong> 也就是说：这一年它没有向股东返还任何有意义的现金，反而又借了近 5000 万进来。股本一年只增加 0.02% 看着还好，但那是因为过去几年（FY2023 回购 9403 万、FY2024 回购 5488 万）在高价位大举回购过——<strong>在股价 52 美元和 40 美元的时候花掉一亿五千万回购，现在股价 40 美元、没钱了、只能停手</strong>，这是典型的在高点回购、低点收手。</p>
+<p><strong>利润和现金流的差</strong>：净利润 2657 万，经营现金流 8736 万，自由现金流 4121 万。逐项对账（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>26.57</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+56.03</td>
+<td><strong>是净利润的 2.1 倍</strong>——重资产</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+13.14</td>
+<td>非现金，但稀释是真的</td>
+</tr>
+<tr>
+<td>+ 资产处置损失</td>
+<td>+0.83</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−7.96</td>
+<td></td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−43.73</strong></td>
+<td>⚠️ 上年同期只有 −9.30</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−12.58</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+23.27</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营性资产</td>
+<td>+31.79</td>
+<td>⚠️ 上年同期 +13.96，此项未拆分</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>87.36</strong></td>
+<td>上年同期 116.79，<strong>同比 −23.7%</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−46.15</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>41.21</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>三处要看清楚：</p>
+<ol>
+<li><strong>应收账款一年增加了 4373 万，而营收只增加了约 1.26 亿。</strong> 也就是新增营收的 <strong>35%</strong> 还挂在账上没收回来。上一年这个比例只有 22%。<strong>收款在变慢。</strong> 汽车零部件行业的下游是整车厂，整车厂日子不好过的时候第一件事就是拖供应商货款——这个数字在证实这件事。</li>
+<li><strong>「其他经营性资产 +3179 万」</strong>，比上年多了 1780 万，摘要页没有拆开是什么。它几乎正好抵消了应收账款的恶化。这一进一出让经营现金流看上去只是「下滑」而不是「崩塌」。</li>
+<li><strong>资本开支被砍到 4615 万，而折旧摊销是 5603 万。</strong> 三年前（FY2024）它还在花 7331 万。<strong>它在靠削减投入维持现金流。</strong> 一家设备密集的零部件厂长期花不到折旧的钱，产线迟早要还。</li>
+</ol>
+<p><strong>从经营利润到净利润：中间蒸发了 6214 万。</strong></p>
+<p>经营利润 8871 万 → 税前利润 4616 万 → 净利润 2657 万。</p>
+<ul>
+<li>按利息保障倍数 7.31 倒推，<strong>利息费用约 1214 万</strong>。</li>
+<li>那么经营利润到税前之间还有约 <strong>3040 万的其他非经营性损失</strong>，摘要页没有拆开。Gentherm 在欧元、韩元、墨西哥比索、人民币上都有大额敞口，工厂分布在北马其顿、乌克兰、墨西哥、中国、越南，<strong>这块大概率是汇兑损失</strong>，但四个页面上确认不了，只能如实标注「无法拆分」。</li>
+<li>然后是税：<strong>税前 4616 万，交税 1958 万，有效税率 42.42%。</strong> 这个税率高得离谱（美国联邦税率 21%）。原因是它在一些国家亏钱、在另一些国家赚钱，<strong>亏损那边的税盾没法拿去抵赚钱那边的税</strong>，还要计提递延所得税资产减值准备。<strong>这不是一次性的，这是它这种多国分散布局的结构性代价</strong>，只要海外亏损工厂还在，这个税率就下不来。</li>
+</ul>
+<p><strong>盈利能力的三年下坡</strong>（这是全篇最重要的一组数字）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th><strong>TTM</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（亿）</td>
+<td>10.46</td>
+<td>12.05</td>
+<td>14.69</td>
+<td>14.56</td>
+<td>14.99</td>
+<td><strong>15.80</strong></td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>29.0%</td>
+<td>22.7%</td>
+<td>23.9%</td>
+<td>25.2%</td>
+<td>24.2%</td>
+<td><strong>24.0%</strong></td>
+</tr>
+<tr>
+<td>经营利润（万）</td>
+<td>11886</td>
+<td>5524</td>
+<td>10169</td>
+<td>12263</td>
+<td>10397</td>
+<td><strong>8871</strong></td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>11.4%</td>
+<td>4.6%</td>
+<td>6.9%</td>
+<td>8.4%</td>
+<td>6.9%</td>
+<td><strong>5.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营收从 10.5 亿涨到 15.8 亿（+51%），经营利润从 1.19 亿跌到 0.89 亿（−25%）。</strong> 这一行就是这家公司的全部故事：<strong>它把生意做大了，却把钱做没了。</strong></p>
+<p><strong>资本回报</strong>：ROIC <strong>6.20%</strong>，ROE <strong>3.74%</strong>，而加权平均资金成本 WACC 是 <strong>9.67%</strong>。<strong>投进去的每一块钱，产出低于它的成本。</strong> 这不是「回报率低」，这是「越投越亏价值」。</p>
+<p><strong>资产负债表</strong>：现金 2.13 亿、总债务 3.25 亿（一年从 2.47 亿涨上来），净负债 1.12 亿。负债/EBITDA 1.98 倍，还算安全，但方向是错的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>12.29 亿 ÷ 0.2657 亿</td>
+<td><strong>46.3 倍</strong></td>
+<td><strong>$2.16</strong></td>
+</tr>
+<tr>
+<td>市场预期（远期 PE）</td>
+<td>隐含未来 12 个月 EPS ≈ $2.93，是现在 $0.86 的 <strong>3.4 倍</strong></td>
+<td>13.7 倍</td>
+<td>$7.29（<strong>是预期，见下方警告</strong>）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目可剔，SBC 已按 GAAP 扣除不加回</td>
+<td><strong>46.3 倍</strong></td>
+<td><strong>$2.16</strong></td>
+</tr>
+<tr>
+<td>↑ 若那 3040 万非经营性损失确为一次性</td>
+<td>税前 7656 万、按 30% 税率 → 净利约 5359 万</td>
+<td>22.9 倍</td>
+<td>$4.36（<strong>存疑，它多半年年发生</strong>）</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>12.29 亿 ÷ 0.4121 亿</td>
+<td><strong>29.8 倍</strong></td>
+<td><strong>$3.35</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>13.41 亿 ÷ 0.8871 亿</td>
+<td>15.1 倍</td>
+<td>$6.62（含债权人那一份）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>12.29 亿 ÷ 0.3660 亿（TTM 2657 万、FY25 1829 万、FY24 6495 万）</td>
+<td><strong>33.6 倍</strong></td>
+<td><strong>$2.98</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>⚠️ 关于那个 13.7 倍的远期市盈率，必须单独说清楚</h3>
+<p>这是唯一一个让这只股票看起来便宜的数字，而它是一个<strong>已经连续三年落空的预期</strong>。看历史上每个时点市场给出的远期 PE，以及后来真实发生的利润：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>时点</th>
+<th>当时的远期 PE</th>
+<th>隐含的"明年"</th>
+<th>后来实际发生的净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023 末</td>
+<td>21.2 倍</td>
+<td>利润会涨</td>
+<td>FY2024：6495 万 ✅ 兑现了</td>
+</tr>
+<tr>
+<td>FY2024 末</td>
+<td><strong>13.66 倍</strong></td>
+<td>利润会再跳一大截</td>
+<td>FY2025：<strong>1829 万</strong> ❌ 反而暴跌 72%</td>
+</tr>
+<tr>
+<td>FY2025 末</td>
+<td><strong>14.08 倍</strong></td>
+<td>利润会跳回来</td>
+<td>TTM：<strong>2657 万</strong> ❌ 只回到 2657 万</td>
+</tr>
+<tr>
+<td>现在</td>
+<td><strong>13.72 倍</strong></td>
+<td>利润要涨 3.4 倍</td>
+<td>？</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>市场连续三年用同一个 13–14 倍的远期市盈率说「明年就好了」，连续两年没兑现。</strong> 现在第三次说同样的话，要求的兑现幅度还是最大的一次——每股收益从 0.86 涨到 2.93。这背后靠的是公司的重组降本计划。它可能成，但<strong>你付的是 46 倍的实际价格，买的是一张 13.7 倍的期票</strong>。</p>
+<h3>说人话</h3>
+<p>你现在拿 100 块钱买 Gentherm：</p>
+<ul>
+<li>按最近一年实际赚到的利润算，公司一年替你赚 <strong>2.16 块</strong>。</li>
+<li>按最近一年实际收进来的现金算，<strong>3.35 块</strong>。</li>
+<li>按过去三年平均算，<strong>2.98 块</strong>。</li>
+<li>按市场的期望算，明年会变成 7.29 块——<strong>但这个期望已经连续两年落空了。</strong></li>
+</ul>
+<p><strong>这 2.16 块里，有多少回到你口袋？</strong> <strong>接近零。</strong> 不分红，回购只有 238 万（占市值 0.19%），同时净借了 4809 万新债。留在公司的钱去哪了？资本开支 4615 万、还有偿债和维持运营。而这些再投资的回报率是 6.20%，低于 9.67% 的资金成本——<strong>留在公司里的每一块钱，都在变小。</strong></p>
+<p><strong>这个数字未来会变大还是变小？</strong> 唯一让它变大的路径是重组降本成功：关掉/整合亏损的欧洲电池业务产能、把座椅加热垫这种低毛利产品的生产挪到低成本国家、把 42% 的税率降下来。这三件事都在做，也都可能奏效。让它变小的力则更多而且更结构性：座椅加热垫的价格年年被压、欧洲电动车放量遥遥无期、整车厂在拖账期、SBC 每年吃掉半个利润、资本开支已经砍到低于折旧、砍无可砍。</p>
+<p><strong>还有一个市场态度的信号</strong>：<strong>7.33% 的流通股被做空</strong>，一个月内从 172 万股加到 225 万股。这个比例对一家 12 亿市值的老牌零部件公司来说不低，说明有相当一批资金在赌重组不会兑现。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>营收创了历史新高，利润却比五年前少了四分之一——一家在自我毁灭价值的公司，还卖着 46 倍的价格。这不值。</strong></p>
+<p>它不是骗子公司，也不是空壳。通风座椅是它发明的，全球份额第一，医疗那块（虽然只有 3%）是真正的好生意。营收还在增长，账上有 2.13 亿现金，负债/EBITDA 不到 2 倍，短期不会出事。</p>
+<p>但把这些好话说完之后，剩下的全是问题，而且每一条都是结构性的、不是运气不好：</p>
+<ul>
+<li><strong>经营利润率五年从 11.4% 掉到 5.6%</strong>，最赚钱的高端座椅业务被最不赚钱的加热垫业务稀释，而且这个趋势没有理由自己停下来；</li>
+<li><strong>ROIC 6.20% 对上 9.67% 的资金成本</strong>——它每投一块钱做生意，摧毁的价值大于创造的；</li>
+<li><strong>2.05 亿买来的电池业务押的是欧洲电动车放量，这个赌注到今天是输的</strong>，产能闲置在亏损；</li>
+<li><strong>有效税率 42.42%</strong>，是多国亏损布局的结构性代价，短期降不下来；</li>
+<li><strong>SBC 相当于净利润的 50%，回购只有 SBC 的 18%，不分红，还净借了 4809 万</strong>——股东这一年从这家公司拿到的现金，四舍五入是零；</li>
+<li><strong>资本开支已经砍到折旧的 82%</strong>，靠少投钱撑出来的自由现金流不可持续；</li>
+<li>唯一便宜的那个数字（13.7 倍远期 PE）<strong>是一张已经连续两年跳票的期票</strong>。</li>
+</ul>
+<p>它现在的市值 12.29 亿，比 2021 年的 28.88 亿少了 57%——市场早就在给这个故事降级了，而且降得有道理。<strong>如果重组真的成功、经营利润率回到 8%，这只股票是有翻倍空间的，这也正是那 7% 的空头和买它的人在赌的东西。但那是一次押注，不是一次投资</strong>——你付 46 倍买的不是一门生意的现金流，是一个管理层能不能救回自己的判断。<strong>这个价格没有给你任何犯错的余地。别买。</strong></p>
+</div></body></html>

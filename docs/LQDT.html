@@ -1,0 +1,429 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LQDT · 流动性服务（Liquidity Services）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LQDT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">14.6倍自由现金流是假象，剔掉SBC和营运资金释放是33.7倍；GovDeals是真好生意</div><h1>LQDT · 流动性服务（Liquidity Services）</h1>
+<p>市值 13.2 亿美元 / 当前股价约 42 美元 / 行业：零售（B2B 二手与剩余资产在线拍卖） / TTM 截止日期：2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司干的事一句话说得清：<strong>帮别人卖掉不想要的东西，从成交价里抽一刀。</strong> 但它拆成四个分部，这四块的赚钱质量差得非常远——最大的那块最平庸，最小的那块最优质。必须一块一块看。</p>
+<h3>生意一：零售退货与尾货（RSCG）—— 占营收 68%，但它是最平庸的一块</h3>
+<p><strong>先讲清楚这件事到底是什么。</strong></p>
+<p>你在网上买了一台咖啡机，拆开觉得不好看，七天无理由退了回去。这台咖啡机现在成了零售商的麻烦：盒子拆过，不能当新品上架；一台一台在自己网站上卖二手，人工成本比咖啡机还贵；扔掉又心疼。全美国每年这样的退货是几千亿美元规模的一坨东西。</p>
+<p>零售商的做法是<strong>打包卖掉，眼不见为净</strong>。一家大型零售商把一整个配送中心的退货，按品类粗分成托盘——「小家电混装托盘」「服装混装托盘」「电视机（外包装破损）托盘」——一车一车拉给 LQDT。</p>
+<p>LQDT 在美国有几座大仓库，收到货以后做三件事：分拣、抽检通电、拍照建档，标注成色（全新未拆 / 拆封未用 / 有功能问题 / 只能拆件）。然后把每个托盘挂上自己的网站（Liquidation.com、AllSurplus）开拍。</p>
+<p><strong>买家是谁？</strong>是几十万个小生意人：开折扣店的、赶跳蚤市场的、在 eBay 和亚马逊上做二手转卖的、把货柜发往拉美和东欧的贸易商。一个零售标价合计 8000 美元的混装厨具托盘，可能 1200 美元成交。买家拉回去一件一件挑、一件一件卖，赚中间的差。</p>
+<p><strong>这门生意的钱怎么收，有两种完全不同的模式，这是理解整家公司的关键：</strong></p>
+<ul>
+<li><strong>代卖（consignment）</strong>：货始终是零售商的，LQDT 只提供仓储、分拣、平台和结算，成交后抽佣。<strong>只有佣金计入营收。</strong>卖 1200 美元抽 30%，营收记 360 美元，几乎没有成本，毛利率极高。</li>
+<li><strong>买断（purchase）</strong>：LQDT 先按一个固定价把整车货买下来，货权归自己，卖多卖少自负盈亏。<strong>整个 1200 美元的成交额都计入营收</strong>，买货成本计入营业成本。营收看着大，毛利率低，还要承担「这车货卖不掉」的风险。</li>
+</ul>
+<p>RSCG 这块里买断模式占了相当比重。这解释了两件事：第一，为什么这块营收 3.31 亿、占全公司三分之二，利润贡献却远没有那么大；第二，为什么全公司毛利率只有 47.6%——一家真正的纯平台公司毛利率会在 80% 以上。</p>
+<p><strong>这块的护城河是有的，但不厚</strong>：仓库网络、一百多万注册买家的池子、跟大零售商多年的合同关系，新玩家很难一夜之间复制。但它本质上是<strong>替别人处理垃圾的重资产劳动</strong>，议价权在零售商手里，价格年年被压，还得承担存货跌价的风险。</p>
+<h3>生意二：政府剩余资产拍卖（GovDeals）—— 占营收 19%，这是皇冠上的宝石</h3>
+<p><strong>这块才是真正的好生意。</strong></p>
+<p>一个县消防局有一辆 2014 年的消防车退役了。按法律，政府处置公共财产必须走公开、可追溯、有竞争的程序——不能私下便宜卖给局长的小舅子。过去的做法是找本地拍卖行，登报公告，在停车场支个棚子，来二十个人举牌。</p>
+<p>现在这个县的采购员登录 GovDeals，上传消防车的照片、里程、维修记录，设一个起拍价，挂七天。全国范围内会有几十个买家出价——邻州的小镇消防队、改装车商、影视道具公司、废钢厂。最后成交价往往比在本地停车场高出一大截，而且全程留痕，审计合规。</p>
+<p>同样的场景每天在发生：学区卖 200 台淘汰的笔记本电脑、州交通局卖一台旧扫雪车、警察局卖一批无主自行车、市政府卖办公桌椅。</p>
+<p><strong>收钱方式：几乎纯代卖。</strong>LQDT 不碰货、不进仓库、不垫钱，成交后抽佣（通常以「买家佣金」的形式向买方收取成交价的 7.5%–12.5%，卖方那边可能一分不收）。<strong>没有存货，没有仓储成本，没有跌价风险，营收即毛利。</strong></p>
+<p><strong>它的护城河非常真实：</strong></p>
+<ul>
+<li><strong>网络效应</strong>：登记的政府机构越多，货越全，买家越愿意常来逛；买家越多，成交价越高；成交价越高，越多政府机构愿意上来。这个循环转了十几年，已经形成默认渠道地位。</li>
+<li><strong>切换成本是流程性的</strong>：一个县要换平台，意味着重做采购流程审批、重做合规存档、重新培训经办人员。为了省几个点的佣金去折腾这些，采购员没有动力。</li>
+<li><strong>合规壁垒</strong>：政府采购有一套繁琐的资质、保险、数据留存要求，新平台一家一家去过这些门槛要好几年。</li>
+</ul>
+<h3>生意三：工业与能源重资产（CAG）—— 占营收 9%，五年原地踏步</h3>
+<p>一家石油公司关停一个作业区，要处理钻机、储罐、发电机组；一家药厂关掉一条产线，要卖反应釜和灌装机；一家矿业公司淘汰几台挖掘机。单件金额从几万到几百万美元。</p>
+<p>LQDT 在这块提供的不只是挂网拍卖，还包括<strong>估值评估、现场清点、分标段设计、跨境买家撮合</strong>——更接近专业中介服务，一部分收固定服务费，一部分抽佣。</p>
+<p>问题是这块<strong>五年没长</strong>：FY2021 营收 3965 万，TTM 4375 万，年化复合增长不到 2%。它高度依赖工业客户的资本开支周期和资产处置节奏，客户不关厂就没生意。这是拖后腿的一块。</p>
+<h3>生意四：Machinio 与软件订阅 —— 占营收 4%，但质量最高</h3>
+<p>两件事：</p>
+<p><strong>Machinio</strong> 是一个二手工业机械的搜索引擎。一个买家想找「二手五轴加工中心，行程 1000mm 以上」，在 Machinio 上一搜，出来全球几万条机床经销商的在售清单。经销商<strong>按月付订阅费</strong>（几百美元一档）把库存挂上去、拿到询盘线索。这是纯 SaaS：没有成交额分成，没有存货，客户按月续费。</p>
+<p><strong>Machinio Systems</strong> 是把 LQDT 自己的拍卖系统做成白牌软件，卖给传统拍卖行——让那些还在用纸质图录的老拍卖公司拥有自己的在线竞价平台，按年收许可费。</p>
+<p>这块 TTM 营收 2171 万，五年从 956 万涨上来，<strong>年化增速 18%，毛利率极高，收入还是订阅制的经常性收入</strong>。它是这家公司里唯一一块「不用干活也在收钱」的业务。可惜太小。</p>
+<h3>四门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收（百万美元）</th>
+<th>占比</th>
+<th>FY2025 全年</th>
+<th>五年营收变化</th>
+<th>估算经营利润率</th>
+<th>估算贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSCG 零售退货尾货</td>
+<td>331.4</td>
+<td>67.7%</td>
+<td>330.3</td>
+<td>158.8 → 331.4</td>
+<td>约 8%（估算）</td>
+<td>约 27（估算）</td>
+</tr>
+<tr>
+<td>GovDeals 政府拍卖</td>
+<td>92.8</td>
+<td>18.9%</td>
+<td>87.4</td>
+<td>49.6 → 92.8</td>
+<td>约 32%（估算）</td>
+<td>约 30（估算）</td>
+</tr>
+<tr>
+<td>CAG 工业重资产</td>
+<td>43.8</td>
+<td>8.9%</td>
+<td>39.3</td>
+<td>39.7 → 43.8</td>
+<td>约 5%（估算）</td>
+<td>约 2（估算）</td>
+</tr>
+<tr>
+<td>Machinio 与软件</td>
+<td>21.7</td>
+<td>4.4%</td>
+<td>19.8</td>
+<td>9.6 → 21.7</td>
+<td>约 25%（估算）</td>
+<td>约 5（估算）</td>
+</tr>
+<tr>
+<td>总部未分摊成本</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −20（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>489.6</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>476.7</strong></td>
+<td><strong>257.5 → 489.6</strong></td>
+<td><strong>8.96%（实际）</strong></td>
+<td><strong>43.9（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两点必须讲清楚：</p>
+<p><strong>第一，分部利润率是估算的，财报只披露到营收。</strong>我的推算依据是：GovDeals 是零存货的纯抽佣模式、营收基本等于毛利，Machinio 是订阅制，这两块利润率必然远高于全公司平均的 8.96%；而全公司毛利率只有 47.6%，说明占三分之二的 RSCG 里有大量买断成本。倒推下来结论很清楚：<strong>GovDeals 一块的利润贡献，大概率跟体量三倍于它的 RSCG 相当甚至更多。</strong></p>
+<p><strong>第二，营收增速这个指标在这家公司身上会骗人。</strong>TTM 营收只增长了 5.18%，而上一个财年（FY2025）增长了 31.20%。这个大起大落不是生意本身在大起大落——FY2025 的暴涨主要来自 RSCG 从 2.33 亿跳到 3.30 亿（+41.8%），<strong>而同期全公司毛利率从 51.0% 掉到 43.8%</strong>。毛利率跟着营收一起大跌，最合理的解释是那一年买断模式的货量突然放大：同样一笔生意，用代卖只记佣金、用买断记全额，营收会凭空翻好几倍，但赚的钱没多多少。TTM 毛利率又回到 47.6%、营收增速掉到 5%，是这个效应在回吐。</p>
+<p><strong>所以看这家公司，不要看营收，要看毛利和经营利润。</strong>毛利从 FY2024 的 1.852 亿涨到 TTM 的 2.332 亿（+25.9%），经营利润从 2526 万涨到 4389 万（+73.8%）——<strong>这两个数字才是真实的进步，而且比营收增速好看得多。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）—— 这是全篇最刺眼的一项</h3>
+<p><strong>TTM 计提 2076 万美元，相当于净利润 3326 万的 62.4%。</strong></p>
+<p>换个说法更直观：公司一年经营利润 4389 万，其中 2076 万是以股票形式付给员工的。<strong>如果把股权激励当成完全的现金成本，公司差不多有一半的经营利润是发给了自己人。</strong></p>
+<p>而且这个数字在快速膨胀：FY2021 是 695 万，FY2023 是 819 万，FY2025 是 1449 万，TTM 直接跳到 2076 万——<strong>五年涨了三倍，而同期营收只涨了 90%。</strong></p>
+<p>GAAP 报表里这 2076 万已经扣掉了（所以净利润 3326 万是扣过的，这点是干净的）。但公司在做「调整后 EBITDA」宣传时会把它加回去，那一版数字要打折看。</p>
+<h3>一次性项目</h3>
+<p>TTM 期间基本没有。资产减值与重组费用为 0（FY2025 有 46 万，微不足道），资产出售损益 5 万。「其他经营活动」304 万未拆解，金额不大。</p>
+<p>诚实地说一句：只看一个 TTM 期间，我没法判断某一项是「真一次性」还是「年年都有的一次性」。但从这家公司过去五年的现金流量表看，重组和减值科目常年接近于零，说明它确实没有靠这类科目粉饰利润的习惯。<strong>这一项是加分的。</strong></p>
+<h3>资本化的支出</h3>
+<p>没有异常。资本开支 819 万，占营收 1.7%，主要是平台开发和仓库设备。折旧摊销 577 万 + 其他摊销 480 万 = 1057 万，略高于资本开支——<strong>说明公司没有在偷偷把费用往资产负债表上藏</strong>，反而是资产在正常折旧、投入偏克制。这是干净的迹象。</p>
+<h3>回购与稀释 —— 及格，但只是及格</h3>
+<p><strong>TTM 回购 2624 万美元，同期 SBC 2076 万。回购 ÷ SBC = 1.26。</strong></p>
+<p>按标准，接近 1 说明回购只是在抵消员工发股，大于 3 才算真正回馈股东。1.26 意味着：<strong>公司花的回购钱里，八成是在填 SBC 挖的坑，只有两成是真正在减少股东人数。</strong></p>
+<p>实际结果印证了这一点：<strong>流通股数一年还是增加了 0.75%</strong>（本季度环比还增加了 1.13%）。回购了 2624 万，股本仍然是净膨胀的。</p>
+<p>不过要公允：至少它在回购，而且账上有大把现金；这比很多同规模公司「只发不买」的做法强。这一项判<strong>及格，不加分</strong>。</p>
+<h3>利润和现金流的差 —— 这里藏着全篇最重要的发现</h3>
+<p>净利润 3326 万，经营现金流 9818 万——<strong>现金流是利润的近三倍</strong>。这种差距必须逐项拆开，否则很容易被「自由现金流 9000 万，14.6 倍，好便宜」骗过去。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>33.26</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>5.77</td>
+<td>非现金，真实加回</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>4.80</td>
+<td>非现金，真实加回</td>
+</tr>
+<tr>
+<td>+ 资产出售损失</td>
+<td>0.05</td>
+<td>可忽略</td>
+</tr>
+<tr>
+<td><strong>+ 股权激励</strong></td>
+<td><strong>20.76</strong></td>
+<td><strong>会计上非现金，但它稀释你的股份——这不是免费的钱</strong></td>
+</tr>
+<tr>
+<td>+ 坏账计提</td>
+<td>0.42</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>3.04</td>
+<td>未拆解</td>
+</tr>
+<tr>
+<td><strong>+ 应收账款减少</strong></td>
+<td><strong>7.50</strong></td>
+<td><strong>营运资金释放，一次性</strong></td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>0.23</td>
+<td>营运资金</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>2.33</td>
+<td>营运资金</td>
+</tr>
+<tr>
+<td>− 预收款减少</td>
+<td>−0.39</td>
+<td>营运资金</td>
+</tr>
+<tr>
+<td>+ 应交税金增加</td>
+<td>2.19</td>
+<td>营运资金</td>
+</tr>
+<tr>
+<td><strong>+ 其他经营性资产净变动</strong></td>
+<td><strong>18.20</strong></td>
+<td><strong>营运资金释放，一次性——最大的一笔</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>98.18</strong></td>
+<td>逐项对得上（差 2 万为四舍五入）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−8.19</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>89.99</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表的含义要说透：那 8999 万自由现金流里，只有一小半是可以年年重复的。</strong></p>
+<ul>
+<li><strong>2076 万是加回来的股权激励。</strong>它不出现金，但它出股份。你可以选择不把它当成本，代价是你的股份被稀释——而事实是股本确实还在膨胀。</li>
+<li><strong>约 3006 万是营运资金释放</strong>（应收 750 万 + 其他经营性资产 1820 万 + 应付 233 万 + 税金 219 万 − 预收 39 万 + 存货 23 万）。这类释放是<strong>一次性的</strong>：应收账款只能收回一次，不能年年收回；「其他经营性资产净变动」那 1820 万，对一家代卖平台来说很可能是<strong>卖家待结算款项（浮存）的增加</strong>——买家的钱已经到账、还没打给卖家，这笔钱在账上停留一段时间。这是好东西，但它随成交量涨落，成交量一旦持平或下滑，这笔钱会反向流出。</li>
+</ul>
+<p><strong>把这两块都剔掉，可持续的自由现金流大约是：9818 − 2076 − 3006 − 819 ≈ 3917 万美元。</strong></p>
+<p>这个数字跟净利润 3326 万在同一量级，只高出一点——<strong>这才是这家公司真实的年产现金能力</strong>。用它算，市值 13.18 亿对应的是 <strong>33.7 倍</strong>，而不是网站上写的 14.6 倍。</p>
+<p><strong>这个差别大到足以改变结论，所以必须放在最前面说。</strong></p>
+<h3>顺带一个资产负债表上的坑</h3>
+<p>网站上写「净现金 2.173 亿美元」，看起来市值 13.2 亿里有 16% 是现金垫底。<strong>但这个数字对一家代卖平台是虚高的。</strong></p>
+<p>看两个数字就明白：账上现金 2.311 亿，<strong>但营运资金（流动资产减流动负债）只有 9967 万</strong>，流动比率 1.58。反推可知流动负债约 1.72 亿。这 1.72 亿里，相当大一部分是<strong>已经收了买家的钱、还没结算给卖家的应付款</strong>。那笔钱在账上，但不是股东的，随时要付出去。</p>
+<p>所以<strong>真正属于股东的、可自由动用的超额现金，远少于 2.173 亿</strong>。相应地，企业价值也高于网站给的 11.0 亿。下面算 EV/EBIT 时我用了网站口径 11.0 亿，读的时候心里要打个折。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 13.183 亿美元。企业价值（网站口径）11.0 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1318.3 ÷ 33.26</td>
+<td><strong>39.6 倍</strong></td>
+<td><strong>2.52 元</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（估算，加回税后 SBC）</td>
+<td>1318.3 ÷ 47.37</td>
+<td>27.8 倍</td>
+<td>3.59 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1318.3 ÷ 33.26（无真一次性项目可剔，SBC 按 GAAP 扣除不加回）</td>
+<td><strong>39.6 倍</strong></td>
+<td><strong>2.52 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>1318.3 ÷ 89.99</td>
+<td>14.6 倍</td>
+<td>6.83 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除 SBC 与营运资金释放后）</strong></td>
+<td>1318.3 ÷ 39.17</td>
+<td><strong>33.7 倍</strong></td>
+<td><strong>2.97 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1100 ÷ 43.89</td>
+<td>25.1 倍</td>
+<td>3.99 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1318.3 ÷ 23.02（FY23–FY25 平均净利润）</td>
+<td><strong>57.3 倍</strong></td>
+<td>1.75 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>几点解释：</p>
+<p><strong>「账面自由现金流 14.6 倍」是全表最漂亮也最有误导性的一行。</strong>任何一个只看筛选器的人都会觉得这只股票便宜——市值 13 亿、自由现金流 9 亿，14 倍多一点。上一节已经拆过了：这 9000 万里近 5100 万来自股权激励加回和一次性营运资金释放。<strong>真正可重复的是 3917 万，对应 33.7 倍。</strong>这一行才是这家公司真实的估值。</p>
+<p><strong>EV/EBIT 25.1 倍是全表最便宜的口径，但它有两处水分。</strong>一是上面说的净现金虚高，真实 EV 更接近 12 亿量级，倍数要往上调；二是 EBIT 里已经扣了 2076 万 SBC，这点倒是干净的。调整后大致在 27–28 倍。</p>
+<p><strong>三年平均口径 57.3 倍看着很吓人，需要说明白它为什么高。</strong>FY2022 和 FY2021 的净利润是 4032 万和 5095 万，比现在还高——但那两年的利润里含有大额的<strong>递延所得税资产估值备抵转回</strong>（现金流量表上 FY2021、FY2022 的「其他经营活动」分别是 −2434 万和 −1802 万，是把利润里的非现金部分减掉），也就是说那两年的高利润有很大一块不是经营赚来的。所以我在算三年平均时用的是 FY2023–FY2025，避开了那个失真区间。即便如此 57.3 倍仍然偏高，原因是 FY2023 和 FY2024 的净利润只有 2000 万上下——<strong>公司确实是最近两年才把利润做起来的，历史盈利基础很薄。</strong></p>
+<h3>说人话：你投 100 块，一年能拿多少</h3>
+<p><strong>按最保守的真实口径（剔除股权激励和一次性营运资金后的自由现金流），你投 100 块进去，公司一年替你赚 2.97 块。按 GAAP 利润算，2.52 块。</strong></p>
+<p>这 3 块钱里，有多少真回到你口袋？</p>
+<ul>
+<li><strong>分红：没有。</strong>公司不派息。</li>
+<li><strong>回购：有，但净效果接近零。</strong>TTM 回购 2624 万，占市值约 2.0%，看着不错。可同期 SBC 是 2076 万，股本最终还是<strong>净增加 0.75%</strong>。<strong>也就是说这 2.0% 的回购里，只有约 0.4 个百分点真正落到了你的持股比例上。</strong></li>
+<li><strong>剩下的钱留在账上。</strong>投资活动 TTM 净流出只有 865 万（资本开支 819 万，收购为零），几乎没有对外投资。所以赚来的现金基本都变成了账上的现金堆——从 FY2024 的 1.556 亿涨到现在的 2.311 亿。</li>
+</ul>
+<p><strong>结论：你投 100 块，一年公司替你赚 3 块，其中约 0.4 块通过回购落到你的持股比例上，其余绝大部分变成了公司账上不断增厚的现金。</strong> 现金堆着不是坏事（它给了公司抗风险能力和收购弹药），但它也不产生回报——现金存在银行的收益，在利润表上表现为 TTM 税前利润 4894 万高于经营利润 4389 万的那 505 万利息收入。</p>
+<h3>这个数字未来会变大还是变小</h3>
+<p><strong>会变大，但增速会比过去两年慢，而且结构风险在集中。</strong></p>
+<p>往上的力量是真的：</p>
+<ul>
+<li><strong>利润的结构在改善。</strong>过去两年经营利润从 2526 万涨到 4389 万（+73.8%），营收只涨了 34.8%——这是<strong>经营杠杆在起作用</strong>：GovDeals 和 Machinio 这两块高毛利业务多卖一块钱几乎不增加成本。只要这两块继续按 13%–20% 增长，全公司利润率还能往上走。</li>
+<li><strong>资产极轻。</strong>投入资本回报率 ROIC 高达 115.92%，净资产收益率 14.96%，负债只有 1384 万、几乎为零。818 名员工创造 4.9 亿营收，人均 59.9 万美元。这门生意扩张不需要砸钱，<strong>赚来的每一块钱都是可自由支配的</strong>。</li>
+<li><strong>内部人持股 24.07%。</strong>创始人还在掌舵，跟外部股东坐在同一条船上。这在小市值公司里是稀缺的。</li>
+</ul>
+<p>往下的力量同样是真的：</p>
+<ul>
+<li><strong>68% 的营收压在最平庸的那块业务上。</strong>RSCG 是替零售商处理退货的重活，毛利率被买断模式稀释，还要承担存货跌价风险。它的量取决于零售商的退货规模和外包意愿——零售商如果自建处理能力（几家大型电商一直在这么做），这块量就会被抽走。</li>
+<li><strong>CAG 五年零增长。</strong>占营收 9%，从 3965 万走到 4375 万，等于没动。它对工业客户的资产处置周期完全被动。</li>
+<li><strong>股权激励失控的趋势。</strong>五年涨三倍、已经吃掉净利润的 62%，这个曲线如果继续，回购再多也填不满坑。这是<strong>最值得盯的一个数字</strong>。</li>
+<li><strong>价格里已经含了很多期待。</strong>股价过去 52 周涨了 57.48%，同期 TTM 每股收益只涨了 22.88%。<strong>39.6 倍这个估值，主要是股价涨出来的，不是利润涨出来的。</strong></li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这家公司的资产质量比它的股价便宜，但它的股价不便宜——尤其是当你把网站上那个「14.6 倍自由现金流」的假象拆掉之后。</strong></p>
+<p>它有真东西：GovDeals 是一门有网络效应、有合规壁垒、零存货零风险的好生意，十几年积累出来的政府客户关系不是钱能买到的；Machinio 是一小块高毛利订阅收入；整家公司几乎没有负债、账上堆着两亿多现金、投入资本回报率超过 100%、创始人还持股四分之一。这些都值得给溢价。</p>
+<p>但它也有真问题：三分之二的营收来自替零售商处理退货这门苦活，毛利被买断模式稀释、量的主动权在客户手里；工业那块五年原地不动；股权激励五年涨了三倍、已经吃掉六成净利润，而回购只够填坑不够减股本；账面上那两亿多「净现金」，有相当一部分是替卖家代管的钱，不是股东的。</p>
+<p><strong>把水分挤干，你付的是 33.7 倍可持续自由现金流、39.6 倍 GAAP 利润，买一家营收增长 5%、利润增长靠经营杠杆的公司。</strong> 这个价格不荒唐，但也不留任何余地——它要求 GovDeals 和 Machinio 继续按现在的速度长、要求 RSCG 不出事、要求股权激励别再翻倍。三件事里有一件不成立，39.6 倍就没有支撑。</p>
+<p><strong>好公司，价格偏贵。</strong> 值得记在本子上，等一次零售退货周期的坏消息把它打到 25 倍以内再看——那时候 GovDeals 的价值就是白送的。</p>
+</div></body></html>

@@ -1,0 +1,331 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PRSU · 追寻景区与酒店（Pursuit Attractions and Hospitality）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PRSU</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">35倍买ROIC7%的景区,自由现金流连亏三年,股本反增12.9%</div><h1>PRSU · 追寻景区与酒店（Pursuit Attractions and Hospitality）</h1>
+<p>市值 13.6 亿美元 | 股价 $49.48 | 行业：旅游服务（景区 + 酒店） | TTM 截止 2026-06-30 | 交易所 NYSE</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说一句身世，不然下面的数字看不懂。这家公司 1926 年成立，原名 <strong>Viad Corp</strong>，几十年里主业是"会展搭建"——给各种大型展会搭展台、运货、布场（GES 业务）。2024 年它把 GES 整个卖掉，拿到约 4.29 亿美元现金，2025 年 1 月改名 Pursuit，从此变成一家<strong>纯粹的"卖门票和床位"的公司</strong>。所以你看到的历史数字里，2024 年那笔 2.75 亿美元净利润是卖公司卖出来的，不是经营赚的，后面第三部分会专门拆。</p>
+<p>今天的 Pursuit 只做一件事：<strong>在那种"一辈子总要去一次"的地方，把最好的位置圈下来，然后向游客收钱</strong>。它自己按地理披露，我按地理拆成四门生意。</p>
+<h3>生意一：加拿大落基山（Banff Jasper Collection）—— 占一半营收，也是全部的定价权来源</h3>
+<p>这是整家公司的心脏。班夫和贾斯珀国家公园每年接待几百万游客，而公园里能做生意的地方是<strong>国家公园管理局特许经营</strong>的——不是你想在冰川上开个车就能开。Pursuit 手里握的就是这批特许权：</p>
+<ul>
+<li><strong>班夫缆车（Banff Gondola）</strong>：一条缆车把游客从山脚送到硫磺山顶，山顶有观景平台、步道和餐厅。成人票旺季约 80 加元一位，一家四口上山一趟三百多加元，山顶再吃顿饭又是一两百。全程没有第二家缆车可选——想上硫磺山看全景，只有这一条路。</li>
+<li><strong>哥伦比亚冰原探险（Columbia Icefield Adventure）</strong>：一辆专门造的巨轮雪地车"Ice Explorer"把游客开到阿萨巴斯卡冰川的冰面上，让你下车站在冰川上走一圈；旁边配一个悬空玻璃观景台"冰川天空步道"。套票约 130 加元一位。全世界能开车带普通游客上冰川的地方屈指可数，这个特许权是排他的。</li>
+<li><strong>玛琳湖游船（Maligne Lake Cruise）</strong>：开船带游客去湖心的精灵岛，那是加拿大旅游宣传照上出现频率最高的画面之一，票价约 80 加元。</li>
+<li><strong>黄金天桥（Golden Skybridge）</strong>：两条横跨峡谷的吊桥 + 滑索 + 高空秋千，走的是"网红打卡 + 二次消费"的路子。</li>
+<li><strong>一批就在景点门口的酒店</strong>：Elk + Avenue、Mount Royal（都在班夫镇中心）、Glacier View Lodge（直接盖在冰原对面，是全世界唯一能在房间里看着阿萨巴斯卡冰川睡觉的酒店）。旺季房价三四百加元一晚。</li>
+</ul>
+<p>这门生意的商业逻辑很直白：<strong>游客飞了一万公里来到班夫，一个门票 80 加元的项目，他不会因为涨到 90 加元就不去</strong>。价格弹性极低，而供给被国家公园锁死。TTM 营收 2.479 亿美元，占总营收 51.3%。</p>
+<h3>生意二：美国（Glacier Park Collection + Alaska Collection + FlyOver）</h3>
+<p>同一套打法搬到美国，但护城河浅一些：</p>
+<ul>
+<li><strong>蒙大拿冰川国家公园周边的木屋酒店</strong>：Grouse Mountain Lodge、Apgar Village Lodge、West Glacier 一带的小屋。夏天三个月满房，冬天基本关门——<strong>这是一门一年只做 100 天生意的买卖</strong>。</li>
+<li><strong>阿拉斯加</strong>：德纳里山附近的荒野旅舍、塔尔基特纳的酒店、基奈峡湾的观鲸/冰川游船。同样是极端季节性，一年的钱在 5 月到 9 月赚完。</li>
+<li><strong>FlyOver 飞行影院</strong>：这是个室内项目——把你吊在一块巨大的球形屏幕前，座椅会俯冲倾斜，配上风、水雾和气味，模拟贴着冰川和峡湾低空飞行的感觉，一场约 10 分钟，票价 30–40 美元。已在拉斯维加斯、温哥华、雷克雅未克等地开出。它的意义在于<strong>把景区生意搬进城市</strong>，不受天气和季节限制，单店投资几千万美元，靠人流密度回本。</li>
+</ul>
+<p>TTM 营收 1.372 亿美元，占 28.4%。</p>
+<h3>生意三：冰岛（Sky Lagoon + FlyOver Iceland）</h3>
+<p><strong>Sky Lagoon</strong> 是一个人造的地热海边温泉，2021 年开业，位置在雷克雅未克市郊，泡在池子里正对北大西洋。它做的是"蓝湖温泉的市区版"——蓝湖离机场远、要提前几周订，Sky Lagoon 离市中心 15 分钟，游客晚上顺路就能去泡。基础票约 95 美元一位，加上"七步仪式"套餐更贵。</p>
+<p>这是全公司<strong>利润率最高的一块</strong>：温泉的运营成本极低（地热水基本免费，人力就是前台和保洁），一旦建成，每多进一个人几乎全是利润。TTM 营收 6672 万美元，占 13.8%。</p>
+<h3>生意四：哥斯达黎加（生态奢华度假村）—— 刚买回来的新东西</h3>
+<p>这是 TTM 里最大的变量。过去 12 个月公司花掉 <strong>1.079 亿美元现金做收购</strong>，买进了哥斯达黎加的生态奢华度假村。FY2025 这块贡献 1306 万美元营收，TTM 从总数倒推约 3140 万美元（占 6.5%）。</p>
+<p>逻辑上说得通——把"落基山冰川"和"热带雨林"凑成一个组合，可以跨季节互补（北美冬天正是哥斯达黎加旺季）。但<strong>这是一笔占公司市值 8% 的现金收购，用借来的钱付的</strong>，效果要看未来两三年，现在没有任何证据说它赚不赚。</p>
+<h3>四门生意的钱（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>年度口径同比*</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>加拿大落基山</td>
+<td>247.9</td>
+<td>+27.1%</td>
+<td>51.3%</td>
+<td>~24%（估算）</td>
+<td>~59（估算）</td>
+</tr>
+<tr>
+<td>美国</td>
+<td>137.2</td>
+<td>+10.8%</td>
+<td>28.4%</td>
+<td>~10%（估算）</td>
+<td>~14（估算）</td>
+</tr>
+<tr>
+<td>冰岛</td>
+<td>66.7</td>
+<td>+14.3%</td>
+<td>13.8%</td>
+<td>~30%（估算）</td>
+<td>~20（估算）</td>
+</tr>
+<tr>
+<td>哥斯达黎加</td>
+<td>~31.4</td>
+<td>新增</td>
+<td>6.5%</td>
+<td>低（新并入）</td>
+<td>~2（估算）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>483.2</strong></td>
+<td><strong>TTM 总体 +26.4%</strong></td>
+<td>100%</td>
+<td><strong>16.35%（实际）</strong></td>
+<td><strong>79.0（实际）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>* 财报只按地理披露营收、<strong>不披露分部利润</strong>，上表的利润率是我按各类资产的经营特性估算的，只用于说明结构，不要当精确数字。同比一列用的是 FY2025 对 FY2024 的年度口径（TTM 的上年同期分地区数据未披露），TTM 总体增速 +26.4%。</p>
+<p><strong>一句话结构判断</strong>：这家公司超过一半的钱来自加拿大国家公园里几个排他性特许项目，那部分是真正的好资产；剩下的一半是季节性酒店、城市飞行影院和一笔刚买的热带度假村，普通得多。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 683 万美元，占净利润 17.8%。规模不算离谱，但对一家净利润只有 3839 万的公司来说，这笔"不花现金的工资"吃掉了近五分之一的利润。<strong>下面所有口径里我都按 GAAP 已扣除的方式处理，不加回。</strong></p>
+<p><strong>一次性项目</strong>：TTM 这一期反而干净——没有资产减值（FY2024 有 4757 万）、没有资产处置收益。要注意的是现金流量表里 TTM 有一笔 <strong>"其他经营活动 +1580 万"</strong>，这是把某些非现金损失加回经营现金流，具体构成未细分。单期口径看不出这类项目是不是年年发生，我只能说"这一期报表没有明显的一次性粉饰"。</p>
+<p><strong>资本化支出</strong>：TTM 资本开支 <strong>8337 万美元，是折旧摊销（4336 万）的 1.92 倍</strong>。这不是维护性投入，是在盖新东西（新酒店、新 FlyOver 点位、景区扩建）。好处是未来有增量；坏处是这笔钱现在就出去了，而收入要三五年后才来。</p>
+<p><strong>回购与稀释——这里有个必须讲清楚的反常</strong>：</p>
+<ul>
+<li>TTM 回购 <strong>4435 万美元</strong>，同期 SBC 只有 683 万，<strong>回购/SBC = 6.5 倍</strong>。按手册的标准，这是"真回购"，力度很大（相当于市值的 3.3%）。</li>
+<li>但是股本<strong>不降反增，同比 +12.87%</strong>。</li>
+</ul>
+<p>两件事怎么同时成立？因为公司同期把一批<strong>可转换优先股转成了普通股</strong>。证据在现金流量表：优先股股息 FY2023、FY2024 都是每年 780 万，FY2025 起变成 0——优先股没了，变成普通股了。所以真实情况是：<strong>公司花了 4400 万现金回购，但被优先股转股稀释掉更多，老股东的持股比例还是被摊薄了</strong>。看到"大额回购"就以为股东回报好，在这家公司上会看错。</p>
+<p><strong>利润和现金流的差</strong>（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>38.39</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>43.36</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>6.83</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（非现金）</td>
+<td>15.80</td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>-1.00</td>
+</tr>
+<tr>
+<td>－ 存货增加</td>
+<td>-2.74</td>
+</tr>
+<tr>
+<td>－ 应付账款减少</td>
+<td>-5.07</td>
+</tr>
+<tr>
+<td>＋ 递延收入增加</td>
+<td>2.74</td>
+</tr>
+<tr>
+<td>＋ 应交税金增加</td>
+<td>6.27</td>
+</tr>
+<tr>
+<td>－ 其他净经营资产</td>
+<td>-26.63</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>77.93</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-83.37</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>-5.44</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读这张表最重要的一行是最后一行：自由现金流是负的。</strong> 经营层面赚回来 7793 万现金，全部投进去还不够，还差 544 万。而且这不是偶然——FY2023 之后自由现金流连续三年为负（FY2024 -656 万、FY2025 -75 万、TTM -544 万）。</p>
+<p>再往下看投资和融资：TTM 还额外花了 1.079 亿收购，钱从哪来？<strong>净新增借款 1.669 亿美元</strong>。净负债从年初的 1.64 亿涨到 2.09 亿。也就是说，过去一年这家公司做的事是：<strong>借钱买景区 + 借钱盖新项目 + 借钱回购股票，而自身经营一分钱余钱都没剩下。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>13.60 亿 ÷ 3839 万</td>
+<td><strong>35.4 倍</strong></td>
+<td><strong>2.83 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>这四页未提供调整后利润；市场给的前瞻 PE 27.96 倍（隐含 EPS 约 $1.79）</td>
+<td>28.0 倍</td>
+<td>3.57 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无重大一次性项目，SBC 已按 GAAP 扣除不加回</td>
+<td><strong>35.4 倍</strong></td>
+<td><strong>2.83 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>13.60 亿 ÷（-544 万）</td>
+<td><strong>负数，无意义</strong></td>
+<td><strong>-0.40 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>15.58 亿 ÷ 7901 万</td>
+<td><strong>19.9 倍</strong></td>
+<td><strong>5.02 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>见下方说明</td>
+<td><strong>约 151 倍</strong></td>
+<td><strong>0.66 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行要单独解释，因为它是全表最重要的数字。</strong> 三年是 FY2024、FY2025、TTM：</p>
+<ul>
+<li>FY2024 报出来的净利润是 2.75 亿——<strong>这全部来自卖掉 GES 的一次性收益</strong>。同期税前利润率是 <strong>-12.40%</strong>，营收 3.665 亿，说明持续经营的税前是 <strong>亏 4540 万</strong>，税后大约亏 3400 万。</li>
+<li>FY2025：赚 2267 万。</li>
+<li>TTM：赚 3839 万。</li>
+</ul>
+<p>三年平均真实净利润 ≈ <strong>902 万美元</strong>，对应 151 倍。</p>
+<p>这个数字不是要吓人，它说的是一件很实在的事：<strong>今天这家公司只有两年的盈利历史。</strong> 它 2024 年还在亏钱，2025 年刚转正，2026 年利润翻倍。你现在按 35 倍买的，是一条刚刚开始向上、还没经过一轮完整旅游周期检验的利润曲线。上一次北美旅游需求真正被打断是 2020–2022 年，那三年这家公司（当时的 Viad）营收从 5.07 亿掉到 2.99 亿，一年亏掉 1.02 亿。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径（GAAP TTM）算，公司一年替你赚 2.83 元。</strong></p>
+<p>这 2.83 元里，有多少回到你口袋？<strong>一分钱现金都没有</strong>——公司不分红，账面上"回购了 3.3% 市值"，但股本反而增加了 12.9%。剩下的钱去哪了？全部留在公司里：8337 万盖新项目、1.079 亿买哥斯达黎加，缺口靠借 1.669 亿填上。</p>
+<p>这个 2.83 元未来会变大还是变小？<strong>大概率变大，但风险不对称</strong>：往好里说，新盖的 FlyOver 点位和哥斯达黎加度假村会在两三年后开始贡献，冰岛温泉的边际利润率极高，加拿大景区可以每年提价 5–8% 而不掉客流。往坏里说——<strong>资本回报率 7.29%，低于公司自己的加权资本成本 10.60%</strong>。翻译成大白话：<strong>这家公司每投一块钱进去，赚回来的钱不够付这一块钱的成本。</strong> 只要这个关系不反转，它扩张得越快，股东的价值毁灭得越快。再加上净负债 2.09 亿、利息保障倍数 7.0 倍、生意的旺季集中在夏天三四个月，任何一个坏年份（加元汇率、北美游客减少、天气、山火）都会立刻打在利润上。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>资产是真好，价格是真贵，中间隔着一个不合格的资本回报率。</strong></p>
+<p>班夫缆车和哥伦比亚冰原的特许权是买不到第二份的东西，Sky Lagoon 也是一门印钞机式的小生意——这些我完全认。但你今天付 35 倍市盈率买的是：一家自由现金流连续三年为负、靠借钱扩张、投出去的钱回报（7.3%）低于借钱成本（10.6%）、股本一年被稀释 12.9%、真实盈利历史只有两年的季节性旅游公司。股价过去 52 周涨了 37%，涨的是"改名换主业"的故事，不是利润的复利。</p>
+<p>好资产，坏价格。等它证明资本回报率能压过资金成本，或者等下一个旅游淡季把价格打下来，都比现在买合理。</p>
+</div></body></html>

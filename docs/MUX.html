@@ -1,0 +1,416 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MUX · 麦克尤恩矿业（McEwen Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MUX</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">18倍PE是假的：主业亏损，利润全是铜矿账面重估+退税，一年增发43%</div><h1>MUX · 麦克尤恩矿业（McEwen Inc.）</h1>
+<p>市值 12.92 亿美元 · 股价约 $21.06 · 行业：有色金属（黄金 + 铜）· 数据口径 TTM，截至 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>先把结论摆前面，因为这家公司的市盈率是个陷阱。</strong>
+各大财经网站上 MUX 的市盈率写着 <strong>18.4 倍</strong>，看起来像是「金价大涨、公司赚翻、估值还不高」。
+但翻开利润表第一行就露馅了：<strong>TTM 经营利润是 −596 万美元，主业在亏钱。</strong> 那 8065 万的净利润，一分钱不是挖金子挖出来的。
+下面把这 8065 万拆开给你看是哪来的。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>McEwen 实质上是三门完全不同性质的生意捆在一个壳里：<strong>两座还在运转的金矿（真业务，勉强打平）+ 一个还没建的巨型铜矿（纯期权，账面利润的来源）+ 一块合资的银金矿权益</strong>。这三样的风险特征天差地别，混在一张报表里，是这家公司最容易骗到人的地方。</p>
+<h3>生意一：Gold Bar 金矿（美国内华达州）—— 挖土、堆浸、卖金条</h3>
+<p>这是最大的一门。位置在内华达州中部的 Battle Mountain–Eureka 成矿带上，是一个<strong>露天开采 + 堆浸提金</strong>的矿。</p>
+<p>具体流程用大白话讲：用炸药把含金的岩石炸开，卡车把矿石拉到一块巨大的、铺了防渗膜的平台上堆成一座人造小山（这叫「堆」），然后从山顶不停往下喷洒稀释的<strong>氰化钠溶液</strong>。氰化物有一个化学特性——能把岩石里的黄金溶解出来。溶液顺着矿堆往下渗，把金子一路带走，流到底部的收集池，再通过活性炭吸附把金子抓下来，最后熔铸成含金约 80% 的粗金锭（叫「合质金」），运给精炼厂换成现金。</p>
+<p><strong>为什么用这种土办法？</strong> 因为 Gold Bar 的矿石品位极低——每吨石头里大概只有 0.7 到 1 克黄金，也就是<strong>一吨岩石里的金子只有一枚回形针那么大</strong>。这么低的品位不值得建磨机粉碎再化学处理（那叫「浮选」和「氰化搅拌浸出」，成本高一个量级），只能用堆浸这种慢但便宜的办法，代价是回收率只有六成左右——<strong>近四成的金子永远留在渣堆里。</strong></p>
+<p>赚钱逻辑是纯粹的算术题：挖一吨土的全成本（炸药、柴油、卡车、氰化钠、工资、复垦准备金）大约 25–30 美元，一吨土出 0.4–0.5 克可回收黄金。按现在的金价（2026 年金价已站上每盎司 4000 美元附近，一盎司 = 31.1 克），0.45 克黄金值约 58 美元。<strong>毛差价看起来很舒服，但这里面还没算折旧、勘探和总部开支。</strong></p>
+<h3>生意二：Fox Complex 金矿（加拿大安大略省 Timmins）—— 地下矿，同一片百年金田</h3>
+<p>Timmins 是加拿大最著名的黄金产区，从 1909 年淘金潮至今出了一亿多盎司黄金。Fox Complex 是这片老矿区里的一组资产（Black Fox、Froome、Grey Fox 等矿体）。</p>
+<p>跟 Gold Bar 不同，这是<strong>地下开采</strong>：打竖井和斜坡道下到地下几百米，沿着金矿脉一段段爆破、出矿，用矿车运上地面，进磨机粉碎成面粉状，再用氰化搅拌浸出提金。地下矿的品位高得多——每吨 4–6 克，是 Gold Bar 的六到八倍——但每吨的开采成本也贵三四倍（要通风、要支护、要抽水、要人下井）。</p>
+<p><strong>Fox 的真正故事不是现在这两个小矿体，而是旁边的 Grey Fox 矿床。</strong> 公司多年来一直在说 Grey Fox 有超过一百万盎司的黄金资源，要投几亿美元建成一个新矿。这是它资本开支一直居高不下的原因之一。</p>
+<h3>生意三：McEwen Copper / Los Azules 铜矿（阿根廷圣胡安省）—— 账面利润的真正来源</h3>
+<p><strong>这才是理解这家公司的关键。</strong></p>
+<p>Los Azules 是阿根廷安第斯山脉高海拔地区的一个<strong>巨型斑岩铜矿</strong>，规模在全球未开发铜矿里排得进前十——含铜金属量以百亿磅计。McEwen 把这个项目单独装进一家叫 McEwen Copper 的子公司，然后<strong>分批卖股权融资</strong>：全球第二大矿业公司力拓（Rio Tinto）旗下的 Nuton、汽车集团 Stellantis 都投了钱进来。McEwen Inc. 自己保留约 47% 的权益。</p>
+<p>每一轮新的融资，只要估值比上一轮高，McEwen 就要在自己的账上把这笔权益<strong>重估一次，记一笔账面收益</strong>。<strong>注意：这笔钱一分钱没进公司口袋，它只是把「别人愿意出更高价买这个项目」翻译成了会计利润。</strong></p>
+<p>TTM 这一期，这笔「权益类投资的账面收益」是 <strong>6858 万美元</strong>。</p>
+<p><strong>但项目本身是什么状态？还没建。</strong> Los Azules 到现在没有一吨铜出来。要把它建成一座矿，需要在海拔 3500 米以上的安第斯山里修路、拉高压电、建水厂、建选厂——公开的可行性研究给出的资本开支是<strong>二三十亿美元级别</strong>，而 McEwen 整家公司的市值只有 12.9 亿。这笔钱它自己出不起，只能继续卖股权稀释、或者找一家大矿业公司把项目买走。</p>
+<h3>把三门生意的钱摊开</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th style="text-align: right;">TTM 营收（百万美元）</th>
+<th style="text-align: right;">同比</th>
+<th style="text-align: right;">占比</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gold Bar 金矿（内华达）</td>
+<td style="text-align: right;">130.5</td>
+<td style="text-align: right;">+24.1%</td>
+<td style="text-align: right;">52.5%</td>
+<td>露天堆浸，低品位</td>
+</tr>
+<tr>
+<td>Fox Complex 金矿（安大略）</td>
+<td style="text-align: right;">97.7</td>
+<td style="text-align: right;">+28.5%</td>
+<td style="text-align: right;">39.3%</td>
+<td>地下开采，高品位</td>
+</tr>
+<tr>
+<td>El Gallo（墨西哥，已停产）</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0%</td>
+<td>只剩残余堆浸，已归零</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td style="text-align: right;"><strong>248.4</strong></td>
+<td style="text-align: right;"><strong>+47.7%</strong></td>
+<td style="text-align: right;">100%</td>
+<td></td>
+</tr>
+<tr>
+<td>减：采矿成本</td>
+<td style="text-align: right;">−155.7</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 毛利</strong></td>
+<td style="text-align: right;"><strong>92.7</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">毛利率 37.3%</td>
+<td></td>
+</tr>
+<tr>
+<td>减：折旧摊销、勘探、总部管理费</td>
+<td style="text-align: right;">−98.7</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营利润</strong></td>
+<td style="text-align: right;"><strong>−6.0</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><strong>−2.4%</strong></td>
+<td><strong>主业亏损</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报没有按矿山披露经营利润</strong>，只披露到营收，所以上面的成本是整体口径，无法拆到单矿。</p>
+<p><strong>这张表要读懂两件事：</strong></p>
+<p><strong>第一，营收暴涨 47.7% 几乎全是金价涨出来的，不是产量涨出来的。</strong> 过去一年国际金价上涨了六成以上。同一座矿、挖同样多的土，营收就多了一半。这不是管理层的功劳，也不可持续——<strong>金价停止上涨的那天，这条增长曲线立刻变平。</strong></p>
+<p><strong>第二，也是最扎心的一点：金价涨了六成，营收涨了 48%，它的经营利润还是负的。</strong> 这句话值得再读一遍。一家金矿公司，在黄金历史最高价、在行业几十年一遇的顺风里，<strong>主业依然不赚钱</strong>。这说明它的成本结构有严重问题——要么品位太低、要么矿太小摊不薄总部开支、要么勘探花钱如流水。同期几家优质金矿公司的经营利润率是 30%–40%。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是全篇的核心，因为 MUX 的 8065 万净利润基本上全部由「障眼法」构成。</p>
+<h3>1. 股权激励（SBC）：371 万，不是问题</h3>
+<p>占净利润 4.6%，绝对金额很小。这一条按 GAAP 已经在费用里扣掉了，<strong>我们不加回</strong>。对 MUX 来说 SBC 不是重点——它的稀释来自别的地方（见第 4 条）。</p>
+<h3>2. 一次性项目：<strong>净利润的全部都在这里</strong></h3>
+<p>把利润表和现金流量表对起来看，8065 万的构成一目了然：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">TTM 金额（百万美元）</th>
+<th>是不是真金白银？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>经营利润（挖金子挣的）</strong></td>
+<td style="text-align: right;"><strong>−6.0</strong></td>
+<td>真的，真在亏</td>
+</tr>
+<tr>
+<td>加：<strong>权益类投资的账面重估收益</strong></td>
+<td style="text-align: right;"><strong>+68.6</strong></td>
+<td><strong>❌ 非现金</strong>，Los Azules 融资估值上调</td>
+</tr>
+<tr>
+<td>加：出售投资的收益</td>
+<td style="text-align: right;">+1.3</td>
+<td>有现金，但一次性</td>
+</tr>
+<tr>
+<td>加/减：利息、汇兑等其他</td>
+<td style="text-align: right;">−12.5</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 税前利润</strong></td>
+<td style="text-align: right;"><strong>51.4</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>加：<strong>所得税「收益」</strong></td>
+<td style="text-align: right;"><strong>+29.3</strong></td>
+<td><strong>❌ 非现金</strong>，确认递延所得税资产</td>
+</tr>
+<tr>
+<td><strong>= GAAP 净利润</strong></td>
+<td style="text-align: right;"><strong>80.7</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两笔非现金收益加起来 9790 万，比净利润本身还多。</strong></p>
+<p>第二笔尤其需要解释：<strong>所得税那一栏是 −2929 万，负号意味着不是交税，是「退税」。</strong> 但公司并没有真收到 2929 万现金。这叫「确认递延所得税资产」——公司过去年年亏损，攒下了一堆可以抵扣未来利润的税务亏损额度。以前因为「看不出未来能不能赚钱」，这些额度在账上按零计价。现在金价大涨、公司觉得未来会赚钱了，于是把这些额度按面值记回资产负债表，<strong>在利润表上一次性确认一笔 2929 万的账面收益</strong>。</p>
+<p>这个动作在会计上完全合规，但它的经济含义只有一个：<strong>管理层对未来更乐观了。</strong> 乐观本身不是利润。</p>
+<p><strong>剔除这两笔非现金收益之后：80.65 − 68.58 − 29.29 − 1.28 = −1850 万美元。真实的 TTM 是亏 1850 万。</strong></p>
+<h3>3. 资本化的支出：CapEx 6031 万，是营收的四分之一</h3>
+<p>资本开支 6031 万，而经营现金流只有 6664 万——<strong>挖金子挣来的现金，90% 又填回矿坑里去了</strong>。这是采矿业的常态（矿是消耗性资产，不持续投入就会枯竭），但对一家只有 2.5 亿营收的公司，这个投入强度意味着<strong>它永远处在「刚够花」的状态</strong>。</p>
+<h3>4. 回购与稀释：<strong>这是全篇最刺眼的数字</strong></h3>
+<ul>
+<li><strong>一年内股本增加了 43.29%。</strong> 不是 4.3%，是 43.3%。</li>
+<li>季度环比还在增：+3.01%。</li>
+<li>回购金额：<strong>0</strong>。</li>
+<li>TTM 发行股票融资：2408 万美元。</li>
+<li>FY25 还发了 1.1 亿美元的债。</li>
+</ul>
+<p>「回购 ÷ SBC」这个比值在这里是 <strong>0</strong>——<strong>它不但没有回购，还在持续向股东伸手要钱。</strong></p>
+<p>这个 43% 的稀释意味着什么？如果你一年前持有 MUX 的 1%，现在只剩 0.70%。<strong>公司的股价过去一年涨了 89.4%，但你手上那份的价值只涨了 89.4% × 0.70 = 32%。</strong> 稀释吃掉了三分之二的涨幅。</p>
+<p><strong>这就是这门生意的本质缺陷</strong>：Los Azules 需要几十亿美元才能建成，McEwen 只有 12.9 亿市值、9200 万现金。它唯一的融资渠道就是<strong>在自己股价高的时候增发</strong>。所以这家公司的商业模式实际上是：<strong>金价涨 → 股价涨 → 增发 → 拿钱继续挖 → 金价涨 → 再增发。</strong> 股东在这个循环里承担的是被不断摊薄的风险。</p>
+<h3>5. 利润和现金流的差：差 1400 万，方向反了</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td style="text-align: right;">80.7</td>
+</tr>
+<tr>
+<td><strong>减：权益投资账面收益（非现金）</strong></td>
+<td style="text-align: right;"><strong>−68.6</strong></td>
+</tr>
+<tr>
+<td>减：出售投资收益（非现金调整）</td>
+<td style="text-align: right;">−1.3</td>
+</tr>
+<tr>
+<td>加：折旧与摊销</td>
+<td style="text-align: right;">+35.3</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td style="text-align: right;">+3.7</td>
+</tr>
+<tr>
+<td>加/减：其他经营调整（含递延税反转）</td>
+<td style="text-align: right;">+36.0</td>
+</tr>
+<tr>
+<td>减：营运资金占用（存货 −19.1、应付 +5.1、其他 −5.1）</td>
+<td style="text-align: right;">−19.1</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td style="text-align: right;"><strong>66.6</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td style="text-align: right;"><strong>−60.3</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td style="text-align: right;"><strong>6.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>自由现金流 634 万美元。</strong> 一家市值 12.9 亿的公司，一整年的自由现金流够买内华达州的一栋别墅。</p>
+<p>而且这是<strong>在金价历史最高位、营收暴涨 48% 的这一年</strong>做到的。往前看：FY25 自由现金流 −3777 万，FY24 −1364 万，FY23 −6574 万，FY22 −8077 万。<strong>这是它五年来第一次自由现金流为正。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th style="text-align: right;">倍数</th>
+<th style="text-align: right;">投 100 块的年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong>（网站上显示的）</td>
+<td>12.92 亿 ÷ 8065 万</td>
+<td style="text-align: right;"><strong>18.4 倍</strong></td>
+<td style="text-align: right;">$5.44</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>12.92 亿 ÷（−1850 万）</td>
+<td style="text-align: right;"><strong>亏损，无倍数</strong></td>
+<td style="text-align: right;"><strong>−$1.43</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>12.92 亿 ÷ 634 万</td>
+<td style="text-align: right;"><strong>204 倍</strong></td>
+<td style="text-align: right;"><strong>$0.49</strong></td>
+</tr>
+<tr>
+<td>企业价值 EV/EBITDA</td>
+<td>13.4 亿 ÷ 2858 万</td>
+<td style="text-align: right;">46.5 倍</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>企业价值 EV/EBIT</td>
+<td>EBIT 为负</td>
+<td style="text-align: right;"><strong>不适用</strong></td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>12.92 亿 ÷ 7.07 亿净资产</td>
+<td style="text-align: right;">1.78 倍</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>前瞻市盈率（市场自己的预期）</td>
+<td>市场预计明年 EPS 掉到 $0.28</td>
+<td style="text-align: right;"><strong>75.1 倍</strong></td>
+<td style="text-align: right;">$1.33</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY23 $55.3M、FY24 −$43.7M、FY25 $34.4M，平均 $15.3M</td>
+<td style="text-align: right;"><strong>84 倍</strong></td>
+<td style="text-align: right;">$1.19</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>「三年平均」这一行是全表最值得看的</strong>：三年平均年利润只有 1530 万美元，对应 84 倍市盈率。而且 FY23 那 5530 万的利润里，光「出售资产收益」一项就有 <strong>2.22 亿美元</strong>——也就是说 FY23 的主业也是巨亏，是靠卖资产撑起来的账面利润。<strong>把三年里所有的一次性项目都剔掉，McEwen 过去三年没有一年真正赚过钱。</strong></p>
+<p>还有一行值得单独指出：<strong>前瞻市盈率 75 倍</strong>。这意味着连华尔街分析师自己都知道今年这 18 倍是假的——他们预测明年每股收益会从 $1.14 掉到 $0.28，<strong>因为那笔 6858 万的权益重估收益不会年年发生</strong>。</p>
+<h3>你现在投 100 块进去，一年拿回多少？</h3>
+<p><strong>按最保守的真实口径：一年不但拿不回钱，还倒亏 1.43 元。</strong></p>
+<p>按能摸到的真现金口径（自由现金流）：<strong>投 100 块，一年公司替你赚 0.49 元。</strong> 不到半块钱。而且这 0.49 元：</p>
+<ul>
+<li><strong>分红：0。</strong> 这家公司不分红，历史上也没分过。</li>
+<li><strong>回购：0。</strong> 不但不回购，还在每年增发几十个点。</li>
+<li><strong>全部留在公司里再投资</strong>，具体去向是：6031 万填回两座金矿的矿坑，以及给 Los Azules 铜矿项目继续输血。</li>
+</ul>
+<p>所以你买 MUX，<strong>买的不是任何形式的现金回报，买的是一张彩票</strong>：赌 Los Azules 有一天能建成、或者被必和必拓、力拓这样的巨头整个买走。</p>
+<h3>这个数未来会变大还是变小？</h3>
+<p><strong>极大概率变小，而且分析师自己就是这么预测的（前瞻 PE 75 倍）。</strong> 理由：</p>
+<ol>
+<li><strong>那 6858 万的账面收益不可能年年发生。</strong> 它需要每年都有一轮估值更高的新融资。铜价一走弱、或者阿根廷政局一变、或者力拓改主意，这个数字立刻归零甚至变成负数（估值下调同样要在账上扣回去）。</li>
+<li><strong>2929 万的税务收益是一次性的</strong>，用掉就没了。</li>
+<li><strong>主业能不能转正，完全取决于金价。</strong> 金价在四千美元的历史高位上它还亏 600 万，如果金价回到 3000，它的营收会少 6000 万，经营亏损会扩大到 6000 万以上。</li>
+<li><strong>稀释还会继续。</strong> Los Azules 的几十亿美元资本开支必须从某个地方来，而这家公司只有一个融资渠道。</li>
+</ol>
+<p>反过来，什么情况下会暴涨？<strong>Los Azules 被整体收购，或者铜价冲到历史新高让这个项目的期权价值重估。</strong> 这确实有可能——巨型未开发铜矿在全球范围内是稀缺的，而电网和数据中心正在把铜需求推高。但这是一个<strong>二元结果</strong>，跟它挖不挖得出金子几乎没关系。</p>
+<p><strong>顺便提一个市场信号：20% 的流通股被卖空</strong>，需要 14.7 天的成交量才能买回来。这个空头比例在中型矿业股里属于极高水平——<strong>市场上有一大批人正在押注这家公司的账面利润是假的。</strong> 从上面的拆解看，他们的理由不难理解。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这家公司在黄金历史最高价的年份里，主业还在亏钱，全部利润来自一笔没收到现金的账面重估和一笔退税，同时一年增发了 43% 的股票——18 倍市盈率是任务里我见过最具误导性的数字之一。</strong></p>
+<p>把它拆成两半来看会更公平一些：</p>
+<p><strong>它不值钱的那一半</strong>：两座金矿，一座低品位露天堆浸、一座小规模地下矿，加起来 2.5 亿营收、经营亏损 600 万、自由现金流 634 万。这半边生意在最好的年景里也只是勉强打平，遇到金价回调就会重新流血。用任何口径给它估值，都撑不起 12.9 亿的市值。</p>
+<p><strong>它可能值钱的那一半</strong>：Los Azules 这个全球罕见的巨型铜矿，而且已经把力拓和 Stellantis 拉上了船。这确实是一份有真实价值的资产——问题是，<strong>要把它变成现金，需要二三十亿美元和十年时间，而 McEwen 有的是 9200 万现金和一台增发机器。</strong> 这份资产大概率不会由现在的股东享受，而会通过一轮又一轮的稀释、或者一次整体出售，把大部分收益让渡出去。</p>
+<p><strong>所以判断是「很贵 + 有硬伤」</strong>：贵，是因为无论用真实利润（负数）、自由现金流（204 倍）、还是三年平均利润（84 倍）来量，价格都远远超出这门生意能支撑的水平；硬伤，是因为主业不赚钱、43% 的年稀释、以及整个投资逻辑压在一个还没建、也没钱建的海外项目上。</p>
+<p><strong>给普通人的话</strong>：这不是一笔投资，是一次押注。你押的不是「金子会涨」（那有更干净的标的），而是「阿根廷山里那个铜矿最后能不能变现，以及在变现之前你的股份会被稀释掉多少」。<strong>如果你想赌黄金，市面上有的是主业真赚钱、还给你分红的金矿公司；如果你想赌铜，也有主业真赚钱的铜矿公司。这家的特点是——它两样都赌，但两样都还没开始赚钱。</strong></p>
+</div></body></html>
