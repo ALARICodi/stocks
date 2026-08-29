@@ -1,0 +1,257 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NTNX · Nutanix（路坦力）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NTNX</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">13倍是一次性税收益画的，真实近70倍；VMware难民红利是真</div><h1>NTNX · Nutanix（路坦力）</h1>
+<p>市值 $187 亿 / 股价约 $69 / 行业：企业软件（超融合基础设施）/ TTM 截止 2026-07-31（即 FY2026 全年）</p>
+<p><strong>先把最重要的话放在最前面：这家公司挂着 13.4 倍的市盈率混进了 0–15 倍名单，但这个 13.4 倍是一笔一次性税收收益画出来的。TTM 净利润 $15.1 亿里，约 $11.8 亿不是赚来的，是会计上「确认递延所得税资产」凭空记出来的。按真实盈利算，它是一家 60 倍以上的成长股。</strong> 下面细说。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Nutanix 实质上只做<strong>一件事：卖「私有云操作系统」的订阅</strong>，外加一点安装陪跑服务。</p>
+<p><strong>1. 订阅软件（Subscription）——TTM 营收 $27.1 亿，占 95%</strong></p>
+<p>先讲清楚它解决什么问题。一家中型银行要自建机房跑核心系统，传统做法是分开买三样东西：戴尔的服务器、EMC 的存储阵列、VMware 的虚拟化软件，再雇三拨工程师把它们拼起来——贵、复杂、出了问题三家互相踢皮球。Nutanix 的产品把<strong>计算、存储、虚拟化打包成一套软件</strong>，装在普通的标准服务器上，机房从「三层架构」变成「一堆一模一样的盒子」，加容量就是再插一台盒子，五分钟上线。这个品类叫超融合（HCI），Nutanix 就是发明这个品类的公司。</p>
+<p>怎么收钱：按订阅制，按 CPU 核心数计价、一签 3-5 年。一家 500 人规模的企业私有云，一年付它几十万美元；大银行、政府、医院这种上千节点的客户，一年付几百万美元。软件装在客户自己买的硬件上（或者通过戴尔、联想、思科贴牌预装），Nutanix 自己不碰硬件，所以毛利率高达 87%。全球约 2.8 万家客户，续约率很高——企业核心基础设施一旦跑起来，迁走的痛苦程度不亚于换银行核心系统，这是它最真实的护城河。</p>
+<p>这两年它还有一个天上掉下来的红利：<strong>Broadcom 在 2023 年收购 VMware 后大幅涨价、砍渠道、逼客户买大捆绑包</strong>，得罪了整个企业 IT 圈。VMware 的几十万存量客户里，凡是想逃的，Nutanix 是唯一成建制的替代品。过去两年 12-18% 的营收增长里，相当一部分就是「VMware 难民」贡献的，这个搬迁潮还没走完。</p>
+<p><strong>2. 专业服务（Professional Services）——TTM 营收约 $1.4 亿，占 5%</strong>
+帮客户做迁移、部署、培训的人力服务，是卖软件的配套动作，不赚什么钱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部（TTM）</th>
+<th>营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅</td>
+<td>$27.1亿</td>
+<td>+12.5%</td>
+<td>95%</td>
+<td>财报只披露到营收</td>
+</tr>
+<tr>
+<td>专业服务</td>
+<td>$1.4亿</td>
+<td>+26%</td>
+<td>5%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$28.5亿</strong></td>
+<td><strong>+12.4%</strong></td>
+<td>100%</td>
+<td>整体经营利润率 11.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p>值得注意的轨迹：经营利润率从 FY2022 的 <strong>-29%</strong> 一路爬到 FY2024 的 0.4%、再到 TTM 的 <strong>+11.1%</strong>——这家烧了十几年钱的公司刚刚学会赚钱，且每年都在改善。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这部分是全篇的重头戏，因为 NTNX 的报表里藏着本批最大的一个障眼法。</p>
+<ul>
+<li><strong>一次性税收收益（核心问题）</strong>：TTM 税前利润 $3.27 亿，净利润却是 $15.07 亿——所得税是<strong>负的 $11.8 亿</strong>。这是「递延所得税资产估值备抵释放」：公司亏损十几年攒下巨额可抵扣亏损（NOL），以前会计上不敢把它记成资产（怕永远盈利不了用不上），现在连续盈利了，审计允许一次性确认。<strong>这 $11.8 亿一分钱现金都没有进来，纯粹是账面上把「未来少交税的权利」记成了今年的利润</strong>（现金流量表里 Other Operating Activities -$11.7 亿就是把它减回去的痕迹）。它明年不会再有。你看到的 PE 13.4、EPS 暴增 694%、利润率 52.8%、ROE 37460%，全是这一笔记账造成的幻觉。</li>
+<li><strong>股权激励（SBC）</strong>：TTM $3.58 亿，<strong>占税前利润的 109%</strong>——发给员工的股票比公司真实赚的还多。GAAP 里已扣除，但公司宣传的 Non-GAAP 利润把它加回去了，不要信。</li>
+<li><strong>资本化的支出</strong>：没有明显项目，研发全部费用化。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $6.79 亿 ÷ SBC $3.58 亿 = 1.9 倍，股本一年只减少 0.65%——<strong>近七亿美元的回购，大头是在对冲员工发股，不是回馈股东</strong>。</li>
+<li><strong>利润和现金流的差</strong>：这张对账表值得看——</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>$15.07亿</td>
+</tr>
+<tr>
+<td>减：递延税资产确认（非现金收益）</td>
+<td>-$11.7亿</td>
+</tr>
+<tr>
+<td>加：SBC（非现金费用）</td>
+<td>+$3.58亿</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+$0.76亿</td>
+</tr>
+<tr>
+<td>加：递延收入增加（客户预付多年订阅）</td>
+<td>+$3.15亿</td>
+</tr>
+<tr>
+<td>其他营运资金变化</td>
+<td>-$1.7亿</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>$9.17亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流 $9.17 亿是真的，capex 只有 $0.76 亿（软件公司不用建厂），自由现金流 $8.41 亿、FCF 利润率 29.5%——<strong>现金创造能力是实打实的</strong>，只是其中有 $3.6 亿靠发股票省下来的工资撑着。另有净现金 $8.4 亿，财务上没有风险。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$187亿 ÷ $15.1亿（含税收幻觉）</td>
+<td>13.4</td>
+<td>¥7.5（假的）</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 后约 $6.5 亿</td>
+<td>≈29</td>
+<td>¥3.5</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>$187亿 ÷ 正常化净利润≈$2.7亿（税前$3.27亿×0.82）</td>
+<td><strong>≈69</strong></td>
+<td><strong>¥1.4</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>$187亿 ÷ $8.4亿</td>
+<td>22.2</td>
+<td>¥4.5</td>
+</tr>
+<tr>
+<td>FCF 再剔 SBC</td>
+<td>$187亿 ÷ ($8.4-3.6)亿</td>
+<td>≈39</td>
+<td>¥2.6</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$178.5亿 ÷ $3.17亿</td>
+<td>56.4</td>
+<td>¥1.8</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年 GAAP 净利润平均仅约 $5.2 亿（且被税收益抬高）</td>
+<td>≈36</td>
+<td>¥2.8</td>
+</tr>
+</tbody>
+</table></div>
+<p>（Forward PE 30 倍——市场自己也知道 13.4 倍是假的。）</p>
+<p><strong>大白话</strong>：你投 100 块进去，按真实经营利润算，公司一年只替你赚 <strong>1 块 4</strong>；按最宽容的自由现金流口径也只有 4 块 5，而且这 4 块 5 里有近一半是靠给员工发股票（稀释你）省出来的。这些钱几乎都没有回到你口袋——回购基本被员工发股吃掉，没有分红。你买它买的不是当下的收益，是「经营利润率从 11% 继续爬向软件业常态的 25-30%、VMware 难民继续投奔」这个成长故事。故事本身不假，但它是个成长股的故事，就该按成长股的价钱来审视。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意在变好，但 13.4 倍是会计幻觉，真实价格是 60-70 倍的成长股价——没有任何便宜可占。</strong> 它出现在低市盈率名单里纯属报表巧合，明年税收益一消失，PE 会自动「涨」回 30 倍以上。想买它的人应该按「87% 毛利、12% 增长、利润率爬坡中的软件股值不值 22 倍 P/FCF」去论证，而不是被 13 倍骗进来。按本名单的标准：偏贵。</p>
+</div></body></html>

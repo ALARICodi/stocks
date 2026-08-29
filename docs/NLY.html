@@ -1,0 +1,183 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NLY · Annaly 资本管理</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NLY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">7倍杠杆债券基金,13%股息含本金搬家,还溢价14%买账面</div><h1>NLY · Annaly 资本管理</h1>
+<p>市值 174 亿美元 / 股价约 23 美元 / 房贷 REIT（mREIT） / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是地产金融企业（抵押型 REIT），下面用市净率 + 股息覆盖口径而不是市盈率，原因是：它的 GAAP 净利润里大头是债券按市价重估的浮盈浮亏，一年正 28 亿、前两年负 18 亿，市盈率 5.8 倍是彻头彻尾的幻觉。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先把话说破：<strong>Annaly 不是一家经营实业的公司，它是一只加了 7 倍杠杆的债券基金，套着 REIT 的壳上市。</strong> 全公司只有 212 个员工，管着 1,400 多亿美元资产——没有工厂、没有客户、没有产品，只有一个交易台。它做的事只有一件：<strong>借短期的便宜钱，买长期的房贷债券，吃中间的利差。</strong> REIT 的规则要求它把应税利润的九成分掉，所以它的存在意义就是把这个利差变成每季度的股息发给你。</p>
+<p>这一件事分三个组合来做：</p>
+<h3>组合一：机构 MBS——主力仓位（TTM 贡献收入 21.2 亿美元，占 66%）</h3>
+<p>具体操作是这样的：Annaly 拿自己 1 块钱的资本金，去回购市场（repo）借来 6–7 块的短期资金（利率跟着美联储走，眼下 4% 出头），用这 7–8 块钱买「机构住房抵押贷款证券」——就是把千千万万笔美国人的房贷打包成的债券，本息由房利美、房地美担保，收益率 5.5–6%。中间 1 个多点的利差，乘以 7 倍杠杆,毛回报就是 10% 上下。<strong>违约风险为零</strong>（政府担保，2008 年都没赖账），<strong>全部的风险都集中在利率上</strong>：短期利率突然飙升，借钱成本瞬间贵过债券收益，利差变负；长期利率飙升，手里债券价格暴跌，账面资产一夜蒸发。2022 年加息就是这么把它的账面价值打掉三成的。总债务 1,252 亿美元，负债权益比 7.4 倍——这个数字放在任何实业公司身上都是破产预警，在这里是商业模式本身。</p>
+<h3>组合二：非机构住房信贷（TTM 6.4 亿美元，占 20%）</h3>
+<p>没有政府担保的房贷生意。它旗下的 Onslow Bay 平台向全美的贷款机构收购「非标」房贷——金额超过政府担保上限的大额贷款（jumbo）、炒房客的投资房贷款等，攒够一批就打包证券化卖出去，自己留一部分收益率更高的层级。这块赚的是信用风险的钱，收益率比机构 MBS 高，但房价大跌时会真的亏本金。</p>
+<h3>组合三：房贷服务权 MSR（TTM 4.3 亿美元，占 14%）</h3>
+<p>买下「替银行收房贷月供」的权利，每年抽贷款余额的 0.25% 当过路费。这块的妙处是<strong>天然对冲</strong>：利率上升时，没人提前还贷、过路费收得更久，MSR 反而升值——正好补一部分主仓位的损失。这是 2020 年后管理层刻意加的稳定器。</p>
+<p><strong>整体盘子（TTM）</strong>：收入 32.6 亿美元，GAAP 净利润 27.9 亿——但记住，这个「利润」里含着大量 2026 年利率下行带来的债券浮盈，不是可持续的经营所得。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司最大的障眼法就是 GAAP 报表本身：</p>
+<ul>
+<li><strong>利润是市值重估器，不是经营成果</strong>：净利润五年走势是 +22.8 亿、+16.2 亿、<strong>-17.9 亿</strong>、+8.5 亿、+18.7 亿——同一门生意、同一批人，利润在正负 20 亿之间荡秋千，荡的不是经营，是利率。TTM 的 27.9 亿正好赶上利率下行、债券涨价。<strong>看它的利润表约等于看债市行情回放。</strong></li>
+<li><strong>股权激励</strong>：全公司 212 人，SBC 微不足道，忽略。</li>
+<li><strong>一次性项目</strong>：谈不上——它每一期都是「一次性」的市价重估。</li>
+<li><strong>利润和现金流的差（核心对账）</strong>：TTM 经营现金流只有 8.9 亿美元，而按 7.54 亿股 × 每年 3 美元算，一年要发约 22.6 亿股息。<strong>缺口靠什么补？靠债券到期回收本金、靠新借的钱、以及靠增发新股。</strong> 经济实质上：发给你的 13% 股息里，真正由利差赚出来的只是一部分，另一部分是资产滚动和资本运作在给现金流搭桥。</li>
+<li><strong>稀释——最扎眼的数字</strong>：<strong>股本一年增加了 22.7%</strong>。它常年在市场上增发新股（因为股价高于账面价值 14%，每增发 1 股反而让老股东的每股账面价值微涨，会计上「增厚」）。但你要看穿这层：一门需要不断喂进新钱才能维持规模和股息的生意，本质上更接近资金池，而不是复利机器。2022 年 9 月它做过 1:4 缩股——股价跌到不体面了才合股，这就是这门生意长期股价轨迹的注脚。</li>
+</ul>
+<hr />
+<h2>第三部分：投 100 块能拿回多少——用 REIT 口径算</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>股价 23.04 ÷ 每股账面 20.15</td>
+<td><strong>1.14 倍</strong></td>
+<td>历史上多数时间在 0.85–1.05 之间，现在是溢价区</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>每年 3.00 美元 ÷ 股价</td>
+<td><strong>13.0%</strong></td>
+<td>这是所有人买它的唯一理由</td>
+</tr>
+<tr>
+<td>GAAP 市盈率</td>
+<td>市值 ÷ 净利润</td>
+<td>5.8 倍</td>
+<td><strong>幻觉，不要用</strong></td>
+</tr>
+<tr>
+<td>派息率</td>
+<td>股息 ÷ GAAP EPS</td>
+<td>76%</td>
+<td>分母失真，参考意义有限</td>
+</tr>
+<tr>
+<td>经营现金流覆盖</td>
+<td>股息约 22.6 亿 vs OCF 8.9 亿</td>
+<td>覆盖不足</td>
+<td>差额靠本金回收和融资滚动</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：投 100 块进去，明面上一年拿 13 块股息，到手是真金白银。但这 13 块不等于「公司替你赚了 13 块」：</p>
+<ol>
+<li>你先付了 14% 的溢价——花 114 块买 100 块的债券组合，而那些债券任何机构按面值就能买到；</li>
+<li>这门生意的账面价值长期是往下走的（缩股、利率冲击、增发摊薄轮着来），股息拿 13 块、本金蚀掉几块，<strong>真实年回报大概率在 7–9 块之间</strong>（估算），而且是坐过山车拿到的；</li>
+<li>它建立在 7.4 倍杠杆上。利率如果再来一次 2022 式的暴走，账面价值单年打七折不需要任何意外。</li>
+</ol>
+<p>它比同行确实做得好：MSR 对冲、Onslow Bay 平台都是真本事，机构持仓 62% 也说明专业投资者认它。但「同类里最好的」不改变这个类别本身的性质。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一只 7 倍杠杆的债券基金，不是一家公司；13% 的股息真能拿到手，但其中一部分是你自己的本金在往回搬，股本一年膨胀 23%、缺口靠滚动融资搭桥——而现在你还要为这个模式付 14% 的账面溢价。想吃利差不如自己买国债，想要 13% 就得接受本金坐过山车。1.14 倍账面买它，偏贵；这门生意本身，有硬伤。</strong></p>
+</div></body></html>

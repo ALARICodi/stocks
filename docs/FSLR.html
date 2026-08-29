@@ -1,0 +1,215 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FSLR · First Solar（第一太阳能）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FSLR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">12.6倍里六成利润是45X补贴，2030退坡；赚的是华盛顿的钱</div><h1>FSLR · First Solar（第一太阳能）</h1>
+<p>市值 $219.7 亿 / 股价约 $204 / 行业：电子科技—光伏组件制造 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>就一件事：造太阳能板，卖给美国的大型电站。</strong> 分部表里 99% 以上的收入都是 Solar Modules，没有第二条腿。但这块板和市面上所有别的板都不一样，值得讲透。</p>
+<h3>它的板：不用硅，避开整条中国供应链</h3>
+<p>全世界 95% 以上的太阳能板是晶硅路线——多晶硅、硅片、电池片、组件四个环节，每个环节的产能一大半在中国。First Solar 走的是<strong>碲化镉（CdTe）薄膜</strong>路线：把一层几微米厚的碲化镉直接蒸镀在玻璃上，一块玻璃进产线，四个小时后一块完整组件出来，全程一栋厂房搞定，<strong>不碰多晶硅、不碰任何中国环节</strong>。效率比最好的晶硅板低一点（约 19.8% 对 22%+），但耐高温、衰减慢，装在亚利桑那的沙漠里发电量反而不吃亏。</p>
+<h3>卖给谁、怎么收钱</h3>
+<p>客户不是装屋顶的家庭，是 NextEra 这类<strong>公用事业级电站开发商</strong>。一单的样子：某开发商要在德州建一个 500 兆瓦的电站，提前两三年跟 First Solar 签约锁定组件供应，按约 0.28–0.30 美元/瓦（估算）计价，这一单就是约 1.4 亿美元，签约先付定金（所以它账上常年趴着大笔预收款），交付时结清。目前<strong>在手订单约 60 吉瓦（估算），排产排到 2030 年左右</strong>——未来几年的收入基本上已经签死了。</p>
+<h3>客户为什么非买它不可</h3>
+<p>不是因为板子最好，是因为<strong>美国的贸易墙</strong>：对中国组件有 201 关税、双反税，再加 UFLPA 强迫劳动法案让新疆硅料相关的进口货随时可能被海关扣在港口。开发商买晶硅进口板，等于把工期押在海关放行上；买 First Solar 的美国造（俄亥俄、阿拉巴马、路易斯安那的工厂，2026 年美国产能约 14 吉瓦），供应链风险归零。<strong>它卖的一半是组件，一半是「确定性」。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>对比 FY2025 全年</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$53.8 亿</td>
+<td>$52.2 亿（TTM 同比 +23.8%）</td>
+<td>几乎全部为组件销售</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>44.0%</td>
+<td>40.6%</td>
+<td>含 45X 补贴抵减成本，见第二部分</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>$18.1 亿（33.7%）</td>
+<td>$16.0 亿</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>$17.5 亿（32.5%）</td>
+<td>$15.3 亿</td>
+<td>有效税率仅 4.35%</td>
+</tr>
+</tbody>
+</table></div>
+<p>一个卖制造业大宗品的公司净利率 32.5%——比苹果还高。这个数字本身就是全篇最大的疑点，答案在下面。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>最大的一项：利润的大头是政府补贴，不是市场利润。</strong> 《通胀削减法案》的 45X 制造业税收抵免，按美国本土产量每瓦补约 0.17 美元，会计上<strong>直接从销售成本里扣掉</strong>——也就是说 44% 的毛利率里内嵌着补贴。FY2024 年报披露的 45X 抵免约 $10.4 亿；按美国产能爬坡推算，TTM 大约 $14–16 亿（估算），<strong>对比税前利润 $18.3 亿，占了八成上下</strong>。再加上 4.35% 的有效税率（正常公司 21%）也是抵免压出来的。把补贴整个剥掉，这家公司税前利润只剩每年几亿美元量级——<strong>剔除补贴的「裸」市盈率不是 12.6 倍，是粗算 40 倍以上（估算）</strong>。补贴是真金白银（抵免可以打折卖给别的公司换现金），法律写到 2032 年（2030 年起逐年退坡），但它是华盛顿给的，不是客户给的。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $2400 万，占净利润 1.4%，可以忽略——制造业公司的好处。</li>
+<li><strong>一次性项目</strong>：TTM 无大额一次性损益。2023–24 年 Series 7 新产线曾计提过质保损失，本期未见。</li>
+<li><strong>资本化支出</strong>：无软件/内容资本化把戏。资本开支从 FY2024 的 $15.3 亿降到 TTM $6.6 亿——三座美国新厂建完了，正在从「烧钱建厂」切换到「收获」模式。</li>
+<li><strong>回购与稀释</strong>：不回购（TTM 仅 $28 万象征性），不分红，股本微增 0.12%。赚的钱全部留着，净现金 $15.3 亿，几乎无债（负债/权益 0.02）。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 $17.5 亿，经营现金流 $21.6 亿，现金流反超——应收和库存都在回落（+$3.1 亿、+$4.0 亿），建厂期压的营运资金正在吐出来。自由现金流 $15.0 亿，是上市以来最好的一年。钱是真的到账了——只是别忘了里面有补贴换来的现金。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>219.7 亿 ÷ 17.5 亿</td>
+<td>12.6</td>
+<td>¥7.9</td>
+</tr>
+<tr>
+<td>公司口径 Forward PE</td>
+<td>市值 ÷ 明年预期利润</td>
+<td>9.8</td>
+<td>¥10.2</td>
+</tr>
+<tr>
+<td><strong>剔除 45X 补贴的「裸」市盈率</strong></td>
+<td>219.7 亿 ÷ 剔补贴后利润（估算）</td>
+<td><strong>约 40+</strong></td>
+<td><strong>约 ¥2.5</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>219.7 亿 ÷ 15.0 亿</td>
+<td>14.7</td>
+<td>¥6.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>204.4 亿 ÷ 18.1 亿</td>
+<td>11.3</td>
+<td>¥8.9</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>219.7 亿 ÷ 12.2 亿（2023–25 均值）</td>
+<td>18.1</td>
+<td>¥5.5</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你现在投 100 块进去，账面上公司一年替你赚 7.9 块，而且是真现金。但这 7.9 块里约 6 块来自华盛顿的补贴支票，只有约 2 块来自把板子卖贵于成本的本事。一分钱不分给你（无分红无回购），全部留在公司里——好在也不乱花，账上净现金越堆越厚。这个 7.9 块未来几年大概率还会涨（订单锁到 2030、补贴到 2029 全额），<strong>但 2030 年起补贴每年退坡 25%，2033 年归零</strong>——那之后它还能赚多少，取决于关税墙还在不在、中国板子进不进得来，没人知道答案。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>12.6 倍买的不是一门生意，是一张「2030 年前由美国法律担保的补贴现金流」加一张「2030 年后看华盛顿脸色」的彩票——按补贴如期兑付算这价格不贵，但你赚的每一块钱里六毛来自政策而不是产品竞争力，<strong>政策风向一变利润表就塌方，这种钱看着容易，睡不安稳</strong>。</p>
+</div></body></html>

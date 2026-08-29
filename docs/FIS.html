@@ -1,0 +1,232 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FIS · 富达国民信息服务（Fidelity National Information Services）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FIS</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">6.4倍是假的:剔23.6亿一次性后11倍现金流,生意拔不掉但新债205亿+前科管理层</div><h1>FIS · 富达国民信息服务（Fidelity National Information Services）</h1>
+<p>市值 $213.7 亿 / 股价 $41.44 / 银行科技服务 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>先把最重要的话放在最前面：<strong>屏幕上显示的 6.4 倍市盈率是假的。</strong> TTM 净利润 33.73 亿里有 23.57 亿是把 Worldpay 剩余股权换出去时确认的一次性投资收益。把这笔剔掉，真实倍数完全是另一个数字（第三部分算清楚）。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>FIS 是给银行"装水电煤"的公司。你在美国一家中小银行开户、查余额、转账、办借记卡，背后跑的系统八成不是银行自己写的，而是租 FIS 的。2026 年二季度起，它实质上做三门生意：</p>
+<h3>生意一：银行核心系统（Banking Solutions）</h3>
+<p>美国有四千多家银行和信用社，绝大多数没能力自己开发"核心账务系统"——就是记录每个账户余额、跑利息计算、清算转账的那套软件。FIS 卖的就是这个：一家中西部社区银行把整套账务外包给 FIS，按账户数和交易量付费，一家中型银行一年付几百万到几千万美元。附带卖的还有手机银行 App、反欺诈、监管报表这些模块。</p>
+<p>这门生意最值钱的一点是<strong>客户几乎不可能跑</strong>。换核心系统对银行来说等于给飞行中的飞机换发动机——要把几百万个账户的历史数据搬家，搬错一位小数就是事故，项目动辄三年、失败案例满地。所以合同一签五到八年，续约率极高，FIS、Fiserv、Jack Henry 三家把美国市场分完了，每年安安稳稳提价 2–4%。代价是增长也就 3% 上下——银行数量每年还在减少。</p>
+<ul>
+<li>钱：FY2025 分部营收约 <strong>70 亿</strong>（占当年总营收 65%，估算：stockanalysis 的分部表数据滞后且口径混乱，此处按公司披露的分部结构估算），增速约 +3%，分部调整后 EBITDA 利润率约 44%（公司披露口径）。</li>
+</ul>
+<h3>生意二：资本市场系统（Capital Markets Solutions）</h3>
+<p>卖给券商、资管、交易所的后台软件：交易撮合后的清算记账、衍生品风控、国债回购处理。客户是高盛这类机构的中后台部门。同样的逻辑——系统嵌得深、换不动、按年收订阅费。</p>
+<ul>
+<li>钱：FY2025 分部营收约 <strong>32 亿</strong>（占 30%，估算口径同上），增速约 +6–7%，是三门里增长最快的，EBITDA 利润率约 50%。</li>
+</ul>
+<h3>生意三：发卡处理（Issuer Solutions，2026 年新并入）</h3>
+<p>这就是原 Global Payments 旗下的 TSYS——给<strong>发卡机构</strong>做信用卡后台：你刷一张美国银行的信用卡，记账、算积分、生成账单、处理争议的系统是 TSYS 跑的。全美前十发卡行里大半是它客户，按活跃卡量收费。2026 年上半年 FIS 用手里 Worldpay 45% 的股权加现金把这块换了过来（TTM 现金流里"收购"一项流出 82.35 亿就是这单）。生意本身稳固——发卡行换后台跟银行换核心一样痛苦——但增长同样只有 3% 左右。</p>
+<ul>
+<li>钱：年化营收约 <strong>26 亿</strong>（并表不满一年，TTM 只含约一个季度，估算），EBITDA 利润率约 45%。</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>营收（年化估算）</th>
+<th>增速</th>
+<th>占比</th>
+<th>EBITDA 利润率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>银行核心系统</td>
+<td>≈$70 亿</td>
+<td>+3%</td>
+<td>55%</td>
+<td>≈44%</td>
+</tr>
+<tr>
+<td>资本市场</td>
+<td>≈$32 亿</td>
+<td>+6%</td>
+<td>25%</td>
+<td>≈50%</td>
+</tr>
+<tr>
+<td>发卡处理（新）</td>
+<td>≈$26 亿</td>
+<td>+3%</td>
+<td>20%</td>
+<td>≈45%</td>
+</tr>
+<tr>
+<td>TTM 报表合计</td>
+<td>$122.0 亿</td>
+<td>+18.3%（并购撑的）</td>
+<td>100%</td>
+<td>经营利润率 21.7%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须交代的前史</strong>：FIS 2019 年花 430 亿美元买下收单公司 Worldpay，2022–2023 两年累计减值约 240 亿（FY2022 净亏 167.5 亿、FY2023 净亏 66.6 亿就是这么来的），2024 年把 55% 股权按 185 亿估值卖给私募 GTCR，2026 年把剩下 45% 换成上面的发卡业务。一进一出，<strong>烧掉了两百多亿美元股东的钱</strong>，管理层已换血。这段历史是评估这家公司管理层资本运作能力时唯一需要记住的东西。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>一次性项目（本案核心）</strong>：TTM 净利润 33.73 亿中，<strong>23.57 亿是 Worldpay 股权置换确认的投资收益</strong>（现金流量表里"权益投资损益 -2,357"白纸黑字）。这是十足的一次性：股权已经换完了，明年没有了。剔掉后 TTM 干净净利润约 <strong>10 亿出头</strong>（有效税率 9.2% 之所以低，也是这笔收益税务处理压出来的）。</li>
+<li><strong>收购摊销</strong>：每年约 <strong>14 亿</strong>"其他摊销"，是历次收购形成的无形资产（客户关系）在账面上分期扣减，不是现金流出。公司 Non-GAAP 把它加回——这一项加回有道理（客户关系不需要重置花钱），但要知道它正是当年 430 亿买 Worldpay 这类高价收购的账面尾巴。</li>
+<li><strong>⚠️ 资本化的支出（第二个陷阱）</strong>：资本开支一栏只有 <strong>1.54 亿</strong>，低得离谱——因为 FIS 把软件开发支出资本化，藏在投资活动"购买无形资产"里，TTM 高达 <strong>9.01 亿</strong>。数据网站算 FCF 时只扣了 1.54 亿，得出 P/FCF 7.6 倍；把资本化软件当成真实资本开支扣掉，<strong>真实自由现金流 = 29.76 − 1.54 − 9.01 ≈ 19.2 亿</strong>，P/FCF 是 11.1 倍不是 7.6 倍。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 1.86 亿，占干净净利润约 18%，占真实 FCF 约 10%。不算过分。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 7.2 亿 ÷ SBC 1.86 亿 = <strong>3.9 倍</strong>，及格线以上的真回购；股本一年缩 2.8%。另派息 8.74 亿，股息率约 4.1%。分红加回购 15.9 亿 ≈ 真实 FCF 的 83%——赚的现金基本都还给股东了。</li>
+<li><strong>利润和现金流的差</strong>：干净净利润约 10 亿 vs 真实 FCF 约 19 亿，差额主要就是那 14 亿非现金收购摊销（税后约 11 亿），对账能对平。<strong>看这家公司，现金流口径比利润口径更接近真相。</strong></li>
+<li><strong>债务</strong>：为了买发卡业务，总债务从 133 亿跳到 <strong>213 亿</strong>，净债务 205 亿，几乎等于全部市值。按并表后全年 EBITDA 约 48–50 亿算，净债务约 4.2 倍 EBITDA，利息覆盖 4.4 倍。不致命，但未来三年赚的钱得优先还债。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>213.7 ÷ 33.73</td>
+<td><strong>6.4（假的）</strong></td>
+<td>¥15.8（假的）</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 14 亿摊销+重组费</td>
+<td>≈6.5（远期口径）</td>
+<td>¥15.4</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>213.7 ÷ 约10.2（剔 23.57 亿一次性收益）</td>
+<td><strong>≈21</strong></td>
+<td>¥4.8</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣资本化软件）</td>
+<td>213.7 ÷ 19.2</td>
+<td><strong>11.1</strong></td>
+<td>¥9.0</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(213.7+205.1) ÷ 26.50</td>
+<td><strong>15.8</strong></td>
+<td>¥6.3（企业口径）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY23-25 均值为<strong>负</strong>（Worldpay 减值）</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那行算不出来本身就是信息：过去三年 GAAP 累计是<strong>亏损</strong>的，Worldpay 减值把利润全吞了。</p>
+<p>大白话：<strong>你现在投 100 块，按最实在的现金口径（真实 FCF），公司一年替你赚 9 块</strong>；其中约 4.1 块以分红形式直接打到你账上，约 3.4 块用来回购，剩下的还债。按剔除一次性后的利润口径只赚 4.8 块——两个口径差一倍，差额是收购摊销，你信哪个取决于你认不认"客户关系摊销不是真成本"（多数专业投资人认）。这个 9 块未来会不会变大：核心业务增速只有 3%，靠的是提价和还债省利息，<strong>大概率缓慢变大，但不会有惊喜</strong>。真正的变数是管理层——刚刚又做了一单 130 亿级别的大收购，而这家公司上一单大收购烧掉了两百多亿。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意本身是插在四千家银行身上拔不掉的水电表，现金收益率 9%、股息 4% 拿着不难受；但 6.4 倍的标价是一次性收益画出来的妆，真实价格是 11 倍现金流加一屁股新债，配上一个刚烧过两百亿、如今又梭哈一单大收购的前科管理层——价格算公道，谈不上捡漏，赚的是"无聊+还债"的钱，别指望增长。</p>
+</div></body></html>

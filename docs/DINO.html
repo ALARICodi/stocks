@@ -1,0 +1,201 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DINO · HF Sinclair（炼油）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DINO</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">9倍是周期顶假便宜，三年平均23倍，股价先翻倍才有的低PE</div><h1>DINO · HF Sinclair（炼油）</h1>
+<p>市值 $177.3 亿 / 股价约 $100 / 行业：石油炼化 / TTM 截止 2026-06-30</p>
+<p>代号 DINO 来自 Sinclair 那只绿恐龙商标——2022 年 HollyFrontier 收购百年老牌 Sinclair Oil 后改的名。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>核心就一门生意（炼油），外面挂着三门衍生生意。</p>
+<h3>生意一：炼油（Refining）——公司的命根子</h3>
+<p>它有 7 座炼油厂，分布在堪萨斯、俄克拉荷马、犹他、怀俄明、新墨西哥、华盛顿州，合计日加工原油约 68 万桶。生意本质极简单：<strong>买进原油，蒸馏裂解成汽油、柴油、航空燃油，卖出去，赚中间的价差</strong>（行话叫裂解价差 crack spread）。具体例子：炼厂以 62 美元买进一桶中部产的原油，炼成约 0.5 桶汽油+0.3 桶柴油，按成品油批发价卖出合计约 80 美元，刨掉 10 美元的能源、人工、催化剂等炼制成本，一桶赚 8 美元——产能开满一天就是 500 多万美元毛利。它的地利在于炼厂全在内陆：中部和落基山的原油运不出去、卖得比海边便宜，而当地成品油市场竞争少、卖得不便宜，两头占便宜。</p>
+<p><strong>但价差完全不由它定</strong>：原油价、汽油价都是全球市场给的，毛差好的年份（2022、2026 上半年）一年赚 30 亿，毛差塌掉的年份（2024）全公司只赚 1.75 亿。它对此毫无办法，只能控制成本和开工率。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>炼油</td>
+<td>$236.4 亿</td>
+<td>+15%</td>
+<td>76%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：品牌加油站批发（Marketing）</h3>
+<p>Sinclair 绿恐龙品牌授权给 30 多个州约 1,500 家加油站——站是加盟商的，DINO 供油、收品牌费。每加仑赚几美分的稳定生意，还给自家炼厂锁定了销路。TTM 营收 $37.9 亿（12%）。</p>
+<h3>生意三：润滑油与特种产品（Lubricants）</h3>
+<p>旗下 Petro-Canada Lubricants、Sonneborn 等品牌，把炼油副产品加工成机油、白油、凡士林原料——卖给汽修连锁、食品药品厂。这是全公司<strong>唯一有品牌溢价、利润不随油价大起大落</strong>的业务。TTM 营收 $28.9 亿（9%）。</p>
+<h3>生意四：可再生柴油（Renewables）+ 管道（Midstream）</h3>
+<p>3 座可再生柴油装置（拿豆油、动物油脂加氢做柴油，赚政府补贴积分），行业整体过剩，基本不赚钱甚至亏；管道储运主要服务自家炼厂，对外收入仅 $1.3 亿。TTM 合计约 $9 亿（3%）。</p>
+<p><strong>分部利润财报只披露到营收，按行业常态估算</strong>：TTM 经营利润 $26.3 亿里，炼油贡献约八成，润滑油贡献约 $2.5–3 亿且年年稳定，可再生柴油为拖累项。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $0.35 亿，占净利润 1.8%，忽略不计。</li>
+<li><strong>一次性项目</strong>：TTM 资产减记与重组 $0.49 亿，很小。没有大额诉讼或税务调整。</li>
+<li><strong>资本化的支出</strong>：没有这类操作，炼油厂的维护性开支老老实实走了资本开支。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $5.59 亿，是 SBC 的 16 倍——<strong>如假包换的真回购</strong>，股本一年实缩 3.4%。加上分红 $3.66 亿，TTM 合计 $9.25 亿回到股东口袋，约为净利润的一半。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $19.0 亿 vs 经营现金流 $27.8 亿 vs 自由现金流 $23.1 亿。对账：净利润 19.0 → 加折旧 $5.8 亿 → 加<strong>收购 Sinclair 带来的无形摊销 $3.3 亿（纯记账数字，不花现金）</strong> → 营运资金合计约 +0.3 → ≈ 27.8 亿经营现金流；减资本开支 $4.7 亿 = 23.1 亿自由现金流。资本开支常年只有折旧的八成，现金流比利润还实——<strong>账本身没有任何问题，问题全在周期上</strong>。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>177.3 亿 ÷ 19.0 亿</td>
+<td>9.3 倍</td>
+<td>10.7 块</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>与 GAAP 差异极小（SBC 可忽略）</td>
+<td>≈9.3 倍</td>
+<td>≈10.7 块</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>减记 0.49 亿加回后无重大调整</td>
+<td>9.1 倍</td>
+<td>11.0 块</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>177.3 亿 ÷ 23.1 亿</td>
+<td>7.7 倍</td>
+<td>13.0 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>188.0 亿 ÷ 26.3 亿</td>
+<td>7.2 倍</td>
+<td>14.0 块</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>177.3 亿 ÷ 7.75 亿（2023–25 平均净利）</td>
+<td><strong>22.9 倍</strong></td>
+<td><strong>4.4 块</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>全表就看最后一行。</strong> 2025 年净利 $5.7 亿、2024 年 $1.75 亿、2023 年 $15.8 亿——TTM 的 $19 亿是裂解价差冲上周期高位的产物，不是公司变强了。表面上"投 100 块一年赚 11 块"，按穿越周期的平均利润算<strong>只赚 4.4 块</strong>。股价一年涨了 99% 才"便宜"到 9 倍：涨在前、低倍数在后，这是周期股最经典的视觉陷阱——<strong>利润顶点时市盈率最低，恰恰是最贵的时候</strong>。</p>
+<p>好的一面也要说：赚到的钱一半实打实分掉回购掉（TTM $9.25 亿），股本三年缩了近一成；净债务只有 $10.8 亿，杠杆很轻，毛差塌方也不会伤筋动骨。这是家把周期红利老实交给股东的公司，不是乱花钱的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>公司不烂，价格贵了——周期顶部的 9 倍是幻觉，穿越周期算是 23 倍。</strong> 内陆炼厂的地利真实、回购真实、账干净，但你现在买入等于在裂解价差的历史高位、股价一年翻倍之后接盘，赌毛差永远维持在顶部。想要它，等毛差回落、市场重新给它挂上"20 倍市盈率"标签（即利润塌、股价也塌）的年份再看，那时才是真便宜。现在：等。</p>
+</div></body></html>

@@ -1,0 +1,194 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FCNCA · 第一公民银行（First Citizens BancShares）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FCNCA</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">抄底SVB的128年家族银行,1.26倍有形账面回购12%股本</div><h1>FCNCA · 第一公民银行（First Citizens BancShares）</h1>
+<p>市值 248 亿美元 / 股价约 2,195 美元 / 银行 / TTM 截止 2026-06-30 / 排名第 61（任务2：市盈率 0–15 倍段）</p>
+<blockquote>
+<p><strong>这是银行，第三部分用 PB / ROE / 拨备口径而不是普通市盈率</strong>，原因是：银行利润建立在约 10 倍杠杆上，账面价值和资产质量比单年利润更能说明值多少钱。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先讲这家公司是谁，因为它的来历就是投资逻辑本身。<strong>北卡罗来纳州的 Holding 家族经营了 128 年的银行，传到第三代，内部人持股 25%</strong>——在美国上市银行里几乎绝无仅有。它出了名的绝活是「<strong>专捡尸体</strong>」：FDIC（联邦存款保险公司）每关闭一家问题银行，就要打折甩卖其资产，第一公民几十年里接盘了 20 多家倒闭银行。两笔改变命运的大买卖：<strong>2022 年吞并 CIT Group</strong>（一家比自己还大的商业金融公司，作价只有其账面价值的一半左右）；<strong>2023 年 3 月硅谷银行（SVB）倒闭，它从 FDIC 手里折价约 165 亿美元接下 SVB 的 720 亿贷款包</strong>，这一单账面直接赚了约 98 亿美元——FY2023 净利润 114 亿就是这么来的，一夜之间资产规模翻倍到 2,200 亿，挤进全美前 20 大银行。</p>
+<p>现在的它是四门生意（按 stockanalysis 分部表；SVB 业务在财报里的归属跨前两块，以下描述含估算）：</p>
+<h3>生意一：General Bank（通用银行）——TTM 营收 39.5 亿，占 44%</h3>
+<p>最传统的那种银行：东南部几百家分行，收居民和小企业的存款，放房贷、车贷、经营贷。第一公民的分行网络以「无聊、保守、便宜的存款」著称——大量支票账户几乎不付利息，这是银行业最值钱的原材料。SVB 并进来的私人银行（服务风投合伙人、创业者个人）也在这块。</p>
+<h3>生意二：Commercial Bank（商业银行）——TTM 营收 37.8 亿，占 42%</h3>
+<p>CIT 留下的家底加 SVB 留下的招牌。CIT 部分：给中型企业做设备融资（一家运输公司要买 50 台卡车，它出钱、分期收租）、保理（服装厂把应收账款打折卖给它先拿现金）、商业地产贷款。<strong>SVB 部分是全美独一份的「创投圈银行」</strong>：给风投基金做 capital call line（基金投项目时先垫资、等 LP 打款再还）、给拿到融资的初创公司开户放贷。SVB 倒闭倒的是资产负债表（存款挤兑+债券浮亏），不是这门业务本身——硅谷的基金和创业公司还得有人服务，现在这块牌子在第一公民手里，竞争对手基本死绝了。</p>
+<h3>生意三：Rail（火车车厢租赁）——TTM 营收 7.0 亿，占 8%</h3>
+<p>CIT 带来的意外资产：<strong>约 12 万节火车车厢和机车，租给铁路公司和货主</strong>（一家化工厂常年租 200 节罐车运原料，按月付租金）。这是重资产生意——公司 TTM 资本开支 15.7 亿，大头就是买新车厢。租金回报稳定、跟着运价周期走，跟银行主业毫无关系，纯粹是买 CIT 时「随箱附赠」，但年年安静赚钱。</p>
+<h3>生意四：Corporate——TTM 营收 4.7 亿</h3>
+<p>总部资金运作和未分配项目，FY2023 那笔 98 亿收购收益当年就记在这里（当年该分部「营收」107 亿）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>最大的历史障眼法要主动点破</strong>：FY2023 净利润 114 亿里约 98 亿是收购 SVB 的一次性「负商誉」收益（打折买资产，差价按会计规则一次计入利润）——<strong>真金白银但永不再来</strong>。剔掉后当年真实经营利润约 16–20 亿（估算）。TTM（22.7 亿）里没有任何这类项目，是干净的经营利润。</li>
+<li><strong>股权激励（SBC）</strong>：页面现金流表不单列，银行体量对 22.7 亿净利影响很小。</li>
+<li><strong>一次性项目</strong>：TTM 有 3 亿出头的出售资产/投资收益，占净利约 1 成，不改变大局。</li>
+<li><strong>回购与稀释</strong>：<strong>全篇最重要的数字：TTM 回购 33 亿，股本一年实际减少 11.7%</strong>。普通股股息只有 1 亿——管理层的态度明明白白：股价 2,200 美元、1.26 倍有形账面时，回购自家股票比派息、比多数放贷机会都划算。SVB 交易带来的超额资本正在通过回购有序还给股东。内部人持股 25%，他们回购烧的一半是自家的钱，这个信号比任何路演都可信。</li>
+<li><strong>拨备</strong>：TTM 信贷损失拨备仅 3.07 亿，对 1,400 多亿的贷款盘子非常温和，资产质量目前无恙。</li>
+<li><strong>存款</strong>：TTM 存款净增 135 亿——<strong>SVB 的储户不但没跑，还在回流</strong>，这单收购的整合风险基本落地。</li>
+<li><strong>利润和现金流的差</strong>：净利润 22.7 亿 vs 经营现金流 31.8 亿，差额是折旧（车厢）、拨备等常规非现金项，银行口径正常，无需对账表。倒是要提醒：页面显示的「自由现金流」16 亿对银行没有意义（放贷和买车厢都算投资流出），别用 P/FCF 给银行估值。</li>
+</ul>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率（GAAP TTM）</td>
+<td>11.8 倍</td>
+<td>投 100 块年赚 <strong>8.5 块</strong></td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>1.24 倍</td>
+<td>账面 219 亿</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>1.26 倍</td>
+<td>商誉极少，账实在（每股有形账面约 1,740 美元）</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>10.65%</td>
+<td>平庸——这是它跟 WRB/SYF 的 20% 差距所在</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>1.01%</td>
+<td>约 10 倍杠杆的正常银行结构</td>
+</tr>
+<tr>
+<td>ROE ÷ PB 换算的真实回报</td>
+<td>投 100 块年赚 <strong>8.6 块</strong></td>
+<td>与市盈率口径互相印证</td>
+</tr>
+<tr>
+<td>ROTCE（估算）</td>
+<td>约 11.5%</td>
+<td>净利 ÷ 有形账面 197 亿</td>
+</tr>
+<tr>
+<td>三年平均利润口径（FY23 剔除 98 亿收购收益后估算）</td>
+<td>约 11 倍</td>
+<td>投 100 块年赚 <strong>9 块</strong>上下——当前利润不在周期高点上</td>
+</tr>
+<tr>
+<td>拨备/CET1</td>
+<td>拨备温和（3 亿）；CET1 页面不提供</td>
+<td>公司历来资本充裕，SVB 交易后更是超额</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话说回报</strong>：你现在投 100 块进去，公司一年替你赚 8.5 块，其中约 13–14 块（对，比利润还多）以回购+股息回到你口袋——超出的部分是在花 SVB 交易攒下的超额资本，这个速度会随资本回到正常水位而放缓，届时股东回报会向利润水平（8 块多）收敛。这 8.5 块未来变大还是变小？股本一年缩 12%，<strong>就算利润原地踏步，每股利润也自动涨 12%</strong>；再加上存款还在增长、拨备处于低位（这是唯一要盯的反向变量：信贷周期转差时拨备会吃掉利润的一大块）。</p>
+<p><strong>杠杆声明</strong>：8.6% 的年回报建立在 10 倍杠杆之上，经济严重衰退时银行利润会剧烈缩水，这是所有银行股的宿命，不是它独有的毛病。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>全美银行界最会抄底的家族，用 1.26 倍有形账面的价格边经营边回购掉 12% 的股本——公道略偏便宜，买得下手。</strong> 它的软肋是裸看指标不出众：ROE 只有 11%，生意是普通银行加火车车厢。它的强项没法进报表：三代人 128 年不炸账的纪律，和 FDIC 电话响起时敢一口吃下 720 亿资产的胃口。按公道价买一个反复证明过「别人恐慌时我贪婪」的资本配置团队，这笔账划算。</p>
+</div></body></html>

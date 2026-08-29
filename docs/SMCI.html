@@ -1,0 +1,250 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SMCI · 超微电脑（Super Micro Computer）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SMCI</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">五年纸赚54亿现金流出79亿,靠增发续命,便宜的理由太硬</div><h1>SMCI · 超微电脑（Super Micro Computer）</h1>
+<p>市值 $240 亿 / 股价 $37.08 / 行业：服务器硬件（Electronic Technology）/ TTM 截止 2026-06-30（恰好是它的 2026 财年全年）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>分部数据只有两块：<strong>攒服务器整机</strong>（占营收约 97%）和<strong>卖零配件</strong>（约 3%）。实质上就是一门生意：给 AI 时代当「组装厂+集成商」。</p>
+<h3>生意一：攒 AI 服务器（FY2026 营收约 379 亿美元，按 FY2025 分部占比 97% 估算）</h3>
+<p>它做的事说穿了很朴素：从英伟达买 GPU、从英特尔/AMD 买 CPU、从三星海力士买内存，装进自己设计的机箱、主板、电源和散热系统里,组成一台台服务器，再把几十台服务器插进机柜、接好液冷管路和网线，整柜卖给要建 AI 数据中心的客户。一个典型订单长这样：某家 AI 创业公司（比如 xAI、CoreWeave 这类要几万张 GPU 的主）找它订 1000 个机柜的液冷 GPU 集群，单柜带 8 台服务器、64 张 GPU，一柜货值几十万美元，整单几个亿。特斯拉、Meta 的数据中心里都有它的机柜。</p>
+<p>它凭什么拿单？三个字：<strong>快、密、冷</strong>。
+- <strong>快</strong>：它用「积木式」设计，几百种主板和机箱模块可以拼出任何配置。英伟达每出一代新 GPU，超微往往是第一个出整机的——比戴尔、HPE 快一两个季度。抢首发就是抢客户。
+- <strong>密、冷</strong>：AI 服务器最大的问题是热。一个机柜功率 100 千瓦以上，风扇已经吹不动了，必须用液冷——冷却液直接流过芯片表面的金属板把热带走。超微的直接液冷（DLC）出货量业内领先，同样的机房面积能塞进更多算力，电费还省。
+- 另外老板梁见后（Charles Liang）是台湾出身的工程师，公司总部就在圣何塞，跟英伟达总部开车十分钟，两家关系铁，能拿到宝贵的 GPU 配额。</p>
+<p>但这门生意的命门也在这：<strong>它不掌握任何核心芯片，毛利率只有 10.8%</strong>——卖 100 块的机器，93 块是从别人那买来的零件钱和制造成本。戴尔、HPE 大举杀进来后，价格战把毛利率从 2023 年的 18% 一路打到现在的 10.8%。它本质是「英伟达生态里的富士康」，赚的是辛苦钱、快钱，不是垄断钱。</p>
+<p><strong>钱的情况</strong>（财报分部只披露营收，利润按整体口径估算）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>FY2026 营收（亿$，估算）</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率（整体）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务器与存储整机</td>
+<td>~379</td>
+<td>+78% 左右</td>
+<td>~97%</td>
+<td>7.1%（整体口径）</td>
+</tr>
+<tr>
+<td>零配件</td>
+<td>~12</td>
+<td>低迷</td>
+<td>~3%</td>
+<td>同上</td>
+</tr>
+</tbody>
+</table></div>
+<p>营收一年翻了近一倍（+77.8%），从 220 亿冲到 391 亿——这个增速是全美大市值公司里最快的一档。</p>
+<h3>生意二：卖零配件（营收约 12 亿美元）</h3>
+<p>把自家主板、机箱、电源单卖给攒机商和小集成商。这是公司 1993 年起家的老本行，如今只剩个零头。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这部分是全篇的重点，因为<strong>这家公司的利润表和现金流量表讲的是两个完全相反的故事</strong>。</p>
+<ul>
+<li><strong>股权激励（SBC）</strong>：FY2026 为 4.12 亿美元，占净利润的 19%。不算离谱但绝不小，一律当真实成本看。</li>
+<li><strong>一次性项目</strong>：本期无大额一次性损益。但必须说前科：2024 年 10 月安永（EY）辞任审计师并公开表示「不愿再与管理层的陈述发生关联」，年报拖延到 2025 年 2 月才补齐，2018 年还因收入确认问题被 SEC 处罚过一次。现在的账由 BDO 审。<strong>这家公司的报表信用是有案底的</strong>，看它的数字要多打一层折扣。</li>
+<li><strong>资本化的支出</strong>：无明显资本化伎俩，研发全部费用化。</li>
+<li><strong>回购与稀释</strong>：FY2026 回购仅 1.3 亿，同时增发普通股 14.5 亿、可转债和贷款净举债 39.5 亿。<strong>股本一年膨胀了 11%</strong>——你持有的每一股，一年被稀释掉一成。回购÷SBC = 0.3，连员工发股都抵消不了。</li>
+<li><strong>利润和现金流的差</strong>：这是核心。净利润 +22.3 亿，经营现金流 <strong>-68.1 亿</strong>，自由现金流 <strong>-69.7 亿</strong>。对账表：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>亿$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+22.3</td>
+</tr>
+<tr>
+<td>加：折旧摊销 + SBC + 其他</td>
+<td>+6.1</td>
+</tr>
+<tr>
+<td>减：应收账款暴增（货发了钱没收回）</td>
+<td>-39.2</td>
+</tr>
+<tr>
+<td>减：存货暴增（囤 GPU 和整机）</td>
+<td>-88.8</td>
+</tr>
+<tr>
+<td>加：应付账款增加（欠供应商的）</td>
+<td>+9.6</td>
+</tr>
+<tr>
+<td>加：预收款增加（客户订金）</td>
+<td>+18.8</td>
+</tr>
+<tr>
+<td>加：应缴税变化等</td>
+<td>+3.1</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>-68.1</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>翻译成人话：公司账面赚了 22 亿，但同时往仓库里塞了 89 亿的存货、账上挂着 39 亿没收回的货款。钱从哪来？<strong>借了 39 亿的债，又增发了 15 亿的股票。</strong> 过去五个财年（FY22–FY26）累计：账面净利润 +54 亿，累计自由现金流 <strong>-79 亿</strong>。五年了，纸面利润一分钱现金都没变出来，全变成了仓库里的芯片和客户的欠条。乐观的解释是「为爆单备货，存货就是明年的营收」；悲观的解释是 10.8% 的毛利率经不起任何存货跌价——GPU 换代极快，压在手里的 B 系列芯片一旦降价，这些「利润」会当场蒸发。Piotroski 财务体检分只有 2 分（满分 9），空头占流通盘的 16.7%，市场里有一大群人在赌悲观剧本。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>240 亿 ÷ 22.0 亿</td>
+<td>11.4</td>
+<td>¥8.8</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 后约 26 亿</td>
+<td>~9.2</td>
+<td>¥10.9（虚的）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>SBC 已扣、无大额一次性，但利润是纸面的</td>
+<td><strong>11.4（纸面）</strong></td>
+<td><strong>¥8.8（收不到现金）</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 -70 亿</td>
+<td>负数</td>
+<td><strong>-29</strong>（在烧你的钱）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>258 亿 ÷ 27.7 亿</td>
+<td>9.3</td>
+<td>¥10.8</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>240 亿 ÷ 14.7 亿（FY24–26 均值）</td>
+<td>16.4</td>
+<td>¥6.1</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：账面上，你投 100 块它一年替你赚 8.8 块，还在以每年 78% 的速度增长——便宜得像捡的。但<strong>这 8.8 块你一分钱都摸不到</strong>：没有分红，回购聊胜于无，公司反过来还要靠增发股票问你要钱（你的股份一年被稀释 11%）。赚到的「利润」全部变成了仓库里的 GPU 和应收账款。这个 8.8 块未来是变大还是变小，完全取决于一件事：AI 数据中心的资本开支狂潮还能烧多久、以及戴尔们的价格战还会不会把 10.8% 的毛利再削掉几个点。</p>
+<h2>第四部分：一句话结论</h2>
+<p>统计上便宜（11 倍市盈率、0.6 倍市销率、营收年增 78%），商业上是全场最烧现金的公司之一：五年累计纸面赚 54 亿、现金流出 79 亿，靠借债和稀释股东续命，毛利率薄得只有 10.8%，报表信用还有安永辞任的案底——这不是低估，这是市场对「利润收不回现金」的合理定价。想赌 AI 基建就去买有定价权的上游，这家公司便宜的理由太硬，<strong>不值得为了 11 倍去接一门赚不到现金的生意</strong>。</p>
+</div></body></html>

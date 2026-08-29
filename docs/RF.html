@@ -1,0 +1,220 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RF · 地区金融（Regions Financial）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RF</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">12倍公道，分红+回购年回8%全还股东，但零增长</div><h1>RF · 地区金融（Regions Financial）</h1>
+<p>市值 $258 亿 / 股价约 $30 / 区域银行（Finance）/ TTM 截止 2026-06-30 / 任务2 榜第 58 名（PE 12.34 入榜）</p>
+<blockquote>
+<p><strong>这是银行，下面用市净率、ROE、ROTCE、净息差、资本充足率这套口径，而不是普通市盈率</strong>——银行的利润建立在十几倍杠杆上，PE 单独看没有意义。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>Regions 是总部在阿拉巴马州伯明翰的区域银行，约 1250 家网点铺在美国东南部——阿拉巴马、田纳西、佛罗里达、佐治亚、路易斯安那这一带。<strong>它的整个投资故事就一句话：美国人口和企业正在往东南部搬，而它是东南部小城镇里存款市场份额第一、第二的那家银行。</strong> 实质上做三件事：</p>
+<h3>1. 消费者银行 —— 吸储放贷的老本行（TTM 营收 37.5 亿，占 52%）</h3>
+<p>给东南部普通家庭开支票账户、发房贷、发信用卡。这门生意的核心资产不是贷款，是<strong>存款</strong>：田纳西州一个五万人的小城里，Regions 可能是镇上唯一有分行的大银行，居民工资卡开在这儿，几十年不挪窝，活期账户几乎不要利息。这就是银行业最值钱的东西——<strong>便宜且不跑的存款</strong>。Regions 的存款成本常年是全美大中型银行里最低的一档（这是它 ROTCE 能到 18% 的根)。收钱方式：把 1% 不到成本吸来的存款，放成 6–7% 的房贷和消费贷，赚利差；再加账户管理费、刷卡手续费。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 营收</th>
+<th>上年(FY25)</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$37.52 亿</td>
+<td>$37.33 亿</td>
+<td>+0.5%</td>
+<td>52%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. 企业银行 —— 给东南部中型企业做金主（TTM 25.6 亿，占 35%）</h3>
+<p>客户是年营收几千万到几亿美元的区域企业：孟菲斯的物流公司、亚特兰大的地产开发商、墨西哥湾的能源服务商。产品是企业贷款、设备融资、财资管理（帮企业管收付款）、利率对冲。一家中型建筑商拿 3000 万美元授信，按用款付 SOFR+2% 的利息，再付一堆账户和对冲的手续费。为什么找它不找摩根大通：本地信贷员认识老板二十年，审批在本地做，速度和灵活性是大行给不了的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 营收</th>
+<th>上年(FY25)</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$25.58 亿</td>
+<td>$24.95 亿</td>
+<td>+2.5%</td>
+<td>35%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3. 财富管理 —— 帮有钱客户管钱（TTM 7.6 亿，占 10%）</h3>
+<p>给医生、企业主、退休高管做投资组合管理、信托、遗产规划，按管理资产规模抽约 1%。增速全场最快（+4.7%）但盘子小，是搭着银行关系卖的增值服务。</p>
+<p><strong>这家银行的底色</strong>：2008 年它差点死掉（拿了 35 亿美元政府救助、股东被稀释到面目全非），之后十几年管理层换血、风控转保守。今天的 Regions 是一家<strong>不追增长、把赚到的钱几乎全数还给股东</strong>的成熟银行——TTM 营收 72.4 亿，五年前是 69.6 亿，五年只涨了 4%。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>SBC</strong>：银行股惯例规模很小，数据源未单列（估算每年 1 亿美元级，占净利约 5%），无关痛痒。</li>
+<li><strong>一次性项目</strong>：TTM 有 7100 万投资出售损失（大概率是把低息旧债券割肉换新，账面亏但换来更高再投资收益率），规模小。没有减值、重组大项。</li>
+<li><strong>拨备是银行版的「利润调节阀」</strong>：TTM 计提坏账拨备 3.79 亿，比上年的 4.70 亿<strong>少提了近 1 亿</strong>——今年利润增长有一部分是「少提拨备」贡献的，不是多赚的。目前东南部经济好，这样提合理，但要知道这个阀门拧一拧利润就变。</li>
+<li><strong>回购与稀释</strong>：TTM 普通股回购 11.7 亿 + 普通股分红 9.2 亿 = <strong>20.9 亿，等于净利的 97%——赚多少还多少</strong>，股本一年实减 3.95%。这是全批三家里唯一「利润真金白银回到股东口袋」的公司。</li>
+<li><strong>利润 vs 现金流</strong>：净利 22.3 亿 vs 经营现金流 17.8 亿，差额主要是应收利息增加 10.7 亿（利息赚了还没到账，银行正常科目）。银行的现金流表本来就没多大分析价值，资金进出主要走存款和贷款科目。</li>
+</ul>
+<hr />
+<h2>三、银行口径：这家银行值多少</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>1.48</td>
+<td>净资产 189 亿</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>2.23</td>
+<td>剔掉 2008 年前并购攒下的商誉，有形净资产约 116 亿</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>11.9%</td>
+<td>平平</td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形回报）</strong></td>
+<td><strong>约 18.6%</strong></td>
+<td>净利 21.5 亿 ÷ 有形净资产 116 亿——这才是真实赚钱能力，全美区域银行第一梯队</td>
+</tr>
+<tr>
+<td>净息差 NIM</td>
+<td>约 3.5–3.6%（估算）</td>
+<td>靠的就是那批便宜存款，同行多在 2.8–3.2%</td>
+</tr>
+<tr>
+<td>拨备</td>
+<td>TTM 计提 3.79 亿，同比少提</td>
+<td>信贷环境目前干净</td>
+</tr>
+<tr>
+<td>CET1 资本充足率</td>
+<td>约 10.5–11%（估算）</td>
+<td>监管线之上留有余量</td>
+</tr>
+<tr>
+<td>PE / Forward PE</td>
+<td>12.3 / 11.2</td>
+<td>参考用</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>投 100 块进去，一年替你赚约 8 块</strong>（ROE 11.9% ÷ PB 1.48 ≈ 8.0，与 1/12.3 倍 PE 互为印证），<strong>而且这 8 块几乎一分不剩全还给你</strong>：约 3.5 块分红 + 4.5 块回购，payout 97%。代价是别指望这 8 块变大——营收五年涨 4%，EPS 的增长全靠回购缩股本硬挤出来。还要记住这 8 块是站在十几倍杠杆上的：银行拿 116 亿有形资本撑着 1500 多亿资产，经济一衰退，拨备阀门反向拧，利润一年腰斩是银行业的常规剧目——2024 年它就从 21 亿掉到 17.7 亿过。它比 2008 年那个鲁莽的 Regions 稳健得多，但杠杆生意的天性没变。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>一家<strong>不装增长股的收息机器</strong>：东南部最便宜的存款底盘、18.6% 的有形回报、赚多少还多少（年化约 8% 的分红+回购收益率）、12 倍的公道价。想要的就是稳定收息、且接受银行股衰退年利润坐过山车，它够格；想要成长，这里一克都没有。<strong>公道价的一般生意，靠 8% 的股东回报吃饭。</strong></p>
+</div></body></html>

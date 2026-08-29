@@ -1,0 +1,208 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SYF · Synchrony Financial（同步金融）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SYF</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">8倍年回16%给股东,赚的是衰退不来的对赌钱</div><h1>SYF · Synchrony Financial（同步金融）</h1>
+<p>市值 254 亿美元 / 股价约 78 美元 / 消费信贷 / TTM 截止 2026-06-30 / 排名第 60（任务2：市盈率 0–15 倍段）</p>
+<blockquote>
+<p><strong>这是消费信贷企业（本质是一家银行），第三部分用 PB / ROE / 拨备口径而不是普通市盈率</strong>，原因是：放贷生意的利润建立在杠杆上，坏账拨备一个变量就能让利润翻倍或腰斩，市盈率必须和「现在处于信贷周期哪一段」一起看才有意义。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>就一门生意：替商家发信用卡，赚穷人的高利息。</strong> 美国最大的「商店信用卡」（private label / co-brand）发卡机构。</p>
+<p>大白话讲透这门生意。你在 Lowe's 建材超市买 3,000 美元的地板，收银员说：「办一张我们的卡吧，今天这单立减 5%，而且 12 个月免息分期。」你办了。<strong>这张印着 Lowe's 名字的卡其实是 Synchrony 发的</strong>——Lowe's 一分钱贷款风险不担，得到的是你买得更多、更常回来；Synchrony 得到的是你的贷款余额。免息期一过（或者你只还最低额），年化利率直奔 <strong>25%–30%</strong>，比普通信用卡的 20% 狠得多——因为办商店卡的人群信用资质整体偏弱，正规银行白金卡不给他们额度。</p>
+<p>它的合作名单基本覆盖美国人生活的每个角落：<strong>Amazon</strong>（亚马逊店卡）、<strong>PayPal</strong>、<strong>Lowe's</strong>、<strong>Sam's Club</strong>、<strong>Verizon</strong>，还有一块特别的 <strong>CareCredit</strong>——牙科、眼科、兽医诊所里的医疗分期卡：美国人镶一口牙 8,000 美元、给狗做十字韧带手术 5,000 美元，保险不赔，当场刷 CareCredit 分期。公司按五大平台报数（家居汽车、数字、多元零售、健康、生活方式），stockanalysis 不提供分部表，这里按整体讲。</p>
+<p><strong>收钱的链条</strong>（TTM，页面口径）：贷款组合收进来的利息和手续费是毛收入，扣掉三样大头——付给储户的资金成本（它靠自营的高息网络银行吸储放贷）、<strong>分给商家的「零售商分成」</strong>（合作协议里商家要分走一块利息收入，这是它锁住 Amazon 们的代价）、<strong>坏账拨备 51.2 亿</strong>——之后的净营收 99.1 亿，再扣运营费用和税，净利润 34.4 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净营收（扣资金成本、商家分成、拨备后）</td>
+<td>99.1 亿</td>
+<td>+7.9%</td>
+</tr>
+<tr>
+<td>信贷损失拨备（净营收前已扣）</td>
+<td>51.2 亿</td>
+<td>前一年 52.3 亿，基本走平</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>34.4 亿</td>
+<td>利润率 34.7%</td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚拨备的体量：<strong>这门生意每年毛赚的钱里，先赔掉 50 亿坏账，剩下的才轮到股东</strong>。客群偏弱 + 30% 利率，高坏账是商业模式的一部分，不是事故——只要收的利息足够覆盖。真正的风险是衰退时坏账从「高」变「失控」。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：页面现金流表不单列（并在「其他经营活动」里），对 34 亿净利润成不了气候。</li>
+<li><strong>一次性项目</strong>：TTM 干净。但注意 <strong>FY2024 净利润 34.3 亿里含出售宠物保险业务 Pets Best 的一次性收益（税前 10.7 亿）</strong>，那年的利润虚高，比较历史时要剔掉——TTM 里已经没有这块了。</li>
+<li><strong>资本化支出</strong>：无。放贷生意没这个空间。</li>
+<li><strong>回购与稀释</strong>：<strong>这是全篇最凶的数字：TTM 回购 36.1 亿，股本一年实际减少 9.8%</strong>。外加普通股股息 4.2 亿，一年合计回给股东 40 亿以上，等于市值的 16%。注意这超过了净利润（34.4 亿）——多出的部分靠出售资产和释放资本金撑着，<strong>这个回购速度不可能永远持续</strong>，但在 8 倍市盈率、1.67 倍账面的价位上回购，留下的股东每一股含金量实打实变厚。</li>
+<li><strong>利润和现金流的差</strong>：经营现金流 96.9 亿远大于净利润 34.4 亿，差额主要是拨备 51.2 亿（先计提、后核销的非现金项）加折旧 5.2 亿。<strong>但对放贷企业别看「自由现金流」流口水</strong>——页面显示 P/FCF 只有 2.6 倍，是幻觉：投资现金流里每年有 70 多亿流出去放新贷款，那才是这门生意真正的「资本开支」。信贷公司只看利润和资本回报，现金流表没有意义。</li>
+</ul>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率（GAAP TTM）</td>
+<td>8.0 倍</td>
+<td>投 100 块年赚 <strong>12.5 块</strong></td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>1.67 倍</td>
+<td>账面 169 亿</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>2.02 倍</td>
+<td></td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>20.8%</td>
+<td>顶级——但看下一行</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>2.9%</td>
+<td><strong>20.8% 的 ROE = 2.9% 的资产回报 × 约 7 倍杠杆</strong></td>
+</tr>
+<tr>
+<td>ROE ÷ PB 换算的真实回报</td>
+<td>投 100 块年赚 <strong>12.4 块</strong></td>
+<td>与市盈率口径互相印证</td>
+</tr>
+<tr>
+<td>三年平均利润口径（剔除 Pets Best 一次性收益，估算）</td>
+<td>约 9.2 倍</td>
+<td>投 100 块年赚 <strong>10.9 块</strong>——三年里含 2023 这个拨备大年，仍有两位数回报</td>
+</tr>
+<tr>
+<td>资本充足率 CET1</td>
+<td>页面不提供</td>
+<td>不硬造数字</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话说回报</strong>：你现在投 100 块进去，按最保守口径公司一年替你赚 11–12 块，而且<strong>这两年它把赚的钱基本全数回给你</strong>（回购+股息约等于甚至超过利润）。8 倍的意思是：市场认定下一次衰退坏账会飙、利润会腰斩——2008 年这类次级消费信贷坏账率确实翻过倍。所以你赚的 12 块里，有一部分是「衰退没来」的风险补偿，不是白给的。</p>
+<p>还有两个结构性软肋要知道：<strong>合作方集中</strong>——前五大伙伴贡献大头，丢一个就伤筋动骨（2019 年它真丢过 Walmart，股价一天跌 10%；Amazon、PayPal 每次续约都是惊魂时刻）；<strong>监管刀口</strong>——消费者金融保护局盯着迟到费和高利率，2024 年的迟到费上限规则差点砍掉它一大块收入（后来法院废了，但刀一直悬着）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真便宜——8 倍利润、每年 16% 现金回到股东口袋，全场少见；但你赚的每一块钱都是「经济不衰退、大伙伴不跑路」的对赌收益。</strong> 生意本身谈不上伟大：7 倍杠杆放贷给次级客群，周期一来利润说没就没，护城河是合作协议而不是产品。价格给足了这些毛病的折扣，作为「便宜筐」里的标的合格，当传家宝不够格。</p>
+</div></body></html>

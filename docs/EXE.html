@@ -1,0 +1,205 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EXE · Expand Energy（扩能能源）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EXE</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">8倍是气价顺风照片，三年平均19倍，纯赌LNG周期</div><h1>EXE · Expand Energy（扩能能源）</h1>
+<p>市值 $227.2 亿 / 股价约 $98 / 行业：天然气勘探开采 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Expand Energy 是 2024 年 10 月由两家老牌天然气公司——切萨皮克能源（Chesapeake，页岩气革命的开创者之一）和西南能源（Southwestern）——对等合并出来的新公司，合并当天就成了<strong>全美产量第一的天然气生产商</strong>，日产约 70 亿立方英尺，够美国全国用气量的 7% 左右。它的生意本质上就一门：从地下把天然气弄出来卖掉。按财报的收入拆法看得更清楚。</p>
+<h3>生意一：卖自产天然气（占营收 65%，利润几乎全部来自这里）</h3>
+<p>它在两块地上打井：一块是<strong>阿巴拉契亚（Marcellus 页岩，宾州、西弗州）</strong>——全美国成本最低的气田，一口井打下去几千米深、再水平钻两三公里，压裂后一天能出上千万立方英尺气，完全成本摊下来每千立方英尺 $2 出头；另一块是<strong>海恩斯维尔（Haynesville，路易斯安那州）</strong>——成本略高，但有个无可替代的优势：<strong>离墨西哥湾的 LNG 出口码头就一两百公里</strong>。美国正在把液化天然气卖给全世界（欧洲要摆脱俄气、亚洲要发电），出口产能 2025–2028 年要翻倍，这些出口终端喝的气，很大一部分就近来自海恩斯维尔。</p>
+<p>收钱方式很直白：气从井口进管道，按当天市场价（挂钩 Henry Hub 基准价）卖给公用事业公司、贸易商和 LNG 出口商。一个具体的单子：一家佐治亚州的电力公司跟它签一年供气合同，每天买 5000 万立方英尺，按 Henry Hub 价结算，一年付它约 $6500 万。<strong>客户为什么买它的？不是因为它的气更好——天然气没有品牌，纯粹因为它便宜、量大、供得稳。</strong> 这就是大宗商品生意的全部逻辑：你唯一的护城河是成本比别人低。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自产天然气</td>
+<td>$82.4 亿</td>
+<td>+59%</td>
+<td>65%</td>
+</tr>
+<tr>
+<td>石油 + NGL（凝析油等副产品）</td>
+<td>$10.6 亿</td>
+<td>+33%</td>
+<td>8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>同比大涨不是产量涨，是<strong>气价涨</strong>：上年同期 Henry Hub 在 $2–3 的坑里，TTM 期内回到了 $3.5–4.5 区间（LNG 出口放量 + AI 数据中心用电抬升发电用气）。这门生意的营收 = 产量 × 气价，产量它说了算，气价它一点都说不了算。</p>
+<h3>生意二：代销贸易气（Marketing，占 26%）</h3>
+<p>顺手把别人家的气也买进来倒卖——比如替没有营销部门的小生产商把气运到市场卖掉，赚个搬运价差。TTM 营收 $33.6 亿看着大，但这是"过手"生意，买进 $33 亿卖出 $33.6 亿，利润率只有 1–2%，贡献利润可忽略。它存在的意义是撑大运输合同的量、拿到更好的管道运力价格。</p>
+<h3>生意三：套保（衍生品，TTM 贡献 +$10.1 亿）</h3>
+<p>严格说不是生意，是保险单：它对未来一两年的部分产量提前锁价（气价 $4 时锁住 $3.8，跌到 $2.5 也照 $3.8 结算）。TTM 衍生品损益是 <strong>+$10.1 亿</strong>，占税前利润四分之一强——这个数字每年在正负几十亿之间大幅摆动（2022 年是 -$26.8 亿），看下一部分怎么处理它。</p>
+<p><strong>财报不按分部披露利润。</strong> 整体：TTM 总营收 $126.6 亿，经营利润 $37.9 亿（利润率 30%），净利润 $27.8 亿。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $4600 万，占净利润 1.7%——挖气的公司不用股票抢程序员，干净。</li>
+<li><strong>一次性项目 / 衍生品</strong>：<strong>全篇最需要较真的地方。</strong> TTM 利润里有 +$10.1 亿衍生品收益，其中已实现（真收到钱）和未实现（只是账面重估）的比例，这份报表拆不出来。套保损益长期看是零和的——今年赚的就是明年少赚的。保守做法是把它整个剔掉再看利润。另外合并 Southwestern 的整合费用主要落在 2024 年报表里，TTM 期内已基本出清。</li>
+<li><strong>资本化的支出</strong>：油气行业的钻井成本本来就资本化（successful efforts 法），TTM 资本开支 $31.8 亿，全在明处，无猫腻。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $5.8 亿 ÷ SBC $0.46 亿 = <strong>12.6 倍，是真回购</strong>；另付股息 $7.7 亿（股息率 3.4%，基础股息+浮动股息结构）、净还债 $14 亿。三项合计约 $27 亿回到股东和债权人，占市值 12%。股本同比 +13% 是合并 Southwestern 增发的余波，合并完成后已转为净回购（季度环比 -1%）。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $27.8 亿 vs 经营现金流 $56.6 亿，差一倍。对账：净利润 27.8 → 加折旧损耗 29.3（打好的井按产量折旧，这是真实成本：井会枯，得不停打新井）→ 加 SBC 0.5 → 其他及营运资金 -1.0 → = 56.6。方向正常。但<strong>别被 $24.8 亿"自由现金流"迷惑</strong>：油气公司的资本开支里一大块是维持性的——不打新井，产量一年掉两三成。这 $24.8 亿 FCF 是按"维持产量+温和增长"的开支水平算的,是真的,但它成立的前提是气价站在 $3.5 以上。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>227.2 亿 ÷ 27.8 亿</td>
+<td>8.2 倍</td>
+<td>12.2 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>调整后（剔未实现套保等），公司口径</td>
+<td>约 9 倍</td>
+<td>约 11 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>保守剔掉全部 $10.1 亿衍生品收益（税后约 $8 亿）</td>
+<td><strong>11.5 倍</strong></td>
+<td><strong>8.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>227.2 亿 ÷ 24.8 亿</td>
+<td>9.2 倍</td>
+<td>10.9 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(227.2 + 30.7) ÷ 37.9</td>
+<td>6.8 倍</td>
+<td>14.7 元（未扣息税）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>227.2 ÷ 三年平均 11.8 亿</td>
+<td><strong>19.3 倍</strong></td>
+<td>5.2 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那行最扎眼：FY2023 赚 24 亿、FY2024 亏 7 亿、FY2025 赚 18 亿，平均下来只有 $11.8 亿——<strong>19.3 倍，跟当期 8.2 倍差出一倍还多</strong>。这就是气价生意的真相：你看到的每一个"便宜"的市盈率，都是气价顺风年的照片，不是这门生意的常态。</p>
+<p><strong>大白话：你现在投 100 块进去，按剔掉套保的真实口径，公司一年替你赚约 8.7 块；按三年平均口径只有 5.2 块。</strong> 真回到你口袋的：股息 3.4 块 + 回购 2.6 块 = 6 块,剩下的在还债和打新井。这个数未来变大还是变小？<strong>取决于一件事且只取决于一件事：气价。</strong> 看多的理由是真实的——LNG 出口产能到 2028 年翻倍、AI 数据中心疯抢电力、而它坐在离出口码头最近的低成本气田上，资产负债表还是全行业最干净的一档（净债务只有 EBITDA 的 0.5 倍）。但看空的理由同样真实：气价一旦回到 2024 年的 $2.2,这家公司的利润会直接消失（那年亏了 7 亿）。华尔街的远期市盈率给到 12 倍,就是在告诉你市场自己也觉得眼下的利润不可持续。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这是三家里最纯粹的一张赌桌：8 倍市盈率是顺风年的照片，三年平均 19 倍才是常态，你买它不是买一门生意，是买"美国天然气进入 LNG 出口大周期"这个判断——判断本身有相当的胜算（出口产能翻倍是已开工的事实，它的资产和负债表也确实是同行里最好的），所以<strong>这个价算公道，不算便宜</strong>：气价的顺风已经写进股价一部分了。信 LNG 故事、拿得住三年波动的人可以当周期仓拿；想要利润自己会长大的生意，这里没有。</p>
+</div></body></html>
