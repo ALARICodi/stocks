@@ -1,0 +1,256 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FATN · FatPipe（法派管网络）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FATN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">15.8倍是纸面的:利润38%靠税务收益,五年现金流全负,钱全挂应收上</div><h1>FATN · FatPipe（法派管网络）</h1>
+<p>市值 $8675 万 / 股价约 $6.1 / 行业：科技服务（SD-WAN 网络软件） / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>FatPipe 实质上只做<strong>一门生意：卖「网络不断线」的设备和软件</strong>。财报没有按业务分部披露，只按地区分（美国 + 海外），所以下面按一门生意讲。</p>
+<h3>这门生意是什么</h3>
+<p>想象一家有 200 家分行的银行。每家分行都要连总部的核心系统——柜员转账、ATM 吐钱、风控审批，全走网络。分行一般同时拉两三条线：一条贵的专线（MPLS，运营商保证质量）、一条便宜的普通宽带、再备一张 4G/5G 卡。问题是：专线一断，传统路由器切到备用线路要几秒到几十秒，切换瞬间所有连接全掉——柜台交易失败、ATM 卡单。</p>
+<p>FatPipe 卖的盒子（加软件）装在分行和总部两头，把这两三条线<strong>捆成一条虚拟的线</strong>。它的专利技术能把同一个数据流拆到多条物理线路上同时走，任何一条线断了，流量瞬间从其他线走，<strong>连接不掉、用户无感知</strong>，而且不需要运营商配合（这是它 1990 年代末申请的一批专利的核心）。这个品类后来被行业叫做 SD-WAN（软件定义广域网）。</p>
+<p>具体怎么收钱：客户按点位买设备/软件许可（每个分支一台，总部一对做冗余），再按年付维保和订阅。一家 200 个网点的客户，初次部署几十万美元量级，之后每年付 15–20% 的维保费——这部分是可以年年收的。产品线叫 MPVPN、WARP、XTREME，上面还有一层集中管理软件 SYMPHONY，网管坐在总部就能给全国网点改配置。</p>
+<p>卖给谁：对「断网一分钟就出事故」的行业最有吸引力——银行、医院、保险、连锁零售、呼叫中心、政府机构。公司总部在盐湖城，研发很大一块在印度，客户也集中在这两个市场。</p>
+<h3>钱的情况（TTM，2025-07 至 2026-06）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>$1951 万</td>
+<td>约 $1560 万</td>
+<td>+25%</td>
+<td>96%</td>
+</tr>
+<tr>
+<td>海外</td>
+<td>$79 万</td>
+<td>约 $88 万</td>
+<td>-10%</td>
+<td>4%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$2030 万</strong></td>
+<td>$1648 万</td>
+<td><strong>+23.2%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>毛利率 90.7%（纯软件属性，盒子只是载体），经营利润率 17.2%（经营利润 $349 万）。172 名员工，人均创收只有 $11.8 万——对一家 90% 毛利的软件公司来说这个人效很低，说明卖得辛苦。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的报表问题<strong>非常严重</strong>，是全篇重点。</p>
+<p><strong>① 净利润是靠「负所得税」撑出来的。</strong> TTM 税前利润只有 $339 万，净利润却有 $544 万——中间差的 $207 万是<strong>所得税收益</strong>（税是负的，很可能是递延税资产确认之类的账面调整）。也就是说，净利润里有 38% 不是生意赚来的，是税务科目送的。单期口径无法判断这是否年年发生，但正常缴税的公司不可能长期税率为负。</p>
+<p><strong>② 利润从来没有变成过现金——五年全负。</strong> 经营现金流：FY2022 -$19 万、FY2023 -$184 万、FY2024 -$36 万、FY2025 -$50 万、FY2026 -$78 万、TTM -$95 万。<strong>账面五年累计净赚约 $1470 万，同期经营现金流累计约 -$370 万。</strong>钱去哪了，对账表一目了然：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流（TTM）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+$544 万</td>
+</tr>
+<tr>
+<td>加回折旧摊销</td>
+<td>+$32 万</td>
+</tr>
+<tr>
+<td>加回股权激励</td>
+<td>+$97 万</td>
+</tr>
+<tr>
+<td>加回坏账计提</td>
+<td>+$123 万</td>
+</tr>
+<tr>
+<td><strong>应收账款增加（收入收不回钱）</strong></td>
+<td><strong>-$709 万</strong></td>
+</tr>
+<tr>
+<td>存货增加</td>
+<td>-$36 万</td>
+</tr>
+<tr>
+<td>其他经营资产净变化</td>
+<td>-$150 万</td>
+</tr>
+<tr>
+<td>应付/预收等小项</td>
+<td>+$3 万</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>-$95 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>一年 $2030 万的收入，应收账款一年就多压了 $709 万——<strong>新增收入的钱基本都停在「客户还没付」这一栏</strong>。而且这不是一年的事，近三个财年应收变动累计约 -$1800 万，跟同期收入规模一个量级。</p>
+<p><strong>③ 坏账计提在加速。</strong> FY2024 计提 $21 万、FY2025 $77 万、FY2026 $111 万、TTM $123 万——公司自己也在承认，挂在账上的应收有一部分收不回来了。收入确认了、利润确认了、钱没来、然后开始一年比一年多地认赔。</p>
+<p><strong>④ 股权激励与稀释</strong>：TTM SBC $97 万，占税前利润 29%。回购为零，回购/SBC = 0。股本一年增加 6.59%（2025 年刚上市，IPO 增发 + 发股）。股东每年被稀释，没有任何回馈。</p>
+<p><strong>⑤ 资本化支出</strong>：没有，资本开支仅 $1.5 万，可忽略。</p>
+<p><strong>⑥ 一次性项目</strong>：除上述税务收益外无其他大额一次性项目。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$8675万 ÷ $544万</td>
+<td>15.8</td>
+<td>¥6.3</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>未提供</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 $339万 按 25% 正常税率 → 净利约 $254万</td>
+<td><strong>34.1</strong></td>
+<td><strong>¥2.9</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 <strong>-$97 万</strong></td>
+<td>负数</td>
+<td><strong>-¥1.1（倒贴）</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$8796万 ÷ $349万</td>
+<td>25.2</td>
+<td>¥4.0</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>$8675万 ÷ 三年平均净利 $377万</td>
+<td>23.0</td>
+<td>¥4.3</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，账面说一年替你赚 6.3 块；把送的税务收益剥掉，只剩 2.9 块；而按真金白银算，公司一年倒贴你 1.1 块</strong>——它不但没收到钱，还得靠借债和增发新股来维持运转（FY2025 借了 $551 万、FY2026 增发募了 $374 万）。分红没有、回购没有，赚的「利润」全变成了应收账款躺在账上，其中一部分正在按年被确认为坏账。这个 6.3 块和 2.9 块的差距未来会怎么走，取决于那座应收账款山能不能收回来——目前的坏账计提趋势指向的方向不乐观。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>表面 15.8 倍的便宜是假的：利润里 38% 是税务科目送的，剩下的部分五年来一分钱现金都没变成，全堆在收不回来的应收账款里，坏账计提一年比一年多——这不是便宜，是报表失真，不值得碰。</strong></p>
+</div></body></html>

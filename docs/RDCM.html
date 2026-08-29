@@ -1,0 +1,412 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RDCM · 瑞康通信（RADCOM Ltd.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RDCM</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">净现金占市值62%，但主业赚的不够付股权激励，5年回购为0</div><h1>RDCM · 瑞康通信（RADCOM Ltd.）</h1>
+<p><strong>市值</strong> 1.711 亿美元 ｜ <strong>股价</strong> 10.22 美元 ｜ <strong>行业</strong> Technology Services（电信网络监测软件，以色列公司，纳斯达克上市）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>全榜名次</strong> 第 1172 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>RADCOM 的财报<strong>不按业务分部披露，只按地区披露</strong>——因为它实质上只做一件事。所以这一节我先把这件事讲透，再拆它的收钱方式和地域结构。</p>
+<h3>这件事是什么：给电信运营商的网络装一套"行车记录仪 + 会诊系统"</h3>
+<p>先说清楚它的客户面对的是什么问题。</p>
+<p>一家大型电信运营商有几千万到上亿用户。它的 5G 网络不再是过去那种一台一台的专用设备，而是被拆成了几百个<strong>软件化的网元</strong>（3GPP 标准里的 AMF、SMF、UPF、PCF 这一串缩写），全部以容器的形式跑在 Kubernetes 集群上，分布在几十个数据中心里。这个架构的好处是弹性，坏处是——<strong>出问题的时候没人知道是哪里出的问题</strong>。</p>
+<p>具体场景：某个城市的用户开始在社交媒体上抱怨"晚上八点视频通话总是掉线"。运营商的网络运维中心收到告警，但告警只告诉它"某个数据中心的丢包率上升了"。要定位到根因，工程师过去得同时打开十几个系统——核心网的日志、无线基站的性能计数器、传输网的流量图、计费系统的话单——人工比对，一次排障要几个小时到几天。而在这几天里，这个城市的用户在一个一个地转网走人。</p>
+<p><strong>RADCOM 卖的就是解决这件事的软件。</strong> 它的做法是：在网络的关键节点上镜像一份流量出来（不影响正常业务），实时解码里面的信令，把每一个用户的每一次通话、每一次上网、每一次视频会话，<strong>完整还原成一条可以回放的记录</strong>。然后它能直接回答那个问题：</p>
+<blockquote>
+<p>"晚上八点掉线的是这 4.2 万个用户，他们都挂在 A 数据中心；他们的会话在 SMF 这个网元申请服务质量（QoS）资源时失败了；失败的原因是 UPF 所在的那批服务器在八点被另一个业务的流量打满了 CPU。"</p>
+</blockquote>
+<p><strong>这就是它的全部价值：把"网络出了点事"翻译成"这一台机器上的这一个函数返回了这一个错误"。</strong> 在电信业这叫 <strong>service assurance（服务保障）</strong>，RADCOM 是这个细分市场里少数几家做到云原生（能跟着 5G 核心网一起跑在容器里、跟着一起自动扩缩容）的供应商。</p>
+<p>公司自己列出来的产品线是同一件事的几个层次：</p>
+<ul>
+<li><strong>RADCOM ACE</strong> —— 核心平台，做网络可见性、服务保障和网络洞察，云原生、容器化；</li>
+<li><strong>RADCOM AIM</strong> —— AI 分析层，可以套在自家 ACE 上，<strong>也可以套在运营商已经买了的别家老系统上</strong>（这一点很重要，是它抢别人客户的入口）；</li>
+<li><strong>RADCOM RAN</strong> —— 把同一套能力延伸到无线接入网这一段；</li>
+<li><strong>RADCOM NWDAF</strong> —— 3GPP 标准里正式定义的"网络数据分析功能"，做闭环自动化，也就是让网络自己发现问题自己调整，不用等人；</li>
+<li><strong>RADCOM NetTalk</strong> —— 生成式 AI 界面，运维人员可以直接用大白话问："上周三凌晨北区的语音接通率为什么掉了？"</li>
+</ul>
+<h3>钱是怎么收的：大单 + 尾巴</h3>
+<p>一个大型运营商的合同通常是<strong>多年期、几百万到上千万美元</strong>的规模，按覆盖的用户数或网络容量定价。结构上分两块：</p>
+<ol>
+<li><strong>项目交付</strong>——软件许可、部署、跟运营商现有系统的集成。这一块金额大、确认收入的时点集中，<strong>是营收季度间大幅波动的根源</strong>；</li>
+<li><strong>年度维护与订阅</strong>——通常是许可金额的 15–20% 每年，只要客户不换供应商就一直收。这是它的经常性收入。</li>
+</ol>
+<p>财报页不拆这两块，但可以从毛利率反推它的性质：<strong>TTM 毛利率 76.6%</strong>（营收 6759 万，毛利 5180 万）。这是典型的软件公司毛利率，说明它卖的主要是许可和订阅，不是硬件探针。</p>
+<h3>客户结构：这是全篇最重要的一句话</h3>
+<p>财报只按地区披露，TTM 口径下（用 FY2025 全年数据看结构）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>FY2025 营收（百万美元）</th>
+<th>占比</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>北美</td>
+<td>38.85</td>
+<td>54.3%</td>
+<td>+7.6%</td>
+</tr>
+<tr>
+<td>EMEA（含以色列）</td>
+<td>22.52</td>
+<td>31.5%</td>
+<td>+89.7%</td>
+</tr>
+<tr>
+<td>亚洲（含日本）</td>
+<td>9.90</td>
+<td>13.8%</td>
+<td>−22.2%</td>
+</tr>
+<tr>
+<td>拉美</td>
+<td>0.22</td>
+<td>0.3%</td>
+<td>−33.3%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>71.49</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>+17.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>北美那 3885 万，<strong>基本上是一个客户</strong>。RADCOM 多年在年报里披露单一最大客户占其营收过半——就是北美的一家超大型运营商（这条信息来自公司年报的客户集中度披露，不在上面那四个财报页里，我单独标注出处）。</p>
+<p><strong>这意味着：这家公司不是有几百个客户的软件公司，它是一个大客户的长期供应商，加上几十个中小客户。</strong> 那个客户如果决定换供应商、或者压价、或者把这块能力自研，RADCOM 一半的生意当天蒸发。EMEA 从 1187 万涨到 2252 万（+90%）是过去一年最好的消息——它说明公司在努力摆脱这个结构，但还远没摆脱。</p>
+<h3>一门生意的钱（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>6759 万</td>
+<td>7149 万</td>
+<td>—</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>5180 万（76.6%）</td>
+<td>5469 万（76.5%）</td>
+<td>毛利率持平</td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>352 万（5.2%）</strong></td>
+<td><strong>830 万（11.6%）</strong></td>
+<td><strong>利润率腰斩</strong></td>
+</tr>
+<tr>
+<td>非经营收入（现金利息）</td>
+<td>439 万</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>791 万</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>708 万</td>
+<td>1199 万</td>
+<td>−41%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意 TTM 营收 6759 万比 FY2025 全年的 7149 万还低。</strong> 两个口径差 390 万，而它们重叠了 2025 年下半年——这个差额就是 <strong>2026 年上半年比 2025 年上半年少赚的 390 万美元营收</strong>，跌幅大约 10%。经营利润同口径少了 478 万，<strong>利润掉得比营收还多</strong>，说明成本一分钱没跟着降。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：这是全篇最刺眼的数字</h3>
+<p><strong>FY2025 的股权激励是 612 万美元</strong>（FY2024 610 万，FY2023 612 万——三年纹丝不动地稳定在这个水平）。对比一下：</p>
+<ul>
+<li>占营收 <strong>8.6%</strong>；</li>
+<li>占 TTM 经营利润 352 万的 <strong>174%</strong>；</li>
+<li>换句话说，<strong>这家公司一年发给员工的股票，比它整个主业一年赚的经营利润还多七成</strong>。</li>
+</ul>
+<p>按 GAAP 规则，SBC 已经在上面那个 352 万里扣过了，我不给它加回来——这是对的，因为它确确实实稀释了你的股份。但把这个比例摆出来，是为了说明一件事：<strong>如果这家公司不发股票、改成发等额现金奖金，它的主业在 TTM 这个口径下会亏钱。</strong>（营收 6759 万，经营利润 352 万，SBC 612 万——现金口径的经营利润是正的 964 万，但股份数每年多 2%。）</p>
+<h3>一次性项目：没有</h3>
+<p>TTM 和最近三个财年的利润表里没有大额重组、诉讼和解、商誉减值或并购费用。FY2023 有一笔 248 万的现金收购，规模很小。<strong>这一项干净。</strong></p>
+<h3>资本化支出：几乎没有</h3>
+<p>资本开支 FY2025 只有 38 万美元，占营收 0.5%。<strong>RADCOM 不把研发费用资本化</strong>——这是好事，很多软件公司靠把开发人员工资挂到资产负债表上来虚增利润，它没有。研发全部当期费用化，所以那个 5.2% 的经营利润率是老老实实的。</p>
+<h3>回购与稀释：这一项是零分</h3>
+<ul>
+<li><strong>TTM 和过去五年，回购金额都是 0。</strong> 现金流量表的融资活动栏里，五年只有 FY2025 的一笔 <strong>+34 万美元发行股票</strong>（员工行权），此外空白。</li>
+<li><strong>回购 ÷ SBC = 0 ÷ 612 万 = 0。</strong> 这个比值的正常参考线是：接近 1 说明回购只在抵消员工发股，大于 3 才是真回馈股东。RADCOM 是 <strong>0</strong>。</li>
+<li>结果：<strong>股本一年增加 2.02%</strong>。你持有的比例每年被稀释掉 2%，而公司账上趴着 1.07 亿美元现金，一分钱不动。</li>
+<li>也从不分红。</li>
+</ul>
+<p><strong>这是以色列小市值科技股最典型的一种形态：公司很稳、账上很有钱、管理层很舒服，但那笔钱永远不属于小股东。</strong> 从 2021 年到现在，净现金从 6863 万涨到 10685 万，五年多攒了 3822 万，同时股份数一直在增加。<strong>攒下来的钱没有一分钱以任何形式回到过股东手里。</strong></p>
+<h3>利润和现金流的差：现金流比利润好，但好的部分是纸</h3>
+<p>FY2025 口径（TTM 的现金流量表这四页没提供，我用 FY2025）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1199</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>69</td>
+<td>轻资产，几乎可以忽略</td>
+</tr>
+<tr>
+<td><strong>+ 股权激励 SBC</strong></td>
+<td><strong>612</strong></td>
+<td><strong>非现金，但它是真成本</strong></td>
+</tr>
+<tr>
+<td>+ 存货变动</td>
+<td>127</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−120</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应付账款</td>
+<td>18</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>− 预收账款减少</strong></td>
+<td><strong>−575</strong></td>
+<td><strong>客户预付的钱在消耗，是个负面信号</strong></td>
+</tr>
+<tr>
+<td>+ 其他经营性资产</td>
+<td>131</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1461</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−38</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1422</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表要看两件事：</p>
+<ol>
+<li><strong>自由现金流 1422 万比净利润 1199 万高，靠的主要是把 612 万 SBC 加回来。</strong> 按本文的原则，SBC 是真实成本，所以<strong>"扣掉股权激励后的真实自由现金流"只有 1422 − 612 = 810 万美元</strong>。网站上那个漂亮的 12 倍市现率（P/FCF）、4.5 倍 EV/FCF，都是没扣 SBC 的口径。</li>
+<li><strong>预收账款（unearned revenue）一年减少了 575 万。</strong> 预收账款是客户已经付钱但公司还没确认成收入的部分，它是软件公司未来收入的蓄水池。<strong>蓄水池在放水，说明新签的合同没跟上已交付的合同。</strong> 这跟 2026 上半年营收下滑 10% 是同一件事的两面。</li>
+</ol>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>先说一个必须先做的调整。</strong> RADCOM 市值 1.711 亿美元，账上净现金 <strong>1.0685 亿美元，每股 6.38 美元，占股价 10.22 美元的 62%</strong>。也就是说，你买一股 RADCOM，其中 6.38 美元买的是现金，只有 <strong>3.84 美元</strong>买的是那门生意。企业价值（EV）只有 <strong>6422 万美元</strong>。</p>
+<p>同时，TTM 税前利润 791 万里，<strong>有 439 万（55%）是这笔现金存在银行赚的利息，不是主业赚的</strong>。所以直接看 24 倍市盈率会严重误判——它一半是在给一个存款账户估值。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1.711 亿 ÷ 708 万</td>
+<td><strong>24.2 倍</strong></td>
+<td><strong>4.13 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页未提供调整后净利</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔，SBC 按 GAAP 已扣</td>
+<td><strong>24.2 倍</strong></td>
+<td><strong>4.13 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（网站口径，未扣 SBC）</td>
+<td>1.711 亿 ÷ 1422 万</td>
+<td>12.0 倍</td>
+<td>8.30 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉 SBC 后）</strong></td>
+<td>1.711 亿 ÷ 810 万</td>
+<td><strong>21.1 倍</strong></td>
+<td><strong>4.74 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT（TTM）</td>
+<td>6422 万 ÷ 352 万</td>
+<td><strong>18.2 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>主业口径（先把现金拿回来）</strong></td>
+<td>6422 万 ÷ 税后经营利润 315 万</td>
+<td><strong>20.4 倍</strong></td>
+<td><strong>4.90 元</strong></td>
+</tr>
+<tr>
+<td>主业口径（按 FY2025 正常年景）</td>
+<td>6422 万 ÷ 税后经营利润 743 万</td>
+<td><strong>8.6 倍</strong></td>
+<td><strong>11.6 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1.711 亿 ÷（697+1199+708）/3 = 868 万</td>
+<td><strong>19.7 倍</strong></td>
+<td><strong>5.07 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（税后经营利润按实际有效税率 10.55% 折算——RADCOM 享受以色列"优先企业"税收优惠，税率长期在 10% 出头。）</p>
+<p><strong>用大白话说：</strong></p>
+<p><strong>你现在投 100 块进 RADCOM，按最保守的口径（GAAP TTM 或扣掉股权激励的现金流口径）算，公司一年替你赚 4.1 到 4.7 块。</strong> 这个数字对一家没有债务、毛利率 76%、账上现金堆成山的软件公司来说，<strong>不算便宜</strong>。</p>
+<p><strong>这 4.1 块里，回到你口袋的是 0 块。</strong> 没有股息，没有回购，五年一分钱没还过。全部留在公司里——但也不是拿去再投资了：资本开支一年只有 38 万，研发已经费用化在利润里，收购五年只做过一笔 248 万。<strong>这笔钱既不还给你，也没被用来扩大生意，它就是躺在那里。</strong> 从 2021 到现在，它躺出了 3822 万的增量，仅此而已。</p>
+<p><strong>关键的分歧在最后三行。</strong> 同一家公司，用 TTM 主业口径算是 <strong>20.4 倍</strong>，用 FY2025 主业口径算是 <strong>8.6 倍</strong>——差了 2.4 倍。这个巨大的差距只取决于一个问题：</p>
+<p><strong>2026 上半年营收掉 10%、经营利润腰斩，是一次交付节奏的波动，还是趋势的开始？</strong></p>
+<p>我倾向于"不只是节奏"，理由是预收账款一年放水 575 万——<strong>如果只是这半年的交付晚了，未来的合同还在，预收账款应该是涨的，而不是跌的。</strong> 另外亚洲市场营收 FY2025 已经跌了 22%。</p>
+<p><strong>这个 4.1 块的回报未来会变大还是变小？</strong> 分两种情形，而且分歧极大：</p>
+<ul>
+<li><strong>变大的路径</strong>：EMEA 那条线继续按 +90% 的势头往上跑，把北美单一客户的占比稀释掉；AI 那几个产品（AIM、NWDAF、NetTalk）在运营商的自动化预算里卡到位置，把营收拉回增长。这条路走通，主业回到 FY2025 的 830 万经营利润甚至更高，现在的 6422 万企业价值就是明显低估。</li>
+<li><strong>变小的路径</strong>：北美那个大客户的项目周期过去，收入台阶式下滑；成本刚性（325 个员工、612 万的年度股权激励）不跟着降；主业经营利润被压到接近零，公司变成一个"账上有 1 亿现金、生意刚好打平"的壳——而那 1 亿现金你永远拿不到。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它值这个价，但它值的那部分主要是账上那 1.07 亿美元现金，不是它的生意。</strong></p>
+<p>你花 10.22 美元买一股，其中 6.38 美元是现金——这给了你一个很硬的底，所以它跌不到哪去。剩下 3.84 美元买的那门生意，用最近这一年的表现算是 20 倍，用去年的表现算是 8.6 倍，<strong>你到底在买哪一个，取决于 2026 上半年营收掉的那 10% 是不是会继续掉</strong>，而预收账款放水 575 万这个细节让我更倾向于会继续掉。</p>
+<p>真正让这只票配不上"便宜"两个字的，不是估值，是<strong>分配</strong>：一年发 612 万美元的股票给员工（超过主业整年的经营利润），一年回购 0 元，股本每年多 2%，1.07 亿现金五年不动。<strong>公司的钱确实很多，但那笔钱在管理层手里，不在你手里。</strong></p>
+<p>一半营收压在一个客户身上这件事，最后再说一遍——它不是风险提示，它是这门生意的结构。</p>
+<p><strong>便宜的是壳，贵的是芯。可以放进观察名单，但要等两样东西之一：营收重新增长，或者管理层开始把现金还给股东。</strong></p>
+</div></body></html>

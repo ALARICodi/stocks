@@ -1,0 +1,532 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HNVR · 汉诺威银行（Hanover Bancorp, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HNVR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">存款成本2.95%贷存比99.3%，正常化ROTCE才8%，配不上1.06倍有形账面</div><h1>HNVR · 汉诺威银行（Hanover Bancorp, Inc.）</h1>
+<p><strong>市值</strong> 1.892 亿美元 ｜ <strong>股价</strong> 26.79 美元（706 万股）｜ <strong>行业</strong> 金融（纽约长岛社区银行）｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动）
+<strong>全榜名次</strong> 第 1166 名（1244 家）｜ <strong>筛选时 PE</strong> 21.0 倍</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率（PB）、有形账面市净率（P/TBV）、净资产收益率（ROE/ROTCE）、净息差（NIM）这套口径，而不是市盈率。</strong>
+理由：银行的利润是净息差乘以杠杆放大出来的，多提一点坏账准备、少提一点，利润能差出一倍——HNVR 的每股收益过去四年就是 3.68 → 2.05 → 1.66 → 1.00，一路下滑。用某一年的市盈率给银行估值，等于用一张随机抽出的照片判断一个人的身高。银行真正的价格标尺是<strong>你花多少钱买它一块钱的有形净资产，以及这一块钱一年能生出多少钱</strong>。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Hanover Bancorp 是 <strong>Hanover Bank</strong> 的控股公司，总部在纽约州长岛的 <strong>Mineola</strong>，服务范围覆盖长岛（拿骚县、萨福克县）、纽约市五区（尤其是皇后区和布鲁克林），另有新泽西和弗吉尼亚的贷款办事处。<strong>总资产 23.37 亿美元，194 名员工。</strong></p>
+<p>跟上一家宾州小镇银行 CB Financial 相比，它规模大 40%，但赚的钱差不多——原因就藏在下面。</p>
+<p>银行不按分部披露利润，但业务实质上是三件事，<strong>其中第一件占了压倒性的比重</strong>。</p>
+<h3>生意一：放地产贷款（贷款总额 19.98 亿，是全公司的命脉）</h3>
+<p><strong>这件事具体是什么：</strong></p>
+<p>Hanover Bank 的 20 亿贷款里，超过 92% 押在房子上。两大块：</p>
+<p><strong>（1）商业地产 + 多户住宅公寓楼，10.8 亿美元</strong>（占贷款 54%）</p>
+<p>典型的一笔生意长这样：布鲁克林一栋 12 户的老公寓楼，市价 400 万美元。房东要重新融资，Hanover 借给他 232 万——<strong>加权平均抵押率（LTV）58%</strong>，也就是说房子跌四成之前，银行的本金还是安全的。利率大约 6.5%—7%，五年一调，30 年摊销。这类贷款<strong>平均单笔 150 万美元</strong>。</p>
+<p>这里有一个必须点名的风险：<strong>多户住宅贷款里约 37% 是受纽约租金管制的物业</strong>。租金管制（rent-regulated）的意思是，法律规定房东每年只能涨很少的租金——2019 年纽约州通过的 HSTPA 法案之后，房东几乎失去了通过装修把房子转成市场价的通道。结果是：<strong>通胀让房东的地税、保险、维修成本连年上涨，但租金收入被法律锁死</strong>。这类物业的现金流在过去几年持续恶化，估值大幅缩水。<strong>2024 年纽约社区银行（NYCB）股价一年跌掉七成，就是栽在同一类资产上。</strong> HNVR 有 4 亿美元左右的敞口。缓和因素是它的 LTV 只有 58%，比 NYCB 出事时的组合保守，但这条弦一直绷着。</p>
+<p><strong>（2）住宅按揭和房净值贷款，7.642 亿美元</strong>（占贷款 38%）</p>
+<p>一到四户家庭住宅的按揭，<strong>平均单笔 48.7 万美元，加权 LTV 56%</strong>。长岛的房子中位价接近 70 万，所以这大致是「买一栋 85 万的房子、首付 37 万」这种客户。LTV 56% 是相当保守的水平——房价要跌四成四银行才开始亏本金。</p>
+<p><strong>（3）其余约 1.6 亿是工商业贷款和 SBA 贷款留存部分</strong>（见下）</p>
+<p><strong>为什么是这些资产？</strong> Hanover 走的是「贴着纽约房地产做抵押、不做无抵押信贷」的路线。好处是踩雷时有房子顶着；坏处是<strong>这类贷款的收益率低</strong>。TTM 贷款收益率 <strong>5.97%</strong>——听起来还行，但你要拿它跟资金成本比才知道问题在哪。</p>
+<h3>生意二：SBA 贷款——放出去，然后卖掉（TTM 非利息收入约 1,109 万里的大头）</h3>
+<p><strong>这件事具体是什么：</strong></p>
+<p>SBA 是美国小企业管理局。它有一个项目：小企业向银行借钱，SBA 替这笔贷款的 75% 提供政府担保。比如一家开洗车行的借 100 万，其中 75 万由美国政府背书——万一借款人跑了，政府赔银行 75 万。</p>
+<p><strong>关键在于：这 75 万有政府担保的部分，可以在二级市场上溢价卖掉。</strong> 买家（保险公司、基金）愿意出 108—112 万美元买这 75 万的债权，因为它相当于一张收益率高于国债的政府担保债券。<strong>银行放贷当天就能确认约 6—9 万美元的出售收益，同时把风险转出去，剩下无担保的 25 万自己留着收利息。</strong></p>
+<p>这门生意是 Hanover 少数几个「非利息收入」来源，而且<strong>利润率极高</strong>——不占资本、不占资产负债表、一放款就见钱。它在全国范围内做 SBA，不限于长岛。</p>
+<p><strong>但这门生意现在正在萎缩。</strong> 公司在 2026 年二季度财报里明说：SBA 贷款发放量和出售收益双双下降，原因是<strong>小企业主的经济前景变差</strong>，以及<strong>银行主动收紧了信贷标准</strong>。TTM 非利息收入 1,109 万，同比 <strong>−28.15%</strong>——这是全公司下滑最快的一条线。</p>
+<p>主动收紧是对的（宁可少赚也别踩雷），但结果是：<strong>唯一一门高利润率的生意在缩，公司被迫更依赖低息差的地产放贷。</strong></p>
+<h3>生意三：吸存款（存款 20.13 亿，这是全公司最大的问题）</h3>
+<p><strong>这件事具体是什么，以及为什么它是问题：</strong></p>
+<p>Hanover 有 20.13 亿存款，但结构很差：</p>
+<ul>
+<li><strong>不付利息的活期存款只有 2.54 亿，占 12.6%</strong></li>
+<li>付利息的储蓄、货币市场、定期存单 <strong>17.59 亿，占 87.4%</strong></li>
+</ul>
+<p>过去 12 个月，这 20 亿存款一共付出去 <strong>5,934 万美元利息，平均成本 2.95%</strong>。</p>
+<p><strong>把这个数字和上一家宾州小镇银行并排放，整件事就清楚了：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>HNVR（纽约长岛）</th>
+<th>CBFV（宾州两千人小镇）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存款成本</td>
+<td><strong>2.95%</strong></td>
+<td><strong>1.65%</strong></td>
+</tr>
+<tr>
+<td>不付息存款占比</td>
+<td>12.6%</td>
+<td>20.8%</td>
+</tr>
+<tr>
+<td>贷款收益率</td>
+<td>5.97%</td>
+<td>5.44%</td>
+</tr>
+<tr>
+<td><strong>利差</strong></td>
+<td><strong>3.02 个百分点</strong></td>
+<td><strong>3.79 个百分点</strong></td>
+</tr>
+<tr>
+<td>净息差 NIM</td>
+<td>3.10%（二季度）</td>
+<td>≈ 3.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>HNVR 的资产端收益率比 CBFV 高 0.53 个百分点，但资金成本高出 1.30 个百分点，一进一出，净利差反而低了 0.77 个百分点。</strong> 它拿着更贵的钱，去放更难做的贷款。</p>
+<p>为什么？因为它开在纽约。长岛和皇后区的储户随时能在几公里内找到二十家银行，还有随手可及的货币市场基金给 4%。<strong>在这种地方，「不付利息的存款」几乎不存在。</strong> 而 CBFV 那种在宾州小镇开了 124 年的银行，储户根本不动。</p>
+<p>这不是管理层不努力能改的，<strong>这是地理位置决定的结构性劣势</strong>。</p>
+<p>还有一个数字：<strong>贷存比 99.3%</strong>（19.98 亿贷款 / 20.13 亿存款）。意思是<strong>存进来的钱几乎全放出去了，一点余量没有</strong>。作为对照，CBFV 是 85.5%，还有 14 个点的空间可以放贷增收。HNVR 想再多放一块钱贷款，就得先多拉一块钱存款——而拉存款要 2.95% 的成本。<strong>这家银行的增长空间被资金端卡死了。</strong></p>
+<h3>钱怎么分（TTM，截至 2026-06-30，单位：万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>同比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贷款利息收入</td>
+<td>11,933</td>
+<td>−0.3%</td>
+<td>19.98 亿贷款，收益率 5.97%</td>
+</tr>
+<tr>
+<td>证券利息收入</td>
+<td>1,063</td>
+<td>−1.5%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>总利息收入</strong></td>
+<td><strong>12,995</strong></td>
+<td><strong>−0.4%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>存款利息支出</td>
+<td>−5,934</td>
+<td>−7.0%</td>
+<td>20.13 亿存款，成本 2.95%</td>
+</tr>
+<tr>
+<td>借款利息支出</td>
+<td>−643</td>
+<td>+4.2%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>净利息收入</strong></td>
+<td><strong>6,419</strong></td>
+<td><strong>+13.94%</strong></td>
+<td>靠存款成本下降，不是靠资产端</td>
+</tr>
+<tr>
+<td>非利息收入</td>
+<td>+1,109</td>
+<td><strong>−28.15%</strong></td>
+<td>SBA 出售收益萎缩</td>
+</tr>
+<tr>
+<td><strong>贷款损失拨备</strong></td>
+<td><strong>−846</strong></td>
+<td>—</td>
+<td><strong>⚠️ 见第二部分</strong></td>
+</tr>
+<tr>
+<td>非利息支出</td>
+<td>−4,825</td>
+<td>−3.1%</td>
+<td>人力 2,746 + 场地 808 + 其他 1,271</td>
+</tr>
+<tr>
+<td>剔除异常项前税前利润</td>
+<td>1,858</td>
+<td>+41.5%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>其他异常项</strong></td>
+<td><strong>−318</strong></td>
+<td>—</td>
+<td><strong>⚠️ 一次性损失</strong></td>
+</tr>
+<tr>
+<td><strong>税前利润</strong></td>
+<td><strong>1,320</strong></td>
+<td>+32.6%</td>
+<td></td>
+</tr>
+<tr>
+<td>所得税</td>
+<td>−373</td>
+<td></td>
+<td>税率 28.29%</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>946</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>优先股股息</td>
+<td>−23</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>归属普通股净利润</strong></td>
+<td><strong>924</strong></td>
+<td><strong>−16.5%</strong></td>
+<td>EPS 1.27 美元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表最该看的一行是「净利息收入 +13.94%」，而它上面一行是「总利息收入 −0.4%」。</strong> 意思是：<strong>这家银行过去一年的利润改善，一分钱都不是靠多赚来的，全部靠少付出来的</strong>——存款成本从 3.2% 降到 2.95%，省下 449 万；资产端反而在小幅萎缩。这是被动的改善，取决于美联储降息，不取决于这家银行做对了什么。降息周期一结束，这个引擎就熄火。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：财报未单独列示，金额包含在 2,746 万人力成本中，对一家 194 人的社区银行来说规模可以忽略。<strong>没有这个问题。</strong></p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>318 万美元的「其他异常项」</strong>（Other Unusual Items），FY2025 全年也是 318 万——说明这笔钱发生在 2025 年下半年，整整落在 TTM 窗口内。财报页不披露明细。这笔钱占税前利润的 24%，剔掉之后税前利润是 1,858 万而不是 1,320 万。<strong>只看 TTM 单期，我无法判断这是真一次性还是会年年出现</strong>，但从 FY2021—FY2024 都没有这一项来看，倾向于是真一次性。</p>
+<p><strong>真正需要处理的不是一次性项目，是拨备。</strong></p>
+<p>TTM 贷款损失拨备 <strong>846 万美元</strong>。把五年的数字排出来：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>拨备</th>
+<th>占净利息收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022（9月财年）</td>
+<td>343 万</td>
+<td>6.3%</td>
+</tr>
+<tr>
+<td>FY2023（12月财年）</td>
+<td>213 万</td>
+<td>4.1%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>494 万</td>
+<td>9.3%</td>
+</tr>
+<tr>
+<td><strong>FY2025</strong></td>
+<td><strong>1,038 万</strong></td>
+<td><strong>17.2%</strong></td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>846 万</strong></td>
+<td><strong>13.2%</strong></td>
+</tr>
+<tr>
+<td><strong>2026 Q2 单季</strong></td>
+<td><strong>50 万</strong>（去年同期 240 万）</td>
+<td><strong>3.0%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>故事很清楚：2024—2025 年信用成本爆发，2026 年正在快速回落。</strong> FY2025 那 1,038 万拨备，几乎等于当年全部净利润的 1.4 倍——这就是 FY2025 每股收益只有 1.00 美元的直接原因。而 2026 年二季度拨备已经降到 50 万，同比减少 79%。</p>
+<p><strong>这是这只股票眼下最重要的一件事</strong>：如果拨备真的正常化到每年 200—400 万，那么在其他条件不变的情况下，利润会跳升 40%—60%。券商给出的前瞻市盈率 9.99 倍，赌的就是这个。</p>
+<p>但要注意两点：第一，<strong>拨备下降和坏账下降不是一回事</strong>。拨备是「今年新提的准备金」，准备金余额从 FY2024 的 2,278 万降到 TTM 的 1,914 万——<strong>余额在减少，说明有一部分是核销掉了（真的亏了钱），不全是情况变好。</strong> 第二，准备金余额 1,914 万 ÷ 贷款 19.98 亿 = <strong>0.96%</strong>，这个覆盖率在有 4 亿租金管制多户住宅敞口的情况下，不算充裕。</p>
+<p><strong>资本化的支出</strong>：银行无此问题。TTM 资本开支很小。</p>
+<p><strong>回购与稀释</strong>：<strong>这一条是减分项。</strong> TTM 股本<strong>增加了 0.28%</strong>，公司没有回购，反而在小幅稀释。股息每股每年 0.40 美元（每季 0.10），<strong>股息收益率仅 1.49%</strong>。作为对照，CBFV 给股东的股息 2.98% 加回购 2.73%，合计 5.71%；<strong>HNVR 只给 1.49%，少了整整四个百分点。</strong> 一家 PB 不到 1 倍的银行不回购自己的股票，说明管理层要么认为资本不够富余，要么认为有更好的用途——考虑到贷存比已经 99.3%、总资产在收缩（从 23.83 亿降到 23.37 亿），更可能是前者。</p>
+<p><strong>利润和现金流的差</strong>：净利润 946 万，经营现金流 <strong>2,693 万</strong>。差额约 1,747 万，主要来自三块非现金项目：拨备计提 846 万（提了准备金但钱没出去）、异常项 318 万、以及待售贷款余额变动（SBA 待售贷款从 641 万降到 293 万，释放约 348 万现金）。<strong>这个差额是正常的银行会计现象，没有问题。</strong> 自由现金流 2,570 万左右，对应 7.35 倍市值——但银行的「自由现金流」意义不大，因为这些钱大部分必须留作资本金支撑贷款，不能拿去分给股东。</p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>0.96 倍</strong></td>
+<td>净资产 2.028 亿，每股 28.02 美元</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td><strong>1.06 倍</strong></td>
+<td>有形净资产约 1.785 亿（扣商誉 1,917 万）</td>
+</tr>
+<tr>
+<td><strong>报表 ROE（TTM）</strong></td>
+<td>4.71%</td>
+<td>被拨备和异常项压低</td>
+</tr>
+<tr>
+<td><strong>剔一次性后 ROE</strong></td>
+<td><strong>5.8%</strong></td>
+<td>1,152 万 ÷ 约 1.99 亿普通股权益</td>
+</tr>
+<tr>
+<td><strong>剔一次性后 ROTCE</strong></td>
+<td><strong>6.5%</strong></td>
+<td>1,152 万 ÷ 1.785 亿有形净资产</td>
+</tr>
+<tr>
+<td><strong>拨备也正常化后 ROTCE</strong></td>
+<td><strong>8.2%</strong></td>
+<td>拨备按 400 万算</td>
+</tr>
+<tr>
+<td><strong>净息差 NIM</strong></td>
+<td><strong>3.10%</strong>（2026Q2）</td>
+<td>一年前是 2.76%，TTM 平均约 2.90%</td>
+</tr>
+<tr>
+<td><strong>存款成本</strong></td>
+<td><strong>2.95%</strong></td>
+<td>⚠️ 全篇最大的问题</td>
+</tr>
+<tr>
+<td><strong>不付息存款占比</strong></td>
+<td>12.6%</td>
+<td>偏低</td>
+</tr>
+<tr>
+<td><strong>贷存比</strong></td>
+<td><strong>99.3%</strong></td>
+<td>⚠️ 满负荷，没有增长空间</td>
+</tr>
+<tr>
+<td><strong>拨备覆盖率</strong></td>
+<td>0.96%</td>
+<td>对租金管制敞口而言不算充裕</td>
+</tr>
+<tr>
+<td><strong>住宅贷款 LTV</strong></td>
+<td>56%</td>
+<td>保守，加分</td>
+</tr>
+<tr>
+<td><strong>商业地产/多户 LTV</strong></td>
+<td>58%</td>
+<td>保守，加分</td>
+</tr>
+<tr>
+<td><strong>租金管制多户占比</strong></td>
+<td>多户组合的 37%</td>
+<td>⚠️ 约 4 亿美元敞口</td>
+</tr>
+<tr>
+<td><strong>CET1 资本充足率</strong></td>
+<td>未披露</td>
+<td>财报页不提供，<strong>盲区</strong></td>
+</tr>
+<tr>
+<td><strong>股息收益率</strong></td>
+<td>1.49%</td>
+<td>每股年 0.40 美元</td>
+</tr>
+<tr>
+<td><strong>回购收益率</strong></td>
+<td>−0.28%</td>
+<td>无回购，小幅稀释</td>
+</tr>
+<tr>
+<td><strong>效率比</strong></td>
+<td>64.1%</td>
+<td>4,825 万 ÷ 7,528 万，偏高</td>
+</tr>
+</tbody>
+</table></div>
+<h3>换算成「投 100 块，一年赚多少」</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报表 TTM 市盈率</td>
+<td>26.79 ÷ 1.27</td>
+<td><strong>21.1 倍</strong></td>
+<td>4.74 元</td>
+</tr>
+<tr>
+<td>前瞻市盈率（券商一致预期）</td>
+<td>—</td>
+<td>10.0 倍</td>
+<td>10.01 元</td>
+</tr>
+<tr>
+<td><strong>剔除一次性后的真实市盈率</strong></td>
+<td>1.892 亿 ÷ 1,152 万</td>
+<td><strong>16.4 倍</strong></td>
+<td><strong>6.09 元</strong></td>
+</tr>
+<tr>
+<td><strong>再把拨备正常化到 400 万</strong></td>
+<td>1.892 亿 ÷ 1,472 万</td>
+<td><strong>12.9 倍</strong></td>
+<td>7.78 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1.892 亿 ÷ 2,570 万</td>
+<td>7.4 倍</td>
+<td>13.56 元（<strong>银行不适用，见下</strong>）</td>
+</tr>
+<tr>
+<td><strong>正常化 ROTCE ÷ P/TBV</strong></td>
+<td>8.2% ÷ 1.06</td>
+<td>—</td>
+<td><strong>7.74 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1.892 亿 ÷ 1,079 万</td>
+<td><strong>17.5 倍</strong></td>
+<td>5.70 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均取归属普通股口径：Dec'23 年 1,312 万、Dec'24 年 1,196 万、Dec'25 年 729 万，平均 1,079 万。）</p>
+<p><strong>关于自由现金流那一行的 13.56 元，要划掉不看。</strong> 银行的经营现金流不能自由分配——它必须留作资本金去支撑贷款，监管有硬性要求。这家公司实际派给股东的只有股息 1.49%，正好说明这一点。</p>
+<p><strong>这张表里最重要的判断：往哪个数字上靠？</strong></p>
+<ul>
+<li>报表 21.1 倍——<strong>太悲观</strong>，里面有一笔 318 万的一次性和一段异常高的拨备；</li>
+<li>券商前瞻 10.0 倍——<strong>太乐观</strong>，它隐含每股收益 2.68 美元、归属普通股净利润约 1,950 万，比 TTM 翻一倍还多。要达到这个数，需要拨备接近于零、净息差继续扩张、SBA 业务反转，三件事同时发生；</li>
+<li><strong>我认为合理的落点是 12.9 到 16.4 倍之间，对应年回报 6.1 到 7.8 元。</strong></li>
+</ul>
+<h3>那么，你现在投 100 块进去，一年赚多少？</h3>
+<p><strong>按最保守的真实口径（剔除一次性、拨备维持 TTM 水平），一年 6.09 元。按拨备正常化的乐观情形，一年 7.78 元。</strong></p>
+<p><strong>这 6 到 7.8 元里，只有 1.49 元真的回到你口袋</strong>——就是那笔每季 0.10 美元的股息。没有回购，股本还在小幅增加。剩下 5 元左右全部留在银行里补充资本金。</p>
+<p>而且必须说清楚：<strong>这个回报建立在约 11.5 倍杠杆之上</strong>（23.37 亿总资产 ÷ 2.03 亿股东权益）。资产端亏 8.7%，股东权益就归零。经济下行时这个回报会剧烈缩水甚至转负——<strong>FY2025 就是活生生的例子：只不过多提了 1,038 万拨备，每股收益就从 1.66 掉到 1.00，跌了四成。</strong></p>
+<p><strong>这个数字未来会变大还是变小？</strong></p>
+<p>往大的方向：<strong>拨备正常化是真实的</strong>，2026 年二季度只提了 50 万，比去年同期少 79%；净息差从 2.76% 扩到 3.10%，二季度净利息收入创下 1,680 万的纪录。这两件事叠加，利润确实在修复。</p>
+<p>往小的方向，有三条，而且都是结构性的：</p>
+<ol>
+<li><strong>净息差扩张靠的是降息，不是本事。</strong> 总利息收入同比 −0.4%，改善全部来自存款成本从 3.2% 降到 2.95%。降息周期结束，这个引擎就停了。而 3.10% 的净息差即使在「创纪录」之后，仍低于社区银行 3.4%—3.6% 的同业中位数。</li>
+<li><strong>贷存比 99.3%，没有增长空间。</strong> 想多放贷就得先高价拉存款，而拉来的存款成本会把刚扩出来的息差重新压回去。总资产已经从 23.83 亿缩到 23.37 亿——<strong>这家银行正在缩表，不是在扩张。</strong></li>
+<li><strong>4 亿美元的租金管制多户住宅敞口。</strong> 只要纽约的租金管制政策不松动，这些物业的现金流就会被通胀一年年侵蚀。LTV 58% 提供了缓冲，但这类资产的估值下行是慢性的、持续的，而拨备覆盖率只有 0.96%。</li>
+</ol>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它不贵，但也不便宜——0.96 倍市净率买的是一家只能挣 8% 有形股东回报的银行，这个价格是市场算准了的，不是漏掉的。</strong></p>
+<p>先给它该给的公道：<strong>这不是一家坏银行</strong>。住宅贷款 LTV 56%、商业地产 LTV 58%，风控上是保守的；2024—2025 年信用出问题时它主动收紧了 SBA 信贷，宁可少赚也不硬放；二季度拨备已经降到 50 万，净息差从 2.76% 扩到 3.10%，净利息收入创纪录。<strong>利润确实在修复，最坏的时候大概率过去了。</strong> 从 1.00 美元的每股收益修回到 1.60—2.00 美元，是有路径的。</p>
+<p>问题在于<strong>修复完了之后，它也就值这个价</strong>。把三个数字并排放就明白了：<strong>存款成本 2.95%、不付息存款只占 12.6%、贷存比 99.3%</strong>。这家银行拿着全美最贵的一批存款（因为它开在长岛和皇后区，储户隔一条街就有二十家银行可选），去放收益率并不高的地产贷款，还已经把资金用到了 99.3%——<strong>它没有便宜的钱，也没有再放贷的空间</strong>。同一批里那家宾州小镇银行 CB Financial，存款成本 1.65%、贷存比 85.5%，规模比它小四成却赚得一样多。这个差距不是管理层努力能补上的，是地理位置写死的。</p>
+<p>结果就是：即使把拨备完全正常化，有形净资产收益率也只有 <strong>8.2%</strong>，低于银行业约 10% 的股本成本。<strong>一家赚不到股本成本的银行，理论上就该在 1 倍有形账面以下交易</strong>——它现在是 1.06 倍。市场没有错杀它，市场给它打的这个折扣是对的。而且它派给股东的现金只有 1.49% 股息、零回购，是这一批里最吝啬的。</p>
+<p><strong>所以答案是：现在不买，但值得记在本子上。</strong> 真正的买点不在这个价格，在两件事发生之后——<strong>要么它连续两三个季度证明拨备真的回到了每年 300 万以内</strong>（那时利润会跳升，而市场往往反应滞后），<strong>要么股价跌回 0.85 倍有形账面（约 21.5 美元）</strong>，那时候你是在用打折价买一门平庸但不烂的生意，安全边际才真正出现。<strong>在那之前，你付的是「修复完成」的价格，承担的却是「修复可能中断」的风险</strong>——而 4 亿美元的纽约租金管制公寓贷款，就是那个最可能让修复中断的东西。</p>
+<hr />
+<p><em>分析日期：2026-08-29 ｜ 数据口径：TTM 截至 2026-06-30 ｜ 数据来源：stockanalysis.com 财报页、Hanover Bancorp 2026 年二季度业绩公告</em></p>
+</div></body></html>

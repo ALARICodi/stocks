@@ -1,0 +1,220 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CHMI · Cherry Hill Mortgage（樱桃山按揭投资）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CHMI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">九折买净资产但年年折价增发磨本金，股息一半是还你自己的钱</div><h1>CHMI · Cherry Hill Mortgage（樱桃山按揭投资）</h1>
+<p>市值 $1.10 亿 / 股价约 $2.92 / 行业：按揭 REIT（mREIT）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是一家按揭地产信托（mREIT），下面用市净率 P/B、ROE、股息覆盖率这套口径，而不是市盈率。原因：它的"利润"里一大半是持仓资产的市场价格波动（公允价值变动），单看 PE 会被某一年的涨跌幅骗得团团转；这类公司的本质是"值多少钱看净资产，赚不赚钱看息差和对冲水平"。</p>
+</blockquote>
+<h2>一、它到底做几件事</h2>
+<p>这家公司只有 14 名员工，管着 13 亿美元资产。它不盖房、不放贷、不见任何购房者——它做的是两门纯金融生意。</p>
+<h3>生意一：买按揭债券吃息差（RMBS 持仓）</h3>
+<p>它拿股东的钱做本金，再以本金 5 倍左右的规模去借短期钱（回购协议融资，年化成本跟着美联储利率走），用借来的钱买"机构按揭抵押债券"——就是房利美、房地美打包担保的住房贷款债券，违约风险由这两家半官方机构兜底，所以债券本身几乎不会赖账。</p>
+<p>赚钱逻辑一句话：<strong>借 4% 的钱，买 5.5% 的债，中间 1.5 个点的息差乘以 5 倍杠杆，变成股东权益上约 7% 的回报。</strong> 风险也全在这句话里：借的是短钱（几个月一滚），买的是 30 年的债。短期利率一涨，借钱成本立刻上去，债券价格立刻下来，两头挨打——2023 年它净亏 3480 万美元，就是这么亏的。</p>
+<ul>
+<li>TTM 该分部收入 $1,857 万，同比大增 112%（上年同期利率高位，基数被砸得很低）</li>
+<li>占总营收 44%</li>
+</ul>
+<h3>生意二：收房贷"过路费"（MSR 服务权）</h3>
+<p>MSR（按揭服务权）是个普通人没听过但很好懂的东西：美国人还房贷，每月打款给的那家"服务商"并不是债主，它只是代收代付——收你的月供，转给债券持有人，顺手每年抽贷款余额的 0.25% 作为服务费。这个"抽费的权利"本身可以买卖，CHMI 买的就是这个权利（实际打杂的活外包给第三方干，它只坐着收钱）。</p>
+<p>举个具体例子：一笔 30 万美元的房贷，服务权每年抽 0.25% 即 750 美元，扣掉外包成本，大部分是纯利。CHMI 手里握着一大池子这样的权利。</p>
+<p>MSR 有个宝贵特性：<strong>利率涨它反而值钱</strong>——利率一涨没人提前还贷换贷，这条收费流就能收得更久。这正好跟生意一相反（利率涨债券跌），所以两门生意互为对冲，这是 CHMI 整个商业模式的设计初衷。</p>
+<ul>
+<li>TTM 该分部收入 $2,367 万，占 56%，是两门生意里更大的那门</li>
+<li>财报只披露到分部营收，利润未分部披露；按整体口径，公司 TTM 经营利润率 43.8%</li>
+</ul>
+<h3>钱的全貌</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RMBS 吃息差</td>
+<td>$1,857万</td>
+<td>约$875万</td>
+<td>+112%</td>
+<td>44%</td>
+</tr>
+<tr>
+<td>MSR 服务权</td>
+<td>$2,367万</td>
+<td>约$2,290万</td>
+<td>+3%</td>
+<td>56%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>$4,224万</td>
+<td>$2,546万</td>
+<td>+66%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意：这个"营收"含持仓的公允价值变动，涨跌全算在内，所以增速数字没有普通公司营收增速的含义，看看就好。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $21 万，14 个人的公司，可忽略。没问题。</li>
+<li><strong>利润的成色</strong>：合并净利 $1,632 万里，先要付掉优先股股息约 $970 万，<strong>落到普通股股东头上只剩 $662 万</strong>。而利润本身一大半是公允价值变动：过去四年合并净利 +2,174 / -3,479 / +1,197 / +683 万，坐过山车。单期口径无法判断当期利润里多少可持续——对 mREIT 来说这不是障眼法而是常态，但你得知道 16 倍 PE 的分母随时会变脸。</li>
+<li><strong>一次性项目</strong>：无重大诉讼、减值。没有。</li>
+<li><strong>资本化支出</strong>：无，金融公司不适用。</li>
+<li><strong>回购与稀释（本篇最大的坑）</strong>：TTM 零回购，反而<strong>增发普通股 $260 万，一年股本膨胀 +15.2%</strong>。股价 $2.92、每股净资产 $3.26——<strong>在净资产打 89 折的价位增发，等于把老股东的资产按 9 折卖给新股东</strong>，每发一股，老股东每股账面价值就被稀释一点。这是 mREIT 行业的慢性病：靠不断发新股维持规模和管理层存在感。</li>
+<li><strong>股息覆盖（第二大的坑）</strong>：普通股年股息 $0.40/股，共约 $1,500 万，加优先股 $970 万，TTM 总派息 $2,626 万。可是归普通股的利润只有 $662 万，经营现金流也只有 $2,322 万。<strong>分红 &gt; 现金流 &gt; 利润，缺口靠增发新股和卖资产补</strong>——13.7% 的股息率里，相当一部分是把你自己的本金拆开还给你。</li>
+</ul>
+<h2>三、值多少钱：mREIT 口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 P/B</td>
+<td>0.89</td>
+<td>股价 $2.92 ÷ 每股净资产 $3.26，打 89 折</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>7.2%</td>
+<td>权益回报，建立在 5 倍杠杆上</td>
+</tr>
+<tr>
+<td>隐含年回报 ROE×(1/PB)</td>
+<td>约 8.1%</td>
+<td>投 100 块，公司一年替你赚约 8.1 块</td>
+</tr>
+<tr>
+<td>GAAP TTM PE（归普通股）</td>
+<td>16.6</td>
+<td>分母极不稳定，仅供参考</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>算不出</td>
+<td>2023–2025 归普通股平均利润为<strong>负</strong>（2023年巨亏）</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>13.7%</td>
+<td>但如上所述，覆盖不足</td>
+</tr>
+<tr>
+<td>杠杆</td>
+<td>负债/权益 5.0 倍</td>
+<td>短借长投</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块，按账面算买到了 112 块的资产，公司一年用这些资产赚约 8 块</strong>——听着不坏。但这 8 块是 5 倍杠杆下"顺风年"的成绩，三年拉平是负数；公司往你口袋里塞 13.7 块"股息"，其中约一半不是赚来的，是增发新股从下一批股东那里收来的。这 8 块未来会变大还是变小？取决于利率路径和管理层的对冲水平，一家 14 人的小公司在这上面没有任何护城河，2023 年一年亏掉三年利润就是证明。</p>
+<h2>四、一句话结论</h2>
+<p>九折买净资产不算贵，但这份净资产每年被"折价增发"磨掉一层皮，利润三年拉平是负数，13.7% 的股息一半是还你本金——<strong>它不贵，但也没有便宜可占，想吃高股息的人拿到的其实是自己的钱，不碰</strong>。</p>
+</div></body></html>

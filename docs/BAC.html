@@ -1,0 +1,180 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BAC · 美国银行</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BAC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">0.91倍PB的便宜已涨没，1.58倍买11%ROE是原价买中等生</div><h1>BAC · 美国银行</h1>
+<p>市值 4358 亿美元 / 股价约 62.3 美元 / 行业：商业银行 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是银行，下面用市净率 PB、ROE、有形资产口径而不是普通市盈率来判断贵贱。原因：银行的"营收"一半是利息，利润建立在 2.6 倍的账面杠杆（实际资产杠杆超过 10 倍）之上，一家 1 倍 PB、ROE 10% 的银行和一家 10 倍 PE 的工厂完全是两种动物。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>美国银行是美国第二大银行（仅次于摩根大通），实质上做四门生意。</p>
+<h3>生意一：消费者银行（TTM 营收 448 亿，占比约 39%）</h3>
+<p>就是你在美国大街上看到的那 3700 家 Bank of America 网点和手机 App。约 6900 万美国人把工资卡开在这里，活期账户几乎不付利息——这就是这门生意的核心：<strong>以接近 0% 的成本吸收近万亿美元存款，转手放出去收 6% 的信用卡利息、5.5% 的房贷、7% 的车贷，中间的利差就是利润</strong>。一个典型客户：工资账户存着 8000 美元（银行付他 0.01%），信用卡欠着 3000 美元（银行收他 24%），这一个人一年就给银行贡献七八百美元利息净收入。存款是全世界最便宜的资金，而且极其粘——换主力银行的麻烦程度堪比搬家，所以哪怕货币基金给 4%，大部分人也懒得挪。这个"懒"就是护城河。</p>
+<h3>生意二：财富管理（Merrill，TTM 营收 265 亿，占比约 23%）</h3>
+<p>旗下美林（Merrill Lynch）是全美最大的财富管理机构之一，管理客户资产数万亿美元。生意模式：一个攒下 200 万美元退休金的牙医把钱交给美林的顾问打理，每年按资产规模收约 1% 的管理费——什么都不用卖出，光"看着"这笔钱一年就收 2 万。市场涨，管理资产水涨船高，收费自动变多。这是四门生意里最不吃资本、利润率最高的一块。</p>
+<h3>生意三：全球银行（对公业务，TTM 营收 250 亿，占比约 22%）</h3>
+<p>给企业放贷、发债承销、并购顾问、现金管理。一家中型连锁餐饮要开 50 家新店，来借 2 亿美元五年期贷款；一家上市公司发 10 亿公司债，美国银行承销抽 0.5–1%。企业客户和银行的绑定比散户更深——工资代发、供应商付款、信用证全在一套系统里。</p>
+<h3>生意四：全球市场（交易部门，TTM 营收 267 亿，占比约 23%）</h3>
+<p>替对冲基金、保险公司、主权基金买卖股票债券外汇，赚佣金和买卖价差。市场越动荡这个部门越赚钱（2026 上半年波动大，这块同比增长约 11%，是四块里最快的）。缺点：利润没有连续性，全靠行情，给不了估值溢价。</p>
+<p>另有"All Other"对账项 TTM 为 -30 亿（内部抵消和资金中心），不是一门生意。</p>
+<p><strong>利润怎么分</strong>：财报按分部只披露到营收口径；按公司披露的分部利润惯例，消费者银行贡献约四成利润，其余三块各贡献两成上下（估算）。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>拨备（银行版的"提前认亏"）</strong>：TTM 计提信贷损失拨备 53 亿，占税前利润约 13%，处于正常年景水平（2021 年是负的——疫情拨备回冲，2024 年 58 亿）。当前不良率没有异常信号，但要知道：<strong>银行利润是"扣完自己估计的坏账"之后的数字，经济衰退时这一项能瞬间翻三倍</strong>，2008 年这家公司差点死于此。</li>
+<li><strong>股权激励（SBC）</strong>：银行发股不算激进，规模约 20–30 亿量级（估算，财报页未单列），占净利润不到 10%。</li>
+<li><strong>一次性项目</strong>：TTM 无重大项目。历史上 BAC 是罚款大户（金融危机后累计赔了超 700 亿），近年干净。</li>
+<li><strong>账面上埋着的雷（利润表看不到）</strong>：2020–21 年低利率时买入的巨额长期债券仍压在"持有到期"账户里，市价浮亏数百亿美元（公开披露口径约千亿量级的高点已随利率回落收窄）。只要不被迫卖就不用认亏，但它意味着<strong>一大块资产收益率被锁死在 2% 上下，这是 BAC 的 ROE 比摩根大通低一截的原因之一</strong>。</li>
+<li><strong>回购与稀释</strong>：TTM 回购普通股 249 亿 + 分红 98 亿，合计回馈约 347 亿，占净利润 321 亿的<strong>108%</strong>——赚多少还多少。回购是 SBC 的约 10 倍，是真回购；股本一年实打实减少 3.7%。这是全篇最硬的一个数字。</li>
+<li><strong>利润 vs 现金流</strong>：银行的经营现金流被存贷款变动搅得剧烈波动（TTM 947 亿、上年 -88 亿），<strong>对银行看现金流没有意义，跳过</strong>，看资本充足率就够：CET1 比率约 12%（公司披露口径），高于监管要求约 2 个百分点，回购是有本钱的。</li>
+</ul>
+<h2>第三部分：贵不贵，用银行的尺子量</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td><strong>1.58 倍</strong></td>
+<td>两年前只有 0.91 倍，股价从 31.75 涨到 62.3，<strong>便宜已经被涨掉了</strong></td>
+</tr>
+<tr>
+<td>有形账面市净率 P/TBV</td>
+<td>2.10 倍</td>
+<td>剔除并购商誉后，你为 1 块钱有形净资产付 2.1 块</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>11.2%</td>
+<td>五年区间 9.2%–11.8% 的上沿，但在大行里只算中游（摩根大通约 17%）</td>
+</tr>
+<tr>
+<td>ROTCE（估算）</td>
+<td>约 15%</td>
+<td>有形股本回报，公司自己考核用这个</td>
+</tr>
+<tr>
+<td>市盈率（参考）</td>
+<td>14.4 倍</td>
+<td>五年里最高的一年（2023 年只有 10.8 倍）</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>2.05%，派息率约 30%</td>
+<td>连续多年稳定增长</td>
+</tr>
+<tr>
+<td>回购收益率</td>
+<td>3.7%</td>
+<td>加股息合计约 5.8% 直接回到股东口袋</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>投 100 块的年回报，按银行公式 ROE × (1/PB) = 11.2% × (1/1.58) ≈ 7.1 元。</strong> 这 7.1 元里，约 5.8 元通过分红+回购当年就实际回到你口袋，剩下留存在银行里滚大账面。这是实实在在的回报——但必须记住它建立在杠杆上：银行总资产是股东权益的 10 倍以上，正常年景 ROE 11%，衰退年景拨备一放大，这个数字可以掉到 5% 甚至更低，2008 年那次是直接跌没。</p>
+<p><strong>未来这 7.1 元变大还是变小</strong>：往上的力量是低收益老债券逐年到期、换成高收益资产（这是管理层反复讲的故事，真实存在）+ 股本每年缩 3.7% 自动抬 EPS；往下的力量是估值已经不站在你这边——PB 从 0.91 修复到 1.58，这段"从被嫌弃到被认可"的重估行情已经走完了，接下来只能赚 ROE 本身的钱，赚不到估值抬升的钱。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意是真的稳（万亿低成本存款+美林），回馈是真的足（赚 100 还 108），但 1.58 倍 PB 买 11% 的 ROE 只能算<strong>公道价买了个中等生</strong>——两年前 0.91 倍 PB 时是白送，现在是原价：值这个价，别指望再来一次翻倍，年化 6–7% 的股东回报是它的本来面目。</p>
+</div></body></html>

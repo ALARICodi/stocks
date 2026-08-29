@@ -1,0 +1,228 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DHI · 霍顿房屋（D.R. Horton）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DHI</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">最会过冬的建房商，年缩股本8%，但利润还在周期下坡上</div><h1>DHI · 霍顿房屋（D.R. Horton）</h1>
+<p>市值 412 亿美元 / 股价约 147.4 美元 / 行业：住宅建筑 / TTM 截止 2026-06-30（财年 9 月底结账）</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>霍顿是<strong>美国销量第一的建房商</strong>，连续二十多年卖房数量全美最多，一年交付约 8–9 万套。它做四件事，但九成二的收入来自第一件。</p>
+<h3>生意 A：盖房卖房（占营收 92.3%）</h3>
+<p>流程是这样的：霍顿在达拉斯郊区看中一块地，不直接买断，而是付 10% 左右的定金锁一个「买地期权」；然后规划出一个 300 套房的社区，标准化图纸（全国就那几十种户型，门把手到屋顶批量采购），开工到交房约 4–6 个月；主打入门级——旗下 Express Homes 品牌专卖首次购房者，一套典型的房子 3 张卧室 2 个卫生间，卖 30–40 万美元。买家是刚组建家庭的年轻人，付 3%–5% 首付，剩下的做 30 年按揭。霍顿每卖一套房，收入约 37 万美元，TTM 毛利率 21.3%——<strong>注意这个数字 2022 年是 30%，一路掉下来的</strong>，因为现在按揭利率高，霍顿要靠「利率补贴」促销（自掏腰包帮买家把按揭利率从 7% 买低到 5%，一套房贴 2–3 万美元），这笔促销直接吃毛利。</p>
+<p>它比同行强的关键一招是<strong>轻资产拿地</strong>：地不囤在自己账上，通过期权和下面的 Forestar 持地，房市转坏时弃权损失的只是定金，不会像 2008 年那样被存货砸死。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卖房</td>
+<td>307.8 亿</td>
+<td>-2.1%</td>
+<td>92.3%</td>
+<td>财报只披露到营收；整体经营利润率 12.0%，卖房是绝对主体（估算约 36 亿）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 B：Forestar —— 控股的土地开发商</h3>
+<p>霍顿持股约 62% 的上市土地开发公司（独立代码 FOR），专门买生地、修路通水电、切成建房用的熟地块，主要卖给霍顿自己。这是上面「轻资产拿地」的配套工具：土地风险放在 Forestar 的资产负债表上，霍顿按需提货。TTM 土地/地块销售营收 3.6 亿（并表口径里单列的部分）。</p>
+<h3>生意 C：租赁房——盖好整个社区直接打包卖给机构</h3>
+<p>盖一个 150 套的独栋租赁社区或公寓楼，不散卖，整体卖给黑石这类收租的机构投资者。TTM 营收 13.9 亿，同比在缩（利率高，机构买家出价低了，霍顿主动放慢）。这块本质还是盖房卖房，只是买家从家庭换成基金。</p>
+<h3>生意 D：房贷金融服务</h3>
+<p>自家的 DHI Mortgage 给买家办按揭——约八成的霍顿购房者直接用它家的贷款，办完转手把贷款卖给两房（房利美/房地美），赚手续费和转售价差，顺带卖产权保险。TTM 营收 8.2 亿。这块是卖房的润滑剂：促销用的「利率补贴」也是通过它来落地的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forestar 土地</td>
+<td>3.6 亿</td>
+<td>+6%</td>
+<td>1.1%</td>
+</tr>
+<tr>
+<td>租赁房</td>
+<td>13.9 亿</td>
+<td>-15%</td>
+<td>4.2%</td>
+</tr>
+<tr>
+<td>金融服务</td>
+<td>8.2 亿</td>
+<td>-3%</td>
+<td>2.4%</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 1.37 亿，占净利润 4.5%。小，不构成问题。</li>
+<li><strong>一次性项目</strong>：资产减记 1520 万，规模可忽略。没有并购魔术、没有重组费循环。<strong>建房商的报表是全场最朴素的一类：收房款、减地价人工，剩下就是利润。</strong></li>
+<li><strong>资本化支出</strong>：不适用。房子本身就是存货，卖掉才确认成本，这是行业正常会计，不是操纵。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 29.7 亿，是 SBC 的 21 倍——<strong>如假包换的真回购</strong>。股本一年实际减少 8.44%，过去十年股本砍掉了三成多。分红 5.1 亿（股息率 1.2%，连涨 11 年，派息率仅 17%），回购+分红合计 34.8 亿，等于市值的 8.4%。<strong>管理层在周期低点用利润猛买自家股票，这是建房商能做的最聪明的事。</strong></li>
+<li><strong>利润 vs 现金流</strong>：TTM 净利润 30.5 亿，经营现金流 33.5 亿，自由现金流 32 亿——现金流反而比利润多。原因：往年利润都拿去买地盖房（存货一年涨几十亿，FY2022 存货吃掉 52 亿现金），现在下行期不扩张了，存货持平（TTM 变化仅 +0.1 亿），利润全变成了现金。<strong>这是周期下行的标志，不是经营变好</strong>：等下一轮扩张，现金流又会被存货吃回去。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>412 亿 ÷ 30.5 亿</td>
+<td>14.0 倍</td>
+<td>7.1 块</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>不搞这套，GAAP 即是全部</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>与 GAAP 基本一致（无重大一次性）</td>
+<td>14.0 倍</td>
+<td>7.1 块</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>412 亿 ÷ 32 亿</td>
+<td>12.9 倍</td>
+<td>7.8 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>463 亿 ÷ 40.2 亿</td>
+<td>11.5 倍</td>
+<td>8.7 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>412 亿 ÷ 43.6 亿（FY23–25 平均）</td>
+<td>9.5 倍</td>
+<td>10.6 块</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块，按当期真实利润算一年赚 7.1 块，其中约 8.4 块（是的，比当期利润还多——动用了留存现金）当年就以分红和回购形式回到股东手里。</strong> 三年平均口径便宜得多（9.5 倍），但要小心方向：跟 NVDA 那种「三年平均贵于当期」相反，DHI 是<strong>当期利润已经从高点掉下来还在掉</strong>——毛利率 30%→21%，EPS 从 16.5 掉到 10.5,今年还在同比 -16%。三年平均 9.5 倍说的是「如果回到过去三年的平均景气」，而不是现在。真正的问题是：21% 的毛利率是不是底？按揭利率降下来促销就能收，利润会回升；利率维持高位，EPS 还有下探空间。14 倍买的是「差不多到底了」这个判断。</p>
+<p>另一把尺子：PB 1.74 倍、ROE 12.6%（周期低点的 ROE，2022 年高点是 30%+），换算成投 100 块年赚 7.2 块，与市盈率口径互相印证。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>公道。</strong> 这是全美国经营纪律最好的建房商——轻资产拿地保命、下行期不硬扛存货、把利润的百分之百拿来回购缩股本，14 倍买不到便宜，但买到的是「行业每熬过一轮周期它的份额和每股价值就上一个台阶」的复利机器。想占便宜得等利润再砸出恐慌（2022 年它到过 5 倍 PE）；现在这个价，是给守纪律的人拿着等周期的，不是给捡漏的人的。</p>
+<p>（周期性强是它挂「一般」而非「好生意」的唯一原因：产品毫无差异化，房子谁盖都一样，护城河全在成本和土地纪律上，而这在暴跌的年份保不住利润，只保得住命。）</p>
+</div></body></html>

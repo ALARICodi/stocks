@@ -1,0 +1,408 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PDEX · Pro-Dex（普罗戴克斯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PDEX</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">表面17倍真实26倍，37%利润是炒股赚的；79%营收压一个客户</div><h1>PDEX · Pro-Dex（普罗戴克斯）</h1>
+<p>市值 1.997 亿美元 / 股价 $62.56（2026-08-28 收盘）/ 行业：医疗器械制造 / TTM 截止日：2026-03-31（财年 7 月—6 月，这是 FY2026 前三季 + FY2025 第四季滚动）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Pro-Dex 是一家开在加州尔湾、只有 <strong>181 个人</strong>的公司，一年做 7,464 万美元营收——人均产值 41 万美元。这个人数和这个营收放在一起就已经说明了它的生意形态：它不服务成千上万的客户，它服务<strong>极少数几个大客户</strong>。到底少到什么程度，下面第三段会给出一个让人倒吸凉气的数字。</p>
+<h3>生意一：给大医疗器械公司代工手术电钻（绝对主体）</h3>
+<p>先说这东西是什么。骨科医生做手术要往骨头里拧螺丝、钻孔、锯骨头——比如脊柱手术要在椎骨上拧钉子，颅颌面手术要在头骨上打孔装钛板，胸外科要锯开胸骨。医生手里拿的那把工具，长得像一把加粗的电动螺丝刀，可以拆开高温高压灭菌反复用，有的插电有的用电池。</p>
+<p><strong>Pro-Dex 就是做这把电钻的。但它不贴自己的牌。</strong></p>
+<p>真实的链条是这样：一家大型骨科植入物公司（做人工关节、脊柱钉棒系统那种）要卖一整套「脊柱融合系统」给医院。这套系统里有钛合金螺钉、有连接棒、还得配一把专用的电动螺丝刀——螺丝刀必须和螺钉的接口严丝合缝，扭矩曲线要匹配，拧到位会自动停。这家大公司自己不做电动工具，就把设计和制造包给 Pro-Dex。Pro-Dex 从零开始做电机选型、齿轮箱、控制板、灭菌密封、跌落测试，做出来的成品上印的是<strong>客户的 logo</strong>，医院和医生根本不知道 Pro-Dex 的存在。</p>
+<p><strong>怎么收钱：按台卖。</strong>一把这样的手术动力工具卖给 OEM 客户是几千美元一台的量级，客户再连同整套植入物系统一起打包卖给医院。除了新机，Pro-Dex 还收返修的钱——工具用坏了寄回来修，这部分毛利更高，但规模不大。</p>
+<p><strong>客户为什么非买不可（也就是护城河在哪）：</strong>这把电钻不是一个独立商品，它是客户那套 FDA 510(k) 注册文件里的<strong>一个组成部分</strong>。客户当年拿注册批文时，提交的验证数据是基于 Pro-Dex 这台机器做出来的。要换一家供应商，客户得重新做设计验证、重新做生物相容性和灭菌验证、重新提交监管文件，还要重新培训销售和医生。这套流程动辄一两年、上百万美元，而省下来的采购成本可能只有个位数百分比。<strong>所以一旦嵌进去，就很难被换掉。</strong></p>
+<p>这是真的壁垒。但它是一把双刃剑——见下面。</p>
+<h3>生意二：APM 精密机加工（2026 年 2 月刚买回来）</h3>
+<p>2026 年 2 月，Pro-Dex 花 <strong>865 万美元</strong>收购了 APM（Advanced Precision Machining），一家做精密机加工的厂子，给医疗、航空航天和国防客户加工零件。</p>
+<p>这门生意更朴素：客户拿一张图纸过来，说我要 5,000 个这样的钛合金支架，公差正负 0.01 毫米。APM 用 CNC 机床照着图纸加工，按件收费。没有设计，没有知识产权，卖的是机器工时和工人手艺。<strong>毛利率比生意一低，但它买回来是为了两件事</strong>：一是给自己的手术工具做垂直整合（原来外包的零件现在自己加工），二是打开航空航天和国防这两个新客户池。</p>
+<p>TTM 期间只并表了 2 月到 3 月这<strong>两个月</strong>，所以下面表里它的营收看起来很小，但年化下来大概是 800–1,200 万美元的量级——也就是明年它会占到营收的十分之一以上。</p>
+<h3>生意三：工业旋转气动马达 + 工程法规咨询（零头）</h3>
+<p>一小块老业务：卖压缩空气驱动的微型旋转马达，用在牙科手机、实验室设备、高精度制造设备上。另外还帮客户做设计验证和 FDA 文件的咨询服务。加起来大概占营收 5%，是历史遗留，不影响判断。</p>
+<h3>钱的分布（TTM，截至 2026-03-31）</h3>
+<blockquote>
+<p><strong>财报只披露营收总额，不按分部披露利润。下表除总额外均为估算</strong>，依据是收购时点、收购价对应的营收规模、以及各业务的毛利率差异。</p>
+</blockquote>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算）</th>
+<th>占比</th>
+<th>同比</th>
+<th>经营利润率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>手术动力工具 OEM（含返修）</td>
+<td>~6,900 万</td>
+<td>~92%</td>
+<td>+14%</td>
+<td>~15%</td>
+</tr>
+<tr>
+<td>APM 精密机加工（仅并表 2 个月）</td>
+<td>~200 万</td>
+<td>~3%</td>
+<td>新增</td>
+<td>~12%</td>
+</tr>
+<tr>
+<td>工业气动马达 + 工程咨询</td>
+<td>~360 万</td>
+<td>~5%</td>
+<td>基本持平</td>
+<td>~10%</td>
+</tr>
+<tr>
+<td><strong>合计（这是真实数）</strong></td>
+<td><strong>7,464 万</strong></td>
+<td>100%</td>
+<td><strong>+16.4%</strong></td>
+<td><strong>14.5%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>⚠️ 这门生意最重要的一个数字：<strong>一个客户 = 79% 的营收</strong></h3>
+<p>这不在上面那四页财报里，它在公司的 10-Q 披露里：<strong>FY2026 前九个月，单一最大客户贡献了 79% 的销售额。</strong></p>
+<p>七成九。不是 30%，不是 50%，是 79%。</p>
+<p>这家公司的护城河和它的悬崖是同一样东西：正因为切换供应商要重做 FDA 验证，所以这个客户短期内换不掉 Pro-Dex；也正因为营收的四分之三挂在这一根绳子上，一旦这个客户决定自己做、或者它自己的那款产品卖不动了，Pro-Dex 就没了。</p>
+<p>有一个缓冲：2025 年 12 月，Pro-Dex 和这个最大客户<strong>续签了三年合同，到 2028 年 12 月 31 日为止，并且约定了 2026 和 2027 两个日历年的最低采购量</strong>。也就是说未来两年的量是锁死的，能见度很高。但换个角度看：<strong>2029 年 1 月 1 日之后，一切归零重谈。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>① 股权激励（SBC）：667 万——不对，是 67 万，小得可以忽略</h3>
+<p>TTM 股权激励 <strong>67 万美元</strong>，占净利润 1,200 万的 <strong>5.6%</strong>，占营收 0.9%。这在小盘股里算非常克制的。按规矩这笔钱当真实成本扣掉（GAAP 里本来就扣了，公司也没有搞 Non-GAAP 加回去的把戏——Pro-Dex 根本不发布 Non-GAAP 数字）。<strong>这一项干净。</strong></p>
+<h3>② 一次性项目：<strong>有，而且这是全篇最大的一个坑</strong></h3>
+<p>TTM 利润表里有一行：<strong>Gain on Sale of Investments = +590 万美元。</strong></p>
+<p>Pro-Dex 拿公司的钱在二级市场买卖股票。这不是笔误，是它多年的习惯——翻一下历史：FY2025 +212 万、FY2024 <strong>−413 万（亏的）</strong>、FY2023 +391 万、FY2022 +96 万、FY2021 +332 万。<strong>每年都有，方向不定，金额相对净利润非常大。</strong></p>
+<p>这 590 万意味着什么？看这条链：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润（真正卖手术工具赚的）</td>
+<td>1,081</td>
+</tr>
+<tr>
+<td>减：利息支出</td>
+<td>−77</td>
+</tr>
+<tr>
+<td>加：利息和投资收益</td>
+<td>+15</td>
+</tr>
+<tr>
+<td><strong>= 剔除异常项的税前利润</strong></td>
+<td><strong>1,019</strong></td>
+</tr>
+<tr>
+<td>加：<strong>卖股票的收益</strong></td>
+<td><strong>+590</strong></td>
+</tr>
+<tr>
+<td><strong>= 报表税前利润</strong></td>
+<td><strong>1,609</strong></td>
+</tr>
+<tr>
+<td>减：所得税（实际税率 25.4%）</td>
+<td>−409</td>
+</tr>
+<tr>
+<td><strong>= 报表净利润</strong></td>
+<td><strong>1,200</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>也就是说，1,200 万净利润里，大约 440 万（590 × 74.6%）是炒股赚的，不是卖手术电钻赚的。占净利润的 37%。</strong></p>
+<p>这是「真一次性」还是「年年都有的一次性」？从上面的历史序列看，<strong>它年年都有，但符号随机</strong>——2024 年就是亏 413 万。所以正确的处理不是"当成一次性剔掉"，而是<strong>不能把它算进可持续的盈利能力里</strong>：你不能拿今年炒股赚的 590 万去推明年，因为明年可能是 −400 万。第三部分的「真实市盈率」我就是这么处理的。</p>
+<p>顺带一个治理层面的观察：这家公司一边<strong>借着 2,017 万美元的债</strong>（利息支出 77 万），一边拿现金去二级市场买股票。这不是资本配置的最优解，是管理层的个人偏好写进了公司报表。</p>
+<h3>③ 资本化的支出：没有</h3>
+<p>R&amp;D 262 万全部费用化，没有开发支出资本化。软件、内容一类的资本化也没有。<strong>干净。</strong></p>
+<h3>④ 回购与稀释：<strong>这一项是真的好</strong></h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>284 万美元</strong></td>
+</tr>
+<tr>
+<td>股权激励（SBC）</td>
+<td>67 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>4.2 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按规矩：接近 1 说明回购只是在抵消员工发股，大于 3 才是真回购。<strong>4.2 倍，这是真回购。</strong></p>
+<p>而且不是一年的事。股本变化历年：−2.35%、−5.88%、−1.81%、−3.36%、−4.39%、−3.48%。<strong>五年下来股份数从约 400 万股缩到 319 万股，缩了两成。</strong>这是一家真的在替股东注销股份的公司，在小盘股里非常少见。</p>
+<p>副作用：流通盘只剩 <strong>173 万股</strong>（内部人持股 8.43%、机构 23.3%）。做空的占了流通盘的 <strong>11.22%</strong>。这么小的盘子意味着股价波动会很剧烈，进出都不容易。</p>
+<h3>⑤ 利润和现金流的差：<strong>差得不小，要逐项对账</strong></h3>
+<p>净利润 1,200 万，经营现金流只有 <strong>734 万</strong>，自由现金流 <strong>697 万</strong>。差了 466 万，钱去哪了？</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1,200</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+130</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+67</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td><strong>减：卖股票的收益</strong></td>
+<td><strong>−590</strong></td>
+<td><strong>这不是经营活动赚的，从经营现金流里剔出去</strong></td>
+</tr>
+<tr>
+<td>减：应收账款增加</td>
+<td>−281</td>
+<td>生意做大了，客户还没付钱</td>
+</tr>
+<tr>
+<td>加：存货减少</td>
+<td>+195</td>
+<td>去年囤的货今年卖掉了</td>
+</tr>
+<tr>
+<td>减：应付账款减少</td>
+<td>−49</td>
+<td>提前付了供应商</td>
+</tr>
+<tr>
+<td>加：预收款增加</td>
+<td>+14</td>
+<td></td>
+</tr>
+<tr>
+<td>加：税款、坏账、其他经营项</td>
+<td>+48</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>734</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−37</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>697</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论很清楚：466 万的缺口里，590 万是那笔炒股收益（它是真钱，但躺在投资活动里，不是经营现金流），另外 281 万是被应收账款吃掉的。</strong>这两笔性质完全不同——前者说明报表净利润虚高，后者只是增长的正常代价。</p>
+<p>还有一个细节值得注意：<strong>TTM 资本开支只有 37 万，而折旧摊销是 130 万。</strong>也就是说这一年公司几乎没添设备，靠吃老本。这让自由现金流好看了约 93 万。正常年份资本开支在 100–165 万（看历史），所以<strong>可持续的自由现金流大概是 604 万，不是 697 万</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 1.997 亿，企业价值 2.085 亿（净负债 874 万）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th><strong>投 100 块年回报</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1.997 亿 ÷ 1,200 万</td>
+<td><strong>16.6 倍</strong>（摊薄口径 17.3 倍）</td>
+<td><strong>$6.01</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不发布 Non-GAAP</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1.997 亿 ÷（经营性税后利润 760 万，炒股收益不算）</td>
+<td><strong>26.3 倍</strong></td>
+<td><strong>$3.80</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1.997 亿 ÷ 697 万</td>
+<td><strong>28.7 倍</strong></td>
+<td><strong>$3.49</strong></td>
+</tr>
+<tr>
+<td>自由现金流（资本开支正常化后）</td>
+<td>1.997 亿 ÷ 604 万</td>
+<td><strong>33.1 倍</strong></td>
+<td><strong>$3.03</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2.085 亿 ÷ 1,081 万</td>
+<td><strong>19.3 倍</strong></td>
+<td><strong>$5.19</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>1.997 亿 ÷ 三年平均经营性税后利润 682 万</td>
+<td><strong>29.3 倍</strong></td>
+<td><strong>$3.41</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行的算法：TTM 760 万、FY2025 740 万、FY2024 546 万（每一年都用「剔除异常项的税前利润 × (1−当年实际税率)」，把炒股损益全部剔掉），平均 682 万。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Pro-Dex，表面上看它一年替你赚 6 块钱。但那 6 块里有 2.2 块是公司拿你的钱去炒股票赚的——去年赚，前年亏。真正卖手术电钻赚给你的，是 3.8 块。</strong></p>
+<p>如果你要求更保守一点，按能持续掏出来的自由现金流算，是 3 块出头。按过去三年平均的经营利润算，是 3.4 块。</p>
+<p><strong>这 3.8 块里，有多少真的回到你口袋？</strong></p>
+<ul>
+<li><strong>回购：1.42 块</strong>（TTM 回购 284 万 ÷ 市值 1.997 亿）。这是实打实的——你的持股比例每年被动上升约 2.35%。</li>
+<li><strong>分红：0 块</strong>。公司不分红。</li>
+<li><strong>剩下的约 2.4 块留在公司里</strong>，去向很明确：TTM 花了 650 万现金买 APM（对应市值就是 3.25 块/100 块），另外净还债 180 万。</li>
+</ul>
+<p>所以严格说，这一年公司把留存利润全部花在了一笔收购上，而且花的钱超过了当年的真实利润——差额是靠卖掉手里的股票（投资证券净流入 959 万）补的。</p>
+<p><strong>这个 3.8 块未来会变大还是变小？</strong></p>
+<p>三个力量在拉扯：</p>
+<p><strong>往上的：</strong>营收在实打实地涨，TTM +16.4%，前九个月 +16%。APM 明年会贡献一整年（增加约 800–1,200 万营收）。经营利润率从五年前的 11.9% 提到了 14.5%，规模效应是真的。股份数还在以每年 2–4% 的速度减少。</p>
+<p><strong>往下的：</strong>毛利率从五年前的 35.7% 一路掉到 27.8%——掉了将近 8 个百分点。这是代工厂的宿命：客户量越大，压价越狠。营收翻倍的代价是每一块钱的含金量在缩水。另外那 590 万炒股收益不会年年重演。</p>
+<p><strong>决定性的：</strong>2028 年 12 月，那份占 79% 营收的合同到期。</p>
+<p>顺带一个市场自己给出的信号：<strong>远期市盈率 22.66 倍，高于当前的 17.28 倍。</strong>市盈率往上走只有一个原因——分析师预期明年的每股收益比今年低。市场自己知道今年的利润里掺了水。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门好生意被装在一个坏结构里，价格还不便宜。</strong></p>
+<p>好的部分是真好：ROIC 16.35%、ROE 29.8%、连续五年注销股份、账目干净没有资本化和 Non-GAAP 的把戏、SBC 只占利润 5%、营收还在两位数增长、卖的东西有 FDA 注册壁垒。这些放在一起，是一家值得尊敬的小公司。</p>
+<p>坏的部分是结构性的：<strong>79% 的营收挂在一个客户身上，合同 2028 年底到期</strong>；毛利率五年掉了 8 个百分点，说明议价权在客户那边；管理层拿公司的钱炒股，把 37% 的报表利润变成了不可持续的东西。</p>
+<p>价格上：市场看到的是 17 倍，<strong>真实的是 26 倍，按自由现金流是 29–33 倍，按三年平均是 29 倍</strong>。股价过去一年已经涨了 37.5%，远期市盈率比当前还高。</p>
+<p>以 26 倍买一家四分之三营收命悬一线的代工厂，不划算。<strong>不便宜，等。</strong></p>
+</div></body></html>

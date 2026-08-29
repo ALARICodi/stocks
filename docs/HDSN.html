@@ -1,0 +1,434 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HDSN · 哈德逊科技</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">HDSN</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">0.94倍市净率买周期底部，账最干净，等毛利率止跌</div><h1>HDSN · 哈德逊科技</h1>
+<p><strong>市值</strong> 2.285 亿美元 | <strong>股价</strong> 约 5.43 美元 | <strong>行业</strong> 分销服务（制冷剂回收再生） | <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只披露一个经营分部，不拆分部利润。但这家公司实质上在做三件性质完全不同的事，必须分开讲——因为其中一件占了收入的九成以上，另外两件才是它的护城河所在。</p>
+<h3>生意一：把用过的制冷剂洗干净再卖 —— 占收入约 90%，是命脉</h3>
+<p>这是全公司的主体，也是理解这家公司唯一需要搞懂的事。</p>
+<p><strong>先说制冷剂是什么。</strong> 你家空调、超市的冷柜、写字楼地下室那台几层楼高的冷水机组，里面循环的那种气体就是制冷剂——常见的型号叫 R-22、R-410A、R-134a、R-32。它不是耗材，理论上密封在系统里可以用二十年，但设备维修、拆机、泄漏的时候会被放出来。</p>
+<p><strong>这些气体不能直接排掉，因为它们是极强的温室气体。</strong> R-410A 的全球变暖潜能值是二氧化碳的 2088 倍——放掉一磅，等于烧掉一吨煤。美国法律（《清洁空气法》第 608 条）规定，维修空调设备时必须把制冷剂回收进钢瓶，不许放空，违者罚款。</p>
+<p>于是就有了哈德逊的生意。全美有几万家 HVAC（暖通空调）承包商，他们拆一台旧冷水机组，会抽出来几百磅混着冷冻油、水分、酸、金属屑，甚至混了别的型号气体的脏制冷剂。这堆东西他们既不能排、也不能直接卖给客户用。哈德逊把它按很低的价格收过来。</p>
+<p><strong>然后是「再生」这道工序。</strong> 收来的脏气体运到伊利诺伊州 Champaign 的工厂——这是全美最大的制冷剂再生厂。工艺是分馏：把混合气体加热汽化，通过多级精馏塔，靠不同组分沸点的差异一层层分开，同时用干燥剂脱水、用活性炭吸附酸和油。出来的成品要送检，达到 <strong>AHRI 700 标准</strong>（跟出厂新气同一个纯度标准）才能贴标出售。</p>
+<p><strong>卖给谁、怎么收钱。</strong> 卖回给同一批 HVAC 承包商。一台商用冷水机组充注量常见在 500 到 2000 磅，承包商一次买一个 1000 磅的钢瓶。价格是这门生意的全部戏剧所在：R-410A 的批发价在过去四年从每磅十几美元跌到个位数，R-22 因为已经停产，价格反而高。哈德逊赚的是<strong>收购价和售价之间的价差</strong>，不是加工费。</p>
+<p><strong>这就是要害：它本质上是一家大宗商品贸易商 + 加工厂，利润完全由制冷剂的市场价格决定，而它对这个价格没有任何定价权。</strong></p>
+<p>除了再生气，他们也从霍尼韦尔、科慕这类原厂买新气来倒手卖，赚更薄的差价，把销售渠道用满。</p>
+<h3>生意二：RefrigerantSide 现场服务 —— 占收入不到 10%，毛利高</h3>
+<p>这块很有意思，是真正带技术含量的部分。</p>
+<p>一栋写字楼的冷水机组用了十年，里面的制冷剂被冷冻油和水分污染了，制冷效率掉了 15%，电费每年多花几十万。传统做法是停机、抽空、换新气，整栋楼的空调要停两三天——夏天做不到。</p>
+<p>哈德逊派一辆装着专利设备的车过去，接到机组的管路上，<strong>在设备继续运行的状态下</strong>把制冷剂抽一部分出来、就地净化、再打回去，循环几轮直到达标。楼里的人毫无感觉，空调没停过。</p>
+<p>按单次作业收费，一单从几千美元到几万美元不等，取决于机组吨位和污染程度。毛利率远高于卖气，但规模上不去——因为需要派人派车，一天做不了几单。</p>
+<h3>生意三：碳信用与 SmartEnergy OPS —— 占收入很小，是期权</h3>
+<p>两件事。一是<strong>销毁</strong>：有些制冷剂（比如 R-11、R-12 这类已经全面禁用的）没有再生价值，哈德逊把它们送去高温焚烧彻底摧毁，按摧毁量拿到经核证的碳信用额度，卖给需要抵消排放的企业。二是<strong>远程监控</strong>：在客户的冷水机组上装传感器，实时监测能效，效率异常时提醒检修，按月收订阅费。</p>
+<p>这两块现在收入很小，但它们是「如果碳市场起来了会很值钱」的期权。</p>
+<h3>三块生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万美元，估算拆分）</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>制冷剂销售（再生 + 转售）</td>
+<td>约 232</td>
+<td>约 90%</td>
+<td>约 20%</td>
+<td>大宗商品价差</td>
+</tr>
+<tr>
+<td>RefrigerantSide 现场服务</td>
+<td>约 20</td>
+<td>约 8%</td>
+<td>约 45%</td>
+<td>技术服务</td>
+</tr>
+<tr>
+<td>碳信用 + 监控订阅</td>
+<td>约 5</td>
+<td>约 2%</td>
+<td>高</td>
+<td>期权</td>
+</tr>
+<tr>
+<td><strong>合计（实际数）</strong></td>
+<td><strong>256.92</strong></td>
+<td>100%</td>
+<td><strong>23.26%（实际）</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>说明：财报只披露一个经营分部和一个总收入数字，<strong>上表的收入拆分和毛利率均为按业务性质和历史披露口径的估算</strong>，不是财报数字。总收入 2.5692 亿、总毛利 5976 万、毛利率 23.26% 是实际数。</p>
+</blockquote>
+<h3>这家公司真正的故事：一场关于监管的赌局</h3>
+<p>必须讲清楚，否则看不懂它的报表为什么这样。</p>
+<p>2020 年美国通过了 <strong>AIM 法案</strong>，要求分阶段削减 HFC 类制冷剂的<strong>生产和进口配额</strong>：2024 年砍到基准的 60%，2029 年砍到 30%，2036 年砍到 15%。</p>
+<p>逻辑非常性感：新气的供应被法律强制掐掉七成，但存量设备还在，制冷剂还得用——那唯一的补充来源就是<strong>再生气</strong>，而全美最大的再生厂是哈德逊。这个故事在 2022 年把这家公司推到了 <strong>1.038 亿美元的年净利润</strong>，毛利率 50.09%。</p>
+<p><strong>然后现实来了。</strong> 配额削减公布后，进口商在窗口期抢在配额收紧前大量囤货进口，市场上的新气不但没少反而堆积如山，价格崩了。看这条曲线：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>收入（百万）</th>
+<th>毛利率</th>
+<th>净利润（百万）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>325.23</td>
+<td>50.09%</td>
+<td><strong>103.80</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>289.03</td>
+<td>38.58%</td>
+<td>52.25</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>237.12</td>
+<td>27.71%</td>
+<td>24.39</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>246.61</td>
+<td>25.18%</td>
+<td>16.67</td>
+</tr>
+<tr>
+<td><strong>TTM（2026年6月）</strong></td>
+<td><strong>256.92</strong></td>
+<td><strong>23.26%</strong></td>
+<td><strong>9.02</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年时间，净利润从 1.038 亿掉到 902 万，跌了 91.3%。</strong> 毛利率从五成掉到不到两成四。收入 TTM 反弹了 14.30%，但那是靠销量和一笔收购堆的，毛利率还在继续往下掉——<strong>说明反弹的是量，不是价</strong>。</p>
+<p>现在这家公司干的事是：<strong>趁价格在地板上，拼命囤货，赌 2029 年配额砍到 30% 的时候价格必须涨。</strong> 下一部分的现金流表会把这个赌注的规模量给你看。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>好消息是：这家公司的账<strong>非常干净</strong>，没有什么需要剥的。坏消息在别处。</p>
+<h3>一、股权激励（SBC）：141 万美元，几乎可以忽略</h3>
+<p>TTM 股权激励 141 万美元，占净利润 902 万的 15.6%。对一家两亿多市值的公司来说这个数字是<strong>克制的</strong>——对比同批次的 TSSI，SBC 占真实利润的 74%。管理层没有在利润下滑的时候给自己多发股票。这一项干净。</p>
+<h3>二、回购与稀释：真回购，本批三家里唯一一个</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>1823 万美元</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>141 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>12.9 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>−5.39%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>12.9 倍。</strong> 判断标准是接近 1 倍说明回购只是在抵消员工发股、大于 3 倍才算真回馈股东——12.9 倍是压倒性的。而且股本实实在在减少了 5.39%，不是账面游戏。</p>
+<p>一年回购 1823 万，占市值 2.285 亿的 <strong>8.0%</strong>。在利润跌到低点的时候，公司拿真金白银按 0.94 倍市净率买自己的股票——从资本配置的角度，这是一个诚实且理性的动作。</p>
+<h3>三、一次性项目：TTM 内没有</h3>
+<p>FY2024 有 44 万的资产减值，FY2023 有 212 万的重组费用，TTM 内这一栏是零。收购方面：FY2024 花了 2067 万现金收购（USA Refrigerants 相关资产），TTM 内只有 224 万的尾款。没有商誉减值，没有诉讼和解，没有税务一次性调整。</p>
+<p>所得税实际税率 <strong>38.68%</strong>（缴税 569 万），这是个偏高的正常税率，不存在税收优惠粉饰利润的问题——<strong>这一点和同批次的 TSSI 形成了鲜明对比：TSSI 靠一笔 691 万的税收优惠把净利润翻了倍，哈德逊则是老老实实按接近四成的税率缴了税</strong>。</p>
+<h3>四、利润和现金流的差：本篇最重要的一张表</h3>
+<p>净利润 902 万，经营现金流 <strong>−2969 万</strong>，自由现金流 <strong>−3451 万</strong>。差额 3871 万，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td><strong>9.02</strong></td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+6.32</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+0.23</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+1.41</td>
+<td>非现金（但是真成本）</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+0.86</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>−2.70</td>
+<td></td>
+</tr>
+<tr>
+<td>小计（营运资金变动前）</td>
+<td><strong>15.14</strong></td>
+<td>这才是这门生意一年真实的造血能力</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−8.23</td>
+<td>销量回升带来的</td>
+</tr>
+<tr>
+<td><strong>− 存货增加</strong></td>
+<td><strong>−45.03</strong></td>
+<td><strong>本表的全部答案</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+14.89</td>
+<td>用供应商账期扛掉了一部分</td>
+</tr>
+<tr>
+<td>− 所得税款项</td>
+<td>−3.88</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性资产</td>
+<td>−2.58</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>−29.69</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−4.83</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−34.51</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表只说了一件事：一年往存货里砸了 4503 万美元。</strong></p>
+<p>这不是经营恶化，是<strong>主动的商业决策</strong>。存货周转率 1.92，意味着账上压着大约六个月的货。营运资金 1.5065 亿，占股东权益 2.4326 亿的 <strong>62%</strong>——<strong>这家公司的大部分资产，就是仓库里的制冷剂钢瓶</strong>。</p>
+<p>要看清这笔钱的性质：如果 2029 年配额收紧、制冷剂价格翻倍，这 4503 万的存货就是一笔极其漂亮的投资；如果价格再跌，这批货就要计提跌价准备，直接砸穿利润表和账面价值。</p>
+<p><strong>你买这只股票，本质上是在替管理层出钱做这个赌注。</strong> 报表上「自由现金流为负」这个吓人的数字，翻译过来就是「他们把利润全押上去了，还加了杠杆」。</p>
+<p>值得注意的是，公司在存货掏走 4503 万、经营现金流为负 2969 万的同时，还回购了 1823 万的股票——现金从 7013 万（FY2024 末）一路掉到现在的 2560 万。<strong>弹药在快速消耗</strong>，好在债务只有 476 万、几乎没有，还有 2084 万的净现金垫底，短期不至于出事。</p>
+<h3>五、资本化：没有</h3>
+<p>没有软件开发费资本化，没有内容制作费。资本开支 483 万主要是再生设备和运输钢瓶，全是实物资产。这一项干净。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 2.2854 亿美元，企业价值 2.0770 亿美元（净现金 2084 万），账面价值 2.4326 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>228.5 ÷ 9.02</td>
+<td><strong>25.3 倍</strong></td>
+<td><strong>3.95 元</strong></td>
+</tr>
+<tr>
+<td>公司口径（调整后 EBITDA）</td>
+<td>公司不披露调整后净利润</td>
+<td>不适用</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无需调整（无一次性项目，SBC 已按 GAAP 扣除，税率正常）</td>
+<td><strong>25.3 倍</strong></td>
+<td><strong>3.95 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 −3451 万</td>
+<td><strong>不适用（为负）</strong></td>
+<td><strong>−15.10 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（还原存货囤积）</td>
+<td>228.5 ÷ 10.52（−34.51 ＋ 45.03 存货支出）</td>
+<td><strong>21.7 倍</strong></td>
+<td><strong>4.60 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>207.7 ÷ 15.62</td>
+<td><strong>13.3 倍</strong></td>
+<td><strong>7.52 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>228.5 ÷ 16.69（FY24 2439 万、FY25 1667 万、TTM 902 万）</td>
+<td><strong>13.7 倍</strong></td>
+<td><strong>7.30 元</strong></td>
+</tr>
+<tr>
+<td>市净率（参考）</td>
+<td>228.5 ÷ 243.3</td>
+<td><strong>0.94 倍</strong></td>
+<td>低于账面价值</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表和绝大多数公司是反过来的，这是它最重要的特征。</strong></p>
+<p>通常「三年平均利润口径」的作用是给你泼冷水——当期利润是周期高点时，三年平均会露出更高的倍数（比如 NVDA 当期 34 倍、三年平均 73.5 倍）。哈德逊恰恰相反：<strong>当期 25.3 倍，三年平均只有 13.7 倍</strong>。</p>
+<p>这说明当前的 902 万净利润<strong>是过去三年里最差的一年</strong>，不是最好的一年。你不是在为一个虚高的利润高点付钱，你是在为一个被压到地板上的利润付钱。</p>
+<p>另外两个数字指向同一个方向：EV/EBIT 只有 13.3 倍（比市盈率低，因为公司有净现金），市净率 0.94 倍（<strong>市值低于账面净资产</strong>）。</p>
+<p><strong>说人话：你现在投 100 块进去，按最保守的当期真实口径算，公司一年替你赚 3 块 9 毛 5；按过去三年的平均水平算，一年赚 7 块 3。</strong></p>
+<p>这笔钱里有多少回到你口袋：公司不分红，但一年回购了 1823 万股票，占市值的 <strong>8.0%</strong>——这是纯粹的股东回报，比它当年赚的 902 万还多一倍。其余的钱，全部去了仓库（存货 +4503 万）。所以准确的说法是：<strong>它今年不但把赚的钱全留下了，还把过去攒的现金也拿去囤了货，同时借着股价便宜回购了 8% 的股份。</strong></p>
+<p>这个 3 块 9 未来变大还是变小：</p>
+<ul>
+<li><strong>变大的理由</strong>：2029 年 AIM 配额从基准的 60% 砍到 30%，是法律条文写死的时间表，不是预测。届时新气供应被腰斩，存量设备的需求还在，再生气是唯一的填补来源。哈德逊有全美最大的再生产能和 EPA 认证——这个认证和分馏产线不是想建就能建的，是真实的准入壁垒。现在囤的 4503 万存货，就是为那一天准备的。收入 TTM 已经回升 14.30%，销量在恢复。</li>
+<li><strong>变小的理由</strong>：2024 年那次配额削减也曾被认为是拐点，结果价格反而崩了——<strong>监管收紧不等于价格上涨，中间隔着一整个囤货周期</strong>，这个错市场已经犯过一次。ROIC 只有 4.30%、ROE 3.62%，低于加权平均资本成本 8.42%，意味着按当前盈利水平，这家公司在<strong>毁灭价值</strong>。存货跌价的风险是实实在在的，市净率 0.94 倍看着安全，但账面价值的六成是按成本计价的制冷剂——如果价格再跌，账面价值本身就要缩水。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>账很干净，管理层很诚实，价格接近净资产——但你买的是一张赌 2029 年制冷剂涨价的彩票，而且这张彩票在 2024 年已经开错过一次。</strong></p>
+<p>这家公司没有任何会计上的花招：税率老老实实交了 38.68%，股权激励只有 141 万，回购是真回购（12.9 倍于 SBC，一年买回 8% 的股份），没有减值，没有一次性收益，负债几乎为零。<strong>在本批三家里，它是唯一一家报表能直接看、不用剥的公司。</strong></p>
+<p>它便宜也是真便宜：市净率 0.94 倍买在净资产以下，EV/EBIT 13.3 倍，三年平均市盈率 13.7 倍，而当期 25.3 倍的高倍数恰恰是因为利润被砸在了周期底部——这是典型的周期股「高市盈率买入、低市盈率卖出」的形态。</p>
+<p>但两件事让它够不上「便宜」这一档，只能算「公道」：</p>
+<p>第一，<strong>当期真实回报只有 3 块 9</strong>，而且现金流深度为负，你的钱在被拿去买制冷剂库存，能不能变回来取决于一个你无法控制的商品价格。</p>
+<p>第二，<strong>转折点还没有出现</strong>。收入回升了但毛利率还在跌，说明是靠降价换量。真正的信号是毛利率止跌回升——现在没有。2029 年还有三年，这三年里现金从 7013 万烧到 2560 万，弹药是有限的。</p>
+<p><strong>结论：一个诚实的周期底部标的，值这个价，但不到「现在必须买」的程度。放进观察名单，盯毛利率那一栏——它一旦从 23% 开始往上走，故事就成立了。</strong></p>
+</div></body></html>

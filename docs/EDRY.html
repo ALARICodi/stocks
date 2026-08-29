@@ -1,0 +1,412 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EDRY · EuroDry 欧洲干散货</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EDRY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">15倍是运价高点的15倍，三年平均是亏的</div><h1>EDRY · EuroDry 欧洲干散货</h1>
+<p><strong>市值</strong> 1.444 亿美元 | <strong>股价</strong> $50.38（2026-08-28 收盘，盘后 $57.15 / +13.45%）| <strong>行业</strong> 海运 · 干散货 | <strong>TTM 截止</strong> 2026-06-30 | <strong>全榜名次</strong> 1179 / 1244</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>只做一件事：把 11 条船租出去，收租金。</strong></p>
+<p>这是任务1做到现在最简单的商业模式之一，简单到财报里连"分部"这一栏都不用有。所以下面我不讲分部，讲这门生意到底怎么运转。</p>
+<h3>这门生意具体是什么</h3>
+<p>EuroDry 是一家注册在希腊 Marousi 的船东公司，2018 年从 Euroseas（EDRY 的姊妹公司，做集装箱船）分拆出来，专门做干散货。截至 2026 年 3 月 31 日，它手上有 <strong>11 条散货船</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>船型</th>
+<th>数量</th>
+<th>大致载重</th>
+<th>典型跑什么货</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Panamax（巴拿马型）</td>
+<td>3</td>
+<td>7–8 万吨</td>
+<td>煤炭、谷物，尺寸卡在老巴拿马运河闸室宽度上</td>
+</tr>
+<tr>
+<td>Kamsarmax（卡萨姆型）</td>
+<td>2</td>
+<td>8.2 万吨</td>
+<td>铝土矿、谷物，为几内亚 Kamsar 港的泊位长度定制</td>
+</tr>
+<tr>
+<td>Ultramax（超灵便型）</td>
+<td>5</td>
+<td>6.3–6.5 万吨</td>
+<td>什么都拉，自带吊机不挑港口</td>
+</tr>
+<tr>
+<td>Supramax（大灵便型）</td>
+<td>1</td>
+<td>5.5–6 万吨</td>
+<td>同上，小一号</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>11</strong></td>
+<td><strong>766,420 载重吨</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>它拉的货分两类：<strong>大宗</strong>（铁矿石、煤炭、谷物）和<strong>小宗</strong>（铝土矿、磷酸盐、化肥）。注意这个船队里 6 条是 Ultramax/Supramax —— 这是"灵便型"船，船上自带起重机，能停靠那些没有岸吊的破港口（西非、东南亚、南美的小码头）。而 Panamax/Kamsarmax 是"大船"，只能去有专业装卸设备的大港。<strong>这个船队结构决定了 EuroDry 的客户不是力拓和淡水河谷那种巨头，而是二线的贸易商和货主。</strong></p>
+<h3>钱是怎么收的</h3>
+<p>举个具体例子。一家新加坡的谷物贸易商要把 6 万吨大豆从巴西 Santos 港运到中国日照港，航程 40 天左右。它有两个办法找船：</p>
+<ol>
+<li><strong>即期市场（spot / voyage charter）</strong>：临时在市场上找一条空船，谈一个"从 A 港到 B 港，每吨多少美元"的价格。假如谈成每吨 32 美元，6 万吨就是 192 万美元，船东自己付燃油、港口费、运河费，剩下的才是自己的。这部分开销一趟能吃掉 80–100 万美元，所以船东实际到手大概 90–110 万。</li>
+<li><strong>期租（time charter）</strong>：直接把整条船连船员一起租给贸易商一段时间，比如租 12 个月，<strong>每天 1.4 万美元</strong>。船东只管船能开、船员在岗；燃油、港口费全归租家出。一年就是 511 万美元的租金，扣掉船员工资、保险、维修、干坞（行业里叫 OPEX，一条 Ultramax 大概每天 5,500–6,500 美元），船东净剩每天七八千美元。</li>
+</ol>
+<p>EuroDry 两种都做，但<strong>主要靠期租</strong>，而且是短期期租（3–12 个月）滚动续约。这个选择很关键：短期期租意味着它<strong>不锁定长期价格</strong> —— 运价涨的时候它跟着涨，运价跌的时候它也跟着跌，几乎没有缓冲。它就是一只运价的杠杆化载体。</p>
+<p>那"运价"是什么？行业看 <strong>BDI（波罗的海干散货指数）</strong> 和分船型的 BSI（Supramax）、BPI（Panamax）。这个指数的特点是<strong>波动大到离谱</strong>：2020 年 5 月跌到 400 多点，2021 年 10 月冲到 5,650 点，14 倍的振幅，一年半之内。EuroDry 的营收就是这条曲线的复印件。</p>
+<h3>TTM 的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>TTM（截至 26/06/30）</th>
+<th>上年同期（FY2025 全年）</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td><strong>6,227 万</strong></td>
+<td>5,226 万</td>
+<td><strong>+25.3%</strong></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>3,458 万</td>
+<td>1,882 万</td>
+<td>+83.7%</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td><strong>55.5%</strong></td>
+<td>36.0%</td>
+<td>+19.5 个点</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>1,660 万</td>
+<td>18 万</td>
+<td>从零到有</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td><strong>26.7%</strong></td>
+<td>0.3%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>935 万</strong></td>
+<td>−426 万</td>
+<td>扭亏</td>
+</tr>
+</tbody>
+</table></div>
+<p>一年之内，一家从亏 426 万变成赚 935 万的公司。营收只涨了 25%，利润从负数变成 935 万 —— <strong>这就是重资产周期股的样子：成本是固定的（折旧、船员、保险照付），收入涨的每一块钱几乎全部掉进利润里。反过来跌的时候也一样。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>78 万美元</strong>，占净利润 935 万的 <strong>8.3%</strong>。GAAP 里已经扣掉了，我不加回。</p>
+<p>金额本身不大，但要配着另一个数字看：<strong>股数一年增加了 2.58%</strong>。一家市值只有 1.44 亿的公司，股本每年被稀释 2.6%，等于你持有的份额每年缩水 2.6% —— 这个稀释速度比 78 万美元的账面费用更值得警惕。</p>
+<h3>一次性项目</h3>
+<p>TTM 有一笔 <strong>卖船收益 71 万美元</strong>（现金流表里的 "Loss (Gain) From Sale of Assets −0.71"），占净利润的 7.6%。FY2025 那年这笔是 279 万，占了当年营业利润的一大半。</p>
+<p>剥掉它：<strong>真实净利润 = 935 − 71 = 864 万美元。</strong></p>
+<p>这里要说清楚一件事：<strong>卖船对船东来说不是"一次性"，是常态经营的一部分</strong> —— 船到了 20 年左右就该卖去拆解或者卖给愿意接盘的二手买家，换新船进来。但它的<strong>金额和时点完全由管理层决定</strong>，运价好的年份少卖，业绩难看的年份多卖。FY2025 全年经营利润只有 18 万，靠 279 万卖船收益才把窟窿盖住一部分。<strong>用单期 TTM 判断不了这是不是年年发生 —— 从 FY2021–FY2026 的记录看，六年里有三年有卖船收益，所以它更接近"经常发生的非经常项目"。</strong></p>
+<h3>资本化的支出</h3>
+<p>船东的 capex 分两种：<strong>扩张性</strong>（买船）和<strong>维持性</strong>（干坞检修、压载水处理系统、脱硫塔）。TTM 花了 <strong>757 万</strong>，同期卖船收回 <strong>829 万</strong>，投资活动净流入 72 万 —— 也就是说，<strong>这一年 EuroDry 净卖了船，没净买船。</strong></p>
+<p>这个数字是本篇最关键的伏笔，第三部分会用到。</p>
+<h3>回购与稀释</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>50 万</td>
+</tr>
+<tr>
+<td>SBC 金额</td>
+<td>78 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.64</strong></td>
+</tr>
+<tr>
+<td>股数实际变化</td>
+<td><strong>+2.58%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这个比值小于 1，意味着回购连员工发的股票都没抵消完，股本还在净增长。</strong> 按分析模式的标准（大于 3 才算真回购），这个 0.64 属于"象征性回购"。同期公司没有派股息（Ex-Dividend Date 显示 n/a）。</p>
+<p>所以：<strong>过去 12 个月，EuroDry 一分钱现金没有回到股东口袋，而你手上的股份被稀释了 2.58%。</strong></p>
+<h3>利润和现金流的差</h3>
+<p>净利润 935 万，经营现金流 2,486 万，差了 1,551 万。逐项对账（单位：万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>935</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+1,178</td>
+<td>船在账面上变老，不花钱</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+33</td>
+<td>融资费用摊销</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+78</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>− 卖船收益</td>
+<td>−71</td>
+<td>已计入利润，但属投资活动</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+176</td>
+<td>杂项</td>
+</tr>
+<tr>
+<td><strong>+ 应收账款收回</strong></td>
+<td><strong>+513</strong></td>
+<td><strong>客户欠款收回来了</strong></td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>+79</td>
+<td>船上燃油、备件</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−69</td>
+<td>还了供应商的钱</td>
+</tr>
+<tr>
+<td>+ 预收账款增加</td>
+<td>+59</td>
+<td>租家预付的租金</td>
+</tr>
+<tr>
+<td>− 其他经营资产净增</td>
+<td>−425</td>
+<td>预付的保险、干坞费等</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>2,486</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读这张表要看两个数字。</strong></p>
+<p>第一个是 <strong>1,178 万的折旧</strong>。对多数轻资产公司来说折旧是"会计上的假成本"，但对船东<strong>它是最真实的成本</strong>：船每跑一年就老一岁，20 多岁就得报废，而一条二手 Ultramax 现在市价 2,500–3,000 万美元。这 1,178 万不是白记的账，是"你每年在消耗掉的船"。</p>
+<p>第二个是 <strong>513 万的应收账款收回</strong>。这是一次性的现金流入 —— 客户欠的钱只能收一遍。把它从 2,486 万里剔掉，<strong>可持续的经营现金流大约是 1,973 万</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>14,440 ÷ 935</td>
+<td><strong>15.4 倍</strong></td>
+<td><strong>6.48 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司未披露调整后口径</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>14,440 ÷ 864（扣掉卖船收益）</td>
+<td><strong>16.7 倍</strong></td>
+<td><strong>5.99 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>14,440 ÷ 1,729</td>
+<td><strong>8.4 倍</strong></td>
+<td><strong>11.97 元</strong></td>
+</tr>
+<tr>
+<td><strong>可持续 FCF 口径</strong></td>
+<td>14,440 ÷（1,729 − 513 应收一次性）</td>
+<td><strong>11.9 倍</strong></td>
+<td><strong>8.41 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>21,617 ÷ 1,660</td>
+<td><strong>13.0 倍</strong></td>
+<td>7.68 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>三年（TTM + FY25 + FY24）平均净利 = <strong>−251 万</strong></td>
+<td><strong>无意义（三年净亏）</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+<tr>
+<td>五年平均利润口径</td>
+<td>14,440 ÷ 462</td>
+<td><strong>31.3 倍</strong></td>
+<td><strong>3.19 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>这张表里最重要的一行</h3>
+<p><strong>三年平均利润是 −251 万美元。</strong></p>
+<p>把 TTM 的 935 万、FY2025 的 −426 万、FY2024 的 −1,261 万加起来除以三，得到的是<strong>负数</strong>。也就是说，<strong>过去三年这家公司合计是亏钱的，一分没赚。</strong></p>
+<p>再往前拉一年到五年：TTM 935 + FY25(−426) + FY24(−1,261) + FY23(−291) + FY22(3,354) = 2,311 万，五年平均 <strong>462 万</strong>。用当前市值 1.444 亿去除，是 <strong>31.3 倍市盈率</strong>。</p>
+<p><strong>所以你现在看到的 15 倍，是用这家公司近五年最好的一年之一算出来的 15 倍。</strong> 五年平均口径 31 倍，三年平均口径根本算不出来。这不是一家 15 倍的公司偶然便宜了，这是一家在周期波峰上被标了 15 倍价签的公司。</p>
+<h3>你投 100 块，一年拿回多少</h3>
+<p><strong>按最保守的真实口径（剔除卖船收益的 GAAP 利润，16.7 倍），公司一年替你赚 5.99 元。</strong></p>
+<p>这 5.99 元里，<strong>回到你口袋的是 0 元</strong>：没有股息，回购 50 万还不够抵消 78 万的股权激励，股本反而多了 2.58%。</p>
+<p>那 5.99 元去哪了？看现金流：经营现金流 2,486 万里，757 万修船，1,268 万还债（TTM 净还债 409 万，总还了 1,268 万又借了 859 万），50 万回购。<strong>钱主要用来还债了。</strong> 这不算坏事 —— 净债务从 FY2024 的 1.004 亿降到现在的 7,177 万，一年砍掉了近 3,000 万。但对你这个股东来说，你今年的回报是"债权人的风险变小了"，不是"我拿到了钱"。</p>
+<h3>这个 5.99 元未来会变大还是变小</h3>
+<p><strong>大概率变小，而且变小的幅度可能很吓人。</strong> 三个理由：</p>
+<p><strong>一、维持性资本开支被推迟了。</strong> TTM 只花了 757 万修船，同期折旧 1,178 万。差额 421 万是"今年省下、以后要还"的账。船队 11 条船，总账面净值（总资产约 1.89 亿减掉现金 2,562 万和其他资产）大概 1.5 亿出头，年折旧 1,178 万 —— 反推船队平均剩余账面寿命约 13 年。这个船队正在变老，而当年只花了折旧的 64% 去维护它。<strong>8.4 倍的 P/FCF 之所以看起来便宜，很大程度上是因为分母里省掉了本该花的钱。</strong></p>
+<p><strong>二、ROIC 5.09% 低于 WACC 6.72%。</strong> 这两个数字都在 stockanalysis 的统计页上摆着。意思是：<strong>EuroDry 每投一块钱进这门生意，产出的回报低于这一块钱的成本 —— 它在毁灭价值，而不是创造价值。</strong> 一家 ROIC 长期低于资本成本的公司，理论上应该按低于账面价值交易。它现在 PB 1.44。</p>
+<p><strong>三、杠杆放大了下行。</strong> 债务 9,739 万，权益 1.094 亿，D/E 0.89。利息覆盖倍数只有 2.59（经营利润 1,660 万 ÷ 利息约 592 万）。运价只要回到 FY2025 的水平，经营利润就掉回 18 万 —— 那时候利息覆盖是 0.03，公司靠卖船和借新还旧过日子。这不是假设，<strong>这就是去年发生过的事。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这家公司现在的 15 倍市盈率，是运价高点上的 15 倍；把镜头拉到三年，它是亏钱的，拉到五年，它是 31 倍。股价一年涨了 374%，你买的不是便宜，是"运价还会更好"这个赌注。</strong></p>
+<p>再说三句：</p>
+<p>它不是骗子公司 —— 11 条船是真的，2,486 万经营现金流是真的，一年砍掉 3,000 万净债务是真的干活。问题在于<strong>它赚的钱不归你</strong>：没股息、回购还不够抵消稀释、赚来的现金都拿去还债和修船了，而 ROIC 5.09% 比资本成本 6.72% 还低，意味着留在公司里再投的每一块钱都在缩水。</p>
+<p>288 万股的总股本、13 万股的日均成交量 —— 这是一只流动性极差的微型股，盘后一跳就是 13%。它的价格由几十个人的情绪决定，跟基本面的关系比你以为的松。</p>
+<p><strong>如果你想赌干散货运价，这是一支高效的赌注工具（杠杆高、船队小、没有长约缓冲，运价涨 20% 利润能翻倍）。但如果你想找一家"便宜的好公司"，这不是。它是一家在周期最好的时刻被标上便宜价签的、正在毁灭价值的重资产公司。</strong></p>
+</div></body></html>

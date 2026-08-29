@@ -1,0 +1,255 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DWSN · 道森地球物理（Dawson Geophysical）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DWSN</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">股价翻倍后28.5倍买五年亏损的周期苦力，FCF还是负的</div><h1>DWSN · 道森地球物理（Dawson Geophysical）</h1>
+<p>市值 $1.04亿 / 股价约 $3.3 / 行业：油气勘探服务（陆上地震数据采集） / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这家公司实质上只做<strong>一门生意：陆上地震勘探数据采集</strong>，按地域分成美国和加拿大两块，但干的是同一件事。</p>
+<h3>唯一的生意：帮油气公司"给地下拍CT"</h3>
+<p>道森是北美最大的陆上地震数据采集承包商，总部在德州米德兰（二叠纪盆地的心脏）。它的活儿说白了是这样的：</p>
+<p>一家页岩油公司（比如在西德州买了一块 200 平方公里的矿权）想知道地下几千米处的油层长什么样、往哪个方向钻井最划算。它找道森签一份几百万到几千万美元的合同。道森派出一支几十到上百人的野外作业队，开着一排叫"可控震源车"（vibroseis truck）的大家伙——每辆几十吨重，车底有一块液压振动板，压在地面上以特定频率震动，把声波打进地下几千米。声波碰到不同岩层会反射回来，地面上预先铺好的几万个检波器（geophone，现在多用无线节点式的，一个巴掌大，插在土里）把反射波录下来。几个星期扫完整个区块，得到的原始数据交给客户（或第三方处理公司），最终生成一幅地下三维立体图。油公司拿着这幅图决定在哪儿打井——一口页岩井成本上千万美元，打歪了就打水漂，所以这笔"拍CT"的钱省不得。</p>
+<p><strong>怎么收钱</strong>：项目制。按合同一单一单收，合同里通常按作业天数或覆盖面积计价。客户开工前会预付一部分（这就是资产负债表上"预收款"科目的来源，后面会讲到它 TTM 里的大动作）。一单大项目几百万到几千万美元，一年也就做十几二十个项目，<strong>营收极不稳定</strong>——看历史就知道：2021 年收 2470 万，2022 年 5160 万，2023 年 9690 万，2024 年掉回 7415 万，TTM 冲到 1.04 亿。这不是增长，是过山车。</p>
+<p><strong>客户为什么非买不可、又为什么随时可以不买</strong>：油价高、钻井预算足的年份，勘探是刚需；油价一跌，勘探预算是油公司<strong>第一个砍掉的</strong>——已有的井照常产油，新区块的"CT"可以明年再拍。所以这门生意在客户预算表里排最末位，周期性比油服行业平均还要凶。</p>
+<p><strong>竞争格局</strong>：陆上地震采集是重资产、低门槛技术、拼价格的苦活。过去十年美国同行大批破产退出，道森靠 2022 年与 Breckenridge Geophysical 合并（对方股东 Wilks 兄弟由此成为控股股东，目前持股约八成多，公开流通盘只有 613 万股、占总股本 20%）活到了今天，"最大"的头衔是熬死同行剩下来的。近两年多了一个新故事：碳捕集封存（CCUS）项目也需要地震监测来确认二氧化碳打进地下后没有跑漏，这给了它一点油气之外的需求，但目前占比还小。</p>
+<h3>地域拆分（财报只按地域披露，无业务分部利润）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地域</th>
+<th>TTM 营收</th>
+<th>上年同期口径（FY2025 全年）</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>$8,897万</td>
+<td>$5,983万</td>
+<td>85%</td>
+</tr>
+<tr>
+<td>加拿大</td>
+<td>$1,534万</td>
+<td>$1,579万</td>
+<td>15%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$10,431万</strong>（同比 +86%）</td>
+<td>$7,563万</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到营收，无分部利润。整体 TTM 毛利率 22.3%、经营利润率 5.1%——收 100 块，刨掉野外队工资、燃油、设备折旧，只剩 5 块。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $16万，占净利润 4%。可忽略，这家公司不玩这套。</li>
+<li><strong>一次性项目</strong>：没有大额一次性损益。但要点名一个更要命的东西：<strong>TTM 净利润 $364万 是建立在营收暴增 86% 的项目大年之上的</strong>，这本身就是"单期口径失真"的极端案例——过去五年（2021–2025）它每一年都是亏的，累计亏掉约 6600 万美元。</li>
+<li><strong>税</strong>：TTM 实际税率只有 <strong>0.95%</strong>（全年只交了 3.5 万美元的税），因为历史巨亏攒下的亏损抵扣。若按正常 21% 税率，$367万 税前利润只剩约 $290万 净利润，"真实"PE 要再上浮两成多。</li>
+<li><strong>资本化的支出</strong>：无软件/内容资本化问题。但注意设备是真金白银买的：TTM 资本开支 $780万，比折旧 $721万 还高——震源车和节点设备用坏就得换，折旧是真成本，一分都不能加回。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $1万（是的，一万美元），聊胜于无；股本一年微增 0.41%。2024 年曾发过一次 $986万 特别股息（Wilks 控股下的一次性分红），TTM 没有任何分红。</li>
+<li><strong>利润和现金流的差——本篇含金量最高的一张表</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+$364万</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+$721万</td>
+</tr>
+<tr>
+<td>加：SBC 及其他</td>
+<td>+$91万</td>
+</tr>
+<tr>
+<td>加：应收款回收 + 应付款增加</td>
+<td>+$741万</td>
+</tr>
+<tr>
+<td><strong>减：预收款减少</strong></td>
+<td><strong>−$1,260万</strong></td>
+</tr>
+<tr>
+<td>减：其他营运资金变动</td>
+<td>−$303万</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>+$335万</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−$780万</td>
+</tr>
+<tr>
+<td>= <strong>自由现金流</strong></td>
+<td><strong>−$445万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>翻译成人话：账面赚了 364 万，但其中相当一部分"营收"是把客户<strong>以前预付的钱</strong>（预收款）确认成了收入——预收款一年里掉了 1260 万，意味着老项目在消耗、新预付没跟上。再扣掉买设备的钱，<strong>这一年实际是净流出 445 万现金</strong>。同时它还在净还债（TTM 净还 $579万），账上现金从 $1,528万 掉到 $613万，净负债 $1,392万。赚的是账面利润，流的是真现金。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$1.037亿 ÷ $364万</td>
+<td>28.5倍</td>
+<td>¥3.5</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>不发布 Non-GAAP，此项无</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>按正常 21% 税率补税后利润约 $290万</td>
+<td>约35.7倍</td>
+<td>¥2.8</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 <strong>−$445万</strong></td>
+<td>无意义（负）</td>
+<td><strong>−¥4.3</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$1.177亿 ÷ $531万</td>
+<td>22.2倍</td>
+<td>¥4.5</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>近三个完整财年平均净利润为 <strong>−$607万</strong></td>
+<td><strong>无意义（三年平均是亏的）</strong></td>
+<td><strong>负数</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>投 100 块进去，最保守的口径算下来公司一年不但不替你赚钱，还倒贴 4 块多现金</strong>；就算认账面利润，也只有 3.5 块，而且这 3.5 块几乎没交税（税盾用完就没了）、全部留在公司里买设备维持运转，一分钱不分给你。至于未来这个数变大还是变小：完全取决于油价和油公司的勘探预算，过去五年里有五年是亏损，营收翻倍的年份也只有 3.5% 的净利率——<strong>这是一门景气顶点也只能勉强糊口的生意</strong>。</p>
+<h2>第四部分：一句话结论</h2>
+<p>股价一年翻倍（+99%）之后，你在用 28.5 倍市盈率买一家五年亏了六千多万、景气大年净利率仅 3.5%、自由现金流仍为负、流通盘只有 20%（Wilks 兄弟控盘八成）的周期性苦力公司——<strong>贵得没道理，这个价格买的不是生意，是对油气勘探周期延续的一注赌</strong>。</p>
+<p><em>数据来源：stockanalysis.com，TTM 截止 2026-06-30，分析日期 2026-08-29。</em></p>
+</div></body></html>

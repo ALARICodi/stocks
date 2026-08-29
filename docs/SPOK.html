@@ -1,0 +1,352 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SPOK · Spok 控股（医院寻呼机 + 医院通讯软件）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SPOK</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">11.7%股息是掏家底发的，寻呼主业年缩6.4%，股本还年增2.8%</div><h1>SPOK · Spok 控股（医院寻呼机 + 医院通讯软件）</h1>
+<p><strong>市值</strong> 2.228 亿美元 ｜ <strong>股价</strong> 约 10.65 美元（2092 万股）｜ <strong>行业</strong> 通讯服务 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报的分部表只按地区拆（美国 1.3343 亿、国际 254 万），没有按业务拆。但公司在季报里一直把营收分成两条线报，<strong>这两条线是两门完全不同的生意，一门在死，一门在活</strong>。必须拆开看。</p>
+<h3>生意 A：给美国医院运营寻呼机网络（TTM 约 7050 万美元，占 52%）</h3>
+<p><strong>这件事具体是什么。</strong></p>
+<p>对，就是那种九十年代挂在腰上的 BB 机（英文 pager）。全美国的消费者寻呼机市场早在 2000 年前后就死光了，但<strong>医院没死</strong>——今天全美还有约 <strong>64.5 万台</strong>在服役的寻呼机，其中绝大多数挂在医生和护士的白大褂上，而这 64.5 万台里的大部分是 Spok 的。</p>
+<p>为什么医院还在用 BB 机？三个非常实在的理由：</p>
+<ol>
+<li><strong>医院大楼是手机信号的坟墓。</strong> 放射科的铅墙、地下室的手术室、MRI 屏蔽间——手机 4G/5G 打不进去。而寻呼机走的是 900MHz 低频窄带信号，穿透力极强，用的是<strong>发射塔同频广播</strong>（同一条消息全城几十座塔同时发），你在电梯井里也能收到。</li>
+<li><strong>一对多广播的可靠性。</strong> 心跳骤停要呼「Code Blue 三楼」，得同时通知 20 个人，还必须保证每个人都收到。寻呼是单向广播，不占用信道、不会因为基站拥堵掉包。飓风把手机网络打瘫时，寻呼网还在响。</li>
+<li><strong>电池能撑一两周</strong>，值 36 小时班不用充电。</li>
+</ol>
+<p><strong>它怎么收钱。</strong> 纯订阅：<strong>每台寻呼机每月收租金</strong>。一家 800 张床的医院可能租了 1500 台，每台每月约 8～9 美元，这家医院一年就付 Spok 约 15 万美元。Spok 负责发射塔、网络维护、坏了换新机。<strong>客户签的是多年合同，按月自动扣款。</strong></p>
+<p>用 TTM 数据倒推：7050 万美元 ÷ 64.5 万台 ÷ 12 个月 ≈ <strong>每台每月 9.1 美元</strong>。</p>
+<p><strong>这门生意为什么值得看，又为什么必死。</strong></p>
+<p>值得看的地方：毛利极高。发射塔早在二三十年前就折旧完了，网络的边际成本几乎为零，收上来的租金大部分直接变利润。整个公司 TTM 折旧摊销只有 364 万美元——一张覆盖全美的无线网络，一年折旧不到 400 万，说明资产早就摊销干净了。</p>
+<p>必死的地方：<strong>用户数每年掉 7%。</strong> 2026 年 6 月底 64.5 万台，一年前是 69.4 万台。Q2 2026 无线营收同比 <strong>-6.7%</strong>。医院一台一台地换成手机 App、换成 Vocera 那种院内对讲徽章、换成 Wi-Fi 覆盖改造。这个下降从未停止过，也不会停。</p>
+<p><strong>这是一块正在融化的冰。</strong> 融得慢（每年 7%），但一直在融。</p>
+<h3>生意 B：卖医院临床通讯软件（TTM 约 6550 万美元，占 48%）</h3>
+<p><strong>这件事具体是什么。</strong></p>
+<p>Spok 的产品叫 <strong>Spok Care Connect</strong>，它解决的是医院里一个非常具体、非常烦人的问题：<strong>谁该被通知，用什么方式，现在轮到谁值班。</strong></p>
+<p>举个具体场景：急诊送来一个疑似中风的病人。护士按下「Code Stroke」按钮，接下来必须在几分钟内完成一串动作——通知当班的神经内科医生、通知 CT 室准备、通知药房准备溶栓药、通知床位协调员留一张 ICU 床。<strong>这四个人是谁？</strong> 神经科今天是张医生值班还是李医生？张医生现在在手术台上吗？他的呼机号是多少，还是发手机？</p>
+<p>Spok 卖的就是这套中枢：</p>
+<ul>
+<li><strong>一个巨大的排班和联系人数据库</strong>，接进医院的 HR 系统和排班系统，实时知道「此刻，神经内科的一线呼叫是谁、二线是谁」。</li>
+<li><strong>一台呼叫处理台</strong>（很多医院的总机接线员坐在 Spok 的界面前工作），护士打进来一句「我要值班的神经科」，系统自动路由。</li>
+<li><strong>告警集成</strong>：床边监护仪、护士呼叫铃、检验危急值、消防报警——全部接进来，按规则自动派发到正确的人的正确设备上（呼机、手机 App、桌面）。</li>
+<li><strong>审计留痕</strong>：每条消息谁发的、几点发的、几点被读的，全部留档。这条对医院是刚需——出了医疗纠纷上法庭，要证明「我确实在 3 分钟内通知了主治医生」。</li>
+</ul>
+<p><strong>怎么收钱。</strong> 三块：一次性的<strong>软件许可费</strong>（一家中型医院买一套 20～50 万美元）、<strong>专业服务费</strong>（上线实施，把医院的排班系统、HIS 系统、几十种设备接口全部对接好，通常几个月，几十万美元）、以及<strong>年度维护订阅费</strong>（许可费的 18～20%，年年收）。Q2 2026 软件许可收入 360 万美元，同比涨了 51.7%——这是波动很大的一块，因为一家大医院签单就能顶好几个季度。</p>
+<p><strong>客户为什么非买不可。</strong> 一旦装上，<strong>换掉极其痛苦</strong>：它接了医院几十个系统的接口，几千名员工的排班规则跑在上面，护士的肌肉记忆也在上面。这是真实的转换成本护城河。所以软件这半边营收基本是平的（TTM 约 6550 万，同比大致持平，Q2 同比 +3.2%）——不涨，但也不掉。</p>
+<h3>钱的分布</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无线寻呼</td>
+<td>约 7050 万</td>
+<td>约 7530 万</td>
+<td><strong>-6.4%</strong></td>
+<td>52%</td>
+<td>高（估算 25%+）</td>
+<td>估算 1800 万</td>
+</tr>
+<tr>
+<td>医疗通讯软件</td>
+<td>约 6550 万</td>
+<td>约 6560 万</td>
+<td>-0.2%</td>
+<td>48%</td>
+<td>低（估算 1%）</td>
+<td>估算 40 万</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1.3597 亿</strong></td>
+<td><strong>1.4074 亿</strong></td>
+<td><strong>-3.4%</strong></td>
+<td>100%</td>
+<td><strong>13.5%</strong></td>
+<td><strong>1842 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>重要说明：上面的 TTM 拆分是我用 2026 年 Q1/Q2 公告的季度数（Q1 无线 1750 万/软件 1570 万，Q2 无线 1720 万/软件 1780 万）倒推的估算值，公司年报只披露地区分部。分部利润公司完全不披露，上表的利润率是按「寻呼网络已折旧完、软件半边要养 380 人的销售和实施团队」这个结构估算的，不是财报数字。</strong></p>
+<p>这个估算的方向是可靠的：<strong>公司 13.5% 的整体经营利润率，几乎全部由正在萎缩的那一半贡献；正在活着的那一半基本不赚钱。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>537 万美元</strong>，占净利润 1224 万的 <strong>43.9%</strong>。这是全篇第一个要盯住的数字。</p>
+<p>一家 382 人的公司，一年发出去 537 万美元的股票。<strong>我按 GAAP 把它当成真实的现金成本，不加回去</strong>——因为它实实在在地稀释了你：股本一年增加了 <strong>2.84%</strong>。公司自己吹的「调整后 EBITDA」把这 537 万加回去了，那个数字不能信。</p>
+<p><strong>一次性项目</strong>：TTM 里有，而且 TTM 之后还有一笔更大的：</p>
+<ul>
+<li><strong>重组费用</strong>：2026 年 4 月公司做了一次「战略重整」，裁掉约 10% 的员工，上半年计入的遣散和重组费用 <strong>190 万美元</strong>，公司说能带来 600 万/年的成本节省。</li>
+<li><strong>频谱出售</strong>：2026 年 7 月成交，<strong>卖掉一批窄带频谱牌照，收 800 万美元，税前收益约 750 万，会计在 2026 年 Q3 入账</strong>。<strong>这笔不在本文的 TTM 窗口里</strong>，但你必须知道它存在——下个季度的净利润会被这 750 万顶得很好看，那是卖资产卖出来的，不是经营赚的。</li>
+</ul>
+<p><strong>必须诚实说的一句</strong>：只看 TTM 这一期，我<strong>分不清这次重组是「真一次性」还是「年年都有的一次性」</strong>。往回看，FY2021 有 1566 万的资产减值/重组费用，FY2022 有一笔 -2185 万的冲回。<strong>三年里出现两次，这家公司的「一次性」出现得相当规律。</strong> 我在下面的估值表里按一次性处理，但你自己要打个折。</p>
+<p><strong>资本化的支出</strong>：软件公司常见的「把开发工资资本化成资产」，Spok 这边看不到明显痕迹。TTM 资本开支只有 <strong>317 万</strong>，占营收 2.3%——一家软件公司花这么少，说明它没在资本化开发费。这一项<strong>干净</strong>。</p>
+<p><strong>回购与稀释</strong>：<strong>这是全篇最难看的一组数字。</strong></p>
+<ul>
+<li>TTM 回购金额 <strong>207 万</strong></li>
+<li>TTM 股权激励 <strong>537 万</strong></li>
+<li><strong>回购 ÷ SBC = 0.39</strong></li>
+</ul>
+<p>按规矩，这个比值接近 1 才算「回购只是在抵消员工发股」，大于 3 才算真回馈股东。<strong>0.39 意味着回购连员工发的股都抵不掉一半。</strong> 结果直接体现在股本上：<strong>一年增加 2.84%</strong>。</p>
+<p>你持有这只股票，什么都不做，一年被稀释掉 2.84%。11.74% 的股息率里，先扣掉这 2.84%。</p>
+<p><strong>利润和现金流的差</strong>：净利润 1224 万，经营现金流 2858 万，自由现金流 2541 万。差了一倍多，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>1224</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>364</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>537</td>
+</tr>
+<tr>
+<td>＋ 坏账计提（非现金）</td>
+<td>141</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（主要是递延所得税）</td>
+<td>400</td>
+</tr>
+<tr>
+<td>＋ 营运资金变化（应收 +110、应付 -52、预收 +138、其他 -4）</td>
+<td>192</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>2858</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td><strong>-317</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>2541</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里有两笔钱是「假的现金」，加起来 937 万，占自由现金流的 37%：</strong></p>
+<ul>
+<li><strong>537 万的股权激励</strong>：它不花公司的现金，但它花的是<strong>你的股份</strong>。经济上它就是成本。</li>
+<li><strong>400 万的「其他经营活动」</strong>：主要是递延所得税。利润表上记了 482 万的所得税费用，但实际交给国税局的现金远少于这个数——Spok 有历史亏损结转（NOL）可以抵税。<strong>这是真的现金好处，但它会用完。</strong> 用完那天，现金流会往下掉一个台阶。</li>
+</ul>
+<p><strong>把股权激励这笔真实成本扣掉，属于股东的真实自由现金流 = 2541 − 537 = 2004 万。</strong> 记住这个数字，下一节要用。</p>
+<p><strong>然后是这家公司最要命的一行：TTM 派了 2733 万美元的股息。</strong></p>
+<ul>
+<li>股息 2733 万 vs 自由现金流 2541 万 → <strong>占 108%</strong></li>
+<li>股息 2733 万 vs 扣掉股权激励后的真实自由现金流 2004 万 → <strong>占 136%</strong></li>
+</ul>
+<p>现金账户的变化印证了这一点：现金从 FY2025 年末的 2528 万掉到 2026 年 6 月的 <strong>1659 万</strong>，18 个月里掉了 869 万；再往前，FY2023 年末是 3199 万。<strong>这家公司在稳定地烧自己的现金余额来维持股息。</strong></p>
+<p>按现在的速度（一年净烧 365 万），账上 1659 万现金还能撑约 4 年半。7 月卖频谱进来的 800 万，能再买 2 年多。<strong>这就是为什么它 7 月要卖频谱——卖的是寻呼网络赖以运行的牌照资产，换来的钱用来发股息。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 2.2278 亿，企业价值 2.1193 亿（账上净现金 1085 万，扣掉了）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2.2278 亿 ÷ 1224 万</td>
+<td><strong>18.2 倍</strong></td>
+<td><strong>5.49 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>反推「调整后净利」1745 万（加回 SBC 和重组的税后影响）</td>
+<td><strong>12.8 倍</strong></td>
+<td><strong>7.84 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2.2278 亿 ÷ 1360 万（只加回重组 190 万的税后 136 万，SBC 不加回）</td>
+<td><strong>16.4 倍</strong></td>
+<td><strong>6.11 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2.2278 亿 ÷ 2541 万</td>
+<td><strong>8.8 倍</strong></td>
+<td><strong>11.41 元</strong></td>
+</tr>
+<tr>
+<td>　└ 扣掉股权激励后的真实现金口径</td>
+<td>2.2278 亿 ÷ 2004 万</td>
+<td><strong>11.1 倍</strong></td>
+<td><strong>9.00 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2.1193 亿 ÷ 1842 万</td>
+<td><strong>11.5 倍</strong></td>
+<td><strong>8.70 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2.2278 亿 ÷ 1436 万（TTM/FY25/FY24 平均）</td>
+<td><strong>15.5 倍</strong></td>
+<td><strong>6.45 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先看第二行和第三行的差距。</strong> 公司希望你相信它只有 12.8 倍，方法是把 537 万的股权激励加回来当利润。<strong>那 537 万稀释了你 2.84% 的股份，它不是利润。</strong> 真实口径是 16.4 倍。<strong>光这一个动作，公司把估值从 16.4 倍说成了 12.8 倍——凭空便宜了 28%。</strong></p>
+<p><strong>再看最后一行。</strong> 三年平均 15.5 倍，比当期真实的 16.4 倍<strong>略低</strong>。意思是：<strong>现在这个利润是三年里偏低的一年</strong>（1224 万 vs 1588 万 vs 1497 万，TTM 是三年最低）。上半年净利 610 万，同比掉了 37.4%——这是重组费用和无线业务加速下滑双重作用的结果。所以这不是「高点估值陷阱」，是「利润已经在往下走的路上」。</p>
+<p><strong>第四行 8.8 倍的自由现金流口径是这只股票最诱人的门面，也是最大的陷阱。</strong> 11.41% 的自由现金流回报率听着极高。但：</p>
+<ul>
+<li>扣掉股权激励这笔真实成本，掉到 <strong>9.00 元</strong>（11.1 倍）；</li>
+<li>而这 2541 万现金流里，有 400 万来自递延所得税这类会用完的好处；</li>
+<li>更重要的是，<strong>产生这些现金流的营收有 52% 每年缩水 6.4%</strong>。</li>
+</ul>
+<h3>那么，投 100 块，一年赚多少？</h3>
+<p><strong>按最保守的真实口径（剔除障眼法后 16.4 倍市盈率），一年 6.11 元。</strong></p>
+<p>这 6.11 元的去向非常特别，也非常反常：</p>
+<ul>
+<li><strong>公司发给你 11.74 元的股息。</strong> 是的——<strong>它发出去的钱是它赚到的钱的近两倍。</strong> TTM 每股股息 1.25 美元（每季 0.3125 美元），股价 10.65 美元，股息率 11.74%。</li>
+<li>多出来的部分从哪来？<strong>从账上的现金余额里掏，从 7 月卖掉的频谱牌照里掏。</strong></li>
+<li><strong>同时你还要倒扣 2.84 元</strong>——股本一年增发 2.84%，你的份额被稀释。</li>
+</ul>
+<p>净下来，你实际得到的经济回报大致是：<strong>真实自由现金流 2004 万 ÷ 市值 2.2278 亿 = 9.0%，再扣掉 2.84% 的稀释 = 约 6.2%。</strong> 剩下那 5.5 个百分点的「股息」是公司把家底分给你，本质是退还本金，不是回报。</p>
+<p><strong>这 6.11 元未来会变大还是变小？大概率变小，而且路径清楚：</strong></p>
+<ul>
+<li><strong>减分（确定的）</strong>：无线营收每年 -6.4%，而这一半几乎贡献了公司全部的经营利润。用户从 69.4 万掉到 64.5 万只用了一年。这块每掉 700 万营收，大约就掉 500 万以上的利润——公司整年经营利润才 1842 万。</li>
+<li><strong>减分（会来的）</strong>：递延所得税的好处（TTM 贡献 400 万现金流）总会用完，那时候现金流会一次性下台阶。</li>
+<li><strong>加分（有限的）</strong>：2026 年 4 月裁员 10%，公司说能省 600 万/年。这是真的，但它只够抵消无线业务<strong>不到一年</strong>的下滑。而且成本只能砍一次，营收会年年掉。</li>
+<li><strong>加分（一次性的）</strong>：Q3 2026 会有 750 万税前的频谱出售收益。<strong>别把它当利润看</strong>——那是卖资产。</li>
+<li><strong>变量（唯一真正的希望）</strong>：软件那一半（6550 万营收，转换成本护城河真实）如果能从「持平」变成「每年涨 8～10%」，五年后它就能盖过寻呼的下滑。Q2 软件许可收入同比 +51.7% 是个好苗头，但许可收入季度波动极大，一个季度说明不了问题。<strong>这是整个投资故事的全部赌注。</strong></li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜，而且那 11.7% 的股息是诱饵，不是回报。</strong></p>
+<p>拆开看是一门融化的生意粘着一门不赚钱的生意：<strong>52% 的营收（寻呼）每年缩水 6.4%，却贡献了几乎全部利润；48% 的营收（医院软件）护城河是真的、营收却是平的、利润接近零。</strong> 两边加起来，整体营收 -3.4%，净利润同比 -37%，TTM 是三年最低。</p>
+<p>估值上，公司想让你看 12.8 倍（Non-GAAP）和 8.8 倍（自由现金流），真实数字是 <strong>16.4 倍市盈率、11.1 倍真实现金流</strong>——为一门在收缩的生意付这个价，没有任何折扣可言。</p>
+<p>最关键的一条：<strong>股息发的是家底。</strong> 2733 万股息 vs 2541 万自由现金流 vs 2004 万扣掉股权激励后的真实现金流——覆盖率只有 <strong>73%</strong>。现金从 3199 万掉到 1659 万，7 月靠卖掉寻呼网络的频谱牌照套现 800 万续命。同时回购只有股权激励的 39%，股本每年膨胀 2.84%。<strong>这是一家一边稀释你、一边把资产变卖了发给你、还管这叫 11.7% 股息率的公司。</strong> 过去一年股价跌了 40%，市场已经在给这笔股息打折了。</p>
+<p>真正的问题不是「这个股息能不能维持」——按现在的现金消耗，<strong>它维持不了四五年就得砍</strong>。真正的问题是「砍完之后剩下什么」：一门 6550 万营收、护城河真实但完全不赚钱的医院软件生意，加上一堆越来越少的寻呼机。那门软件生意值不值 2.2 亿？<strong>如果它能证明自己可以每年增长 10% 并做出利润，值；现在它每年增长 0%，不值。</strong></p>
+<p>不要为了股息率买它。要买，等它把股息砍掉、股价再掉一截、软件那半边拿出连续四个季度的真实增长之后再说。</p>
+</div></body></html>

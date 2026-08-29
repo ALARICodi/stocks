@@ -1,0 +1,448 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CBFV · CB 金融服务（CB Financial Services, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CBFV</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">29倍是假的，债券重组亏损造的，真实12倍；1.65%存款成本是真护城河</div><h1>CBFV · CB 金融服务（CB Financial Services, Inc.）</h1>
+<p><strong>市值</strong> 1.910 亿美元 ｜ <strong>股价</strong> 37.59 美元（508 万股）｜ <strong>行业</strong> 金融（宾夕法尼亚州社区银行）｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日（最近四个季度滚动）
+<strong>全榜名次</strong> 第 1165 名（1244 家）｜ <strong>筛选时 PE</strong> 29.3 倍</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率（PB）、有形账面市净率（P/TBV）、净资产收益率（ROE/ROTCE）、净息差（NIM）这套口径，而不是市盈率。</strong>
+原因很简单：银行的「利润」是净息差乘以杠杆放大出来的，同一家银行今年多提一点坏账准备、明年少提一点，利润能差出一倍——CBFV 的 EPS 过去四年就是 2.18 → 4.40 → 2.38 → 0.92，坐过山车。用某一年的市盈率给银行估值，等于用一张随机抽出的照片判断一个人的身高。银行真正的价格标尺是<strong>你花多少钱买它一块钱的净资产（PB），以及这一块钱净资产一年能生出多少钱（ROE）</strong>。</p>
+<p><strong>另外必须先说的一件事：这家公司报表上 27.5 倍的市盈率是假的。</strong> 里面塞了一笔 1,175 万美元的债券出售亏损，那是一次主动的资产负债表重组，不是经营亏损。剔掉之后是 <strong>12.0 倍</strong>。这份分析的一大半篇幅，就是在讲清楚这笔钱。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>CB Financial Services 是 <strong>Community Bank</strong> 的控股公司，1901 年成立，总部在宾夕法尼亚州 <strong>Carmichaels</strong> ——一个人口不到两千人的小镇，在匹兹堡以南约 100 公里。业务范围覆盖宾州西南部、西弗吉尼亚州北部和俄亥俄州东部。全公司 <strong>174 名员工</strong>，总资产 <strong>16.56 亿美元</strong>。</p>
+<p>银行不按「分部」披露，但它的赚钱方式实质上就三件事，而且<strong>第一件占了 95% 以上</strong>。</p>
+<h3>生意一：吸存款、放贷款，赚中间的差价（TTM 净利息收入 5,533 万，占绝对主体）</h3>
+<p><strong>这件事具体是什么：</strong></p>
+<p>镇上的居民和小企业把钱存进 Community Bank，公司付给他们利息。截至 2026 年 6 月末，总存款 <strong>13.80 亿美元</strong>，其中：
+- <strong>不付利息的活期存款 2.87 亿</strong>（占 20.8%）——这是银行最值钱的东西，稍后细说；
+- 付利息的储蓄、货币市场、定期存单 <strong>10.93 亿</strong>。</p>
+<p>过去 12 个月，这 13.8 亿存款一共付出去 <strong>2,278 万利息</strong>，平均成本 <strong>1.65%</strong>。</p>
+<p>然后把钱放出去。贷款总额 <strong>11.80 亿美元</strong>，主要四类：
+1. <strong>商业地产贷款</strong>——给本地的零售物业、写字楼、公寓楼、酒店做抵押贷款。比如镇上一个开发商要盖一栋 24 户的公寓，估价 400 万，银行借他 280 万，七成抵押率，年利率 7.5%，20 年期。
+2. <strong>住宅按揭和房净值贷款</strong>——一到四户家庭住宅的按揭、房屋净值分期贷款和循环授信额度。一个当地家庭买 25 万的房子，首付 5 万，银行借 20 万。
+3. <strong>工商业贷款（C&amp;I）和授信额度</strong>——给本地企业的经营周转。比如一家有 40 台卡车的运输公司，银行给它 150 万的循环额度，用来垫付柴油和司机工资，用多少算多少利息。
+4. <strong>消费贷款</strong>——包括<strong>间接汽车贷款</strong>（这个模式是：你在本地车行买车，车行当场帮你办贷款，贷款实际由 Community Bank 出资，银行付给车行一笔介绍费）、以及各种有抵押/无抵押的个人贷款。</p>
+<p>这 11.80 亿贷款过去 12 个月收回 <strong>6,418 万利息</strong>，平均收益率 <strong>5.44%</strong>。</p>
+<p><strong>利差就是钱</strong>：5.44% 收进来，1.65% 付出去，中间 3.79 个百分点。乘上生息资产规模，就是 <strong>5,533 万净利息收入</strong>——而且这个数字 TTM 同比涨了 <strong>18.09%</strong>，是这家银行六年来最快的一次。为什么这么快？答案在第二部分。</p>
+<p><strong>客户为什么不换银行：</strong> 小镇银行的护城河不是产品，是<strong>距离和人</strong>。一个在 Carmichaels 开了 20 年餐馆的老板，他的贷款经理跟他认识 15 年，知道他冬天现金流紧、夏天回款好。他去大银行申请，对方看的是信用评分模型，可能直接拒了。这种关系型贷款让小银行能收更高的利率，也让存款粘在这里不动——<strong>20.8% 的存款一分利息不付，这就是关系的价值</strong>。</p>
+<h3>生意二：把闲钱买成债券（TTM 贡献利息 1,571 万）</h3>
+<p>存款收进来 13.8 亿，只放贷出去 11.8 亿，剩下的 2 亿多不能躺着。银行拿去买美国国债、政府机构债、住房抵押贷款支持证券（MBS）、抵押贷款凭证（CMO）、投资级公司债、州和地方政府债、<strong>抵押贷款债券（CLO）</strong>，还有一小部分共同基金。这部分 TTM 收进 <strong>1,571 万利息</strong>。</p>
+<p>这门「生意」平时不起眼，但<strong>这次它是全公司最大的一件事</strong>——因为公司刚在这上面主动认亏了 1,175 万。详见第二部分。</p>
+<h3>生意三：手续费和其他服务收入（TTM 约 456 万）</h3>
+<p>存款账户月费、透支费、ATM 交换费、借记卡刷卡分成、财富管理和信托服务费、卖按揭给二级市场的服务费。TTM <strong>456 万美元</strong>。</p>
+<p>这一块曾经大得多：<strong>2023 年 8 月，公司把保险代理子公司 Exchange Underwriters 卖掉了</strong>，当年确认了 <strong>2,459 万美元的资产出售收益</strong>（这就是 FY2023 净利润高达 2,255 万、EPS 4.40 的原因，那是一次性的）。卖掉之后，非利息收入从 FY2023 剔除一次性后的水平掉到 FY2024 的 453 万。<strong>这家银行现在几乎是一门纯粹的存贷生意，没有手续费业务垫底。</strong></p>
+<h3>钱怎么分（TTM，截至 2026-06-30，单位：万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>同比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贷款利息收入</td>
+<td>6,418</td>
+<td>+3.4%</td>
+<td>11.80 亿贷款，收益率 5.44%</td>
+</tr>
+<tr>
+<td>证券利息收入</td>
+<td>1,571</td>
+<td>+13.3%</td>
+<td>重组后收益率上升</td>
+</tr>
+<tr>
+<td><strong>总利息收入</strong></td>
+<td><strong>7,989</strong></td>
+<td><strong>+5.2%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>存款利息支出</td>
+<td>−2,278</td>
+<td>−2.9%</td>
+<td>13.80 亿存款，成本 1.65%</td>
+</tr>
+<tr>
+<td>借款利息支出</td>
+<td>−178</td>
+<td>+3.5%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>净利息收入</strong></td>
+<td><strong>5,533</strong></td>
+<td><strong>+18.09%</strong></td>
+<td><strong>六年最快</strong></td>
+</tr>
+<tr>
+<td>手续费等非利息收入</td>
+<td>+456</td>
+<td>+3.2%</td>
+<td>正常经营</td>
+</tr>
+<tr>
+<td><strong>债券出售亏损</strong></td>
+<td><strong>−1,175</strong></td>
+<td>—</td>
+<td><strong>⚠️ 一次性，见第二部分</strong></td>
+</tr>
+<tr>
+<td>资产出售收益</td>
+<td>+4</td>
+<td>—</td>
+<td>忽略不计</td>
+</tr>
+<tr>
+<td>贷款损失拨备</td>
+<td>−88</td>
+<td>+49%</td>
+<td>极低</td>
+</tr>
+<tr>
+<td>非利息支出</td>
+<td>−4,048</td>
+<td>+7.6%</td>
+<td>人力 2,335 + 其他 1,713</td>
+</tr>
+<tr>
+<td><strong>税前利润</strong></td>
+<td><strong>793</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>所得税</td>
+<td>−72</td>
+<td></td>
+<td><strong>实际税率仅 9.03%</strong></td>
+</tr>
+<tr>
+<td><strong>净利润</strong></td>
+<td><strong>721</strong></td>
+<td>−37.9%</td>
+<td>EPS 1.37 美元</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这份财报里有一笔钱，把整张利润表扭曲了一倍以上，必须先处理它。</strong></p>
+<p><strong>债券出售亏损 1,175 万美元</strong> ——TTM 非利息收入这一栏是 <strong>负 704 万</strong>。一家银行的手续费收入怎么会是负的？因为里面有一笔 <strong>1,175 万美元的「证券出售亏损」</strong>。FY2025 全年这个数字是 1,181 万，说明这笔钱基本发生在 2025 年下半年，整整落在 TTM 这个窗口里。</p>
+<p><strong>这笔亏损是什么？</strong> 这是银行业 2024—2026 年做得最多的一件事，叫<strong>资产负债表重组</strong>（balance sheet repositioning）。逻辑是这样的：2020—2021 年利率极低的时候，银行拿存款买了一堆收益率只有 1.5%—2% 的长久期债券。后来美联储加息，这些老债券的市价大跌，账面上浮亏一大截。银行有两个选择——</p>
+<ul>
+<li><strong>装死</strong>：把它们放在「持有至到期」科目里不动，浮亏不进利润表，但<strong>你的钱就被锁在 1.5% 的收益率上，锁十年</strong>；</li>
+<li><strong>认亏换新</strong>：一次性卖掉，在利润表上认下这笔亏损，拿回来的现金去买今天 5%—6% 收益率的新债券。</li>
+</ul>
+<p>CBFV 选了第二条。<strong>用一次性的 1,175 万，换取此后每年更高的利息收入。</strong></p>
+<p><strong>这笔交易划不划算？财报已经给出答案了：TTM 净利息收入同比 +18.09%，是六年来最快的一次；其中证券利息收入 +13.3%。</strong> 粗略算一下：假设卖掉的是约 2 亿美元的低息证券（1,175 万亏损相当于 5.9% 的账面折价），换成收益率高 2 个百分点的新券，一年多赚约 400 万——<strong>不到三年回本，之后全是净赚。</strong> 这是一笔正确的交易。</p>
+<p><strong>所以这笔亏损应当剔除。</strong> 它是真实的经济损失（那些钱确实亏掉了），但它是<strong>过去几年低利率决策的一次性了结</strong>，不是这门生意的常态。用它来判断公司今天的盈利能力，会得出完全错误的结论。</p>
+<p>顺带解释一个异常：TTM <strong>实际税率只有 9.03%</strong>，正常应该是 21%—25%。因为这笔证券亏损可以抵税，把税基压低了。这也从侧面印证了它是真实发生的、税务上认可的损失。</p>
+<p><strong>股权激励（SBC）</strong>：财报中未单独列示，金额在人力成本里，规模可以忽略——这是一家小镇银行，不是硅谷公司。<strong>没有这个问题。</strong></p>
+<p><strong>其他一次性项目</strong>：TTM 除了上面那笔债券亏损，没有其他大额一次性项目。但<strong>历史上这家公司一次性项目非常多</strong>，看这四年就明白了：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>报表净利</th>
+<th>里面的一次性</th>
+<th>剔除后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>2,255 万</td>
+<td>+2,459 万卖保险子公司、−1,020 万债券亏损</td>
+<td>≈ 1,118 万</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>1,259 万</td>
+<td>无</td>
+<td>1,259 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>490 万</td>
+<td>−1,181 万债券亏损</td>
+<td>≈ 1,423 万</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>721 万</td>
+<td>−1,175 万债券亏损</td>
+<td>≈ <strong>1,649 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表是全篇最重要的一张。</strong> 报表上的净利润从 2,255 万一路崩到 490 万，看起来像是这家银行快不行了；剔掉一次性之后，真实盈利是 1,118 → 1,259 → 1,423 → <strong>1,649 万</strong>，<strong>每年稳步上升，四年涨了 47%</strong>。两条曲线的方向完全相反。</p>
+<p><strong>资本化的支出</strong>：银行没有这个问题。TTM 资本开支仅 56 万美元。</p>
+<p><strong>回购与稀释</strong>：<strong>这一条是加分项。</strong> TTM 股本减少 <strong>2.73%</strong>，回购收益率 2.73%。银行没有像样的股权激励，所以回购不是在抵消发股，<strong>是真金白银在减少股份</strong>。加上 2.98% 的股息，<strong>股东总回报（股息＋回购）5.71%</strong>——公司实实在在把钱还给股东了。</p>
+<p><strong>利润和现金流的差</strong>：净利润 721 万，经营现金流 <strong>2,009 万</strong>，自由现金流 <strong>1,953 万</strong>。现金流是净利的 2.8 倍——<strong>差额的绝大部分就是那笔 1,175 万的债券亏损</strong>：它在利润表上扣了，但在现金流量表上要加回去（卖债券的现金流入被记在投资活动里，不在经营活动里）。<strong>这恰恰是「那笔亏损不影响真实赚钱能力」的最直接证据。</strong></p>
+<p><strong>几处需要盯着的隐患：</strong></p>
+<ol>
+<li><strong>拨备率偏低。</strong> 贷款损失准备金余额 1,045 万，贷款总额 11.80 亿，<strong>覆盖率仅 0.89%</strong>。同业通常在 1.1%—1.3%。TTM 只提了 88 万拨备。这可能说明资产质量确实好（宾州小镇经济稳定、没有大城市写字楼那种雷），也可能说明<strong>准备提得不够</strong>。财报页不披露不良贷款率和拨备覆盖倍数，无法进一步验证——<strong>这是这份分析里最大的一个盲区</strong>。</li>
+<li><strong>短期借款突然暴增。</strong> 从 FY2025 末的 87 万涨到 TTM 的 <strong>6,533 万</strong>，半年增加 75 倍。同期总资产从 15.48 亿涨到 16.56 亿（+7%）。这说明公司在<strong>用借来的钱扩表</strong>——存款增长跟不上放贷速度，只好借。这是加速增长的信号，也是风险信号：借来的钱比存款贵得多。</li>
+<li><strong>成本控制不算好。</strong> 非利息支出 4,048 万，除以（净利息收入 5,533 ＋ 正常化非利息收入 470）＝ <strong>效率比 67.4%</strong>。意思是每赚 100 块收入要花 67 块运营。优秀的社区银行在 55%—60%。<strong>这家银行赚的钱有三分之二被自己花掉了。</strong></li>
+</ol>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>1.18 倍</strong></td>
+<td>账面净资产 1.621 亿，每股 31.91 美元</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td><strong>1.25 倍</strong></td>
+<td>有形净资产 1.524 亿（扣商誉 973 万），每股约 30.0 美元</td>
+</tr>
+<tr>
+<td><strong>报表 ROE（TTM）</strong></td>
+<td>4.65%</td>
+<td>被债券亏损压低，<strong>不代表真实水平</strong></td>
+</tr>
+<tr>
+<td><strong>正常化 ROE</strong></td>
+<td><strong>10.2%</strong></td>
+<td>1,649 万真实净利 ÷ 1.621 亿净资产</td>
+</tr>
+<tr>
+<td><strong>正常化 ROTCE</strong></td>
+<td><strong>10.8%</strong></td>
+<td>1,649 万 ÷ 1.524 亿有形净资产</td>
+</tr>
+<tr>
+<td><strong>净息差 NIM（估算）</strong></td>
+<td><strong>≈ 3.5%</strong></td>
+<td>5,533 万净利息收入 ÷ 约 15.8 亿生息资产</td>
+</tr>
+<tr>
+<td><strong>存款成本</strong></td>
+<td><strong>1.65%</strong></td>
+<td>全篇最漂亮的一个数字，下面细说</td>
+</tr>
+<tr>
+<td><strong>无息存款占比</strong></td>
+<td>20.8%</td>
+<td>2.87 亿 / 13.80 亿</td>
+</tr>
+<tr>
+<td><strong>贷存比</strong></td>
+<td>85.5%</td>
+<td>11.80 亿 / 13.80 亿，健康，还有放贷空间</td>
+</tr>
+<tr>
+<td><strong>拨备覆盖率</strong></td>
+<td>0.89%</td>
+<td>偏低，<strong>需要留意</strong></td>
+</tr>
+<tr>
+<td><strong>CET1 资本充足率</strong></td>
+<td>未披露</td>
+<td>财报页不提供，<strong>这是个盲区</strong></td>
+</tr>
+<tr>
+<td><strong>股息收益率</strong></td>
+<td>2.98%</td>
+<td>每股年 1.08 美元</td>
+</tr>
+<tr>
+<td><strong>回购收益率</strong></td>
+<td>2.73%</td>
+<td>股本一年减少 2.73%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>换算成「投 100 块，一年赚多少」</h3>
+<p>银行的年回报换算公式是 <strong>ROE ÷ PB</strong>——你花 1.18 块买 1 块钱净资产，这 1 块钱一年生出 0.102 块。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报表 TTM 市盈率</td>
+<td>3,759 ÷ 137（每股，美分）</td>
+<td><strong>27.5 倍</strong></td>
+<td>3.64 元</td>
+</tr>
+<tr>
+<td>前瞻市盈率（市场预期）</td>
+<td>券商一致预期</td>
+<td>11.25 倍</td>
+<td>8.89 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1.910 亿 ÷ 1,649 万</td>
+<td><strong>12.0 倍</strong></td>
+<td><strong>8.33 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1.910 亿 ÷ 1,953 万</td>
+<td>9.8 倍</td>
+<td>10.22 元</td>
+</tr>
+<tr>
+<td><strong>正常化 ROE ÷ PB</strong></td>
+<td>10.2% ÷ 1.18</td>
+<td>—</td>
+<td><strong>8.64 元</strong></td>
+</tr>
+<tr>
+<td><strong>正常化 ROTCE ÷ P/TBV</strong></td>
+<td>10.8% ÷ 1.25</td>
+<td>—</td>
+<td><strong>8.64 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1.910 亿 ÷ 1,267 万</td>
+<td><strong>15.1 倍</strong></td>
+<td>6.62 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均取剔除一次性后的 FY2023 1,118 万、FY2024 1,259 万、FY2025 1,423 万，平均 1,267 万。）</p>
+<p><strong>这张表里最值得注意的两件事：</strong></p>
+<p>第一，<strong>报表口径 27.5 倍和真实口径 12.0 倍之间的裂口，完全由那笔债券亏损造成。</strong> 而市场其实早就看穿了——券商给出的前瞻市盈率是 <strong>11.25 倍</strong>，跟我算出来的 12.0 倍几乎一致。所以严格说，这只股票<strong>并没有因为这笔亏损被错杀</strong>，市场是清醒的。但对只看筛选器上「PE 29.3 倍」这个数字的人来说，它被完全误读了。</p>
+<p>第二，<strong>三年平均口径 15.1 倍高于当期 12.0 倍</strong>，说明<strong>这是一家盈利能力正在改善的银行，不是在高点</strong>。这跟大部分周期性公司的情况相反（那些公司通常当期便宜、三年平均贵）。改善的驱动力是净利息收入 +18.09%，而这个增长又来自那笔债券重组。</p>
+<h3>那么，你现在投 100 块进去，一年赚多少？</h3>
+<p><strong>按最保守的正常化口径，一年 8.33 到 8.64 元。</strong></p>
+<p>这 8.6 元里，<strong>5.71 元真的回到你口袋</strong>——2.98 元是现金股息（每股年 1.08 美元，按季支付），2.73 元是回购（股本一年减少 2.73%，你什么都不做，持股比例自动上升）。剩下约 2.9 元留在银行里，变成资本金支撑更多放贷——TTM 总资产扩张了 7%，这些钱确实用出去了。</p>
+<p><strong>但必须说清楚：这 8.6% 的回报是建立在约 10 倍杠杆之上的。</strong> 这家银行 16.56 亿总资产，只由 1.62 亿股东权益支撑。意思是资产端只要亏 6.2%，股东权益就归零。经济下行时，这个回报率会剧烈缩水甚至转负——2020 年疫情、2023 年硅谷银行事件期间，一大批同类小银行的 ROE 都被拨备砸到 0 附近。<strong>看到 10% 的 ROE 就当成「稳定的 10%」，是投资银行股最常见的错误。</strong></p>
+<p><strong>这个数字未来会变大还是变小？</strong></p>
+<p>往大的方向：<strong>债券重组的收益还没吃完</strong>。新买的高息券会在未来 2—3 年持续贡献，净利息收入 +18% 的增速里，很大一块是这个。同时贷存比只有 85.5%，还有放贷空间。</p>
+<p>往小的方向：<strong>存款成本一定会往上走</strong>。1.65% 的存款成本在今天的美国是极低的水平——这来自小镇储户的惰性和 20.8% 的无息存款。但储户不会永远不动，同业竞争会慢慢把这个数字推高。另外，<strong>拨备只有 0.89% 是一根绷紧的弦</strong>：TTM 只提了 88 万拨备，如果本地经济转差需要补提到同业平均的 1.2%，一次要多提约 370 万，直接砍掉两成利润。还有那 6,533 万突然出现的短期借款，成本比存款高得多。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它值这个价，甚至略微便宜——但便宜的原因不是市场犯了错，而是这家银行本身只是「还行」。</strong></p>
+<p>先把误会澄清掉：<strong>筛选器上那个 29.3 倍市盈率是假的</strong>，它是一笔 1,175 万美元的债券重组亏损造出来的会计幻觉。剔掉之后是 12.0 倍市盈率、1.18 倍市净率、10.8% 的有形净资产收益率——<strong>这是一家正常定价的、经营在改善的社区银行</strong>，不是一家快不行的公司。而且这笔重组是对的：它拿一次性的痛，换来了净利息收入 18% 的增长，这是这份财报里最扎实的一个数字。</p>
+<p>但也别把它想得太好。<strong>1.18 倍市净率买 10.8% 的有形股东回报率，年化 8.6%</strong>——这个价格是公道的，谈不上捡便宜。市场没有错杀它（券商前瞻市盈率 11.25 倍，跟我的 12.0 倍几乎一样），只是筛选器错杀了它。真正拉后腿的是三件事：<strong>效率比 67.4%</strong>，每赚 100 块要花掉 67 块，这家银行在成本上没有本事；<strong>没有手续费业务</strong>，2023 年把保险子公司卖了之后，它变成一门纯粹的存贷生意，全部身家押在利差上；<strong>拨备率只有 0.89%</strong>，比同业低两三成，而不良率和资本充足率财报页都不披露——这是我看不见的地方，也是最容易出事的地方。</p>
+<p><strong>它真正的优势只有一个，但这一个很硬：1.65% 的存款成本。</strong> 一家开在宾州两千人小镇、1901 年就存在的银行，20.8% 的存款一分利息不付。这种东西买不到、也复制不了。作为对照，同一批里那家开在纽约长岛的 Hanover Bancorp，存款成本是 2.95%——<strong>整整高出 1.3 个百分点，这就是「无聊的地方」和「热闹的地方」之间的差价</strong>。银行这门生意最后拼的就是谁的钱更便宜，在这一点上 CBFV 赢得干净利落。</p>
+<p><strong>可以放进观察名单</strong>：真实估值 12 倍、股息加回购给你 5.71% 的确定现金回报、盈利趋势向上、有一条真实的护城河。等它跌回 1.0 倍市净率以下（约 32 美元）会更值得下手。<strong>但要一直盯着两个数</strong>：拨备覆盖率有没有补上去，以及那 6,533 万突然冒出来的短期借款会不会继续往上加——<strong>小银行出事，从来都是从「增长太快」和「准备提得太少」这两个地方开始的。</strong></p>
+<hr />
+<p><em>分析日期：2026-08-29 ｜ 数据口径：TTM 截至 2026-06-30 ｜ 数据来源：stockanalysis.com 财报页</em></p>
+</div></body></html>

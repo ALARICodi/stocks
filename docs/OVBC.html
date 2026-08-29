@@ -1,0 +1,446 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OVBC · 俄亥俄谷银行公司（Ohio Valley Banc Corp.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OVBC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">息差肥资本厚，但拨备一年翻2.25倍，股价涨25%利润只涨2.6%</div><h1>OVBC · 俄亥俄谷银行公司（Ohio Valley Banc Corp.）</h1>
+<p>市值 $2.15 亿 · 股价 $45.59（2026-08-28 收盘）· 行业：金融 / 社区银行 · TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是一家银行，下面不用市盈率那一套当主口径，改用市净率 PB、有形账面市净率 P/TBV、净资产收益率 ROE、净息差 NIM、拨备计提这一套。</strong>
+原因很简单：银行的"利润"不是卖东西赚来的，是"借进来的钱和借出去的钱之间的利差"减掉"预计有多少借出去的钱收不回来"。后面那个减项是<strong>管理层自己估的</strong>，一笔坏账可以今年认、也可以明年认。所以看银行不能只看一年利润，得看它拿多少本钱（净资产）在扛多大摊子（总资产），以及它对坏账的估计是在变松还是变紧。
+市盈率这一节我照样会算给你看，但要配着拨备一起读，单看会骗人。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>OVBC 是一家控股公司，底下就一家银行——The Ohio Valley Bank Company，开在俄亥俄河谷（俄亥俄州南部和西弗吉尼亚州交界那一带），全公司 <strong>269 个员工</strong>。这是一家真正意义上的小地方银行：总资产估算约 <strong>15.8 亿美元</strong>（用 TTM 净利润 1421 万 ÷ 资产收益率 0.90% 倒推，<strong>是估算</strong>），在美国四千多家银行里属于中下规模。</p>
+<p>它实质上只做一件半生意。</p>
+<h3>生意一：吸存款、放贷款，赚中间的利差（占税前收入的 87%）</h3>
+<p><strong>这件事具体是怎么做的</strong>：镇上的居民和小企业把钱存进俄亥俄谷银行——活期支票账户、储蓄账户、货币市场账户、定期存单（CD）、退休金账户（IRA）。银行为这些钱付利息，比如一张两年期的定存单可能付 3.8%，活期支票账户可能只付 0.1%。TTM 里银行为<strong>所有存款</strong>总共付出了 <strong>2785 万美元</strong>利息，再加上向联邦住房贷款银行等机构借款付的 <strong>214 万</strong>，一共 <strong>3000 万利息成本</strong>。</p>
+<p>然后银行把这些钱贷出去。贷款的种类看下来相当杂，这一点很重要：</p>
+<ul>
+<li><strong>住宅按揭</strong>：镇上一户人家买房，银行放一笔 30 年期一到四户型住宅抵押贷款。</li>
+<li><strong>商业贷款</strong>：本地一家小型制造厂要买一台新机床，或者一个开发商要买一栋出租公寓楼，银行拿这台机床、这栋楼、甚至存货和股权做抵押放贷。</li>
+<li><strong>消费贷款</strong>——<strong>这一块是理解这家银行的钥匙</strong>：汽车贷款、<strong>移动房屋（mobile home）贷款</strong>、<strong>房车（RV）贷款</strong>、以个人财产做抵押的杂项贷款、<strong>纯信用无抵押的个人贷款</strong>、<strong>无担保信用卡应收款</strong>、汽车经销商的<strong>存货占用融资（floor plan）</strong>、学生贷款、建筑期贷款。</li>
+</ul>
+<p>最后这一串不是普通社区银行的标配。移动房屋贷款、房车贷款、无抵押个人贷和信用卡应收款，是<strong>收益率明显更高、违约率也明显更高</strong>的资产。一笔 30 年住宅按揭可能收 6.5%，一笔移动房屋贷款可以收到 9%–12%，一笔无抵押个人贷更高。</p>
+<p>结果就写在财报上：TTM <strong>利息总收入 9035 万</strong>，其中贷款利息 <strong>7805 万</strong>、债券投资利息 <strong>1230 万</strong>。减掉 3000 万利息成本，<strong>净利息收入 6036 万美元，比去年同期长了 13.2%</strong>——在 2026 年这个时点，一家小银行的净利息收入还能两位数增长，是很扎眼的数字。</p>
+<p>用总资产粗算，净利息收入 / 总资产 = 6036 万 / 15.8 亿 = <strong>3.82%</strong>；如果按生息资产（大约占总资产 93%）算，<strong>净息差约 4.1%（估算）</strong>。这个水平在社区银行里属于偏高的那一档。<strong>高息差不是白来的，代价就是上面那串高风险贷款。</strong></p>
+<p>这门生意 TTM 还在猛扩张：现金流量表里"贷款净投放"一项是 <strong>-1.4486 亿美元</strong>，意思是这一年银行新放出去的贷款比收回来的多出 1.45 亿。按估算的贷款盘子推算，<strong>贷款余额一年长了大约 12%（估算）</strong>。一家银行在利率高位、经济不确定的时候把贷款簿扩张 12%，要么是抢到了别人不敢做的好生意，要么是接了别人不肯接的坏生意——第二部分会告诉你答案偏向哪边。</p>
+<h3>生意二：收手续费（占 13%）</h3>
+<p>存贷之外的收入 TTM 一共 <strong>895 万美元</strong>，构成是：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>其他非利息收入</td>
+<td>8.68</td>
+<td>账户月费、透支费、借记卡刷卡分成、电汇费、保险箱租金</td>
+</tr>
+<tr>
+<td>信托业务收入</td>
+<td>0.35</td>
+<td>替本地富裕家庭管遗产和信托账户</td>
+</tr>
+<tr>
+<td>按揭代销收入</td>
+<td>0.18</td>
+<td>把发放的房贷卖给二级市场赚的价差</td>
+</tr>
+<tr>
+<td><strong>出售债券的亏损</strong></td>
+<td><strong>-3.37</strong></td>
+<td>见下</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>8.95</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>信托 35 万、按揭代销 18 万，加起来占总收入不到 1%——<strong>这两块可以当不存在</strong>。真正的手续费收入就是账户杂费和刷卡分成那 868 万，稳定但不增长。</p>
+<p>那个 <strong>-337 万的"出售投资亏损"</strong>是这一栏里最大的一笔：银行在过去 12 个月里卖掉了一批债券，卖亏了 337 万认在账上。这不是经营亏损，是当年利率上行把老债券价格砸下去后，银行主动割肉换成高息新债的动作——<strong>割一次痛一次，但换来的是未来更高的利息收入</strong>。它把 TTM 的非利息收入拉低了 32.5%，也把 TTM 的利润压低了。</p>
+<h3>各生意收入表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（百万美元）</th>
+<th>同比</th>
+<th>占计提拨备前总收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入（存贷利差）</td>
+<td>60.36</td>
+<td>+13.2%</td>
+<td>87.1%</td>
+</tr>
+<tr>
+<td>非利息收入（手续费等）</td>
+<td>8.95</td>
+<td>-32.5%</td>
+<td>12.9%</td>
+</tr>
+<tr>
+<td><strong>计提拨备前总收入</strong></td>
+<td><strong>69.31</strong></td>
+<td>+3.9%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>减：贷款损失拨备</td>
+<td><strong>-6.87</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>口径内"营业收入"</strong></td>
+<td><strong>62.44</strong></td>
+<td><strong>-1.7%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报没有按业务线披露利润，银行也基本不这么披露。全公司 TTM <strong>非利息支出 4489 万</strong>，其中工资和员工福利 <strong>2560 万</strong>（占 57%）、日常管理费 <strong>1184 万</strong>、FDIC 存款保险费 <strong>83 万</strong>、其他 <strong>661 万</strong>。</p>
+<p><strong>成本收入比（效率比）= 4489 / 6931 = 64.8%。</strong> 这个指标衡量"每赚 1 块钱收入要花多少钱"，优秀的银行在 50%–55%，OVBC 的 64.8% <strong>属于偏臃肿</strong>——269 个人管 15.8 亿资产，人均资产不到 600 万美元，规模不经济是小银行的通病。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表里<strong>没有这一项</strong>。这家银行基本不发股票给员工——TTM 股本变动 <strong>0.00%</strong>，五年里股份数一直是 500 万左右。在一家小银行身上这是好事，你的股份没被稀释。</li>
+<li><strong>一次性项目</strong>：TTM 的"剔除非经常项目后的税前利润"和"税前利润"<strong>都是 1755 万，完全相等</strong>，说明按数据商的口径这一期没有非经常损益。但我不同意这个口径：那笔 <strong>-337 万的债券出售亏损</strong>被算进了经常性收入里，实质上是一次性的资产处置。<strong>加回来（税后约 273 万），真实净利润应为 1694 万。</strong> 另外要说明：FY2024 的税前利润里有 <strong>-333 万</strong>的非经常项目，把那年利润从 1671 万砸到 1338 万——所以这家银行<strong>是会时不时冒出一次性项目的</strong>，只看 TTM 一期分不清哪些是真一次性、哪些是隔几年就来一回。</li>
+<li><strong>资本化的支出</strong>：没有。银行不存在软件开发费或内容制作费资本化的问题，TTM 资本开支 322 万，就是买设备装修网点。</li>
+<li><strong>回购与稀释</strong>：<strong>TTM 回购金额 = 0</strong>。FY2024 回购过 195 万，之后停了。SBC 也是 0，所以"回购 ÷ SBC"这个比值算不出来，但结论比比值更干脆：<strong>过去一年公司一分钱都没回购，股东拿到的现金只有分红。</strong> 股份数一年零变化，既没稀释也没减少。</li>
+<li><strong>利润和现金流的差</strong>：TTM 净利润 <strong>1421 万</strong>，经营现金流 <strong>2294 万</strong>，差 873 万。逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>14.21</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>1.70</td>
+</tr>
+<tr>
+<td>+ <strong>贷款损失拨备（非现金）</strong></td>
+<td><strong>3.05</strong></td>
+</tr>
+<tr>
+<td>+ 出售投资的亏损转回</td>
+<td>2.40</td>
+</tr>
+<tr>
+<td>+ 已发放/出售贷款净变动</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>− 应收利息增加</td>
+<td>-0.67</td>
+</tr>
+<tr>
+<td>− 其他经营性资产净变动</td>
+<td>-0.32</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>4.42</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>22.94</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最该看的是"贷款损失拨备"那一行。</strong> 拨备是纯会计动作——银行说"我估计这批贷款里有 X 会收不回来"，就在利润表上扣掉 X，但现金一分没出去，所以做现金流时要加回来。<strong>利润被拨备压低了，现金流没有。</strong></p>
+<p>另外要提醒：银行的"自由现金流"是个没有意义的数字。页面上写 P/FCF 10.89、FCF 1971 万，看起来比市盈率便宜，但银行的经营现金流不包含"放贷款花掉的钱"（那 1.45 亿被记在投资活动里），所以这个 FCF 既不能分红也不能回购，<strong>别拿它当估值依据</strong>。</p>
+<h3>真正的问题：拨备翻了一倍多</h3>
+<p>这是整份分析里最重要的一个数字，单独拎出来：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>贷款损失拨备（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>-0.42（转回，即冲回了利润）</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>-0.03</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>2.09</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>2.47</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>3.05</td>
+</tr>
+<tr>
+<td><strong>TTM（截至 2026-06）</strong></td>
+<td><strong>6.87</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>TTM 的拨备是 FY2025 全年的 2.25 倍，是 FY2024 的 2.8 倍。</strong> 这一项直接从利润表上扣掉了 687 万——如果拨备维持在 FY2025 的 305 万水平，OVBC 的税前利润会是 2137 万而不是 1755 万，净利润会是 1730 万而不是 1421 万，<strong>每股收益会是 3.67 美元而不是 3.02 美元</strong>。</p>
+<p>拨备为什么翻倍？财报页面不提供拨备覆盖率和不良贷款率，我拿不到直接答案。但把三件事摆在一起，指向是明确的：<strong>贷款簿一年扩张约 12%、消费贷里有大量移动房屋 / 房车 / 无抵押个人贷 / 信用卡应收、净息差高达 4.1%</strong>。高息差 + 高增长 + 高风险资产类别 + 拨备突然翻倍，这四件事凑在一起，最自然的解释是<strong>它扩张的那部分贷款正在开始出问题</strong>。</p>
+<p>我不能确认这是不是已经变成实际坏账（页面没有不良率数据），但这是买这只股票前<strong>必须自己去 10-Q 里核实的第一件事</strong>。</p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<h3>银行专用指标</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td><strong>1.24</strong></td>
+<td>花 124 块买 100 块的净资产</td>
+</tr>
+<tr>
+<td>有形账面市净率 P/TBV</td>
+<td><strong>1.29</strong></td>
+<td>剔除商誉后，花 129 块买 100 块</td>
+</tr>
+<tr>
+<td>每股账面价值</td>
+<td><strong>$36.80</strong></td>
+<td>股价 $45.59</td>
+</tr>
+<tr>
+<td>净资产收益率 ROE</td>
+<td><strong>8.50%</strong></td>
+<td>银行的及格线是 10%，优秀是 13%+</td>
+</tr>
+<tr>
+<td>总资产收益率 ROA</td>
+<td><strong>0.90%</strong></td>
+<td>及格线 1.0%，OVBC 略低于及格</td>
+</tr>
+<tr>
+<td>净息差 NIM</td>
+<td><strong>约 4.1%（估算）</strong></td>
+<td>明显高于同业，代价是高风险资产</td>
+</tr>
+<tr>
+<td>成本收入比</td>
+<td><strong>64.8%</strong></td>
+<td>偏臃肿（优秀 &lt;55%）</td>
+</tr>
+<tr>
+<td>股东权益 / 总资产</td>
+<td><strong>约 11.0%（估算）</strong></td>
+<td>资本充足，杠杆约 9.1 倍</td>
+</tr>
+<tr>
+<td>CET1 核心资本充足率</td>
+<td><strong>页面不提供</strong></td>
+<td>用上面的权益/资产比代替，<strong>这是替代品不是等价物</strong></td>
+</tr>
+<tr>
+<td>拨备覆盖率 / 不良率</td>
+<td><strong>页面不提供</strong></td>
+<td>只能看到拨备计提额翻倍这一个信号</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>权益/资产 11.0% 是这家银行最让人放心的地方</strong>：杠杆只有 9.1 倍，而美国银行业普遍在 10–12 倍。资本垫子厚，意味着即使那批消费贷真出问题，本金亏损也不太可能危及银行本身。</p>
+<h3>多口径的"投 100 块，一年赚多少"</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2.15 亿 ÷ 1421 万</td>
+<td><strong>15.11 倍</strong></td>
+<td><strong>$6.62</strong></td>
+</tr>
+<tr>
+<td>公司自吹的 Non-GAAP</td>
+<td>这家公司不发布调整后利润</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2.15 亿 ÷（1421 万 + 债券出售亏损税后 273 万）</td>
+<td><strong>12.67 倍</strong></td>
+<td><strong>$7.89</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2.15 亿 ÷ 1971 万</td>
+<td>10.89 倍</td>
+<td>$9.18（<strong>银行的 FCF 无意义，别信这个数</strong>）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV / 利润</td>
+<td>1.884 亿 ÷ 1421 万</td>
+<td>13.26 倍</td>
+<td>$7.54（银行算 EV/EBIT 无意义，改用 EV/利润）</td>
+</tr>
+<tr>
+<td>ROE ÷ PB 换算</td>
+<td>8.50% ÷ 1.24</td>
+<td>—</td>
+<td><strong>$6.85</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>2.15 亿 ÷（12.63+11.00+15.60）/3 = 1308 万</td>
+<td><strong>16.42 倍</strong></td>
+<td><strong>$6.09</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行说明了一件事：TTM 的利润不是高点，反而略低于常态。</strong> 三年平均 1308 万 vs TTM 1421 万，TTM 比三年均值高 8.6%——考虑到 TTM 还扛着翻倍的拨备和 337 万的债券割肉，说明这家银行的<strong>正常盈利能力大概在 1600–1700 万</strong>，只是这一年被两个减项压住了。这跟大多数公司"当期是高点、三年均值难看"的情况正好相反。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 OVBC，按最保守的 GAAP 口径，公司一年替你赚 6.62 块。</strong> 如果那 337 万的债券割肉不再发生，这个数会到 7.89 块；如果拨备也回到常态，还能再高一截。</p>
+<p>这 6.62 块里：</p>
+<ul>
+<li><strong>2.19 块以现金分红的形式进你口袋</strong>（每股年分红 $1.00，股息率 2.19%，派息率 33.2%），分红已经连涨，TTM 每股 $0.94 涨到当前年化 $1.00。</li>
+<li><strong>0 块通过回购回来</strong>——公司过去一年没有回购。</li>
+<li><strong>剩下约 4.43 块留在银行里</strong>，变成新的资本金，再按 9 倍杠杆放大成新的贷款。这部分推动账面价值以每年约 <strong>5.7%</strong>（ROE 8.50% × 留存率 66.8%）的速度增长。</li>
+</ul>
+<p><strong>这个 6.62 块未来会变大还是变小？</strong> 两股力量在对拉：</p>
+<ul>
+<li><strong>往上</strong>：净利息收入还在 13% 增长，贷款簿在扩张，337 万的债券亏损大概率不重演。</li>
+<li><strong>往下</strong>：<strong>拨备</strong>。TTM 已经翻倍到 687 万；如果它继续往上走到 1000 万，利润会直接被再砍掉 250 万（-18%）。</li>
+</ul>
+<p>所以这只股票本质上是<strong>一个关于"那批高息消费贷会不会烂掉"的赌注</strong>。赌对了，真实盈利能力回到 1700 万，12.6 倍市盈率买一家 ROE 会修复到 10% 以上的银行，划算；赌错了，拨备继续爬，8.5% 的 ROE 还要往下掉，1.24 倍 PB 就一点也不便宜了。</p>
+<p>还有一件事要摆出来：<strong>股价过去 52 周涨了 25.41%，但净利润只涨了 2.59%。</strong> 15.11 倍市盈率是股价涨出来的，不是利润涨出来的——一年前这只股票大概是 12 倍。你现在买的位置，已经比去年贵了四分之一。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家资本厚、息差肥、但成本臃肿、ROE 只有 8.5% 的小地方银行，1.24 倍 PB / 15 倍市盈率不算贵也不算便宜——问题全在那笔翻了一倍多的贷款拨备上：它要么是这家银行今年被低估的原因，要么是明年被高估的证据，而财报页面上给不出答案。</strong> 股价一年涨 25% 而利润只涨 2.6%，便宜的那段已经过去了，现在是个公道价，不是个捡漏价。</p>
+</div></body></html>

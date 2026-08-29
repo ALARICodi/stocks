@@ -1,0 +1,380 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MNTK · 蒙托克可再生能源（Montauk Renewables）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MNTK</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">剔除税收抵免真实88倍，四年烧掉超市值的现金，ROIC0.76%不到资本成本零头</div><h1>MNTK · 蒙托克可再生能源（Montauk Renewables）</h1>
+<p><strong>市值</strong> 2.535 亿美元 ｜ <strong>股价</strong> 约 1.77 美元 ｜ <strong>行业</strong> Process Industries（垃圾填埋气 / 可再生天然气）｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>全榜名次</strong> 第 1135 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Montauk 干的事，一句话说清就是：<strong>去垃圾填埋场和养猪场收"臭气"，提纯成能烧的天然气，卖掉气本身，再把"我用的是绿色的气"这张证明单子单独卖一遍钱——而且证明单子比气本身值钱得多。</strong></p>
+<h3>生意一：可再生天然气（RNG）—— 占营收 82%，是全部身家</h3>
+<p>先说这生意在物理上是怎么回事。</p>
+<p>一座城市垃圾填埋场，几百万吨生活垃圾埋在地下，几十年里慢慢腐烂，会自己冒出气来。这股气大概一半是甲烷（就是天然气的主要成分），一半是二氧化碳，还混着水汽、硫化氢和一堆乱七八糟的杂质。以前填埋场怎么处理？<strong>点根火把烧掉</strong>——因为甲烷直接排到空气里的温室效应是二氧化碳的 28 倍，法规不许你放跑，所以就地烧成二氧化碳完事。烧掉是纯成本，填埋场老板一分钱赚不到。</p>
+<p>Montauk 上门谈的就是这件事：你别烧了，让我来。它自掏腰包在填埋场旁边建一座提纯厂——先把气抽出来，脱水、脱硫、用膜或者变压吸附把二氧化碳分离掉，把甲烷浓度从 50% 提到 96% 以上，达到管道天然气的规格，然后接进旁边的天然气主干管网。填埋场老板什么也不用干，按提出来的气量抽一笔特许权使用费（royalty），通常是收入的百分之十几到二十。Montauk 目前在美国跑着十几个这样的项目，主要分布在加州、德州、俄克拉荷马、宾州、北卡、俄亥俄。</p>
+<p>除了填埋场，它还做<strong>养猪场沼气</strong>——北卡罗来纳的大型生猪养殖场，粪污进厌氧发酵池产沼气，原理一样，只是气源换了。这条线规模小但单位价值更高，因为农业沼气在联邦法规里被认定为"最干净的一档"。</p>
+<p><strong>关键在于钱是怎么收的——这里有两笔，而且不成比例。</strong></p>
+<p><strong>第一笔，卖气。</strong> 提纯出来的甲烷按天然气市场价卖，大致跟亨利港（Henry Hub）基准价挂钩，最近两年在每百万英热单位 3–4 美元区间。这笔钱按体量算，一年也就几千万美元级别，而且完全随大宗商品价格波动，Montauk 一点定价权都没有。</p>
+<p><strong>第二笔，卖"我是绿的"这张纸。</strong> 美国有个联邦制度叫可再生燃料标准（RFS），强制炼油商每年必须掺进一定比例的可再生燃料，掺不够就得去市场上买别人的"合规凭证"，这个凭证叫 <strong>RIN</strong>。填埋气提纯出来的天然气如果用作车用燃料，能生成级别最高的一类 RIN（D3，纤维素类）。一个 D3 RIN 的市价历史上在 1.5–3.5 美元之间剧烈波动。</p>
+<p><strong>这笔"卖纸"的钱，通常占 Montauk 这条业务线收入的一半以上，而且几乎是纯利润</strong>——因为气已经产出来了，生成 RIN 的边际成本近乎为零。同时它也意味着：<strong>RIN 价格跌一半，Montauk 的利润就直接归零。</strong> 2026 年还多了一项联邦 45Z 清洁燃料生产抵免，逻辑类似，是另一张可以卖的"纸"。</p>
+<p>举个具体的账：一个中型填埋场项目一年产出约 60 万百万英热单位的气，按 3.5 美元卖气收入 210 万美元；同样这批气能生成约 700 万个 D3 RIN（换算系数约 11.7 个/百万英热），按 2 美元一个就是 1400 万美元。<strong>卖纸的钱是卖气的近七倍。</strong> 这就是这门生意的全部秘密——它名义上是能源公司，实质上是一家<strong>政策补贴的套利公司</strong>。</p>
+<h3>生意二：可再生电力（REG）—— 占营收 9%，正在被边缘化</h3>
+<p>这是 Montauk 的老本行，也是它现在正在往外撤的业务。同样是收填埋气，但不提纯成管道气，而是直接烧了发电，把电卖给电网，再把"这度电是绿电"的证明（可再生能源证书，REC）单独卖一遍——跟 RNG 一个套路，只是产品从气换成了电，凭证从 RIN 换成了 REC。</p>
+<p>问题在于，<strong>同样一份气，做成 RNG 卖 RIN 赚的钱，比做成电卖 REC 多好几倍</strong>。所以 Montauk 这几年一直在把电力项目改造成 RNG 项目，REG 这条线的营收就一直原地踏步（TTM 1740 万，FY2023 是 1845 万，三年不但没涨还缩了）。它现在的作用主要是"还没轮到改造的存量资产"。</p>
+<h3>第三块：其他 / 公司层 —— 占营收 9%，但增长最快，也最不透明</h3>
+<p>财报分部表里这一栏 FY2025 只有 342 万，<strong>TTM 却推算到约 1620 万</strong>（总营收 18910 万减去 RNG 15547 万和 REG 1740 万）。一年之内从 3% 跳到 9%。财报只披露到营收，没有分部利润，也没有明说这一栏具体是什么。合理推断是新上马的农业副产品/生物炭相关业务，以及部分环境属性交易的重分类。</p>
+<p><strong>这一块的说明我标注为估算</strong>——分部表口径最近一年动过，单看 TTM 一期无法判断这是真新增业务还是会计上的挪腾。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可再生天然气 RNG</td>
+<td>155.47</td>
+<td>−0.2%</td>
+<td>82.2%</td>
+<td>估算 8–10%</td>
+<td>估算 1300–1600 万</td>
+</tr>
+<tr>
+<td>可再生电力 REG</td>
+<td>17.40</td>
+<td>+1.0%</td>
+<td>9.2%</td>
+<td>估算 0–5%</td>
+<td>估算 0–90 万</td>
+</tr>
+<tr>
+<td>其他 / 公司层</td>
+<td>约 16.23</td>
+<td>大幅增加</td>
+<td>8.6%</td>
+<td>无法估算</td>
+<td>无法估算</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>189.10</strong></td>
+<td><strong>+4.3%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>2.4%</strong></td>
+<td><strong>457 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只披露到分部营收，不披露分部利润，上表利润率是按整体经营利润率 2.42% 和业务结构估算的，不是财报数字。</strong></p>
+<p>请先记住这张表最刺眼的一件事：<strong>全公司一年 1.89 亿美元营收，经营利润只有 457 万美元，经营利润率 2.4%。</strong> 一家重资产的能源公司做到这个利润率，等于白干。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：TTM 196 万，反常地小</h3>
+<p>TTM 股权激励 196 万美元，占净利润 7.93 亿分之……占净利润 793 万的 24.7%。听起来还行。但看历史序列：FY2021 是 2242 万，FY2022 是 984 万，FY2023 是 832 万，FY2024 是 996 万，FY2025 是 444 万，TTM 只剩 196 万。</p>
+<p><strong>四年砍掉 91%。</strong> 股权激励塌方式下降通常只有两个原因：要么公司主动缩减（省成本），要么原有的业绩考核条件没达成、已计提的费用被冲回。<strong>这家公司的业绩确实一塌糊涂（FY2025 净利只有 175 万），大概率是后者。</strong> 这意味着当期这个 196 万是被压低的、不可持续的低点——员工留不住就得重新发股，费用还会回来。</p>
+<p>顺带一提，尽管 SBC 大幅下降，股本还是同比增加了 0.62%，也就是<strong>股东在被稀释</strong>。</p>
+<h3>一次性项目：所得税抵免把亏损公司变成了盈利公司</h3>
+<p>这是全篇最重要的一处。看这三行数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td><strong>383 万美元</strong></td>
+</tr>
+<tr>
+<td>所得税</td>
+<td><strong>−410 万美元</strong>（不是交税，是退税/抵免）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>793 万美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润比税前利润还高 410 万——因为所得税是负的。</strong> 正常公司税前赚 383 万，交掉 25% 的税，剩下 287 万。Montauk 反过来倒收了 410 万，净利润膨胀到 793 万，是税前利润的两倍多。</p>
+<p>这 410 万来自哪里？合理解释是递延所得税资产的重新确认，或者与新项目投产相关的联邦能源税收抵免（ITC / 45Z）。无论哪一种，<strong>它不是主营业务赚来的钱</strong>。</p>
+<p>而且——<strong>只看 TTM 单期，我没法判断这个税收抵免是一次性的还是未来几年还会有。</strong> 45Z 抵免按现行法规延续到 2029 年底，理论上还会来；但递延税资产的重新确认是标准的一次性动作。诚实的说法是：<strong>这 410 万里有多少能重复，单期口径无法判断，所以下面算真实市盈率时我按"全部剔除、按 25% 正常税率重算"处理。</strong></p>
+<h3>资产减值：190 万</h3>
+<p>TTM 计提资产减值 190 万（FY2025 是 323 万）。规模不大，但值得注意的是这家公司<strong>年年都有减值</strong>（FY2021 到 TTM，六个期间没有一期是零）。年年都有的"一次性损失"，就不是一次性损失，是经营的一部分。</p>
+<h3>资本化的支出：没有软件或内容资本化</h3>
+<p>这不是软件公司，没有开发费资本化的问题。但它有个更凶的东西——见下一节。</p>
+<h3>回购与稀释：几乎没有回购</h3>
+<p>TTM 回购 7 万美元，SBC 196 万美元。<strong>回购 ÷ SBC = 0.04。</strong> 这个比值接近 1 才叫"回购只是抵消员工发股"，大于 3 才叫真回馈股东。0.04 的意思是：<strong>公司根本没在回购，股东只在被稀释。</strong> 股本同比 +0.62%，环比 +0.47%（年化约 1.9%），稀释还在加速。</p>
+<p>不分红。</p>
+<h3>利润和现金流的差：净利 793 万，经营现金流 4343 万，自由现金流 <strong>负 8337 万</strong></h3>
+<p>这三个数字放在一起，就是这家公司的全部真相。逐项对账（TTM，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>7.93</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>+33.46</td>
+<td><strong>是净利润的 4.2 倍</strong>——重资产的标志</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+0.68</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−0.01</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 资产减值</td>
+<td>+1.90</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>+1.96</td>
+<td>非现金但真实稀释股东</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>+1.99</td>
+<td>收回了一点欠款</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−0.87</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+2.42</td>
+<td>拖着供应商的钱没付</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>−0.66</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他净营运资产</td>
+<td>−3.47</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−1.89</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>43.43</strong></td>
+<td>对账完全吻合</td>
+</tr>
+<tr>
+<td><strong>− 资本开支</strong></td>
+<td><strong>−126.80</strong></td>
+<td><strong>这才是关键</strong></td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>−83.37</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>看清楚这两行：经营活动一年收回 4343 万现金，同期在建项目花掉 1.268 亿——自由现金流是负 8337 万。</strong></p>
+<p>这不是偶然。看四年序列：FY2023 −2204 万，FY2024 −1853 万，FY2025 −8621 万，TTM −8337 万。<strong>连续四年烧钱，累计烧掉 2.1 亿美元，超过了公司现在的整个市值（2.535 亿）。</strong></p>
+<p>钱从哪来的？<strong>借的。</strong> TTM 净新增借款 8494 万。看债务序列：FY2023 总债务 6809 万，FY2024 是 6292 万，FY2025 跳到 1.379 亿，TTM 到 1.571 亿。<strong>两年翻了 2.5 倍。</strong> 净现金头寸从 FY2023 的 +651 万，变成现在的 <strong>−1.414 亿</strong>。</p>
+<p>同期利息覆盖倍数（经营利润 ÷ 利息支出）只有 <strong>0.88</strong>——<strong>低于 1，意思是经营利润连利息都不够付。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 2.535 亿，企业价值 3.949 亿（多出来的 1.414 亿是净负债）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2.535 亿 ÷ 793 万</td>
+<td><strong>32.0 倍</strong></td>
+<td><strong>3.13 元</strong></td>
+</tr>
+<tr>
+<td>公司口径（调整后 EBITDA）</td>
+<td>无对应净利数，以 EV/EBITDA 3.949÷0.3803 呈现</td>
+<td>10.4 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 383 万按 25% 正常税率 → 287 万；2.535 亿 ÷ 287 万</td>
+<td><strong>88.3 倍</strong></td>
+<td><strong>1.13 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为 <strong>负 8337 万</strong></td>
+<td><strong>不适用</strong></td>
+<td><strong>−32.9 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3.949 亿 ÷ 457 万</td>
+<td><strong>86.4 倍</strong></td>
+<td><strong>1.16 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年净利 793 / 175 / 973 万，平均 647 万；2.535 亿 ÷ 647 万</td>
+<td><strong>39.2 倍</strong></td>
+<td><strong>2.55 元</strong></td>
+</tr>
+<tr>
+<td>（对照）市场预期口径</td>
+<td>公司给的前瞻市盈率</td>
+<td>7.4 倍</td>
+<td>13.51 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 1 块 1 毛 3。</strong></p>
+<p>这 1 块 1 毛 3 里，<strong>有多少回到你口袋？一分钱也没有。</strong> 不分红，回购 7 万美元（对 2.5 亿市值等于零）。全部留在公司里，而且不够——公司还额外借了 8494 万投进去。</p>
+<p><strong>这个 1.13 元未来会变大还是变小？</strong> 这是全篇唯一真正的分歧点，两个方向都得说清楚：</p>
+<p><strong>看多的逻辑（也是前瞻市盈率只有 7.4 倍的原因）：</strong> 那 1.268 亿资本开支不是打水漂，是在建新的 RNG 项目。RNG 项目的特点是建设期只花钱不赚钱，一旦投产，边际成本极低、现金流很好。如果在建项目按计划投产，加上 45Z 抵免和 RIN 价格企稳，市场共识认为明年利润能到现在的四五倍。<strong>七倍市盈率的前瞻数字如果兑现，这只股票现在是便宜的。</strong></p>
+<p><strong>看空的逻辑（我更信这一边，理由是数字）：</strong></p>
+<ol>
+<li><strong>投入资本回报率 0.76%，加权平均资本成本 5.46%。</strong> 翻译成人话：<strong>它每投入 100 块，一年赚回 7 毛 6，而这 100 块的融资成本是 5 块 4 毛 6。每投一块钱就毁灭价值。</strong> 一家 ROIC 远低于 WACC 的公司，越扩张股东越亏——除非新项目的回报率跟历史完全不同，而这需要证据，不是承诺。</li>
+<li><strong>同样的故事已经讲了四年。</strong> FY2023、FY2024 就在烧钱建项目，说好的利润呢？FY2024 净利 973 万，FY2025 塌到 175 万，TTM 回到 793 万——<strong>四年下来利润在原地打转，营收从 1.749 亿到 1.891 亿只涨了 8%，而债务从 6809 万涨到 1.571 亿。</strong></li>
+<li><strong>命门在别人手里。</strong> 利润的大头来自 RIN 和税收抵免，而 RIN 价格由联邦环保署每年定的掺混义务量决定，税收抵免由国会决定。这两样东西 Montauk 一点影响力都没有。<strong>政策一变，这家公司的利润表就重写。</strong></li>
+<li><strong>利息覆盖 0.88。</strong> 经营利润付不起利息。现在能撑住是因为还在借新债，一旦信贷环境收紧或者项目投产延期，这就是流动性问题——而它的流动比率只有 0.62，营运资金是负 1703 万。</li>
+</ol>
+<p>有一条能给它托底：<strong>市净率 0.96</strong>，账面净资产 2.645 亿，比市值还高一点。资产是实打实的沼气提纯厂和管道接口。<strong>但这个"托底"是有条件的</strong>——账面价值是过去四年资本开支堆出来的，而这些资产的实际回报率是 0.76%。<strong>回报率这么低的资产，账面值本身就该打问号</strong>，一旦项目不及预期，减值是必然的（而且它每年都在小额减值）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家用借来的钱赌政策补贴的公司，而且赌局已经进行了四年还没兑现。</strong></p>
+<p>表面 32 倍市盈率已经不便宜了，而这 32 倍还是靠一笔 410 万的税收抵免撑起来的——把这笔钱剔掉、按正常税率重算，是 <strong>88 倍</strong>；企业价值口径 <strong>86 倍</strong>；自由现金流是 <strong>负的</strong>，四年累计烧掉超过整个市值的现金；投入资本回报率 0.76%，连自己 5.46% 的资本成本的零头都不到；经营利润付不起利息。</p>
+<p>多头唯一的依据是"新项目投产后利润翻五倍"（前瞻 7.4 倍市盈率），但同样的话 2023 年就在说，兑现的是债务翻 2.5 倍、股东被持续稀释、以及一分钱分红回购都没有。</p>
+<p><strong>不值这个价。</strong> 市净率 0.96 看着像有安全垫，但那堆账面资产的年回报率是 0.76%，安全垫本身就不硬。如果你想赌 RIN 价格和 45Z 抵免，这确实是一张杠杆很足的彩票；但那是买彩票，不是买生意——<strong>而且这张彩票的开奖时间，四年里已经推迟过三次。</strong></p>
+</div></body></html>

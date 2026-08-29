@@ -1,0 +1,274 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MPC · 马拉松石油（Marathon Petroleum）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MPC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">12.8倍是周期顶的便宜,三年平均18倍,股价一年翻倍后追高等于赌价差不回落</div><h1>MPC · 马拉松石油（Marathon Petroleum）</h1>
+<p>市值 $1,036 亿 / 股价 $368.83 / 行业：能源—炼油 / TTM 截止 2026-06-30（任务2 榜第 12 名，PE 0–15 段）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>马拉松石油是美国最大的独立炼油商。「独立」的意思是它不像埃克森那样自己开采石油——它不拥有油田，只做中下游：买原油、炼成油品、卖出去，外加一张收过路费的管网。实质上是三门生意。</p>
+<h3>生意一：炼油与销售（Refining &amp; Marketing）—— 公司的主体，赚的是「价差」</h3>
+<p>这门生意的本质一句话能说清：<strong>从市场上买原油，在自家 13 座炼油厂里加工成汽油、柴油、航空煤油，再批发卖给加油站、航空公司、货运公司，赚中间的加工价差。</strong></p>
+<p>具体到操作层面：MPC 在全美有 13 座炼油厂，日加工能力约 300 万桶，是全美第一。举个具体例子——它在德州 Galveston Bay 的炼油厂一天能吃掉 63 万桶原油。假设今天西德州原油 75 美元一桶，炼出来的汽油柴油按批发价折算成「每桶油品」约 95 美元，中间这 20 美元就是所谓「裂解价差」（crack spread）。从里面再扣掉炼厂运转的能源费、人工、催化剂、维护，剩下的才是利润。<strong>这门生意 MPC 自己定不了价：原油价格是市场给的，成品油价格也是市场给的，它赚的价差完全随行就市。</strong> 行业好的年份一桶赚十几美元，差的年份一桶只赚两三美元甚至白干。</p>
+<p>它的客户是谁？不是开车的散户。MPC 把汽油批发卖给挂着 Marathon 招牌的约 7,000 家独立加盟加油站、卖给 Costco 这类大买家、把航煤直接卖给航空公司。零售端的加油站生意（Speedway 便利店连锁）2021 年已经以 210 亿美元整体卖给了日本 7-Eleven——所以今天的 MPC 是纯批发商。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>炼油与销售</th>
+<th>TTM（至2026-06）</th>
+<th>FY2025（日历年）</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$1,446 亿</td>
+<td>$1,243 亿</td>
+<td>+16%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>94%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>约 $75 亿（估算）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只按分部披露到营收，利润是按整体经营利润倒推的估算。营收涨 16% 不是卖得更多，是 2026 年上半年炼油价差大涨——美国和欧洲近两年关掉了好几座炼油厂（LyondellBasell 休斯顿厂、加州两座），供给收缩，剩下的炼厂日子突然好过。<strong>这也是本篇最需要警惕的一个事实：TTM 利润是在行业景气高点上录得的。</strong></p>
+<h3>生意二：中游管网（Midstream，即上市子公司 MPLX）—— 收过路费的稳定生意</h3>
+<p>MPC 手里还攥着一家单独上市的公司 MPLX（持股约 64%）的控股权。MPLX 干的是「收过路费」：<strong>拥有输油管道、天然气处理厂、码头和储罐，油气公司要把二叠纪盆地的原油和天然气运出来，就得按桶数/立方数付费，签的多是十年以上的照付不议合同。</strong> 举例：一家页岩油生产商要把每天 5 万桶原油从西德州运到墨西哥湾炼厂，走 MPLX 的管道，一桶付几十美分，一年下来付给 MPLX 上千万美元——不管油价是 40 还是 120，这笔过路费照收。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>中游（MPLX）</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$117 亿</td>
+<td>$115 亿</td>
+<td>+2%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>8%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>约 $52 亿（估算，MPLX 自身披露的利润率约 45%）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意一件事：<strong>MPLX 只有 64% 属于 MPC 股东</strong>，剩下 36% 属于 MPLX 自己的公众持有人。财报是并表的（营收利润全算进来），但每年要分走约 20 亿美元给 MPLX 的公众股东。这是读 MPC 报表最容易踩的坑，第二部分细说。</p>
+<h3>生意三：可再生柴油（Renewable Diesel）—— 政策生意，目前不怎么赚钱</h3>
+<p>MPC 把加州 Martinez 一座旧炼油厂改成了用废弃食用油、动物油脂炼「可再生柴油」的厂（和 Neste 合资）。这东西化学性质和普通柴油一样，能直接加进卡车油箱，卖点是碳排放低，能吃加州的低碳燃料补贴和联邦税收抵免。<strong>这门生意的利润几乎完全取决于补贴政策</strong>，这两年补贴缩水加上原料（废油脂）涨价，行业普遍亏损。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>可再生柴油</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$34 亿</td>
+<td>$28 亿</td>
+<td>+20%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>2%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>约亏损至勉强打平（估算）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：MPC 的 SBC 一年约 1.3 亿美元量级，占净利润不到 2%，在重资产行业里算克制，不构成障眼法。</li>
+<li><strong>一次性项目</strong>：TTM 里有出售资产收益 1.65 亿、权益投资收益 3.9 亿，合计税后约 4.5 亿的「顺风」。单期口径无法判断资产出售是否年年都有（从历史看 MPC 确实经常卖零碎资产），剔除后真实净利约 $81 亿，比报表数低 5%。另外记住一个历史背景：2021 年卖 Speedway 收回 210 亿现金，此后三年 90 亿以上/年的巨额回购花的主要是这笔钱，那个回购力度不代表常态。</li>
+<li><strong>资本化的支出</strong>：炼油行业没有软件资本化的把戏，资本开支就是实打实修炼厂、修管道，TTM $42 亿。没有障眼法。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $49.3 亿，是 SBC 的约 38 倍——<strong>真回购</strong>。股本一年缩了 6.6%，五年从 6.5 亿股缩到 2.8 亿股，接近腰斩。这是 MPC 过去五年股价十倍的最大发动机之一。</li>
+<li><strong>少数股东这道坎（本篇最重要的一条）</strong>：MPC 并表 MPLX，但 MPLX 有 36% 不属于 MPC 股东。税前利润 $128 亿、缴税 $25 亿后是 $103 亿，其中约 $18 亿归 MPLX 公众持有人，<strong>归 MPC 股东的才是 $85.5 亿</strong>——本文和网站用的 PE 已经用的是这个正确口径，但你在别处看到「MPC 经营现金流 171 亿」这种数时要记得：那里面约有两成的现金流不是你的。</li>
+<li><strong>利润和现金流的差</strong>：TTM 经营现金流 $171 亿远大于净利润 $85.5 亿，对账如下：净利润（含少数股东）$103 亿 → 加折旧摊销 $33 亿 → 加其他非现金项 $29 亿 → 加营运资金净释放 $28 亿（应收涨了 46 亿，但其他营运项目释放 73 亿）→ ≈ $171 亿。<strong>其中营运资金释放的 28 亿是一次性的（油价和库存波动带来的），不能当可持续现金流看。</strong> 可持续口径大约是：经营现金流 143 亿 − 资本开支 42 亿 − 分给 MPLX 公众持有人 20 亿 ≈ <strong>归股东自由现金流 $80 亿/年</strong>，和净利润基本对得上，利润是真现金。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $1,036 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,036亿 ÷ 85.5亿</td>
+<td>12.8</td>
+<td>$7.8</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>MPC 不怎么玩调整口径，与 GAAP 接近</td>
+<td>≈12.8</td>
+<td>$7.8</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,036亿 ÷（85.5亿 − 一次性收益约4.5亿）</td>
+<td><strong>12.8</strong></td>
+<td><strong>$7.8</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（归股东）</td>
+<td>1,036亿 ÷（FCF 129亿 − 营运资金一次性 − MPLX分流 ≈ 80亿）</td>
+<td>13.0</td>
+<td>$7.7</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（1,036亿 + 净负债265亿）÷ 121亿</td>
+<td>10.8</td>
+<td>$9.3（含债权人的份）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1,036亿 ÷ 三年平均净利 57亿（2023:97/2024:34/2025:40）</td>
+<td><strong>18.1</strong></td>
+<td><strong>$5.5</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>全表最值钱的是最后一行。</strong> 当期 12.8 倍看着便宜，但过去三年平均利润只有 57 亿——2024、2025 两年炼油价差低迷时它一年只赚 34–40 亿。现在的 85 亿是建立在「欧美炼厂关停潮 + 2026 上半年价差暴涨」这个景气高点上的。<strong>按三年平均算你付的是 18 倍，这在周期股里不便宜。</strong> 佐证：这只股票过去 52 周涨了 107%，市盈率却没怎么变（一直 12–13 倍）——涨的全是 E，而 E 是周期给的。</p>
+<p>大白话总结：<strong>你现在投 100 块进去，按当期真实口径公司一年替你赚 7.8 块；但如果价差回到过去三年的平均水平，就只剩 5.5 块。</strong> 这 7.8 块里，回来到你口袋的比例很高：TTM 回购 49 亿 + 分红 11.6 亿 ≈ 61 亿，相当于市值的 5.9% 直接还给了股东，剩下的钱主要投给了 MPLX 的管网扩建和小并购。未来这个数是变大还是变小，几乎完全取决于炼油价差能在高位停多久——供给端确实在收缩（美国炼能只减不增），这是结构性利好，但 2022 年价差暴涨后 2024 年照样跌回去了，周期没有死。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>好资产、好管理层、真回购，但你是在炼油景气高点、股价一年翻倍之后来看它的——当期 12.8 倍是周期顶部的便宜，三年平均口径 18 倍才是真实标价，现在买等于赌高价差成为新常态，<strong>不便宜了，想要的人应该等价差回落砸出来的坑，而不是现在追。</strong></p>
+</div></body></html>

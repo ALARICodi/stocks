@@ -1,0 +1,495 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RBKB · Rhinebeck Bancorp（莱茵贝克银行）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RBKB</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">软件显示1.38倍PB是错的，真实0.91倍；但ROE只5.6%，赌被收购</div><h1>RBKB · Rhinebeck Bancorp（莱茵贝克银行）</h1>
+<p>市值约 1.97 亿美元 / 股价 $12.60（2026-08-28 收盘）/ 行业：社区银行（纽约州哈德逊河谷）/ TTM 截止日：2026-06-30</p>
+<blockquote>
+<p><strong>这是一家银行，下面不用市盈率当主口径，改用市净率（PB）、有形账面价值市净率（P/TBV）、净资产收益率（ROE）和净息差（NIM）。</strong>原因很简单：银行的"利润"是可以靠少提坏账拨备凭空造出来的，而它的"资产"就是一堆借出去的钱。判断一家银行贵不贵，先问「花多少钱买它一块钱的净资产」，再问「它拿这一块钱净资产一年能赚几分」。</p>
+<p><strong>⚠️ 更重要的前提：这家公司在 2026 年 7 月 21 日刚刚完成"二次转制"，所以你在任何行情软件上看到的 RBKB 的市净率和市盈率，此刻全是错的。</strong>下文第二部分会把它算对。看不懂这句话没关系，第一部分末尾会用大白话解释什么叫二次转制。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Rhinebeck Bank 是一家开在纽约州哈德逊河谷（纽约市往北两小时车程那一带）的社区银行，<strong>只有 165 个员工</strong>，管着 <strong>14.7 亿美元的资产</strong>。它做的事在结构上只有三件，而且第一件占了绝大部分。</p>
+<h3>生意一：吸存款、放贷款，赚中间的利差（占收入约 87%）</h3>
+<p>这是银行最原始的生意，用具体的钱来讲最清楚：</p>
+<p>隔壁镇上的居民把 10 万美元存进 Rhinebeck Bank 的定期存款，银行一年付给他大约 <strong>2.3%</strong> 的利息（2,300 美元）。银行转手把这 10 万借给本地一个开餐厅的老板买铺面，收他大约 <strong>6.5%</strong> 的利息（6,500 美元）。中间 4,200 美元的差额，就是银行的毛利。</p>
+<p>放到整个 TTM 的规模上：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贷款利息收入</td>
+<td><strong>5,987 万</strong></td>
+<td>借出去的 9.26 亿贷款收回来的利息，平均收益率约 6.3%</td>
+</tr>
+<tr>
+<td>证券投资利息收入</td>
+<td>923 万</td>
+<td>见生意二</td>
+</tr>
+<tr>
+<td><strong>总利息收入</strong></td>
+<td><strong>6,910 万</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>付给储户的利息</td>
+<td><strong>−2,137 万</strong></td>
+<td>12.83 亿存款里付息的那部分</td>
+</tr>
+<tr>
+<td>付给同业和 FHLB 的利息</td>
+<td>−105 万</td>
+<td>借来的钱，现在几乎还清了</td>
+</tr>
+<tr>
+<td><strong>总利息支出</strong></td>
+<td><strong>−2,241 万</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 净利息收入</strong></td>
+<td><strong>4,669 万</strong></td>
+<td><strong>同比 +10.2%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净息差（NIM）约 3.7%</strong>（估算：净利息收入 ÷ 期间平均生息资产。之所以只能估算，是因为 6 月 30 日的资产被下面要讲的转制认购款撑大了，直接拿期末数算会失真）。3.7% 在社区银行里属于中上水平——这是它做得对的地方。</p>
+<p><strong>贷款是些什么贷款？</strong>从数据能看出来的是：贷款余额 <strong>9.26 亿</strong>，坏账准备金 <strong>770 万</strong>（覆盖率 0.83%），TTM 计提的新增坏账拨备只有 <strong>147 万</strong>（占贷款 0.16%）。这个计提水平很低，说明现在的资产质量确实没出问题。</p>
+<p>但有一件事必须指出来——<strong>贷款余额在持续缩小</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>时点</th>
+<th>贷款总额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2023-12</td>
+<td>10.16 亿</td>
+</tr>
+<tr>
+<td>2024-12</td>
+<td>9.80 亿</td>
+</tr>
+<tr>
+<td>2025-12</td>
+<td>9.62 亿</td>
+</tr>
+<tr>
+<td><strong>2026-06</strong></td>
+<td><strong>9.26 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两年半缩了 8.9%。</strong>同期存款反而从 10.31 亿涨到 12.83 亿。一家银行存款在涨、贷款在缩，只有两种解释：要么它主动在退出某类风险贷款，要么它找不到值得放的贷款。无论哪种，结果都一样——<strong>赚钱的资产在变少，不赚钱的现金在堆积。</strong></p>
+<h3>生意二：拿存不出去的钱买债券（占收入约 13%）</h3>
+<p>存款进来但贷不出去的部分，银行拿去买国债、市政债和住房抵押支持证券（MBS），吃票息。目前持有 <strong>1.77 亿证券</strong>（其中 MBS 8,288 万），TTM 收了 <strong>923 万利息</strong>。</p>
+<p>这块业务 2024 年出过大事，见第二部分。</p>
+<h3>生意三：手续费和佣金（TTM 683 万）</h3>
+<p>非利息收入 683 万，包括存款账户的服务费、透支费、保险代理佣金、财富管理费等。占总收入约 13%，规模不大但胜在稳定，不占用资本。（这四页财报只给了总额 683 万，没有把各项拆开，所以这里不编具体分项。）</p>
+<h3>成本端：165 个人花掉 3,955 万</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>非利息支出项</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工资和员工福利</td>
+<td><strong>2,192 万</strong></td>
+</tr>
+<tr>
+<td>一般行政费用（SG&amp;A）</td>
+<td>984 万</td>
+</tr>
+<tr>
+<td>其他运营费用</td>
+<td>684 万</td>
+</tr>
+<tr>
+<td>联邦存款保险费（FDIC）</td>
+<td>92 万</td>
+</tr>
+<tr>
+<td>无形资产摊销</td>
+<td>4 万</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,955 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>效率比率 = 3,955 万 ÷（净利息收入 4,669 万 + 非利息收入 683 万）= 73.9%。</strong></p>
+<p>这个数字要记住。它的意思是：<strong>这家银行每赚 100 块钱的收入，要花掉 73.9 块钱在人工和运营上，只剩 26 块。</strong>行业里管理得好的社区银行在 55–60%，一般的在 62–68%。<strong>73.9% 是差的那一档。</strong>根本原因是规模不够——14.7 亿资产养 165 个人和一堆分行网点，摊不薄。</p>
+<h3>关于"二次转制"：用大白话讲</h3>
+<p>Rhinebeck Bank 原来是一家<strong>互助银行</strong>（mutual bank）——没有股东，理论上归储户共有，跟中国的信用社性质接近。2019 年它做了"第一步"：成立一个控股公司上市，卖了大约 40% 的股份给公众，剩下 60% 由一个叫"MHC"的互助控股实体持有。MHC 不是人，它没有钱，它只是个法律外壳。</p>
+<p><strong>2026 年 7 月 21 日，它做了"第二步"：MHC 直接消失，它手里那 60% 的股份被注销，同时公司向公众增发新股。</strong></p>
+<p>具体数字：
+- 以 <strong>每股 $10.00</strong> 卖出 <strong>8,880,210 股</strong>新股，<strong>毛收入 8,880 万美元</strong>
+- 原来公众手里的每 1 股，换成 <strong>1.3978 股</strong>新股
+- 转制完成后总股本 <strong>15,638,237 股</strong></p>
+<p><strong>这件事对股东意味着什么？</strong>公司凭空多了 8,880 万美元的净资产，而这笔钱是新股东按 $10 一股掏出来的。原来的公众股东通过 1.3978 的换股比例，也分到了原本属于 MHC 那部分的价值。这是美国储蓄银行转制的标准剧本，历史上这类"转制股"往往在几年内被大银行收购。</p>
+<p><strong>但这件事也在财报上造成了一个巨大的、暂时的失真——</strong> 下面就说。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>① 最大的失真：2026-06-30 的资产负债表根本不能直接看</h3>
+<p>看这两组数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>2025-12-31</th>
+<th>2026-06-30</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现金及等价物</td>
+<td>1.02 亿</td>
+<td><strong>3.05 亿</strong></td>
+<td><strong>+2.03 亿</strong></td>
+</tr>
+<tr>
+<td>存款总额</td>
+<td>10.97 亿</td>
+<td><strong>12.83 亿</strong></td>
+<td><strong>+1.86 亿</strong></td>
+</tr>
+<tr>
+<td>贷款</td>
+<td>9.62 亿</td>
+<td>9.26 亿</td>
+<td>−0.36 亿</td>
+</tr>
+<tr>
+<td>股东权益</td>
+<td>1.369 亿</td>
+<td><strong>1.396 亿</strong></td>
+<td>只 +0.027 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>半年之内存款暴涨 1.86 亿（涨了 17%），现金堆到 3.05 亿（占总资产 21%），而股东权益几乎没动。</p>
+<p><strong>这不是业务爆发，这是股票认购款。</strong>转制发行期间，认购者把钱打进银行开的账户里等交割，这些钱在 6 月 30 日那天的报表上就是"存款"和"现金"。交割日是 7 月 21 日——<strong>在报告期之后</strong>。所以：</p>
+<ul>
+<li><strong>6 月 30 日的现金和存款是虚胖的</strong>，超额认购的部分在 7 月已经退还给认购人了</li>
+<li><strong>6 月 30 日的股东权益 1.396 亿完全不包含那 8,880 万募资</strong>，因为交割还没发生</li>
+</ul>
+<p><strong>结果就是：任何行情软件此刻显示的 RBKB 市净率（stockanalysis 上是 1.38 倍）都是拿"转制后的市值"去除"转制前的净资产"，分子分母不是一个时点的东西。这个数字没有意义。</strong></p>
+<h3>把它算对：转制后的真实市净率</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>转制前股东权益（2026-06-30）</td>
+<td>1.396 亿</td>
+</tr>
+<tr>
+<td>加：新股发行毛收入</td>
+<td>+0.888 亿</td>
+</tr>
+<tr>
+<td>减：发行费用（估算约 300 万）</td>
+<td>−0.030 亿</td>
+</tr>
+<tr>
+<td>减：员工持股计划（ESOP）未分配股份，按惯例计为权益抵减（估算 350–700 万）</td>
+<td>−0.050 亿</td>
+</tr>
+<tr>
+<td><strong>= 转制后股东权益（备考）</strong></td>
+<td><strong>约 2.20 亿</strong></td>
+</tr>
+<tr>
+<td><strong>= 转制后有形净资产（备考）</strong></td>
+<td><strong>约 2.17 亿</strong></td>
+</tr>
+<tr>
+<td>总股本</td>
+<td>15,638,237 股</td>
+</tr>
+<tr>
+<td><strong>每股净资产（备考）</strong></td>
+<td><strong>约 $14.04</strong></td>
+</tr>
+<tr>
+<td><strong>每股有形净资产（备考）</strong></td>
+<td><strong>约 $13.90</strong></td>
+</tr>
+<tr>
+<td>当前股价</td>
+<td><strong>$12.60</strong></td>
+</tr>
+<tr>
+<td><strong>真实市净率 P/B</strong></td>
+<td><strong>约 0.90 倍</strong></td>
+</tr>
+<tr>
+<td><strong>真实有形市净率 P/TBV</strong></td>
+<td><strong>约 0.91 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：不是 1.38 倍，是 0.91 倍。股价低于每股有形净资产 9%。</strong>这个差别大到足以颠覆判断，所以这一节是全篇最重要的部分。</p>
+<p>（发行费用和 ESOP 两项是估算，取值偏保守。即使把这两项加倍到 1,000 万，P/TBV 也只是 0.95 倍，结论不变。）</p>
+<h3>② 一次性项目：2024 年那笔 1,604 万的债券亏损</h3>
+<p>翻历史会看到 FY2024 这家银行<strong>净亏损 862 万</strong>，非常刺眼。原因就一条：</p>
+<p><strong>Gain (Loss) on Sale of Investments = −1,604 万美元。</strong></p>
+<p>2022–2023 年美联储加息，银行手里早年买的低息债券市价大跌。Rhinebeck 在 2024 年选择<strong>割肉卖掉</strong>这些低收益债券，认了 1,604 万的账面亏损，把钱换成当时利率更高的资产。MBS 持仓从 2023 年底的 1.286 亿一路降到现在的 8,288 万，就是这个动作的痕迹。</p>
+<p><strong>这是"真一次性"，而且它是有效的。</strong>证据在净利息收入：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>净利息收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>3,797 万</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>3,770 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td><strong>4,639 万（+23%）</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>4,669 万</td>
+</tr>
+</tbody>
+</table></div>
+<p>割肉之后利息收入立刻跳了 23%。<strong>这笔钱花得对，不该算作管理层的污点，反而说明他们愿意认错。</strong></p>
+<h3>③ 资本化的支出 / 股权激励 / 回购</h3>
+<ul>
+<li><strong>股权激励（SBC）</strong>：这四页财报没有单列银行的 SBC 金额，从非利息支出结构看规模很小，不构成实质影响。</li>
+<li><strong>资本化支出</strong>：无。银行没有软件资本化、内容资本化这类问题。</li>
+<li><strong>回购</strong>：<strong>没有，方向是反的</strong>。股本回购收益率 <strong>−1.85%</strong>，即股份数在增加（转制发新股所致）。转制后的储蓄银行通常要等满一年才被允许启动回购——这是后面第三部分要讲的关键变量。</li>
+<li><strong>分红</strong>：<strong>不分红。</strong></li>
+</ul>
+<h3>④ 利润和现金流的差：没问题</h3>
+<p>净利润 986 万，经营现金流 1,411 万，自由现金流 1,272 万。<strong>现金流高于净利润</strong>，这在银行是正常且健康的（净利润里扣了非现金的坏账拨备和折旧）。<strong>这一项干净，没有猫腻。</strong></p>
+<hr />
+<h2>第三部分：银行口径的估值——花多少钱，买一年赚几分</h2>
+<p>市值 1.97 亿（15,638,237 股 × $12.60）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th><strong>投 100 块年回报</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>有形市净率 P/TBV（转制后备考）</strong></td>
+<td><strong>0.91 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>市净率 P/B（转制后备考）</td>
+<td>0.90 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>行情软件显示的 P/B（错的，见第二部分）</td>
+<td>1.38 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE（TTM，转制前口径）</strong></td>
+<td><strong>7.35%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE（转制后备考，资本被摊薄）</strong></td>
+<td><strong>约 5.6%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROA（总资产收益率）</td>
+<td>0.72%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>市盈率（TTM 净利 986 万，新资本尚未产生收益）</strong></td>
+<td><strong>20.0 倍</strong></td>
+<td><strong>$5.00</strong></td>
+</tr>
+<tr>
+<td><strong>市盈率（备考：新资本按 4.5% 税前收益部署后）</strong></td>
+<td><strong>约 15.9 倍</strong></td>
+<td><strong>$6.29</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均 ROE 口径（FY2023 +3.96%、FY2024 −7.32%、FY2025 +7.77%）</strong></td>
+<td><strong>平均 1.47%</strong></td>
+<td><strong>$1.63</strong></td>
+</tr>
+<tr>
+<td>净息差 NIM（估算）</td>
+<td>约 3.7%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>效率比率</td>
+<td><strong>73.9%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>坏账准备金 / 贷款</td>
+<td>0.83%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>贷存比</td>
+<td>72.2%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>权益 / 总资产（备考，剔除认购退款后）</td>
+<td><strong>约 16%</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>CET1 核心一级资本充足率这四页财报不提供。但用权益/资产约 16% 来看，这家银行转制后属于<strong>严重超额资本</strong>（监管要求的"资本充足"门槛远在这之下），这既是安全垫，也是 ROE 被压低的直接原因。</p>
+</blockquote>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 RBKB，买到的是价值 110 块的有形净资产——账面上就赚了 10 块。</strong>这是这笔投资唯一确定的好处。</p>
+<p><strong>但这 110 块资产一年替你赚多少钱？按现在的盈利水平，5 块。等新募的 8,880 万部署到位（买债券或放贷款），大概是 6.3 块。</strong></p>
+<p><strong>为什么资产打了九折，回报却只有 6%？</strong>因为这家银行的赚钱能力配不上它的资产。ROE 只有 5.6%（备考）——而一家银行的股东要求回报通常在 9–10%。<strong>换句话说，它每留存一块钱利润，创造的价值不到一块钱。</strong>用 0.91 倍净资产买它，在数学上恰恰是"合理"的，不是"便宜"的：一家永远只能赚 5.6% ROE 的银行，理论合理价格大约就是 0.6 倍净资产。市场给到 0.91 倍，已经预支了改善的预期。</p>
+<p><strong>最难看的一行是"三年平均 ROE 1.47%"。</strong>FY2023 赚 3.96%、FY2024 亏 7.32%、FY2025 赚 7.77%，三年平均下来一年只有 1.5% 的净资产回报。<strong>换算成投 100 块，一年 1.63 块。</strong>这就是这门生意过去三年的真实成绩单——2024 年那次债券割肉虽然是对的选择，但它是真金白银的亏损，不能因为"是一次性的"就假装没发生过。</p>
+<p><strong>这 5–6 块里有多少回到你口袋？现在是 0。</strong>公司不分红、不回购（转制后一年内不被允许回购）。全部留在银行里。</p>
+<p><strong>未来会变大还是变小？这才是真正的问题，答案取决于一件事：</strong></p>
+<p>转制后的储蓄银行有一套非常固定的剧本：满一年后开始大额回购股份（把过剩资本还给股东，同时把 ROE 顶上去），三到五年内被区域性大银行以 <strong>1.3–1.6 倍有形净资产</strong>的价格收购。如果这个剧本上演，$12.60 买入、按 1.4 倍 TBV（约 $19.5）被收购，就是 55% 的回报。</p>
+<p><strong>如果剧本不上演</strong>，你持有的是一家：贷款余额两年半缩了 8.9%、效率比率 73.9%、ROE 5.6%、不分红、Piotroski 财务健康评分只有 4 分（满分 9）的次级社区银行。而且股价过去 12 个月已经涨了 <strong>31.3%</strong>——市场里已经有一批人在押这个剧本了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是一家好银行，这是一张彩票，而且彩票的价格是公道的。</strong></p>
+<p>先把最容易被误导的地方说清楚：<strong>行情软件上 1.38 倍的市净率是错的，真实是 0.91 倍</strong>——股价低于有形净资产。仅凭这一点，它不贵。</p>
+<p>但也别急着叫便宜。它的净资产之所以打折，是因为赚钱能力实在不行：ROE 5.6%（低于资金成本）、效率比率 73.9%（每 100 块收入花掉 74 块）、贷款余额连缩两年半、三年平均 ROE 只有 1.47%、现金占总资产 21% 躺着不干活、一分钱不分红。<strong>用 0.91 倍买一家 5.6% ROE 的银行，数学上就是公道价，不是捡漏。</strong></p>
+<p>真正的投资逻辑只有一条：赌它按转制银行的老剧本走——一年后大额回购、三五年内被收购、卖在 1.3–1.6 倍有形净资产。这条逻辑历史上胜率不低，但它是一个事件驱动的赌局，不是一门你想长期持有的生意。<strong>而股价已经先涨了 31%，赌桌上的位置没有一年前好了。</strong></p>
+<p>不便宜也不贵。想玩转制银行这个游戏的可以看看，冲着"好公司"来的可以直接翻过去。</p>
+</div></body></html>

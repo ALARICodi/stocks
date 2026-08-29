@@ -1,0 +1,240 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PYPL · PayPal（贝宝）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PYPL</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">7倍FCF年注销7%股本,赌按钮不被苹果吃掉</div><h1>PYPL · PayPal（贝宝）</h1>
+<p>市值 459 亿美元 / 股价约 53.7 美元 / 行业：数字支付 / TTM 截止 2026-06-30</p>
+<p>52 周股价跌了 23%，从 2021 年高点算跌了超过八成。现在 10 倍市盈率、7 倍自由现金流——<strong>这是本批三家里唯一一家"便宜是便宜在市场厌恶上"的公司</strong>，值得把账算细。</p>
+<h2>一、它到底做几件事</h2>
+<p>财报只分两行（交易收入 90%、增值服务 10%），但实质上是<strong>四门生意</strong>：</p>
+<p><strong>第一门：黄色按钮（品牌结账），最赚钱的核心。</strong> 你在美国任何一个网店结账，付款页上那个黄色的"PayPal"按钮就是它。商家为什么装：装了按钮的结账转化率明显更高——4 亿多用户的卡号、地址早就存在 PayPal 里，点两下就付完，不装按钮顾客掏卡输号输到一半就烦了、弃单走人。怎么收钱：<strong>向商家收约 2.9% + 0.30 美元一笔</strong>（顾客不掏钱）。举个例子：一家卖瑜伽垫的独立站月流水 100 万美元，其中四成顾客选 PayPal 结账，PayPal 一个月从这家店抽走约 1.2 万美元。这是双边网络：用户多→商家不敢不装→按钮到处都是→用户更懒得换，这个循环转了二十年。<strong>它也是唯一被 Apple Pay 真刀真枪攻击的那一门</strong>——iPhone 上的 Safari 结账，苹果的按钮就长在系统里。</p>
+<p><strong>第二门：Braintree（无品牌通道），走量不赚钱。</strong> 给 Uber、Airbnb、TikTok 这类大平台做底层刷卡处理——顾客看不到 PayPal 的名字，钱从卡组织到商家账上的管道由它铺。费率极薄（毛利千分之几），靠巨大流量堆收入。这几年交易收入的增长大半靠它，但<strong>它拉低整体毛利率</strong>——这就是为什么总营收涨 5.7%、毛利只涨 0.4%。</p>
+<p><strong>第三门：Venmo，美国年轻人的转账默认工具。</strong> 朋友间 AA 餐费、付房租都用它，装机量巨大但转账本身免费，变现靠 Venmo 借记卡刷卡回佣和商家收款，正在慢慢兑现。</p>
+<p><strong>第四门：增值服务（Other VAS），34.5 亿。</strong> 大头是<strong>客户余额趴在账上产生的利息</strong>（利率敏感，降息周期会缩水），加上给中小商家放贷的利息和风控服务费。</p>
+<p><strong>分部的钱</strong>（TTM，百万美元；财报只披露到这两行，内部拆分按公司披露和公开信息描述，利润按整体估算）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>FY2025 全年</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>交易收入</td>
+<td>30,674</td>
+<td>29,798</td>
+<td>90%</td>
+<td>黄按钮（高毛利）+ Braintree（薄毛利）混在一行</td>
+</tr>
+<tr>
+<td>增值服务</td>
+<td>3,454</td>
+<td>3,374</td>
+<td>10%</td>
+<td>利息为主，利率敏感</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 总营收 34,128（+5.7%），毛利 13,814（毛利率 40.5%），经营利润 6,010（17.6%），净利润 4,902。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 10.0 亿，<strong>占净利润 20.4%，重大</strong>。公司吹的"调整后 EPS"把这 10 亿加回去了——别信那个口径，SBC 是真实成本，GAAP 已扣，本文全篇用扣完的数。好消息是 SBC 绝对额在降（2023 年 14.8 亿 → TTM 10.0 亿）。</p>
+<p><strong>一次性项目</strong>：TTM 里有重组费和信贷拨备的常规波动，没有改变结论量级的大项。FY2022 净利润 2,419 的大坑是股权投资减值，早已出清。有效税率 16.4%，偏低但连续多年如此，不是单期粉饰。</p>
+<p><strong>资本化的支出</strong>：内部软件开发有少量资本化，包含在 8.9 亿资本开支里，相对 74.8 亿经营现金流可忽略。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 63.7 亿 ÷ SBC 10.0 亿 = <strong>6.4 倍，真回购</strong>；股本一年实际缩了 <strong>7.8%</strong>。2026 年起还开始发股息（TTM 付了 3.8 亿）。回购+分红合计 67.5 亿，<strong>占市值 14.7%</strong>——注意这比净利润（49 亿）还多，缺口靠存量现金和新发债补（TTM 净增债 20 亿），管理层摆明了认为自家股票被贱卖。</p>
+<p><strong>利润和现金流的差</strong>：净利润 4,902 vs 经营现金流 7,475 vs 自由现金流 6,586，差额健康（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>4,902</td>
+</tr>
+<tr>
+<td>+ SBC</td>
+<td>1,001</td>
+</tr>
+<tr>
+<td>+ 折旧摊销及其他非现金（估算合计）</td>
+<td>~1,900</td>
+</tr>
+<tr>
+<td>± 营运资金变化</td>
+<td>~-330</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>7,475</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−889</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>6,586</td>
+</tr>
+</tbody>
+</table></div>
+<p>利润是真现金，含金量没问题。净负债仅 30 亿（现金 113 亿、债 142 亿），账干净。</p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>45,904 ÷ 4,902</td>
+<td>9.4</td>
+<td>10.7 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>把 10 亿 SBC 加回，<strong>不采纳</strong></td>
+<td>~8</td>
+<td>（虚）</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>TTM 无重大一次性，≈ GAAP</td>
+<td>9.4</td>
+<td>10.7 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>45,904 ÷ 6,586</td>
+<td>7.0</td>
+<td>14.3 元</td>
+</tr>
+<tr>
+<td>EV/EBIT</td>
+<td>48,870 ÷ 6,010</td>
+<td>8.1</td>
+<td>12.3 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>45,904 ÷ 4,542</td>
+<td>10.1</td>
+<td>9.9 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最有分量的是最后一行</strong>：三年平均口径 10.1 倍和当期 9.4 倍几乎一样——说明现在的利润<strong>不是周期高点</strong>，这个便宜没有掺"利润虚高"的水分（对比：任务1 里 NVDA 当期 34 倍、三年平均 73 倍）。</p>
+<p>大白话：<strong>你投 100 块进去，按最保守的 GAAP 口径公司一年替你赚 10 块 7；而它实际还给股东的是 14 块 7</strong>——把赚的全还给你不够，还把账上存的现金也拿来买自己的股票。按现在的回购速度，五年后同样的利润摊在少三分之一的股本上，就算生意一点不长，每股利润也自动涨 40%+。X 未来变大还是变小：生意本身大概率<strong>慢速变大</strong>（电商大盘还在涨、Venmo 变现在推进），但每股口径因为回购会<strong>明显变大</strong>；风险是黄按钮的份额被 Apple Pay 一年啃一点，啃的速度快过回购的速度，那这就是价值陷阱。</p>
+<h2>四、一句话结论</h2>
+<p>10 倍利润、7 倍自由现金流、每年真金白银注销 7–8% 的股本、利润不在周期高点、账上干净——<strong>这是真便宜</strong>；它换来的是你得接受一门增长只有 5%、正面被苹果攻击的生意，但"平庸"两个字已经在价格里打了对折，"衰败"才会让你亏钱——目前的数据（营收还在涨、用户没流失）支持平庸，不支持衰败。</p>
+<p>数据来源：stockanalysis.com（TTM 截止 2026-06-30，市值为 2026-08-28 收盘）</p>
+</div></body></html>

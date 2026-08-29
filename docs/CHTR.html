@@ -1,0 +1,190 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CHTR · 查特通信（Charter Communications, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CHTR</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">便宜是杠杆幻觉:967亿债上薄股权,EV/FCF实为28倍</div><h1>CHTR · 查特通信（Charter Communications, Inc.）</h1>
+<p>市值 $251 亿 / 股价 $153.62 / 有线宽带（Spectrum 品牌） / TTM 截止 2026-06-30</p>
+<p>一年前它还是 $270 的股票，52 周跌了 43%，做空盘占流通股 21%——4 倍市盈率的背后是华尔街在赌它的宽带业务被 5G 和光纤吃掉。先把生意讲清楚，再看这 4 倍是真便宜还是陷阱。</p>
+<h2>一、它到底做几件事</h2>
+<p>查特用 Spectrum 这个牌子，在全美 41 个州经营有线网络——就是当年铺进千家万户的同轴电缆，如今升级后主要卖宽带。收入拆开是四门生意：</p>
+<h3>1. 家庭宽带（Internet）——占营收 43%，公司的命根子</h3>
+<p>约 3,000 万户家庭每月付 $60–90 从墙上那根线接互联网。这门生意的经典逻辑是<strong>区域性准垄断</strong>：在美国大部分郊区和小城镇，铺一张有线网络要几十亿美元，历史上一个社区只有一张有线网+一张电话线网，电话线的 DSL 跑不过同轴电缆，所以过去十五年有线宽带几乎躺着收钱——边际成本趋近零，提价就是纯利润。</p>
+<p><strong>现在这个垄断第一次被真正攻破了，这就是股价腰斩的原因。</strong> 两路敌人：T-Mobile 和 Verizon 用 5G 基站做「固定无线宽带」，每月 $50、插电即用，五年抢走了行业上千万用户，专打查特服务差、价格贵的软肋；AT&amp;T 和 Frontier 在查特的地盘上铺光纤，速度更快。查特的宽带用户数从 2024 年起由增转降，一年流失几十万户。TTM 宽带收入 $235 亿，较 FY2025 全年<strong>下滑 1.1%</strong>——这门生意历史上从来只涨不跌，掉头本身就是警报。</p>
+<ul>
+<li>钱：TTM 营收 23,494（占 43.2%，同比转负）。财报不披露分部利润；按整体推算，宽带贡献了公司绝大部分利润（视频接近零利润）。</li>
+</ul>
+<h3>2. 付费电视（Video）——占营收 24%，在安乐死</h3>
+<p>传统有线电视套餐，每月 $100+，正被 Netflix/YouTube 们埋葬：TTM 收入 $130 亿，比 FY2021 的 $176 亿萎缩了 26%，还在以每年 5% 的速度掉。查特的应对是把 Disney+、Max 之类打包进套餐续命。这门生意要按「五年后减半」来预期。</p>
+<h3>3. 手机（Mobile）——占营收 7.5%，唯一的高增长</h3>
+<p>Spectrum Mobile：查特没有自己的基站，批发租用 Verizon 的网络转售，每线每月 $30 起，专卖给自家宽带用户做捆绑（宽带+手机一起买更便宜，也更不容易退订宽带）。用户超 1,000 万线，TTM 收入 $41 亿，较 FY2025 全年 +8%，两年前才 $31 亿。增长真实，但要看清本质：<strong>这是防守型增长</strong>——毛利薄（要给 Verizon 交批发费），主要价值是拖住宽带用户别跑。</p>
+<h3>4. 企业客户 + 广告 + 其他——占营收约 23%</h3>
+<p>给小企业卖宽带电话（$44 亿）、给中大型企业卖专线（$30 亿）、有线电视广告位（$15 亿）、以及农村补贴建网等杂项（$36 亿）。稳定、不起眼。</p>
+<p><strong>还有一件悬在头上的大事</strong>：2025 年 5 月查特宣布与 Cox Communications（美国第三大有线商，家族私有）合并，作价约 $345 亿，预计 2026 年内交割。合并后将成为全美最大有线运营商。这是防守性抱团取暖——两家挤成本、共摊 5G 冲击。交割后财报会大变样，本篇分析的是合并前的查特。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $6.4 亿，占净利润 13%，不算轻但可控。</li>
+<li><strong>一次性项目</strong>：TTM 现金流量表里没有大额一次性损益，<strong>这 $49 亿净利润是干净的经营利润</strong>，难得。</li>
+<li><strong>资本化的支出</strong>：这是重头戏。TTM 资本开支 <strong>$121 亿，吃掉营收的 22%</strong>——升级网络到 DOCSIS 4.0、往农村铺线（有政府补贴）。而折旧只有 $88 亿，资本开支比折旧多 $33 亿，意味着<strong>利润表还高估了自由现金</strong>：赚的钱大头被埋回地里。管理层承诺 2027 年后资本开支见顶回落，自由现金流才会释放——这是多头论点的核心赌注。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $47.6 亿 ÷ SBC $6.4 亿 = <strong>7.5 倍，是真回购</strong>，股本一年缩了 11%。不分红，自由现金流全部用于回购。十年缩掉一半股本的节奏。</li>
+<li><strong>利润和现金流的差</strong>（对账，百万美元）：净利润 4,924 → 加折旧摊销 8,762 → 加 SBC 635 → 加其他非现金项约 2,100 → 减营运资金变化约 −300 → <strong>经营现金流 16,470</strong> → 减资本开支 12,112 → <strong>自由现金流 4,358</strong>。每一分钱去向清楚：赚 165 亿现金，121 亿埋回网络里，剩 44 亿全部回购。</li>
+</ul>
+<p><strong>真正的障眼法是资本结构：$967 亿总债务 vs $251 亿市值。</strong> 企业价值 $1,213 亿里，债主占 79%，股东只占 21%。这是一个 4:1 的杠杆股权——EBITDA 变动 10%，股权价值理论上摆动 40%。利息一年约 $50 亿，吃掉营业利润的 39%（利息保障倍数只有 2.6 倍）。债务/EBITDA 4.4 倍，在「用户还在流失」的背景下，这个杠杆没有安全垫。</p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>25,125 ÷ 4,924</td>
+<td>5.1（网站口径 4.0，差异是合伙单位算法）</td>
+<td>19.6 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>不适用——查特没有大额加回项</td>
+<td>≈GAAP</td>
+<td>—</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>TTM 无大额一次性项，同 GAAP</td>
+<td>5.1</td>
+<td>19.6 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>25,125 ÷ 4,358</td>
+<td>5.8</td>
+<td>17.3 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>121,326 ÷ 13,053</td>
+<td>9.3</td>
+<td>10.8 元（给债主+股东合计）</td>
+</tr>
+<tr>
+<td><strong>EV/自由现金流</strong></td>
+<td>121,326 ÷ 4,358</td>
+<td><strong>27.8</strong></td>
+<td><strong>3.6 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>25,125 ÷ 平均(4,987/5,083/4,557)</td>
+<td>5.2</td>
+<td>19.4 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均和当期几乎一样（利润确实稳定），<strong>但全表最扎眼的是 EV/FCF 27.8 倍</strong>：把债务算进来，整个企业每产出 1 块真实自由现金，买家要付 28 块——这根本不便宜，甚至偏贵。<strong>5 倍市盈率的「便宜」完全是杠杆制造的视觉效果</strong>：债主先拿走 50 亿利息、网络先吞掉 121 亿开支，股东排在最后分那 44 亿。</p>
+<p>大白话：<strong>你投 100 块进去，账面上公司一年替你赚 19.6 块——这个数字是真的；但真正变成现金、可以自由支配的只有 17.3 块，而且一分钱不分给你，全部用来回购</strong>（好在回购价低，缩股本的复利是实打实的）。这 19.6 块未来变大还是变小，完全取决于一件事：宽带用户流失是「放缓企稳」还是「持续失血」。企稳，则 5 倍市盈率+每年缩 11% 股本 = 五年翻倍的数学；失血，则 EBITDA 每降 5%，4.4 倍杠杆会把股权价值打掉两三成，回购越回越亏。目前的证据（宽带收入已转负、对手 5G 还在铺、光纤还在挖）不支持「已经企稳」的判断。</p>
+<h2>四、一句话结论</h2>
+<p>统计上便宜是真的（5 倍利润、5.8 倍自由现金流、股本一年缩 11%），但便宜的形状是<strong>在 967 亿债务上摞着的一片薄股权，命悬「宽带用户止跌」这一个赌注</strong>，而这个赌注目前趋势对它不利——EV/FCF 28 倍才是这家公司的真实标价：想赌杠杆反转的人自己去赌，想「留着观察」的人这里没有安稳觉睡。</p>
+<p>数据说明：TTM 截止 2026-06-30，来源 stockanalysis.com（S&amp;P Global 数据）；分部利润未披露，文中按整体利润结构估算；Cox 合并交割后需整体重估。</p>
+</div></body></html>

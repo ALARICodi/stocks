@@ -1,0 +1,229 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EIX · 爱迪生国际 (Edison International)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EIX</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">7倍是假的真实12倍，分红靠发债垫，山火账单正在进行时</div><h1>EIX · 爱迪生国际 (Edison International)</h1>
+<p>市值 $270 亿 / 股价约 $70 / 公用事业（电力） / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>先把最要紧的话放在最前面：<strong>筛选器显示的 7.2 倍市盈率是假的。</strong> 这家公司前瞻市盈率 12.1 倍，TTM 利润里塞满了监管追偿的一次性入账。这份分析很大程度上就是在拆这个 7.2 倍是怎么伪造出来的——不是公司造假，是会计规则叠加特殊年份的产物。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>名义上有分部，实质上<strong>只有一门生意</strong>：旗下的<strong>南加州爱迪生电力公司（SCE）</strong>，给洛杉矶周边 5 万平方英里、约 1500 万人口送电。你在洛杉矶郊区租房，每月收到的电费单八成就是 SCE 寄来的。</p>
+<p><strong>这门生意怎么赚钱，值得讲透，因为它跟普通公司完全不同</strong>：</p>
+<p>SCE 是政府特许的垄断企业——它的服务区里你别无选择。作为交换，它不能随便定价：加州公用事业委员会（CPUC）每三年开一次听证会，核定它的「费率基数」（rate base，即它投入电网的全部资产净值，目前约 $500 多亿），然后允许它在这个基数的股东出资部分上赚一个<strong>核定回报率（目前约 10%）</strong>。翻译成人话：<strong>SCE 的利润不取决于卖了多少电，而取决于它往电网里砸了多少钱</strong>。电线杆埋得越多、变电站修得越多、防山火的绝缘导线换得越多，费率基数越大，被允许赚的利润就越多，电费单随之上调。加州还有「收入脱钩」机制——居民省电不会让 SCE 少赚，少收的下年补回来。</p>
+<p>所以这家公司的增长逻辑简单粗暴：每年资本开支 $60–70 亿（TTM $67.8 亿），全部进费率基数，费率基数以每年 6–8% 复合增长，核定利润跟着涨。管理层给的核心每股收益指引就是这么推出来的。</p>
+<p><strong>客户构成</strong>（财报的「分部」其实是客户分类）：商业用户 $82.2 亿（42%）、居民用户 $76.0 亿（39%）、其他合同收入 $29.3 亿、监管调整项 $6.5 亿，TTM 总营收 $194.2 亿（+10.7%，涨的主要是获批的费率上调）。</p>
+<p><strong>但这门生意在加州有一个别州没有的死穴：山火。</strong> 加州法律实行「反向征收」（inverse condemnation）——只要山火是你的电线引燃的，<strong>不管你有没有过错</strong>，你都要赔。2017–2018 年的 Thomas/Woolsey 大火让 SCE 赔了几十亿；<strong>2025 年 1 月的 Eaton 大火烧毁了阿尔塔迪纳镇、致 19 人死亡，起火点就在 SCE 的输电塔下</strong>，SCE 已经启动直接赔付计划，最终账单估计在百亿美元量级。州政府 2019 年设立了 $210 亿的山火保险基金（AB 1054）给公用事业公司兜底，SCE 的赔付大部分将由基金和保险吸收——但基金是有限的，烧完一次少一次，而且下一场大火随时可能来。这就是它市盈率常年比全国同行低一截的原因。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这部分是全篇核心，因为 <strong>TTM 净利润 $37.4 亿严重失真</strong>。</p>
+<ul>
+<li><strong>利润尖峰是怎么来的</strong>：看历史序列就明白——FY2022 净利 $6.1 亿、FY2023 $12.0 亿、FY2024 $12.8 亿、<strong>FY2025 突然跳到 $44.6 亿</strong>。2025 年发生了什么？CPUC 批准了 SCE 对 2017–18 年山火成本约 $16 亿的追偿（TKM 决定），加上山火基金相关的预期回收入账、递延监管资产确认——这些都是把「过去垫的钱未来能收回」一次性确认成当期利润的会计动作，<strong>钱还没到手，更不会年年都有</strong>。公司自己的「核心利润」口径反而把这些剔掉了：核心每股收益指引约 $6 上下，对应核心净利约 $23 亿——比 GAAP 少了 $14 亿。这是少见的「公司自己的 Non-GAAP 比 GAAP 更老实」的案例。</li>
+<li><strong>股权激励（SBC）</strong>：公用事业公司量级很小，忽略不计。</li>
+<li><strong>一次性项目</strong>：如上，TTM 里约 $14 亿量级的监管追偿类收益是单次的；同时 TTM 还有 $1.1 亿资产减记。单期口径无法精确切割每一笔，但方向明确：<strong>真实经营利润远低于报表</strong>。</li>
+<li><strong>回购与稀释</strong>：几乎不回购（TTM $0.3 亿），股本基本不变。公用事业不玩这个，反而未来大概率<strong>增发股票</strong>给资本开支融资。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $37.4 亿 vs 经营现金流 $63.9 亿，对账（单位：百万美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>3,745</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>2,874</td>
+</tr>
+<tr>
+<td>＋其他摊销</td>
+<td>463</td>
+</tr>
+<tr>
+<td>＋资产减记</td>
+<td>106</td>
+</tr>
+<tr>
+<td>＋营运资金变化（应收/存货/应付）</td>
+<td>+51</td>
+</tr>
+<tr>
+<td>－其他净经营资产变化（监管资产增加等）</td>
+<td>-2,010</td>
+</tr>
+<tr>
+<td>＋其他经营调整</td>
+<td>+1,162</td>
+</tr>
+<tr>
+<td>＝经营现金流</td>
+<td>6,391</td>
+</tr>
+</tbody>
+</table></div>
+<p>那行 <strong>-$20 亿的「其他净经营资产」就是尖峰利润的影子</strong>——利润确认了，现金没进来，挂成了监管资产。</p>
+<ul>
+<li><strong>自由现金流是负的，而且永远是负的</strong>：TTM 经营现金流 $63.9 亿，资本开支 $67.8 亿，<strong>自由现金流 -$3.9 亿</strong>——过去五年年年为负。分红 $13.9 亿哪来的？<strong>发债</strong>（TTM 净新增债务 $41 亿）。这在受监管公用事业里是标准玩法（今天借钱修电网，明天从电费里连本带利收回来），不算庞氏，但它意味着：股东回报完全押在监管机构持续放行费率上调、以及利率不失控上。</li>
+<li><strong>负债</strong>：总债务 <strong>$435 亿</strong>，是市值的 1.6 倍；债务/EBITDA 4.0 倍，利息保障 3.1 倍。利率每涨一个点，一年多付 $4 亿利息（逐步置换后）。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $270.0 亿，企业价值 $703.0 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>270.0 ÷ 37.4</td>
+<td><strong>7.2 倍（假的）</strong></td>
+<td>¥13.9（假的）</td>
+</tr>
+<tr>
+<td>公司自己的核心口径</td>
+<td>270.0 ÷ 约 23（核心净利，剔除监管一次性收益）</td>
+<td>约 11.7 倍</td>
+<td>¥8.5</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>与核心口径基本一致（这家公司的 Non-GAAP 是往低了调的）</td>
+<td><strong>约 11.7 倍</strong></td>
+<td>¥8.5</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为负</td>
+<td>无法计算</td>
+<td>0</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>703.0 ÷ 60.6（分子里 EBIT 同样含一次性收益，实际更贵）</td>
+<td>11.6 倍（偏乐观）</td>
+<td>¥8.6</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>270.0 ÷ 23.1（FY23–25 平均）</td>
+<td>11.7 倍</td>
+<td>¥8.6</td>
+</tr>
+</tbody>
+</table></div>
+<p>三个独立口径（公司核心、三年平均、前瞻 12.1 倍）全部指向同一个数：<strong>真实市盈率约 12 倍，不是 7 倍。</strong></p>
+<p><strong>大白话</strong>：你现在投 100 块进去，公司真实一年替你赚约 8.5 块。其中约 4.9 块以分红形式打到你账上（股息率 4.9%，且已连续二十多年增长）；剩下的 3.6 块<strong>你拿不到，也不会留在公司账上</strong>——它连同新发的债一起被砸进了电网，变成未来更大的费率基数。这个 8.5 块未来会不会变大？监管路径说会：费率基数每年涨 6–8%，核心 EPS 指引同步涨。但两个东西可以把它一把清零：下一场被认定是 SCE 设备引燃的大火（基金烧穿后自己赔），或者 CPUC 在民怨（加州电价已是全美最贵之一）下压缩核定回报率。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这不是 7 倍的便宜货，是 12 倍的加州电网垄断商，头顶悬着一把叫「山火」的剑，分红的钱全靠发债垫。</strong> 垄断是真垄断、费率增长路径是真清晰、4.9% 的股息也是真的，但你赚的每一分钱都建立在「监管继续友好＋大火别再烧到它头上」这两个自己完全控制不了的前提上——Eaton 大火的最终账单还没算完，这不是假设风险，是正在进行时。结论：<strong>价格公道（按真实口径），但生意有硬伤</strong>；想买公用事业收息的人，同样 12 倍上下有的是不带山火敞口的州，没必要非选加州这份惊险。</p>
+</div></body></html>

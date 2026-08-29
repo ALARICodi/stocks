@@ -1,0 +1,223 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CCLD · CareCloud（凯尔云，医疗账单外包）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CCLD</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">现金流口径6倍真便宜，但三年前停过优先股息、股本刚稀释72%</div><h1>CCLD · CareCloud（凯尔云，医疗账单外包）</h1>
+<p>市值 $1.06 亿 / 股价约 $2.49 / 行业：医疗信息技术服务 / TTM 截止 2026-06-30</p>
+<h2>一、它到底做几件事</h2>
+<p>这家公司原名 MTBC，总部在新泽西，但 3,650 名员工绝大部分在巴基斯坦和斯里兰卡——人均年创收只有 3.5 万美元，这个数字本身就把商业模式说透了：<strong>用南亚的人力成本，干美国医生诊所最烦的活</strong>。</p>
+<h3>生意一：替医生把钱从保险公司手里要回来（技术+外包账单服务，占 68%）</h3>
+<p>美国的医疗收费流程复杂到荒谬：病人看完病，诊所要把诊疗过程翻译成几万个收费代码里正确的那几个，提交给保险公司，保险公司挑刺拒付，诊所再申诉、再提交……一家 5 个医生的小诊所，光应付这套流程就得雇两三个专职文员，还经常要不回钱。</p>
+<p>CareCloud 的核心生意就是把这整套活接过来：诊所把每天的诊疗记录交给它，它在巴基斯坦的团队负责编码、提交、跟保险公司扯皮、催收，<strong>收费标准通常是"实际收回金额的 3%–7%"</strong>。比如一家小诊所一年从保险公司收回 200 万美元诊疗费，付给 CareCloud 大约 8–10 万。诊所为什么非买不可？因为自雇文员一年成本至少 12 万还干不好，而收不回的拒付款一年可能损失十几万——外包给它是笔划算账。捆绑在这个服务里的还有它的电子病历（EHR）和诊所管理软件，软件本身不值钱，值钱的是"活儿有人干了"。</p>
+<ul>
+<li>TTM 营收 $8,725 万，上年同期约 $7,529 万，<strong>+15.9%</strong>（主要靠 2026 年上半年的并购并表，不是自然增长——这块业务 2021 年就有 $1.06 亿，之后连跌三年）</li>
+</ul>
+<h3>生意二：出租懂行的人（专业服务，占 17%）</h3>
+<p>给大医院和医疗集团派驻顾问和IT人力：上线新病历系统时派 20 个实施顾问驻场半年、按人天收费这类活。一单几十万美元量级，做完就结束，没有粘性。TTM 营收 $2,174 万，同比 -8%，萎缩中。</p>
+<h3>生意三：整包诊所后台（诊所管理，占 12%）</h3>
+<p>比生意一更进一步：连前台排班、采购、人事都替诊所管了，医生只管看病，公司按诊所收入分成。只服务十几家诊所，是个小而稳的存量生意。TTM 营收 $1,510 万，同比 +5%。</p>
+<h3>生意四、五：打印邮寄账单（$355 万）和集中采购返点（$100 万）</h3>
+<p>凑数的边角料，合计不到 4%，不展开。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>技术+账单外包</td>
+<td>$8,725万</td>
+<td>+15.9%</td>
+<td>68%</td>
+</tr>
+<tr>
+<td>专业服务</td>
+<td>$2,174万</td>
+<td>-8%</td>
+<td>17%</td>
+</tr>
+<tr>
+<td>诊所管理</td>
+<td>$1,510万</td>
+<td>+5%</td>
+<td>12%</td>
+</tr>
+<tr>
+<td>打印邮寄+采购</td>
+<td>$455万</td>
+<td>~持平</td>
+<td>3%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>$12,864万</td>
+<td>+15.1%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到分部营收；整体经营利润率 7.2%，账单外包是利润主力（估算，毛利率高的是它），专业服务估算微利。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>SBC</strong>：TTM 仅 $36 万，可忽略（2021–23 年曾是每年 $500 万，已停发，这点难得）。</li>
+<li><strong>一次性项目</strong>：TTM 内没有。但 2023 年有 $4,200 万商誉减值——就是把 2020 年高价买来的 CareCloud 品牌方"承认买贵了"。TTM 干净，历史有前科。</li>
+<li><strong>资本化的支出（要扣）</strong>：每年把约 $319 万软件开发费资本化（不进当期利润），同时每年摊销 $1,032 万旧的资本化软件和并购无形资产。<strong>当期摊销远大于当期资本化</strong>，所以现在的 GAAP 利润其实是被"还历史旧账"压低的，不是虚高的——方向跟常见的把戏相反，对现在的买家反而有利。</li>
+<li><strong>回购与稀释</strong>：零回购。<strong>股本一年暴增 +72%</strong>——不是增发圈钱，是把 11% 股息率的 A 系列优先股转成了普通股（换股省掉了每年沉重的优先股股息）。对老普通股股东是实打实的稀释，但换来的是利润表上少扣一块固定费用，属于"割肉疗伤"。剩余优先股每年仍要吃掉约 $500 万利润。<strong>2023 年公司曾暂停优先股分红</strong>——那是财务濒临失控的标志，才过去三年。</li>
+<li><strong>新债</strong>：TTM 净借款 +$4,874 万，总负债从 $430 万跳到 $5,401 万，用于收购（TTM 现金收购 $1,715 万）和补营运。杠杆从几乎为零加到了净负债 $4,062 万，EBITDA 的 1.6 倍左右，不算危险但方向要盯。</li>
+<li><strong>利润 vs 现金流（全篇关键）</strong>：归普通股利润只有 $296 万，经营现金流却有 $2,672 万。对账：合并净利 $799 万 → 加折旧摊销 $765 万 → 加无形资产摊销 $1,032 万 → 加坏账等杂项 $77 万 → 营运资金几乎不动 → = $2,672 万。<strong>差额几乎全是非现金摊销</strong>，其中一大半是历史并购留下的"纸面折旧"，不用再花钱。这家公司的真实赚钱能力看现金流比看利润准。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（归普通股）</td>
+<td>$1.058亿 ÷ $296万</td>
+<td>35.8</td>
+<td>¥2.8</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>调整后EBITDA约$2,540万</td>
+<td>EV/调整EBITDA≈5.8</td>
+<td>（不可比）</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>归普通股利润+并购无形摊销(税后约$600万) ≈ $900万</td>
+<td>≈11.8</td>
+<td>¥8.5</td>
+</tr>
+<tr>
+<td>自由现金流口径（归普通股）</td>
+<td>($2,280万FCF − $500万优先股息) ÷ 市值</td>
+<td>≈5.9</td>
+<td>¥16.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$1.464亿 ÷ $923万</td>
+<td>15.9</td>
+<td>¥6.3</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2023–25归普通股平均为<strong>负</strong>（-$2,164万/年）</td>
+<td>算不出</td>
+<td>负</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块，按最挑剔的"真实利润"口径，公司一年替你赚约 8.5 块；按现金流口径赚约 16 块。</strong> 这两个数差这么多，是因为利润表还在消化历史并购的摊销旧账。这些钱目前一分不分给你——全部拿去还债、付优先股息和继续买小公司。X 会变大还是变小？向上的力量是并购并表和优先股负担减轻（华尔街预期明年 EPS $0.29，对应 8.6 倍前瞻 PE）；向下的力量是三块业务里两块自然萎缩、增长全靠买。</p>
+<h2>四、一句话结论</h2>
+<p>现金流口径 6 倍是真便宜，利润被历史摊销压着也是真的，但这家公司三年前刚暂停过优先股分红、股本一年稀释 72%、增长靠新借的 5,000 万买回来——<strong>便宜有便宜的道理，算得上"值这个价"，想买的人要盯住两件事：并购消化和别再稀释</strong>。</p>
+</div></body></html>

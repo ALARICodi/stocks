@@ -1,0 +1,249 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PCG · 太平洋煤气电力公司（PG&E Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PCG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">12倍靠退税撑真实18倍，负现金流+野火尾险，烧穿过一次</div><h1>PCG · 太平洋煤气电力公司（PG&amp;E Corporation）</h1>
+<p>市值 366 亿美元 / 股价 16.6 美元 / 行业：公用事业（电力+天然气）/ TTM 截止 2026-06-30</p>
+<p>先交代一个绕不开的背景：<strong>这家公司 2019 年破产过一次</strong>——2018 年它的输电线在大风天打火花，引燃了烧死 85 人的坎普山火（Camp Fire），赔偿约 255 亿美元，公司进了破产法庭，2020 年重组出来。今天你看到的一切——高负债、增发股票、微薄分红、每年一百多亿的电线改造开支——都是那场火的余波。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>本质上只有一门生意：<strong>在加州北部和中部当受监管的能源垄断商</strong>，给约 1600 万人（旧金山、硅谷、萨克拉门托到中央谷地农业区）供电供气。按产品分两条线：</p>
+<h3>生意一：卖电（占营收约 74%）</h3>
+<p>从发电厂（自有的 Diablo Canyon 核电站 + 水电 + 外购）把电通过自家的电网送到用户家。<strong>垄断怎么赚钱是理解这家公司的全部钥匙</strong>：电价不是它定的，是加州公用事业委员会（CPUC）批的，批法是「成本照实报销 + 你投进电网的净资产（费率基数 rate base）按约 10.3% 的核定收益率赚利润」。翻译成人话：<strong>PG&amp;E 每往电网里砸 100 亿美元修铁塔、埋电缆，监管就允许它每年多赚约 10 亿的税前利润，从电费里收回来</strong>。所以它的「增长」不靠多卖电，靠多花钱——资本开支就是它的营收增长引擎，这也是为什么它 TTM 资本开支高达 124 亿、比经营现金流还多 43 亿。</p>
+<p>用户是什么体验？旧金山一户普通家庭现在每度电付 0.4 美元以上，全美最贵之列，过去四年电价累计涨了约五成——涨的钱大部分在付「把 1 万英里高火险区电线埋到地下」的账单，一英里埋线成本 300–400 万美元。用户没得选，搬家才能换供应商。</p>
+<p>分部营收（财报按客户类型披露，利润不分拆）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>客户类型</th>
+<th>TTM 营收（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>电·居民</td>
+<td>73.1</td>
+</tr>
+<tr>
+<td>电·商业（含数据中心）</td>
+<td>72.3</td>
+</tr>
+<tr>
+<td>电·工业</td>
+<td>20.2</td>
+</tr>
+<tr>
+<td>电·农业（中央谷地灌溉抽水）</td>
+<td>18.4</td>
+</tr>
+<tr>
+<td>电·路灯及其他</td>
+<td>7.2</td>
+</tr>
+<tr>
+<td>天然气（居民+商业+运输）</td>
+<td>67.1</td>
+</tr>
+<tr>
+<td><strong>合计（含监管平衡账户调整）</strong></td>
+<td><strong>258.4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>值得一提的亮点：硅谷的 AI 数据中心正在排队向它申请供电（申请规模累计约 10 吉瓦级），商业用电是未来几年最确定的增量——这是加州给它的少数好消息。</p>
+<h3>生意二：卖天然气（占营收约 26%）</h3>
+<p>同样的监管逻辑，管道输气到居民和商业用户。加州政策上在逐步「去天然气化」（新建筑禁装燃气管道的城市越来越多），这条线长期是缓慢萎缩的，但费率基数模式下短期利润照赚。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：财报页未单列，公用事业惯例规模很小，可忽略。</li>
+<li><strong>一次性项目——最要紧的一条：它的税是负的。</strong> TTM 税前利润 26.5 亿，净利润却有 30.6 亿，<strong>所得税是 -4.06 亿（净退税）</strong>。公用事业因为巨额折旧抵税，有效税率长期偏低是常态，但税是负数意味着报表 PE 被明显美化了：<strong>按正常 25% 税率算，净利润约 20 亿而不是 30.6 亿，市盈率立刻从 12 倍变成约 18 倍</strong>。这个低税率有一部分是结构性的（会持续多年），但把它当永久性的 0% 显然不对。</li>
+<li><strong>资本化的支出</strong>：公用事业的资本化是商业模式本身（修电网记资产、按 30–40 年折旧），不算障眼法，但要知道：折旧 46.7 亿远低于当期资本开支 124 亿，账面利润没有反映真实的重置投入。</li>
+<li><strong>回购与稀释</strong>：没有回购，<strong>股本一年还在增发 +3.1%</strong>（2024 年增发过 11 亿美元普通股）。你的持股每年被稀释 3%，这要从回报里扣掉。分红倒是 2023 年恢复了，但普通股分红 TTM 只有 3.3 亿，股息率不到 1%，聊胜于无。</li>
+<li><strong>利润和现金流的差</strong>：净利润 30.6 亿 vs 经营现金流 81.5 亿——现金流多出 50 亿，几乎全是折旧摊销（50.9 亿）加回来的，对账干净：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>30.6</td>
+</tr>
+<tr>
+<td>加回折旧摊销</td>
+<td>+50.9</td>
+</tr>
+<tr>
+<td>营运资金及其他经营项净额</td>
+<td>约 0</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>81.5</strong></td>
+</tr>
+<tr>
+<td>减资本开支</td>
+<td>−124.1</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>约 −42.6</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>自由现金流是负 43 亿，而且未来五年都会是负的</strong>（公司自己的资本开支计划到 2028 年每年都超过 100 亿）。缺口靠借债填：TTM 净新增借款 51 亿，总债务已到 647 亿，<strong>企业价值 1003 亿里市值只占 366 亿</strong>——你买的是一家「债主拿大头」的公司。利息覆盖倍数只有 1.8 倍（经营利润 57.8 亿 ÷ 利息约 32 亿），利率每高一个点，都是从股东利润里割肉。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>366 亿 ÷ 30.6 亿</td>
+<td>12.0</td>
+<td>8.4 元</td>
+</tr>
+<tr>
+<td>公司自己吹的「核心 EPS」</td>
+<td>剔除野火相关等项目，比 GAAP 还好看</td>
+<td>~10</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>366 亿 ÷ 正常化税率后净利润约 20 亿</td>
+<td><strong>约 18</strong></td>
+<td><strong>5.5 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>自由现金流为负</td>
+<td>无意义</td>
+<td><strong>0 元以下</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1003 亿 ÷ 57.8 亿</td>
+<td>17.3</td>
+<td>3.3 元（给全体出资人）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>366 亿 ÷（22.4+24.8+25.9）/3 亿</td>
+<td>15.0</td>
+<td>6.7 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，把退税的水分挤掉，公司一年替你赚约 5 块 5</strong>。但这 5 块 5 里，真正回到你口袋的分红不到 1 块，其余全部——外加每年再借的几十亿——都埋进了加州的地下电缆里；同时你的股份每年还被增发稀释 3%。好消息是监管保证这些埋下去的钱按 10% 左右的收益率变成未来利润（EPS 过去三年确实以年均 10% 以上在涨，公司指引未来还能年增 9–10%），数据中心用电潮又给了额外确定性；坏消息是这套复利机器的前提是<strong>加州别再烧一场算到它头上的大火</strong>——2019 年的破产证明这个前提不是必然成立的（州里 210 亿美元的野火基金和责任上限法案 AB 1054 提供了缓冲，但缓冲不是免疫）。</p>
+<h2>第四部分：一句话结论</h2>
+<p>12 倍的表面市盈率里有退税撑起来的三分之一，真实约 18 倍——跟一家普通美国公用事业一个价钱，但它不是普通公用事业：负自由现金流要持续到 2028 年以后、每年稀释 3%、利息覆盖只有 1.8 倍、头顶悬着加州野火这把烧穿过一次的剑。EPS 年增 9–10% 和数据中心需求是真的，<strong>算公道价，但这不是「便宜的垄断收费站」，是「用杠杆和好天气换增长的重建工程」——想要安稳收息的人不该来这里，这份便宜留给愿意赌加州不再起火的人。</strong></p>
+</div></body></html>

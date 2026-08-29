@@ -1,0 +1,435 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CXDO · Crexendo（克雷申多）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CXDO</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">48倍是5.75%超低税率美化过的，真实60倍，增长全是买来的</div><h1>CXDO · Crexendo（克雷申多）</h1>
+<p><strong>市值</strong> 2.085 亿美元 ｜ <strong>股价</strong> 6.27 美元 ｜ <strong>企业价值</strong> 1.959 亿美元 ｜ <strong>行业</strong> 科技服务（云通信）
+<strong>TTM 口径截止</strong> 2026 年 6 月 30 日（最近四个季度滚动）｜ <strong>市值排名</strong> 全榜第 1155 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Crexendo 是一家做「企业电话」的公司。这话听起来像上个世纪的生意，但它实际上在做两门完全不同的买卖——<strong>一门是自己开店卖电话服务，一门是把电话服务的「发动机」批发给别的公司去开店</strong>。这两门生意的客户、毛利、护城河完全不一样，必须分开看。</p>
+<h3>生意一：云电话服务（Cloud Telecommunications Services）</h3>
+<p><strong>这件事到底是什么。</strong> 假设凤凰城有一家 40 人的保险代理公司。它办公室的杂物间里有一个一米高的铁盒子，那是老式的程控交换机（PBX），2009 年装的，坏了要叫师傅上门，加一条分机线要收 800 美元，员工出门在外就接不到公司电话。这家保险公司找到 Crexendo，Crexendo 做三件事：</p>
+<ol>
+<li>寄来 40 台桌面话机（第三方品牌如 Yealink、Poly，Crexendo 转售），话机不接电话线，<strong>直接插办公室的网线</strong>；</li>
+<li>把这家公司用了十几年的那个总机号码「携号转网」搬到 Crexendo 的机房——这一步是整门生意的命根子，下面再说；</li>
+<li>从此这 40 部电话的每一通来电去电，都先跑到 Crexendo 在美国的数据中心，再转出去。</li>
+</ol>
+<p>保险公司每个月按人头付钱，<strong>大约每人每月 15–25 美元</strong>，40 人就是每月 600–1000 美元，签 3 到 5 年的合同。这个价钱买到的不只是打电话：语音信箱自动转成邮件、自动总机（「理赔请按 1，续保请按 2」）、通话录音、视频会议、用公司总机号码收发短信，以及一个手机 App——业务员在客户家里，公司座机响了他手机也响，接起来对方看到的还是公司号码。</p>
+<p><strong>客户为什么非买不可、为什么不走。</strong> 因为那个总机号码。这家保险公司二十年的名片、黄页、Google 商户信息、老客户手机通讯录里存的都是这个号码。换供应商意味着号码要再搬一次家，搬家期间可能漏接电话——对保险代理来说漏接电话就是漏掉生意。所以只要服务不出大事，客户就懒得动。这是 UCaaS（统一通信即服务）行业普遍的高留存来源。</p>
+<p><strong>2026 年 3 月这门生意被强行做大了一倍。</strong> Crexendo 于 2026 年 3 月 2 日以 <strong>3500 万美元</strong>（现金 2730 万 + 股票 770 万）收购了德州公司 <strong>Estech Systems（ESI）</strong>，作价约为 ESI 2025 年营收（约 2600 万美元）的 1.35 倍。ESI 干了三十年的老本行是<strong>卖实体交换机</strong>——酒店、牙科诊所、汽车 4S 店杂物间里那个铁盒子，很多就是 ESI 造的——外加维保合同，通过全美各地的本地电话安装商（经销商）卖出去。Crexendo 买它，买的不是那个正在萎缩的硬件生意，买的是<strong>它的客户名单和经销商渠道</strong>：把那几万个还在用铁盒子的客户，一个一个转成按月付费的云客户。</p>
+<p>这笔收购是本段营收暴涨的<strong>全部原因</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM（截至 26/6/30）</th>
+<th>FY2025</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>云电话服务营收</td>
+<td><strong>5004 万美元</strong></td>
+<td>3850 万美元</td>
+<td><strong>+30.0%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>但 TTM 里只含了 ESI 大约四个月（3 月 2 日至 6 月 30 日）。ESI 年化 2600 万，四个月约 870 万。把这 870 万剔掉，这门生意的内生增速大约是<strong>中个位数</strong>，跟 FY2025 的 2.8% 差不多——<strong>30% 这个数字是买来的，不是长出来的。</strong></p>
+<h3>生意二：软件授权（Software Solutions，即 NetSapiens）</h3>
+<p><strong>这件事到底是什么。</strong> 这门生意 Crexendo 不面对最终企业客户，<strong>它把「发动机」卖给同行</strong>。</p>
+<p>具体讲：俄亥俄州有一家区域宽带运营商，手上有 8000 家中小企业宽带客户，它想顺便卖电话服务多赚一份钱。自己从零开发一套软交换（负责呼叫路由、计费、录音、会议的那套系统）需要几十个工程师干好几年。于是它买 Crexendo 旗下 <strong>NetSapiens</strong> 平台的授权：装在自己机房或托管在 Crexendo 处，界面换成自己的 logo，对外叫「XX 宽带商务电话」，最终客户根本不知道 Crexendo 存在。</p>
+<p><strong>收钱方式是按最终坐席数抽成</strong>——大致每个终端用户每月 1–2 美元，签最低承诺量。全球有 <strong>250 家以上</strong>的服务商在用这个平台，背后覆盖数百万终端席位。</p>
+<p><strong>这门生意的护城河比第一门硬得多。</strong> 那家俄亥俄运营商在 NetSapiens 上面搭了自己的开通流程、计费对接、客服工单系统，还培训了销售。要换平台，等于把 8000 家企业客户的电话逐个迁移一遍，还要重写所有对接——不是「不方便」，是「基本不可能」。所以这块营收黏得很死，边际成本接近零（多卖一个席位不增加什么成本）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>软件授权营收</td>
+<td><strong>3087 万美元</strong></td>
+<td>2966 万美元</td>
+<td>+4.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p>但注意：<strong>它只长了 4.1%。</strong> 一门理论上黏性极强、边际成本为零的软件生意，一年只长 4%，说明服务商这个池子本身不怎么增长了——大运营商自建，小运营商在被并购。</p>
+<h3>两门生意合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>云电话服务（含 ESI）</td>
+<td>5004 万</td>
+<td>+30.0%</td>
+<td>61.8%</td>
+<td>约 1%（估算）</td>
+<td>约 50 万</td>
+</tr>
+<tr>
+<td>软件授权 NetSapiens</td>
+<td>3087 万</td>
+<td>+4.1%</td>
+<td>38.2%</td>
+<td>约 15%（估算）</td>
+<td>约 450 万</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>8091 万</strong></td>
+<td><strong>+25.5%</strong></td>
+<td>100%</td>
+<td><strong>6.2%（实际）</strong></td>
+<td><strong>500 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>利润率是估算，不是财报数字。</strong> Crexendo 财报只按分部披露营收，不披露分部利润。上表按「软件授权毛利率远高于服务、且公司总部费用主要压在服务端」的常识倒推，仅供理解结构，<strong>不要当精确数字用</strong>。可以确定的事实只有两条：公司整体毛利率 62.9%、整体经营利润率 6.2%。</p>
+</blockquote>
+<p>一句话概括结构：<strong>赚钱的是那门只长 4% 的软件生意，长得快的那门服务生意几乎不赚钱。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：308 万美元，吃掉净利润的 72%</h3>
+<p>TTM 股权激励 <strong>308 万美元</strong>，而同期 GAAP 净利润只有 <strong>430 万美元</strong>——SBC 相当于净利润的 <strong>71.6%</strong>。这笔钱在 GAAP 里已经扣掉了（所以 430 万是扣完的数），本文一律不加回。要警惕的是公司自己讲的「调整后 EBITDA」把它加回去了，那个数字对股东没有意义：员工拿到的股票是从你手里稀释出来的，是真成本。</p>
+<h3>一次性项目：TTM 期内没有大额一次性项目</h3>
+<p>TTM 的减值、重组栏都是空的。但历史上有一笔巨大的：<strong>FY2022 一次性资产减值 3268 万美元</strong>（当年净亏损 3541 万），那是收购 NetSapiens 后的商誉/无形资产减值。这笔旧账现在还在通过税收影响当期业绩，见下面「税」这一节。</p>
+<p>按规矩说清楚：单看 TTM 一期，<strong>无法判断某些费用是否年年发生</strong>。不过本期确实干净。</p>
+<h3>税：实际税率只有 5.75%——这是全篇最大的一个障眼法</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td>456 万美元</td>
+</tr>
+<tr>
+<td>所得税</td>
+<td><strong>26.2 万美元</strong></td>
+</tr>
+<tr>
+<td>实际税率</td>
+<td><strong>5.75%</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>430 万美元</td>
+</tr>
+</tbody>
+</table></div>
+<p>一家正常的美国公司实际税率在 21%–25%。Crexendo 只交 5.75%，原因是 2022 年那笔 3541 万的巨亏留下了大量<strong>递延所得税资产/亏损结转（NOL）</strong>，现在正在冲抵利润。</p>
+<p>这意味着什么：<strong>那 430 万净利润里，有大约 80–100 万是「暂时不用交税」变出来的，不是经营变好变出来的。</strong> NOL 总有用完的一天，用完之后同样的经营利润只能落下 76% 到净利润。按 24% 的正常税率算，TTM 的「完税后真实利润」应该是 456 × 76% = <strong>347 万美元</strong>，而不是 430 万。第三部分的估值表里会用这个数。</p>
+<h3>资本化支出：基本没有</h3>
+<p>TTM 资本开支为零（FY2025 也才 2 万美元）。这是家轻资产公司，机房和话机走的是运营费用或租赁。软件开发费也没看到大规模资本化的迹象——D&amp;A 里 407 万主要是收购来的无形资产摊销。<strong>这一项干净，没有藏东西。</strong></p>
+<h3>回购与稀释：这一项很难看</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td><strong>−72 万美元</strong></td>
+</tr>
+<tr>
+<td>发行股票（员工行权等）</td>
+<td><strong>+576 万美元</strong></td>
+</tr>
+<tr>
+<td>股权激励 SBC</td>
+<td>308 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.23</strong></td>
+</tr>
+<tr>
+<td><strong>股本一年变化</strong></td>
+<td><strong>+6.87%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这个 0.23 的比值是<strong>全篇最刺眼的数字</strong>。健康的公司这个比值起码要接近 1（回购刚好抵消员工发股），大于 3 才算真回馈股东。Crexendo 是 0.23——<strong>它回购的钱只够抵消四分之一的员工发股，剩下四分之三直接稀释你。</strong></p>
+<p>再加上收购 ESI 时付出的 770 万股票对价，<strong>股本一年膨胀了 6.87%</strong>。也就是说：即使公司利润一分不涨，你手里那份的每股收益也要缩水 6.4%。这是一台<strong>边赚钱边稀释</strong>的机器。</p>
+<h3>利润与现金流的差：430 万 vs 1155 万，逐项对账</h3>
+<p>自由现金流（1155 万）是净利润（430 万）的 2.7 倍，差 725 万。钱从哪来的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>430</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>+407</td>
+<td>大部分是收购 NetSapiens/ESI 的无形资产摊销</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>+68</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>+308</td>
+<td>不花现金，但稀释股份</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>+3</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−17</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>+14</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+76</td>
+<td>占供应商的钱</td>
+</tr>
+<tr>
+<td>＋ 预收账款增加</td>
+<td>+55</td>
+<td>客户预付的话费</td>
+</tr>
+<tr>
+<td>＋ 应交税增加</td>
+<td>+12</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营性资产增加</td>
+<td>−199</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>1155</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−0</td>
+<td>轻资产</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>1155</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表告诉我们两件事：</strong></p>
+<ol>
+<li><strong>现金流是真的</strong>，没有靠拉长应付账款或做假应收撑出来。营运资金合计只贡献了 −59 万，几乎中性。</li>
+<li><strong>但那 725 万的差额里，683 万来自两笔「不花现金但也不是白赚」的科目</strong>：308 万 SBC（稀释你）+ 475 万摊销（对应的是花了 2621 万现金真金白银买回来的无形资产）。把 SBC 扣回去，「归股东的现金」是 1155 − 308 = <strong>847 万</strong>。</li>
+</ol>
+<p>而且必须看到：TTM 投资活动流出 <strong>2621 万美元</strong>（收购 ESI 的现金对价）。<strong>经营挣了 1155 万，收购花了 2621 万，差额靠净增 464 万债务和 576 万发股补上。</strong> 所以本期公司对股东的实际现金回报是负的——没有分红，回购 72 万，全部现金都投进了买公司。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 2.085 亿美元，企业价值 1.9585 亿美元（净现金 1265 万）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th><strong>投 100 块年回报</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2.085 亿 ÷ 430 万</td>
+<td><strong>48.5 倍</strong></td>
+<td><strong>2.06 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（估算）</td>
+<td>430 万加回 SBC 308 万、收购无形摊销约 240 万、并购费用</td>
+<td>约 22 倍</td>
+<td>约 4.55 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2.085 亿 ÷（税前 456 万 × 76% 正常税率）＝ 347 万，SBC 按 GAAP 已扣不加回</td>
+<td><strong>60.1 倍</strong></td>
+<td><strong>1.66 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2.085 亿 ÷ 1155 万</td>
+<td>18.1 倍</td>
+<td>5.54 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流扣掉 SBC</strong></td>
+<td>2.085 亿 ÷ 847 万</td>
+<td><strong>24.6 倍</strong></td>
+<td><strong>4.06 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1.9585 亿 ÷ 500 万</td>
+<td><strong>39.2 倍</strong></td>
+<td>2.55 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>2.085 亿 ÷（TTM 430＋FY25 507＋FY24 168）/3 ＝ 368 万</td>
+<td><strong>56.7 倍</strong></td>
+<td><strong>1.76 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话版本。</strong></p>
+<p>你现在投 100 块进 Crexendo。按最保守的真实口径（完税后利润、三年平均利润），公司一年替你赚 <strong>1.7 到 1.8 块</strong>。按最宽松的自由现金流口径，一年赚 5.5 块——但那 5.5 块里有 1.5 块是发给员工的股票，真正属于你的是 <strong>4.1 块</strong>。</p>
+<p><strong>这 1.7 到 4.1 块里，有多少真的回到你口袋？一分也没有。</strong> TTM 没有分红，回购只有 72 万（占市值 0.35%），而同期股本反而膨胀了 6.87%。钱全部去了两个地方：2621 万买 ESI，剩下的留在账上。</p>
+<p><strong>这个数字未来会变大还是变小？</strong> 两股力量在拉扯：</p>
+<ul>
+<li><strong>变大的理由</strong>：ESI 从 3 月才并表，TTM 只含四个月，全年化能再加约 1700 万营收，而它的成本已经在整合削减；NOL 还能再免几年税；公司自己给的前瞻市盈率是 <strong>15.9 倍</strong>（对应约 1300 万净利润，是当前的三倍）。管理层公开的目标是做到 1 亿美元年营收规模。</li>
+<li><strong>变小的理由</strong>：ESI 的主体是<strong>正在萎缩的硬件生意</strong>，买进来的营收会自然流失，能不能转化成云订阅是没验证的赌注；软件授权那门真正赚钱的生意只长 4.1%；<strong>ROIC 7.15% 低于加权资本成本 10.22%</strong>——教科书定义的毁灭价值，公司每投一块钱进新收购，理论上都在减损股东价值；股本每年膨胀 6.9%，稀释速度快过多数增长。</li>
+</ul>
+<p>前瞻 15.9 倍和当期 48.5 倍之间隔着「利润要涨两倍」这件事，而它的历史记录是：FY2023 亏 36 万，FY2024 赚 168 万，FY2025 赚 507 万，TTM 又回落到 430 万——<strong>已经在往回走了。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不值这个价。</strong> 48.5 倍的账面市盈率还是靠 5.75% 的超低税率美化过的，按正常完税算是 60 倍、按三年平均利润算是 57 倍；而支撑这个估值的 25% 营收增长是花 3500 万现金加股票买来的，内生只有中个位数，真正赚钱的软件业务一年只长 4%。更要命的是 ROIC 7.15% 压根覆盖不了 10.2% 的资本成本，股本却每年膨胀 6.9%——<strong>这是一家一边稀释你、一边把现金投向低回报收购的公司</strong>。18 倍的自由现金流看着便宜，是因为把 308 万稀释你的股权激励和 475 万收购摊销当成了「不花钱」，两笔都是真成本。生意本身（NetSapiens 那块授权平台）是好东西，但它只占四成营收、增长停滞，撑不起整个公司 60 倍的定价。想赌 ESI 整合成功的人可以等，等的应该是「整合真的做成了」的财报，不是现在这个价。</p>
+</div></body></html>

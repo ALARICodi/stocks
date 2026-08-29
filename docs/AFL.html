@@ -1,0 +1,226 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AFL · Aflac（美国家庭人寿保险，"鸭子"保险公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AFL</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">五十年奶牛年还你8%现金,但日本主业在人口学上不可逆萎缩</div><h1>AFL · Aflac（美国家庭人寿保险，"鸭子"保险公司）</h1>
+<p>市值 $584.2亿 / 股价约 $116.5 / 保险（补充医疗与癌症险）/ TTM 截至 2026-06-30</p>
+<p><strong>这是保险企业，下面用市净率 + ROE + 承保口径而不是普通市盈率</strong>，原因是：保险公司的"营收"里一大块是投资收益和证券买卖的浮盈浮亏，市盈率会被资本市场行情搅得失真；看它先看两件事——承保本身赚不赚钱、拿保费养的投资盘子收益率多少。</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>Aflac 名字里的 AFL 是 American Family Life（美国家庭人寿），但它实质上是<strong>半家日本公司</strong>：约六成利润来自日本。两门生意，本质相同——<strong>卖"正规医保不管的那部分"的小额保险</strong>，行话叫第三领域保险/补充保险。</p>
+<h3>生意一：日本 Aflac（约占营收 50%，利润的大头）</h3>
+<p>1974 年 Aflac 把"癌症保险"这个品类带进日本，吃了五十年先发红利，今天它仍是日本最大的癌症险和医疗险公司，<strong>日本每四个家庭就有一张它的保单</strong>。</p>
+<p>这件事具体是这样的：日本有全民医保，住院手术本身花不了多少钱，但癌症治疗期间的收入中断、差额病床费、往返交通、先进疗法自费部分，医保不管。Aflac 卖的就是这个缺口——一个 40 岁的东京上班族每月交 3000–5000 日元（约 150–250 人民币），确诊癌症时一次性拿一笔诊断金（比如 100 万日元），之后每次住院、每次放疗按天数定额给现金。<strong>钱直接打给本人，怎么花不管</strong>，这是它和报销型医保的根本区别。销售靠三张网：遍布全国的代理店、银行柜台、以及和日本邮政的独家合作——全日本约两万个邮局网点替它卖保单。</p>
+<p>但这门生意在肉眼可见地缩：日本已赚保费从 2021 年的 113 亿美元跌到 TTM 的 64 亿。缩水近半是日元贬值的汇率折算（美元计价报表被动缩），另一半是真实流失——老一代癌症险保单陆续到期、缴清，日本人口老龄化+减少，新单卖得没有旧单跑得快。<strong>这是全公司最核心的一个事实：现金牛还在产奶，但牛在变老。</strong></p>
+<h3>生意二：美国 Aflac（约占营收 40%，增长稍好）</h3>
+<p>就是电视广告里那只嘎嘎叫的白鸭子。产品逻辑和日本一样，卖法不同：<strong>通过雇主发薪渠道卖</strong>。一家 200 人的连锁餐厅把 Aflac 请进来给员工开说明会，员工自愿投保意外险、短期伤残险、重疾险、牙科眼科险，每月 20–40 美元直接从工资里扣。员工摔断腿不能上班，正规医保付医院账单，Aflac 按天发现金补工资缺口。美国已赚保费 TTM 61 亿美元，一年涨约 3%，不快，但方向是正的。</p>
+<h3>底下的第三门隐形生意：投资浮存金</h3>
+<p>保费收进来到理赔付出去之间隔着几年甚至几十年，这笔钱（主要是日本国债和美元公司债，投资盘子约千亿美元量级，<strong>估算</strong>）TTM 产生净投资收益约 45 亿美元。这才是保险公司真正的利润引擎：<strong>承保基本打平或小赚，投资收益就是纯利</strong>。Aflac 比同行强的地方在于它承保本身也赚钱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部（TTM）</th>
+<th>营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>税前利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日本（保费+投资收益）</td>
+<td>$89.5 亿</td>
+<td>约 -4%</td>
+<td>50%</td>
+<td>约 $30 亿</td>
+</tr>
+<tr>
+<td>美国（保费+投资收益）</td>
+<td>$70.0 亿</td>
+<td>约 +3%</td>
+<td>39%</td>
+<td>约 $15 亿</td>
+</tr>
+<tr>
+<td>公司层面投资与对冲</td>
+<td>$21.2 亿</td>
+<td>—</td>
+<td>11%</td>
+<td>含 $7.1 亿证券利得</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表没有单列，规模约一亿美元级别，对 49 亿净利润无关痛痒。没有 SBC 骗局。</li>
+<li><strong>一次性项目</strong>：TTM 净利 48.6 亿里含 <strong>7.1 亿美元证券净利得</strong>（税前）。这不是经营利润，是债券和股票的市值波动——2025 财年这一项是 -5.7 亿，2024 财年是 +12.7 亿，逐年翻脸。剔掉它才是经营成色，下面真实口径按剔除后算。这不算"藏"，保险公司都这样，但公司 GAAP EPS 同比"+111%"这种数字全是它造出来的，别当真。</li>
+<li><strong>资本化的支出</strong>：无。保险公司没有这个科目的猫腻。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 <strong>37.9 亿</strong> + 分红 11.9 亿，合计 49.8 亿，等于把整年净利润原封不动全还给股东，股本一年实缩 5.75%。SBC 约等于零，所以回购是十足真金。Aflac 已连续 43 年提高股息，回购连续多年 25 亿以上——<strong>股东回报是这家公司最硬的一块</strong>。</li>
+<li><strong>利润和现金流的差</strong>：净利 48.6 亿 vs 经营现金流 26.5 亿，差了 22 亿。对账：净利 48.6 → 减证券利得 7.1 → 加摊销 9.1 → 保险准备金变动 -1.9 → 其他经营项 -20.4 → 经营现金流 26.5。那个"-20.4 亿其他"主要是日本老保单进入了理赔多于收保费的阶段（存量保单到期给付),现金往外流快于利润确认。<strong>这不是造假，是"牛在变老"在现金流量表上的直接体现</strong>——利润是真的，但这门生意每年从体内净流出现金，全靠投资组合到期回笼来补。经营现金流从 2021 年的 50.5 亿一路降到 26.5 亿，五年腰斩，这条曲线比任何一句管理层展望都诚实。</li>
+</ul>
+<h2>第三部分：估值（保险口径）</h2>
+<p>市值 584.2 亿，账面净资产 303.1 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB（=有形PB）</td>
+<td>584.2 ÷ 303.1</td>
+<td>1.93 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GAAP ROE</td>
+<td>48.6 ÷ 303.1</td>
+<td>16.9%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除证券利得的真实 ROE</strong></td>
+<td>42.7 ÷ 303.1</td>
+<td><strong>14.1%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>真实年回报（ROE ÷ PB）</strong></td>
+<td>14.1% ÷ 1.93</td>
+<td>—</td>
+<td><strong>¥7.3</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（参考）</td>
+<td>584.2 ÷ 48.6</td>
+<td>12.4 倍</td>
+<td>¥8.0</td>
+</tr>
+<tr>
+<td>剔除利得后真实市盈率</td>
+<td>584.2 ÷ 42.7</td>
+<td>13.7 倍</td>
+<td>¥7.3</td>
+</tr>
+<tr>
+<td>三年平均真实利润口径</td>
+<td>584.2 ÷ 42.2（三年平均，均剔利得）</td>
+<td>13.8 倍</td>
+<td>¥7.2</td>
+</tr>
+<tr>
+<td>承保成色：给付率</td>
+<td>理赔与给付 ÷ 已赚保费</td>
+<td>日本约66%、美国约47%（估算）</td>
+<td>承保本身赚钱</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 13.8 倍和当期 13.7 倍打平——利润极稳，<strong>不存在周期高点买顶的问题</strong>。真实经营利润连续三年钉在 42–44 亿美元这条线上，纹丝不动。</p>
+<p>大白话：你投 100 块，公司一年替你赚约 7.3 块真钱。这 7.3 块的去向罕见地干净：<strong>约 8.5 块直接以分红+回购还到你手上</strong>（49.8 亿回报 ÷ 584 亿市值）——比它当年赚的还多一点，差额靠发债补（TTM 净发债 4.3 亿，债务两年从 99 亿加到 162 亿）。这个"赚 7 还 8"的状态说明管理层自己也清楚：日本主业不需要再投入了，这是一头处在挤奶期的牛，能挤多少挤多少。未来这个 7.3 会不会变大？大概率缓慢变小——日本保费每年缩 3–5%，美国每年长 3%，两边相抵后整体微降，再叠一层日元汇率的骰子。远期市盈率 16 倍（高于当期 12.4）就是市场在给你报"明年利润会更低"的价。</p>
+<p>风险不在赔付端（癌症发病率精算了五十年，稳得很），在两处：一是<strong>日元</strong>——六成利润以日元计，日元再贬 10%，利润直接少一截；二是投资组合里买了不少美国中型企业贷款和商业地产债，2024 年已经计提过一轮，利率高位再撑几年可能还有。</p>
+<h2>第四部分：一句话结论</h2>
+<p>五十年护城河的收租生意，账算得清、钱真的还给你、连续 43 年涨股息，但核心市场（日本）在人口学意义上不可逆地萎缩，经营现金流五年腰斩把这件事摆在了明面上。1.93 倍市净率买 14% 的真实 ROE、换来每年约 8% 的现金回报，<strong>值这个价，是头好奶牛，但别指望它长大</strong>——当收息资产拿可以，当成长股买就错了。</p>
+<p>（对中国投资者：这是普通美股，分红按中美协定预扣 10%，没有 MLP 那种 37% 的坑。）</p>
+</div></body></html>

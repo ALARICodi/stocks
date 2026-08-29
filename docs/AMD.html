@@ -1,0 +1,278 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AMD · 超微半导体</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AMD</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">涨完178%后133倍，把成为第二个英伟达当定局收钱</div><h1>AMD · 超微半导体</h1>
+<p>市值 7600 亿美元 / 股价 465.57 美元 / 行业：半导体 / TTM 截止 2026-06-27</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AMD 是一家只做设计、不建工厂的芯片公司（生产全部外包给台积电），实质上做<strong>四门生意</strong>，共同点是：<strong>每一门都在跟一个更大的对手抢饭吃</strong>——数据中心抢英伟达和英特尔的，PC 抢英特尔的，游戏卡抢英伟达的。它是全世界最强的「第二名」。</p>
+<h3>生意一：数据中心——两条战线，一条大胜，一条苦追</h3>
+<p>这门生意 TTM 收入 222.1 亿，占总营收 54%，是全部增长的来源。里面其实是两件事：</p>
+<p><strong>服务器 CPU（EPYC）——大胜的那条线。</strong> 云厂商（亚马逊、微软、谷歌）的数据中心里，每台服务器要一颗中央处理器。这个市场过去二十年是英特尔的天下，AMD 靠代工厂（台积电）的制程领先和「芯粒」设计（把一颗大芯片拆成几颗小芯片拼装，良率高、成本低），把服务器 CPU 的收入份额从 2017 年的接近 0 抢到了如今的四成以上。一颗顶级 EPYC 卖 1 万美元上下，云厂商一次采购就是几万颗。这条线利润丰厚、份额还在涨，是 AMD 账上最扎实的钱。</p>
+<p><strong>AI 加速卡（Instinct MI 系列）——苦追的那条线。</strong> 训练 ChatGPT 这类大模型用的 GPU，英伟达占九成。AMD 的 MI300/MI350 是市面上唯一拿得出手的替代品，大客户就是不想被英伟达一家拿捏才买它：2025 年 10 月 OpenAI 跟 AMD 签了 6 吉瓦的采购协议（分几年落地，是 AMD 史上最大单），甲骨文、微软也在部署。但英伟达真正的护城河是 CUDA 软件生态——全世界的 AI 工程师都用它写代码，AMD 的软件（ROCm）追了十年还在追。<strong>买 AMD 卡的逻辑是「还价筹码」，买英伟达是「默认选项」，这个位置决定了 AMD 拿份额靠降价。</strong></p>
+<h3>生意二：PC 处理器（Ryzen）——稳定抢份额的现金牛</h3>
+<p>TTM 收入 117.9 亿，占 29%。就是你买笔记本、台式机时选的那颗 CPU。跟英特尔的双寡头格局（x86 指令集全世界只有这两家有授权，这是真护城河），AMD 靠性能优势把 PC CPU 份额抢到了三成左右，还在涨。PC 市场本身不增长，AMD 的增长全靠从英特尔嘴里夺食。</p>
+<h3>生意三：游戏——萎缩中</h3>
+<p>TTM 收入 36.4 亿，占 9%，同比还在跌。内容是 Radeon 游戏显卡（被英伟达压着打）和游戏机半定制芯片——PS5 和 Xbox 的主芯片都是 AMD 做的，但这两台主机已进入生命周期末段，订单逐年下滑。</p>
+<h3>生意四：嵌入式（赛灵思）——买来的稳定器</h3>
+<p>TTM 收入 36.6 亿，占 9%。2022 年花 490 亿美元买下赛灵思得来的 FPGA 生意（可以现场改写电路的芯片，用在基站、雷达、工业设备里，产品生命周期长达十几年，客户极粘）。周期低谷刚过，基本走平。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 分部</th>
+<th>营收(亿美元)</th>
+<th>对比FY2025全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据中心</td>
+<td>222.1</td>
+<td>166.4（TTM 已超全年 34%）</td>
+<td>54%</td>
+</tr>
+<tr>
+<td>PC 处理器</td>
+<td>117.9</td>
+<td>106.4</td>
+<td>29%</td>
+</tr>
+<tr>
+<td>游戏</td>
+<td>36.4</td>
+<td>39.1（萎缩）</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>嵌入式</td>
+<td>36.6</td>
+<td>34.5</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>413.1</td>
+<td>346.4（+39.5%）</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（财报分部利润未在本页披露；按公司过往披露口径，数据中心和嵌入式利润率最高，游戏最低，估算数据中心贡献六成以上经营利润。）</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 19.0 亿美元，占净利润 29%。GAAP 已扣，不加回。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>8.5 亿美元的出售投资收益</strong>（税前），这就是为什么税前利润率（18.3%）反而比经营利润率（15.8%）还高。这不是主业赚的钱，算真实利润时要剔掉。另外要单独说一个<strong>还没进报表的大雷</strong>：为了换 OpenAI 的 6 吉瓦大单，AMD 向 OpenAI 发了<strong>至多 1.6 亿股、行权价 1 美分的认股权证</strong>（分阶段兑现，绑定采购量和股价目标）。1.6 亿股约等于现有股本的 10%——<strong>这笔订单不是白来的，是拿你 10% 的股份换的</strong>。权证兑现时会计上会冲减收入或计入费用，未来几年的财报会持续消化它。</p>
+<p><strong>资本化的支出</strong>：无重大资本化操作，研发全部费用化（TTM 研发约 70 亿量级，真金白银投进去的）。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 11.8 亿 vs SBC 19.0 亿，<strong>比值 0.62——回购连员工发股都对冲不完</strong>，股本一年净增 1.07%，OpenAI 权证兑现后稀释还会加码。分红为零。<strong>股东现阶段拿不到任何现金回报。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 64.3 亿 vs 经营现金流 100.8 亿 vs 自由现金流 84.0 亿，现金流大于利润，健康。对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>逐项对账（TTM，亿美元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>64.3</td>
+</tr>
+<tr>
+<td>+ 折旧摊销（大头是收购赛灵思的无形资产摊销，非现金）</td>
+<td>30.3</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>19.0</td>
+</tr>
+<tr>
+<td>− 出售投资收益（非主业）</td>
+<td>−8.5</td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td>13.5</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>20.3</td>
+</tr>
+<tr>
+<td>− 应收账款、存货大增（<strong>营收暴涨的代价：客户欠款+备货各多压了20亿上下</strong>）</td>
+<td>−39.6</td>
+</tr>
+<tr>
+<td>+ 其他营运资金</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>100.8</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−16.8</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>84.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>账本身干净：净现金 88 亿，几乎无债，现金流真实。应收和存货随 40% 的营收增速同步膨胀属于正常代价，但值得盯——如果哪天营收停了、存货还在涨，就是砍单信号。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7600 亿 ÷ 64.3 亿</td>
+<td>118.8</td>
+<td>0.84 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 和摊销后约 100 亿</td>
+<td>约 76</td>
+<td>1.32 元（摊销是真花过的收购款，SBC 是真稀释，都不该加回）</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>64.3 亿 − 出售投资收益税后约 7.3 亿 = 57.0 亿</td>
+<td>约 133</td>
+<td>0.75 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>7600 亿 ÷ 84.0 亿</td>
+<td>90.5</td>
+<td>1.11 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>7512 亿 ÷ 65.4 亿</td>
+<td>114.9</td>
+<td>0.87 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>7600 亿 ÷ 三年（FY23-25）平均净利 22.8 亿</td>
+<td>333.8</td>
+<td>0.30 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均口径 334 倍——<strong>当期利润是历史最高点，而且比三年平均高出近两倍</strong>。这跟当年 NVDA「当期 34 倍、三年平均 73 倍」是同一个形状，只是更陡：市场不但按利润新高定价，还按「新高再翻几倍」定价。股价一年涨了 178%（去年 12 月市值还是 3500 亿，现在 7600 亿），涨的不是利润，是 OpenAI 那纸协议。</p>
+<p>大白话讲：<strong>你现在投 100 块进 AMD，按最保守的真实口径算，公司一年替你赚 7 毛 5。</strong> 这 7 毛 5 一分都到不了你口袋——不分红，回购连稀释都堵不住，钱全部留在公司里扩研发、备存货，赌数据中心继续翻倍。这个赌注有真凭据：华尔街预期明年利润翻近两倍（远期 PE 42 倍），OpenAI、甲骨文的订单是签了字的。但也有真代价：订单是用 10% 股本的权证换的，而英伟达不会坐着看——它随时可以降价，AMD 的 AI 卡毛利在人家手里捏着。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>生意本身过硬：服务器 CPU 是教科书级的以小胜大，x86 双寡头是真护城河，账干净、现金流比利润还实。但 465 美元的股价是把「AMD 成为第二个英伟达」当成定局在收钱——真实口径 133 倍、三年平均 334 倍、涨完 178% 之后买入，赚的每一分钱都得靠 OpenAI 大单如期兑现、英伟达不打价格战、AI 资本开支不歇脚这三件事同时成立。<strong>好公司，坏价格：一年前它 80 倍都嫌贵，现在贵出了信仰的味道。等它跌回人间再看。</strong></p>
+</div></body></html>

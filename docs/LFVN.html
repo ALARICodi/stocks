@@ -1,0 +1,215 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LFVN · LifeVantage（莱芙腾）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LFVN</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">真便宜且大手笔回购，但直销机器在漏水缩两成</div><h1>LFVN · LifeVantage（莱芙腾）</h1>
+<p>市值 $0.80 亿 / 股价约 $6.35 / 行业：健康科技（营养补充剂直销） / TTM 截止 2026-06-30（恰好是完整财年 FY2026）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>拆开看，LifeVantage 实质上只做<strong>一门生意：用「直销/多层次营销」的方式卖自家品牌的保健品和护肤品</strong>。产品分三条线，但卖法完全一样，财报也只按一个分部披露。</p>
+<p><strong>这门生意具体怎么运转：</strong> 公司不开店、不进超市、基本不投广告，而是招募了几万名「独立顾问」（consultant）。你想买他家产品，得通过某个顾问的链接下单；顾问自己拿零售差价和佣金，还能从自己拉来的下线顾问的销售额里抽成——这就是典型的多层次营销（MLM），跟安利、康宝莱是同一个物种。公司的真实客户结构里，大部分是「订阅制老客户」：办个月度自动配送（subscription），每月寄一瓶，占收入的大头。</p>
+<p>三条产品线：</p>
+<ol>
+<li><strong>Protandim 营养补充剂（收入主力）</strong>。招牌产品 Protandim Nrf2 Synergizer，一瓶 30 粒装零售约 50 美元，宣传点是「激活人体自身抗氧化基因」。一个订阅老客户一年大约给公司贡献 500–600 美元。这类产品的科学证据一直有争议，但复购率靠的是顾问的社群维护，不是靠临床数据。</li>
+<li><strong>MindBody GLP-1 System（减肥概念蹭点）</strong>。2024 年底趁着司美格鲁肽减肥神药大火，推出一款宣称「天然激活 GLP-1」的冲剂套装（注意：它不含任何药物成分，只是概念挂钩）。这东西让 FY2025 收入暴涨 14%，是过去五年唯一一次像样的增长——然后热度退潮，FY2026 收入直接跌回原形还倒退，全年 -20%。典型的一波流。</li>
+<li><strong>TrueScience 护肤/洗护</strong>。面霜、洗发水等，客单价高但体量小，蹭主品牌的顾问网络卖。</li>
+</ol>
+<p><strong>分地区的钱（TTM，百万美元）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美洲（主要是美国）</td>
+<td>约 142.7</td>
+<td>约 185.7</td>
+<td>78%</td>
+</tr>
+<tr>
+<td>日本</td>
+<td>24.2</td>
+<td>25.4</td>
+<td>13%</td>
+</tr>
+<tr>
+<td>欧洲 + 澳新 + 其他亚太</td>
+<td>15.7</td>
+<td>17.4</td>
+<td>9%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>182.6</strong></td>
+<td><strong>228.5（-20.1%）</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到营收，分地区利润没有；整体经营利润率 3.7%（经营利润 670 万），毛利率倒是高达 77.6%——这是直销模式的通病：<strong>货本身不值钱，钱都发给了顾问网络</strong>。销售佣金吃掉毛利的绝大部分，公司自己只剩薄薄一层。</p>
+<p>值得单独说一句日本：五年前日本一年卖 3680 万，现在只剩 2420 万，年年往下掉，没有一年回升过。这块「现金牛」在稳定漏水。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 235 万，相当于净利润（507 万）的 46%。比例不低，但 GAAP 里已经扣了，我们不加回。</li>
+<li><strong>一次性项目</strong>：利润表上没看到大额减值或和解。现金流里 FY2026 有一笔 374 万的收购支出（花现金买了个小业务），另有 411 万「其他经营活动」调整项——单期口径分不清是否年年发生，存疑但金额不致命。</li>
+<li><strong>资本化的支出</strong>：没有明显的开发费资本化，资本开支 357 万，比往年（130–250 万）高，部分是收购后的整合投入。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 566 万 ÷ SBC 235 万 = <strong>2.4 倍</strong>，股本一年实际减少 2.2%——这是真回购，不是抵消员工发股的假动作。再加上分红 234 万，TTM 合计 800 万现金回到股东口袋，相当于市值的 10%。小公司里少见的实在。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 507 万，经营现金流 1024 万，自由现金流 667 万。对账：净利润 507 + 折旧摊销 281 + SBC 235 + 其他调整 411 + 清库存回笼 202 + 应付款等零项 ≈ 经营现金流 1024。现金流比利润好一倍，主要靠非现金费用加回和压库存，质量算真实。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7961 ÷ 507</td>
+<td>15.7</td>
+<td>6.4 元</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>公司爱报「调整后EBITDA」，四页数据源里无该数</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额真一次性项目，≈GAAP</td>
+<td><strong>15.7</strong></td>
+<td><strong>6.4 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>7961 ÷ 667</td>
+<td>11.9</td>
+<td>8.4 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(7961 − 净现金505) ÷ 670</td>
+<td>11.1</td>
+<td>9.0 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>7961 ÷ 三年平均594（507/981/294）</td>
+<td>13.4</td>
+<td>7.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按最保守口径公司一年替你赚 6 块 4，按现金流口径赚 8 块 4</strong>。而且这钱不是纸面数字——过去一年公司把相当于市值 10% 的现金以回购+分红的形式实打实还给了股东，账上还躺着 505 万净现金（没有净负债）。</p>
+<p>但这个 6 块 4 明年大概率变小而不是变大：收入刚缩水 20%，减肥概念的一波流已经退潮，日本连跌五年，直销行业整体在老化——靠拉人头卖保健品这套打法，在短视频带货时代获客越来越难。股价一年跌了 53%，市场不是没看见便宜，是不信这门生意还有明天。</p>
+<h2>第四部分：一句话结论</h2>
+<p>按数字看真便宜：16 倍不到、现金流口径 12 倍、无负债还大手笔回购分红；但生意本身是台在漏水的直销机器——收入缩两成、爆款退潮、日本连跌五年，便宜得有道理。<strong>这不是能安心留着观察的公司，是烟蒂：捡便宜可以，指望它长大不行。</strong></p>
+</div></body></html>

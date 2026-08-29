@@ -1,0 +1,271 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CMCSA · 康卡斯特（Comcast）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CMCSA</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">8.4倍真实口径,年回股东10%+,漏气但真便宜</div><h1>CMCSA · 康卡斯特（Comcast）</h1>
+<p>市值 960 亿美元 / 股价约 27 美元 / 行业：宽带与传媒（任务2 · 市盈率 0–15 倍段，榜内第 17 名）/ TTM 截止 2026-06-30</p>
+<p>一年股价跌了 20%，市盈率 8.76 倍、自由现金流口径 4.7 倍——这是全美股市值前一百名里最便宜的公司之一。便宜的理由市场说得很响：宽带用户在流失。这篇要回答的是：漏气的速度，配不配得上这个折价。</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>康卡斯特实质上做五门生意。前两门（网线）贡献了利润的绝大头，后三门（内容）是 NBC 环球。2025 年底它做了一次大手术：把 USA、CNBC、MSNBC 等有线电视频道打包分拆成独立上市公司 Versant 送给股东——等于把衰退最快的器官切了出去，所以 2026 财年起「媒体」分部换了新口径，比老口径小了一圈。</p>
+<h3>生意一：家庭宽带与平台（Residential Connectivity &amp; Platforms）——现金奶牛，也是漏气点</h3>
+<p>大白话：<strong>给三千多万美国家庭拉网线。</strong> 一户费城家庭每月付约 80 美元用 Xfinity 宽带上网——这根同轴电缆二十年前就埋好了，每月的维护成本远低于收费，毛利厚得像收租。捆在同一张账单上的还有：Xfinity Mobile 手机服务（自己不建基站，租 Verizon 的网络转卖，一条线每月 30–50 美元，已经有一千多万条线，是这个分部里唯一高速增长的东西）、传统有线电视（正在崩塌，用户一年跑掉几百万）、以及英国和欧洲的 Sky（宽带+付费电视）。</p>
+<p>问题就出在核心的宽带上：T-Mobile 和 Verizon 用 5G 基站做「固定无线宽带」，每月 50 美元不用拉线，三年抢走了行业几百万用户；光纤商又在另一头挖角。康卡斯特每季度净流失二三十万宽带户，靠给存量用户提价把收入稳住——<strong>用户数在跌、单价在涨,收入微降</strong>,这个模式能撑多年,但撑不了永远。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比（对比 FY2025）</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>家庭宽带与平台</td>
+<td>697.8 亿美元</td>
+<td>-1.5%</td>
+<td>约 56%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：企业专线（Business Services Connectivity）——被低估的小引擎</h3>
+<p>大白话：<strong>给餐馆、诊所、连锁店拉企业网线。</strong> 一家有 40 个门店的快餐连锁，每个门店每月付康卡斯特 200–400 美元装专线、Wi-Fi、监控回传和防火墙,一年就是十几万美元,而且几乎不会换供应商。这门生意利润率比家庭宽带还高,增长稳定。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>企业专线</td>
+<td>104.8 亿美元</td>
+<td>+2.3%</td>
+<td>约 8%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：媒体（Media，新口径）——NBC 广播网 + Peacock + 体育</h3>
+<p>大白话：切走 Versant 后剩下的是：NBC 广播电视网（超级碗、奥运会转播）、流媒体 Peacock（约 4000 万订户,每月 8–14 美元,还在亏但亏损收窄）、以及天价买来的体育版权——从 2025-26 赛季起 NBC 每年付 NBA 约 25 亿美元转播费,赌的是体育直播是唯一没人剪线的电视内容。TTM 口径的营收里新旧口径各占一段,同比不可比,看规模就好。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>媒体（新口径）</td>
+<td>235.4 亿美元</td>
+<td>约 19%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意四：影业（Studios）</h3>
+<p>大白话：<strong>环球影业 + 梦工厂 + 照明娱乐</strong>——《侏罗纪世界》《小黄人》《超级马里奥》都是它的。一部大片全球票房 10 亿美元,片方分走约一半,再加上后续的流媒体授权、衍生品。好年份和坏年份差距巨大,平均下来是门利润率个位数到十几个点的生意。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>影业</td>
+<td>124.9 亿美元</td>
+<td>+10.7%</td>
+<td>约 10%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意五：主题公园（Theme Parks）——正在收获期</h3>
+<p>大白话：奥兰多、好莱坞、大阪、北京的环球影城。<strong>2025 年 5 月奥兰多 Epic Universe 开园——美国三十年来最大的新主题公园</strong>,一家四口玩一天门票加吃住花上千美元。前几年砸下的七十亿资本开支从 2025 年下半年起开始变成收入。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主题公园</td>
+<td>103.5 亿美元</td>
+<td>+5.3%</td>
+<td>约 8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（另有内容板块内部抵销 -28.8 亿、企业及其他 +14.9 亿、总抵销 -53.5 亿,合计对上总营收 1249 亿。分部经营利润数据页未披露；按公司历史披露口径,两门网线生意贡献了全公司 EBITDA 的七成以上——<strong>估算</strong>。）</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 13.7 亿,占净利润 12%,GAAP 已扣,不加回。规模对这个体量的公司算克制。</li>
+<li><strong>一次性项目</strong>：<strong>FY2025 的净利润 200 亿是假象</strong>——里面有出售 Hulu 股权给迪士尼确认的约 88.5 亿一次性收益。好消息是这笔收益<strong>不在 TTM 里</strong>（TTM 反而有 4.5 亿的资产处置损失）,所以当期 8.76 倍的市盈率是拿相对干净的利润算出来的,不是被一次性收益做低的。另外 Versant 分拆意味着被切走频道的利润从报表里消失了,同比数字都要打个问号。</li>
+<li><strong>资本化的支出</strong>：除 121 亿资本开支外,每年还有约 26 亿「购买无形资产」——主要是内容和版权的资本化投入,算 FCF 时最好当经常性支出扣掉（下面给两个口径）。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 56.0 亿 ÷ SBC 13.7 亿 = <strong>4.1 倍,是真回购</strong>。股本一年实打实减少 4.74%——这是全篇最硬的数字之一：就算利润原地踏步,每股利润也会因为分母缩小而每年涨约 5%。</li>
+<li><strong>利润 vs 现金流对账（TTM,亿美元）</strong>：净利润 112 → 加折旧摊销 158 → 加 SBC 14 → 加资产处置损失 5 → 加其他非现金项 16 → 营运资金净变化 +21 → <strong>经营现金流 325</strong>。自由现金流 = 325 − 资本开支 121 = <strong>204 亿</strong>;再扣掉 26 亿无形资产投入的严格口径是 <strong>178 亿</strong>。现金流比净利润高 60–80%,核心原因是折旧（158 亿）远大于维持网络所需的资本开支——埋在地下的电缆账面上年年折旧,实际还在赚钱。<strong>这家公司的现金是真的,而且比利润表好看。</strong></li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>960 亿 ÷ 112 亿</td>
+<td>8.76</td>
+<td>11.4 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>剔除并购摊销等（<strong>估算</strong>）</td>
+<td>约 6.5</td>
+<td>约 15 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>960 亿 ÷（112 + 4.5 亿处置损失）</td>
+<td><strong>8.4</strong></td>
+<td><strong>12.0 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>960 亿 ÷ 204 亿（严格口径 178 亿则为 5.4 倍）</td>
+<td>4.7</td>
+<td>21.3 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(960 + 827 净债务) ÷ 183 亿经营利润</td>
+<td>9.8</td>
+<td>10.2 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>960 亿 ÷ 三年平均约 149 亿（已剔除 FY25 Hulu 收益）</td>
+<td>6.4</td>
+<td>15.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均口径 6.4 倍<strong>低于</strong>当期 8.4 倍——意思是当期利润不是周期高点,反而在近三年的低位（经营利润从 233 亿一路降到 183 亿,主要是媒体衰退和 Versant 切割）。</p>
+<p>大白话：<strong>你现在投 100 块进去,按最保守的真实利润口径算,公司一年替你赚 12 块;按现金流算是 18–21 块。</strong> 这里面有约 10.9 块<strong>当年就以现金回到你口袋</strong>——分红 5.1 块（股息率 5.1%）加回购 5.8 块,这是市值前一百公司里数一数二的现金回报率;另外每年还拿出约 8–11 块还债（净债务 827 亿,债务/EBITDA 2.56 倍,可控且在降）。剩下的钱投进了主题公园和体育版权。<strong>这个 12 块未来是变大还是变小?大概率缓慢变小</strong>——宽带提价能顶两三年,Epic Universe 和无线业务能补一部分,但媒体和有线视频的萎缩是单行道。市场按 8.76 倍定价,已经假设它每年烂掉几个点。</p>
+<h2>四、一句话结论</h2>
+<p><strong>便宜,真便宜——买的是一台缓慢漏气但油箱巨大的现金机器。</strong> 8.4 倍真实市盈率、4.7 倍自由现金流、每年 10% 以上的现金直接回到股东口袋、股本每年缩 5%,这个价格已经把「宽带用户永远流失下去」定价进去了;只要漏气速度不加快,光靠分红加回购就能拿到两位数年回报,Epic Universe 和企业专线还免费送你两个增长期权。它配不上 15 倍,但也罪不至 8.76 倍——对能忍受「收入永远不增长」的人,这是 0–15 倍段里到目前为止最值得放进观察名单的一家。</p>
+<p><em>数据来源：stockanalysis.com,TTM 截止 2026-06-30,分析日期 2026-08-29。分部利润未披露,Non-GAAP 倍数与 EBITDA 占比为估算。</em></p>
+</div></body></html>

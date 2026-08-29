@@ -1,0 +1,235 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PDD · 拼多多（PDD Holdings）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PDD</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔现金后4倍利润全场级便宜,但零分红零回购</div><h1>PDD · 拼多多（PDD Holdings）</h1>
+<p>市值 $1220 亿 / 股价约 $85.9 / 行业：电商平台 / TTM 截止 2026-06-30（财报为人民币，按 ¥6.79/$ 换算）</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只分两个 segment，实质上是<strong>三门生意</strong>：拼多多主站的广告、主站的交易佣金、以及海外的 Temu（藏在交易服务里不单独披露）。</p>
+<h3>生意一：拼多多主站——卖广告位（TTM ¥2209 亿，占 49%）</h3>
+<p>拼多多主站是中国用户量最大的电商 App 之一（年活买家 9 亿+）。它自己不进货不卖货，就是个大集市。集市怎么赚钱？<strong>收摊位费里最值钱的那种：好位置</strong>。</p>
+<p>具体例子：一个卖袜子的义乌商家，10 块钱 3 双。拼多多上卖袜子的商家有几万个，用户搜「袜子」，谁排前面谁卖爆。商家于是花钱买「场景推广」——设定每被点一次出价 0.8 元，一天预算 500 块。用户点了他的袜子链接，拼多多收 0.8 元，不管成没成交。大商家一年在拼多多投几百万广告费是常态。这就是「在线营销服务」¥2209 亿的来源——<strong>本质是把 9 亿人的注意力切成竞价拍卖品卖给 500 万商家</strong>，边际成本几乎为零，是全公司利润的真正来源。</p>
+<p>为什么商家非买不可：拼多多的流量分配极度中心化，不买推广就沉底；而它客单价低、用户下沉市场为主，正是白牌工厂货唯一能走量的地方——工厂离开它没有别的地方能一天出 10 万单。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2024</th>
+<th>增速(FY25 vs FY24)</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在线营销服务</td>
+<td>¥2209 亿</td>
+<td>¥1979 亿</td>
+<td>+10.0%</td>
+<td>49.0%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：主站交易佣金 + 生意三：Temu（合计 TTM ¥2298 亿，占 51%）</h3>
+<p>「交易服务」收入两个来源混在一起披露：</p>
+<ol>
+<li><strong>主站佣金</strong>：商家每成交一单，拼多多抽 0.6%（基础支付通道费）到百亿补贴类目的 1–3%。看着薄，架不住主站一年几万亿 GMV。</li>
+<li><strong>Temu</strong>：2022 年 9 月上线的海外版拼多多，把中国工厂的 3 美元手机壳、8 美元连衣裙直邮卖给美欧消费者。全托管模式下 Temu 自己定价、自己管物流，赚商品差价——这部分收入按全额记账，所以交易服务从 2022 年的 ¥276 亿爆炸到 TTM 的 ¥2298 亿，<strong>三年 8 倍，主要就是 Temu</strong>。</li>
+</ol>
+<p>Temu 现状：美国 2025 年取消 800 美元以下小包免税（de minimis），Temu 的成本优势被砍了一大截，被迫转向本地仓+半托管模式，增速明显失速（交易服务 TTM 同比只剩 +7.4%，两年前是 +250%）。<strong>Temu 大概率仍在亏损或微利</strong>（公司不披露，按行业测算标注：估算）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在线营销（主站广告）</td>
+<td>¥2209 亿</td>
+<td>+10%</td>
+<td>49%</td>
+<td>财报不分部披露；主站利润率估 40%+，Temu 估亏损或打平（估算）</td>
+</tr>
+<tr>
+<td>交易服务（佣金+Temu）</td>
+<td>¥2298 亿</td>
+<td>+7%</td>
+<td>51%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>¥4508 亿</strong></td>
+<td>+10%</td>
+<td>100%</td>
+<td>经营利润 ¥986 亿（利润率 21.9%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>利润率的真相</strong>：整体经营利润率从 2024 年的 27.5% 降到 TTM 的 21.9%，毛利率从 61% 降到 56%。管理层每个季度都在电话会上重复同一句话：加大商家补贴和生态投入，「利润下降是长期趋势不是意外」。<strong>这是主动把主站印钞机的利润拿去养 Temu 和固盘</strong>。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM ¥79.4 亿，占净利润 8.6%。绝对额不小但比例可控，且股本一年还降了 0.09%——SBC 没有稀释到股东头上。</li>
+<li><strong>一次性项目</strong>：TTM 净利润里有 ¥104 亿「出售投资收益」（拿 4000 多亿现金买的理财/债券兑现的差价）+ 大额利息收入。利息收入年年有算真利润，但出售收益波动大，剔掉后经营性净利约 ¥838 亿。单期口径无法判断出售节奏是否年年如此，按保守剔除。</li>
+<li><strong>资本化的支出</strong>：无。资本开支一年仅 ¥11 亿，对一个 4500 亿营收的公司约等于零——它连服务器都大量租用，是极端的轻资产。</li>
+<li><strong>回购与稀释</strong>：<strong>回购 0，分红 0，SBC ¥79 亿。</strong> 这是全篇最刺眼的一行：账上净现金 ¥4516 亿（$665 亿，占市值 55%），一分钱不回馈股东，全部拿去买理财和补贴 Temu。回购/SBC 比值没法算——分子是零。</li>
+<li><strong>利润和现金流的差</strong>：净利润 ¥921 亿 vs 经营现金流 ¥1119 亿，现金流多 ¥198 亿。对账：净利 921 → 加 SBC 79 → 加应付款增加 153（占着商家的货款，电商平台的天然浮存）→ 减出售投资收益 -104 → 加其他 ≈ 1119。<strong>利润是真现金，甚至比报表还多</strong>，账本身干净。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$1220 亿 ÷ $135.5 亿</td>
+<td>9.35</td>
+<td>¥10.7</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP（加回SBC，别信）</td>
+<td>¥921+79=1000 亿</td>
+<td>8.3</td>
+<td>¥12.0</td>
+</tr>
+<tr>
+<td>剔除障眼法后（扣出售投资收益）</td>
+<td>¥921−83(税后) = ¥838 亿</td>
+<td>10.3</td>
+<td>¥9.7</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>$1220 ÷ $164.6 亿</td>
+<td>7.41</td>
+<td>¥13.5</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td>($1220−665 净现金) ÷ $145 亿</td>
+<td><strong>3.82</strong></td>
+<td><strong>¥26.2</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>¥(600+1124+978)/3 = ¥901 亿 ≈ $132.7 亿</td>
+<td>9.2</td>
+<td>¥10.9</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你花 100 块买它，其中 55 块买到的是趴在账上的现金和理财，只有 45 块买的是生意本身——而这门生意一年替你赚 10 块出头。<strong>按企业价值口径，你实际是在用 4 倍利润买中国第二大电商</strong>，这是全场罕见的便宜。三年平均口径 9.2 倍和当期基本一致，说明这不是周期顶的假便宜——利润是这个量级已经三年了。</p>
+<p>但这 10 块钱<strong>一分都不进你口袋</strong>：不分红、不回购，全部留在公司。留存的钱去哪了？买理财（一年利息+投资收益贡献 ¥160 亿，约占税前利润 14%）和补贴 Temu 全球扩张。这个 X 未来变大还是变小：<strong>管理层自己说会变小</strong>——主站利润主动让利，Temu 被关税打断腿后从烧钱换增长转向求盈利，未来两年利润大概率在 ¥800–1000 亿区间横盘，指望不上 2024 年那种爆发。</p>
+<p>为什么这么便宜，市场不是傻子，三重折价都是真的：① 中概股 VIE 结构+退市尾部风险；② 现金锁在公司里，小股东既拿不到分红也否决不了黄峥（内部人持股 32%）；③ Temu 的命运握在美欧关税政策手里。</p>
+<h2>第四部分：一句话结论</h2>
+<p>主站是中国互联网变现效率最高的印钞机，账干净、利润是真现金，剔掉现金后 4 倍利润的价格是全场级别的便宜——<strong>便宜是真的，但你买的是一张「黄峥总有一天会把 4500 亿现金分给股东」的期票，他从没承诺过兑现日期</strong>：接受这一点它就是便宜货，接受不了它就是价值陷阱。</p>
+</div></body></html>

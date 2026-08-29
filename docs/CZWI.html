@@ -1,0 +1,545 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CZWI · Citizens Community Bancorp（公民社区银行控股）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CZWI</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">涨28%后没便宜可占;有形资本回报8%够不着股权成本</div><h1>CZWI · Citizens Community Bancorp（公民社区银行控股）</h1>
+<p><strong>市值</strong> 2.0285 亿美元 ｜ <strong>股价</strong> 21.02 美元 ｜ <strong>总资产</strong> 18.14 亿美元 ｜ <strong>行业</strong> 金融（社区银行）
+<strong>TTM 口径截止</strong> 2026 年 6 月 30 日（最近四个季度滚动）｜ <strong>市值排名</strong> 全榜第 1157 名</p>
+<blockquote>
+<p><strong>这是一家银行，下面不用市盈率当主轴，改用市净率（PB）、有形账面市净率（P/TBV）、净资产收益率（ROE / ROTCE）、净息差（NIM）、拨备覆盖这一套。</strong>
+原因很简单：银行的「营收」是净利息收入，它的资产就是贷款，负债就是储户的钱，杠杆天生就是十倍以上。同样赚 1000 万利润，一家银行可能压了 2 亿股东资本、另一家压了 1 亿，市盈率完全看不出这个差别，市净率能。而且银行的利润里有一项完全由管理层拿捏的科目——<strong>贷款损失拨备</strong>，多提一点利润就掉一半。CZWI 这一期恰恰就撞上了这件事，所以看拨备比看市盈率重要得多。
+另外提醒：统计站给出的「企业价值 1.336 亿」对银行毫无意义（它把储户存款当成了「现金」去抵扣），<strong>忽略它</strong>。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>CZWI 是威斯康星州欧克莱尔（Eau Claire）的一家社区银行控股公司，旗下是 Citizens Community Federal 全国性协会银行，网点分布在<strong>威斯康星州和明尼苏达州的中小城镇</strong>，全公司只有 <strong>238 名员工</strong>，总资产 18.14 亿美元。这是一家非常小的银行——美国前十大银行随便一家的一个分行群就顶它整个公司。</p>
+<p>它实质上在做三件事，前两件是同一套逻辑的两面。</p>
+<h3>生意一：吸储放贷（主业，占毛收入 82%）</h3>
+<p><strong>这件事到底是什么。</strong> 银行的本质是一间<strong>借钱转手的铺子</strong>：从一边用低价把钱借进来（储户存款），从另一边用高价借出去（贷款），赚中间的差价。</p>
+<p>具体到 CZWI：</p>
+<p><strong>钱从哪进来。</strong> 它手上有 <strong>15.54 亿美元存款</strong>，来自威斯康星和明尼苏达小城镇里的居民和商户。这些存款分三类：
+- <strong>不付利息的活期存款 2.748 亿</strong>（占存款的 17.7%）——比如镇上一家五金店的对公账户，钱放在里面是为了开支票、收刷卡款，银行一分利息不付。这是银行最值钱的资金；
+- <strong>付利息的储蓄和定期存款 12.26 亿</strong>——本地居民的定存，TTM 平均付出 <strong>2.49%</strong> 的利息；
+- <strong>机构存款 5350 万</strong>——批发来的资金，最贵。</p>
+<p>三类合起来，CZWI 一年为这 15.54 亿存款付了 <strong>3183 万美元</strong>利息，<strong>综合资金成本约 2.05%</strong>。</p>
+<p><strong>钱从哪出去。</strong> 它把这些钱放成了 <strong>13.86 亿美元贷款</strong>，TTM 收回 <strong>7688 万美元</strong>利息，<strong>平均贷款收益率约 5.55%</strong>。这些贷款主要是三类：给本地小企业的商业地产抵押贷款（镇上的临街商铺、小型仓库、公寓楼）、给农场的经营和设备贷款（威斯康星和明尼苏达是奶业带，这是 CZWI 的传统强项）、以及居民住房按揭。<strong>注意：贷款的详细分类不在本文所用的四个财报页里，上面是行业常识 + 后文提到的问题贷款性质的合理描述，不是精确披露的比例。</strong></p>
+<p>剩下没放贷的钱买了债券：<strong>2.19 亿投资证券</strong>（其中 1.41 亿是抵押贷款支持证券 MBS）加 <strong>1.22 亿现金</strong>，一年赚 <strong>1069 万</strong>利息，收益率约 3.14%——比放贷低，但随时能变现。</p>
+<p><strong>这门生意的账。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（截至 26/6/30）</th>
+<th>FY2025</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总利息收入</td>
+<td>8758 万</td>
+<td>8763 万</td>
+<td>−0.1%</td>
+</tr>
+<tr>
+<td>总利息支出</td>
+<td>3478 万</td>
+<td>3645 万</td>
+<td>−4.6%</td>
+</tr>
+<tr>
+<td><strong>净利息收入</strong></td>
+<td><strong>5279 万</strong></td>
+<td>5118 万</td>
+<td><strong>+10.2%</strong></td>
+</tr>
+<tr>
+<td>净息差 NIM（估算）</td>
+<td>约 3.1%</td>
+<td>约 2.9%</td>
+<td>扩大</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这里有一条真正的好消息，值得单独说：净利息收入一年长了 10.2%，而且是在总利息收入零增长的情况下长出来的。</strong> 全部来自资金成本下降——存款利息支出降了 4.6%，借款利息更是从 516 万（FY24）掉到 295 万。这是美联储降息周期里社区银行的典型受益路径：贷款是长期的、利率锁死，存款是短期的、能立刻重定价。</p>
+<h3>生意二：收手续费（占毛收入 18%）</h3>
+<p><strong>这件事到底是什么。</strong> 银行除了赚利差，还在客户身上收零碎的钱。TTM 非利息收入 <strong>1142 万美元</strong>，包括：账户维护费和透支费、借记卡刷卡的交换费分成（客户在超市刷 100 美元，银行分到几毛）、<strong>代客户卖房贷给房利美后保留的贷款服务费</strong>（房子的按揭卖出去了，但每月催收、代收房产税和保险还是这家银行做，按贷款余额抽一点点）、以及给客户卖保险和理财的佣金。其中 <strong>23 万</strong>是卖债券的投资收益，那是一次性的、不该当经常性收入看。</p>
+<p>这块钱的好处是<strong>不占用资本、不承担信用风险</strong>，坏处是不太长——TTM 1142 万，五年前（FY2021）是 1582 万，<strong>缩水了 28%</strong>（那时房贷再融资潮还在，卖房贷的收益很肥）。</p>
+<h3>生意三（成本端）：养 238 个人和一堆网点</h3>
+<p>TTM 非利息支出 <strong>4300 万美元</strong>，其中工资和福利就占 <strong>2399 万</strong>，占了 56%。加上 FDIC 存款保险费 82 万、无形资产摊销 112 万、其他管理费用 1702 万。</p>
+<p><strong>效率比率（银行业最重要的成本指标）= 非利息支出 ÷（净利息收入＋非利息收入）= 4300 ÷ 6421 = 67.0%。</strong></p>
+<p>大白话：<strong>每收进 100 块毛收入，先花掉 67 块养人和维持网点，只剩 33 块用来吸收坏账和上税。</strong> 行业里 55% 以下算优秀，60% 算合格，67% 属于偏胖——这是小银行的通病，18 亿资产的规模摊不薄固定成本。</p>
+<h3>三件事合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（万美元）</th>
+<th>占毛收入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入</td>
+<td>5279</td>
+<td>82.2%</td>
+</tr>
+<tr>
+<td>非利息收入（手续费等）</td>
+<td>1142</td>
+<td>17.8%</td>
+</tr>
+<tr>
+<td><strong>拨备前毛收入</strong></td>
+<td><strong>6421</strong></td>
+<td>100%</td>
+</tr>
+<tr>
+<td>减：非利息支出</td>
+<td>−4300</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 拨备前经营利润（PPNR）</strong></td>
+<td><strong>2121</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：<strong>贷款损失拨备</strong></td>
+<td><strong>−593</strong></td>
+<td>← 全篇的关键</td>
+</tr>
+<tr>
+<td>＝ 税前利润</td>
+<td>1529</td>
+<td></td>
+</tr>
+<tr>
+<td>减：所得税（16.21%）</td>
+<td>−248</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 净利润</strong></td>
+<td><strong>1281</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先记住这个数：拨备前经营利润 2121 万，比 FY2025 的 1939 万涨了 9.4%。生意本身在变好。是拨备把利润按回去了。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>银行的「障眼法」跟一般公司不一样。SBC、资本化开发费这些在这里基本不是问题，真正的问题在<strong>拨备</strong>和<strong>账面净资产的水分</strong>。逐项过一遍。</p>
+<h3>拨备：这是本期唯一重要的事，也是唯一的坏消息</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>贷款损失拨备（万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>0</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>148</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td><strong>−48（转回，反而增加利润）</strong></td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td><strong>−318（转回，反而增加利润）</strong></td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>195</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>593</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>TTM 的拨备是 FY2025 的 3 倍，而 FY2024 那年拨备是负的——那一年银行往回冲了 318 万，相当于凭空多出 318 万利润。</strong></p>
+<p>这就是拨备的双面性：经济好的时候管理层往回转，利润凭空多一块；经济转坏的时候必须多提，利润凭空少一块。<strong>FY2024 那 1375 万净利润里，有 318 万是转回来的，不是赚来的。</strong></p>
+<p>具体发生了什么（来自公司 2026 年二季度业绩公告）：</p>
+<ul>
+<li><strong>2026 年二季度单季拨备 432.5 万美元</strong>，而一季度只有 75 万——<strong>几乎全部集中在一个季度爆发</strong>；</li>
+<li>原因是<strong>三笔贷款关系被降级为「次级—非应计」</strong>（次级 substandard 意思是还款来源已经不足，非应计 nonaccrual 意思是银行已经不再把这笔贷款的利息计入收入了）：</li>
+<li>其中一个借款人<strong>已经停止经营</strong>，导致 380 万美元的拨备计提，含 <strong>120 万直接核销</strong>；</li>
+<li>另外<strong>两笔商业地产（CRE）贷款关系合计 800 万美元</strong>，本季度从「正常」直接跳到「次级—非应计」；</li>
+<li>非应计贷款的<strong>专项准备净增 310 万，升至 630 万</strong>；单季核销 <strong>140 万</strong>。</li>
+<li>结果：<strong>二季度每股收益只有 0.11 美元</strong>——而 TTM 全年是 1.31 美元，正常一个季度应该在 0.35 美元上下。<strong>一个季度的利润被打掉了三分之二。</strong></li>
+</ul>
+<p><strong>这件事该怎么看？</strong> 两句话：</p>
+<ol>
+<li><strong>金额上不致命。</strong> 800 万加 380 万，对一个 13.86 亿的贷款盘子来说不到 1%；核销 140 万约等于贷款余额的 0.10%。银行的准备金池子（下面细说）完全吃得下。</li>
+<li><strong>但方向是坏的，而且是商业地产。</strong> 一个季度里三笔关系同时从「正常」跳到「非应计」——不是慢慢滑下去的，是断崖式的。商业地产在 2024–2026 年是全美银行业最集中的雷区（写字楼空置、小商铺租户退租、按 2021 年低利率做的贷款到期要按 2026 年的利率重做）。<strong>单看 TTM 一期的数据无法判断这是三笔孤立的倒霉事，还是本地商业地产整体开始出问题的第一批。</strong> 这句话必须诚实地留在这里——下一两个季度的非应计贷款走势才能给答案。</li>
+</ol>
+<p><strong>好消息是准备金池子确实厚了：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>FY2024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贷款损失准备（万美元）</td>
+<td><strong>2590</strong></td>
+<td>2240</td>
+<td>2055</td>
+</tr>
+<tr>
+<td>贷款总额（万美元）</td>
+<td>138,600</td>
+<td>134,300</td>
+<td>137,200</td>
+</tr>
+<tr>
+<td><strong>准备/贷款</strong></td>
+<td><strong>1.87%</strong></td>
+<td>1.67%</td>
+<td>1.50%</td>
+</tr>
+</tbody>
+</table></div>
+<p>1.87% 的覆盖率在同规模社区银行里属于偏保守的一头（多数在 1.2%–1.5%）。<strong>管理层是在往厚里备，不是在藏问题。</strong> 这一点应该给分。</p>
+<h3>账面净资产的水分：3150 万商誉，以及 −1202 万的浮亏</h3>
+<p>股东权益账面 <strong>1.9135 亿美元</strong>，但里面有两块不实：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商誉</td>
+<td><strong>3150</strong></td>
+<td>历年收购小银行付出的溢价，是笔账上的数字，破产清算时一文不值</td>
+</tr>
+<tr>
+<td>其他无形资产</td>
+<td>17</td>
+<td>收购来的存款关系等，正在摊销（TTM 摊 112 万）</td>
+</tr>
+<tr>
+<td>累计其他综合收益（AOCI）</td>
+<td><strong>−1202</strong></td>
+<td>手上债券的浮亏，<strong>已经扣在净资产里了，不是隐藏损失</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>剔掉商誉和无形资产后的<strong>有形普通股权益 = 1.9135 亿 − 3150 万 − 17 万 = 1.5968 亿美元</strong>，每股有形账面价值 <strong>16.55 美元</strong>（账面价值是 19.83 美元）。<strong>买这家银行的时候，每股 19.83 的账面里有 3.28 块是买不到实物的商誉，这 3.28 块必须先扣掉再谈估值。</strong></p>
+<p>关于 AOCI 那 −1202 万：这是银行手上 2.19 亿债券在利率上升后的浮亏。值得说明的是它<strong>已经全额扣在股东权益里了</strong>（不像有些银行把债券挪进「持有至到期」科目从而不用扣），而且相对 1.5968 亿的有形资本只有 7.5%，规模温和——2023 年硅谷银行倒闭那种「浮亏比资本还大」的情形，<strong>这里没有</strong>。</p>
+<h3>资本充足：厚，不是薄</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股东权益 / 总资产</td>
+<td>10.55%</td>
+</tr>
+<tr>
+<td><strong>有形普通股权益 / 有形总资产（TCE/TA）</strong></td>
+<td><strong>8.96%</strong></td>
+</tr>
+<tr>
+<td>贷款 / 存款</td>
+<td>89.2%</td>
+</tr>
+<tr>
+<td>不计息存款 / 总存款</td>
+<td>17.7%</td>
+</tr>
+</tbody>
+</table></div>
+<p>TCE/TA 接近 9% 对社区银行来说是<strong>扎实</strong>的（监管线远低于此，同业普遍在 7%–9%）。贷存比 89% 说明没有过度放贷，还有余地。<strong>CET1 等监管资本充足率在这四个财报页里没有披露，但从 8.96% 的 TCE/TA 反推，大概率在 12%–14% 这个安全区间——这是估算，不是披露数字。</strong></p>
+<p>唯一偏弱的是不计息存款只占 17.7%（优秀的社区银行能到 25%–30%），意味着它的资金成本对利率变化更敏感。</p>
+<h3>回购与稀释：这一项做得好</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股本一年变化</td>
+<td><strong>−3.30%</strong></td>
+</tr>
+<tr>
+<td>股本季度变化</td>
+<td>+0.13%</td>
+</tr>
+<tr>
+<td>实收资本 FY24 → FY25</td>
+<td>11456 万 → 11032 万（回购注销）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一年回购注销了 3.3% 的股份</strong>，而且是在股价低于账面价值时买的（FY2025 的 PB 只有 0.92）——<strong>用 92 分钱买回 1 块钱的净资产，这是最划算的一种回购，每一股都在增厚剩下股东的账面价值。</strong> 银行没有股权激励稀释的问题，这一栏干净。</p>
+<p>不过要注意：<strong>最近一个季度股本反而微增 0.13%，回购似乎停了。</strong> 结合二季度拨备暴增，很可能是管理层在保存资本。</p>
+<h3>股息：一个口径打架的地方</h3>
+<ul>
+<li>公司二季度董事会批准的<strong>季度股息是每股 0.105 美元</strong>，年化 <strong>0.42 美元</strong>，按 21.02 美元股价算<strong>股息率 2.00%</strong>；</li>
+<li>但财报页上 <strong>TTM 实际每股派息只有 0.21 美元</strong>，比 FY2025 的 0.36 少了 41.7%。</li>
+</ul>
+<p>两个数对不上。最可能的解释是派息节奏调整（比如把某次派息挪到了统计区间外），<strong>不是真的砍了股息</strong>——季度 0.105 的年化率本身就是 0.42，比 FY2025 的 0.36 还高。但<strong>单期口径确实无法完全确认</strong>，如实记在这里。</p>
+<p>按 0.42 计算，<strong>派息率 = 0.42 ÷ 1.31 = 32%</strong>，覆盖充分，即使利润再掉三分之一也还付得起。</p>
+<h3>利润与现金流的差：银行这里不重要，但顺手核一下</h3>
+<p>TTM 净利润 1281 万，经营现金流 2238 万，自由现金流 1935 万（资本开支 303 万）。现金流高于利润 957 万，主要来自 593 万非现金的拨备计提 + 112 万无形摊销 + 折旧。</p>
+<p><strong>但必须说明：银行的「自由现金流」是个基本没有意义的指标。</strong> 一家银行的经营现金流会因为存款流入流出、贷款投放收回而剧烈波动，跟股东能拿到什么钱没有直接关系。银行真正能给股东的钱，上限是<strong>监管允许分掉的那部分资本</strong>。所以下面第三部分不会用 P/FCF 当主轴。</p>
+<hr />
+<h2>第三部分：银行口径的估值——PB、ROTCE 和你的年回报</h2>
+<p>市值 2.0285 亿美元，股价 21.02 美元，<strong>流通股本只有 965 万股</strong>（小得出奇，日均成交才 4 万股）。</p>
+<h3>各口径一览</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th><strong>投 100 块年回报</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>21.02 ÷ 每股账面 19.83</td>
+<td><strong>1.06 倍</strong></td>
+<td>ROE 6.84% ÷ 1.06 = <strong>6.45 元</strong></td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>21.02 ÷ 每股有形账面 16.55</td>
+<td><strong>1.27 倍</strong></td>
+<td>ROTCE 8.02% ÷ 1.27 = <strong>6.31 元</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2.0285 亿 ÷ 1281 万</td>
+<td><strong>15.99 倍</strong></td>
+<td><strong>6.25 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2.0285 亿 ÷（1281＋1442＋1375）/3 ＝ 1366 万</td>
+<td><strong>14.85 倍</strong></td>
+<td><strong>6.73 元</strong></td>
+</tr>
+<tr>
+<td>拨备正常化后（估算）</td>
+<td>PPNR 2121 万 − 常态拨备约 250 万 ＝ 税前 1871 万，税后约 1568 万</td>
+<td><strong>约 12.9 倍</strong></td>
+<td>约 <strong>7.75 元</strong></td>
+</tr>
+<tr>
+<td>公司自己给的前瞻口径</td>
+<td>统计站前瞻市盈率</td>
+<td><strong>10.84 倍</strong></td>
+<td>9.23 元</td>
+</tr>
+<tr>
+<td>真正到手的现金（股息＋回购）</td>
+<td>股息率 2.00% ＋ 股本注销 3.30%</td>
+<td>—</td>
+<td><strong>5.30 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>支撑这些数字的银行基本面</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ROE（净资产收益率）</strong></td>
+<td><strong>6.84%</strong></td>
+<td>银行赚钱能力的核心指标</td>
+</tr>
+<tr>
+<td><strong>ROTCE（有形净资产收益率）</strong></td>
+<td><strong>8.02%</strong></td>
+<td>剔掉商誉后的真实赚钱能力</td>
+</tr>
+<tr>
+<td>ROA（资产收益率）</td>
+<td>0.72%</td>
+<td>优秀社区银行 ≥1.0%，这家不到</td>
+</tr>
+<tr>
+<td>净息差 NIM（估算）</td>
+<td>约 3.1%</td>
+<td>在改善（FY25 约 2.9%）</td>
+</tr>
+<tr>
+<td>效率比率</td>
+<td>67.0%</td>
+<td>偏胖</td>
+</tr>
+<tr>
+<td>准备 / 贷款</td>
+<td>1.87%</td>
+<td>保守，加分</td>
+</tr>
+<tr>
+<td>TCE / TA</td>
+<td>8.96%</td>
+<td>扎实</td>
+</tr>
+<tr>
+<td>贝塔</td>
+<td>0.51</td>
+<td>波动只有大盘一半</td>
+</tr>
+</tbody>
+</table></div>
+<h3>大白话：你现在投 100 块进去，一年能赚多少？</h3>
+<p><strong>核心那句话是这样算的：你付 1.27 倍的有形账面价格，买一家有形资本回报率 8.02% 的银行。你的年回报 = 8.02% ÷ 1.27 = 6.31%。也就是投 100 块，公司一年替你赚 6.3 块。</strong></p>
+<p>按 TTM 市盈率算是 6.25 块，按三年平均利润算是 6.73 块——<strong>三个口径高度一致，落在 6.3 到 6.7 之间</strong>。这个一致性本身是好事，说明这家银行的账没有大水分，不像成长股那样各口径打架。</p>
+<p><strong>这 6.3 块里，有多少真的回到你口袋？</strong></p>
+<ul>
+<li><strong>股息约 2.0 块</strong>（季度 0.105 美元、年化 0.42 美元）——真金白银打到账户；</li>
+<li><strong>回购注销约 3.3 块</strong>（一年注销 3.3% 股份）——不进你口袋，但让你手里每股代表的资产变多，效果一样，而且不用交税；</li>
+<li><strong>剩下约 1 块留在银行里</strong>，变成新增的资本金，理论上支撑更多贷款。</li>
+</ul>
+<p><strong>加起来股东实际拿到的是 5.3 块，留存 1 块。这个分配结构其实相当股东友好</strong>——比很多社区银行把钱都留在账上强。<strong>但注意：最近一个季度回购已经停了</strong>，如果拨备继续走高，那 3.3 块会先没。</p>
+<h3>这 6.3 块未来会变大还是变小？</h3>
+<p><strong>变大的力量：</strong>
+- <strong>净息差还在扩。</strong> 净利息收入一年长 10.2%，全靠存款成本下降。降息周期里这个顺风还没吹完；
+- <strong>拨备前经营利润长了 9.4%</strong>（1939 万 → 2121 万）。生意本身在恢复；
+- 一旦这三笔问题贷款处理完、拨备回到 200–250 万的常态，税后利润能回到 <strong>1550 万上下、每股 1.60 美元</strong>，对应现在的股价只有 <strong>12.9 倍</strong>——统计站给的前瞻市盈率 10.84 倍就是按这条路径算的；
+- 股本一年缩 3.3%，每股数字自动往上走；
+- <strong>1.27 倍有形账面对一家 18 亿资产的社区银行来说，是被收购的价位区间下沿</strong>（同业并购通常在 1.3–1.6 倍有形账面成交）。机构持股 60.9%、股本只有 965 万股、五年营收零增长——这是典型的并购标的画像。</p>
+<p><strong>变小的力量：</strong>
+- <strong>商业地产（CRE）的雷才刚开始响。</strong> 一个季度里三笔关系同时非应计，其中两笔是 CRE。这类问题很少单独出现；
+- <strong>ROTCE 8.02% 低于股权成本。</strong> 社区银行的股权成本一般按 9%–11% 算——<strong>这家银行的赚钱能力还够不着股东要求的回报</strong>。这是决定性的一条：一家长期赚不回资本成本的银行，理论上就不该按超过 1 倍有形账面来定价；
+- <strong>主业规模在缩。</strong> 贷款总额从 FY2023 的 14.65 亿降到现在的 13.86 亿，<strong>三年缩了 5.4%</strong>；拨备前毛收入 6421 万还低于 FY2021 的 6949 万，<strong>五年没长</strong>；
+- <strong>手续费收入五年缩水 28%</strong>（1582 万 → 1142 万），而且短期看不到回来的路；
+- <strong>效率比率 67%</strong>，18 亿资产的体量摊不动这个成本结构，除非它去买别的银行——但那要花掉现在正在回购股票的钱；
+- <strong>股价一年涨了 28.5%，而净利润只涨了 2.85%。</strong> PB 从 0.92 涨到 1.06——<strong>这 28.5% 几乎全是估值扩张，不是公司变好。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜了，涨完 28% 之后已经没有便宜可占。</strong> 这家银行本身没什么大毛病——资本厚（TCE/TA 8.96%）、准备金保守（1.87%）、在低于账面价格时真金白银回购了 3.3% 的股份、净息差正在扩、拨备前经营利润一年长了 9.4%，账干净得几乎找不到障眼法。<strong>但它的有形资本回报率只有 8.02%，压根够不着 9%–11% 的股权成本，而现在市场要你按 1.27 倍有形账面去买它——为一家赚不回资本成本的银行付溢价，这笔账在数学上是不成立的。</strong> 三年缩了 5.4% 的贷款盘子、五年零增长的毛收入、67% 的效率比率，说明它自己也长不出更高的回报来；而二季度那三笔跳成非应计的贷款（两笔是商业地产）提醒你，下行风险是活的、正在发生的，不是理论上的。投 100 块一年赚 6.3 块，其中 5.3 块以股息和回购的形式回到你手上——<strong>这不是一笔烂投资，是一笔平庸的投资</strong>，回报大致等同于一只公司债，却要承担 CRE 的信用风险和银行的十倍杠杆。真正的上涨空间在「被别人收购」这一条，那是运气，不是理由。想买的人，等它跌回 1 倍有形账面（约 16.5 美元）再说，或者等两个季度看非应计贷款到底是三笔孤立事故还是一串的开头。</p>
+</div></body></html>

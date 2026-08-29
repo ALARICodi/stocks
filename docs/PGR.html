@@ -1,0 +1,279 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PGR · 前进保险（Progressive）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PGR</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">11倍是周期顶利润,三年平均16倍;承保纪律全行业最好</div><h1>PGR · 前进保险（Progressive）</h1>
+<p>市值 $1271 亿 / 股价约 $218.6 / 行业：财产险（车险为主） / TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是保险公司，下面用 PB、ROE、综合成本率口径而不是普通市盈率</strong>，原因是：保险公司的「营收」里混着保费和投资收益，利润被承保周期和利率大幅摆动，单看 PE 会严重误判。不过 PGR 的 PE 表也会给，放在第三部分对照着看。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>Progressive 实质上就做<strong>一门半生意：卖车险（顺带一点家财险），再拿收来的保费去做投资</strong>。</p>
+<h3>生意一：个人车险（TTM 保费 738 亿美元，占总营收 81%）</h3>
+<p>这是全美第二大车险公司（第一是 State Farm，第三是 GEICO）。生意的本质很朴素：你有一辆车，法律规定必须买保险才能上路。你打开 Progressive 的网站或 App，输入车型、年龄、住址、过往出险记录，30 秒出一个报价——比如一年 1800 美元。你付钱，它承诺：你撞了人、车被偷了、被冰雹砸了，它赔。</p>
+<p>它的钱是这么赚的：<strong>收 100 块保费，赔出去加运营开销花掉大约 88 块，剩 12 块是承保利润</strong>——这个「花掉的比例」行话叫综合成本率（combined ratio），是财产险公司唯一重要的经营指标。低于 100 才算承保赚钱；行业平均常年在 100 上下晃，也就是说<strong>大部分车险公司卖保险本身不赚钱，全靠投资收益</strong>，而 Progressive 常年做到 90 上下，是全行业承保纪律最好的公司，没有之一。</p>
+<p>它凭什么比别人便宜 10 个点？两件事：</p>
+<ol>
+<li><strong>直销模式</strong>。GEICO 靠打广告直销，State Farm 靠 19000 个代理人。Progressive 两条腿都走，但直销占比越来越高——没有代理人抽佣，成本天然低几个点。</li>
+<li><strong>定价精算是真本事</strong>。它是全行业最早做「按驾驶行为定价」的：装个叫 Snapshot 的小盒子（现在直接用手机 App）记录你急刹车几次、半夜开不开车，开得好的人保费打折。这背后是几十年积累的定价数据库——同样一个 35 岁得州司机，Progressive 比同行更清楚该收他多少钱才不亏。定价准，就敢把好客户的价格压到底抢下来，把烂客户的价格抬到吓走——<strong>别人的逆向选择，就是它的顺向选择</strong>。</li>
+</ol>
+<p>一单大概多少钱：美国个人车险平均年保费约 1800–2200 美元。Progressive 有约 3500 万份个人险保单。客户为什么非买不可：法律强制 + 换保险公司只要 10 分钟，谁便宜用谁——这反而是 Progressive 的主场，因为比价场景对定价最准的公司最有利。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>上年同期(FY2024)</th>
+<th>增速</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人险保费</td>
+<td>$737.9 亿</td>
+<td>$600.9 亿(FY24)</td>
+<td>全年口径 +17.8%</td>
+<td>81%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：商业车险（TTM 保费 107 亿，占 11.7%）</h3>
+<p>给小企业的车队保险：管道工的皮卡、披萨店的送餐车、小物流公司的货车，也包括给 Uber/Lyft 司机的网约车保单。是全美商用车险第一名。逻辑和个人险一样，只是客户换成小老板。TTM 保费 $106.9 亿，同比基本走平（FY25 全年 108.8 亿，FY24 107.1 亿，+1.6%）——公司在主动踩刹车，因为商用车赔付通胀（尤其人身伤害官司的判赔金额）涨得凶，它宁可不做也不做亏本单。</p>
+<h3>生意二点五：投资组合（TTM 投资收益 48.3 亿，占 5.3%）</h3>
+<p>保险公司的固有属性：保费先收进来，赔款后付出去，中间趴着一笔别人的钱（浮存金）可以拿去投资。Progressive 的投资组合约 800 多亿美元，风格是<strong>出了名的保守</strong>——九成多放在债券，股票占比极小。利率从 0 涨到 4% 之后，这笔钱的利息收入从 2022 年的负收益（债券价格下跌）涨到 TTM 的 48.3 亿，是这三年利润暴涨的第二引擎。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人险保费</td>
+<td>$737.9 亿</td>
+<td>81.0%</td>
+<td>财报只披露到营收，承保利润不分部（下面整体算）</td>
+</tr>
+<tr>
+<td>商业险保费</td>
+<td>$106.9 亿</td>
+<td>11.7%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>投资收益</td>
+<td>$48.3 亿</td>
+<td>5.3%</td>
+<td>基本即利润</td>
+</tr>
+<tr>
+<td>服务费及其他</td>
+<td>$17.4 亿</td>
+<td>1.9%</td>
+<td>微利</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$910.6 亿</strong></td>
+<td>100%</td>
+<td>经营利润 $150.8 亿（利润率 16.6%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>整体账（估算口径）</strong>：TTM 经营利润 150.8 亿里，投资贡献约 48 亿，剩下约 100 亿出头是承保利润。用保费收入约 845 亿倒推，<strong>综合成本率约 88%</strong>（估算，公司口径的月报数字也在 88 上下）——收 100 块保费净赚 12 块承保利润，这在车险行业是顶级水平。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 $1.36 亿，占净利润 1.2%。保险公司不靠期权抢工程师，这项干净得可以忽略。</li>
+<li><strong>一次性项目</strong>：无重大一次性项目。但注意 TTM 净利润里含 $11.8 亿投资已实现收益（卖债券/股票赚的差价），这部分年年有但金额随市场波动，不算严格的经营利润。</li>
+<li><strong>资本化的支出</strong>：无。保险公司没有这个科目的操作空间。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $11.9 亿，SBC $1.36 亿，<strong>回购/SBC ≈ 8.8 倍，真回购</strong>。股本一年降 0.14%——不多，因为 Progressive 回馈股东的主渠道是分红：<strong>TTM 普通股分红 $81.5 亿</strong>（它的传统是每年一次大额可变特别股息，赚得多分得多）。分红+回购合计 93 亿，占净利润 117 亿的 80%。</li>
+<li><strong>利润和现金流的差</strong>：净利润 117 亿 vs 经营现金流 163 亿，现金流反而<strong>多</strong> 46 亿。对账：净利润 117 亿 → 加保险准备金增加 44 亿（收了保费、赔款还没赔出去，先记负债但现金在手里）→ 加未到期保费增加 11 亿 → 减应收增加 7 亿 → 加投资卖出净调整等 ≈ 经营现金流 163 亿。<strong>保险模式的天然优点：现金永远先到账</strong>。没有障眼法，这份账非常干净。</li>
+</ul>
+<h2>第三部分：估值，多口径</h2>
+<p>保险股主口径（PB × ROE）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PB（市净率）</td>
+<td>3.70</td>
+<td>你花 3.7 块买 1 块净资产</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>34.9%</td>
+<td>这 1 块净资产一年赚 0.35 块</td>
+</tr>
+<tr>
+<td><strong>换算：投 100 块年回报</strong></td>
+<td><strong>≈ 9.4 块</strong>（34.9% ÷ 3.70）</td>
+<td>与 PE 口径互相印证</td>
+</tr>
+<tr>
+<td>CET1/偿付能力</td>
+<td>债务/权益仅 0.24，利息保障 50 倍</td>
+<td>杠杆在保险业里算低的</td>
+</tr>
+</tbody>
+</table></div>
+<p>PE 各口径对照：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1271 亿 ÷ 117 亿</td>
+<td>10.97</td>
+<td>¥9.1</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>无重大调整，与 GAAP 基本一致</td>
+<td>≈11</td>
+<td>¥9.1</td>
+</tr>
+<tr>
+<td>剔除障眼法后</td>
+<td>扣掉 11.8 亿投资已实现收益：1271 ÷ 105</td>
+<td>12.1</td>
+<td>¥8.3</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1271 ÷ 159.5 亿</td>
+<td>7.97</td>
+<td>¥12.5（含浮存金增量，虚高）</td>
+</tr>
+<tr>
+<td>EV/EBIT</td>
+<td>1353 ÷ 150.8</td>
+<td>8.98</td>
+<td>¥11.1</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>1271 ÷ 三年平均净利(FY23+FY24+FY25 = 78.8 亿)</td>
+<td><strong>16.1</strong></td>
+<td><strong>¥6.2</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你现在投 100 块进去，按当期真实口径公司一年替你赚 8–9 块，其中约 6.5 块以分红+回购真的回到你口袋，剩下留在公司里滚投资组合。<strong>但三年平均口径告诉你：这 9 块是站在周期顶上赚的。</strong> 2022 年车险全行业巨亏（通胀让赔付成本暴涨、保费没跟上，PGR 那年综合成本率破 95、净利只有 7 亿），2023–2025 全行业猛涨价，涨价追上通胀后利润爆发——TTM 的 117 亿正是涨价周期的果实。现在费率见顶、各家开始重新打广告抢客户，<strong>下一阶段利润率大概率往下走，回不到 2022 的惨状，但也守不住现在的 12 个点承保利润</strong>。市场懂这个，所以股价 52 周跌了 10.65%，PE 才会只有 11 倍。</p>
+<h2>第四部分：一句话结论</h2>
+<p>全美承保纪律最好的车险公司，账目干净得在金融股里罕见，但 11 倍 PE 是周期顶部利润算出来的，按三年平均是 16 倍——<strong>这是好生意在利润高点的公道价，不是便宜货</strong>：想买顶级车险公司的人可以接受这个价，想捡便宜的人这里没有便宜。</p>
+</div></body></html>

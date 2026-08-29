@@ -1,0 +1,289 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FISV · 费哲金融服务 (Fiserv)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FISV</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">10倍PE/7倍FCF真便宜,银行后台年金托底,但274亿净债+增长熄火</div><h1>FISV · 费哲金融服务 (Fiserv)</h1>
+<p>市值 $283 亿 / 股价约 $53 / 商业服务（支付与银行科技） / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>先说一件事：这家公司 52 周股价跌了 <strong>61%</strong>。2025 年中它还是千亿市值的支付明星，现在只剩 $283 亿。跌成这样的公司出现在 0–15 倍市盈率榜单里，第一个问题永远是：便宜是真的，还是刀还在往下掉。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>按财报分部，Fiserv 实质上做两门生意，外加一个杂项。</p>
+<h3>生意一：帮商户收钱（Merchant Solutions）</h3>
+<p><strong>这件事是什么</strong>：你家楼下如果有一家美国的餐馆、理发店、咖啡店，店里那台白色的收银机很可能叫 <strong>Clover</strong>——那就是 Fiserv 的东西。Clover 是一整套小生意操作系统：一台带屏幕的收银终端（硬件卖几百到一千多美元），装着点单、排班、库存、会员系统的软件（每月收 $15–$300 不等的订阅费），顾客刷卡付钱时，Fiserv 再从每笔交易里抽一道手续费（大约每 100 美元抽 0.5–1 美元里的一部分，剩下的分给发卡行和卡组织）。一家年流水 100 万美元的餐馆，一年大概给 Fiserv 交几千到上万美元。</p>
+<p>对大商户（连锁超市、航空公司、加油站），Fiserv 用另一套叫 <strong>Carat</strong> 的企业级平台，把线上网站、手机 App、门店收银全部接到一个管道里，按交易量收费，单价薄但量巨大。</p>
+<p><strong>为什么客户非用不可</strong>：小商户一旦把点单、库存、员工排班全搬进 Clover，换系统等于把店停下来重开一遍；大商户的支付管道直接焊在自己的 IT 系统里，换供应商是一个以年计的工程。</p>
+<p><strong>但这门生意 2025–2026 年出了事</strong>：Clover 的增长神话熄火了。前两年 Merchant 分部的高增长里有相当一块来自阿根廷——恶性通胀下商户资金沉淀的利息收入和比索计价的名义增长，2025 年阿根廷通胀回落后这块凭空消失；再加上美国小商户消费转弱、同店流水下滑，管理层 2025 年连续两次下调指引，CEO 换人，股价就是这么崩的。</p>
+<p><strong>钱</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM 数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$101.1 亿（占总营收 48%）</td>
+</tr>
+<tr>
+<td>同比</td>
+<td>约 -0.3%（对比 FY2025 的 $101.4 亿，基本停滞）</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>财报只披露到分部营收，按公司整体及历史披露估算约 35% 上下</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 $35 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：给银行当后台（Financial Solutions）</h3>
+<p><strong>这件事是什么</strong>：美国有几千家中小银行和信用社，它们没能力自己写核心系统，于是把「账本」外包给 Fiserv。你在一家美国社区银行开户、存钱、转账、查余额，背后记账的软件很可能是 Fiserv 的 <strong>DNA、Premier 或 Signature</strong>——银行按账户数每月付钱，按交易笔数再付钱，合同一签就是 5–7 年。除此之外，Fiserv 还运营 <strong>STAR、Accel</strong> 借记卡网络（你刷借记卡时走的清算通道，按笔抽费）、替银行做信用卡发卡处理、跑 Zelle 转账接入和账单支付。</p>
+<p><strong>为什么客户非用不可</strong>：把银行的核心账本从一家供应商迁到另一家，业内称为「心脏移植手术」——要停机、要迁数据、要重新培训全行员工，失败了储户取不出钱就是挤兑。所以银行核心系统的客户流失率极低，这是一门年金式的生意，涨价能力温和但极其稳定。</p>
+<p><strong>钱</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM 数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$93.5 亿（占 45%）</td>
+</tr>
+<tr>
+<td>同比</td>
+<td>约 -3.2%（对比 FY2025 的 $96.6 亿；扣掉一次性授权收入的节奏因素，底层大致低个位数增长）</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>估算约 45%（历史披露该分部利润率高于 Merchant）</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 $42 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>杂项：Corporate and Other</h3>
+<p>营收 $14.1 亿（占 7%），主要是邮资代收代付、打印对账单这类过手业务，基本不赚钱。</p>
+<p><strong>合计</strong>：TTM 总营收 $208.7 亿，同比 <strong>-1.2%</strong>。一家过去十年年年高个位数增长的公司，第一次收入负增长——这就是市场给它 10 倍市盈率的原因。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $3.77 亿，占净利润 $28.0 亿的 13%。不算过分，GAAP 里已扣，不加回。</li>
+<li><strong>一次性项目</strong>：TTM 里有三笔利得——出售资产赚 $1.92 亿、出售投资赚 $0.74 亿、股权投资公允价值变动赚 $0.35 亿，合计约 $3 亿，这些不是经营赚来的，算真实利润时要剔掉。另外 TTM 经营利润 $44.7 亿比 FY2025 的 $57.0 亿少了 $12 亿，其中相当部分是 2026 上半年计提的重组/减值类费用——单期口径无法判断这类费用是否年年发生，但 Fiserv 过去几年「整合费用」确实年年都有，把它全当一次性是自欺。</li>
+<li><strong>资本化的支出</strong>：TTM 资本开支 $19.1 亿里大头是资本化的软件开发费（Clover 和银行平台的研发），这些钱进了资产负债表慢慢摊销，而不是当期费用。真实的「维持性开销」比利润表显示的高。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $16.5 亿 ÷ SBC $3.77 亿 = <strong>4.4 倍，是真回购</strong>，股本一年实际减少 5.2%。但要注意：FY2025 回购了 $59 亿，TTM 骤降到 $16.5 亿——股价越跌买得越少，钱转去还债了（TTM 净还债 $24.4 亿）。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $28.0 亿，经营现金流 $58.3 亿，差了一倍多，值得逐项对账（单位：百万美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,801</td>
+</tr>
+<tr>
+<td>＋折旧与摊销</td>
+<td>3,267</td>
+</tr>
+<tr>
+<td>＋其他摊销</td>
+<td>49</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>377</td>
+</tr>
+<tr>
+<td>－出售资产/投资等利得</td>
+<td>-301</td>
+</tr>
+<tr>
+<td>－其他经营调整</td>
+<td>-913</td>
+</tr>
+<tr>
+<td>＋营运资金变化（应收/应付/递延等）</td>
+<td>+551</td>
+</tr>
+<tr>
+<td>＝经营现金流</td>
+<td>5,831</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表里最重要的一行是 <strong>$32.7 亿的折旧摊销</strong>——其中估计超过一半是 2019 年吞并 First Data 时产生的无形资产摊销（客户关系、商标这类账面数字的逐年冲销），<strong>不是真花钱</strong>。这意味着 Fiserv 的真实现金盈利能力明显高于 GAAP 净利润——自由现金流 $39.3 亿比净利润 $28.0 亿高 40%，就是这么来的。</p>
+<ul>
+<li><strong>必须说的负债</strong>：总债务 <strong>$280 亿</strong>，现金只有 $6.3 亿，净债务 $274 亿——几乎等于一整个市值。利息保障倍数只有 2.9 倍（经营利润 $44.7 亿 ÷ 年利息约 $15.5 亿）。这是 First Data 并购留下的债，投资级评级还在，但它吃掉了相当一部分股东的容错空间。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $282.8 亿，企业价值（市值＋净债务）$556.9 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>282.8 ÷ 28.0</td>
+<td><strong>10.1 倍</strong></td>
+<td>¥9.9</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回并购摊销、整合费用等（估算调整后净利约 $43 亿）</td>
+<td>约 6.6 倍</td>
+<td>¥15.2</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>净利润剔除 $3 亿出售利得（税后约 $2.5 亿）：282.8 ÷ 25.5</td>
+<td><strong>11.1 倍</strong></td>
+<td>¥9.0</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>282.8 ÷ 39.3</td>
+<td>7.2 倍</td>
+<td>¥13.9</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>556.9 ÷ 44.7</td>
+<td>12.5 倍</td>
+<td>¥8.0</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>282.8 ÷ 32.3（2023–2025 平均净利）</td>
+<td>8.8 倍</td>
+<td>¥11.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意两个口径的分裂：
+- <strong>看股东回报</strong>（市盈率、P/FCF），它非常便宜——自由现金流口径投 100 块一年赚近 14 块。
+- <strong>看企业价值</strong>（EV/EBIT 12.5 倍），它只是普通便宜——因为 $274 亿净债务把便宜稀释了。买这家公司的股票，等于替它背一份跟市值一样大的债。</p>
+<p><strong>大白话</strong>：你现在投 100 块进去，按剔除一次性利得的真实口径，公司一年替你赚约 9 块；按现金口径（把并购摊销这种纸面费用加回来）一年赚约 14 块，真实盈利能力在两者之间、更靠近后者。这些钱怎么回到你口袋：不分红（Fiserv 从不分红），TTM 回购花了 $16.5 亿（约等于市值的 5.8%），还了 $24 亿债（还债也是在替股东增厚——债少一块，股东多一块）。至于这个数未来变大还是变小：Financial Solutions 那门年金生意大概率稳中微增，胜负手全在 Clover——如果小商户消费企稳、Clover 恢复哪怕中个位数增长，7 倍前瞻市盈率就是错杀；如果 Merchant 继续萎缩，$280 亿债务背景下市场不会给它涨估值。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是跌出来的真便宜，不是价值陷阱式的假便宜——但便宜得有条件。</strong> 银行后台那半边（45% 收入、约一半多利润）是几乎不可能被换掉的年金生意，单这一块就撑得起大半个市值；商户那半边出了真问题（增长熄火、指引失信、管理层动荡），但 10 倍 GAAP、7 倍自由现金流的价格已经把「Clover 永远不再增长」定价进去了。最大的硬伤不是业务，是 $274 亿净债务——它让这笔投资没有「错了也亏不多」的缓冲。结论：<strong>便宜，值得放进观察名单</strong>，适合能忍受账上一堆债、赌的是「年金生意托底＋商户业务只要不继续恶化就赢」的人；想要睡得香的钱别来。</p>
+</div></body></html>
