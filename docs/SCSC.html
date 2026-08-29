@@ -1,0 +1,231 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SCSC · ScanSource（扫描源公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SCSC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">14.5倍利润横盘，回购一年缩股本9%，Intelisys是暗藏的好资产</div><h1>SCSC · ScanSource（扫描源公司）</h1>
+<p>市值 $11.4 亿 / 股价约 $56.6 / 行业：专业技术产品分销 / TTM 截止 2026-06-30（恰好是 FY2026 整财年，8 月 20 日刚出年报）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报分两个部，实质是<strong>一门老生意加一门小而美的新生意</strong>：卖硬件的批发商（占营收 97%），和抽佣金的云服务中介（占 3%，但利润占比高得多）。</p>
+<h3>生意一：专业技术产品分销（Specialty Technology Solutions）</h3>
+<p>ScanSource 是<strong>条码扫描器、收银系统、支付终端、安防摄像头这类「专用硬件」的中间批发商</strong>。举个具体例子：一家给连锁超市做收银系统集成的小公司，接了个单子要装 50 台斑马（Zebra）扫描枪、20 台 Verifone 刷卡机。它不会直接找斑马买——斑马这种大厂商不伺候一次买 50 台的小客户，账期、备货、技术支持都不给。它找 ScanSource：下单第二天发货（ScanSource 在密西西比的大仓库常年备着几亿美元的货）、给 30–60 天账期（小集成商垫不起资金，这个赊账就是命脉）、设备预先烧好配置贴好标签、坏了帮着走保修。ScanSource 赚的就是进销差价——毛利率 13.6%，比卖电脑的普通分销商（Ingram 那种 6–7%）高一倍，因为专用设备水更深、服务更重。</p>
+<p>上游供应商是斑马、霍尼韦尔、思科、爱克信（Axis）等一两百家厂商，下游客户是约三万家增值经销商（VAR）。这门生意的护城河是「两边都懒得绕开它」：厂商不想管几万个小客户的赊账和物流，小集成商不想跟十几家厂商分别开户。但本质仍是搬箱子，<strong>净利率只有 2.4%</strong>，赚的是辛苦钱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>FY2026</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$31.25 亿</td>
+<td>$29.43 亿</td>
+</tr>
+<tr>
+<td>同比</td>
+<td>+6.2%</td>
+<td>-7.1%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>96.9%</td>
+<td>96.8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>分部经营利润本页数据源不披露，按历史披露规律<strong>估算</strong>该分部经营利润率约 2.5%，贡献约 $0.75–0.8 亿经营利润（占总数六到七成）。</p>
+<h3>生意二：Intelisys 云服务佣金中介（Intelisys &amp; Advisory）</h3>
+<p>这是 2016 年买来的一门完全不同的生意。一家 IT 咨询公司帮客户选了 Zoom 电话系统或 AT&amp;T 的企业专线，签的是三年期月付合同——运营商会为这笔引荐<strong>按月付佣金，付整个合同周期</strong>。Intelisys 是全美最大的这类佣金结算平台：上千个独立销售代理挂在它下面，它跟两百多家云通信/网络运营商签总代协议，佣金先进它的账、再分给代理，自己留一道。财报记的 $1 亿营收基本是净佣金，<strong>接近纯利润的钱</strong>——不用备货、不用垫资、客户不退订就月月自动到账。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>FY2026</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（净佣金口径）</td>
+<td>$1.01 亿</td>
+<td>$0.98 亿</td>
+</tr>
+<tr>
+<td>同比</td>
+<td>+3.1%</td>
+<td>+6.3%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>3.1%</td>
+<td>3.2%</td>
+</tr>
+</tbody>
+</table></div>
+<p>分部利润率<strong>估算</strong>在 30–40%（佣金生意的行业常态），贡献约 $0.3 亿经营利润——用 3% 的营收挣三成左右的利润，这是全公司质地最好的资产。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：FY2026 $1406 万，占净利润 17.8%。偏高但不离谱，GAAP 已扣，不加回。</li>
+<li><strong>一次性项目</strong>：FY2026 没有大额一次性损益（FY2024 有 $1416 万卖资产收益，已过去）。年内花 $1822 万做了小并购，属正常经营。没有需要剔除的。</li>
+<li><strong>资本化的支出</strong>：分销商没这个把戏，CapEx 一年才 $929 万。</li>
+<li><strong>回购与稀释</strong>：<strong>全篇最亮的数字。</strong> FY2026 回购 $1.01 亿 ÷ SBC $1406 万 = <strong>7.2 倍</strong>，真回购；FY2025 还回购了 $1.11 亿。两年合计买回约 $2.1 亿，接近当前市值的 19%，<strong>股本一年实缩 9%</strong>。管理层用真金白银在缩股本。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $7887 万 vs 经营现金流 $1.23 亿。对账：净利润 7887 + 折旧摊销 2363 + SBC 1406 + 坏账计提 596 + 其他 569 − 应收增加 13323 − 库存增加 3666 + 应付增加 15088 − 税项 342 + 其他经营资产 1673 = 12313 万。<strong>要点</strong>：分销商的现金流被营运资金摆布——生意转好多备货多赊账，现金流就被吸走（FY2023 营收 $38 亿时经营现金流是 <strong>-$3577 万</strong>）；生意收缩清库存，现金流就喷出来（FY2024 +$3.7 亿）。今年应收+库存吸走 $1.7 亿、靠应付账款顶回 $1.5 亿，净利润和现金流基本对得上。<strong>看这家公司别迷信单年 FCF，要看跨周期平均</strong>：近五年 FCF 合计约 $4 亿，年均 $0.8 亿，恰好和净利润量级一致——利润是真的。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>净债务仅 $2252 万，EV（$11.6 亿）≈ 市值。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>11.4亿 ÷ 7887万</td>
+<td>14.5</td>
+<td>¥6.9</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP（加回摊销等）</td>
+<td>公司口径约每股$4.8</td>
+<td>≈11.8</td>
+<td>别信这个</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目，= GAAP</td>
+<td><strong>14.5</strong></td>
+<td><strong>¥6.9</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>11.4亿 ÷ FY26 FCF 1.14亿</td>
+<td>10.0</td>
+<td>¥10.0（单年，勿外推）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>11.6亿 ÷ 1.04亿</td>
+<td>11.2</td>
+<td>¥8.9</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>11.4亿 ÷ 7583万</td>
+<td><strong>15.0</strong></td>
+<td><strong>¥6.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均（15.0 倍）和当期（14.5 倍）几乎一样——<strong>利润既不在高点也不在低点，这就是它的常态</strong>：过去五年净利润在 $7200 万到 $9000 万之间横着走，营收从 $38 亿缩到 $32 亿又回升，赚钱能力稳定但不长个儿。</p>
+<p><strong>说人话</strong>：你投 100 块，公司一年替你真实赚 6.9 块。这 6.9 块的去向非常清楚：不分红，几乎全部拿去回购注销股票（FY26 回购金额比净利润还多 28%）——你的持股比例每年被动上升约 9%，等于把回报直接打进每股价值里。这个 6.9 块未来会不会变大？营收端看小集成商的生意冷暖（跟着中小企业 IT 支出走，弱周期），利润端主要靠 Intelisys 佣金池慢慢变厚和股本缩小，<strong>合理预期是每股利润以高个位数爬</strong>（今年 EPS +21% 里面约一半是回购贡献的）。别指望它变成成长股：ROIC 8.6%，还低于它 10.5% 的资金成本，这门生意加大投入不创造超额价值，所以管理层选择回购——这是对的选择。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>公道。</strong> 14.5 倍买一门利润五年横盘、但账目干净、现金真实、管理层拿全部利润以 7 倍于 SBC 的力度缩股本的辛苦生意，里面还埋着 Intelisys 这块占营收 3% 却贡献约三成利润的优质佣金资产。它不贵，回购让每股价值确定性地一年厚 9%，但生意本身没有成长引擎、ROIC 低于资金成本，股价过去一年已涨 27%，便宜的那截被吃掉了。愿意赚「回购+低估值」的慢钱可以看，想找会长大的公司，这不是。</p>
+</div></body></html>

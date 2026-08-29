@@ -1,0 +1,257 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RPD · Rapid7（网络安全）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RPD</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">P/FCF6倍全靠发股票撑,真实23倍+零增长+年稀释4.6%,价值陷阱</div><h1>RPD · Rapid7（网络安全）</h1>
+<p>市值 $8.96亿 / 股价约 $13.3 / 行业：科技服务·网络安全软件 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报分部只切成「产品订阅」和「专业服务」两块，实质上是一门生意：<strong>卖一套帮企业找漏洞、盯入侵的安全软件平台，外加替没有安全团队的公司代管这套系统</strong>。</p>
+<p><strong>1. 产品订阅（TTM 营收 8.28 亿美元，占 96.8%）</strong></p>
+<p>Rapid7 的平台叫 Insight，核心是三件套：</p>
+<ul>
+<li><strong>漏洞管理（InsightVM）</strong>：这是它的老根据地。一家有 5000 台电脑、服务器和打印机的区域银行买了它，软件每天扫描全部机器，列出「哪台 Windows 没打上个月的补丁、哪台服务器还开着不该开的端口」，按资产台数收年费，这样规模的客户一年付一二十万美元。银行非买不可的原因很直接：监管检查和网络保险都要求出示漏洞扫描报告。</li>
+<li><strong>检测与响应（InsightIDR，即 SIEM）</strong>：把公司所有电脑、服务器、云账号的日志汇到一处，用规则和行为分析找「有人半夜从境外 IP 登录了财务总监的邮箱」这类入侵迹象。按员工数收费。</li>
+<li><strong>托管检测响应（MDR 服务）</strong>：中型公司根本雇不起 7×24 的安全分析师（一个班次就要五六个人、上百万美元年薪），于是把告警外包给 Rapid7 的分析师团队盯着，出事时对方直接电话叫醒你。这是它近年唯一还在涨的业务线，一单一年几十万美元。</li>
+</ul>
+<p>客户上万家，绝大多数是中型企业——买不起 CrowdStrike 全家桶、又必须过合规检查的那批人。</p>
+<p><strong>2. 专业服务（TTM 营收 2753 万，占 3.2%）</strong>：渗透测试、事件响应咨询之类的按次收费项目，规模逐年萎缩（三年前 3754 万），不重要。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上年同期约</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品订阅</td>
+<td>$8.28亿</td>
+<td>$8.20亿</td>
+<td>+1%</td>
+<td>96.8%</td>
+</tr>
+<tr>
+<td>专业服务</td>
+<td>$0.28亿</td>
+<td>$0.33亿</td>
+<td>-17%</td>
+<td>3.2%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$8.56亿</strong></td>
+<td>$8.55亿</td>
+<td><strong>+0.07%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（财报只披露分部营收，不披露分部利润。）</p>
+<p><strong>真正的问题一句话：营收增速归零了。</strong> 2021 年还增 30%，2023 年 13.5%，2024 年 8.5%，TTM 只剩 0.07%。漏洞管理这个老根据地正被 CrowdStrike、Palo Alto、微软这些平台大厂当成「顺手送的功能」蚕食，Rapid7 守着中端市场打价格战。52 周股价跌了 35.7%，11.8% 的流通股被卖空，就是市场对这个趋势的投票。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 8930 万美元，<strong>是净利润（2014 万）的 4.4 倍</strong>。这是全篇最重要的一个数字：这家公司 GAAP 口径勉强赚 2000 万，但每年发给员工的股票就值 8900 万。Non-GAAP 口径把这 8900 万加回去吹「调整后利润」，那是把稀释你的成本当不存在。</p>
+<p><strong>一次性项目</strong>：TTM 没有大额一次性项目（2023 年有过 3078 万重组减值，已出表）。</p>
+<p><strong>资本化的支出</strong>：除 850 万常规资本开支外，TTM 还有 1630 万「购入无形资产」（主要是资本化的软件开发费）——这笔钱是真实的经常性支出，但没算进「资本开支」，让自由现金流好看了一截。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 142 万 ÷ SBC 8932 万 = <strong>0.016</strong>，等于没有回购。股本一年膨胀 4.56%——你持有一年，什么都没做，股份就被稀释掉近 5%。</p>
+<p><strong>利润和现金流的差（核心对账表）</strong>：净利润 2014 万，经营现金流却有 1.53 亿，差了 7.6 倍。钱从哪来的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2,014</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>4,914</td>
+</tr>
+<tr>
+<td>+ <strong>股权激励（发股票不花现金）</strong></td>
+<td><strong>8,932</strong></td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>933</td>
+</tr>
+<tr>
+<td>− 递延收入减少</td>
+<td>-1,564</td>
+</tr>
+<tr>
+<td>± 其他杂项</td>
+<td>104</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>15,333</td>
+</tr>
+</tbody>
+</table></div>
+<p>看明白了吗：<strong>1.53 亿经营现金流里，8900 万来自「工资用股票发、不走现金」</strong>。P/FCF 只有 6.2 倍看着极便宜，但这个 FCF 是靠印股票印出来的。把 SBC 当真实成本扣掉、再扣掉资本化软件费，真实自由现金流只有约 3900 万（15,333 − 853 − 1,630 − 8,932 ≈ 3,918 万，估算）。</p>
+<p><strong>债务</strong>：总债 9.62 亿（现金 7.03 亿，净债 2.59 亿），利息保障倍数只有 1.31 倍——经营利润刚够付利息。</p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>8.96亿 ÷ 2014万</td>
+<td>43.5</td>
+<td>¥2.3</td>
+</tr>
+<tr>
+<td>公司吹的 Non-GAAP（远期）</td>
+<td>SBC 加回后的预期利润</td>
+<td>7.1</td>
+<td>¥14.0（骗人的）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性，SBC 已扣</td>
+<td><strong>43.5</strong></td>
+<td><strong>¥2.3</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>8.96亿 ÷ 1.45亿</td>
+<td>6.2</td>
+<td>¥16.2（虚，六成是SBC）</td>
+</tr>
+<tr>
+<td>剔 SBC 后的真实 FCF 口径</td>
+<td>8.96亿 ÷ 约0.39亿</td>
+<td>约22.9</td>
+<td>¥4.4</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>11.5亿 ÷ 1334万</td>
+<td>86.5</td>
+<td>¥1.2</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年平均净利为 <strong>-3464万</strong></td>
+<td>负数</td>
+<td>无意义</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均是负的——2023 年还亏 1.53 亿，这家公司是刚刚扭亏的状态，现在的微利没有任何「历史常态」可言。</p>
+<p><strong>说人话：你投 100 块进去，按真实利润口径公司一年替你赚 2 块 3；按剔掉发股票的真实现金口径赚 4 块 4。</strong> 而且这 4 块 4 一分钱都不会回到你口袋——不分红，回购聊胜于无，钱都趴在账上对付那 9.6 亿债务。同时你的股份每年还被稀释 4.6%，把那 4 块 4 里的大半又吃掉了。这个回报未来会不会变大？取决于一家增长归零的公司能不能在巨头夹缝里把利润率从 1.6% 提上去——有可能（管理层正在砍成本），但那是重组赌局，不是复利生意。</p>
+<h2>四、一句话结论</h2>
+<p><strong>表面便宜是幻觉：P/FCF 6 倍全靠发股票撑出来的现金流，剔掉后真实口径 23 倍，换来的是零增长、1.3 倍利息保障和每年 4.6% 的稀释——典型的价值陷阱长相，不值得接。</strong></p>
+</div></body></html>

@@ -1,0 +1,207 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CALX · Calix（凯利克斯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CALX</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">SBC比利润还大56%,真实48倍买政府补贴周期,三年平均180倍</div><h1>CALX · Calix（凯利克斯）</h1>
+<p>市值 $23.6 亿 / 股价约 $37.5 / 电子科技—通信设备 / TTM 截止 2026-06-27</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Calix 的客户不是 AT&amp;T、Verizon 这种巨头，而是<strong>美国上千家小型宽带运营商</strong>——乡镇电话合作社、市政光纤公司、电力合作社的宽带部门，一家可能只有几千到几十万用户。Calix 把自己定位成这群"小玩家"的全套军火商：设备 + 家用路由器 + 云端软件一条龙。财报分两个部：</p>
+<h3>生意一：卖设备（Appliance，约占营收 83%）</h3>
+<p>具体是两类铁盒子。</p>
+<p><strong>局端设备</strong>：小运营商要给全县拉光纤，机房里得有一台把光纤信号分发到千家万户的核心设备（光线路终端，Calix 的 E7/E9 系列）。比如明尼苏达州一家 3 万用户的农村电话合作社拿到联邦补贴建光纤网，机房买几台 E7、每台几万美元，再按覆盖户数买板卡，一个县级网络的设备采购是几百万美元量级。</p>
+<p><strong>用户端设备</strong>：装到每个订户家里的光猫和智能 Wi-Fi 路由器（GigaSpire 系列），一台一两百美元。运营商发展一个宽带用户就装一台，等于 Calix 按"每新增一户"收一次钱。这块的巧妙之处在于路由器是软件的入口——见生意二。</p>
+<p>这门生意的大背景是<strong>联邦政府 425 亿美元的农村宽带补贴（BEAD 计划）</strong>：政府发钱让乡下拉光纤，拿补贴的小运营商采购设备，Calix 是最直接的受益者之一。这也解释了营收的过山车：2023 年 $10.4 亿（疫情后抢建）→ 2024 年 $8.3 亿（-20%，客户等补贴落地、消化库存）→ TTM $11.1 亿（+27.8%，补贴开闸）。<strong>这是一门跟着政府拨款节奏走的周期生意。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算拆分）</th>
+<th>上年同期</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备</td>
+<td>约 $9.2 亿</td>
+<td>约 $7.2 亿</td>
+<td>~83%</td>
+<td>财报不按分部拆利润；整体经营利润率仅 5.5%</td>
+</tr>
+<tr>
+<td>软件与服务</td>
+<td>约 $1.9 亿</td>
+<td>约 $1.5 亿</td>
+<td>~17%</td>
+<td>同上，估算利润率远高于设备</td>
+</tr>
+</tbody>
+</table></div>
+<p>（分部只披露到年度营收，TTM 拆分按 FY2025 比例估算。）</p>
+<h3>生意二：卖云软件（Software and Service，约占营收 17%）</h3>
+<p>运营商装了 Calix 的路由器后，可以按用户数订阅 Calix Cloud：营销云告诉运营商"哪些用户天天投诉 Wi-Fi 卡、该推销升级套餐"，运维云让客服远程看到用户家里网络状况、少派一次上门维修车（对小运营商，派一次车成本上百美元）。还有卖给终端家庭的增值服务（家长管控、网络安全）由运营商打包转售、跟 Calix 分成。FY2025 这块 $1.74 亿、同比 +27%，是全公司战略里真正值钱的部分——毛利率高、按年订阅、越用越离不开。但它现在只有总盘子的六分之一。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $7,990 万——<strong>比净利润 $5,120 万还大 56%</strong>。这是全篇最重要的数字：公司真实的员工成本里有一大块用股票支付，GAAP 已扣（所以净利润才这么薄），但公司对外吹的 Non-GAAP 利润把它全加回去，把一家 5% 净利率的公司包装成 10%+。一律不认。</li>
+<li><strong>一次性项目</strong>：TTM 有 $230 万出售投资收益，金额小。没有大额重组或减值。税率 29.5%，正常。</li>
+<li><strong>资本化的支出</strong>：没有明显的费用资本化，研发全费用化。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $2.6 亿，是 SBC 的 3.3 倍——数字上是"真回购"档。但要看清资金来源：TTM 自由现金流只有 $8,500 万，回购的钱是把账上现金池从 $3.9 亿花到 $1.9 亿（趁股价一年跌 37% 抄自己的底）。而且员工行权还在发新股（TTM 发股融资 $6,900 万），<strong>过去一年股本还是净增了 6.6%</strong>，最近一个季度才刚压下来（-4.5%）。方向对了，但持续性受限——现金池再花一年就见底。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 $5,120 万 → 加折旧摊销 $1,790 万 → <strong>加 SBC $7,990 万</strong>（现金流比利润好看，一半以上是因为工资用股票发）→ 加其他 $1,620 万 → 营运资金合计 −$5,570 万（应收 −$7,330 万、存货 −$7,000 万，放量期铺货压库存，被应付 +$7,020 万部分对冲）→ = 经营现金流 $1.1 亿。减资本开支 $2,410 万 = 自由现金流 $8,540 万。现金流是真的，但它的"好看"主要靠 SBC 这个非现金项撑着。</li>
+<li>账上净现金 $1.8 亿，无债，财务上很安全。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$23.6亿 ÷ $5,120万</td>
+<td>46.1</td>
+<td>¥2.2</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（加回SBC）</td>
+<td>$23.6亿 ÷ 约$1.2亿</td>
+<td>约20</td>
+<td>¥5.0（虚的）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>GAAP 剔掉投资收益：$23.6亿 ÷ $4,890万</td>
+<td><strong>48.3</strong></td>
+<td><strong>¥2.1</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>$23.6亿 ÷ $8,540万</td>
+<td>27.6</td>
+<td>¥3.6</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$21.8亿 ÷ $6,130万</td>
+<td>35.6</td>
+<td>¥2.8</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>$23.6亿 ÷ 三年平均$1,310万</td>
+<td><strong>约180</strong></td>
+<td>¥0.6</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均一行最扎眼：TTM $5,120 万、FY2025 $1,790 万、FY2024 <strong>亏</strong> $2,980 万，平均下来一年只赚 $1,310 万——<strong>180 倍</strong>。这说明当前利润不是这家公司的"常态"，而是政府补贴周期上行段的产物；上一次周期下行（2024）它直接亏钱。</p>
+<p>大白话：<strong>你投 100 块，按真实口径公司一年替你赚 2 块</strong>；按现金流口径赚 3.6 块，但那 3.6 里有一半是"工资先欠着用股票抵"变出来的。回报里确实有一大块正在通过回购还给你（TTM 回购占市值 11%），可这是在花老本，自由现金流本身撑不起这个速度。这个 2 块未来变多少取决于两件事：BEAD 补贴的采购潮能持续几年，以及经营利润率能不能从 5.5% 爬到管理层画饼的两位数——远期 19.8 倍的市盈率已经把这两件事都当成定局在定价了。而这家公司历史上从来没有稳定做到过两位数利润率。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>方向不坏（软件占比在涨、趁暴跌真金白银回购），但这本质上是一门跟着政府拨款走的周期性硬件生意，利润率 5.5%、资本回报率跑不赢资金成本，真实市盈率 48 倍、三年平均 180 倍——现在买等于给"补贴潮不停 + 利润率翻倍"的最佳剧本付全价，不值，等周期或价格给机会。</p>
+</div></body></html>

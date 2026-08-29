@@ -1,0 +1,215 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CASS · 卡斯信息系统（Cass Information Systems）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CASS</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">百年双寡头收费站,回购4.6倍SBC全还股东,20倍公道无便宜</div><h1>CASS · 卡斯信息系统（Cass Information Systems）</h1>
+<p>市值 $7.25 亿 / 股价 $56.65 / 商业服务（发票审核与支付 + 银行）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>这是一家 1906 年成立、总部在圣路易斯的百年老店，全美国最老的上市公司之一。名字里带"信息系统"，法律身份却是一家<strong>银行控股公司</strong>——这个奇怪的组合正是它生意的精髓。它实质上做两门半生意。</p>
+<h3>生意一：替大公司审核和代付运费账单（信息服务，收入主力）</h3>
+<p>想象一家全美开工厂的制造业公司，每个月收到 2 万张运费发票——卡车公司的、铁路的、海运的、快递的，每张金额从 80 块到 8 万块不等。这些发票错误率高得惊人：重复开票、用错合同费率、算错燃油附加费，行业里公认 5%–10% 的运费发票有毛病。制造公司自己的财务部门根本核不过来。</p>
+<p>于是它把整件事外包给 Cass：所有承运商的发票直接寄到 Cass，Cass 的系统逐张核对——这张发票对应的货真的发过吗？费率跟你和卡车公司签的合同一致吗？有没有重复？核完之后，制造公司把一整笔钱打给 Cass，Cass 替它分头付给几百家承运商，同时把每一笔运费花在哪条线路、哪个仓库、哪种运输方式的数据整理成报表，供货主砍价和优化物流用。</p>
+<p><strong>怎么收钱：按处理的发票张数收费</strong>，一张几毛到几块美元；另外——这是这门生意最妙的地方——<strong>客户的付款资金会在 Cass 手里停留几天到几周</strong>（钱已从货主账上划出、还没付给承运商），这笔"在途资金"（浮存金）常年有十几亿美元，Cass 拿去买国债和放贷吃利息。等于客户不但付服务费，还免费借钱给它。这几年美国加息，这块利息收入吃得很饱。</p>
+<p>除了运费，同一套模式还复制到了<strong>水电费、电信费、废弃物处理费</strong>账单上：全国连锁企业（比如开 3000 家门店的零售商）每个月几万张水电账单，Cass 替它审核、代付、汇总数据。</p>
+<p>客户为什么非用它不可：这行在美国基本是 Cass 和 U.S. Bank 旗下部门的双寡头，客户一旦把几百家承运商的付款流程、历史数据、系统接口都搭在 Cass 上，换一家要伤筋动骨，所以客户黏性极高，很多客户用了几十年。</p>
+<ul>
+<li>TTM 分部收入（财报口径，只含手续费类收入，不含利息）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 收入</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>信息服务（手续费）</td>
+<td>$112.7M</td>
+<td>约 $108M</td>
+<td>+4%</td>
+<td>96%</td>
+</tr>
+<tr>
+<td>银行服务（手续费）</td>
+<td>$2.8M</td>
+<td>$2.7M</td>
+<td>+2%</td>
+<td>2%</td>
+</tr>
+<tr>
+<td>公司及抵消项</td>
+<td>$2.0M</td>
+<td>—</td>
+<td>—</td>
+<td>2%</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意：这张分部表只披露到手续费收入（合计 $117M），公司总收入 $215M 里另外约 $98M 是<strong>利息收入</strong>（浮存金 + 银行放贷赚的），财报没有把利息按分部拆开。分部经营利润财报不单独披露，按整体口径估算信息服务贡献了大约七成利润，其余三成来自利息差——标注：估算。</p>
+<h3>生意二：一家小银行（银行服务）</h3>
+<p>Cass 旗下有一家真的银行——Cass Commercial Bank，圣路易斯的小型商业银行，专做两类奇特的客户：<strong>教会和宗教机构</strong>（给教堂盖楼放贷款，这个细分市场大银行懒得做）、<strong>连锁餐饮加盟商</strong>（比如一口气开 15 家麦当劳的加盟主）。放贷规模十几亿美元，坏账历来极低。这家银行的另一个作用是给整个集团提供牌照和资金管理基础设施——上面那门浮存金生意的钱，很大一部分就趴在自家银行里生息。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $4.6M，占净利润 12.5%。不算过分，照例当真实成本扣——GAAP 里本来就扣了。</li>
+<li><strong>一次性项目</strong>：TTM 窗口内基本干净（出售投资净收益仅 $0.4M）。FY2025 有一笔 $18M 的业务出售（剥离电信费用管理业务），落在本 TTM 窗口之外，未污染本期利润。FY2024 净利润曾骤降到 $19.2M（经营利润下滑 + 投资出售亏损），单期口径分不清当年是真一次性还是经营恶化，但 TTM 已回到 $36.7M，说明那一年是坑不是常态。</li>
+<li><strong>资本化的支出</strong>：无重大软件资本化问题，CapEx 一年只有 $6.7M。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $21.0M ÷ SBC $4.6M = <strong>4.6 倍，是真回购</strong>。股本一年实缩 3.49%。再加分红 $16.4M，一年合计还给股东 $37.4M——几乎等于全部净利润（102%）。这是全篇最硬的加分项。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $36.7M → 加折旧摊销 $7.2M → 加 SBC $4.6M → 税项时间差 +$9.9M → 其他经营项 −$9.2M → 应收款变化约持平 → <strong>经营现金流 $48.7M</strong>。现金流比利润多 33%，利润是真金白银。自由现金流 = 48.7 − 6.7 = <strong>$41.9M</strong>。</li>
+<li><strong>一个要留意的新动作</strong>：TTM 内首次发债 $80M（历史上零有息负债）。规模不大（Debt/EBITDA 1.15），大概率是给回购和资产负债表补弹药，但百年不借钱的公司开始借钱，值得记一笔。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<p>先说明：Cass 法律上是银行控股公司，但九成六的手续费收入来自发票处理，经济实质更像收费站+浮存金生意，所以仍用市盈率框架；EV 口径因为账上混着客户浮存金和银行存款，净现金数字失真，仅供参考。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$725M ÷ $36.7M</td>
+<td>20.4</td>
+<td>¥4.9</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司基本不搞 Non-GAAP 花活</td>
+<td>≈GAAP</td>
+<td>¥4.9</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无重大一次性项目，SBC 已扣</td>
+<td><strong>20.4</strong></td>
+<td><strong>¥4.9</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>$725M ÷ $41.9M</td>
+<td>17.3</td>
+<td>¥5.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>($725M−$144M 净现金) ÷ 经营利润（浮存金失真，参考）</td>
+<td>9.2</td>
+<td>¥10.8（虚高）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>$725M ÷ 三年平均 $28.1M（35.1/19.2/30.1）</td>
+<td>25.8</td>
+<td>¥3.9</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 4.9 块，按现金流口径赚 5.8 块。</strong> 而且这家公司的特点是赚到的几乎全还你——过去一年分红加回购合计返还了净利润的 102%，不是留在账上画饼。但三年平均口径只有 3.9 块，提醒你当前利润有加息红利的成分：浮存金吃的利息是这两年利率高才有的，若美联储把利率降回去，那约三成靠利息的利润会缩水。ROE 15%，回报质量不错但算不上顶级。</p>
+<h2>第四部分：一句话结论</h2>
+<p>一门百年双寡头收费站生意，客户黏死、账目干净、赚的全是现金还几乎全还给股东，20 倍的价格对这样的质地算公道——但股价刚涨了 32%，利润里有加息红利，便宜是没有的，值这个价、别指望捡漏。</p>
+</div></body></html>

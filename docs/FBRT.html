@@ -1,0 +1,226 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FBRT · 富兰克林BSP地产信托 (Franklin BSP Realty Trust)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FBRT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">股息只被利润盖住一半，拆本金包装成9.5%股息率，接飞刀</div><h1>FBRT · 富兰克林BSP地产信托 (Franklin BSP Realty Trust)</h1>
+<p>市值 $7.03亿 / 股价约 $8.46 / 商业地产抵押REIT（mREIT） / TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是地产金融企业，下面用「账面价值 + 股息覆盖 + ROE」口径而不是市盈率</strong>。原因：它的"利润"由利差和坏账拨备决定，市盈率会被拨备的节奏扭曲；对一家把大部分利润当股息发出去的抵押REIT，真正要回答的是两个问题——<strong>账面价值是不是真的</strong>，以及<strong>股息是不是利润发的</strong>。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>它本质上是一家"公寓楼过桥贷款银行"，外加三个小配套。注意：它自己没有员工做投资——整个公司<strong>外包给 Benefit Street Partners（富兰克林邓普顿旗下的信贷平台）管理</strong>，每年付管理费。这个安排后面还要说。</p>
+<h3>1. 放商业地产过桥贷款，收利息（Real Estate Debt，主业）</h3>
+<p>大白话：一个开发商在凤凰城买下一栋 800 套的旧公寓楼，打算翻新后把月租从 $1,100 提到 $1,500。银行嫌这楼现状太破、租金还没兑现，不肯给长期贷款。开发商就来找 FBRT 借一笔两三年期的<strong>过桥贷</strong>——利率是浮动的，大约 SOFR 加 3~4 个百分点，一笔贷款几千万美元。等楼翻新完、出租率稳定了，开发商再去房利美做长期低息贷款，把 FBRT 的钱还掉。</p>
+<p>FBRT 自己的本金只出一部分，大头靠发 CLO 加杠杆：把几十笔这样的贷款打包成债券卖给保险公司和基金，自己留最底层的风险和利差。总债务 $41.9 亿对普通股权益 $12.3 亿，<strong>杠杆约 3.4 倍</strong>——这是这门生意的标准玩法，也是它跌起来快的原因。贷款组合以多户公寓（apartment）为主，这是商业地产里最抗跌的一类，比办公楼强得多。</p>
+<p>TTM 该分部净收入 $1.158 亿，比 2023 年的 $2.45 亿<strong>缩了一半多</strong>——利率下行让浮动利率贷款收息变少，贷款规模也在收缩，坏账还在啃。</p>
+<h3>2. 替房利美放贷，赚手续费（Agency / NewPoint，2025 年买来的新业务）</h3>
+<p>2025 年 FBRT 收购了 NewPoint（一家代理贷款平台）。这门生意完全不同：替房利美、房地美、HUD 发放多户公寓的<strong>长期贷款</strong>，放完立刻卖给这三家机构，自己基本不留风险，赚两道钱——放款时的发起费，和之后十几年每年细水长流的<strong>贷款服务费</strong>。这是轻资本的手续费生意，不吃资产负债表。FY2025 贡献营收约 $4,000 万。管理层想靠它把公司从"纯吃利差"转成"利差+手续费"双轮，方向是对的，但目前体量还小。</p>
+<h3>3. 收回来的房子自己经营（REO）</h3>
+<p>借款人还不上钱，FBRT 把抵押的公寓楼收走，一边收租一边找机会卖掉。TTM 该分部收入 $2,215 万。<strong>这个数字的走势比数字本身重要</strong>：2021 年才 $340 万，2022 年 $850 万，2023 年 $1,790 万，2024-25 年稳定在 $2,200 万以上——收上来的房子越来越多，说明过去三年高利率期借款人断供的速度一直不低。这不是一门生意，这是坏账的实物形态。</p>
+<h3>4. Conduit（打包卖贷款，很小）</h3>
+<p>发起固定利率商业地产贷款，攒一批打包卖进 CMBS 市场赚差价。TTM 仅 $556 万，可以忽略。</p>
+<p><strong>钱的全貌（TTM，分部为净收入口径）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 净收入</th>
+<th>上年同期趋势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>过桥贷款（Real Estate Debt）</td>
+<td>$1.158亿</td>
+<td>逐年下滑（2023: $2.45亿）</td>
+<td>主业，吃利差</td>
+</tr>
+<tr>
+<td>REO 经营</td>
+<td>$2,215万</td>
+<td>高位徘徊</td>
+<td>坏账的实物形态</td>
+</tr>
+<tr>
+<td>Agency（NewPoint）</td>
+<td>FY2025: $4,001万</td>
+<td>2025年新并入</td>
+<td>手续费生意，转型方向</td>
+</tr>
+<tr>
+<td>Conduit</td>
+<td>$556万</td>
+<td>波动</td>
+<td>可忽略</td>
+</tr>
+<tr>
+<td><strong>公司整体营收</strong></td>
+<td><strong>$2.93亿</strong></td>
+<td>+34%（并购NewPoint所致）</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>归属净利润</strong></td>
+<td><strong>$3,556万</strong></td>
+<td>连续四年下滑</td>
+<td>2023: $1.17亿 → 2024: $6,708万 → 2025: $5,321万 → TTM: $3,556万</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：几乎没有——因为它<strong>没有自己的投资团队</strong>，是外部管理模式。但别高兴：换成了<strong>管理费</strong>付给 Benefit Street Partners，旱涝保收，股价跌 25% 管理人照样收钱。外部管理的 mREIT 天然有利益冲突：管理人按资产规模收费，有动力把盘子做大，而不是把每股价值做高。</li>
+<li><strong>一次性项目</strong>：mREIT 的"一次性"就是信贷损失拨备，而它年年都有——过去四年利润逐级下台阶，主要就是拨备和坏账在啃。单期口径无法判断拨备高峰是否已过，但 REO 分部收入还在 $2,200 万高位，说明消化远没完。</li>
+<li><strong>股本变化（关键）</strong>：过去一年股本<strong>增加 2.75%</strong>——在 0.57 倍账面的价位增发，等于按五七折卖掉老股东的资产，是毁灭价值的操作。最近一个季度股本减了 4.45%（转向回购），低于账面回购是加分，但一年拉通看仍是净稀释。</li>
+<li><strong>股息没有被利润覆盖（全篇最重要的一条）</strong>：年股息 $0.80/股，一年要付出约 $6,600 万；而 TTM 归属净利润只有 $3,556 万，<strong>只盖得住一半</strong>。2026 年刚把股息砍了约 22%（从约 $1.02 降到 $0.80），砍完还是不够。差额从哪来？从账面价值里来——也就是<strong>把你自己的本金拆出来还给你，包装成"9.46% 股息率"</strong>。</li>
+<li><strong>利润 vs 现金流</strong>：经营现金流 TTM $1.58 亿，远高于净利润，但对 mREIT 这不说明利润质量好——拨备是非现金的，现金流要等坏账真核销时才挨刀。</li>
+</ul>
+<hr />
+<h2>三、值多少钱：账面价值口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>大白话</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股价 / 普通股账面价值（PB）</td>
+<td><strong>0.57 倍</strong>（账面 $14.77/股）</td>
+<td>花 57 块买账上 100 块的资产</td>
+</tr>
+<tr>
+<td>股价 / 有形账面价值（P/TBV）</td>
+<td><strong>0.77 倍</strong>（有形账面约 $11/股）</td>
+<td>扣掉收购 NewPoint 带来的商誉和服务权，折价缩小到 77 折</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>4.12%</td>
+<td>100 块本金一年只赚 4.1 块，很差</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>9.46%（$0.80/年）</td>
+<td>但其中约一半是拆本金</td>
+</tr>
+<tr>
+<td>杠杆</td>
+<td>总债务 $41.9亿 / 普通股权益 $12.3亿 ≈ 3.4倍</td>
+<td>mREIT 常规水平</td>
+</tr>
+<tr>
+<td>52周股价</td>
+<td>−25.5%</td>
+<td>市场在持续下调对账本的信任</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>投 100 块的年回报怎么算</strong>：按 ROE × (1/PB) = 4.12% × 1.75 ≈ <strong>7.2 块</strong>——这是公司真实替你赚的。你到手的股息是 9.46 块，比 7.2 块多出来的部分不是赚的，是退的本。分析师给的目标价 $12.75（+51%）赌的是降息后过桥贷需求回暖 + NewPoint 手续费放量 + 坏账见顶，三件事都对才成立。</p>
+<p><strong>账面折价是双刃剑</strong>：如果 $14.77 的账面是实的，8.46 买入等于白捡 43%；但市场按 25% 的年跌幅持续投不信任票，赌的就是账面还要往下修——过去四年利润的走势站在市场那边。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>0.77 倍有形账面买一堆多户公寓过桥贷，<strong>折价是真的，但折价的理由也是真的</strong>：利润连续四年下台阶、收房越收越多、股息砍完一刀还是只能盖住一半、外部管理人旱涝保收还在低位增发稀释你。看多的全部理由是"账面是实的+降息救所有人"，而你没有任何办法从外面验证那本贷款账的成色。这不叫捡便宜，这叫接飞刀——真想赌降息，也轮不到用一家连股息都发不起的公司来赌。</p>
+</div></body></html>

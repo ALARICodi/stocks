@@ -1,0 +1,216 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VRRM · 维拉移动 (Verra Mobility)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VRRM</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">跌83%也只是公道价,Avis带走四成利润,还赌Hertz不跟跑</div><h1>VRRM · 维拉移动 (Verra Mobility)</h1>
+<p>市值 $6.67亿 / 股价约 $4.39 / 智能交通服务 / TTM 截止 2026-06-30</p>
+<p><strong>先说大背景，不然全篇数字都没法读</strong>：2026 年 5 月 26 日，公司披露大客户 Avis（安飞士租车）发出终止通知，结束近二十年的合作，2026 年 9 月起生效。Avis 占公司总营收 12% 以上、占商业服务分部利润的大头——管理层自己给的数：年化营收减少约 $1.35~1.45 亿，<strong>分部利润减少约 $1.2~1.25 亿</strong>（成本削减前）。股价一天从 $13.08 跌到 $3.85（−71%），52 周累计 −82.7%，随后还吃了证券集体诉讼。TTM 报表里 $1.14 亿的资产减值就是这件事的后遗症。下面所有估值，都要拿"Avis 走了之后"的口径重新算一遍才算数。</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报分部只披露到"服务收入 $9.43亿 / 产品销售 $6,410万"，下面三门生意的营收拆分按公司历年披露口径估算。</p>
+<h3>1. 商业服务：替租车公司处理过路费，向租客收"便利费"（估算 TTM 约 $4 亿，出事的就是这块）</h3>
+<p>大白话：你在机场租了一辆 Avis 的车，开上高速过了三个电子收费站。收费站拍的是车牌，账单寄给车主——也就是租车公司。租车公司最烦处理这种几块钱的账单，于是外包给 Verra：Verra 把自家的电子标签装进租车公司的全部车队，过路费它先垫付，然后从你留在租车公司的信用卡里扣——<strong>过路费照收，另加每天几美元的"便利费"</strong>。你没得选（不交就等着收违章代办费账单），租车公司还能从便利费里分成。这是门近乎无本万利的生意：车是租车公司的、路是政府的、卡是你的，Verra 只出一套计费系统，分部经营利润率长期在 40% 以上（估算）。</p>
+<p>命门在客户集中：美国租车市场就三大家——Enterprise、Hertz、Avis。<strong>四个大客户占 Verra 总营收约一半</strong>。2026 年 5 月 Avis 说不玩了（大概率是自建系统，把便利费留给自己），一刀砍掉这个分部利润的半壁江山。剩下的问题全世界都在问：<strong>Hertz 和 Enterprise 会不会照着学？</strong> Avis 用行动证明了这件事外包并非不可替代。</p>
+<h3>2. 政府解决方案:替政府运营执法摄像头，按月/按量收费（估算 TTM 约 $4.7 亿）</h3>
+<p>大白话：纽约市要在 750 个学校区装超速摄像头，自己不会建也不想养——Verra 负责装摄像头、维护设备、拍照识别车牌、生成罚单初稿，政府只管审核签发，Verra 按摄像头数量包月收费或按处理量抽成。红灯摄像头、公交专用道摄像头、校车越线拍照同理。纽约市是最大客户，<strong>2025 年 3 月刚把这份合同续了约五年</strong>——这是眼下这家公司最值钱的一份纸。政府客户粘性极高（换供应商要重新招标、重新装设备），但增长受制于立法：每个州要先立法允许摄像头执法，这也是它 capex 大涨的原因——TTM 资本开支 $1.18 亿（2024 年才 $7,100 万），主要砸在纽约合同的设备铺设上。</p>
+<h3>3. 停车管理软件 T2（估算 TTM 约 $1 亿）</h3>
+<p>卖给大学和市政的停车管理系统：车位管理、缴费 App、月卡、违停开单，SaaS 模式按年收订阅费。稳定的小生意，存在感不强。</p>
+<p><strong>钱的全貌（TTM）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>$10.07亿（+11.1%）</td>
+<td>服务 $9.43亿 + 产品 $6,410万</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>$2.43亿（利润率 24.1%）</td>
+<td>减值计在营业外</td>
+</tr>
+<tr>
+<td>资产减值+重组</td>
+<td><strong>−$1.14亿</strong></td>
+<td>推测为 Avis 事件后对商业服务的商誉/无形减值（财报页只披露金额）</td>
+</tr>
+<tr>
+<td>利息负担</td>
+<td>约 $6,200万</td>
+<td>净债务 $10.3亿</td>
+</tr>
+<tr>
+<td>归属净利润</td>
+<td>$4,429万（EPS $0.29）</td>
+<td>被减值和 53.8% 的畸高税率压扁</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $1,859 万，占净利润 42%——占比高是因为分母被减值压扁了，占营收仅 1.8%，正常水平。</li>
+<li><strong>一次性项目</strong>：$1.14 亿减值+重组。它确实是一次性的——但注意方向：<strong>这是为"未来利润消失"提前埋单的确认书</strong>，不是与经营无关的意外。另外 53.8% 的有效税率（正常约 25%）是减值不可抵税所致，也属一次性扭曲。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $1.91 亿 ÷ SBC $1,859 万 ≈ <strong>10 倍，真回购</strong>，股本一年净减 4.84%。管理层在崩盘前后都在买。但账上净债务 $10.3 亿、利润又要塌方，继续大手笔回购的空间存疑。</li>
+<li><strong>资本化支出</strong>：capex 从 $7,100 万跳到 $1.18 亿，主因纽约新合同铺设备——这部分是有合同对应的好 capex，但它把 TTM 自由现金流压到只剩 $9,690 万（经营现金流 $2.15 亿）。</li>
+<li><strong>利润 vs 现金流对账（TTM）</strong>：净利润 $4,429万 → 加回折旧摊销 $1.18亿 → 加回减值 $1.14亿 → 加回 SBC $1,859万 → 减应收账款大增 −$1.04亿（收入在涨、回款在拖，值得盯一眼）→ 其他 $2,400万 → 经营现金流 $2.15亿。现金流是真的，利润被非现金减值压着。</li>
+</ul>
+<hr />
+<h2>三、市盈率，多口径——重点：每一档都要问"Avis 走后还剩多少"</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>$6.67亿 ÷ $4,429万</td>
+<td>15.1</td>
+<td>6.6 元</td>
+</tr>
+<tr>
+<td>剔除减值的"干净"TTM</td>
+<td>税前加回$1.14亿减值、按25%税率重算，净利约$1.57亿</td>
+<td><strong>4.2</strong></td>
+<td>23.6 元（<strong>幻觉，见下</strong>）</td>
+</tr>
+<tr>
+<td><strong>Avis 走后的真实口径</strong></td>
+<td>经营利润 −$1.2亿分部利润 + 部分成本削减，估净利 $4,500万~$7,000万</td>
+<td><strong>10~15</strong></td>
+<td>6.7~10 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>$6.67亿 ÷ $9,690万</td>
+<td>6.9</td>
+<td>14.5 元（capex高峰期，且含Avis贡献）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$17.0亿 ÷ $2.43亿（走后约$1.3亿）</td>
+<td>7.0 → <strong>约13</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>$6.67亿 ÷ 三年平均净利约$7,500万</td>
+<td>8.9</td>
+<td>11.2 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>那个 4.2 倍看着流口水，但它算的是"Avis 还在"的利润——<strong>那些利润已经收到死刑通知书，9 月执行</strong>。诚实的算法只有一种：营收减 $1.4 亿、分部利润减 $1.2 亿，砍掉部分成本后，剩下的公司大约年赚净利 $5~7 千万、自由现金流（capex 回落后）$0.8~1.2 亿。按这个口径，<strong>你现在投 100 块，公司一年替你赚 7~10 块</strong>——对应 10~15 倍市盈率，只是个公道价，不是便宜价。这 7~10 块目前主要以回购形式回到股东（不分红），但回购能不能持续要看 $10.3 亿净债务的脸色。</p>
+<p>还有一层：企业价值口径下它根本不便宜。股权 $6.67 亿之下压着 $10.3 亿净债务（负债/权益 4.9 倍），EV $17 亿对走后约 $1.3 亿经营利润是 13 倍。<strong>股价看着是清仓价,是因为杠杆把所有坏消息都放大到股权这一层</strong>——反过来，若 Hertz 或 Enterprise 再走一家，同样的杠杆会把股权直接送进重症室。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>跌 83% 之后它也没有看上去那么便宜:表面 15 倍、"剔除减值"4 倍都是幻觉，按 Avis 走后的真实盘子算是 10~15 倍，压着 10 亿债务，只能算公道价。买它本质上是一注赌局：赌纽约那份五年合同稳稳收租、赌 Hertz 和 Enterprise 不学 Avis。政府业务确实是好资产，但 Avis 已经把"这服务可以自建替代"演示给全行业看了，下一只鞋掉不掉不由你控制。公道的价格、买一个二元赌局，这不叫投资机会，叫看戏位——站远点看戏就好。</p>
+</div></body></html>

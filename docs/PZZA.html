@@ -1,0 +1,234 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PZZA · 棒约翰（Papa John's）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PZZA</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">腰斩后真实51倍,分红靠卖店续命,利息吃掉六成经营利润</div><h1>PZZA · 棒约翰（Papa John's）</h1>
+<p>市值 7.81 亿美元 / 股价约 23.72 美元 / 行业：披萨连锁（重加盟模式） / TTM 截止 2026-06-28</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报列了五个分部，实质是<strong>三门生意</strong>：收加盟商的租子、给加盟商卖面团、自己开店。</p>
+<h3>生意一：收租子——特许经营抽成（印钞机部分）</h3>
+<p>全球约 6000 家棒约翰，八成五是加盟店。孟菲斯一个加盟商想开棒约翰：自己掏钱装修、雇人、烤披萨，然后<strong>营业额（不是利润）的 5% 左右交给总部</strong>当特许权使用费，外加往全国广告基金里再交一笔。他的店一年卖 100 万美元，总部旱涝保收抽走 5 万——<strong>店亏钱也得交</strong>。加盟商为什么认？因为"Papa John's"三个词自带订单：全国广告、APP 和外卖系统、供应链全是现成的，自己从零开牌子死得更快。</p>
+<ul>
+<li>北美特许经营：TTM 收入 1.38 亿</li>
+<li>国际（几乎全加盟）：TTM 收入 1.79 亿</li>
+</ul>
+<p>这块加起来才 3.2 亿收入，却是全公司利润的真正来源——收租子几乎没有成本。</p>
+<h3>生意二：卖面团——中央厨房供应链（收入最大、利润最薄）</h3>
+<p>总部<strong>强制</strong>北美所有门店（含加盟店）从自家中央厨房（Quality Control Centers）买面团、酱料、奶酪，统一配送。TTM 收入 <strong>10.29 亿，占总收入的 52%</strong>——报表上这是最大的"生意"，但本质是个物流+集采公司，加价率只有几个点。它存在的意义一半是赚钱，一半是攥住品质和加盟商的命脉（"Better Ingredients, Better Pizza" 的口号得有抓手）。</p>
+<h3>生意三：自营店——正在甩卖的资产</h3>
+<p>自己直营约几百家店，TTM 收入 5.95 亿（占 30%），比上一财年的 6.63 亿缩了一成。缩水一部分是生意差，更大一部分是<strong>故意的</strong>：公司正在把直营店卖给加盟商（refranchising），回笼现金、变重为轻。TTM 靠卖店回款 3880 万。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 收入</th>
+<th>FY2025</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中央厨房供应链</td>
+<td>10.29 亿</td>
+<td>10.58 亿</td>
+<td>52%</td>
+</tr>
+<tr>
+<td>自营店</td>
+<td>5.95 亿</td>
+<td>6.63 亿</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>国际</td>
+<td>1.79 亿</td>
+<td>1.74 亿</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>北美特许经营</td>
+<td>1.38 亿</td>
+<td>1.43 亿</td>
+<td>7%</td>
+</tr>
+<tr>
+<td>其他+抵消</td>
+<td>0.27 亿</td>
+<td>0.16 亿</td>
+<td>1%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>19.67 亿（-5.7%）</strong></td>
+<td>20.54 亿</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（分部利润未披露，总经营利润 1.049 亿、利润率 5.3%。按生意结构估算：利润几乎全部来自收租子和供应链，自营店大致打平——这是估算。）</p>
+<p>总收入 -5.7%、净利润从 FY2024 的 8330 万塌到 TTM 的 <strong>2630 万</strong>。行业老三被达美乐按着打，同店负增长，2024 年 8 月上任的新 CEO（前 Wendy's 老板）的翻身仗还没打出利润。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>SBC</strong>：TTM 1495 万，<strong>等于净利润的 57%</strong>——利润基数塌了之后，股权激励显得极重。GAAP 里已扣，不加回。</li>
+<li><strong>一次性项目</strong>：TTM 利润里混进了约 <strong>1760 万的非现金收益</strong>（资产减值转回/卖店相关，现金流量表里作为负项冲回）。剔掉税后约 1100 万，<strong>真实经常性净利只剩约 1500 万（估算）</strong>。refranchising 还在进行，这类科目年年都在动，单期口径分不清哪些会重复出现。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 238 万 ÷ SBC 1495 万 = <strong>0.16，回购连员工发股的零头都盖不住</strong>，股本 +0.5% 在净稀释。2022–2023 年一年回购一两亿的日子，是借钱撑的，现在撑不动了。</li>
+<li><strong>分红是全篇最大的红旗</strong>：TTM 分红 <strong>6151 万，是净利润（2630 万）的 2.3 倍、自由现金流（2470 万）的 2.5 倍</strong>。缺口靠什么补？卖店回款 3880 万 + 账上现金。<strong>等于靠变卖自营店维持每年 1.87 美元/股的分红</strong>。现在 7.9% 的股息率不是市场送你的礼物，是市场在报价"这个分红撑不住"。</li>
+<li><strong>利润 vs 现金流对账（TTM，百万美元）</strong>：净利 27.6 → 加折旧摊销 91.2（重资产：中央厨房+直营店，折旧是净利的 3.3 倍）→ 加 SBC 15.0 → 减减值转回等非现金收益 17.6 → 加坏账计提 8.8 → 减营运资金变动等 29.9 → <strong>经营现金流 95.0</strong>。现金流是利润的 3.6 倍，听着健康，但капекс每年 7000 万雷打不动，真正落袋的自由现金流只有 2470 万。</li>
+<li><strong>资产负债表</strong>：净资产 <strong>-4.41 亿</strong>（历史上借钱回购把家底买穿了），总债务 9.36 亿，债务/EBITDA 3.84 倍，<strong>利息保障倍数只有 2.63</strong>——经营利润 1.05 亿里约 6000 万被利息吃掉，税前只剩 4530 万。股权是压在债务下面的杠杆残值。</li>
+<li>另一个信号：<strong>流通股的 16.8% 被卖空</strong>——空头拥挤到这个程度，说明分红断供是市场的主流剧本。</li>
+</ul>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>7.81亿 ÷ 2630万</td>
+<td>29.7</td>
+<td>3.4 元</td>
+</tr>
+<tr>
+<td>华尔街前瞻口径</td>
+<td>前瞻 EPS</td>
+<td>20.4</td>
+<td>4.9 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>7.81亿 ÷ 约1500万经常性净利（估算）</td>
+<td><strong>约 51</strong></td>
+<td>2.0 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>7.81亿 ÷ 2470万</td>
+<td>31.7</td>
+<td>3.2 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>16.9亿 ÷ 1.049亿</td>
+<td>16.1</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>7.81亿 ÷ 6500万（FY2023-25 平均）</td>
+<td>12.0</td>
+<td>8.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：投 100 块进去，按剔完水分的真实赚钱能力，一年只替你赚 <strong>2 块</strong>。这 2 块之上，公司还在往外付 7.9 块的分红——差额是卖家当卖出来的，等于每年退你一部分本金还管你叫收益。就算你信新 CEO 能把利润修回三年平均水平（那也只是达美乐零头的生意状态），也就 8.3 块。而且你这 100 块股权头顶上压着 116 块净债务：EV 口径下你买的是个杠杆残值，利润稍有起色归股东的部分放大，再塌一格股权先归零。</p>
+<p>唯一真正的看点：<strong>EV/EBITDA 8.6 倍</strong>——快餐特许经营体系在并购市场上常给 10 倍以上，若有买家整体收购，对股权有溢价空间。但拿自己的钱赌被收购，不是投资是买彩票。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>股价一年腰斩不等于便宜——<strong>利润塌得比股价更狠</strong>（8300 万→2600 万，真实口径约 1500 万），腰斩之后真实市盈率反而有 50 倍。品牌和收租模式是真资产，但它现在同时踩着四件事：同店下滑、分红靠卖店续命、9 亿债务利息吃掉六成经营利润、17% 流通盘被卖空。翻身剧本要能成立，得先看到同店转正和分红问题的了断（砍掉或重新盖住）。<strong>现在不值这个价，等利润见底、分红的雷响完再看。</strong></p>
+</div></body></html>

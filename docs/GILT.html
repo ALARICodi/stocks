@@ -1,0 +1,316 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GILT · Gilat（吉来特卫星网络）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GILT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">净现金占市值20%但真实32倍，等应收变现金、稀释停下再看</div><h1>GILT · Gilat（吉来特卫星网络）</h1>
+<p>市值 $7.66 亿 / 股价约 $9.9 / 行业：卫星通信地面设备（以色列公司，纳斯达克上市） / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Gilat 是以色列的卫星通信老厂（1987 年成立），做的不是卫星本身，而是<strong>卫星通信的"地面那一半"</strong>——天上的卫星要跟地面说话，得靠它卖的调制解调器、天线、地面站。按分部报表，它做三门生意。</p>
+<h3>生意一：商业（Commercial）——给卫星运营商卖地面网络，给飞机装 WiFi 天线</h3>
+<p>这门生意有两个具体场景：</p>
+<p><strong>场景 A：卫星运营商的地面网络。</strong> SES、Intelsat 这类公司花几亿美元把卫星打上天后，还需要一整套地面系统才能把带宽卖给客户——网关站（把卫星信号接入互联网骨干网的大型地面站）、以及成千上万个终端用户手里的小站（VSAT，一口锅加一个调制解调器）。Gilat 的 SkyEdge 平台就是这套东西，一个大项目几千万美元。这行全球就三家能做（Gilat、美国 Hughes、Viasat），新一代中低轨星座（如 SES 的 mPOWER）建网是当前最大的订单来源。</p>
+<p><strong>场景 B：飞机上的 WiFi 天线。</strong> 2025 年 Gilat 花约 $1.05 亿收购了美国公司 Stellar Blu——它做装在飞机顶上的电子扫描阵列天线（ESA，没有机械转动部件、能同时跟踪低轨和高轨卫星），一套终端几十万美元。航空公司要给乘客提供"全程不断线"的星链级 WiFi，就得换这种天线。这是 TTM 商业收入暴涨的主因——<strong>商业分部从 FY2024 的 $155M 跳到 TTM 的 $304M，翻倍的钱主要是买来的，不是自己长出来的</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>上一财年(FY2025)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$303.9M</td>
+<td>$281.4M</td>
+<td>FY2024 仅 $155.3M，翻倍靠收购</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>62.3%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：国防（Defense）——军用卫星通信</h3>
+<p>主体是美国子公司 DataPath 加上以色列本土的国防业务：卖给军队的战术卫星通信终端——装在悍马车顶、能快速展开的移动地面站，让前线部队接上军用卫星网。客户是美军和以色列及盟国军方。战争与国防预算周期是这块的发动机，这两年全球军费上行，它跟着受益。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>上一财年(FY2025)</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$105.3M</td>
+<td>$100.4M</td>
+<td>+5%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>21.6%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：秘鲁（Peru）——替政府运营亚马逊雨林里的电信网</h3>
+<p>最特别的一块：秘鲁政府出钱在偏远地区（安第斯山、亚马逊流域）修宽带网，Gilat 中标后负责建网加运营若干年，政府按合同付服务费。本质是<strong>政府项目承包商</strong>，收入稳定但天花板取决于秘鲁财政拨款。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>上一财年(FY2025)</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$78.6M</td>
+<td>$69.9M</td>
+<td>+13%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>16.1%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合计</strong>：TTM 营收 $487.8M（同比 +39%，主要是收购并表），经营利润 $32.0M（利润率 6.6%），净利润 $30.3M。分部利润财报只披露到营收，经营利润按整体口径估算：国防和秘鲁利润率相对稳，商业里新并入的 Stellar Blu 还在爬坡期、拉低毛利（整体毛利率从 37% 降到 30% 就是它并表的痕迹）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM $16.75M，<strong>是净利润（$30.3M）的 55%</strong>，而且一年内翻倍（FY2025 全年才 $8.4M）——收购 Stellar Blu 带来的留任激励是主因。GAAP 已扣，不加回，但这个增速要盯着。</p>
+</li>
+<li>
+<p><strong>税收</strong>：TTM 实际税率只有 <strong>1.4%</strong>（税前 $30.7M，交税 $43 万）。以色列公司有历史亏损结转和优惠企业税制，短期合法，但<strong>不可能永远交 1% 的税</strong>。按正常 23% 税率还原，真实净利润约 <strong>$23.6M</strong>。</p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：TTM 无大额减值或和解，但收购相关费用（中介费、无形摊销、留任奖金）散布在费用里，单期口径无法拆干净。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：无明显开发费资本化问题，资本开支 $11.4M，量级正常。</p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：这是本篇最扎眼的数字。<strong>股本一年增加 24.3%</strong>——FY2025 增发融资 $164M（用来买 Stellar Blu 和补充弹药），回购为零。你一年前持有的每 1% 股份，现在只剩 0.8%。收购带来的收入增长，先被增发稀释掉一大截才轮到老股东。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：净利润 $30.3M，经营现金流只有 <strong>$8.1M</strong>，自由现金流 <strong>-$3.4M</strong>。逐项对账：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+$30.3M</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+$24.1M</td>
+</tr>
+<tr>
+<td>加：SBC</td>
+<td>+$16.8M</td>
+</tr>
+<tr>
+<td>减：<strong>应收账款暴增</strong></td>
+<td><strong>-$78.9M</strong></td>
+</tr>
+<tr>
+<td>减：存货增加</td>
+<td>-$18.8M</td>
+</tr>
+<tr>
+<td>加：应付增加等其他营运项目</td>
+<td>+$34.5M</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>+$8.1M</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>-$11.4M</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>-$3.4M</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一年账面赚 3000 万，货发出去了、钱还没收回来 7900 万。</strong> 大项目型生意（政府、军方、卫星运营商）付款周期本来就长，收购并表也会带进一坨应收，所以不一定是造假信号——但在钱真正收回来之前，这 3000 万利润只是纸面数字。</p>
+<ul>
+<li><strong>家底</strong>：现金 $159.2M、债务仅 $9.6M，<strong>净现金 $149.5M（占市值 20%）</strong>，这是全篇最结实的一行——就算现金流再难看一年，它也熬得起。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $765.7M，企业价值 $616.1M（扣掉净现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>765.7 ÷ 30.3</td>
+<td>23.6</td>
+<td>¥4.2</td>
+</tr>
+<tr>
+<td>公司口径（远期 PE）</td>
+<td>分析师预期</td>
+<td>25.5</td>
+<td>¥3.9</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（税率还原到23%）</td>
+<td>765.7 ÷ 23.6</td>
+<td><strong>32.4</strong></td>
+<td><strong>¥3.1</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF -$3.4M</td>
+<td><strong>负数，无意义</strong></td>
+<td><strong>¥0（今年没收回钱）</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>616.1 ÷ 32.0</td>
+<td>19.3</td>
+<td>—（好于表面PE，靠净现金）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>765.7 ÷ 三年平均 23.0</td>
+<td>33.3</td>
+<td>¥3.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，把"几乎不交税"这层滤镜摘掉，公司一年替你赚 3 块出头；而且今年这 3 块还压在客户的账期里，一分现金没见到。</strong> 没有分红、没有回购，赚的钱全部再投进卫星地面站和飞机天线的扩张里——方向不算错（低轨星座和机上 WiFi 是真风口），但股东先被 24% 的增发稀释了一轮才上车。</p>
+<p>值得说的另一面：EV/EBIT 只有 19 倍，比表面 PE 便宜，因为五分之一的市值是现金；股价现在 $9.9，比 200 日均线 $14.6 低 32%，市场已经砸过一轮（Q2 指引不及预期）。它不是被炒高的票，是被打下来的票。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>三门生意都真实（地面站三巨头之一、军费上行、机上 WiFi 风口），资产负债表干净得少见，但成色经不起细看：税near零撑出来的利润、55% 利润量级的 SBC、一年 24% 的稀释、应收压出来的负现金流——真实口径 32 倍买一家利润率 6%、ROIC 低于资金成本的项目型公司，<strong>不便宜，合理偏贵；想要它的人应该等应收转成现金、稀释停下来的证据，而不是现在进</strong>。</p>
+</div></body></html>

@@ -1,0 +1,280 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KFRC · Kforce（凯服人力）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KFRC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">周期底部27.5倍涨完78%，分红回购当下靠借钱垫</div><h1>KFRC · Kforce（凯服人力）</h1>
+<p>市值 $9.74亿 / 股价约 $58 / 行业：商业服务·专业人才派遣 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Kforce 是一家总部在佛罗里达坦帕的<strong>技术人才派遣公司</strong>，名字来自 "KnowledgeForce"。生意本质一句话：<strong>当中介，把程序员租给大公司，赚工资差价</strong>。按分部算两门生意，其实是同一套模式卖两种人。</p>
+<h3>生意一：技术人才派遣（Tech），占营收 92.5%</h3>
+<p>大白话讲整个流程：一家大银行要做数据仓库迁移，项目周期 12 个月，需要 20 个懂云计算的数据工程师，但银行不想为一个临时项目招 20 个正式工——招进来项目结束还得裁，赔偿金和名声都是成本。于是找 Kforce。Kforce 的销售和猎头（自家养了上千人的招聘团队）从人才库里捞出合适的工程师，以 Kforce 员工的身份派到银行干活。银行按小时付费，比如每小时 $95；Kforce 转手付给工程师 $70，中间 $25 的毛差里再扣掉工程师的社保、医保和自家销售提成，剩下的才是利润。</p>
+<p>客户是谁：财富 500 强为主——银行、保险、医疗、零售，一个大客户一年能贡献几百万到上亿美元的账单。工程师派驻周期通常 6-18 个月，项目结束要么续签要么换下一家。这门生意<strong>没有护城河</strong>：客户同时用三五家派遣商（Kforce 之外还有 TEKsystems、Insight Global、罗致恒富），谁的人快、价合适用谁。Kforce 的本事在于几十年攒下的客户关系和一个庞大的技术人才数据库，这能让它活得不错，但保证不了定价权。</p>
+<p><strong>看营收就知道这是门顺周期生意</strong>：企业 IT 预算宽松时（2021-2022 疫后数字化狂潮），营收冲到 17 亿；2023 年起利率上去了、企业砍项目，营收连跌三年到 13.3 亿；TTM 刚刚企稳（同比 −1.3%，但环比在回暖）。市场现在赌的就是 AI 项目潮带来下一轮 IT 外包景气——股价一年涨了 78%，赌注已经下了。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>技术派遣</th>
+<th>TTM（截至2026-06）</th>
+<th>FY2025全年（参照）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$12.43亿</td>
+<td>$12.30亿</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>92.5%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>财报只披露到营收；整体经营利润率4.0%（<strong>估算</strong>：此分部与整体接近）</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：财务与会计人才派遣（FA），占营收 7.5%</h3>
+<p>同一套中介模式，换成派会计、审计、信贷、应收账款专员。这块在萎缩得很厉害：FY2021 还有 $3.06亿，TTM 只剩 $1.01亿——一部分是公司主动砍掉低毛利的低端岗位（前台、数据录入），一部分是这类白领岗位本身正在被软件和 AI 吃掉。公司自己也不装了，资源全压在技术派遣上。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财会派遣</th>
+<th>TTM（截至2026-06）</th>
+<th>FY2025全年（参照）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>$1.01亿</td>
+<td>$0.99亿</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>7.5%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>整体盘子（TTM）</strong>：营收 $13.44亿（−1.3%），毛利率 27.7%（注意：派遣业的「毛利」就是那个工资差价），经营利润 $5,432万（<strong>利润率只有 4.0%</strong>——这是门薄利生意），净利润 $3,648万，EPS $2.12。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $1,378万，<strong>占净利润 37.8%</strong>——这个比例相当高。派遣公司最大的资产是销售和猎头团队，留人就得发股。GAAP 已扣，但要明白：真实利润里有超过三分之一分量的成本是拿你的股份付的。</li>
+<li><strong>一次性项目</strong>：TTM 没有看到大额减值或重组。账面干净。</li>
+<li><strong>资本化的支出</strong>：资本开支 $1,374万，是折旧 $255万的五倍多——差额主要是内部软件系统和新总部投入，资本化了一部分技术开支。规模不大，但注意 FCF 因此比表面更紧。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $3,371万 ÷ SBC $1,378万 = <strong>2.4 倍</strong>，股本一年真减了 5.65%。方向是真回购，Kforce 十几年如一日地回购缩股，这是它 EPS 比利润好看的原因。</li>
+<li><strong>利润和现金流的差——本篇最要紧的发现在这</strong>。净利润 $3,648万，经营现金流只有 $3,630万，自由现金流仅 <strong>$2,256万</strong>。逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（TTM）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+$3,648万</td>
+</tr>
+<tr>
+<td>加：折旧摊销（含其他摊销）</td>
+<td>+$530万</td>
+</tr>
+<tr>
+<td>加：股权激励（非现金）</td>
+<td>+$1,378万</td>
+</tr>
+<tr>
+<td>加：坏账准备等</td>
+<td>+$38万</td>
+</tr>
+<tr>
+<td>加：其他非现金调整</td>
+<td>+$856万</td>
+</tr>
+<tr>
+<td>应收账款增加（钱压在客户手里）</td>
+<td>−$1,136万</td>
+</tr>
+<tr>
+<td>其他经营资产变化（递延薪酬等）</td>
+<td>−$1,683万</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>$3,630万</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−$1,374万</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>$2,256万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>再看钱怎么花的：TTM 分红 $2,706万 + 回购 $3,371万 = <strong>$6,077万，是自由现金流的 2.7 倍</strong>。差额哪来的？<strong>净举债 $3,710万</strong>。账上现金只剩 $33万（不是亿，是万），总债务 $1.22亿。历史上它的 FCF（2021-2024 年均 $7,000-8,400万）是完全盖得住股东回报的，现在是周期底部现金流缩水+回暖期应收账款重新吃钱，公司选择借钱把分红回购撑住。杠杆本身不危险（Debt/EBITDA 1.9 倍），但<strong>当下这个分红+回购是借来的</strong>，这一点必须知道。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 ÷ TTM净利润 $3,648万</td>
+<td>27.5</td>
+<td>¥3.6</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>无夸张调整，与GAAP接近</td>
+<td>≈27.5</td>
+<td>¥3.6</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性项目，SBC已扣</td>
+<td><strong>27.5</strong></td>
+<td><strong>¥3.6</strong></td>
+</tr>
+<tr>
+<td>华尔街 Forward PE</td>
+<td>市值 ÷ 预期明年利润</td>
+<td>21.0</td>
+<td>¥4.8（是期货，不是现货）</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ FCF $2,256万</td>
+<td><strong>43.2</strong></td>
+<td>¥2.3</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（市值+净负债$1.2亿）÷ 经营利润</td>
+<td>20.2</td>
+<td>¥5.0</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ FY2023-25平均净利润 $4,877万</td>
+<td>20.0</td>
+<td>¥5.0</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表和 NWPX 正好是镜像：<strong>三年平均口径（20倍）比当期口径（27.5倍）便宜</strong>，说明当期利润处在周期低谷而不是高峰——如果派遣市场回暖到 2023 年的水平（净利润 $6,100万），现价对应约 16 倍。</p>
+<p>大白话：<strong>你现在投 100 块进去，按当期真实利润算，公司一年替你赚 3 块6</strong>；其中约 2 块8（分红$2,706万+回购$3,371万相对市值）是真金白银回到你口袋的——但刚才说了，这两块八眼下有一部分是公司借钱垫的。这个 3 块6 未来大概率变大（周期在底部回升、AI 项目潮是真实需求），可市场已经抢跑：一年涨 78%，回升的头一段行情已经被买走了。</p>
+<h2>第四部分：一句话结论</h2>
+<p>一门没有护城河、经营利润率 4% 的薄利中介生意，管理得不差（真回购、真缩股、周期底部也没亏钱），但现在是<strong>在周期底部按 27.5 倍、涨了 78% 之后卖给你</strong>，赌的是复苏兑现——复苏若如期，现价也只是不贵；若迟到，27.5 倍的派遣公司跌起来不会客气。<strong>没有便宜可占，等它跌回派遣行业该有的 15 倍上下再看</strong>。</p>
+</div></body></html>

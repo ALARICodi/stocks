@@ -1,0 +1,221 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CSHR · CoinShares（币股份）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CSHR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">便宜是幻觉:利润全看币价,正常化后15.7倍</div><h1>CSHR · CoinShares（币股份）</h1>
+<p>市值 7.88 亿美元 / 股价约 5.98 美元 / 行业：加密货币资产管理 / <strong>数据截止 2025-12-31（⚠️见下）</strong></p>
+<blockquote>
+<p><strong>⚠️ 先说数据的事</strong>：这家公司 2026 年 7 月才从斯德哥尔摩交易所搬到纳斯达克，美国数据源只收录到 2025 年报——下面全篇拿 <strong>FY2025 当"最近一整年"用，比今天旧了 8 个月</strong>。这 8 个月里币价又走了一大段、公司又发了两季财报，所有结论要打这个折扣。另外这家的报表被数据源切得稀碎（原因见第二部分），能信的数字只有净利润、现金流和分部营收。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>两门生意：<strong>资产管理</strong>（FY2025 收入 1.264 亿，占 76%）和<strong>资本市场</strong>（3930 万，占 24%）。</p>
+<h3>生意一：加密货币的"收费站"——发 ETP，天天刮管理费</h3>
+<p>说人话：一个法兰克福的退休医生想买比特币，又不想研究钱包、私钥、交易所跑路风险，于是他在证券账户里像买股票一样买了一手 CoinShares Physical Bitcoin。CoinShares 拿他的钱去买真比特币锁进冷库，然后<strong>每天从产品净值里自动刮走一小条管理费</strong>。医生不用管，费自动扣；币价涨，管理规模涨，费跟着涨——CoinShares 全程不用多雇一个人。93 名员工，人均创收 178 万美元，就是这么来的。</p>
+<p>它是<strong>欧洲最大的加密 ETP 发行商</strong>，管理规模在百亿美元量级（估算）。两条产品线：</p>
+<ul>
+<li><strong>XBT Provider</strong>（瑞典，2015 年起的老产品）：费率高达 2.5%/年，是台老印钞机。但客户在持续流失——同样的比特币敞口，隔壁新产品只收零点几个点，凭什么多付你十倍？这块的费收入是在<strong>缓慢融化的冰块</strong>。</li>
+<li><strong>CoinShares Physical</strong>（新产品线）：费率 0.25%–0.98%，用低价接住从老产品跑出来的钱、抢新客户。规模在涨，但一块钱规模赚的费比老产品少得多。</li>
+</ul>
+<h3>生意二：资本市场——自己下场玩币</h3>
+<p>给自家 ETP 做市（赚买卖价差）、质押（staking：把产品背后的以太坊放进网络验证记账，赚约 3-4% 的币息，这部分大头归公司不归客户）、加密借贷。FY2025 收入 3930 万。这块<strong>不是收费站，是自己扛着币价敞口做交易</strong>，赚的钱波动极大，2022 年那种行情下会直接变成亏损来源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>FY2025 收入</th>
+<th>FY2024</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产管理</td>
+<td>1.264 亿</td>
+<td>1.117 亿</td>
+<td>+13%</td>
+<td>76%</td>
+</tr>
+<tr>
+<td>资本市场</td>
+<td>0.393 亿</td>
+<td>0.439 亿</td>
+<td>-10%</td>
+<td>24%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>1.657 亿</td>
+<td>1.555 亿</td>
+<td>+6.5%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>（分部利润未披露；公司整体 FY2025 净利润 1.143 亿，净利率 69%——费类生意成本极低，利润率高是真的。）</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p>这家是<strong>重灾区，但方向反常——不是公司粉饰利润，是报表结构把数据源骗了</strong>，看的人容易往两个方向都判错：</p>
+<ul>
+<li><strong>经营利润 -6.87 亿美元是假的</strong>。ETP 在会计上是公司"发的债"（客户持有的是债务凭证），背后的币是公司资产。币价涨：资产端记收益、债务端记等额损失，两边抵消。数据源把两边切进了不同科目，于是出现"经营利润 -6.87 亿、税前利润 +1.15 亿"的鬼数字。<strong>ROIC -134%、ROA -7.6% 同样全是这个鬼影，直接扔掉。</strong></li>
+<li><strong>页面显示的 PE 3.45 倍也是假的</strong>。EPS 1.74 美元是按老股本（约 6600 万股）算的，搬家到美股后股本变成 1.318 亿股。用净利润直接算：7.88 亿市值 ÷ 1.143 亿净利 = <strong>真实 6.9 倍</strong>。PB 0.82 同样错位，按净资产 4.77 亿算<strong>真实 PB ≈ 1.65</strong>。</li>
+<li><strong>净利润本身的含水量才是关键</strong>：1.143 亿净利里有相当部分是自有币持仓的公允价值变动和资本市场业务的币价敞口收益。旁证一：华尔街前瞻 EPS 只有 0.38 美元（对应全公司约 5000 万利润），等于说<strong>正常年景的赚钱能力不到 FY2025 的一半</strong>。旁证二：FY2024 净利 1.62 亿但经营现金流只有 1730 万——那年的利润几乎全是纸上富贵。</li>
+<li><strong>2021–2022 年的历史数字是坏的</strong>（净利 -32.66 亿之类，疑似货币单位错乱），一律不引用。</li>
+<li><strong>SBC</strong>：FY2025 仅 284 万，占净利 2.5%，小。</li>
+<li><strong>回购与稀释</strong>：回购 1062 万 ÷ SBC 284 万 = <strong>3.7 倍，是真回购</strong>；股本一年 -1.38%，另发了 2510 万现金分红。股东回报这块干净，是全篇少有的加分项。</li>
+<li><strong>利润 vs 现金流</strong>：FY2025 经营现金流 1.236 亿 ≈ 净利 1.143 亿，当年对得上（但如上所述，前一年对不上——这家的利润和现金流哪年对得上，取决于币价哪年配合）。</li>
+</ul>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP FY2025 市盈率</td>
+<td>7.88亿 ÷ 1.143亿</td>
+<td>6.9</td>
+<td>14.5 元</td>
+</tr>
+<tr>
+<td>页面显示的 3.45 倍</td>
+<td>旧股本错位</td>
+<td><strong>作废</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>按正常年景费类利润约 5000 万（街的前瞻口径）</td>
+<td><strong>约 15.7</strong></td>
+<td>6.4 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>7.88亿 ÷ 1.232亿</td>
+<td>6.4</td>
+<td>15.6 元</td>
+</tr>
+<tr>
+<td>企业价值口径</td>
+<td>9.24亿 EV ÷ 1.143亿净利</td>
+<td>8.1</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>7.88亿 ÷ 1.175亿（FY2023-25 平均）</td>
+<td>6.7</td>
+<td>14.9 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：按 FY2025 算，投 100 块一年替你赚 14.5 块，看着像白捡。但分母是<strong>史上最大加密牛市顶上的利润</strong>——三年平均 6.7 倍看着也便宜，可那三年恰好全是牛市，这个"平均"平不掉周期。把币价大年的水分挤掉，正常赚钱能力约 5000 万，对应 15.7 倍、一年 6.4 块。这 6.4 块里回到口袋的约 4.5 块（分红+净回购），比例不低，是真给钱。但 X 未来变大还是变小，<strong>不取决于管理层，取决于币价</strong>：老产品 2.5% 的肥费率在流失，新产品费率只有零头，量涨价跌对冲之下，费引擎本身没什么增长；币价腰斩，利润跟着腰斩起步。</p>
+<p>还有两条结构性提醒：内部人持股 55.4%，流通盘只有 3800 万股，<strong>盘子薄，进出都费劲</strong>；刚搬来美股，机构持仓只有 3.6%，定价还没稳定下来。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>生意模式听着像收费站，其实是<strong>半个收费站绑着半个币价赌注</strong>：费率端在融化，利润端跟着币价坐过山车，6.9 倍的便宜是牛市利润造出来的幻觉，正常化后 15.7 倍——为一门自己控制不了利润的生意付 15.7 倍，不划算。信币价的人不如直接买币或买现货 ETF，不信币价的人这里没有安全垫。<strong>不值这个价，等一轮币价冬天再来看它</strong>——2022 年那种时候的 CoinShares 才可能真便宜。</p>
+</div></body></html>

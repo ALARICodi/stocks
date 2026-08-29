@@ -1,0 +1,223 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RHLD · Resolute控股管理</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RHLD</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">7人抽平台10%EBITDA的费流水,拴在重债平台,35-42倍不值</div><h1>RHLD · Resolute控股管理</h1>
+<p>市值 $10.6亿 / 股价约 $136 / 行业：商业服务·另类资产管理 / TTM 截止 2026-06-30</p>
+<p><strong>先说一句提纲挈领的话：这家公司只有 7 个员工，但报表上有 11.2 亿美元营收和 22.4 亿美元债务。这不是笔误，这就是本文要剥的最大一层障眼法。</strong> 筛选器给它的 24.9 倍市盈率，几乎是个没有意义的数字。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<h3>它的真生意只有一门：收管理费</h3>
+<p>来龙去脉要先讲清楚。有一家做金属信用卡的公司叫 CompoSecure——你手里如果有美国运通百夫长黑金卡、大通蓝宝石那种沉甸甸的金属卡，八成就是它代工的。2025 年 2 月，这家公司的控制人（前霍尼韦尔传奇 CEO 大卫·科特和他的操盘手汤姆·诺特）把「管理团队」单独拆出来上市，就是 RHLD；留下的上市壳更名为 GPGI，定位成一个「永久资本平台」——说白话就是<strong>学伯克希尔和丹纳赫，不断买入好生意、长期持有、用同一套管理方法改造它们</strong>。2026 年 1 月 12 日，平台完成第二笔大收购：Husky——全球最大的 PET 瓶胚注塑设备制造商（全世界的可乐瓶、矿泉水瓶，很大一部分是用 Husky 的机器吹出来的），年营收十几亿美元。</p>
+<p>RHLD 在这个结构里扮演什么角色？<strong>它是收费的大脑</strong>。7 个人，不拥有工厂、不拥有 CompoSecure 或 Husky 的股权，只跟平台签了一份管理合同：<strong>每个季度收取被管理公司过去十二个月调整后 EBITDA 的 2.5%</strong>，换算成年化就是<strong>平台 EBITDA 的约 10% 每年</strong>。CompoSecure 交一份、Husky 交一份。平台再买第三家公司，就再多一份。</p>
+<p>大白话打个比方：GPGI 是一支「永不清盘的私募基金」，RHLD 是基金管理人。基金规模越大、旗下公司赚得越多，管理费越高。TTM 管理费收入 <strong>$3,428万</strong>（上一财年只有 $1,228万，因为费是 2025 年 2 月才开始收的，且 Husky 2026 年 1 月才进来）。这门生意本身美得不像话：合同锁定、几乎零成本、零资本开支，收入跟着平台扩张自动长大。</p>
+<h3>报表上那 11.2 亿营收是怎么回事</h3>
+<p>会计规则（VIE 合并）认定 RHLD 实质控制着它管理的平台，所以要把 GPGI 旗下 CompoSecure（TTM 营收 $5.03亿）和 Husky（并表后约 $6.2亿，<strong>估算</strong>）的整张报表<strong>并进自己的报表</strong>——尽管这些收入、这些债务、这些工厂在经济上属于 GPGI 的股东，不属于 RHLD 的股东。于是一家 7 人公司账面上出现了 11.2 亿营收、22.4 亿债务、21.2 亿股票增发（那是 GPGI 为收购 Husky 融的资）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部（TTM）</th>
+<th>营收</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPGI/CompoSecure（并表）</td>
+<td>$5.03亿</td>
+<td>金属信用卡代工，经济利益属于GPGI股东</td>
+</tr>
+<tr>
+<td>Husky（并表，2026-01-12起）</td>
+<td>约$6.2亿（估算）</td>
+<td>PET注塑设备，同上</td>
+</tr>
+<tr>
+<td><strong>Resolute 管理费（真正属于RHLD的）</strong></td>
+<td><strong>$3,428万</strong></td>
+<td>平台调整后EBITDA的年化约10%</td>
+</tr>
+<tr>
+<td>抵销</td>
+<td>−$3,428万</td>
+<td>管理费在并表层面左手付右手</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是本篇的主菜，因为<strong>几乎每一个常规估值指标在 RHLD 身上都是坏的</strong>：</p>
+<ul>
+<li><strong>市盈率 24.2 倍是假的</strong>：TTM「净利润」$4,718万里混着并表实体的损益分配和一笔 <strong>$692万的所得税收益</strong>（税是负的），税前利润其实只有 $2,830万。这些数字属于会计分配，不是 RHLD 股东能拿到的现金利润。</li>
+<li><strong>市净率 0.35 倍是假的</strong>：看起来「三五折买资产」，但那些净资产大头是 GPGI 股东的非控制权益，跟你无关。</li>
+<li><strong>P/FCF 13.2 倍是假的</strong>：并表自由现金流 $8,053万里绝大部分是 CompoSecure 和 Husky 的经营现金流，轮不到 RHLD 股东分。</li>
+<li><strong>平台的债务不是你的，但你的命运系在上面</strong>：并表 22.4 亿债务、Debt/EBITDA 8.3 倍、<strong>利息保障倍数只有 1.83</strong>——Husky 这笔收购加了重杠杆。债不用 RHLD 还，可一旦平台被利息压得 EBITDA 缩水，RHLD 的管理费按合同同步缩水。</li>
+<li><strong>SBC</strong>：并表口径 TTM $1,960万，无法从公开页面拆出 RHLD 自身那份；对一家 7 人公司来说，团队股权激励几乎肯定是其最大的真实成本。单期口径无法精确剥离，<strong>这直接意味着「RHLD 自身的净利润」外人算不准</strong>。</li>
+<li><strong>回购与稀释</strong>：RHLD 自身股本一年缩了约 1%（QoQ −5.2%），并表口径的 $1.2亿回购主要发生在 GPGI 层面。流通盘只有 274 万股（占总股本 35%），<strong>极小的流通盘+一年涨 112%，股价里投机成分不小</strong>。</li>
+<li><strong>利益冲突写在结构里</strong>：科特和诺特同时坐在收费方（RHLD）和付费方（GPGI）两边。年化约 10% EBITDA 的管理费率，比典型私募基金贵好几倍——这是 RHLD 股东的蜜糖，也是最大的单点风险：GPGI 的公众股东哪天造反、压费率或终止合同，RHLD 的全部价值就悬了。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<p>这是资产管理生意，正经估法是看<strong>管理费流水</strong>值多少钱，不是看并表利润。表里逐条标注哪个数能信：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+<th>能信吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值÷并表净利润$4,718万</td>
+<td>24.2</td>
+<td>¥4.1</td>
+<td>✗ 并表噪音+税收益</td>
+</tr>
+<tr>
+<td>公司口径</td>
+<td>公司强调分部/费相关收益</td>
+<td>—</td>
+<td>—</td>
+<td>公开页拿不到细项</td>
+</tr>
+<tr>
+<td><strong>真实口径：市值÷管理费收入</strong></td>
+<td>$10.6亿÷$3,428万</td>
+<td><strong>31倍（对收入！）</strong></td>
+<td>—</td>
+<td>✓ 这是真钱</td>
+</tr>
+<tr>
+<td><strong>真实口径：市值÷费收入年化run-rate（估算）</strong></td>
+<td>Husky全年计入后费收入约$4,800万，扣RHLD自身成本后净赚约$2,500-3,000万（<strong>估算</strong>）</td>
+<td><strong>约35-42倍</strong></td>
+<td><strong>¥2.4-2.9</strong></td>
+<td>✓ 方向可信，精度有限</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值÷并表FCF</td>
+<td>13.2</td>
+<td>¥7.6</td>
+<td>✗ 钱不是你的</td>
+</tr>
+<tr>
+<td>EV/EBIT</td>
+<td>EV含平台22亿债</td>
+<td>24.5</td>
+<td>—</td>
+<td>✗ 债不是你的</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY2024/2025是分拆前的承继报表</td>
+<td>不可比</td>
+<td>—</td>
+<td>✗ 公司2025年才存在</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，买到的是一条真实的管理费流水，按最诚实的估算，公司一年替你赚 2 块4 到 2 块9。</strong> 这笔钱目前一分不分红，全押在「平台继续买公司、费基继续变大」上。它未来会不会变大？如果科特继续并购、平台不被债压垮，费收入确实能一年翻一年——TTM 费收入已经比上年翻了近三倍（低基数+并购所致）；但反过来，这个 X 建立在 1.83 倍利息保障的平台上，衰退一来先缩的就是 EBITDA。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意模式聪明得近乎狡猾——7 个人躺着抽整个平台 10% 的 EBITDA——但你要为这条费流水付 35-42 倍的真实价钱，而它一头拴在重债平台的景气上、另一头拴在「付费方股东永远不造反」上，报表还被并表规则搅成一锅粥；<strong>故事可以远远欣赏，这个价格不值得下注</strong>。</p>
+<p>（结构与费率依据：<a href="https://www.globenewswire.com/news-release/2026/08/06/3340095/0/en/Resolute-Holdings-Reports-Second-Quarter-2026-Results.html">Resolute 2026年Q2业绩公告</a>、<a href="https://www.composecure.com/composecure-news/gpgi-inc-completes-rebrand-and-starts-trading-as-gpgi-on-nyse">GPGI 更名公告</a>、<a href="https://www.sec.gov/Archives/edgar/data/0002039497/000110465926091709/rhld-20260630x10q.htm">RHLD 10-Q</a>）</p>
+</div></body></html>

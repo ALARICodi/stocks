@@ -1,0 +1,228 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BFS · Saul Centers（索尔购物中心）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BFS</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">7.1%分红付得起,12倍FFO公道,收租工具别指望估值修复</div><h1>BFS · Saul Centers（索尔购物中心）</h1>
+<p>市值 $8.22 亿（普通股）/ 含家族合伙单位全口径约 $11.9 亿 / 股价 $33.3 / 零售+混合用途 REIT / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是地产信托（REIT），下面用 FFO、AFFO、派息率口径而不是市盈率，原因是：REIT 的"净利润"被房产折旧压得毫无意义——楼在账上每年"折旧"几千万，实际上华盛顿的地段年年升值。34 倍的表面市盈率是假贵，真口径见第三部分。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说清这家公司是谁的：<strong>它是华盛顿地产豪门 B.F. Saul 家族的上市载体</strong>。家族通过合伙单位和股票握着大约三分之一以上的权益，35.7 万股全口径股本里真正在市场上流通的只有 1370 万股。你买 BFS，本质是给 Saul 家族当小股东——好处是家族利益跟你绑在一起、从不乱来；坏处是公司怎么干轮不到外部股东说话，估值也因此常年打折。</p>
+<p>它做两门生意，全部集中在华盛顿特区都会圈（DC、马里兰、北弗吉尼亚）：</p>
+<h3>生意A：社区购物中心——占营收 63%，压舱石</h3>
+<p>50 多个以超市为主力店的社区购物中心。生意的具体样子：在马里兰郊区一个 10 万平方英尺的购物中心，主力店是 Giant Food 超市（签 20 年长约、租金便宜但雷打不动），旁边配着药店、银行网点、快餐店、干洗店、牙医诊所，各自签 5–10 年的租约，每年租金递增 2–3%。居民每周来买菜，顺路消费——<strong>这类"买菜地产"是零售地产里最抗电商、抗衰退的一种</strong>：亚马逊替代不了超市和理发店。华盛顿圈子又是全美最稳的经济体——联邦政府、军工、律所撑着，失业率常年偏低。TTM 营收 $1.92 亿，同比 +2%，出租率长期 95% 上下，同店净营运收入（NOI）最新季度 +6.9%。</p>
+<h3>生意B：混合用途物业（办公+公寓+零售）——占营收 33%，增长引擎兼风险所在</h3>
+<p>家族过去十年把购物中心攒下的现金押到了一件事上：<strong>把自家在罗克维尔派克大道（Rockville Pike）等黄金地段的旧购物中心，推倒重建成"底层商业+上面住宅塔楼"的城市综合体</strong>。两个大项目刚落成：</p>
+<ul>
+<li><strong>Twinbrook Quarter 一期</strong>（罗克维尔）：底层是 8 万平方英尺的 Wegmans 超市（华盛顿圈最受欢迎的高端超市），上面是 452 套公寓"The Milton"。公寓 2024 年底开租，<strong>2026 年 6 月底出租率已到 96.7%</strong>（一年前才 77%）——租爆了。</li>
+<li><strong>Hampden House</strong>（贝塞斯达市中心）：366 套公寓，2025 年落成，正在爬坡。</li>
+</ul>
+<p>TTM 营收 $1.01 亿，同比 +9.3%，增长全是这两栋楼贡献的。</p>
+<p><strong>代价在资产负债表上</strong>：总债务 $16.1 亿（几乎全是逐栋楼抵押的固定利率按揭），Debt/EBITDA 8.85 倍，<strong>利息保障倍数只有 1.59 倍</strong>——经营利润的六成多在付利息。这是全案最刺眼的数字。缓冲垫在于：债是一栋楼一笔的抵押贷款，不交叉担保，某栋楼真出事最多把那栋楼交给银行，拖不垮全公司。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>购物中心</td>
+<td>$1.92 亿</td>
+<td>+2%</td>
+<td>63%</td>
+<td>出租率 ~95%，同店 NOI +6.9%</td>
+</tr>
+<tr>
+<td>混合用途</td>
+<td>$1.01 亿</td>
+<td>+9%</td>
+<td>33%</td>
+<td>两栋新公寓楼爬坡中</td>
+</tr>
+<tr>
+<td>其他调整</td>
+<td>$0.10 亿</td>
+<td>—</td>
+<td>3%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$3.02 亿</strong></td>
+<td><strong>+8.7%</strong></td>
+<td></td>
+<td>分部利润未披露，NOI 按整体估算</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉（REIT 版）</h2>
+<ul>
+<li><strong>折旧是假成本</strong>：TTM 净利润 $2367 万 vs 经营现金流 $1.03 亿，差额主要就是房产折旧。REIT 行业用 FFO（净利润加回折旧）替代：<strong>TTM FFO 约 $9800 万，是净利润的 4 倍</strong>。表面 PE 34 倍在这里没有任何参考价值。</li>
+<li><strong>利润下滑的真相</strong>：每股 FFO 从上年同期 $0.73 降到 Q2'26 的 $0.69。原因不是生意变差（同店 NOI 还 +6.9%），而是<strong>两栋新楼落成后，建设期资本化的利息开始进损益表</strong>。楼租满之后这个剪刀差会收窄——公寓 96.7% 的出租率说明这一天不远。</li>
+<li><strong>一次性项目</strong>：没有重大一次性损益。</li>
+<li><strong>股权激励与稀释</strong>：股本一年只增 0.57%，SBC 可忽略——家族公司不玩发股游戏。但也注意：<strong>REIT 增长靠融资，将来建二期大概率要么发股要么加债</strong>。</li>
+<li><strong>分红的可持续性</strong>：季度分红 $0.59（年化 $2.36，收益率 7.1%），<strong>派息率约占 FFO 的 86%</strong>——付得起，但余量薄，这也是分红多年没涨的原因：剩下的钱全填进了开发项目。</li>
+</ul>
+<h2>第三部分：REIT 口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FFO（TTM，全口径）</td>
+<td>约 $9800 万（$2.76/股）</td>
+<td>净利润加回折旧</td>
+</tr>
+<tr>
+<td>市值/FFO</td>
+<td><strong>12.2 倍</strong></td>
+<td>全口径市值 $11.9 亿计</td>
+</tr>
+<tr>
+<td>AFFO（估算）</td>
+<td>约 $8500 万</td>
+<td>FFO 再扣维护性资本开支约 12%（估算）</td>
+</tr>
+<tr>
+<td>市值/AFFO（估算）</td>
+<td>~14 倍</td>
+<td></td>
+</tr>
+<tr>
+<td>分红收益率</td>
+<td><strong>7.1%</strong>（$2.36/年）</td>
+<td>占 FFO 86%，付得起但没余量</td>
+</tr>
+<tr>
+<td>净负债</td>
+<td>$16.0 亿</td>
+<td>几乎全是单楼抵押固定利率贷款</td>
+</tr>
+<tr>
+<td>Debt/EBITDA</td>
+<td>8.85 倍</td>
+<td>偏高；利息保障 1.59 倍</td>
+</tr>
+<tr>
+<td>出租率</td>
+<td>购物中心 ~95%；新公寓 96.7%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按 FFO 口径它一年替你产出约 8.2 块现金，其中 7.1 块直接以分红打到你账上</strong>，剩下 1 块留在公司填开发项目。同行里，同样做买菜购物中心的 Regency、Federal Realty 卖 15–18 倍 FFO，BFS 只卖 12 倍——折价的名字叫"家族控股+高杠杆"，而且这个折价十几年如一日，<strong>别指望它哪天修复</strong>。这 8.2 块未来往哪走：公寓租满、利息剪刀差收窄是增项；利率维持高位、$16 亿债务逐年到期重贷是减项，两相抵大概率缓慢向上。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>7.1% 的分红是真金白银且付得起，资产（华盛顿买菜地产+租爆了的新公寓）是好资产，12 倍 FFO 价格公道；但 1.59 倍的利息保障和永久性的家族折价决定了它就是个<strong>收租工具，不是成长股</strong>——想吃稳定分红可以留着观察，想赚估值修复的钱别来。</p>
+<p>数据来源：stockanalysis.com（TTM 财报、估值）；FFO、分红、出租率来自 <a href="http://www.prnewswire.com/news-releases/saul-centers-inc-reports-second-quarter-2026-earnings-302845418.html">Q2'26 财报</a>、<a href="https://www.tradingview.com/news/tradingview:82f46696297a2:0-saul-centers-reports-q2-2026-revenue-76-8m-net-income-11-5m-ffo-24-8m/">TradingView 摘要</a>、<a href="https://www.prnewswire.com/news-releases/saul-centers-declares-quarterly-dividends-302804828.html">分红公告</a></p>
+</div></body></html>
