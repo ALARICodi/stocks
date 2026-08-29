@@ -1,0 +1,427 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NATH · 纳森热狗（Nathan's Famous, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NATH</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">18倍买的是牛肉涨价压低的利润，但2/3营收只赚8%毛利</div><h1>NATH · 纳森热狗（Nathan's Famous, Inc.）</h1>
+<p>市值 4.035 亿美元 ｜ 股价约 $98.4（4.10 百万股） ｜ 行业：消费服务 / 品牌授权+食品分销 ｜ 交易所 NASDAQ
+<strong>TTM 口径截止日：2026 年 6 月 28 日</strong>（财年 3 月底结束，所以这个 TTM 比刚发的 FY2026 年报还新一个季度）</p>
+<p>全量筛选榜第 1061 名。当前市盈率 20.4 倍。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>纳森热狗 1916 年在纽约康尼岛开的第一家店，卖 5 美分一根的热狗。一百多年过去，这家公司<strong>已经基本不靠卖热狗给你我赚钱了</strong>——它现在实质上是一家「收商标租金的公司」，外面套了一层「批发热狗给餐厅」的壳。全公司只有 <strong>129 名员工</strong>，一年做 1.69 亿美元营收，人均营收 131 万美元。这个数字本身就说明问题：它不是一家食品厂，它是一个品牌 + 一小撮谈合同的人。</p>
+<p>财报把生意拆成四块，我按重要性重排一下讲。</p>
+<h3>生意一：品牌产品项目（Branded Product Program）—— 卖热狗给餐厅和球场</h3>
+<p>这是<strong>营收最大的一块，但赚钱最少的一块</strong>。</p>
+<p>具体是这么运作的：纳森自己不养牛也不开工厂。它委托 Smithfield（史密斯菲尔德，美国最大的猪肉/加工肉企业，2013 年被中国的万洲国际收购）按纳森的配方生产牛肉热狗，做出来的货打上纳森的商标，然后纳森把这批货卖给<strong>餐饮渠道</strong>——不是超市，是终端要现场加热卖给消费者的地方。</p>
+<p>买家长什么样：一个体育场的餐饮承包商（比如 Aramark 或 Levy），要在洋基球场的看台档口卖热狗，它跟纳森签约，一年进 40 万根纳森热狗，一根批发价大概 1 块 3 到 1 块 5，一年付给纳森 5、60 万美元；这个档口把热狗以 7 美元一根卖给球迷。同样的模式还有：Costco 的美食广场、机场餐厅、赌场、主题公园、高速服务区、大学食堂、地方连锁快餐。纳森还有一套「纳森品牌角落」的授权，让第三方餐厅在自家菜单里挂一个纳森热狗的招牌，交一笔费用。</p>
+<p><strong>为什么客人非买它不可？</strong> 因为「纳森热狗」在美国东北部是有溢价的名字——每年 7 月 4 日国庆日的康尼岛大胃王吃热狗比赛在 ESPN 直播，看的人几千万，这是纳森自己办的赛事，办了五十年。球场卖「纳森热狗」比卖「无名热狗」可以多收两块钱。</p>
+<p><strong>但纳森在这门生意里的角色，说白了是个中间商</strong>：它从 Smithfield 手上按牛肉成本买货，加一道品牌溢价卖给餐饮渠道。<strong>牛肉涨价，它就被夹在中间。</strong> 这正是 TTM 这一期发生的事——下面第二部分会看到数字有多难看。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM（截至 26年6月）</th>
+<th>上一财年 FY2026</th>
+<th>再上一年 FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万美元）</td>
+<td>111.73</td>
+<td>105.77</td>
+<td>91.83</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>66.1%</td>
+<td>65.3%</td>
+<td>62.0%</td>
+</tr>
+<tr>
+<td>年增速</td>
+<td>—</td>
+<td>+15.2%</td>
+<td>+6.2%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>估算的经营利润率：约 9%~10%，贡献利润约 1,000~1,100 万美元。</strong>（财报只披露到分部营收，不披露分部利润；这个数是我用整体毛利倒推的——见下面的算法说明。）</p>
+<h3>生意二：产品授权（Product Licensing）—— 纯收租金，这才是公司的心脏</h3>
+<p>这门生意一年只有 3,862 万美元营收，占总营收 22.8%，<strong>但它几乎就是这家公司全部的利润</strong>。</p>
+<p>怎么运作：纳森把「Nathan's Famous」这个商标授权给 Smithfield，由 Smithfield 自己生产、自己铺货、自己承担库存和促销，把纳森牌热狗摆到全美的 Kroger、Walmart、Publix 冷柜里。你在超市货架上拿一包 8 根装的纳森热狗，付 7.99 美元，这笔钱进的是 Smithfield 的口袋，<strong>Smithfield 按销售额的一个百分比给纳森打钱</strong>。纳森这边不出一分钱成本、不碰一根香肠、不承担一分库存风险。</p>
+<p>除了主力的 Smithfield 热狗授权，还有一堆小授权：纳森牌的薯条（授权给 Lamb Weston）、腌菜、芥末酱、爆米花、金枪鱼罐头，甚至还有授权给别人开的纳森快餐店。</p>
+<p><strong>这门生意的经济性有多好：3,862 万美元营收，成本接近于零。</strong> 全公司 TTM 毛利只有 4,919 万美元，光这一块就贡献了大约 3,860 万——也就是说<strong>公司毛利的 78% 来自这个几乎不需要成本的授权</strong>。ROIC 62.9%（投入的每一块钱资本一年赚回 6 毛 3），根源就在这里。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万美元）</td>
+<td>38.62</td>
+<td>37.42</td>
+<td>37.42</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>22.8%</td>
+<td>23.1%</td>
+<td>25.3%</td>
+</tr>
+<tr>
+<td>年增速</td>
+<td>—</td>
+<td><strong>0.0%</strong></td>
+<td>+11.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意那个 0.0%。</strong> 授权收入连续两年卡在 3,742 万美元一动不动。这不是个好兆头——超市里的纳森热狗销量停止增长了。</p>
+<p><strong>这门生意最大的风险，是它只有一个客户。</strong> 纳森全部的利润，压在跟 Smithfield 一纸合同上。合同续不续、按什么费率续，是这只股票唯一真正重要的变量。</p>
+<h3>生意三：餐厅经营（Restaurant Operations）—— 情怀资产</h3>
+<p>康尼岛那家 1916 年的原始店面（现在是纽约的旅游景点，夏天排队排到街上）、布鲁克林另外几家自营店，加上全球一批加盟店收的加盟费和特许权使用费。</p>
+<p>一年 1,674 万美元营收，占 9.9%，<strong>四年零增长</strong>（FY2023 16.45 → FY2026 16.83）。这块生意的价值不在赚钱，在于它是活的品牌广告——大胃王比赛就在这家店门口办。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收（百万美元）</td>
+<td>16.74</td>
+<td>16.83</td>
+<td>16.86</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>9.9%</td>
+<td>10.4%</td>
+<td>11.4%</td>
+</tr>
+<tr>
+<td>年增速</td>
+<td>—</td>
+<td>-0.2%</td>
+<td>+2.4%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意四：公司/广告基金（Corporate）</h3>
+<p>204 万美元，1.2%。是向加盟商收的广告分摊款，收多少花多少，不赚钱。忽略。</p>
+<h3>分部利润率是怎么估出来的（说明）</h3>
+<p>财报只给分部营收，不给分部利润。我的算法：授权收入 3,862 万几乎无成本，先全额算作毛利；全公司毛利 4,919 万减去它，剩下 <strong>1,057 万毛利要摊在品牌产品项目 + 餐厅 + 公司这 1.305 亿营收上，合计毛利率只有 8.1%</strong>。再按品牌产品项目历史上略高于餐厅的毛利率分配，得到品牌产品项目约 9%~10%、餐厅接近盈亏平衡。<strong>这是估算，不是财报数字。</strong></p>
+<p><strong>这个 8.1% 是本文最刺眼的数字</strong>：占公司三分之二营收的那门生意，一百块钱的货只赚八块钱毛利，还要从这八块里出人工、出运费、出管理费。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>好消息：<strong>纳森的账是我看过的最干净的一类</strong>。没有资本化把戏，没有 Non-GAAP 魔术，没有商誉减值待爆。逐项过一遍。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 112 万美元，占净利润 5.6%，占营收 0.7%。<strong>极小</strong>。这是一家真的用现金而不是用股票发工资的公司。按规矩当成真实成本扣掉——GAAP 里已经扣了，不用调整。</p>
+<p><strong>一次性项目：有一笔，而且是新出现的。</strong> TTM 有一笔 <strong>349 万美元的「并购与重组费用」（Merger &amp; Restructuring Charges）</strong>。往前翻，FY2025、FY2024、FY2023、FY2022 这一行<strong>全是零</strong>，从 FY2026 才开始（FY2026 全年 321 万，TTM 349 万，说明这个季度还在继续花钱）。</p>
+<p>一家 129 人、四亿市值的公司，突然连续两年掏几百万请投行和律师，<strong>通常只有一种解释：公司在被卖，或者在评估战略选择。</strong> 我不能从单期数据断定这笔钱明年还会不会有——按规矩，我明说：<strong>单期口径无法判断这是否会持续</strong>。但它的性质更像「一次性的交易费用」而不是「年年都有的经营费用」，所以在下面的真实市盈率里，我把它加回去。</p>
+<p><strong>资本化的支出</strong>：没有。软件费、开发费一律费用化。资本开支 TTM 只有 <strong>32 万美元</strong>，全年三十来万，比很多公司一个月的办公费还少——这就是「授权生意不需要资产」的具体形态。</p>
+<p><strong>回购与稀释：这一项不及格。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>46 万美元</td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>112 万美元</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.41</strong></td>
+</tr>
+<tr>
+<td>股本变化（同比）</td>
+<td><strong>+0.52%（增加）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>按规矩，这个比值接近 1 才叫「回购只是在抵消发股」，大于 3 才叫真回购。<strong>纳森是 0.41 —— 回购连抵消稀释都做不到，股份数在实实在在地增加。</strong> 好在绝对量很小（一年多发 0.5%），不构成实质伤害，但「管理层在回购股票回馈股东」这句话在这家公司身上不成立。</p>
+<p><strong>它回馈股东的方式是分红，而且力度很大。</strong> 常规股息每股 2.00 美元已经连发三年没涨（这本身也说明增长停滞）。但看现金流量表：<strong>TTM 实付股息 1,840 万美元</strong>，除以 410 万股 = 每股约 4.49 美元。这意味着 FY2026 里派了一笔<strong>约每股 2.50 美元的特别股息</strong>。按当前 98.4 的股价，常规股息率 2.0%，算上那笔特别股息则是 4.6%——但特别股息按定义不能指望年年有。</p>
+<p><strong>利润和现金流的差：几乎没有差，这是好公司的标志。</strong> 净利润 1,992 万，经营现金流 1,940 万，自由现金流 1,908 万。三个数字挤在一起，说明报表上的利润就是真金白银。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>19.92</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>0.94</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>0.07</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>1.12</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>0.12</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>-0.09</td>
+</tr>
+<tr>
+<td><strong>＝ 剔除营运资金前的现金利润</strong></td>
+<td><strong>22.08</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td><strong>-5.13</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>-0.50</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>+3.59</td>
+</tr>
+<tr>
+<td>− 递延收入减少</td>
+<td>-0.24</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>-0.41</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>19.40</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-0.32</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>19.08</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>唯一值得盯的是那笔 513 万的应收账款增加。</strong> 营收只涨了 12.4%（增加约 1,870 万），应收账款却涨了 513 万——<strong>应收增速快过营收增速一倍多</strong>。对一家客户是球场承包商和大型零售商的公司，这可能只是季节性（6 月底是热狗销售旺季的开头），但如果下期还这样，就要怀疑是不是在放宽账期硬推货。<strong>先记一笔，不下结论。</strong></p>
+<p><strong>负债</strong>：总债务 5,102 万，现金 2,469 万，<strong>净负债 2,633 万</strong>。TTM 利息支出 274 万，利息保障倍数 12.2 倍，债务/EBITDA 1.34 倍。<strong>杠杆不高，但也谈不上保守</strong>——公司一边背着 5,100 万债，一边把 1,840 万（几乎等于全部自由现金流）派了出去。这是一家「不打算再投资、把钱全分掉」的公司的资产负债表。值得注意的是利息支出正在快速下降（FY2022 1,014 万 → TTM 274 万），说明过去几年一直在还债，这部分对每股利润是正贡献。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 4.035 亿，企业价值 4.298 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>403.5 ÷ 19.92</td>
+<td><strong>20.3 倍</strong></td>
+<td><strong>4.94 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>纳森不发布调整后利润</td>
+<td>无</td>
+<td>无</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>403.5 ÷ [(31.50 息税前扣非) × (1−29.1%)] = 403.5 ÷ 22.33</td>
+<td><strong>18.1 倍</strong></td>
+<td><strong>5.53 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>403.5 ÷ 19.08</td>
+<td><strong>21.1 倍</strong></td>
+<td><strong>4.73 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>429.8 ÷ 33.46</td>
+<td><strong>12.8 倍</strong></td>
+<td><strong>7.78 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>403.5 ÷ [(20.02+24.03+19.62)/3 = 21.22]</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>5.26 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（真实市盈率的算法：把那笔 349 万并购重组费用加回，按 29.1% 的实际税率纳税，得到 2,233 万的「正常年份」净利润。SBC 已按 GAAP 扣除，不加回。）</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进纳森热狗，按最保守的口径（自由现金流 21.1 倍）算，公司一年替你赚 4 块 7 毛 3；按我认为最公允的剔除一次性费用口径算，是 5 块 5 毛 3。</strong></p>
+<p>三年平均口径 19.0 倍<strong>比当期 20.3 倍还便宜一点</strong>，这条信息很重要：它说明<strong>你现在买的不是一个利润高点</strong>——恰恰相反，TTM 的利润（1,992 万）比三年平均（2,122 万）还低 6%，比两年前的高点（2,403 万）低 17%。你买在了一个利润的相对低谷。这跟很多股票「当期看着便宜、三年平均一看原形毕露」的情况正好反过来。</p>
+<p><strong>这 5 块 5 里，有多少真的回到你口袋？</strong> 几乎全部。资本开支一年只有 32 万美元（占利润 1.6%），公司<strong>根本没地方再投资</strong>。TTM 派了 1,840 万股息（其中约 1,020 万是特别股息）、还了 240 万债、回购了 46 万——<strong>1,908 万自由现金流全部流出，一分没留</strong>。所以你收到的现金回报，取决于公司愿意派多少：按常规股息 2.00 美元算是 2.0% 的股息率，剩下的 2.7 个百分点公司用来还债（这等于变相帮股东降低风险和增加未来利润）。</p>
+<p><strong>这个 5 块 5 未来会变大还是变小？</strong> 我的判断是：<strong>先变小，然后取决于牛肉。</strong></p>
+<p>变小的理由已经在报表里了——毛利率的塌方：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>FY2026</th>
+<th>FY2025</th>
+<th>FY2024</th>
+<th>FY2023</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毛利率</td>
+<td><strong>29.1%</strong></td>
+<td>30.2%</td>
+<td>35.1%</td>
+<td>35.5%</td>
+<td>38.0%</td>
+</tr>
+<tr>
+<td>净利润（百万）</td>
+<td>19.92</td>
+<td>20.02</td>
+<td>24.03</td>
+<td>19.62</td>
+<td>19.62</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年时间毛利率从 38.0% 掉到 29.1%，掉了将近 9 个百分点。<strong>原因不是公司变差了，是美国牛肉价格创了历史新高</strong>——美国肉牛存栏量降到了七十年来最低，绞肉/牛腩碎料价格一路涨。纳森的品牌产品项目是「按成本买、按品牌卖」的中间商，牛肉成本涨的时候，它没法把全部涨幅立刻转嫁给球场和 Costco（那些是年度合同）。所以你看到一个诡异的组合：<strong>营收 +12.4%，净利润 −15.9%</strong>。营收涨的那部分，很大一块只是牛肉涨价传导过去的价格，不是真实生意变大。</p>
+<p>变大的理由：牛群是有周期的。美国肉牛存栏见底后会补栏，两三年内牛肉价格大概率回落。牛肉一回落，毛利率就会往回走，<strong>同样的销量能多赚出几百万</strong>。另外那笔 349 万的并购重组费用如果是一次性的，明年消失就是白捡的利润。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这个价格是公道的，而且你买的是一个被牛肉价格暂时压低的利润，不是一个虚高的利润——但别把它当成便宜货，它的三分之二营收是一门只赚 8% 毛利的中间商生意。</strong></p>
+<p>展开说：真正值钱的东西只有一件——那份把「Nathan's Famous」商标租给 Smithfield 的合同，一年 3,862 万近乎零成本的收入。单看这一块，税后约 2,740 万，用整个 4.035 亿市值去买，相当于 <strong>14.7 倍买下这份授权，然后白送你一门年销 1.1 亿的批发生意和康尼岛那家店</strong>。这么算是划算的。</p>
+<p>但要清醒地看到三件事：<strong>第一，那份授权连续两年零增长</strong>，超市里的纳森热狗不卖了；<strong>第二，公司全部的命运系在一个交易对手（Smithfield，中资万洲国际旗下）身上</strong>，合同一变，估值逻辑立刻推倒重来；<strong>第三，管理层已经不再投资这门生意了</strong>——一年 32 万的资本开支、连发三年不涨的股息、突然冒出来的并购顾问费，拼起来是「公司在准备卖掉自己」的画像，而不是「公司在建设未来」的画像。</p>
+<p>所以它值这个价，不值更高的价。20 倍买一门利润在萎缩、增长为零、但现金极其真实、ROIC 62.9% 的品牌授权生意，<strong>是笔公道买卖，不是笔便宜买卖</strong>。真正的看点是那笔并购重组费用——如果这家一百一十岁的公司真的在找买家，收购溢价会是比牛肉周期更快的那个催化剂。</p>
+</div></body></html>

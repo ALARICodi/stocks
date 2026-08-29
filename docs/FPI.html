@@ -1,0 +1,487 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FPI · 农田合伙人（Farmland Partners Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FPI</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">利润一半是卖地赚的；12个人一年吃掉1500万管理费</div><h1>FPI · 农田合伙人（Farmland Partners Inc.）</h1>
+<p>市值 4.476 亿美元 / 股价约 10.25 美元 / 行业：农地 REIT（房地产信托） / TTM 截止 2026 年 6 月 30 日</p>
+<blockquote>
+<p><strong>这是 REIT（房地产信托），下面不用市盈率当主口径，用 FFO 和 AFFO。</strong>
+原因很简单：REIT 的净利润里有两个东西让它失去意义。第一，折旧——会计准则要求房地产每年按账面价值折旧，可农地不会磨损，一块伊利诺伊的黑土地种一百年还是那块地，这笔折旧是纯粹的记账动作。第二，卖地的收益——FPI 每年都在卖农场，卖价高于账面就记一笔利得进净利润。这两个加起来，能把「净利润」这个数字扭曲到完全脱离生意本身。FFO（营运资金流）就是把折旧加回、把卖地利得剔掉之后剩下的东西；AFFO（调整后营运资金流）再扣掉维持性支出，最接近「这块地一年真正给股东挣了多少现金」。
+<strong>对 FPI 来说这个区别不是学术问题，是全篇的核心</strong>：TTM 净利润 2417 万美元，其中 1415 万是卖地赚的。剥掉之后剩不到一半。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>到 2026 年 6 月 30 日，FPI 拥有 <strong>约 70,100 英亩（约 28.4 万亩）农地，分布在 11 个州</strong>，其中约 <strong>60% 种大田作物</strong>（玉米、大豆、小麦这类一年一收的），约 <strong>40% 种特种作物</strong>（杏仁、开心果、柑橘、蔬菜这类多年生果园和高价值经济作物）。全公司只有 <strong>12 名员工</strong>。</p>
+<p>这是一家实质上只做一门生意、外加两个小配菜的公司。</p>
+<h3>生意一：当地主，收租（这就是全部）</h3>
+<p>具体怎么运转的：伊利诺伊州有一块 1,200 英亩的连片黑土地，FPI 在 2015 年花了大约 1,000 万美元买下来。它自己不种地——它把这块地租给附近一个种了三代玉米的农户家庭，签一份三年期的现金租约，<strong>每英亩每年 300 美元固定租金，播种前一次性或分两次付清，不管今年玉米卖 4 美元一蒲式耳还是 7 美元，不管有没有旱灾，租金一分不少</strong>。这一块地一年就是 36 万美元收入。FPI 要做的只有三件事：收钱、交财产税、以及每隔几年在租约到期时跟农户重新谈价。</p>
+<p><strong>这个模式的关键词是「固定现金租」。</strong> 公司自己在二季度的说法是：核心收入仍然是固定农地租金、按季节性节奏收现；只有在某些地区按当地习惯才会用「浮动租」（按当年收成分成）。这意味着 FPI 承担的风险和农民不一样——农民承担天气和粮价，FPI 承担的是「三年后这个农民还愿不愿意出 300 美元一英亩」，以及「万一他破产了我能不能找到下一个租户」。因为地永远在那儿，租户跑了还能再找，所以这门生意的现金流极其稳定，也极其平庸。</p>
+<p><strong>大田作物（60%）和特种作物（40%）是两套很不一样的经济学</strong>，这一点非常重要：</p>
+<ul>
+<li><strong>大田作物地</strong>（中西部玉米豆带、内布拉斯加、科罗拉多）：每英亩买价大约 5,000–12,000 美元，年租金 200–400 美元，<strong>毛租金收益率约 2.5%–3.5%</strong>。回报低，但地价极其抗跌——美国中西部农地价格 40 年只有极少数年份下跌过，它本质上是一种抗通胀的实物资产。</li>
+<li><strong>特种作物地</strong>（加州中央谷地的杏仁园、开心果园、柑橘园）：每英亩买价可以到 20,000–40,000 美元，因为地上还有几十年树龄的果树和滴灌系统。租金绝对值高得多，但风险完全不同：树是活的，水权是有价的且逐年收紧（加州 SGMA 地下水法案在强制减采），而杏仁价格 2022 年之后崩过一轮。<strong>FPI 在 2025 财年计提了 1782 万美元的资产减值——这笔钱几乎可以肯定就出在这 40% 的特种作物组合上。</strong></li>
+</ul>
+<h3>生意二：中介和管理费（很小）</h3>
+<p>FPI 有一块农场拍卖与经纪业务（FPI Agricultural Management / Murray Wise Associates），替第三方地主卖农场、办拍卖、抽佣金，也替别人管地收管理费。这块钱不多，但战略意义在于它让 FPI 知道全美农地的实时成交价——这是它判断「什么时候该卖」的信息优势来源，也是它这两年能连续以高于账面的价格出货的原因之一。</p>
+<h3>生意三：放贷（更小）</h3>
+<p>对农户和小地主的抵押贷款项目，用 FPI 的资金放出去收利息。规模小到在财报上单独看不出来。</p>
+<p><strong>财报没有按分部披露利润，所以上面三块的利润拆分我无法给出精确数字。</strong> 但从 12 个员工、以及租金业务占绝对主导这个结构判断，二和三对利润的贡献是个位数百分比，可以并入整体看。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是全篇最重要的地方。FPI 的报表不是造假，但它的净利润和这门生意的赚钱能力之间隔着一条很宽的沟。</p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>201 万美元</strong>，占净利润 2417 万的 8.3%，但<strong>占我下面算出来的核心利润 1177 万的 17%</strong>。12 个员工分 201 万美元的股票，人均 16.8 万美元。GAAP 已经扣了，不加回。</p>
+<p><strong>一次性项目——这是最大的一块</strong>：</p>
+<p>TTM 净利润 2417 万美元里，包含 <strong>1415 万美元的「资产出售利得」</strong>（卖农场卖出的价差）和 <strong>59 万美元的投资出售利得</strong>，同时包含 <strong>175 万美元的资产减值损失</strong>（减记农场账面价值）。把这三项剥掉：</p>
+<blockquote>
+<p><strong>核心净利润 = 2417 − 1415 − 59 + 175 = 1118 万美元</strong>（另一条路径核对：经营利润 2310 万 − 利息支出约 1036 万 = 1274 万税前，REIT 免税，扣掉少数股东权益后落在 1100–1300 万区间，两条路互相印证）</p>
+</blockquote>
+<p><strong>也就是说：公司报出来的利润，有一半以上不是收租赚的，是卖地赚的。</strong></p>
+<p>而且这不是 TTM 一年的特例。把三年拆开看（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>报表净利润</th>
+<th>其中：卖地利得</th>
+<th>其中：资产减值</th>
+<th><strong>剥干净后的核心利润</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2023</td>
+<td>27.79</td>
+<td>36.13</td>
+<td>−5.84</td>
+<td><strong>−2.50</strong></td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>56.43</td>
+<td>54.15</td>
+<td>−0.79</td>
+<td><strong>3.07</strong></td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>28.80</td>
+<td>35.86</td>
+<td>−17.82</td>
+<td><strong>10.76</strong></td>
+</tr>
+<tr>
+<td><strong>三年合计</strong></td>
+<td><strong>113.02</strong></td>
+<td><strong>126.14</strong></td>
+<td><strong>−24.45</strong></td>
+<td><strong>11.33</strong></td>
+</tr>
+<tr>
+<td>TTM（截至 2026/6）</td>
+<td>24.17</td>
+<td>14.15</td>
+<td>−1.75</td>
+<td><strong>11.77</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年里，卖地利得（1.2614 亿）比三年净利润总额（1.1302 亿）还多。</strong> 换句话说，如果 FPI 这三年一亩地都没卖，它的账面是亏钱的——三年加起来只挣了 1133 万美元，平均一年 378 万，对一个 6.87 亿美元的资产盘子来说是 0.55%。</p>
+<p>必须公平地补一句：<strong>这条曲线是往上走的</strong>（−250 万 → 307 万 → 1076 万 → 1177 万）。原因是真实的：卖地拿到的钱大量用来还债，有息负债从 FY2023 的 3.613 亿降到现在的 2.243 亿，一年省下的利息就是七八百万。所以「卖地—还债—核心利润上升」这个循环是有效的。但也要看清它的本质：<strong>这是靠缩小自己来提高每股回报，不是靠把生意做大</strong>。</p>
+<p><strong>资本化的支出</strong>：REIT 不存在软件资本化那类花招。TTM 购置农地只花了 172 万美元——几乎停止买地了。</p>
+<p><strong>回购与稀释——这里有一个必须警告的地方</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权激励 SBC</td>
+<td>201 万</td>
+</tr>
+<tr>
+<td>普通股回购（现金）</td>
+<td>1409 万</td>
+</tr>
+<tr>
+<td><strong>优先股回购（现金）</strong></td>
+<td><strong>6820 万</strong></td>
+</tr>
+<tr>
+<td>现金股息</td>
+<td>2037 万</td>
+</tr>
+<tr>
+<td><strong>合计现金流出股东端</strong></td>
+<td><strong>1.0266 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>回购/SBC = 1409 / 201 = <strong>7.0 倍</strong>，远大于 3，按常规标准这是真回购。数据源同时显示<strong>流通股一年减少了 22.63%</strong>，「股东回报率」高达 26.14%。</p>
+<p><strong>但这两个数字对不上，买之前必须自己去核。</strong> 22.63% 的股本减少对应约 1,270 万股，按 10–11 美元算需要 1.3–1.4 亿美元现金，而 TTM 的现金回购只有 1409 万。缺口约 1,100 万股不是用现金买回来的。最可能的解释是非现金注销——赎回此前计入股本口径的优先股/经营合伙企业单位（TTM 那笔 6820 万美元的优先股回购是线索），或者以农场换股份的资产置换。<strong>数据源的摘要页看不到这笔明细。</strong> 所以「26% 的股东回报率」这个耀眼的数字，在没读 10-Q 之前不能当真。</p>
+<p><strong>利润和现金流的差</strong>：净利润 2417 万，经营现金流只有 1842 万，<strong>现金流比利润还低</strong>——这在健康公司里很少见，原因正是那 1415 万的卖地利得必须从经营现金流里剔出去（它属于投资活动）。逐项对账（单位：百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>24.17</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>＋3.68</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>＋0.37</td>
+</tr>
+<tr>
+<td><strong>− 卖地利得（挪到投资活动去了）</strong></td>
+<td><strong>−14.15</strong></td>
+</tr>
+<tr>
+<td>− 投资出售利得</td>
+<td>−0.59</td>
+</tr>
+<tr>
+<td>＋ 资产减值（非现金）</td>
+<td>＋1.75</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>＋2.01</td>
+</tr>
+<tr>
+<td>− 权益法投资收益</td>
+<td>−0.23</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−3.08</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产变化</td>
+<td>＋0.90</td>
+</tr>
+<tr>
+<td>− 其他经营活动</td>
+<td>−2.31</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>18.42</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>减去 172 万的购地支出，<strong>自由现金流 1670 万美元</strong>。这是这家公司一年真正产生的、可以自由支配的现金。</p>
+<p><strong>记住这个数：1670 万。</strong> 因为 TTM 派出去的现金股息是 <strong>2037 万美元</strong>——<strong>股息比自由现金流多出 22%</strong>。差额从哪来？从卖地：TTM 卖农场收回 3033 万美元现金。<strong>这家公司在卖地发股息。</strong></p>
+<p><strong>最后一项，全篇最刺眼的数字：管理费用。</strong> 从毛利润倒推：</p>
+<blockquote>
+<p>营收 5106 万 − 物业直接成本 885 万 − 折旧摊销 405 万 − <strong>总部管理费用约 1506 万</strong> = 经营利润 2310 万</p>
+</blockquote>
+<p><strong>一家只有 12 个员工、靠收固定地租过日子的公司，一年花掉 1506 万美元的管理费用，占营收的 29.5%，人均 125 万美元。</strong> 就算把 201 万的股权激励剔掉，人均还有 109 万。收租这件事本身几乎不需要人力——地在那儿，租约签三年，一年收两次钱。这 1500 万是这家公司「不是一块地，而是一块地加一个壳」的全部代价，也是投入资本回报率只有 3.34% 的直接原因。你作为股东，每收到 100 元租金，有 29.5 元在到你手里之前就被这个壳吃掉了。</p>
+<hr />
+<h2>第三部分：REIT 口径估值</h2>
+<h3>核心比率</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>公司指引的 2026 年 AFFO</strong></td>
+<td><strong>每股 0.31–0.35 美元</strong></td>
+<td>二季度已把区间下限从 0.30 上调到 0.31</td>
+</tr>
+<tr>
+<td><strong>市价 / AFFO（P/AFFO）</strong></td>
+<td><strong>29.3 – 33.1 倍</strong></td>
+<td>股价 10.25 美元 ÷ AFFO 0.35 / 0.31</td>
+</tr>
+<tr>
+<td><strong>AFFO 收益率</strong></td>
+<td><strong>3.0% – 3.4%</strong></td>
+<td>这就是「投 100 块，这门生意一年真给你挣多少」</td>
+</tr>
+<tr>
+<td>市价 / FFO（P/FFO）</td>
+<td>26.02 倍</td>
+<td>FFO 约 1720 万美元，每股约 0.394</td>
+</tr>
+<tr>
+<td>市净率 PB / 有形账面市净率</td>
+<td><strong>0.97 倍 / 0.97 倍</strong></td>
+<td>账上没有商誉，每股账面净资产 10.61 美元</td>
+</tr>
+<tr>
+<td><strong>股息</strong></td>
+<td>年化 <strong>0.36 美元</strong>，股息率 <strong>3.51%</strong></td>
+<td><strong>高于 AFFO 指引的上限 0.35</strong></td>
+</tr>
+<tr>
+<td><strong>股息 / AFFO 支付率</strong></td>
+<td><strong>103% – 116%</strong></td>
+<td>未被覆盖</td>
+</tr>
+<tr>
+<td>股息 / 自由现金流</td>
+<td>2037 万 ÷ 1670 万 = <strong>122%</strong></td>
+<td>未被覆盖</td>
+</tr>
+<tr>
+<td>投入资本回报率 ROIC</td>
+<td><strong>3.34%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>加权平均资本成本 WACC</td>
+<td><strong>6.91%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>净资产收益率 ROE</td>
+<td>5.03%</td>
+<td>且其中大半来自卖地</td>
+</tr>
+<tr>
+<td>有息负债</td>
+<td>2.243 亿美元</td>
+<td>债务/EBITDA 8.28 倍</td>
+</tr>
+<tr>
+<td>利息保障倍数</td>
+<td>2.23 倍</td>
+<td>利息支出约 1036 万</td>
+</tr>
+<tr>
+<td>每英亩账面成本</td>
+<td>约 <strong>9,806 美元</strong></td>
+<td>（权益 4.631 亿＋负债 2.243 亿）÷ 70,100 英亩</td>
+</tr>
+<tr>
+<td>卖空比例</td>
+<td>7.23% 流通股</td>
+<td>偏高</td>
+</tr>
+</tbody>
+</table></div>
+<h3>换算成「投 100 块一年赚多少」</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AFFO 口径（最诚实）</strong></td>
+<td>4.476 亿 ÷（0.33×4366 万股 ≈ 1441 万）</td>
+<td><strong>31.1 倍</strong></td>
+<td><strong>3.22 元</strong></td>
+</tr>
+<tr>
+<td>FFO 口径</td>
+<td>4.476 亿 ÷ 1720 万</td>
+<td>26.0 倍</td>
+<td>3.84 元</td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率（含卖地利得）</td>
+<td>4.476 亿 ÷ 2417 万</td>
+<td>18.5 倍</td>
+<td>5.40 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>4.476 亿 ÷ 1118 万（剔卖地利得、加回减值）</td>
+<td><strong>40.0 倍</strong></td>
+<td><strong>2.50 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>4.476 亿 ÷ 1670 万</td>
+<td>26.8 倍</td>
+<td>3.73 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>6.605 亿 ÷ 2310 万</td>
+<td>28.6 倍</td>
+<td>3.50 元（按 EV 计）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（表面）</strong></td>
+<td>4.476 亿 ÷（FY23–25 平均 3767 万）</td>
+<td><strong>11.9 倍</strong></td>
+<td>8.42 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径（剥掉卖地）</strong></td>
+<td>4.476 亿 ÷（三年核心平均 378 万）</td>
+<td><strong>118 倍</strong></td>
+<td><strong>0.85 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最有价值的是最后两行的对比。</strong> 表面上看，三年平均口径 11.9 倍是全表最便宜的数——这正是筛选器把 FPI 以 22 倍市盈率放进「15–50 倍」名单的原因。但那三年的平均利润里，卖地利得（1.2614 亿）比总利润（1.1302 亿）还多。<strong>把卖地那部分剥掉，三年平均口径是 118 倍。</strong> 一个数字从 11.9 倍变成 118 倍，只因为你问了一句「这些钱是收租赚的还是卖资产赚的」。</p>
+<p>现实中最该用的是第一行：<strong>按公司自己给的 AFFO 指引，你投 100 块，这门生意一年给你挣 3.22 元。</strong></p>
+<h3>负利差：这门生意的根本问题</h3>
+<p>把三个数字并排：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资产端：经营利润 2310 万 ÷ 投入资本 6.874 亿</td>
+<td><strong>3.36%</strong></td>
+</tr>
+<tr>
+<td>负债端：利息支出 1036 万 ÷ 有息负债 2.243 亿</td>
+<td><strong>4.62%</strong>（按期末债务；按期内平均债务约 1.9 亿算则为 5.4%）</td>
+</tr>
+<tr>
+<td>资金成本：WACC</td>
+<td><strong>6.91%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FPI 借着 4.6%–5.4% 的钱，买着回报 3.4% 的地。</strong> 每借一块钱去买地，就毁灭价值。这不是管理层无能——这是农地这类资产的天然属性：地价里包含了巨大的「抗通胀期权价值」和「稀缺性溢价」，所以当期租金收益率天生就低于借贷利率。<strong>农地是一种适合用自有资金持有、不适合用杠杆持有、更不适合装进一个每年吃掉 1500 万管理费的上市壳的资产。</strong></p>
+<p>管理层显然知道这一点，因为他们过去三年干的事，正是在拆掉这个结构：卖掉 6 亿多美元的农场、把债务从 3.61 亿砍到 2.24 亿、回购普通股和优先股、把流通股缩掉两成。<strong>这是正确的动作</strong>，而且效果实实在在（核心利润从三年前的负数变成现在的 1177 万）。二季度业绩会上他们也说，下半年会继续评估资产处置，所得款项用于还债或回购股票。</p>
+<h3>那么 0.97 倍市净率是不是就便宜了</h3>
+<p>这是买 FPI 唯一站得住的理由，所以要认真算。</p>
+<p><strong>支持「账面低估了真实地价」的证据是硬的</strong>：过去三年 FPI 卖出约 6.03 亿美元的农场，录得 1.2614 亿美元的利得，也就是<strong>实际成交价平均比账面价高出约 26%</strong>。这不是估值模型，是真金白银的成交记录。按这个折算，70,100 英亩的市场价值约为 6.874 亿 × 1.26 ≈ <strong>8.66 亿美元</strong>，减去 2.243 亿负债，权益的清算价值约 <strong>6.4 亿美元</strong>，对应每股约 <strong>14.7 美元</strong>。股价 10.25 美元，<strong>折价约 30%</strong>。</p>
+<p><strong>但这个折价要打两个折扣</strong>：</p>
+<ol>
+<li><strong>那 26% 的溢价来自被卖掉的农场，不是留下的农场。</strong> 公司卖的当然是能卖出好价的那些。剩下的 70,100 英亩里有 40% 是特种作物地，而 FPI 自己在 FY2025 就对这类资产计提了 1782 万美元的减值——<strong>公司用自己的会计动作承认了这部分资产的账面价值都撑不住，遑论溢价 26%。</strong></li>
+<li><strong>清算价值只有真被清算了才归你。</strong> 只要公司还在，每年 1500 万的管理费就要从租金里先扣走，负利差就要继续吞噬价值。折价能不能收窄，取决于管理层继续卖、继续回购的意愿和速度——过去两年他们确实在做，但这不是合同，是选择。</li>
+</ol>
+<h3>这 3.22 元里有多少真到你口袋</h3>
+<ul>
+<li><strong>股息 3.51 元</strong>（年化 0.36 美元）：确实按季打进账户。但<strong>它超过了公司自己指引的 AFFO 上限（0.35），也超过了自由现金流 22%</strong>，差额来自卖地款。这是一笔部分由变卖资产支撑的股息——你收到的一部分钱，是你自己那块地被卖掉换来的。</li>
+<li><strong>回购</strong>：账面数字很漂亮（股本减少 22.63%），但如上文所述，其中只有 1409 万是现金回购，其余约 1,100 万股的注销机制在摘要数据里查不到，<strong>买之前必须自己去 10-Q 核实</strong>。</li>
+<li><strong>留存</strong>：几乎没有——TTM 只花了 172 万美元买地。公司已经不再扩张。</li>
+</ul>
+<p><strong>这个 3.22 元未来是变大还是变小？</strong> 每股口径大概率缓慢变大，但靠的不是生意变好，而是<strong>分母变小</strong>：继续卖地、继续还债、继续回购，同样的租金摊到更少的股份上。营收已经连续四年下降（6126 万 → 5747 万 → 5753 万 → 5179 万 → TTM 5106 万），这个趋势不会逆转，因为公司在主动缩表。真正的变量只有两个：中西部现金租金能不能跟上通胀（历史上大致能），以及加州那 40% 特种作物地的水权和树龄问题会不会再来一次减值。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>按生意算，贵得离谱；按地价算，打了七折。你买的不是一家公司，是一块地，外加一个每年吃掉 1500 万美元的壳。</strong></p>
+<p>先把生意的账算清楚：这门生意一年产生 1670 万美元自由现金流、1441 万美元 AFFO，你要为它付 4.476 亿美元，<strong>31 倍 AFFO，3.2% 的收益率</strong>——而同一时间美国十年期国债给你的是 4% 出头，无风险。它借着 4.6%–5.4% 的钱买回报 3.4% 的地，投入资本回报率（3.34%）不到资金成本（6.91%）的一半，营收连续四年下降，派出去的股息超过了它自己给的 AFFO 指引上限。报表上那个 18.5 倍的市盈率是假的——把卖地利得剥掉是 40 倍，三年平均剥干净是 118 倍。<strong>作为一门生意，它不值这个价，差得远。</strong></p>
+<p>再把地的账算清楚：70,100 英亩真实存在的美国农地，账面 6.87 亿，而过去三年实际成交比账面高出 26%，所以清算价值大约每股 14.7 美元，现价 10.25 美元。<strong>作为一块地，它打了七折。</strong> 而且管理层这三年一直在做正确的事——卖地、还债、回购、缩股本，把折价一点点变现给股东。</p>
+<p>所以买它的理由只能有一个：<strong>你不是在买一家公司的成长，你是在打赌管理层会继续把这块地拆开卖掉，然后把钱还给你。</strong> 这个赌注不算离谱——他们过去三年确实在这么做，而且做得不错。但它有三个明确的漏洞：那 40% 的加州特种作物地公司自己刚减值过 1782 万，26% 的溢价大概率不适用于它；每拖一年，1500 万的管理费和 1000 万的利息就吃掉一次租金；而「继续卖」是管理层的选择，不是你能强制的合同。</p>
+<p><strong>结论：不便宜。</strong> 想赚这个 30% 的折价，等一个更宽的折价再动手——农地 REIT 的折价在利率高位时经常拉到 40% 以上。而如果你真正想要的是「持有美国农地对抗通胀」，直接买地或买农地基金，比通过这个每年抽走 29.5% 营收的壳去持有它划算得多。</p>
+</div></body></html>

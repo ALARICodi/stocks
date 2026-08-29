@@ -1,0 +1,469 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GBFH · GBank 金融控股（GBank Financial Holdings Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GBFH</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">1.68倍PB买11.4%的ROE，公道不便宜；拨备一年涨86%要盯</div><h1>GBFH · GBank 金融控股（GBank Financial Holdings Inc.）</h1>
+<p>市值 2.92 亿美元 · 股价 $20.10（2026-08-28 收盘）· 行业：地区性银行（内华达州拉斯维加斯）· 员工 189 人 · TTM 截止 <strong>2026-06-30</strong></p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用「市净率 × 净资产收益率」而不是市盈率做主口径。</strong> 原因：银行的利润是加了 8 倍杠杆（1206 万存款撑起 1432 万资产，股东只出 173 万）撬出来的，同样赚 1 块钱，一家杠杆 8 倍的银行和一家零负债的软件公司完全不是一回事。市盈率看不出杠杆和坏账准备，市净率能。市盈率照样列出来做参照。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>GBank 是一家只有 189 个人、总资产 14.3 亿美元的小银行，但它的收入结构一点都不像小银行——<strong>非利息收入占了拨备前总收入的 37.6%</strong>，一般社区银行这个数字只有 10%~15%。所以它实质上是三门生意拼起来的。</p>
+<h3>生意一：SBA 小企业贷款——放一半、卖一半、赚两道钱</h3>
+<p>这是 GBank 最赚钱也最特别的一块，值得讲清楚它的机制。</p>
+<p>美国小企业管理局（SBA）有个叫 <strong>7(a)</strong> 的项目：小企业向银行借钱，政府替这笔贷款<strong>担保 75%</strong>。意思是借了 100 万，企业还不上，政府赔银行 75 万，银行只亏 25 万。</p>
+<p><strong>一单具体长这样</strong>：拉斯维加斯有个牙医，想自己开诊所，需要 150 万美元买设备、装修、租下铺面。他没有厂房抵押，普通商业贷款批不下来。GBank 用 SBA 7(a) 批给他 150 万，期限 10 年，利率是<strong>最优惠利率 + 2.75%</strong>（浮动，2026 年大约 9.5%~10%）。</p>
+<p>批完之后 GBank 做了一件普通银行不做的事：<strong>把政府担保的那 112.5 万（75%）拿到二级市场卖掉</strong>。买家是保险公司、养老金、专门吃 SBA 债的基金——他们要的就是"美国政府担保 + 浮动高息"这个组合，愿意出<strong>溢价 108~112 元买面值 100 元的东西</strong>。</p>
+<p>于是 GBank 一单赚三道：
+1. <strong>卖出溢价</strong>——卖 112.5 万的担保部分，收回约 122 万，当场确认约 10 万利润，现金落袋；
+2. <strong>留下的 37.5 万继续收息</strong>——自己承担全部风险，但利率接近 10%；
+3. <strong>服务费</strong>——虽然卖掉了，但收款、催收还是 GBank 做，按未偿本金每年收 1% 服务费，收 10 年。</p>
+<p>资产负债表上能看到这个流程：<strong>待售贷款（Loans Held for Sale）5085 万美元</strong>——这就是已经放出去、正在排队等着卖的那批担保部分。</p>
+<p>放贷之外它也做本地的<strong>商业地产贷款、设备贷款、企业定期贷款、医疗/专业人士贷款、经营性授信、应收账款和存货融资</strong>。全部集中在内华达州。</p>
+<h3>生意二：拉存款——但便宜存款正在变贵</h3>
+<p>银行放贷的钱来自存款。GBank 的存款结构这三年发生了很不好的变化：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>2022-12</th>
+<th>2023-12</th>
+<th>2024-12</th>
+<th>2025-12</th>
+<th>TTM 2026-06</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无息存款（百万）</td>
+<td>304.95</td>
+<td>216.90</td>
+<td>239.67</td>
+<td>214.13</td>
+<td><strong>233.44</strong></td>
+</tr>
+<tr>
+<td>计息存款（百万）</td>
+<td>250.48</td>
+<td>528.80</td>
+<td>695.41</td>
+<td>886.86</td>
+<td><strong>930.91</strong></td>
+</tr>
+<tr>
+<td>机构存款（百万）</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>41.71</td>
+<td><strong>41.38</strong></td>
+</tr>
+<tr>
+<td><strong>无息存款占比</strong></td>
+<td><strong>54.9%</strong></td>
+<td><strong>29.1%</strong></td>
+<td><strong>25.6%</strong></td>
+<td><strong>18.7%</strong></td>
+<td><strong>19.4%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>四年前一半以上的存款是<strong>不用付利息的活期账户</strong>（拉斯维加斯的商户经营账户、承包商的往来户），那是银行最值钱的东西。现在只剩不到两成，其余全靠<strong>付息揽储</strong>——TTM 光存款利息就付出去 3574 万美元，平均计息存款成本约 <strong>3.93%</strong>（估算）。</p>
+<h3>生意三：卡业务和支付服务——最小、增长最快、最看不清</h3>
+<p>财报的标准化分类里有一行「其他非利息收入」，走势是这样的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>其他非利息收入（百万）</td>
+<td>2.67</td>
+<td>1.95</td>
+<td>3.92</td>
+<td>12.29</td>
+<td><strong>13.80</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两年涨了 3.5 倍</strong>，是全公司增长最快的一块。公司业务描述里对应的是信用卡、商户收单、Zelle、正向支付、远程存款、商业快递这些支付和账户服务。这块的具体拆分公开财报没有披露，从体量和增速判断是卡和支付业务在放量（<strong>估算，非披露数据</strong>）。这也是它能维持那 2.33 亿无息存款的原因——支付业务天然沉淀活期资金。</p>
+<h3>三门生意的钱汇总（TTM）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入</th>
+<th>同比</th>
+<th>占拨备前收入比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入（放贷收息 − 存款付息）</td>
+<td>$5145 万</td>
+<td>+6.4%</td>
+<td>62.4%</td>
+</tr>
+<tr>
+<td>非利息收入（卖 SBA 贷款价差 + 服务费 + 卡业务）</td>
+<td>$3104 万</td>
+<td><strong>+51.7%</strong></td>
+<td>37.6%</td>
+</tr>
+<tr>
+<td><strong>拨备前总收入</strong></td>
+<td><strong>$8249 万</strong></td>
+<td>+8.5%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>− 贷款损失拨备</td>
+<td>−$717 万</td>
+<td><strong>+86.2%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 财报口径营业收入</strong></td>
+<td><strong>$7531 万</strong></td>
+<td>+15.8%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最该盯的是两个反向的箭头：非利息收入 +51.7%，贷款损失拨备 +86.2%。</strong> 一边在加速赚钱，一边在加速计提坏账。</p>
+<p>利息端拆开看：贷款利息收入 7817 万，按平均贷款余额约 10.15 亿估算，<strong>贷款收益率约 7.7%</strong>；存款成本 3.93%；<strong>利差约 3.8 个百分点</strong>，明显高于普通地区银行 2.5~3 个百分点的水平——这就是 SBA 浮动高息贷款带来的好处。</p>
+<p>财报不按业务线披露利润，上面各条的利润率无法准确拆分，故只列收入。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：很小，约 107 万美元，占净利润 5.8%</h3>
+<p>财报的现金流表没有单列股权激励。用另一条路倒推：TTM 实收资本从 8041 万增加到 8261 万（+220 万），同期现金发股只有 113 万，<strong>差额约 107 万就是非现金的股权激励</strong>（估算）。占净利润 5.8%，在银行里属于正常偏低水平，<strong>按规矩当成真实成本已经在 GAAP 里扣掉了，不加回</strong>。</p>
+<h3>一次性项目：有一笔 557 万，但单期口径判断不了它是不是"年年都有"</h3>
+<p>TTM 有一笔 <strong>Other Unusual Items −557 万美元</strong>（税前），把税前利润从 2912 万压到 2355 万。上一年（FY2025）同一行是 −130 万，再往前两年是 0。</p>
+<p>财报的标准化分类没说这 557 万具体是什么。从资产负债表上有两条线索：<strong>「其他不动产及止赎资产」（OREO）从 2024 年底的 0 涨到 2025 年底的 440 万、再到现在的 566 万</strong>——这是收回来的抵押物，通常伴随减值。所以这笔一次性有相当概率跟不良资产处置有关。</p>
+<p><strong>但只看一期数据，无法判断这是"真一次性"还是"以后每年都会有"。</strong> 考虑到连续两年出现、且不良资产在同步上升，本文的处理是：<strong>主口径不剔除，另列一个剔除后的口径作对比</strong>，让两个数字都摆出来。</p>
+<h3>资本化的支出：有 716 万折旧摊销，但不是设备</h3>
+<p>TTM 折旧摊销 <strong>716 万美元</strong>，而全公司的房产设备净值只有 620 万——折旧比资产还多，说明这里面绝大部分<strong>不是厂房设备的折旧，是 SBA 服务权和贷款溢价的摊销</strong>（卖掉贷款时确认的服务权资产，之后按年摊销回冲）。这是 SBA 银行的固有会计特征，不是障眼法，但<strong>要知道它意味着当年确认的卖贷款收益，在后面几年会被摊销部分抵消</strong>。</p>
+<h3>回购与稀释：没有回购，稀释很轻</h3>
+<p><strong>TTM 回购 0，股本 +1.68%。</strong> 回购 ÷ SBC = 0，但这里的 SBC 本身只有 107 万，所以稀释也轻。往回看：FY2023 +1.23%、FY2024 +2.94%、FY2025 +7.88%（这一年增发了 1946 万美元融资）、TTM +1.68%。</p>
+<p><strong>这是一家把利润全部留在体内的银行——不分红、不回购、股本基本不动。</strong> 股东权益从 2022 年底的 8680 万涨到现在的 1.728 亿，三年半接近翻倍，全靠留存利润（未分配利润从 3488 万涨到 9214 万）加一次增发。<strong>跟上一家（SAR）正好相反：SAR 边赚边挖净资产，GBFH 一分不发全部滚存。</strong></p>
+<h3>利润和现金流的差：有一笔约 1300 万的隐形非现金收益</h3>
+<p>TTM 净利润 1848 万，经营现金流 3188 万，自由现金流 3105 万。现金流<strong>高于</strong>净利润，表面看是好事，但把逐项对账做出来会发现一个缺口：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>18.48</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+7.16</td>
+<td>主要是 SBA 服务权摊销</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+0.09</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 贷款损失拨备</td>
+<td>+7.17</td>
+<td>计提但没真掏钱</td>
+</tr>
+<tr>
+<td>+ 资产处置损益</td>
+<td>+0.07</td>
+<td></td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>−1.65</td>
+<td>非现金，冲回</td>
+</tr>
+<tr>
+<td>+ 已发放/已售出贷款净变动（经营）</td>
+<td>+16.95</td>
+<td>卖掉的待售贷款多于新放的</td>
+</tr>
+<tr>
+<td>− 应收利息增加</td>
+<td>−0.66</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营资产变动</td>
+<td>−5.86</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+3.10</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>以上加总</strong></td>
+<td><strong>44.85</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>财报实际经营现金流</strong></td>
+<td><strong>31.88</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>缺口</strong></td>
+<td><strong>−12.97</strong></td>
+<td><strong>← 有一行没显示出来</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这个 1297 万的缺口，几乎可以肯定是<strong>「卖 SBA 贷款确认的账面价差」被作为非现金项冲回</strong>（标准化报表里这一行没单独列示，是从加总倒推出来的，<strong>属于估算</strong>）。</p>
+<p><strong>这件事的含义很重要</strong>：GBFH 那 3104 万非利息收入里，大约 1300 万（占净利润的 70%）不是收利息收来的，是<strong>把贷款卖掉时一次性确认的账面收益</strong>。这类收益的特点是：
+- <strong>好的时候特别好</strong>——二级市场溢价高、SBA 贷款抢手，一卖就是 8~12 个点的利润；
+- <strong>坏的时候直接归零</strong>——市场一冷、买家一退，贷款卖不动，这块收入当季就没了，而工资、房租、存款利息一分不少。</p>
+<p>所以<strong>这家银行的利润质量比表面的 PE 15.7 倍要脆</strong>。</p>
+<h3>资产质量：在恶化，但还没到危险线</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>2024-12</th>
+<th>2025-12</th>
+<th>TTM 2026-06</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毛贷款（百万）</td>
+<td>824.86</td>
+<td>970.17</td>
+<td><strong>1,060</strong></td>
+</tr>
+<tr>
+<td>贷款损失准备（百万）</td>
+<td>9.11</td>
+<td>9.89</td>
+<td><strong>12.42</strong></td>
+</tr>
+<tr>
+<td><strong>准备金 / 毛贷款</strong></td>
+<td>1.10%</td>
+<td>1.02%</td>
+<td><strong>1.17%</strong></td>
+</tr>
+<tr>
+<td>止赎资产 OREO（百万）</td>
+<td>0</td>
+<td>4.40</td>
+<td><strong>5.66</strong></td>
+</tr>
+<tr>
+<td>当期拨备（百万）</td>
+<td>2.24</td>
+<td>3.85</td>
+<td><strong>7.17</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>从拨备和准备金余额倒推，<strong>TTM 净核销约 464 万美元，约占贷款的 0.46%</strong>（估算）——比 2024 年高了一截，但对一家做 SBA 小企业贷款的银行来说还在正常带内（SBA 组合的历史核销率通常 0.5%~1.5%）。<strong>要盯的是趋势：拨备一年翻了 86%，OREO 从零涨到 566 万，这是曲线的开头而不是结尾。</strong></p>
+<p>资本方面没有问题：<strong>股东权益 1.728 亿 ÷ 总资产 14.32 亿 = 12.07%</strong>，有形资本几乎等于全部资本（P/B 1.68 和 P/TBV 1.69 只差 0.01，说明商誉和无形资产可以忽略）。这个厚度在小银行里属于很扎实的一档，能吃下比现在大好几倍的坏账。</p>
+<hr />
+<h2>第三部分：多口径估值——投 100 块，一年到底赚多少</h2>
+<p><strong>主口径（银行专用）</strong>：你花 1.68 元买 1 元净资产，这 1 元净资产一年赚 11.39 分，所以你的 100 块一年赚 <strong>11.39% ÷ 1.68 = 6.78 元</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>291.78 ÷ 18.48</td>
+<td><strong>15.8 倍</strong></td>
+<td><strong>$6.33</strong></td>
+</tr>
+<tr>
+<td>剔除一次性后（加回 557 万税后 437 万）</td>
+<td>291.78 ÷ 22.85</td>
+<td>12.8 倍</td>
+<td>$7.83</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实口径</strong>（SBC 已扣，一次性两年连出故不剔）</td>
+<td>同 GAAP</td>
+<td><strong>15.8 倍</strong></td>
+<td><strong>$6.33</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>291.78 ÷ 31.05</td>
+<td>9.4 倍</td>
+<td>$10.64（<strong>银行不适用</strong>，见下）</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>银行的 EV 概念不成立</td>
+<td>不适用</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均净利润口径</td>
+<td>291.78 ÷ 16.83（FY23/24/25 平均）</td>
+<td>17.3 倍</td>
+<td>$5.77</td>
+</tr>
+<tr>
+<td><strong>市净率 × ROE（主口径）</strong></td>
+<td>PB 1.68，ROE 11.39%</td>
+<td><strong>1.68 倍 PB</strong></td>
+<td><strong>$6.78</strong></td>
+</tr>
+<tr>
+<td>有形净资产口径</td>
+<td>P/TBV 1.69，ROTCE 约 11.4%</td>
+<td>1.69 倍</td>
+<td>$6.74</td>
+</tr>
+<tr>
+<td>分析师预期口径</td>
+<td>前瞻 PE 9.87</td>
+<td>9.9 倍</td>
+<td>$10.13</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>先排除两个不能信的：</strong></p>
+<p><strong>P/FCF 9.4 倍、回报 10.64 元——假的。</strong> 银行的"自由现金流"是个空概念：它的现金流出主要看放了多少贷款（TTM 投资活动流出 2.12 亿）、流入主要看吸了多少存款（融资活动流入 1.78 亿），跟"股东能拿走多少钱"毫无关系。任何拿 P/FCF 给银行估值的做法都是套错了公式。</p>
+<p><strong>前瞻 PE 9.87 倍、回报 10.13 元——太乐观。</strong> 它隐含明年每股赚约 $2.04，比 TTM 的 $1.28 高 59%。只有 3 位分析师覆盖，目标价 $32（比现价高 59%），而 TTM 的实际净利润是<strong>同比下降 5.15%</strong> 的。要相信这个数字，得同时相信拨备不再上升、一次性项目不再出现、卖贷款价差恢复到 2025 年的水平——三件事同时发生的概率不高。</p>
+<p><strong>三年平均口径 17.3 倍、回报 5.77 元——对这家公司偏保守。</strong> 因为这三年它的资产从 9.18 亿长到 14.32 亿，权益从 9843 万长到 1.728 亿，用三年前那个只有一半大的银行的利润来平均，等于罚它增长。</p>
+<p><strong>该信的是 6.3~6.8 元这一档，三个独立口径（GAAP PE 6.33、PB×ROE 6.78、P/TBV×ROTCE 6.74）互相印证。</strong></p>
+<p><strong>这 6.5 块里有多少回到你口袋？一分都没有。</strong> 公司不分红、不回购，全部留存——TTM 全部 1848 万利润留在体内，投资活动净流出 2.12 亿（几乎全是新放贷款），存款净流入 1.73 亿。<strong>它把赚到的每一分钱都变成了新的贷款。</strong> 对股东来说，回报的形式是每股净资产从三年前的 $7.6 左右涨到现在的 $11.94，未来靠股价反映。</p>
+<p><strong>这个 6.5 块未来会变大还是变小？两股力量在对冲：</strong></p>
+<ul>
+<li><strong>往上的力</strong>：非利息收入 +51.7%，卡和支付业务两年涨 3.5 倍且几乎不占资本；贷款余额 +9.3%，规模还在长；效率比 56%（费用 4619 万 ÷ 拨备前收入 8249 万），对一家 189 人的小银行是相当好的水平；12.07% 的资本充足度还能再撑好几年扩张。</li>
+<li><strong>往下的力</strong>：ROE 已经从 FY2024 的 15.59% 降到 11.39%，ROA 从 1.83% 降到 1.39%；拨备一年翻倍、OREO 从零冒出来；无息存款占比从 54.9% 塌到 19.4%，每多拉一块钱存款成本都更高；利润里那 1300 万"卖贷款价差"随市场情绪波动。</li>
+</ul>
+<p>净效果大概率是<strong>回报率继续温和下滑到 6% 附近，但净资产的绝对值还在以每年 10%~15% 的速度变厚</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门真实的好生意（SBA 放贷 + 支付沉淀存款 + 12% 的厚资本 + 56% 的效率比），配上一个已经从疯狂回落但还没到便宜的价格。</strong></p>
+<p>这只票一年跌了 51%，从 $43 跌到 $20，但<strong>跌下来的主要不是基本面，是估值</strong>：2024 年底市净率被炒到 <strong>4.28 倍</strong>，现在 1.68 倍。同期净利润只是从 1864 万变成 1848 万，几乎没动。所以"腰斩"这件事本身既不构成买入理由，也不构成危险信号——它只是把一个荒唐的价格改回了一个正常的价格。</p>
+<p><strong>基本面上，真实的隐患有三个，不能忽略</strong>：拨备一年涨 86%、止赎资产从零冒出 566 万、连续两年有解释不清的"一次性"支出（今年 557 万）；无息存款从一半塌到两成；净利润里约 70% 来自卖贷款的一次性价差，这块在信用周期转坏时会先消失。管理层的应对姿态倒是对的——一分钱不分、全部留存、资本厚到 12%。</p>
+<p><strong>结论：1.68 倍市净率买 11.4% 的 ROE，投 100 块一年赚 6.8 块，这个价格是公道，不是便宜。</strong> 好银行的常态区间是 1.2~1.8 倍市净率，它在这个区间的中上沿，没有明显的安全边际可占。真要出手，得等两件事之一：市净率跌到 1.3 倍以下（股价 $15.5 附近），或者拨备曲线掉头向下、证明这轮信用恶化到头了。<strong>现在这个位置：生意值得放进观察名单，价格不值得追。</strong></p>
+</div></body></html>

@@ -1,0 +1,459 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IIIV · i3 Verticals（垂直行业软件与支付）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IIIV</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">借钱回购三分之一市值，利息保障1.27倍，现金只剩265万</div><h1>IIIV · i3 Verticals（垂直行业软件与支付）</h1>
+<p>市值 4.29 亿美元 / 当前股价约 $16.28 / 行业：科技服务（政府与教育软件 + 嵌入式支付）/ TTM 截止日期：2026 年 6 月 30 日（公司财年 9 月底结束）</p>
+<p>全量筛选榜名次：第 1057 名。TTM 市盈率 50.3 倍。过去 52 周股价 <strong>−47.4%</strong>。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说一件必须先说的事：<strong>这家公司在 2024 年 8 月把自己最大的一块业务卖掉了。</strong> 它原来的主体是"商户收单"（Merchant Services，给餐馆、零售店装刷卡机抽手续费），2024 年以约 4.4 亿美元卖给了 Payroc，一次性录进 <strong>2.0558 亿美元的处置收益</strong>——这就是 FY2024 净利润高达 1.1334 亿的全部原因，跟经营没有半点关系。卖掉之后剩下的才是今天的 i3 Verticals。</p>
+<p><strong>所以任何拿 FY2024 数字做对比的分析都是废的。</strong> 下面只讲卖完之后剩下的这家公司。</p>
+<p>财报没有可用的分部营收表（stockanalysis 上没有 segment 数据），下面按业务实质拆，<strong>营收占比是估算</strong>，业务描述是确定的。</p>
+<h3>生意一：卖给县政府和市政府的后台软件（估计占营收 55–60%，是主体）</h3>
+<p>这是理解这家公司的钥匙。</p>
+<p>设想美国中部一个 18 万人口的县，叫 Jefferson County。这个县要干几十件收钱和管事的活：收房产税、管法院案件和交通罚单、发建筑许可、办狗证和婚姻证、收水费、管选民登记。<strong>这些活在 2005 年之前全是纸质档案柜加一台 Windows XP 上跑的定制程序</strong>，写这程序的那家小公司的老板现在 68 岁，准备退休了。</p>
+<p>i3 Verticals 干的事就是：<strong>把这种小公司一家一家买下来</strong>，然后把它的软件卖给下一个县。</p>
+<p>具体到收钱的方式，一个县给它交两笔：
+1. <strong>软件订阅费</strong>：法院案件管理系统一年 15 万到 40 万美元，房产税征收系统另算，按人口和模块数定价。签的是 3–5 年的合同。
+2. <strong>每笔交易的支付抽成</strong>：这个县的居民在网上交那张 120 美元的超速罚单，i3 的支付通道抽 2.5%–3%（通常还是让居民额外承担的"便民服务费"）。一个县一年在线交易几万笔，这块钱不多但纯度极高。</p>
+<p><strong>为什么政府不换供应商？</strong> 因为换一次要走公开招标、要把十五年的房产税历史数据迁移过去、要重新培训四十个县政府雇员、而且中间万一出错整个县收不上税。所以 <strong>续约率长期在 95% 以上</strong>。这是一门真正有护城河的生意——护城河不是技术，是<strong>换掉你的痛苦大于忍受你的痛苦</strong>。</p>
+<p><strong>代价是：它也几乎不可能快速增长。</strong> 美国有 3143 个县，一个一个啃，一年能新签几十个已经不错。所以 i3 的增长模式实质上是<strong>靠不断收购同行来买营收</strong>——TTM 光收购就花了 6000 万现金。</p>
+<h3>生意二：K-12 学区软件（估计占营收 20% 左右）</h3>
+<p>同样的逻辑换个客户：学区的后台。学生信息系统（成绩、出勤、家长联系方式）、食堂刷卡缴费（家长在 App 里给孩子的饭卡充钱，i3 抽支付手续费）、校车路线、家长交春游费和乐队服装费。学区跟县政府一样换不动系统，而且预算来自税收，付款极稳。</p>
+<h3>生意三：医疗收入循环管理（估计占营收 15% 左右）</h3>
+<p>帮中小医院和诊所做保险理赔：把医生写的诊断翻译成保险公司认的编码、提交理赔、被拒了再申诉、最后向病人催缴自付部分。<strong>按收回金额的百分比抽成</strong>（通常 4%–8%）。这块生意的问题是它不是软件，是<strong>外包劳务</strong>——需要养一屋子人做编码和电话催收，毛利和黏性都远不如政府软件。</p>
+<h3>生意四：嵌在上面三类里的支付（估计占营收 10%，且和上面重叠）</h3>
+<p>上面每一块软件里收到的卡付款，i3 自己做通道。营收确认按毛额还是净额对报表影响很大，公司披露不清晰。</p>
+<h3>收入结构（TTM，截止 2026 年 6 月 30 日）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算，百万美元）</th>
+<th>占比</th>
+<th>同比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公共部门软件（县市政府）</td>
+<td>~125</td>
+<td>~57%</td>
+<td>个位数增长</td>
+<td>公司不披露</td>
+</tr>
+<tr>
+<td>教育软件（K-12 学区）</td>
+<td>~43</td>
+<td>~20%</td>
+<td>个位数增长</td>
+<td>公司不披露</td>
+</tr>
+<tr>
+<td>医疗收入循环</td>
+<td>~32</td>
+<td>~15%</td>
+<td>偏弱</td>
+<td>明显低于软件（估算）</td>
+</tr>
+<tr>
+<td>支付通道（部分与上重叠）</td>
+<td>~18</td>
+<td>~8%</td>
+<td>增长</td>
+<td>公司不披露</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>218.16</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>+4.09%</strong></td>
+<td><strong>2.56%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>上面各行的营收和占比是估算，不是财报原文；只有最后一行 218.16、+4.09%、2.56% 是确数。公司完全不披露分部利润，无法估算。</strong></p>
+<p><strong>营收 +4.09%，而 TTM 还花了 6000 万现金做收购。</strong> 这两个数字放一起看是本篇的第一个警报：<strong>花了相当于市值 14% 的钱去买营收，营收只涨了 4%。</strong> 有机增长（不算收购）大概率接近零甚至是负的。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是全篇的重点，因为 IIIV 的报表几乎每一行都需要翻译。</p>
+<h3>障眼法一：经营利润只有 559 万，但税前利润有 1515 万</h3>
+<p><strong>经营利润 559 万，经营利润率 2.56%。</strong> 一家自称软件公司、毛利率 68.5% 的企业，经营利润率只有 2.56%——这中间的 66 个百分点被销售费用、研发、总部和<strong>巨额的无形资产摊销</strong>吃掉了。</p>
+<p>而税前利润 1515 万<strong>比经营利润还高 956 万</strong>。多出来的钱不是经营赚的，是三笔线下项目：
+- <strong>投资处置收益 987 万</strong>（卖了持有的某项资产/投资）
+- <strong>资产处置收益 66 万</strong>
+- 减去利息支出（利息保障倍数 1.27 倍，倒推年利息约 440 万），再加上其他杂项</p>
+<p><strong>换句话说，如果没有那 1053 万的一次性处置收益，这家公司 TTM 的税前利润只有 462 万左右。</strong> 单期口径无法完全排除这类处置在明年是否还会发生，但连续两年都靠"卖东西"补利润（FY2025 有 2596 万处置收益、FY2024 有 2.0558 亿），本身就说明经营层面的利润是撑不住的。</p>
+<h3>障眼法二：净利润 852 万是正的，每股收益却是 −$0.57</h3>
+<p>这不是笔误。i3 用的是所谓 <strong>Up-C 双层结构</strong>（上市公司 i3 Verticals Inc. 只持有下面那家合伙企业的一部分，创始人和早期股东持有另一部分的 B 类单位）。归属于<strong>上市公司股东</strong>的那部分利润，扣掉少数股东权益和税收应收协议（TRA）的调整之后是<strong>负的</strong>。</p>
+<p><strong>你作为公开市场买入的股东，拿到的是 −$0.57 那一行，不是 +852 万那一行。</strong></p>
+<p>这也解释了另一个诡异数字：股数一年少了 19.93%、一个季度少了 36.10%，但"当前股份类别"是 1802 万而"总股本"是 2632 万——两层结构下的股数口径本身就是乱的。</p>
+<h3>障眼法三：股权激励 1814 万，是经营利润的 3.2 倍</h3>
+<p><strong>这是全篇最刺眼的一个数字。</strong></p>
+<ul>
+<li>经营利润：559 万</li>
+<li>股权激励 SBC：<strong>1814 万</strong></li>
+<li>比值：<strong>3.25 倍</strong></li>
+</ul>
+<p><strong>这家公司发给员工的股票，价值是它整个经营利润的三倍多。</strong> 换个说法：如果把 SBC 全部换成现金工资发出去，这家公司立刻变成大额亏损。GAAP 报表里已经扣了这笔（所以经营利润才只剩 559 万），公司在自己的"调整后 EBITDA"里会加回来——<strong>加回来之后 EBITDA 能变成 4000 万上下，看着像一门正常生意。那是骗人的，我不加。</strong></p>
+<h3>障眼法四：资本化的软件开发</h3>
+<p>现金流量表里"无形资产购置 −843 万"，这就是<strong>资本化的软件开发费</strong>——今年花掉的程序员工资，不进当期损益，摊到未来几年。同时"其他摊销 1485 万"就是过去几年资本化的东西和收购来的客户关系在往回摊。</p>
+<p><strong>所以真实的自由现金流必须把这 843 万减掉</strong>，它跟资本开支（只有 246 万）是一回事，只是记在不同行。</p>
+<h3>障眼法五：自由现金流 4993 万看着极好，但一半是假的</h3>
+<p>财报口径：经营现金流 5238 万 − 资本开支 246 万 = <strong>自由现金流 4993 万</strong>。市值 4.29 亿除以它 = <strong>8.6 倍</strong>，看起来便宜得离谱。</p>
+<p><strong>把三件事扣回去：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>财报口径自由现金流</td>
+<td><strong>49.93</strong></td>
+</tr>
+<tr>
+<td>− 股权激励 SBC（在经营现金流里被加回了）</td>
+<td>−18.14</td>
+</tr>
+<tr>
+<td>− 资本化的软件开发（记在投资活动里，没扣）</td>
+<td>−8.43</td>
+</tr>
+<tr>
+<td><strong>= 真实的股东自由现金流</strong></td>
+<td><strong>23.36</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>4993 万 → 2336 万，砍掉一半以上。</strong> 对应的市盈率从 8.6 倍变成 <strong>18.3 倍</strong>。</p>
+<h3>利润和现金流的逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>8.52</td>
+<td>起点（归属上市公司股东的是负的）</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>14.98</td>
+<td>主要是收购来的无形资产</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>14.85</td>
+<td>资本化软件 + 客户关系</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>18.14</td>
+<td>非现金，<strong>但是真成本</strong></td>
+</tr>
+<tr>
+<td>− 处置收益（投资 + 资产）</td>
+<td>−10.53</td>
+<td>一次性，非经营</td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>13.67</td>
+<td>递延税、或有对价重估等，披露不清</td>
+</tr>
+<tr>
+<td>= 小计</td>
+<td><strong>59.63</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−9.37</td>
+<td>政府客户回款慢</td>
+</tr>
+<tr>
+<td>+ 应付 / 预收</td>
+<td>+7.51</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营净资产</td>
+<td>−5.39</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>52.38</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2.46</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 财报口径自由现金流</strong></td>
+<td><strong>49.93</strong></td>
+<td>扣掉 SBC 和资本化软件后只剩 23.36</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>"其他经营项目 +1367 万"这一行披露不清，占了整个经营现金流的四分之一，是这张表上最大的一个黑箱。</strong></p>
+<h3>障眼法六（不是会计问题，是资本配置问题）：借钱把自己买了三分之一</h3>
+<p>这是本篇最重要的一段。TTM 期间：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购自家股票</td>
+<td><strong>−141.63</strong></td>
+</tr>
+<tr>
+<td>新增净借款</td>
+<td><strong>+114.28</strong></td>
+</tr>
+<tr>
+<td>收购同行</td>
+<td><strong>−60.00</strong></td>
+</tr>
+<tr>
+<td>期末现金</td>
+<td><strong>2.65</strong></td>
+</tr>
+<tr>
+<td>期末总债务</td>
+<td><strong>118.87</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这家公司在 12 个月里花了 1.4163 亿美元回购股票——相当于它今天全部市值（4.29 亿）的 33%——钱主要是借来的。</strong> 回购前它有 6667 万净现金，回购后变成 <strong>1.1623 亿净负债</strong>，账上现金只剩 <strong>265 万美元</strong>。</p>
+<p><strong>回购/SBC 比值 = 141.63 ÷ 18.14 = 7.8 倍</strong>，按第二部分的标准这远超"真回购"的 3 倍线，纸面上是股东回报的极致。但要看两件事：
+1. <strong>钱是借的，不是赚的。</strong> TTM 真实自由现金流才 2336 万，回购花了 1.4 亿，缺口全部靠杠杆。
+2. <strong>买贵了。</strong> 股价过去 52 周跌了 47.4%，现在 $16.28，50 日均线 $19.57、200 日均线 $22.07。<strong>这笔回购的绝大部分成交在比今天高得多的价格上。</strong></p>
+<p>回购之后的账本：<strong>债务/EBITDA = 5.14 倍，利息保障倍数 = 1.27 倍。</strong> 后面这个数字的意思是：<strong>经营利润刚刚够付利息，多出来的部分只有 27%。</strong> 经营利润再掉两成，这家公司就付不起利息了。</p>
+<p>另一个市场信号：<strong>空头持股占流通股的 25.96%</strong>（占总股本 12.76%）。四分之一的流通盘在赌它跌。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 4.2852 亿，企业价值 5.4475 亿（净负债 1.1623 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>428.52 ÷ 8.52</td>
+<td><strong>50.3 倍</strong></td>
+<td><strong>$1.99</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（粗算）</td>
+<td>加回 SBC 与摊销、扣掉处置收益 ≈ 24.25</td>
+<td>17.7 倍</td>
+<td>$5.65</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>428.52 ÷ [(15.15 − 10.53) × 0.704] = ÷3.25</td>
+<td><strong>131.8 倍</strong></td>
+<td><strong>$0.76</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（财报原样）</td>
+<td>428.52 ÷ 49.93</td>
+<td>8.6 倍</td>
+<td>$11.63</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣 SBC 与资本化软件）</strong></td>
+<td>428.52 ÷ 23.36</td>
+<td><strong>18.3 倍</strong></td>
+<td><strong>$5.46</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>544.75 ÷ 5.59</td>
+<td><strong>97.5 倍</strong></td>
+<td><strong>$1.03</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>见下</td>
+<td><strong>负数，无意义</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三年平均那一行为什么是负的</h3>
+<p>必须把每一年的一次性收益剥掉才有意义：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>年份</th>
+<th>报表净利润</th>
+<th>一次性处置收益（税前）</th>
+<th>剔除后的真实净利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2024</td>
+<td>+113.34</td>
+<td>+205.58（卖商户收单业务）</td>
+<td><strong>约 −47</strong></td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>+17.87</td>
+<td>+25.96</td>
+<td><strong>约 −0.3</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>+8.52</td>
+<td>+10.53</td>
+<td><strong>约 +3.25</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均</strong></td>
+<td></td>
+<td></td>
+<td><strong>约 −14.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>过去三年，这家公司在剔除"卖东西"的收益之后，累计是亏的。</strong> 它这三年报出来的所有正利润，全部来自变卖资产。三年平均利润口径下市盈率不存在——因为分母是负数。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进去：</strong>
+- 按 GAAP 会计利润算，公司一年替你赚 <strong>1 块 9 毛 9</strong>。
+- 按剔除一次性收益后的真实会计利润算，一年替你赚 <strong>7 毛 6</strong>。
+- 按真实的股东自由现金流算（这是最接近实质的口径），一年替你赚 <strong>5 块 4 毛 6</strong>。
+- 按企业价值和经营利润算（这个口径把新借的 1.16 亿债务算进去了），一年替你赚 <strong>1 块 0 毛 3</strong>。</p>
+<p><strong>为什么会计利润（7 毛 6）和自由现金流（5 块 4 毛 6）差七倍？</strong> 因为报表里每年有 <strong>2983 万的折旧和摊销</strong>，其中绝大部分是过去收购十几家小软件公司形成的"客户关系"和"商标"在往回摊——<strong>这些是过去花掉的钱在账上分期认赔，不是今年真的花出去了钱。</strong></p>
+<p><strong>这也正是这只股票唯一的多头逻辑</strong>：如果这些摊销真的是纯会计现象、不需要持续花钱去补，那么 18.3 倍真实自由现金流买一门 95% 续约率的政府软件生意，不算贵。</p>
+<p><strong>而空头逻辑是</strong>：这些摊销不是纯会计现象，<strong>它是这门生意的真实成本</strong>。因为 i3 的增长几乎全部来自收购（TTM 又花了 6000 万），你必须年年买公司才能维持这 4% 的增长。<strong>买公司花的现金不在自由现金流里扣，但它是必须年年支付的。</strong> 把 6000 万收购算进去，TTM 的净现金流是 <strong>负的</strong>。</p>
+<p><strong>这 5 块 4 毛 6 未来变大还是变小？</strong> 前瞻市盈率 13.77 倍说明分析师预期明年会大幅好转。但真正决定结果的是三个具体的东西：（1）利息保障 1.27 倍留给经营的容错空间几乎为零；（2）现金只剩 265 万，任何一次意外都要再借钱；（3）SBC 一年 1814 万仍在稀释，而回购的弹药已经打光并且是借来打的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一门本来不错的生意，被一个糟糕的资产负债表决策毁掉了安全边际。</strong></p>
+<p>政府和学区的后台软件确实是好赛道——换不动、续约率 95%、收入像收租。但今天的 i3 Verticals 是这样一家公司：经营利润 559 万，付给员工的股票 1814 万（是经营利润的 3.2 倍），刚刚借钱花掉相当于市值三分之一的现金去回购股票、买在了比现价高 30%–40% 的位置，回购完账上只剩 265 万现金和 1.19 亿债务，利息保障倍数 1.27 倍，有形账面净值为负，剔除变卖资产后三年平均利润是负的，四分之一的流通股在被做空。</p>
+<p>18.3 倍真实自由现金流这个价格本身不算离谱——<strong>但你付这个价的时候，附赠的是一张没有任何容错空间的资产负债表。</strong> 这门生意本身经不起一次经营失误，而管理层刚刚证明了自己会犯资本配置的错误。</p>
+<p>不值这个价。等它把债还下来、或者跌到自由现金流真的能覆盖风险的位置再说。</p>
+</div></body></html>

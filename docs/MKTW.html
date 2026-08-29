@@ -1,0 +1,336 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MKTW · 美国市场智慧（MarketWise）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MKTW</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">12.8倍真便宜，但你买的是创始人餐桌旁的小板凳</div><h1>MKTW · 美国市场智慧（MarketWise）</h1>
+<p>市值 2.840 亿美元 / 股价 $18.00 / 行业：技术服务（订阅制投资资讯） / TTM 截止 2026年6月30日 / 全榜第 1120 名</p>
+<blockquote>
+<p><strong>先说一句最要紧的：这家公司的市盈率有两个完全不同的数，差 6 倍。</strong> 财经网站显示 20.6 倍，用市值除以报表净利润却是 127 倍，而按整个业务的真实盈利算又只有 9.9 倍。三个数都没算错，错的是把它们混着看。原因是一个叫 <strong>Up-C</strong> 的股权结构——第三部分会把它拆开讲清楚。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>MarketWise 在财报里只披露<strong>一个分部</strong>。但这一个分部里实际是三层递进的生意，它们的经济性质差别很大。下面的拆分是我按商业模式做的划分，不是财报数字。</p>
+<h3>底层：用巨额广告费买「愿意留邮箱的人」</h3>
+<p>这门生意的起点不是研究，是<strong>营销</strong>。你在 YouTube 上刷到过那种视频：一个穿西装的男人站在书房里，用 40 分钟讲「有一家公司拿到了 AI 芯片的独家专利，我把它的名字写在这份报告里」，然后要你留下邮箱下载免费报告。那个视频背后大概率就是 MarketWise 旗下某个品牌。</p>
+<p>旗下主要牌子包括 <strong>Stansberry Research</strong>（创始人 Porter Stansberry 的招牌，宏观 + 价值投资）、<strong>InvestorPlace</strong>（面向散户的股票推荐）、<strong>Legacy Research</strong>（旗下又有 Palm Beach Research Group、Brownstone Research 等）、<strong>TradeSmith</strong>（量化选股软件）、<strong>Chaikin Analytics</strong>（技术面打分工具）、<strong>Altimetry</strong>、<strong>Empire Financial Research</strong>。</p>
+<p>买流量的钱是真金白银：这类公司通常把营收的 30%～50% 砸回广告投放（Facebook、YouTube、播客口播、邮件列表租用）。获取一个免费邮箱线索成本 3～10 美元，公司手上养着一个几百万人的邮件名单。</p>
+<h3>中层：入门刊，把邮箱变成付费用户</h3>
+<p>拿到邮箱后，接下来几周你会收到密集的推销邮件，最终转化成一份 <strong>49～199 美元/年</strong>的入门通讯——比如「每月推荐 2 只股票 + 一份组合跟踪表」。这一层几乎不赚钱，甚至亏钱：客单价刚够覆盖获客成本。它的作用是<strong>筛选</strong>——把「肯为投资建议掏钱的人」从名单里挑出来。</p>
+<h3>顶层：高价会员，全部利润在这里</h3>
+<p>真正赚钱的是升级。买过入门刊的人会被推销「终身会员」「联盟会员」「内部圈子」，价格从 <strong>1500 美元跳到 5000、10000、甚至 25000 美元</strong>，通常是一次性付款、终身有效。一个 5 万人的付费名单里，只要有 2% 的人升级到 5000 美元档，就是 500 万美元收入，而边际成本几乎是零——研究报告写一次，卖给第 1 个人和第 1000 个人的成本一样。</p>
+<p><strong>这就是 86% 毛利率的来源。</strong> 内容是一次性成本，分发是零成本。</p>
+<p><strong>会计上的关键点</strong>：一笔 5000 美元的「终身会员」不能一次性确认为收入，要按预计服务年限（通常按 5 年）分摊。所以公司账上有一大笔<strong>递延收入</strong>（客户已付钱、服务还没提供完）。2021 年加密和 meme 股狂热期收到的巨额预付款，这几年一直在往损益表里「释放」——<strong>这是理解它营收连年下滑的钥匙</strong>。</p>
+<h3>数字</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅制投资资讯（财报唯一分部）</td>
+<td>3.175 亿</td>
+<td>-11.3%</td>
+<td>100%</td>
+<td>8.52%</td>
+<td>0.270 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>历史营收曲线：2021 年 5.492 亿 → 2022 年 5.124 亿 → 2023 年 4.482 亿 → 2024 年 4.087 亿 → 2025 年 3.281 亿 → TTM 3.175 亿。<strong>连续五年下滑，累计缩水 42%。</strong></p>
+<p>更狠的是利润：经营利润 2024 年 9624 万 → 2025 年 6298 万 → TTM 2703 万。<strong>营收两年掉 22%，经营利润掉 72%。</strong> 这是典型的经营杠杆反噬——固定成本（编辑、平台、办公室）摊在缩小的收入上。</p>
+<p><strong>客户为什么买？</strong> 因为想赚钱、又不想自己研究。这个需求永远存在，但它跟股市情绪高度绑定：牛市里人人想加杠杆找下一个十倍股，熊市里第一个砍掉的订阅就是这个。2021 年是巅峰，之后一路回落，<strong>现在的 3.175 亿大致是「没有狂热情绪时的常态水位」</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1053 万美元，占合并净利润 2871 万的 36.7%。2021 年那次上市（SPAC 借壳）当年确认了 <strong>2.109 亿</strong> SBC——一次性的巨额创始人股份成本，把当年经营利润砸到 -9.576 亿。现在的 1053 万属于正常水平。</p>
+<p><strong>一次性项目</strong>：TTM 没有大额重组或减值。有 59 万的资产处置损失，可忽略。</p>
+<p><strong>这家公司真正的「障眼法」不在损益表，在股权结构。</strong></p>
+<p><strong>Up-C 结构——本篇最重要的一段</strong>：</p>
+<p>你买的股票叫 MarketWise Inc.，它是一个<strong>空壳控股公司</strong>。真正做生意的是 MarketWise LLC。Inc. 只持有 LLC 的<strong>一小部分</strong>，剩下的绝大部分由创始人团队通过 Class B 股 + LLC 权益单位持有。</p>
+<p>结果就是财报上这个诡异的组合：
+- <strong>合并经营利润 2703 万，合并税前利润 2952 万</strong>（整个 LLC 赚的）
+- <strong>归属于 MarketWise Inc. 的净利润只有 223 万</strong>（Inc. 那一小片）
+- 中间差掉的约 2650 万，全部归「非控股权益」，也就是创始人</p>
+<p>现金流量表上那个看着可疑的「其他经营活动 +2574 万」，就是这笔归属创始人的利润在做加回——<strong>不是什么隐藏的非现金费用，是结构性的记账产物</strong>。搞清楚这一点，整张现金流量表就通了。</p>
+<p><strong>税率 2.75% 是怎么来的</strong>：LLC 是穿透纳税实体，创始人那部分利润由他们个人报税，公司层面不交。所以合并报表上只交了 81.3 万的税，实际税率 2.75%。<strong>这让合并净利润 2871 万看起来比一家正常 C 公司好看得多</strong>——如果按 25% 的正常税率全额计税，税前 2952 万只剩 2214 万。</p>
+<p><strong>回购与稀释——这里有个说不通的地方</strong>：
+- TTM 回购 1669 万
+- TTM 股权激励 1053 万
+- 回购 ÷ SBC = <strong>1.59</strong></p>
+<p>按常规读法这算「略好于抵消稀释」。但实际股本数据是：<strong>总股本一年增加 19.25%，最近一个季度增加 6.10%</strong>。一边花 1669 万回购、一边股本大增 19%，只有一个解释：有大量新股份从回购之外的地方发出来了。Class A 流通股只有 <strong>279 万股，自由流通量 176 万股</strong>，而总股本 1577 万股——中间 1300 万股是创始人手里随时可转换成 Class A 的 LLC 单位。</p>
+<p><strong>账面净资产是负 2.673 亿</strong>。这是 2021 年借壳上市时的重组产物（LLC 把钱分给了创始人，留下负权益）。所以市净率、ROE、ROIC 这些指标在这家公司身上全部无效（网站直接显示 n/a）。</p>
+<p><strong>利润和现金流的差</strong>：归属净利润 223 万，经营现金流 4673 万，差了 4450 万。对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>归属于 MarketWise Inc. 的净利润</td>
+<td>2.23</td>
+</tr>
+<tr>
+<td>+ 归属创始人的利润等（记在「其他经营活动」）</td>
+<td>25.74</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>10.53</td>
+</tr>
+<tr>
+<td>+ 折旧摊销 + 其他摊销</td>
+<td>2.24</td>
+</tr>
+<tr>
+<td>+ 资产处置损失</td>
+<td>0.59</td>
+</tr>
+<tr>
+<td>— 递延收入减少</td>
+<td>-4.05</td>
+</tr>
+<tr>
+<td>+ 应收 / 应付 / 其他营运资金</td>
+<td>+9.46</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>46.73</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>递延收入变动这一行是全篇最重要的好消息</strong>：
+- 2024 年：<strong>-1.621 亿</strong>（收到的新钱比确认的收入少 1.6 亿）
+- 2025 年：<strong>-5609 万</strong>
+- TTM：<strong>-405 万</strong></p>
+<p>递延收入的流失几乎停了。这说明「2021 年预收款的释放」已经基本走完，<strong>现在的营收接近真实的当期销售水平，而不是在吃老本</strong>。营收还在跌 11%，但跌的性质从「预收款耗尽」变成了「正常经营波动」。</p>
+<p><strong>现金去哪了——这是坏消息</strong>：账上现金从 7014 万掉到 3291 万，一年少了 3723 万。去向：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营现金流</td>
+<td>+46.73</td>
+</tr>
+<tr>
+<td>资本开支 + 无形资产</td>
+<td>-2.63</td>
+</tr>
+<tr>
+<td>股票回购</td>
+<td>-16.69</td>
+</tr>
+<tr>
+<td>Class A 股东现金分红</td>
+<td>-4.35</td>
+</tr>
+<tr>
+<td><strong>给 LLC 权益持有人（创始人）的分配</strong></td>
+<td><strong>-59.50</strong></td>
+</tr>
+<tr>
+<td><strong>净变动</strong></td>
+<td><strong>-36.20</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一年拿出去 8054 万，只赚回 4587 万自由现金流。</strong> 多出来的 3467 万是从账上现金里掏的。其中最大一笔——给创始人的 5950 万分配，是合并净利润 2871 万的两倍多。流动比率只剩 0.35。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>这家公司的估值必须先解决一个问题：<strong>分子和分母要在同一个层面上</strong>。市值 2.840 亿是按<strong>全部 1577 万股</strong>（含创始人可转换的 LLC 单位）× $18 算出来的，代表<strong>整个业务</strong>的权益价值。所以分母也必须用<strong>整个业务</strong>的利润，不能用只归属于 Inc. 那一小片的 223 万。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>财经网站显示的 PE</td>
+<td>股价 $18 ÷ Class A 每股收益 $0.87</td>
+<td>20.6 倍</td>
+<td>4.83 元</td>
+</tr>
+<tr>
+<td><strong>错误但常见的算法</strong></td>
+<td>市值 2.840亿 ÷ 归属净利润 223万</td>
+<td>127 倍</td>
+<td>0.78 元</td>
+</tr>
+<tr>
+<td><strong>全公司口径（正确起点）</strong></td>
+<td>市值 2.840亿 ÷ 合并净利润 2871万</td>
+<td><strong>9.9 倍</strong></td>
+<td>10.11 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>市值 ÷（税前 2952万 × 75%，把穿透税补上）</td>
+<td><strong>12.8 倍</strong></td>
+<td><strong>7.79 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表数）</td>
+<td>2.840亿 ÷ 4587万</td>
+<td>6.2 倍</td>
+<td>16.15 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（补足所得税）</td>
+<td>2.840亿 ÷ 3930万</td>
+<td>7.2 倍</td>
+<td>13.84 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（再扣 SBC 这笔真成本）</td>
+<td>2.840亿 ÷ 2877万</td>
+<td>9.9 倍</td>
+<td>10.13 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2.566亿 ÷ 2703万</td>
+<td>9.5 倍</td>
+<td>10.53 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径（估算）</td>
+<td>2.840亿 ÷ 约 6227万</td>
+<td><strong>4.6 倍</strong></td>
+<td>21.93 元</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>三年平均口径的分母是估算：TTM 合并净利 2871 万、2025 年约 6460 万、2024 年约 9350 万（后两年按各自税前利润率 × 营收、沿用同等低税率推算）。</p>
+</blockquote>
+<p><strong>三年平均这一行必须反着读，而且要读出警告而不是便宜。</strong> 4.6 倍看起来白菜价，但那个分母里的 9350 万是 2024 年的利润——那时营收 4.087 亿、经营利润率 23.55%。现在营收 3.175 亿、经营利润率 8.52%。<strong>这个「三年平均」用的是回不去的过去当分母。</strong> 它真正告诉你的是：这门生意的盈利能力在两年里缩水了七成，而不是「现在有多便宜」。</p>
+<p><strong>说人话：你现在投 100 块进去，按最保守的真实口径（全公司利润补足正常所得税）算，公司一年替你赚 7.8 元。</strong></p>
+<p>这 7.8 元有多少回你口袋？如果你买的是 Class A 股，<strong>你在这家公司的地位是「坐在创始人餐桌旁的小板凳」</strong>：整个业务赚的钱，大约 82% 按 LLC 权益分配给创始人（TTM 分掉了 5950 万现金），剩下约 18% 归 Inc.，Inc. 再从中派息（TTM 派了 435 万，每股约 1.56 美元，当前年化派息率 1.80 美元，<strong>股息率 10.0%</strong>）和回购（1669 万）。</p>
+<p><strong>这个 7.8 元未来会变大还是变小？</strong> 三个因素：</p>
+<ol>
+<li><strong>营收还在跌，但跌势可能在收窄</strong>。递延收入流失从 -1.62 亿收窄到 -405 万，说明新增销售已接近确认收入。营收 -11.3% 是这五年里最小的降幅（前两年是 -19.7% 和 -8.8%）。</li>
+<li><strong>经营杠杆是双向的</strong>。营收跌 22% 让经营利润跌 72%；反过来，如果营收企稳，利润恢复的速度也会很快。卖方给的<strong>前瞻市盈率 7.61 倍</strong>押的就是这个。</li>
+<li><strong>这门生意的需求跟股市情绪同步</strong>。2026 年市场情绪不差，营收还在跌，说明流失的是结构性的——2021 年那批高价终身会员到期后没有续。</li>
+</ol>
+<p><strong>还有一个数字必须说</strong>：日均成交量 <strong>13937 股</strong>，按 $18 算约合 25 万美元。自由流通股只有 176 万股。<strong>这只股票几乎买不进也卖不出</strong>——市值 2.84 亿是个理论数字，你无法按这个价格买到 2.84 亿的份额，同样也无法在需要时卖出。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>统计上，这是全场最便宜的东西之一：12.8 倍补足税的真实市盈率、7.2 倍自由现金流、9.5 倍 EV/EBIT、10% 股息率、86% 毛利率、几乎不需要资本开支。商业上，你买的不是这家公司。</strong></p>
+<p>你买的是一个负净资产 2.67 亿的空壳控股公司的少数股权，这个空壳持有一家由创始人绝对控制的 LLC 的约 18%；LLC 一年往创始人口袋分了 5950 万——是全公司利润的两倍多，靠掏空账上现金完成（现金一年少 53%）；总股本一年增加 19.25%；自由流通股 176 万股，日成交 25 万美元。而底下这门生意，营收连续五年下滑累计 42%，经营利润两年掉 72%。</p>
+<p><strong>便宜是真便宜，坑也是真坑。</strong> 唯一实质性的好转信号是递延收入流失基本停止——这意味着营收终于接近真实销售水平。<strong>留在观察名单外面，等它证明营收能企稳、并且创始人不再把现金分光，再谈。</strong></p>
+</div></body></html>

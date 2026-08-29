@@ -1,0 +1,400 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SLP · Simulations Plus, Inc.（仿真加公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SLP</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">46倍配2%增速,毛利从80%掉到63%,刚把9877万收购减记7722万</div><h1>SLP · Simulations Plus, Inc.（仿真加公司）</h1>
+<p>市值 3.72 亿美元 / 当前股价约 $18.39 / 行业：科技服务（制药仿真软件）/ TTM 截止日：2026 年 5 月 31 日（公司财年 8 月底结束）</p>
+<p>数据来源：stockanalysis.com 的利润表、现金流量表、估值指标三页。全篇口径为 TTM（最近四个季度滚动）。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报明确按两个分部披露：<strong>软件（Software）</strong>和<strong>服务（Services）</strong>。这两件事的经济性质天差地别，必须分开看——因为这家公司最近三年的故事，就是"贵的那半在缩、便宜的那半在长"。</p>
+<h3>生意一：软件（TTM 4514 万美元，占 55%）</h3>
+<p><strong>这件事到底是什么：让药厂在不做实验的情况下，算出药进了人体会怎么样。</strong></p>
+<p>举个最具体的例子。一家药厂做出一个新的口服药片，它们必须回答一个问题：<strong>病人空腹吃和饭后吃，血药浓度会差多少？</strong></p>
+<p>这个问题不能猜。差太多的话，同一片药空腹吃可能过量中毒，饭后吃可能完全无效——FDA 不会批。传统做法是做一个"食物效应临床试验"：招 24 个健康志愿者，分两组，抽 20 次血，测浓度曲线。<strong>大约 200 万美元，六到九个月。</strong></p>
+<p>Simulations Plus 卖的软件叫 <strong>GastroPlus</strong>，做的事是：你把这个药片的物理化学参数（溶解度、渗透性、粒径分布、pKa）输进去，软件里有一套人体消化道的数学模型——胃排空速度、小肠九段各自的 pH 值和表面积、肝脏首过代谢的酶活性、饭后胆汁分泌怎么改变溶解度……<strong>它把这些微分方程解出来，给你一条模拟的血药浓度曲线。一个下午出结果。</strong></p>
+<p><strong>最关键的一点：FDA 认这个。</strong> 美国 FDA 有正式的指导原则，接受"基于生理的药代动力学（PBPK）模型"作为监管申报材料的一部分。也就是说，<strong>在某些情况下你可以用软件模拟结果替代一整个临床试验</strong>，FDA 会据此批准说明书上的用法用量。欧洲 EMA、日本 PMDA 也一样。</p>
+<p>这就是护城河的本质：<strong>它不是技术护城河，是监管护城河。</strong> 一个新对手就算写出数学上更漂亮的模型，也得花十年积累"FDA 见过、认过、批过"的申报案例。药厂的监管事务负责人绝不会拿一个 FDA 没见过的软件去赌一次申报。</p>
+<p><strong>软件线的其他产品：</strong>
+- <strong>ADMET Predictor</strong>：还没合成的分子，只输入化学结构式，就预测它会不会被吸收、会不会伤肝、半衰期多长。用在药物发现最早期——化学家有 10 万个候选分子，先用软件筛掉 99.9%，只合成剩下那 100 个。
+- <strong>MonolixSuite</strong>：群体药代动力学建模。临床试验里 300 个病人的血药数据，用它反推"体重、肾功能、年龄各自解释了多少个体差异"，从而定出说明书上"肾功能不全者减半"这类规则。
+- <strong>虚拟儿童 / 虚拟孕妇模型</strong>：儿科和孕妇的临床试验伦理上极难做，模型可以把成人参数按器官发育曲线缩放，模拟出一个 6 岁儿童的体内过程。这是这类软件不可替代性最强的场景。</p>
+<p><strong>怎么收钱。</strong> 年度订阅授权，按模块和坐席数分档，单个客户一年从几万美元到几十万美元不等。<strong>客户续订率历来在 90% 以上</strong>——因为一旦一个项目的模型建在 GastroPlus 里、并且已经用它向 FDA 提交过材料，中途换软件意味着整套模型要重建、重验证，没人干这事。</p>
+<p>客户就是全球排得上号的药厂和生物技术公司，加上 FDA 自己（监管机构也买来复核申报材料）。</p>
+<p><strong>这门生意的经济性：</strong> 毛利率历史上在 <strong>90% 以上</strong>，边际客户几乎零成本，是典型的高质量软件生意。<strong>问题是它不长了</strong>——TTM 4514 万，对比 FY2025 全年 4583 万（口径不完全可比，仅看方向），<strong>基本持平甚至微降</strong>。前几年它是每年 12% 到 18% 增长的。</p>
+<h3>生意二：服务（TTM 3692 万美元，占 45%）</h3>
+<p><strong>这是"我们帮你做"而不是"卖给你自己做"。</strong></p>
+<p>药厂不一定养得起会用这些软件的人——建一个 PBPK 模型需要一个既懂药代动力学又懂数值计算的人，这种人年薪 20 万美元起，而一家中型药厂一年只需要用 15 次。所以它把活外包出来。</p>
+<p><strong>具体一单：</strong> 一家生物技术公司做完二期临床，300 个病人的血药数据摆在那儿，它需要在三个月内写出一份 FDA 能接受的群体药代分析报告，用来支持三期的给药方案。它把数据打包发给 SLP 的 <strong>Cognigen</strong> 团队，SLP 派两三个科学家建模、写报告、必要时代表客户跟 FDA 开会答辩。<strong>这一单大概 30 万到 80 万美元，做三到六个月。</strong></p>
+<p>服务线里还有：
+- <strong>DILIsym</strong>：专门模拟"这个药会不会伤肝"的咨询业务。药物性肝损伤是新药被毙掉的头号原因之一，这块的模型有独立价值。
+- <strong>Pro-ficiency</strong>（2024 年买来的）：给临床试验的研究中心做<strong>模拟式培训</strong>。一个三期试验铺在 200 家医院，每家的护士都得学会"这个药怎么配、抽血在第几分钟、不良事件怎么上报"——培训不到位就出数据偏差。Pro-ficiency 做的是交互式的模拟训练系统，让护士在虚拟场景里练一遍。</p>
+<p><strong>这门生意的经济性差得多：</strong> 它是人力密集的咨询，收入随人头走，毛利率大概在 40% 到 50% 的量级（<strong>这是我按整体毛利率和分部结构估算的，财报不披露分部利润</strong>）。它能长（TTM 3692 万对 FY2025 的 3335 万，方向上是双位数增长），但每多一块钱收入就得多雇人。</p>
+<h3>钱的分布</h3>
+<p>财报只披露到分部营收，<strong>不披露分部利润</strong>，下表的利润率一栏是我按整体毛利率和业务性质估算的。增速一列是 TTM 数对 FY2025 年度数的比较（有 9 个月重叠），只能看方向，不是严格同比。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>方向</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>软件</td>
+<td>45.14</td>
+<td><strong>持平 / 微降</strong></td>
+<td>55%</td>
+<td>约 85–90%</td>
+</tr>
+<tr>
+<td>服务</td>
+<td>36.92</td>
+<td><strong>+约 11%</strong></td>
+<td>45%</td>
+<td>约 40–50%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>82.06</strong></td>
+<td><strong>+2.1%（财报实数）</strong></td>
+<td>100%</td>
+<td><strong>63.4%（财报实数）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>把整体毛利率的四年曲线拉出来，这家公司过去三年发生了什么就一目了然：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>毛利率</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2022</td>
+<td>79.9%</td>
+<td>28.2%</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>80.5%</td>
+<td>21.0%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>61.6%</td>
+<td>12.5%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>58.4%</td>
+<td>9.1%</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>63.4%</td>
+<td>15.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>毛利率从 80% 掉到 60% 出头。</strong> 原因不是软件卖不动价了，是<strong>收入结构从"卖软件"往"卖人时"偏移</strong>——五年前软件占 60%、服务占 40%，现在快对半了，而且长的那半是差的那半。</p>
+<p>这是这家公司最核心的问题：<strong>它正在从一家软件公司，慢慢变成一家咨询公司，而市场还在按软件公司的估值给它定价。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>股权激励（SBC）：TTM <strong>642 万美元，占净利润 79%</strong></h3>
+<p>这是这份财报里最扎眼的一个比例。净利润 811 万，股权激励 642 万——<strong>公司每赚 1 块钱给股东，就发出去 0.79 块钱的股票给员工。</strong></p>
+<p>按规则，SBC 一律当作真实的现金成本。GAAP 已经在利润表里扣过了，所以下面第三部分的 GAAP 市盈率是含这笔成本的、是诚实的。<strong>但凡有人跟你说 SLP 的"调整后 EBITDA 1500 万"、"调整后利润率 18%"，那都是把这 642 万加回去算出来的——那个数字是假的。</strong></p>
+<p>SBC 的绝对额五年翻了 2.3 倍（2021 年 275 万 → TTM 642 万），而同期净利润从 978 万降到 811 万。<strong>给员工的钱在涨，给股东的钱在跌。</strong></p>
+<p>对应的稀释：股本同比 <strong>+0.65%</strong>。稀释率不高，是因为公司在用现金买回一部分——但 TTM 的回购是 <strong>0</strong>（见下文），所以这 0.65% 是净稀释。</p>
+<h3>一次性项目：TTM <strong>这一期是干净的，但上一期是场灾难</strong></h3>
+<p><strong>TTM（截至 2026 年 5 月）没有重大一次性项目</strong>——没有减值、没有重组、没有诉讼和解。这一期的 811 万净利润是干净的经营结果。</p>
+<p>但要看懂这家公司，必须看紧挨着的上一期发生了什么：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>资产减值</th>
+<th>当年净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2024</td>
+<td>0</td>
+<td>+995 万</td>
+</tr>
+<tr>
+<td><strong>FY2025</strong></td>
+<td><strong>7722 万</strong></td>
+<td><strong>−6472 万</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>0</td>
+<td>+811 万</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FY2025 一次性减值 7722 万美元。</strong> 这笔钱的来历很具体：FY2024 公司花了 <strong>9877 万美元现金</strong>收购 Pro-ficiency（就是上面说的临床试验培训业务）。<strong>一年多之后，把这笔收购的商誉和无形资产减记了 7722 万——等于承认当初花的钱里有 78% 打了水漂。</strong></p>
+<p>这件事的严重性不在于会计数字，在于它花掉的是什么：<strong>收购前公司账上有 1.15 亿美元现金（FY2023），收购后只剩 2026 万（FY2024）。这家公司把自己的整个现金储备，换成了一笔一年后要减记掉八成的资产。</strong></p>
+<p>按规则，我不该只凭单期就断言"这是否年年发生"。但这里的性质是清楚的：这不是周期性的经营波动，是一次可识别的、具体的资本配置失败。而它对未来估值的影响是：<strong>这套管理层的收购决策，不能给信用溢价。</strong></p>
+<h3>资本化的支出：小额但持续</h3>
+<p>TTM 购买无形资产 <strong>288 万美元</strong>——这是资本化的软件开发成本。占营收 3.5%，不算高，但要注意：<strong>这 288 万在现金流量表上被记在投资活动里，不进利润表，也不从 stockanalysis 计算的"自由现金流"里扣。</strong> 后面算真实现金流时我会扣掉它。</p>
+<p>同期折旧摊销 242 万 + 其他摊销 320 万 = 562 万，高于新增资本化额，说明存量在正常摊销，没有靠资本化来虚增利润。</p>
+<h3>回购与稀释：TTM 回购为 <strong>零</strong>，股息也停了</h3>
+<ul>
+<li><strong>TTM 回购 0 美元。</strong> SBC 642 万。回购 / SBC = <strong>0</strong>。</li>
+<li>上一次回购是 FY2023 的 2000 万美元。</li>
+<li><strong>股息也停了</strong>：FY2022 到 FY2024 每年派 480 万左右，<strong>FY2025 起归零</strong>。</li>
+<li>股本同比 <strong>+0.65%</strong>（在稀释）。</li>
+</ul>
+<p><strong>这一条要连起来读：一家账上有 4950 万净现金、年赚 2454 万自由现金流、零负债的公司，既不回购也不分红。</strong> 钱去哪了？TTM 花了 1319 万买证券（投资理财），另有 288 万资本化开发。也就是说，管理层选择把现金<strong>攒起来</strong>。</p>
+<p>在刚刚经历过一场 7722 万减值的公司里，"攒现金"这个动作有两种读法：一是学乖了，在修复资产负债表；二是在攒下一次收购的弹药。考虑到上一次收购的结果，第二种读法对股东不是好消息。</p>
+<h3>利润和现金流对账表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>8.11</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>2.42</td>
+</tr>
+<tr>
+<td>+ 其他摊销（收购无形资产）</td>
+<td>3.20</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>6.42</td>
+</tr>
+<tr>
+<td>+ 其他经营项目</td>
+<td>3.28</td>
+</tr>
+<tr>
+<td>+ 递延税等</td>
+<td>0.69</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−2.42</td>
+</tr>
+<tr>
+<td>+ 应付/预收/其他营运资金</td>
+<td>3.18</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>24.94</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−0.40</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流（常规口径）</strong></td>
+<td><strong>24.54</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 811 万，自由现金流 2454 万，差了 3 倍。</strong> 差额的构成很清楚：<strong>642 万是股权激励（真成本，只是不用现金付）+ 562 万是摊销（其中 320 万是被减值过的那笔收购留下的无形资产摊销）+ 328 万其他 + 营运资金贡献。</strong></p>
+<p>所以那个"自由现金流 2454 万"是被两样东西撑起来的：员工用股票代替工资拿走的 642 万，和一笔已经证明买贵了的收购留下的摊销。<strong>把股权激励扣回去，真实的自由现金流是 1812 万；再扣掉 288 万资本化的开发支出，是 1524 万。</strong>（公司自己披露的"有杠杆自由现金流"是 1841 万，跟我扣 SBC 后的 1812 万几乎一致，互相印证。）</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 <strong>3.7193 亿</strong>，净现金 <strong>4950 万</strong>，企业价值 <strong>3.2243 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3.719 亿 ÷ 811 万</td>
+<td><strong>45.9 倍</strong></td>
+<td><strong>$2.18</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回 642 万 SBC 后</td>
+<td>约 25.6 倍</td>
+<td>$3.91（<strong>这个数字是假的</strong>）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无一次性项目，等同 GAAP</td>
+<td><strong>45.9 倍</strong></td>
+<td><strong>$2.18</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（常规）</td>
+<td>3.719 亿 ÷ 2454 万</td>
+<td>15.2 倍</td>
+<td>$6.60</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣 SBC 与资本化开发）</strong></td>
+<td>3.719 亿 ÷ 1524 万</td>
+<td><strong>24.4 倍</strong></td>
+<td><strong>$4.10</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3.224 亿 ÷ 1260 万</td>
+<td><strong>25.6 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong>（FY2025 加回减值）</td>
+<td>3.719 亿 ÷ 1019 万均值</td>
+<td><strong>36.5 倍</strong></td>
+<td><strong>$2.74</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年真实净利润：TTM 811 万、FY2025 剔除 7722 万减值后 <strong>1250 万</strong>、FY2024 995 万，均值 <strong>1019 万</strong>。</p>
+<p><strong>这一行的信息量：三年平均 1019 万 高于 TTM 的 811 万。</strong> 也就是说，<strong>现在的盈利不是高点，是低点</strong>——过去三年利润是在往下走的（1250 万 → 995 万 → 811 万，顺序上更接近 FY24 → FY25 调整后 → TTM）。用三年平均算出来的 36.5 倍比当期的 45.9 倍便宜，正是因为过去比现在赚得多。</p>
+<p>这跟大多数"当期便宜、三年平均贵"的周期股正好相反。它的问题不是周期高点，是<strong>盈利能力在持续侵蚀</strong>。</p>
+<h3>你投 100 块，一年赚多少</h3>
+<p><strong>按最保守的口径：$2.18。</strong></p>
+<p>理由：GAAP 净利润 811 万是唯一一个既扣了股权激励、又扣了摊销、还扣了 35.4% 所得税的数字。3.719 亿 ÷ 811 万 = 45.9 倍，倒数就是 2.18%。</p>
+<p>如果宽容一点，用扣掉股权激励和资本化开发后的真实自由现金流 1524 万来算，是 <strong>$4.10</strong>（24.4 倍）。</p>
+<p><strong>这 2.18 到 4.10 元里，有多少回到你口袋？一分也没有。</strong></p>
+<ul>
+<li>分红：<strong>0</strong>（FY2025 起停派）</li>
+<li>回购：<strong>0</strong>（TTM 无回购）</li>
+<li>全部留在公司里。TTM 拿去买了 1319 万证券、288 万资本化开发。</li>
+</ul>
+<p>也就是说，你买这只股票，<strong>当期不会从公司拿到任何现金</strong>，全部回报都必须来自"公司未来把这些留存的钱变成更多利润"或者"市场愿意给更高的倍数"。而这家公司刚刚证明了，它把 9877 万留存现金变成了 2155 万。</p>
+<h3>还有两个数字必须放在一起看</h3>
+<p><strong>第一：ROIC 8.94%，WACC 11.57%。</strong></p>
+<p>投入资本回报率低于资本成本 2.6 个百分点。这句话翻译成人话是：<strong>这家公司现在每投一块钱进去，创造的价值低于这一块钱本身的机会成本——它在毁灭价值，不是创造价值。</strong> 对一家 46 倍市盈率的公司来说，这是致命的组合：高倍数只有在高回报率上才成立。</p>
+<p><strong>第二：空头持仓占流通股 16.77%，占总股本 13.94%。</strong></p>
+<p>七个交易日的成交量才够空头平仓。这个水平的做空比例，对一家 3.7 亿市值的小盘股来说是很重的下注，说明相当一部分资金在赌上面那个逻辑（增长熄火 + 结构恶化 + 高估值）会兑现。<strong>但反过来，如果哪个季度数字超预期，13.9% 的空头回补会把股价推得很猛</strong>——过去 52 周股价涨了 28%，可能已经有一部分是这个原因。</p>
+<h3>未来这个数字会变大还是变小</h3>
+<p><strong>变大的力量：</strong> 软件那半的护城河是真的（FDA 监管接受度、90%+ 续订率、模型迁移成本极高）；生物技术融资回暖的话，服务需求会跟着起来；AI 辅助药物发现的叙事对 ADMET Predictor 这类产品有直接利好；零负债 + 4950 万净现金意味着它不会死。</p>
+<p><strong>变小的力量：</strong> 软件（毛利 90%）不增长而服务（毛利 45%）在增长，混合毛利率会继续被拖下去；SBC 每年 640 万且在涨；ROIC 已经低于 WACC；管理层刚刚证明了它的收购判断力，而它正在攒下一笔收购的钱；FDA 层面如果出现开源或竞争性的 PBPK 工具被接受，护城河会被侵蚀。</p>
+<p>最要紧的一点：<strong>营收增速从 13% 掉到 2.1%，这个变化发生在一年之内。</strong> 46 倍市盈率是给两位数增长的估值，2% 的增长撑不住这个倍数。要么增速回去，要么倍数下来。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>软件那半是好生意，但你出的是整家公司的价钱，而且是按它十年前的成长速度出的价。</strong></p>
+<p>GastroPlus 那套东西是真有护城河——FDA 认可、九成以上续订、换软件要重做整套监管申报，这种生意全市场也没几家。问题在于，<strong>它现在只占公司的一半，而且这一半不长了；长的是另一半毛利 45% 的人力咨询。</strong> 整体毛利率从 80% 掉到 63%，营收增速从 13% 掉到 2.1%，投入资本回报率 8.94% 已经低于资本成本 11.57%。</p>
+<p>估值上，46 倍 GAAP 市盈率，投 100 块一年赚 2.18 元；就算用最宽容的现金流口径也只有 4.10 元，还一分不发给你——不分红、不回购、全留在公司。而这家公司上一次动用留存现金做的事，是花 9877 万买了 Pro-ficiency，一年后减记掉 7722 万。</p>
+<p><strong>这不是好公司坏价格，是一家一半好一半平庸的公司，被按纯软件公司的倍数定价。</strong> 46 倍配 2% 的增长，需要增速马上回到两位数才说得通，而报表上看不到这件事正在发生的迹象。13.9% 的空头持仓说明市场上不止我一个人这么算。</p>
+<p><strong>要买它，得先看到一件具体的事：软件分部重新回到两位数增长。</strong> 在那之前，这个价格不值。</p>
+</div></body></html>

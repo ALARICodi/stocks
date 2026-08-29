@@ -1,0 +1,337 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AVBC · 阿维迪亚银行控股（Avidia Bancorp）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AVBC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">1.05倍净资产买ROE4.5%的银行，赌回购抬ROE；存款一年跑掉2.9亿</div><h1>AVBC · 阿维迪亚银行控股（Avidia Bancorp）</h1>
+<p><strong>市值</strong> 4.09 亿美元｜<strong>股价</strong> $22.10｜<strong>行业</strong> 区域性银行（马萨诸塞州）｜<strong>TTM 截止</strong> 2026-06-30｜<strong>员工</strong> 241 人｜<strong>创立</strong> 1869 年</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分不用市盈率当主口径，改用市净率 PB、有形账面市净率 P/TBV、ROE / ROTCE。</strong> 原因是银行的「利润」很大程度上是一个会计选择——今年多提一笔坏账拨备，利润就没了；明年少提，利润就回来。AVBC 自己就是活样本：2025 年它计提了 2144 万拨备，全年直接亏损；TTM 拨备降回 474 万，利润变成 1759 万。同一家银行、同一批贷款，一个拨备科目让利润从 -329 万变成 +1759 万。所以看银行要先看「它有多少净资产、这些净资产一年能生出几个点」，市盈率只是个参考。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Avidia Bank 是马萨诸塞州伍斯特郡（Hudson、Westborough、Marlborough 一带）的社区银行，1869 年成立，到 2025 年为止它一直是一家<strong>互助银行（mutual bank）</strong>——没有股东，法律上属于存款人，赚的钱全部留在银行里滚。2025 年它做了「互助转股份制」上市，在纽交所挂牌，一次性发行股票募了 <strong>1.858 亿美元</strong>现金。这一笔钱是理解这家公司全部的钥匙，后面会反复提到。</p>
+<p>财报<strong>不按分部披露利润</strong>，只给整体数字。下面按「钱从哪来、钱放到哪去」拆，这是社区银行唯一诚实的拆法；每块的利润贡献是我按整体利差估算的，不是财报数字，<strong>明确标注为估算</strong>。</p>
+<h3>生意一：吸存款（负债端，成本中心，但也是护城河本身）</h3>
+<p>这门生意的产品就是「账户」。一个 Hudson 镇的居民在 Avidia 开一个支票账户，每月工资打进来，水电费、房贷从里面扣，配一张借记卡。银行给这个账户付的利息接近于零——支票账户和普通储蓄账户在 2026 年的美国大概付 0.05%–0.5%。一个开了二十年账户、水电煤自动扣款都绑定在这里的人，几乎不会为了别家多给 0.3% 的利息就搬走，因为搬一次要重设十几个自动扣款。<strong>这个「懒得搬」就是社区银行全部的护城河</strong>，行话叫「核心存款黏性」。</p>
+<p>Avidia 在普通社区银行的账户之外，有一块相对特别的东西：<strong>健康储蓄账户（HSA）托管</strong>。美国的高免赔额医保计划允许员工每年往 HSA 里存一笔税前的钱（2026 年个人约 4400 美元）专门用来付医药费，没花完可以一直滚下去。银行帮雇主把这些账户开起来、发卡、做报销结算，收一点年费，<strong>同时这笔钱作为存款躺在银行账上，成本极低而且极其稳定</strong>——因为这是个税收优惠账户，员工不会因为利率高低把它搬来搬去，搬走还要走一堆手续。一家 300 人的制造业公司把 HSA 交给 Avidia，可能就带来两三百万美元的常年低息存款。这类账户对一家 29 亿美元资产的银行是很实在的加分项。</p>
+<p>还有一块是<strong>国际电汇</strong>和面向小企业主的<strong>商户服务</strong>。一家本地的进口商每月要往意大利付三四笔货款，每笔电汇收 35–50 美元手续费；一家本地餐厅用银行提供的刷卡机，每笔交易银行分掉几个基点。单笔金额都很小，但这类费用收入不占用资本、不承担信用风险，是银行报表里质量最高的那部分收入。</p>
+<p><strong>TTM 存款端出了一件必须点名的事：存款净减少 2.895 亿美元。</strong> 对一家总资产约 29 亿的银行，这相当于 10% 的负债一年内走掉了。同期它还掉了 1 亿美元的借款（总债务从 3.0 亿降到 1.99 亿）。这两件事合起来的解读是：IPO 拿到 1.858 亿现金之后，银行不再需要靠高息定存和批发借款去凑钱放贷了，于是主动放掉了一批<strong>贵的、不黏的</strong>存款——那种为了 5% 的一年定期利率从网上搬进来、到期就走的钱。这是主动瘦身，不是挤兑。但 2.895 亿这个绝对值大得需要盯着：<strong>如果流走的里面混进了核心账户，那护城河就在漏水</strong>，从这四页财报上看不出来，只能看后续季度存款是否止跌。</p>
+<h3>生意二：放贷款（资产端，主要的钱在这里）</h3>
+<p>存进来的钱放出去收息，赚中间的差价。Avidia 的贷款投向主要三块：</p>
+<ul>
+<li><strong>商业地产贷款</strong>：本地一栋 20 个单元的公寓楼、一个小型购物中心、一家自建厂房的制造企业。典型一笔 200–800 万美元，期限 5–10 年，利率通常挂钩国债加 2–3 个点。这是绝大多数新英格兰社区银行最大的一块，也是风险最集中的一块。</li>
+<li><strong>工商业贷款（C&amp;I）</strong>：给本地企业的经营性贷款和循环额度。一家做医疗器械配件的公司订单来了要垫料款，从银行拉 150 万循环额度，用多少算多少利息。这类贷款收益率高，但企业一旦出事回收率低。</li>
+<li><strong>住宅按揭和房屋净值贷款</strong>：本地居民买房、装修。金额小、笔数多、坏账率极低。</li>
+</ul>
+<p><strong>2025 年的 2144 万拨备就出在资产端。</strong> 一家 29 亿资产的银行一年计提 2144 万，相当于把总贷款的 1% 左右直接冲掉——这不是「按模型例行计提」的量级，这是<strong>具体几笔贷款出问题了</strong>。对比一下：2024 年拨备只有 178 万，TTM 回到 474 万。从这四页看不出坏在哪个行业（大概率是商业地产里的某几笔），但可以看出<strong>它已经计提完了</strong>：TTM 的 474 万回到正常水平，说明管理层认为窟窿已经填上。这是全篇最关键的一个不确定性——如果 2025 年那一笔是个孤立事件，那 TTM 的 1759 万利润是真的；如果商业地产的问题还在往下走，那 TTM 只是暴风雨的间歇。</p>
+<h3>生意三：拿着 IPO 募来的 1.858 亿去赚钱</h3>
+<p>这严格说不是一门生意，但它解释了这家公司 TTM 报表上最刺眼的数字：<strong>营收从 2025 年的 8212 万跳到 TTM 的 1.0816 亿，增长 46.78%</strong>。一家 157 岁的社区银行不可能一年内把业务做大 47%。真实原因是三件事叠加：</p>
+<ol>
+<li>IPO 的 1.858 亿现金投进了生息资产（贷款和证券），按 5%–5.5% 的收益率，一年多出约 950 万利息收入（<strong>估算</strong>）；</li>
+<li>还掉 1 亿高成本借款，一年省下约 450–500 万利息支出（<strong>估算</strong>）；</li>
+<li>放掉高息存款，存款成本下降。</li>
+</ol>
+<p>三件事都是<strong>一次性的结构改善，不是业务增长</strong>。这一点必须记住：TTM 的 46.78% 营收增速不会重复，明年增长要靠真正的放贷。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>业务块</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入（存贷差）</td>
+<td>约 9200 万</td>
+<td>约 85%</td>
+<td><strong>估算</strong>，财报未拆分</td>
+</tr>
+<tr>
+<td>非利息收入（手续费、HSA、电汇、商户）</td>
+<td>约 1600 万</td>
+<td>约 15%</td>
+<td><strong>估算</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1.0816 亿</strong></td>
+<td><strong>100%</strong></td>
+<td>同比 +46.78%（结构性，见上文）</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表上没有单列 SBC 这一行。对一家刚从互助转过来、员工只有 241 人的社区银行，股权激励通常刚起步（转制银行一般会在上市一年后设立 ESOP 和限制性股票计划，规模在净利润的 3%–8%）。<strong>这里没有科技公司那种「Non-GAAP 加回一大笔股权成本」的把戏可玩</strong>，这是个正面。</li>
+<li><strong>一次性项目</strong>：有，而且是决定性的。2025 年的 <strong>2144 万拨备</strong>和 <strong>57 万资产减值</strong>是把 2025 年打成亏损的直接原因。按规格要求诚实说：<strong>单期口径无法判断这是不是年年都会发生</strong>——如果是商业地产周期的开始，那它会年年来；如果是几笔孤立的坏账，那它已经过去了。TTM 的 474 万拨备是「已经过去」这一侧的证据，但只有一期。</li>
+<li><strong>资本化的支出</strong>：银行几乎没有这个问题。资本开支 TTM 322 万，就是分行装修和 IT 设备，占营收 3%，正常。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 <strong>1606 万</strong>，SBC 无单列数据，无法算比值。但可以看更硬的证据：<strong>股本一年减少 7.40%</strong>。对一家刚上市的公司，这是很激进的回购——这正是「互助转股份制」银行的标准剧本：IPO 时资本募多了，ROE 被摊薄，所以上市后立刻大力回购把股本收回来，把 ROE 抬回去。这一条是<strong>真回购，不是抵消员工发股</strong>。</li>
+<li><strong>利润和现金流的差</strong>：净利润 1759 万 vs 经营现金流 5141 万 vs 自由现金流 4818 万。差额 3382 万，逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>17.59</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>3.07</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>0.14</td>
+</tr>
+<tr>
+<td>+ 信贷拨备（非现金计提）</td>
+<td>4.74</td>
+</tr>
+<tr>
+<td>+ 资产减值</td>
+<td>0.57</td>
+</tr>
+<tr>
+<td>− 出售资产收益</td>
+<td>−0.36</td>
+</tr>
+<tr>
+<td>− 出售投资收益</td>
+<td>−0.60</td>
+</tr>
+<tr>
+<td>+ 所得税科目变动</td>
+<td>6.41</td>
+</tr>
+<tr>
+<td>+ 贷款发放/出售净变动</td>
+<td>0.27</td>
+</tr>
+<tr>
+<td>+ 应收利息变动</td>
+<td>0.22</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>17.83</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>51.41</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−3.22</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>48.18</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表对银行不能按字面读。</strong> 差额里最大的两块是「其他经营活动 1783 万」和「所得税科目变动 641 万」，这两个在银行报表里是应计项目的时点错配，不是真的多出来 2400 万现金。而且 P/FCF 8.48 倍、FCF 收益率 11.79% 这两个数字<strong>对银行完全没有意义</strong>——银行的经营现金流里混着贷款发放和存款变动，随便一个季度的存款波动就能让它翻倍或转负。<strong>看银行请忽略自由现金流，看净资产和 ROE。</strong></p>
+<hr />
+<h2>第三部分：估值，银行口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>市值 ÷ 账面净资产（约 3.89 亿）</td>
+<td><strong>1.05 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>市值 ÷ 有形净资产（约 3.78 亿）</td>
+<td><strong>1.08 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE（财报口径，用平均权益）</td>
+<td>净利 ÷ 期间平均权益</td>
+<td>6.06%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE（用 IPO 后完整资本算）</strong></td>
+<td>1759 万 ÷ 3.89 亿</td>
+<td><strong>4.52%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROTCE（有形权益回报）</td>
+<td>1759 万 ÷ 3.78 亿</td>
+<td><strong>4.65%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（真实到手回报）</strong></td>
+<td>4.52% ÷ 1.05</td>
+<td>—</td>
+<td><strong>4.30 元</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>4.085 亿 ÷ 1759 万</td>
+<td>23.4 倍</td>
+<td>4.28 元</td>
+</tr>
+<tr>
+<td>前瞻市盈率（分析师预期 2026 全年）</td>
+<td>券商一致预期</td>
+<td>15.35 倍</td>
+<td>6.51 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>4.085 亿 ÷ 三年均值 688 万</td>
+<td><strong>59.4 倍</strong></td>
+<td><strong>1.68 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>8.48 倍</td>
+<td>—</td>
+<td><strong>对银行无意义，不用</strong></td>
+</tr>
+<tr>
+<td>资本充足度（用杠杆倒推）</td>
+<td>总资产约 29 亿 ÷ 权益 3.89 亿</td>
+<td><strong>7.4 倍杠杆</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>必须解释的三个数字：</strong></p>
+<p><strong>1. 财报上的 ROE 6.06% 是被口径抬高的。</strong> ROE 的分母是「期间平均权益」，而 AVBC 是 2025 年中途才拿到 1.858 亿新资本的——平均下来的权益比现在实际拥有的少一大截。用它现在真正握着的 3.89 亿净资产算，<strong>真实 ROE 只有 4.52%</strong>。这个数字才是你作为今天的买家该看的。一家银行的 ROE 4.5%，是<strong>明显低于行业</strong>的水平（美国区域银行的中位数大致在 9%–11%）。</p>
+<p><strong>2. 三年平均口径的 59.4 倍看着吓人，但要打折看。</strong> 2023/2024/2025 三年净利分别是 1244 万、1148 万、-329 万，平均只有 688 万。问题在于那三年这家银行的净资产比现在小得多（没有那 1.858 亿），拿旧的盈利去除新的市值不公平。<strong>但它揭示的东西仍然成立：这家银行在过去三年、在更高的杠杆下，年均只赚 688 万。</strong> 你今天付 4.085 亿，是在赌「拨备正常化 + 新资本全额投放」能把盈利能力永久钉在 TTM 的 1759 万这个水平上——而不是回到历史那个 1100 万上下的常态。</p>
+<p><strong>3. 杠杆只有 7.4 倍，这是把双刃剑。</strong> 典型美国银行是 10 倍左右。7.4 倍意味着<strong>资本严重过剩</strong>——这正是刚转制银行的通病，也正是它 ROE 低的直接原因（同样的资产收益率，杠杆低 30%，ROE 就低 30%）。好的一面是它安全垫极厚，2025 年那 2144 万拨备砸下来银行毫发无损；坏的一面是<strong>这些多余的资本不产生回报，你付了净资产价买了一堆闲置的钱</strong>。</p>
+<h3>说人话：投 100 块，一年赚多少</h3>
+<p><strong>按最保守的真实口径（现有资本、TTM 利润）：你投 100 块进去，公司一年替你赚 4.30 块。</strong></p>
+<p>这 4.30 块的去向：管理层已经开始了两件事——<strong>回购</strong>（TTM 花了 1606 万，股本一年缩 7.40%）和<strong>刚开始的派息</strong>（2026 年 8 月 18 日有除息日，但现金流量表财务活动里连一行独立的分红支出都还看不到，说明金额极小）。也就是说，这 4.30 块里<strong>绝大部分是以回购的形式回到你口袋的</strong>——回购不给你现金，但让你手里每股代表的银行份额变大。剩下的留在银行里放贷。</p>
+<p>这个 4.30 块未来大概率会<strong>变大</strong>，理由是明确的：
+- 资本过剩（7.4 倍杠杆）正在通过回购往下降，杠杆回到 9 倍，同样的资产收益率能把 ROE 从 4.5% 推到 5.5%–6%；
+- 1.858 亿新资本 TTM 只投放了一部分（现金和证券还堆着 7669 万），全额放出去还有增量；
+- 拨备如果真的正常化，1759 万往上还有空间——券商给的 15.35 倍前瞻市盈率对应的是<strong>约 2660 万的 2026 年净利</strong>，比 TTM 高 51%。</p>
+<p>风险也同样明确：<strong>TTM 存款净流出 2.895 亿</strong>，以及 2025 年那 2144 万拨备背后的贷款到底修好没有。这两件事任何一件恶化，上面那串「变大」的逻辑就全部作废。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，不便宜也不贵，属于「买得下手但要盯着」的那一档。</strong></p>
+<p>你付 1.05 倍净资产、1.08 倍有形净资产，买一家 ROTCE 只有 4.65% 的银行——单看这个组合是不划算的，正常应该给 ROE 5% 的银行打折到 0.8 倍净资产才对。撑住这个价的是三件很具体、可验证的事：资本严重过剩正在被激进回购消化掉（一年缩股 7.4%）、1.858 亿新钱还没全投出去、2025 年那笔巨额拨备已经计提干净。这三件事都兑现的话，券商 15.35 倍的前瞻市盈率（对应 6.5% 的年回报）就是对的，现在 22 块的股价就便宜。</p>
+<p>但要清楚你在赌什么：<strong>你赌的不是这家银行本身有多好，而是「转制银行上市后 ROE 会被回购抬起来」这个剧本能第 N 次重演。</strong> 这个剧本历史上确实经常演，但 AVBC 的两个具体风险不在剧本里——一年跑掉 2.895 亿存款，和一年之前刚爆过 2144 万的坏账。股价 52 周已经涨了 44.8%，最容易赚的那段折价已经没了。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截至 2026-06-30，分析日期 2026-08-29。</em></p>
+</div></body></html>

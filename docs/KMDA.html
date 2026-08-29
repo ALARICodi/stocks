@@ -1,0 +1,287 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KMDA · Kamada Ltd.（卡玛达）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KMDA</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">血浆特效药无仿制威胁，利润率1%走到14.5%，15倍EV/EBIT，折价在以色列</div><h1>KMDA · Kamada Ltd.（卡玛达）</h1>
+<p>市值 4.81 亿美元 · 股价约 8.3 美元 · 行业：健康技术（血浆衍生特效药） · TTM 截止 2026 年 6 月 30 日 · 以色列公司，纳斯达克与特拉维夫双重上市</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Kamada 做的是<strong>从人血浆里提取抗体，做成救命的注射剂</strong>。这门生意的特殊之处在于：它的原料不是化学品，是人；它的产品无法被仿制药复制；而它的客户基本没有第二个选择。</p>
+<p>财报把它拆成两块，一块是全部的价值所在，另一块基本是个搭头。</p>
+<h3>生意 A：自有产品（占 84.3%）</h3>
+<p>这块的核心叫<strong>特异性免疫球蛋白</strong>（hyperimmune immunoglobulin）。听起来复杂，原理其实很朴素：</p>
+<p>假设你被一只可能带狂犬病毒的狗咬了。狂犬疫苗要 7–14 天才能让你自己的身体产生抗体，而病毒可能等不了那么久。<strong>你需要的是现成的抗体，现在就打进去。</strong> 这些抗体从哪来？从那些体内已经有高浓度狂犬抗体的人的血浆里提取——通常是被专门免疫过的献浆员。Kamada 收集这些血浆、分离出抗体、纯化、灭活病毒、灌装，做成一支药。</p>
+<p>Kamada 手上有一组这样的产品，每一个对应一种"来不及等自身免疫"的场景：</p>
+<ul>
+<li><strong>KEDRAB / KamRAB</strong>——狂犬病免疫球蛋白。美国市场通过 Kedrion 分销，是美国唯一一款完成了儿童临床试验的狂犬免疫球蛋白。被咬伤后急诊科注射，一支几千美元。</li>
+<li><strong>CYTOGAM</strong>——巨细胞病毒（CMV）免疫球蛋白。器官移植病人（心、肺、肝、肾）术后要用免疫抑制剂防排异，免疫系统被压住了，潜伏的 CMV 就会爆发，能致命。移植中心在术后给病人打 CYTOGAM 预防。<strong>全球只有这一个产品</strong>。</li>
+<li><strong>WINRHO SDF</strong>——抗 D 免疫球蛋白。Rh 阴性血型的孕妇怀了 Rh 阳性的胎儿，母体会产生抗体攻击胎儿；打这个能阻断。也用于治疗免疫性血小板减少症。</li>
+<li><strong>HEPAGAM B</strong>——乙肝免疫球蛋白。肝移植病人防止新肝脏被乙肝病毒再感染，以及乙肝暴露后的紧急阻断。</li>
+<li><strong>VARIZIG</strong>——水痘带状疱疹免疫球蛋白。免疫缺陷病人、早产儿、孕妇接触水痘后的紧急保护。</li>
+<li><strong>GLASSIA</strong>——α1 抗胰蛋白酶，治疗一种先天性肺气肿。这个产品的生产已经转给日本武田（Takeda），Kamada 现在主要收<strong>特许权使用费</strong>，一路收到 2040 年前后，几乎零成本的纯利。</li>
+</ul>
+<p><strong>为什么这门生意别人抢不走？</strong> 三道门：第一，你得有血浆，而且是<strong>含特定高浓度抗体的血浆</strong>——这需要一批被专门免疫、定期抽浆的固定献浆员，不是有钱就能买到。第二，血浆分离厂需要 FDA 逐个产品发许可证，建一条线要五到八年。第三，<strong>生物制品没有"仿制药"通道</strong>——化学药专利到期后仿制药能一夜之间把价格打掉九成，但血浆制品无法证明"完全相同"，只能走全套生物类似药审批，对这种年销售几千万美元的小适应症来说根本不值得做。所以这些产品的定价能长期稳住。</p>
+<p>Kamada 还在往上游走：在美国德州收购和自建了<strong>血浆采集中心</strong>，自己抽浆，一是控制原料，二是把外部采浆的毛利留下来。</p>
+<h3>生意 B：以色列本地分销（占 15.7%）</h3>
+<p>在以色列代理别人的药——疫苗、生物类似药等——负责进口、注册、仓储、铺货。这就是个贸易生意，毛利很薄，和上面那门生意没有任何技术关系。它存在的理由是历史沿革加上现成的以色列医院渠道。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收（百万美元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>毛利率（估算）</th>
+<th>毛利贡献（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自有产品（免疫球蛋白＋特许费）</td>
+<td>161.7</td>
+<td>+10.4%（FY25 口径）</td>
+<td>84.3%</td>
+<td>~45%</td>
+<td>~73</td>
+</tr>
+<tr>
+<td>以色列分销</td>
+<td>30.2</td>
+<td>+24.3%（FY25 口径）</td>
+<td>15.7%</td>
+<td>~18%</td>
+<td>~5</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>191.9</strong></td>
+<td><strong>+13.2%</strong></td>
+<td>100%</td>
+<td><strong>40.8%</strong></td>
+<td><strong>78.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部利润。上表毛利率是按整体 40.8% 和"专利药 vs 代理贸易"的常识差距倒推的<strong>估算值</strong>。分部同比用 FY2025 对 FY2024。</p>
+</blockquote>
+<p>值得单独说一句的是<strong>经营杠杆</strong>：营收从 2021 年的 1.04 亿涨到现在的 1.92 亿（+85%），而经营利润从 <strong>110 万涨到 2783 万</strong>（涨了 24 倍），经营利润率从 1.1% 提到 14.5%。这门生意的固定成本（工厂、质检、监管合规）摊薄效应极强，多卖一支药，边际利润非常高。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 210 万美元，占净利润 2225 万的 <strong>9.4%</strong>。不算低但也不夸张，而且注意它 TTM 突然从 FY2025 的 85 万跳到 210 万，翻了 1.5 倍——大概率是股价上涨后新一轮授予的公允价值变高。GAAP 已扣，本文不加回。</p>
+<p><strong>一次性项目</strong>：TTM 没有大额重组、减值或诉讼和解。现金流表里的"其他经营项"650 万主要是递延税和汇兑（以色列谢克尔对美元），这块年年都有，不是一次性。<strong>只看单期无法判断这 650 万里有没有偶发成分</strong>，不做进一步调整。</p>
+<p><strong>资本化的支出</strong>：没有软件或研发资本化。资本开支 TTM 944 万，占营收 4.9%——真金白银投在采浆中心和产能上。</p>
+<p><strong>这里有个必须点出来的口径问题</strong>：TTM 折旧摊销 <strong>1530 万</strong>，而资本开支只有 944 万，差 586 万。差额是 2021 年那笔 <strong>9640 万美元收购</strong>（从 Saol Therapeutics 买下 CYTOGAM、WINRHO、HEPAGAM B、VARIZIG 四个已获 FDA 批准的产品）形成的无形资产在摊销。这笔摊销是<strong>非现金</strong>的，但它对应的资产是<strong>永久性的产品许可证</strong>——不像专利会到期，FDA 生物制品许可证只要产品还在生产就一直有效。所以严格说，这 586 万的摊销<strong>高估了真实的经济成本</strong>。如果把它加回（税后约 489 万），净利润会是 2714 万，市盈率从 21.6 倍降到 <strong>17.7 倍</strong>。下面的主表按保守口径不加回，但这一点值得记住。</p>
+<p><strong>回购与稀释</strong>：TTM 没有明确的股票回购科目，但股本一年<strong>减少了 1.60%</strong>（季度环比 −1.93%），减少的部分体现在"其他融资活动 −596 万"里。同期 SBC 210 万——<strong>股本是真的在缩，不是抵消发股</strong>。这是个正面信号，但规模不大。</p>
+<p><strong>分红</strong>：TTM 派息 <strong>1442 万美元</strong>（FY2025 首次派息 1153 万）。派息率 = 净利润的 <strong>64.8%</strong>、自由现金流的 <strong>54.8%</strong>。分得起，没有透支。</p>
+<p><strong>利润和现金流的差</strong>：净利润 2225 万，经营现金流 3576 万，现金流高出 1351 万。对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>22.25</td>
+</tr>
+<tr>
+<td>＋ 折旧与摊销</td>
+<td>15.30</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>2.10</td>
+</tr>
+<tr>
+<td>＋ 其他经营项（递延税、汇兑）</td>
+<td>6.50</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−6.19</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−4.80</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>1.17</td>
+</tr>
+<tr>
+<td>− 递延收入减少</td>
+<td>−0.02</td>
+</tr>
+<tr>
+<td>− 其他营运资金</td>
+<td>−0.56</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>35.76</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>关键在营运资金那三行：<strong>应收 +619 万、存货 +480 万，合计吃掉 1099 万现金</strong>。存货这一项是结构性的——存货周转率只有 <strong>1.34 次</strong>，相当于<strong>存货在账上躺 272 天</strong>。这不是管理不善，是血浆制品的物理规律：血浆采集后要冷冻检疫、混批、分离、纯化、灭活、质检放行，全流程接近一年。<strong>这门生意天然是"吃现金"的</strong>，营收每涨 10%，就得多压一笔存货进去。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 4.81 亿，企业价值 4.23 亿（净现金 5833 万，占市值 12%）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>481.4 ÷ 22.25</td>
+<td><strong>21.6×</strong></td>
+<td>4.62 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司只指引调整后 EBITDA（4149 万），不报调整后净利润</td>
+<td>市值/EBITDA 11.6×</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无重大一次性项目可剔，＝ GAAP</td>
+<td><strong>21.6×</strong></td>
+<td>4.62 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>481.4 ÷ 26.32</td>
+<td><strong>18.3×</strong></td>
+<td>5.47 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>423.1 ÷ 27.83</td>
+<td><strong>15.2×</strong></td>
+<td>6.58 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>481.4 ÷ 18.97（TTM＋FY25＋FY24 平均）</td>
+<td><strong>25.4×</strong></td>
+<td>3.94 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行这次是"贵"的方向，而这恰恰是好消息。</strong> 三年平均口径 25.4 倍 &gt; 当期 21.6 倍，说明现在的利润<strong>不是高点，是这三年里最高的一年，而且是一路涨上来的</strong>：FY2024 净利润 1446 万 → FY2025 2020 万 → TTM 2225 万。营收也是连续五年正增长（+24.8%、+10.2%、+12.9%、+12.1%、+13.2%），<strong>低两位数，非常稳</strong>。三年平均口径显得贵，只是因为它把两年前那个更低的利润拉进来平均了——对一家利润在爬坡的公司，这个口径是保守的，不是警告。</p>
+<p>另一个值得看的是 <strong>EV/EBIT 只有 15.2 倍</strong>，明显低于 21.6 倍的市盈率。差距来自那 5833 万净现金——<strong>市值的 12% 是趴在账上的钱，不产生经营利润但被算进了分母之外</strong>。剔掉这部分，你真正为经营业务付的价格更接近 15 倍。</p>
+<p><strong>你现在投 100 块进去，按最保守的真实口径（21.6 倍）算，公司一年替你赚 4.62 块。</strong></p>
+<p>这 4.62 块的去向很清楚：<strong>约 2.99 块以现金分红发到你手里</strong>（派息率 64.8%，股息率约 3.0%），另有约 0.5 块通过缩股本还给你（股本一年减 1.6%），剩下<strong>约 1.1 块留在公司里</strong>——投向资本开支（944 万，扩采浆中心和产能）和存货（480 万，为下一年的销量备货）。留存的部分投得不算多，也不乱花：TTM 没有任何并购支出，4066 万现金只是从活期挪进了短期投资。</p>
+<p>这 4.62 块未来大概率<strong>会变大</strong>，理由有三条：一是经营杠杆还没走完（利润率从 1.1% 走到 14.5%，同行成熟血浆企业能到 20% 以上）；二是自建采浆中心逐步爬产能后，原料成本会从"外购"变成"自产"，直接进毛利；三是 GLASSIA 的武田特许费是零成本收入，一直收到 2040 年前后。管理层给的前瞻市盈率是 <strong>16.5 倍</strong>，隐含明年利润再涨约 30%。</p>
+<p>风险也说清楚，三条：<strong>第一，血浆供应</strong>——采浆中心建设和献浆员招募是硬瓶颈，慢一点整个增长就慢一点。<strong>第二，产品集中</strong>——CYTOGAM、KEDRAB 两个产品扛着相当大的比重，其中 KEDRAB 在美国靠 Kedrion 一家分销，续约条件变化会直接冲击业绩。<strong>第三，地缘</strong>——生产基地在以色列（Beit Kama），战争、征兵、空运中断都是实打实的经营风险，虽然过去两年公司交付并未中断。另外 ROE 只有 8.4%，看着低，原因是 2021 年那笔收购和 2023 年 5824 万美元的增发把股东权益做大了（PB 1.79 但 P/有形账面价值 3.31，差额就是商誉和产品无形资产）；看 ROIC 11.35% 对 WACC 5.01%，<strong>投入资本回报是资金成本的 2.3 倍</strong>，这才是更真实的画面。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，甚至略微偏便宜——这是本批三家里唯一一门真有护城河、利润还在往上走的生意。</strong> 21.6 倍市盈率、15.2 倍 EV/EBIT、18.3 倍自由现金流，配上连续五年低两位数营收增长、经营利润率从 1% 走到 14.5%、净现金占市值 12%、3% 股息率、股本还在缓慢缩小；账上找不到障眼法，利润是真现金（经营现金流 3576 万 &gt; 净利润 2225 万）；产品是别人做不出来的血浆特效药，没有仿制药威胁。<strong>要打折的地方只有两处：存货天然要占用大量现金（272 天周转），以及工厂在以色列这个不可控的地缘环境里。</strong> 前者是这门生意的成本，后者是这只股票的折价理由——市场给它 21 倍而不是同类美国血浆企业的 30 倍，一半原因在这。愿意承担这个地缘折价的人，这价格是公道的。</p>
+</div></body></html>

@@ -1,0 +1,260 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VMD · 维艾迈德医疗 (Viemed Healthcare)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VMD</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">零净负债年增25%的赛道龙头，24倍算公道，命脉在Medicare费率表</div><h1>VMD · 维艾迈德医疗 (Viemed Healthcare)</h1>
+<p>市值 $3.36亿 / 股价约 $8.8 / 家庭医疗服务 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>全量榜第 1091 名。美国最大的独立"居家无创呼吸机"服务商，总部在路易斯安那州拉法叶。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只有一个分部，但实际上是围绕"把医院级的呼吸照护搬进病人家里"的两三门生意。</p>
+<p><strong>生意一（核心）：晚期肺病患者的居家呼吸机租赁+照护服务</strong></p>
+<p>美国有上千万慢阻肺（COPD）患者——几十年抽烟或粉尘暴露把肺熬坏了，走到晚期，肺已经没力气把二氧化碳呼出去，晚上一躺下就憋醒。传统结局是反复进 ICU 插管，一次住院花掉 Medicare 几万美元。Viemed 卖的是另一条路：给病人家里装一台无创呼吸机（戴面罩不插管），病人每晚戴着睡觉，机器帮肺"打辅助"。</p>
+<p>关键是它不只是送台机器：Viemed 雇了几百名持证呼吸治疗师（RT），机器装好后治疗师定期上门——调参数、教家属、看数据、发现恶化苗头提前干预。收费模式是<strong>按月租金</strong>：Medicare 或商业保险每月付一千美元上下（机器+服务打包），一个病人往往能持续付一两年甚至更久。对保险方来说这钱花得值：一个月一千多美元，换来的是少一次几万美元的 ICU 住院，所以这项报销存在的理由很硬。病人这边则是"不买就得反复进医院"，粘性极强，流失基本只因为去世或病情终结。</p>
+<p>这门生意的另一面：<strong>呼吸机是 Viemed 自己掏钱买的</strong>（一台几千美元），先投资产、再按月收回来，本质是重资产租赁——TTM 资本开支 $3155万，几乎全是买设备，折旧 $3025万是真金白银的成本，这点在第三部分算账时很重要。</p>
+<p><strong>生意二：睡眠呼吸暂停、制氧机等其他居家设备</strong></p>
+<p>同一张上门网络顺手卖的周边：睡眠呼吸暂停患者的 CPAP 呼吸机（含面罩耗材的定期补给订阅，耗材复购是门好生意）、居家制氧、以及 2023 年收购 HMP（田纳西的家用医疗设备商）、2025 年又收购一家地区性同行带进来的普通家用医疗设备（轮椅、病床之类）。逻辑是"呼吸治疗师反正要进病人家门，多带几样产品摊薄上门成本"。</p>
+<p><strong>生意三（很小）：医护人员派遣</strong></p>
+<p>把自家呼吸治疗师和护士按小时派给医院填班，疫情期间起家的副业，占比个位数。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM营收</th>
+<th>同比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>呼吸机租赁+照护(估算)</td>
+<td>约$1.6亿</td>
+<td>—</td>
+<td>财报不分产品线披露，占比约5成，按公司历史披露结构估算</td>
+</tr>
+<tr>
+<td>睡眠/制氧/其他设备(估算)</td>
+<td>约$1.1亿</td>
+<td>—</td>
+<td>收购贡献了相当一部分增长</td>
+</tr>
+<tr>
+<td>派遣及其他(估算)</td>
+<td>约$0.3亿</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$3.02亿</strong></td>
+<td><strong>+25.2%</strong></td>
+<td>经营利润率 8.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p>营收五年翻了近三倍（2021 年 $1.17亿 → TTM $3.02亿），年年 20%+。但要打个折扣：2023 年花 $2859万、2025 年又花 $2633万买公司，<strong>增长里有一块是买来的</strong>，不全是自家长出来的。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $896万，<strong>是净利润($1450万)的 62%</strong>——这是全篇最扎眼的数字。GAAP 里已经扣了，但要明白：这家公司真实赚的钱里，有六成多以股票形式发给了管理层和员工。</li>
+<li><strong>一次性项目</strong>：TTM 有 $172万资产出售损失（上年同期是 $224万收益，一来一回摆动 $400万税前，正好解释了为什么营收涨 25% 净利润却只涨 6.5%）。卖二手呼吸机本来就是业务的一部分，算不上真一次性。没有减值、没有重组。</li>
+<li><strong>资本化的支出</strong>：没有资本化软件的把戏。设备资本化是租赁生意的正常形态，且折旧 $3025万 ≈ 资本开支 $3155万，账是诚实的。但注意 <strong>EV/EBITDA 6 倍这个"便宜"指标在这里是陷阱</strong>——呼吸机三五年就折旧完、必须再买新的，折旧是真成本，EBITDA 在这门生意里没有意义。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $2046万 ÷ SBC $896万 = <strong>2.3 倍</strong>——够不上 3 倍的"真回购"线，一半左右的回购是在给员工发股擦屁股。股本一年净减 1.9%，方向是对的。无分红。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $1450万 vs 经营现金流 $6078万，差 4 倍，但对账干净：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额(百万$)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>14.5</td>
+</tr>
+<tr>
+<td>+ 折旧摊销(呼吸机队伍的损耗)</td>
+<td>30.6</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>9.0</td>
+</tr>
+<tr>
+<td>+ 资产出售损失及其他</td>
+<td>7.5</td>
+</tr>
+<tr>
+<td>− 营运资金占用(应收账款增加为主)</td>
+<td>-0.7</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>60.8</strong></td>
+</tr>
+<tr>
+<td>− 资本开支(买新呼吸机)</td>
+<td>-31.6</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>29.2</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>没有藏东西，差额就是折旧和 SBC。但 TTM 还花了 $2633万收购——把收购也算成"维持增长的开销"的话，一年下来现金基本没剩。
+- <strong>资产负债表</strong>：现金 $1068万、总债务 $1160万，净负债约为零。<strong>干净得罕见</strong>，扩张和回购全靠自己的现金流喂，没借钱。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 $3.36亿，企业价值 $3.37亿（没有净负债，两者几乎相等）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3.36亿 ÷ 1450万</td>
+<td>24.5</td>
+<td>¥4.1</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>公司爱报"调整后EBITDA"($5580万,EV/EBITDA 6.0)——<strong>在重资产租赁生意里这是废指标，折旧是真成本</strong></td>
+<td>(6.0)</td>
+<td>(虚)</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>一次性项目极小，真实≈GAAP，SBC已扣不加回</td>
+<td><strong>~24</strong></td>
+<td><strong>~¥4.1</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>3.36亿 ÷ 2924万</td>
+<td>11.5</td>
+<td>¥8.7</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>3.37亿 ÷ 2555万</td>
+<td>13.2</td>
+<td>¥7.6</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>3.36亿 ÷ 三年平均净利1215万</td>
+<td>27.6</td>
+<td>¥3.6</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>投 100 块进去，按真实利润口径一年赚 4 块；按自由现金流口径赚 8 块 7。</strong> 两个口径差一倍，差在折旧——会计上呼吸机按几年摊，但一台机器实际服役期往往更长、退役了还能卖二手（TTM 卖旧设备回收 $520万），所以真实的现金回报介于两者之间，偏现金流那头。</p>
+<p>这些钱现在<strong>一分不分红</strong>，去向是：约 $2000万回购（其中一半抵消 SBC），$2633万买同行。等于公司替你做的选择是"全部再投资赌规模"。这个回报未来变大还是变小？人口老龄化+COPD 患者基数增长+保险方愿意为"少住院"买单，需求端十年内看不到头，营收大概率继续涨。<strong>真正的风险只有一个名字：Medicare。</strong> 收入的大头最终由联邦报销费率决定，费率表某年砍一刀（这个行业历史上发生过多次竞标降价），利润率立刻见血。净利率只有 4.8%，没有多少垫子可挨刀。</p>
+<h2>第四部分：一句话结论</h2>
+<p>小而干净的成长股：需求真实、赛道龙头、零净负债、营收年增 25%，代价是 4.8% 的薄净利率、62% 的 SBC 占比、以及命脉握在 Medicare 费率表手里。24 倍 GAAP、11.5 倍现金流，对一个 20%+ 的成长速度来说<strong>价格算公道，没占到便宜也没吃亏</strong>——值得放进观察名单盯着，等哪次报销政策恐慌把它砸下来再动手更划算。</p>
+</div></body></html>

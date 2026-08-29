@@ -1,0 +1,337 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PBFS · 先锋银行控股（Pioneer Bancorp）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PBFS</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">1.47倍有形账面买5.8%ROTCE，无股息，日成交仅14万美元</div><h1>PBFS · 先锋银行控股（Pioneer Bancorp）</h1>
+<p><strong>市值</strong> 4.27 亿美元｜<strong>股价</strong> $17.63｜<strong>行业</strong> 区域性银行（纽约州首府区）｜<strong>TTM 截止</strong> 2026-06-30｜<strong>员工</strong> 269 人｜<strong>创立</strong> 1889 年</p>
+<blockquote>
+<p><strong>这是一家银行，第三部分不用市盈率当主口径，改用市净率 PB、有形账面市净率 P/TBV、ROE / ROTCE。</strong> 银行的利润受拨备科目支配，一笔计提就能让盈利面目全非；真正稳定的是「有多少净资产、这堆净资产一年生几个点」。</p>
+<p><strong>另外有一件事必须放在最前面，它比所有财务数字都重要：PBFS 的股票你只能买到三分之一。</strong> 总股本 2421 万股，实际在市场上流通的（float）只有 <strong>757 万股</strong>——占 31%。剩下的 68.7% 由 Pioneer Bancorp, MHC（一家互助控股公司，法律上属于存款人）持有。这个结构叫 MHC，直接决定了这笔投资的性质，第一部分和第四部分会展开。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Pioneer Bank 是纽约州首府区（Albany、Troy、Schenectady 一带）的社区银行，1889 年成立，总资产约 22 亿美元，269 名员工，2019 年做了「互助转股份制」的<strong>第一步</strong>上市（挂 NASDAQ，代号 PBFS）。财报<strong>不按分部披露利润</strong>，下面按业务性质拆，利润归属为<strong>估算</strong>。</p>
+<h3>生意一：吸存款（负债端）</h3>
+<p>产品是账户：活期、储蓄、货币市场、定期存单（CD）。一个 Troy 的居民把工资卡开在 Pioneer，房贷和水电自动扣款绑在这个账户上，银行给这个账户付接近零的利息，然后把这笔钱以 6%–7% 的利率放出去。这个「懒得搬账户」的惰性就是社区银行的全部护城河，同 AVBC。</p>
+<p>Pioneer 在首府区有一块相对有分量的客户：<strong>市政和非营利机构存款</strong>。纽约州首府区是州政府所在地，学区、市镇、医院、大学基金会这类机构都要开对公账户，钱量大、稳定、对利率相对不敏感——但这类存款有个特点，<strong>它是关系型的</strong>，靠的是几个业务负责人跟当地政要、校董的多年交情，不是产品优势。人走了钱可能就走了。</p>
+<p><strong>TTM 存款净增 2.2846 亿美元</strong>，对一家 22 亿资产的银行是 10% 的增长，非常猛。但这个增长跟下面那笔收购几乎肯定是同一件事，不是自然揽储。</p>
+<h3>生意二：放贷款（资产端，钱主要在这里）</h3>
+<ul>
+<li><strong>商业地产贷款</strong>：首府区的公寓楼、小型零售中心、医疗诊所自建楼。典型一笔 150–600 万，挂钩国债加 2–3 个点。这是最大的一块，也是风险最集中的一块。</li>
+<li><strong>工商业贷款（C&amp;I）</strong>：给本地企业的经营性额度。一家承接州政府工程的建筑公司在开工前拉 200 万循环额度垫材料款，工程款到账再还上。首府区大量企业靠州政府订单吃饭，这块生意的景气度<strong>跟纽约州财政预算高度绑定</strong>——这是一个大多数人不会注意到的集中度风险。</li>
+<li><strong>商业建筑贷款</strong>：给开发商的建设期贷款，利率最高、风险也最高，因为项目烂尾时抵押的是一个盖到一半的壳子。</li>
+<li><strong>住宅按揭、房屋净值贷款、消费贷</strong>：金额小、笔数多、坏账极低，是压舱石。</li>
+</ul>
+<h3>生意三：TTM 里那笔 1.418 亿美元的现金收购</h3>
+<p>现金流量表的投资活动里，TTM 出现了一行 <strong>Cash Acquisitions −1.4182 亿美元</strong>——这是本期最大的单笔动作，对一家 22 亿资产的银行相当于把 6% 的资产表一次性买了进来。同期还出现了两个配套数字：<strong>存款净增 2.2846 亿</strong>、<strong>贷款净投放 2.1465 亿</strong>。</p>
+<p><strong>stockanalysis 这四页只给到「现金收购 1.4182 亿」这一行，不披露买的是什么，我无法从这些数据确认标的。</strong> 但三个数字同时出现在同一期，形态非常像「并入了一家小银行或一批分支网点」——买方付出现金对价，同时承接对方的存款和贷款组合。</p>
+<p>这件事的意义：<strong>Pioneer 把 2019 年上市攒下的过剩资本用出去了一部分。</strong> 转制银行最大的通病是钱太多没处放、ROE 上不去，收购是标准解法之一。但同期发生的另一件事让人皱眉——<strong>TTM 每股收益 0.70 美元，比 2025 全年的 0.83 下降了 20.41%</strong>，净利从 2029 万降到 1685 万。花 1.418 亿买进来的资产，短期不但没抬高每股收益，还伴随着利润下滑（收购的整合费用、并购溢价的摊销、以及新并入贷款的初始拨备，都会砸在当期）。这笔买卖是赚是赔，要再看两三个季度。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>业务块</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利息收入（存贷差）</td>
+<td>约 8400 万</td>
+<td>约 85%</td>
+<td><strong>估算</strong>，财报未拆分</td>
+</tr>
+<tr>
+<td>非利息收入（账户费、财富管理、保险代理）</td>
+<td>约 1450 万</td>
+<td>约 15%</td>
+<td><strong>估算</strong></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>9851 万</strong></td>
+<td><strong>100%</strong></td>
+<td>同比 +10.78%</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表未单列。269 人的社区银行，规模不会大。<strong>这里没有「Non-GAAP 加回一大笔股权成本」的把戏可玩</strong>，是个正面。</li>
+<li><strong>一次性项目</strong>：TTM 有 <strong>200 万资产减值（Total Asset Writedown）</strong>，占税前利润 2143 万的 9.3%，同时有 <strong>254 万的证券出售收益</strong>（这是利润，方向相反）。两者大致对冲。按规格诚实说：<strong>单期口径无法判断这两项是不是年年发生</strong>——证券出售收益这一项在 FY2025（479 万）、FY2024（294 万）都有，说明<strong>它其实是年年都有的「一次性」</strong>，这是银行常用的利润平滑手段（缺利润时就卖掉几笔浮盈的债券），不该当成可持续的核心盈利。</li>
+<li><strong>资本化的支出</strong>：银行几乎不存在。TTM 资本开支 150 万，占营收 1.5%，就是分行和 IT，正常。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 <strong>1004 万</strong>，股本一年减少 <strong>2.38%</strong>，回购收益率 2.38%。<strong>无股息</strong>（除息日 n/a，股息 n/a）。SBC 无单列数据，无法算回购/SBC 比值，但股本实打实减了 2.38%，说明是真回购。<strong>注意一个结构性事实：MHC 持有 68.7% 的股份，公司回购的实际上主要是外部股东那 31% 的流通盘</strong>——回购花掉的钱来自全体股东（含 MHC），买回来的股份却主要来自小股东手里。这不算损害小股东，但意味着回购在持续把 MHC 的持股比例往上推。</li>
+<li><strong>利润和现金流的差</strong>：净利润 1685 万 vs 经营现金流 2407 万 vs 自由现金流 2257 万。差额 722 万，逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>16.85</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>2.40</td>
+</tr>
+<tr>
+<td>+ 信贷拨备（非现金计提）</td>
+<td>3.48</td>
+</tr>
+<tr>
+<td>+ 资产减值</td>
+<td>2.00</td>
+</tr>
+<tr>
+<td>− 出售投资收益</td>
+<td>−2.54</td>
+</tr>
+<tr>
+<td>− 出售资产收益</td>
+<td>−0.04</td>
+</tr>
+<tr>
+<td>+ 贷款发放/出售净变动</td>
+<td>5.13</td>
+</tr>
+<tr>
+<td>− 应收利息变动</td>
+<td>−0.36</td>
+</tr>
+<tr>
+<td>+ 其他经营性资产净变动</td>
+<td>16.98</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>0.37</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>24.07</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1.50</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>22.57</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表对银行不能按字面读。</strong> 最大的一块是「其他经营性资产净变动 +1698 万」，这是应计科目的时点错配（很可能与那笔收购的整合有关），不是真的多出来 1700 万现金——上一年这一项还是 <strong>−1275 万</strong>，一进一出摆动近 3000 万，说明它纯属噪音。同理，P/FCF 18.90 倍、FCF 收益率 5.29% 这两个数字<strong>对银行没有意义</strong>（FY2025 的 P/FCF 是 37.39 倍，FY2024 是 10.34 倍——同一家银行两年间波动 3.6 倍，这个指标本身就是废的）。<strong>看银行请忽略自由现金流。</strong></p>
+<hr />
+<h2>第三部分：估值，银行口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>市值 ÷ 账面净资产（约 3.28 亿）</td>
+<td><strong>1.30 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>市值 ÷ 有形净资产（约 2.90 亿）</td>
+<td><strong>1.47 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>净利 1685 万 ÷ 权益</td>
+<td><strong>5.24%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROTCE（有形权益回报）</td>
+<td>1685 万 ÷ 2.90 亿</td>
+<td><strong>5.81%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（真实到手回报）</strong></td>
+<td>5.24% ÷ 1.30</td>
+<td>—</td>
+<td><strong>4.03 元</strong></td>
+</tr>
+<tr>
+<td><strong>ROTCE ÷ P/TBV（有形口径）</strong></td>
+<td>5.81% ÷ 1.47</td>
+<td>—</td>
+<td><strong>3.95 元</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>4.267 亿 ÷ 1685 万</td>
+<td>25.3 倍</td>
+<td>3.95 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>4.267 亿 ÷ 三年均值 1917 万</td>
+<td><strong>22.3 倍</strong></td>
+<td><strong>4.49 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>18.90 倍</td>
+<td>—</td>
+<td><strong>对银行无意义，不用</strong></td>
+</tr>
+<tr>
+<td>资本充足度（杠杆倒推）</td>
+<td>总资产约 22.2 亿 ÷ 权益 3.28 亿</td>
+<td><strong>6.8 倍杠杆</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>股息</td>
+<td>—</td>
+<td><strong>无</strong></td>
+<td>0 元</td>
+</tr>
+<tr>
+<td>回购收益率</td>
+<td>股本一年减少</td>
+<td>2.38%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均口径的说明</strong>：Pioneer 在 2024 年把财年从 6 月 30 日改成 12 月 31 日，中间夹了一个半年过渡期，所以没有干净的三个连续年度。我用三个<strong>不重叠</strong>的完整 12 个月：FY2023（截至 2023-06）2195 万、FY2024（截至 2024-06）1526 万、FY2025（截至 2025-12）2029 万，平均 1917 万——中间因改制漏掉了 2024 年 7–12 月这半年。得出 22.3 倍。</p>
+<p><strong>这个数字传达的信息是重要的：22.3 倍低于当期的 25.3 倍，意味着 TTM 的 1685 万利润不是历史高点，而是低于三年常态的。</strong> 换句话说，你今天付的 25.3 倍不是「买在利润高点」，而是「买在利润小低谷」——这是对估值有利的一面。TTM 的利润下滑（EPS -20.41%）很可能确实与收购整合的当期成本有关，会回来。</p>
+<p><strong>必须点名的两个数字：</strong></p>
+<p><strong>1. 杠杆只有 6.8 倍，比 AVBC 还低，比典型美国银行（约 10 倍）低三成以上。</strong> 这是 2019 年上市募的钱到今天仍未用完的直接证据，也是 ROE 只有 5.24% 的直接原因——不是资产端赚得少（ROA 0.76% 其实还过得去，接近行业下缘），而是<strong>分母上堆着一大笔没干活的资本</strong>。那笔 1.418 亿的收购正是在解决这个问题。</p>
+<p><strong>2. 日均成交量 8,286 股。</strong> 按 17.63 美元算，<strong>每天全市场成交额只有 14.6 万美元</strong>。这不是一个技术细节，这是一个决定性的约束：你想买 50 万美元的仓位，要花三四天、而且会把股价买上去；想在坏消息里出来，可能一周都跑不掉。空头回补天数（short ratio）13.07 天也印证了这一点。</p>
+<h3>说人话：投 100 块，一年赚多少</h3>
+<p><strong>按最保守的真实口径（有形净资产、TTM 利润）：你投 100 块进去，公司一年替你赚 3.95 块。</strong></p>
+<p>这 3.95 块<strong>没有一分钱以现金形式回到你口袋</strong>——PBFS 不付股息。回到你口袋的只有回购（TTM 1004 万，股本缩 2.38%），剩下的全部留在银行里，用于放贷和收购。</p>
+<p>这个 3.95 块未来会不会变大？逻辑上会，理由是资本过剩正在被收购和回购消化，杠杆从 6.8 倍往 9 倍走的话，同样的 ROA 能把 ROE 从 5.24% 推到 7% 左右，对应的到手回报能到 5.4%。<strong>但这个改善的速度不由你决定。</strong> 这就要回到最前面那件事——</p>
+<p><strong>MHC 结构。</strong> 68.7% 的股份握在互助控股公司手里，那家公司法律上属于存款人、由一个自我延续的董事会控制。这意味着：
+- 董事会选举、并购决策、资本安排，外部股东永远是少数派，投票没有意义；
+- 银行没有被收购的可能（谁也买不走一家 MHC 控股的银行，除非 MHC 董事会自己同意）；
+- 外部股东真正的价值实现路径只有一条：<strong>第二步转换（second-step conversion）</strong>——MHC 把自己彻底转成股份制，把那 68.7% 的股份按公允价值卖给市场。这一步通常会给现有小股东一个不错的兑换比例，历史上是转制银行投资的主要利润来源。
+- <strong>但什么时候做、做不做、以什么定价做，完全由 MHC 董事会说了算，小股东既无法推动也无法预测。</strong> 2019 年至今已经七年了，还没做。</p>
+<p>所以这笔投资的真实形态是：<strong>用 1.47 倍有形账面的价格，买一份年回报不到 4%、没有股息、每天只能交易 14 万美元、并且需要等一个不知道会不会来的事件的资产。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>偏贵，不值这个价——不是因为银行本身有问题，是因为你付的价格里已经把「好事全都会发生」算进去了，而好事发生与否你说了不算。</strong></p>
+<p>生意本身是站得住的：首府区的老牌社区银行，1889 年到现在，ROA 0.76% 说明资产端还行，账面上没有明显的会计手脚，Beta 只有 0.40，坏账拨备正常。TTM 利润的下滑大概率是收购整合的当期成本，三年平均口径（22.3 倍）低于当期（25.3 倍）也支持「现在是小低谷不是高点」。</p>
+<p>问题全在价格和结构。<strong>1.47 倍有形账面买一家 ROTCE 5.81% 的银行，到手 3.95% 的年回报，还不付股息</strong>——同一批数据里，隔壁 AVBC 是 1.08 倍有形账面、4.30% 回报，同一个行业、同一种转制故事、更便宜的价格。而 PBFS 股价 52 周已经涨了 37.6%，PB 从 1.02 涨到 1.30，<strong>这轮上涨完全是估值扩张涨出来的，不是利润涨出来的</strong>（同期 EPS 反而降了 20.4%）。</p>
+<p>最后那条最容易被忽略：<strong>每天 14.6 万美元的成交额</strong>。哪怕上面所有判断都错了、这家银行明天就宣布第二步转换，你也得先能买进去、还得能卖出来。对绝大多数人来说，这一条本身就足以把它排除掉。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截至 2026-06-30，分析日期 2026-08-29。</em></p>
+</div></body></html>

@@ -1,0 +1,396 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ALLT · Allot Ltd.（阿洛特）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ALLT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">13倍FCF是假的:2892万里2722万是客户预付款</div><h1>ALLT · Allot Ltd.（阿洛特）</h1>
+<p><strong>市值</strong> 3.811 亿美元 ｜ <strong>当前股价</strong> 约 $7.79 ｜ <strong>行业</strong> 电子科技 / 网络设备与软件（以色列公司，纳斯达克上市）｜ <strong>TTM 截止日期</strong> 2026-06-30（最近四个季度滚动）</p>
+<p>全榜名次 #1071（按市值从高到低，1244 家中）。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>先说一个必须交代的口径问题：Allot 的财报只按地区披露营收（美洲 / 欧洲 / 亚太 / 中东非），不按业务分部披露。</strong> 所以下面两门生意的营收拆分是<strong>估算</strong>，依据是公司在业绩会上反复披露的「安全业务年化经常性收入（ARR）」口径和总营收的差额。业务描述本身是确切的，钱的拆分不是。</p>
+<p>Allot 只有 375 名员工，一年做 1.09 亿美元营收。它的客户几乎全是<strong>电信运营商</strong>——不是企业、不是消费者，是 Vodafone、Telefónica、Verizon 这一级的电话公司。理解这家公司只需要抓住一件事：<strong>它的东西是装在运营商的网络机房里的，不是装在你的电脑上的。</strong></p>
+<h3>1. 网络流量识别与管理（DPI 业务，传统主业）</h3>
+<p><strong>估计 TTM 营收约 7500 万美元，占 69%。</strong></p>
+<p>这门生意具体是什么：一家运营商的骨干网上每秒钟跑过几百万个数据包。这些包从外面看只是一堆二进制，运营商并不天然知道哪一路是抖音视频、哪一路是 Zoom 会议、哪一路是有人在挂 BT 下载。Allot 卖的机器（配套软件）插在网络的关键节点上，能<strong>实时拆开每个数据包看里面是什么应用</strong>——这就是「深度包检测」（DPI，Deep Packet Inspection）。一台设备能处理几百 Gbps 的流量，看到的不只是「这是视频」，而是「这是 Netflix 的 4K 流、这个用户这个月已经看了 40GB」。</p>
+<p><strong>运营商买它干三件事：</strong></p>
+<p><strong>(a) 计费和套餐设计。</strong> 运营商想卖「刷抖音不限流量，其他照常计费」这种套餐，前提是网络得能认出哪些包属于抖音。没有 DPI，这种差异化套餐根本做不出来。</p>
+<p><strong>(b) 拥堵管理。</strong> 晚上八点小区基站堵了，运营商需要把大文件下载和 P2P 限速，优先保证视频通话和游戏不卡。要限速就得先能分辨，这也得靠 DPI。</p>
+<p><strong>(c) 网络规划和取证。</strong> 知道哪个区域、哪个时段、哪类应用的流量在涨，才知道下一笔扩容的钱该花在哪。欧盟的网络中立法规还要求运营商能证明自己没有搞歧视性限速，DPI 系统的日志就是证据。</p>
+<p><strong>怎么收钱：</strong> 一套系统卖给一家运营商，规模通常是<strong>几十万到几百万美元</strong>的一次性设备+许可费，之后每年收 15–20% 的维保和软件订阅费。全球一共也就几百家够大的运营商，所以这是个典型的「客户少、单笔大、销售周期长（一单谈一年很正常）」的生意。</p>
+<p><strong>这门生意的性格：成熟、慢、稳。</strong> 运营商网络一旦装上某家的 DPI，换掉的成本极高（要重新配置整个计费系统），所以续费率很高、维保收入很稳。但新增长有限——全球运营商就那么多，装完就装完了。</p>
+<h3>2. 网络级安全服务（Allot Secure / SECaaS，增长引擎）</h3>
+<p><strong>估计 TTM 营收约 3400 万美元，占 31%，增速远高于公司整体的 14%。这块是整个估值的全部理由。</strong></p>
+<p>这门生意的逻辑很聪明，值得讲透：</p>
+<p><strong>问题是这样的——</strong> 普通家庭用户理论上应该装杀毒软件、应该给孩子的平板设上网时间限制、应该防钓鱼网站。但现实是绝大多数人不会去下载安装任何东西，也不会去配置任何设置。安全软件公司（诺顿、卡巴斯基）几十年都在跟这个「用户懒」的问题作斗争，转化率始终很低。</p>
+<p><strong>Allot 的解法是：绕过用户。</strong> 既然每个家庭的宽带和每部手机的流量都要经过运营商的网络，那就把安全功能<strong>做进运营商的网络里</strong>。用户什么都不用装、不用配、不用更新——他家里所有设备（电视、摄像头、扫地机器人、小孩的平板，很多根本装不了杀毒软件）的流量一出门就已经被过滤过了。钓鱼网站在网络层就被拦掉，恶意软件回连的服务器在网络层就被切断。</p>
+<p><strong>怎么收钱：运营商在月账单上加钱，Allot 按订阅用户数分成。</strong> 典型形态是运营商把「家庭安全包」定价 <strong>3–5 美元/月</strong>（拦截恶意网站 + 儿童上网时间管理 + 设备清单），或者干脆免费送给高端套餐用户当作留存工具。Allot 从中按<strong>每个激活用户每月几毛钱</strong>的价格拿分成。目前订阅用户在<strong>千万量级</strong>。</p>
+<p><strong>为什么运营商愿意：</strong> 这对运营商是纯增量收入——不用买硬件（设备是 Allot 装的）、不用建团队、不用做客服培训，账单上多一行就是纯利。而且它还能降低用户流失率：办了家庭安全包的用户换运营商的意愿更低。</p>
+<p><strong>为什么这门生意值钱：它是经常性收入。</strong> DPI 是「卖一台机器赚一笔」，Secure 是「每个月按用户数收钱」。同样一块钱营收，后者的估值倍数天然高得多，因为它可预测、可累加、随用户数自然增长。这也是 Allot 从 2023 年那场灾难里活过来的路径。</p>
+<p><strong>这门生意的致命风险：客户极度集中。</strong> Allot 的订阅用户全靠少数几家大运营商去推广。一家大客户改变推广节奏、换掉合作方、或者把安全包从主推位置撤下来，Allot 的整年数字就会翻车——<strong>2022–2023 年那两年的巨亏就是这么来的</strong>（见下表）。Allot 自己控制不了终端用户的获取，它只是运营商的供应商。</p>
+<h3>两门生意合起来（TTM，2026-06-30 截止）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>增速</th>
+<th>占比</th>
+<th>毛利率</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DPI 流量管理（估算）</td>
+<td>约 0.75 亿</td>
+<td>约 +8%</td>
+<td>约 69%</td>
+<td>约 65%</td>
+<td>含硬件，毛利率被拉低</td>
+</tr>
+<tr>
+<td>Secure 网络安全（估算）</td>
+<td>约 0.34 亿</td>
+<td>约 +30%</td>
+<td>约 31%</td>
+<td>约 85%</td>
+<td>纯软件订阅</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1.0895 亿</strong></td>
+<td><strong>+14.3%</strong></td>
+<td>100%</td>
+<td><strong>71.30%</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>⚠️ 上表的分部拆分和分部毛利率全部是估算</strong>，财报只披露地区营收和公司整体毛利率 71.30%。整体毛利率从 FY2023 的 56.56% 恢复到现在的 71.30%，方向上印证了「高毛利的软件订阅占比在上升」。</p>
+<p>按地区看（FY2025 完整财年数据，财报唯一的官方分部口径）：<strong>欧洲 4401 万（43%）是最大市场</strong>，中东非 1965 万、亚太 1924 万、美洲 1909 万各占约 19%。欧洲权重这么高有个现实原因——欧盟的网络中立和数据保护法规最严，运营商对流量可视化和合规工具的刚性需求最强。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分是全篇最重要的地方。Allot 的利润表看起来是一家刚刚转正、开始赚钱的成长公司；现金流量表讲的是另一个故事。</strong></p>
+<h3>先看这家公司三年前有多惨</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>营收</th>
+<th>净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>1.456 亿</td>
+<td>−1504 万</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>1.227 亿</td>
+<td>−3203 万</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>0.932 亿</td>
+<td><strong>−6280 万</strong></td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>0.922 亿</td>
+<td>−587 万</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>1.020 亿</td>
+<td>+371 万</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>1.0895 亿</strong></td>
+<td><strong>+1024 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FY2023 那一年，营收 9320 万，亏了 6280 万——亏掉了三分之二的营收。</strong> 这不是「成长期烧钱」，这是生意本身出了事（一家大客户的安全业务推广停滞 + 硬件业务萎缩）。营收从 1.456 亿掉到 0.932 亿，缩水 36%。<strong>到今天，营收还没回到 2021 年的水平。</strong> 这是评估现在这个 39 倍市盈率时必须放在眼前的背景。</p>
+<h3>递延收入 —— 这一条足以推翻表面上的现金流</h3>
+<p>TTM 经营现金流 3117 万，自由现金流 2892 万，看起来非常漂亮：市值/自由现金流只有 13.2 倍，企业价值/自由现金流只有 9.9 倍——这是这家公司「看起来便宜」的唯一来源。</p>
+<p><strong>但经营现金流 3117 万里，有 2722 万来自「递延收入增加」。</strong></p>
+<p>递延收入是什么：客户签了一份多年期合同，一次性把钱付了，但服务还没交付。这笔钱进了银行账户（所以计入经营现金流），但在资产负债表上是<strong>负债</strong>——公司欠客户未来几年的服务。</p>
+<p><strong>这意味着：TTM 这 2892 万自由现金流里，2722 万是客户预付的、对应未来才要干的活的钱，只有约 170 万是这一年真正经营出来的自由现金流。</strong></p>
+<p>这不是造假，递延收入是真金白银进账，而且大额预付通常说明签到了好的长期合同——但它<strong>绝对不可持续</strong>。递延收入不能每年都增加 2722 万，除非合同规模年年翻倍。明年这一项大概率回落甚至转负（服务开始交付、确认为收入）。</p>
+<p>按剔除这一项的口径，真实的年度自由现金流约 170 万，对应市值 <strong>3.811 亿 ÷ 170 万 = 224 倍</strong>。这个数字和 13.2 倍放在一起，是本文最有杀伤力的对比。</p>
+<h3>股本一年增加 29.09%</h3>
+<p><strong>这是硬伤级别的事实。</strong> 2025 年 Allot 增发新股融资 <strong>4255 万美元</strong>，加上员工行权，<strong>流通股一年增加了 29.09%</strong>——你去年持有的每 100 股，今天的权益相当于只剩 77 股。</p>
+<p>这笔钱现在躺在账上。公司账面现金 1.022 亿、有息负债 692 万、<strong>净现金 9529 万</strong>（每股 1.95 美元，占股价的 25%）——听起来资产负债表极其干净，但要清楚：<strong>这 9529 万净现金里有将近一半是 2025 年刚从股东兜里拿的</strong>，不是经营赚出来的。同期公司还还掉了 3141 万的债务，所以这笔增发的实际用途是「用股权换掉债权」。</p>
+<p><strong>回购：零。</strong> Allot 没有任何股份回购。所以「回购/SBC」这个核心比值是 <strong>0</strong>——SBC 533 万美元全部是纯稀释，一分钱都没被对冲。</p>
+<h3>股权激励（SBC）</h3>
+<p>TTM <strong>533 万美元</strong>，占净利润 1024 万的 <strong>52%</strong>。按本文规矩一律当真实现金成本，GAAP 里已扣，不加回。绝对值上，533 万相对 3.81 亿市值约 1.4%/年，对一家软件公司不算离谱，但配合零回购，稀释是单向的。</p>
+<h3>存货增加 899 万</h3>
+<p>一年存货多压了 899 万，对一家营收 1.09 亿的公司是大数。两种解释：备货应对预期中的订单（营收确实在涨 14%，支持这个解释），或者硬件卖不动积压。<strong>单期口径分不清是哪一种</strong>，但值得下个季度盯一眼。</p>
+<h3>利润和现金流的差 —— 逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>+10.24</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+2.98</td>
+<td>轻资产，这一项很小</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+5.33</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>−0.72</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−5.04</td>
+<td>收款变慢</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td><strong>−8.99</strong></td>
+<td>备货压钱</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+0.49</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>+ 递延收入增加</strong></td>
+<td><strong>+27.22</strong></td>
+<td><strong>客户预付，全篇关键</strong></td>
+</tr>
+<tr>
+<td>+ 其他净经营资产</td>
+<td>−0.76</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>31.17</strong></td>
+<td>逐项对得上（四舍五入差 0.4）</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2.25</td>
+<td>极轻，只占营收 2%</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>28.92</strong></td>
+<td>其中 27.22 是客户预付款</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>再看一眼利润表本身：经营利润 735 万，但净利润 1024 万——净利润比经营利润还高。</strong> 差额来自 1 亿现金的利息收入和汇兑收益（税前利润 1172 万），加上以色列的优惠税率——<strong>实际税率只有 12.6%</strong>（美国公司普遍 21–25%）。也就是说：<strong>Allot 净利润的近三分之一不是主业赚的，是存款利息和税收优惠。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 3.811 亿，净现金 9529 万，企业价值（EV）<strong>2.858 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3.811 亿 ÷ 1024 万 GAAP 净利润</td>
+<td><strong>37.2 倍</strong></td>
+<td><strong>2.69 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>Allot 主推「安全业务 ARR 增长」和调整后 EBITDA，不发布调整后净利润</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong><br>（只算主业，剥掉利息收入和汇兑）</td>
+<td>3.811 亿 ÷（经营利润 735 万 × (1−12.6%) = 642 万）</td>
+<td><strong>59.4 倍</strong></td>
+<td><strong>1.68 元</strong></td>
+</tr>
+<tr>
+<td>同上但用企业价值（扣掉净现金）</td>
+<td>2.858 亿 ÷ 642 万</td>
+<td><strong>44.5 倍</strong></td>
+<td><strong>2.25 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>3.811 亿 ÷ 2892 万 FCF</td>
+<td><strong>13.2 倍</strong></td>
+<td><strong>7.58 元</strong></td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除递延收入）</strong></td>
+<td>3.811 亿 ÷ 约 170 万</td>
+<td><strong>约 224 倍</strong></td>
+<td><strong>0.45 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2.858 亿 ÷ 735 万经营利润</td>
+<td><strong>38.9 倍</strong></td>
+<td><strong>2.57 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>（FY23 −6280 万 + FY24 −587 万 + FY25 +371 万）/3 = <strong>−2165 万</strong></td>
+<td><strong>无意义（三年平均是亏的）</strong></td>
+<td><strong>−5.68 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行必须读懂：过去三个完整财年，Allot 平均每年亏 2165 万美元。</strong> 现在的 1024 万盈利不是「常态利润的一个正常年份」，而是<strong>这家公司近五年唯一一次像样的盈利</strong>。任何用当期利润推出来的估值倍数，都建立在「这次转正是永久的」这个假设上。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 Allot，按最保守的真实口径（只算主业、59.4 倍）算，公司一年替你赚 1.68 元。</strong></p>
+<p>如果把账上那 9529 万净现金先扣掉（这部分你买的是现金，不是生意），剩下的钱买到的生意是 44.5 倍，一年赚你 2.25 元。</p>
+<p>这 1.68 元里，<strong>有多少回到你口袋？零。</strong> Allot 不分红、不回购，一分钱都不还。全部留在公司里。留下来的钱去了哪：TTM 投资活动流出 4910 万，其中 4337 万是<strong>买了金融证券</strong>（存起来吃利息），只有 225 万是资本开支。也就是说，公司现在的做法是<strong>把钱存起来</strong>，既不还给股东也不大举投入增长。</p>
+<p><strong>这个 1.68 元未来会变大还是变小？</strong></p>
+<p><strong>变大的理由是真实的：</strong></p>
+<ul>
+<li>营收连续两年恢复增长（FY2025 +10.6%，TTM +14.3%），Secure 业务的订阅逻辑成立且增速远高于公司整体；</li>
+<li>毛利率从 56.6% 恢复到 71.3%，说明产品结构在往高毛利软件转；</li>
+<li>经营杠杆极强——只有 375 名员工、资本开支只占营收 2%，每多一块钱订阅收入几乎全部落到利润里。营收从 9200 万到 1.09 亿（多了 1700 万），经营利润从 −601 万变成 +735 万（多了 1336 万），<strong>增量营收的 78% 变成了利润</strong>；</li>
+<li>市场也是这么看的：<strong>前瞻市盈率 22.0 倍、PEG 0.77</strong>，说明卖方预期未来 12 个月利润再涨七成；</li>
+<li>账上 9529 万净现金，占市值 25%，不存在破产风险。</li>
+</ul>
+<p><strong>变小的理由更硬：</strong></p>
+<ul>
+<li><strong>三年平均是亏的，而且亏得很惨（FY2023 亏掉三分之二的营收）。</strong> 这家公司证明过自己会在一年之内从盈利掉进深亏。</li>
+<li><strong>客户极度集中在少数几家大运营商</strong>，Allot 对终端用户增长没有控制权。同样的原因造成了 2022–2023 的崩塌，这个结构一点没变。</li>
+<li><strong>真实自由现金流约 170 万，不是 2892 万。</strong> 那 2722 万递延收入明年不会重来。</li>
+<li><strong>股本一年 +29.09%，零回购。</strong> 就算每股盈利涨，你手上的份额在缩水。</li>
+<li>净利润里近三分之一靠存款利息和 12.6% 的优惠税率——利率一降，这部分立刻缩水。</li>
+<li>存货一年增加 899 万，收款也在变慢（应收 +504 万）。</li>
+<li>空头持有 4.09% 的流通股，虽然不算高位，但对这个盘子说明市场有相当一部分人不信。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜，偏贵——价格里已经把「转型成功」全额算进去了。</strong></p>
+<p>Allot 的 Secure 业务逻辑是真的好：绕开「用户懒得装安全软件」这个几十年解不开的死结，把安全做进运营商网络，用户零动作、运营商纯增量、Allot 拿经常性分成。71% 的毛利率、375 人做 1.09 亿营收、增量营收 78% 直接变利润的经营杠杆，这些都不是包装出来的。账上还有占市值 25% 的净现金托底。</p>
+<p>问题全在价格上。你付的是 <strong>37 倍 GAAP 市盈率</strong>，而这个利润有三分之一来自存款利息和以色列税收优惠；只算主业是 <strong>59 倍</strong>，扣掉净现金也还有 <strong>44 倍</strong>。看起来便宜的 13 倍自由现金流口径经不起一戳——那 2892 万里 2722 万是客户预付的钱，真实数字约 170 万。</p>
+<p>更要紧的是背景：<strong>这家公司过去三个完整财年平均每年亏 2165 万</strong>，营收至今没回到 2021 年的水平，2023 年一年就亏掉了三分之二的营收，而造成那场崩塌的结构性原因（客户极度集中在少数运营商、增长节奏不由自己控制）一条都没消失。去年还增发把股本稀释了 29%，回购是零。</p>
+<p>这是一个赌注：赌 Secure 的订阅曲线这次能连续跑下去。赌赢了，两三年后利润到两三千万，44 倍的企业价值口径会变成 10 倍出头，现在这个价就是便宜的；赌输了，它会退回 2023 年的样子。<strong>37 倍的价格，是在你还看不出赌局输赢的时候，就要求你按赌赢了来付钱。</strong> 好生意，不是好价格。</p>
+</div></body></html>

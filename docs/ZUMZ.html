@@ -1,0 +1,323 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZUMZ · Zumiez（祖米兹）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ZUMZ</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">扣掉现金只剩5倍FCF，一年回购掉10%股本，但ROIC打不过资金成本</div><h1>ZUMZ · Zumiez（祖米兹）</h1>
+<p>市值 3.067 亿美元 | 股价约 18.2 美元 | 行业：零售（青少年服饰专卖）| TTM 截止 2026-05-02</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Zumiez 是一家开实体店卖衣服的公司。它不生产任何东西（自有品牌也是外包代工），本质是<strong>在商场里租一块地方，把滑板、滑雪、街头这套亚文化装扮成一家店，卖给 12 到 24 岁的年轻人</strong>。全球约 730 家店。</p>
+<p>财报只按<strong>地理区域</strong>披露收入，不按产品线。所以它实质上是三门生意——同一套模式，在三块市场里跑，成熟度和赚钱能力天差地别。</p>
+<h3>生意一：北美 Zumiez 门店（美国 + 加拿大）</h3>
+<p>这是本体，占八成营收。</p>
+<p>具体是什么样：你走进一家美国郊区商场，Zumiez 的店大概 300 平米不到，墙上挂滑板，音响放着音乐，店员自己就是穿这身衣服的年轻人——公司招人明确要求"是这个圈子里的"。货架上是 Vans 的鞋、Champion 的卫衣、Carhartt 的工装裤，还有一堆你没听过的小众滑板品牌，以及公司自己的私有品牌（Empyre、A-Lab 这些，占了将近一半的销售额，因为不用给别人分利润，毛利率高得多）。客单价大概 60 美元，一个高中生买一件卫衣加一顶帽子。</p>
+<p>它怎么收钱：就是零售差价。一件卫衣从代工厂拿货 25 美元，挂牌 65 美元，卖掉赚 40 美元毛利，然后从这 40 里付租金、付店员工资、付水电。<strong>整个生意的胜负手就在"毛利够不够付掉租金和人工"</strong>——Zumiez TTM 毛利率 36.14%，经营利润率只有 2.89%，意味着 100 块营收里 36 块毛利，其中 33 块被租金和人工吃掉，剩 3 块。</p>
+<p>客户为什么非来不可：不是非来不可。这是这门生意最脆弱的地方——同样的 Vans 鞋在 Amazon、在 Vans 官网、在隔壁 PacSun 都买得到，价格还可能更低。Zumiez 卖的是"这家店懂这个圈子"的氛围和选品，以及一个 15 岁的孩子周末在商场里闲逛时的即兴消费。这个护城河真实存在，但很浅。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速*</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>713.09</td>
+<td>+5.0%</td>
+<td>76.0%</td>
+<td>约 5%（估算）</td>
+<td>约 36</td>
+</tr>
+<tr>
+<td>加拿大</td>
+<td>49.78</td>
+<td>+7.7%</td>
+<td>5.3%</td>
+<td>约 5%（估算）</td>
+<td>约 2.5</td>
+</tr>
+</tbody>
+</table></div>
+<p>*增速用 FY2026 对 FY2025 计算，因为公司不披露上年同期 TTM。利润率是估算——<strong>财报只披露到各区域营收，不披露区域利润</strong>，下面的推算方法在生意二里说明。</p>
+<h3>生意二：Blue Tomato（欧洲）</h3>
+<p>2012 年花 7400 万欧元买来的奥地利公司，滑雪滑板起家，现在是"实体店 + 电商"混着做，主要在德语区（德国、奥地利、瑞士）。跟美国 Zumiez 不同的是，Blue Tomato 有很重的电商成分，也卖硬件（滑雪板、固定器、雪镜这类几百欧一件的大件）。</p>
+<p>具体例子：一个慕尼黑的滑雪爱好者，10 月在 Blue Tomato 网站上配一整套雪板——板 450 欧、固定器 200 欧、雪鞋 300 欧，快递到家，可以七天退换。这单近千欧，但毛利率比卖卫衣低得多，因为硬件品牌方（Burton 这些）把价格管得很死。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>欧洲</td>
+<td>151.56</td>
+<td>+2.1%</td>
+<td>16.2%</td>
+<td>大概率为负（估算）</td>
+<td>约 −3 至 −8</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>为什么判断它在亏钱</strong>：公司 TTM 的实际税率高达 <strong>43.1%</strong>（税前利润 2542 万，缴税 1094 万）。美国联邦加州的综合税率约 25%，一家纯美国公司不该缴到 43%。多出来的这 18 个百分点，最常见的成因就是<strong>海外子公司亏损、而那笔亏损在当地拿不到税务抵扣</strong>（要么当地没有应税利润可抵，要么已经计提了递延所得税资产的估值备抵）。欧洲营收占了 16%，增速只有 2%，是四个区域里最慢的——这两条线索指向同一个结论：Blue Tomato 大概率还在流血，而且已经流了不止一年。这是估算，不是财报明写的，但税率这个数字很难有别的解释。</p>
+<h3>生意三：Fast Times（澳大利亚）</h3>
+<p>2016 年收的小盘子，几家店。TTM 营收 2364 万美元，占 2.5%，同比 <strong>−1.3%</strong>，是唯一在缩的区域。规模太小，既不影响估值也谈不上战略意义，管理层近年也基本不提。放着不管的一块。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Zumiez 的报表意外地干净——这是一家没什么花招可玩的传统零售商。逐项过一遍：</p>
+<p><strong>股权激励（SBC）</strong>：TTM 7470 万……不对，是 <strong>747 万美元</strong>。这个数字本身不大，但<strong>占 TTM 净利润 1444 万的 51.7%</strong>——公司赚的每两块钱里，就有一块是发给员工的股票。按规矩，这笔钱当真实现金成本扣掉（GAAP 已经扣了，本文不加回）。要注意的是：SBC 常年稳定在 680–750 万之间，而净利润从 −6261 万到 +1444 万剧烈波动。<strong>在利润薄的年份，SBC 会显得极其巨大</strong>；这不是公司变坏了，是分母太小。</p>
+<p><strong>一次性项目</strong>：TTM 有 190 万的"资产减值与重组费用"（关店计提）。这个数字过去六年分别是 190 / 185 / 147 / <strong>4390</strong> / 208 / 223 万——除了 FY2024 那次大规模关店减值，其余年份都稳定在 150–220 万。<strong>所以这根本不是"一次性"，是一家每年都要关掉几家亏损店的连锁零售商的常规开销</strong>。按 190 万税前、约 108 万税后加回，聊胜于无。FY2024 那 4390 万是真的一次性（疫情后大规模收缩），但那已经不在 TTM 里了。</p>
+<p><strong>资本化的支出</strong>：没有。零售商没有软件资本化、内容资本化这类空间，装修支出走资本开支（TTM 1055 万），老老实实按年折旧。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>1903 万美元</strong>，SBC 747 万，<strong>比值 2.55 倍</strong>。这是本篇少数几个真正的亮点——比值超过 2 说明回购不只是在抵消员工发股，是真的在减少股东人数。股本从一年前减少了 <strong>9.74%</strong>，一年少掉近十分之一的股份。管理层还在继续买（上一财年买了 3825 万）。手上 1.24 亿现金、几乎没有真实借款，回购是它现在唯一在做的资本配置动作。</p>
+<p><strong>利润和现金流的差</strong>：净利润 1444 万，经营现金流 4746 万，差了 3.3 倍。这个差额几乎全是<strong>租赁会计造成的记账幻觉</strong>，值得逐项拆开：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>14.44</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>20.63</td>
+<td>门店装修按年摊，不花现金</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>7.47</td>
+<td>发股票不花现金（但稀释你）</td>
+</tr>
+<tr>
+<td>+ 资产减值/重组</td>
+<td>1.90</td>
+<td>关店计提，不花现金</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>66.99</td>
+<td><strong>几乎全是租赁使用权资产的摊销加回</strong></td>
+</tr>
+<tr>
+<td>+ 应收账款变动</td>
+<td>3.78</td>
+<td>收回一点欠款</td>
+</tr>
+<tr>
+<td>− 存货变动</td>
+<td>−1.32</td>
+<td>货略微压多了</td>
+</tr>
+<tr>
+<td>+ 应付账款变动</td>
+<td>6.24</td>
+<td>欠供应商多了点，等于占用了别人的钱</td>
+</tr>
+<tr>
+<td>− 所得税变动</td>
+<td>−2.16</td>
+<td>补缴</td>
+</tr>
+<tr>
+<td>− 其他经营性净资产变动</td>
+<td><strong>−70.51</strong></td>
+<td><strong>实际付出去的房租现金</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>47.46</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>看最后两行的那对数字：<strong>+66.99 和 −70.51</strong>。会计准则要求零售商把未来所有租约折现记成一笔"使用权资产"和一笔"租赁负债"，然后每年摊销资产（非现金，加回）、同时支付租金（现金，扣掉）。这两笔差不多相抵，净流出 <strong>352 万</strong>。所以别被"其他经营活动 +6699 万"吓到，那不是白捡的现金。</p>
+<p>真正的结论是：<strong>这家公司现金流比会计利润好得多，是因为折旧摊销（2063 万）远大于资本开支（1055 万）</strong>。它每年报的折旧是过去疯狂开店时代留下的装修在摊销，而现在它已经不怎么开新店了，实际维护性支出只有折旧的一半。自由现金流 3691 万，是净利润的 2.6 倍——<strong>这个差距是真实的，不是障眼法</strong>，但它也在提醒你：这家公司正在收缩，不是在扩张。</p>
+<p><strong>账上的"债"是假的</strong>：报表列总负债 2.038 亿，净负债 −7967 万，看着有杠杆。但看现金流量表的融资部分——TTM 借了 689 万、又还了 689 万（循环贷进出而已），<strong>公司实际没有任何银行借款或债券</strong>。那 2 亿"债务"全是 730 家门店的租赁负债，也就是未来要付的房租被记成了负债。真实的资产负债状况是：<strong>手握 1.24 亿现金，零有息负债</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 3.067 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>306.74 ÷ 14.44</td>
+<td><strong>21.2 倍</strong></td>
+<td><strong>4.71 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不发布调整后净利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>306.74 ÷（14.44 + 1.08 税后重组）</td>
+<td><strong>19.8 倍</strong></td>
+<td><strong>5.05 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>306.74 ÷ 36.91</td>
+<td><strong>8.3 倍</strong></td>
+<td><strong>12.03 元</strong></td>
+</tr>
+<tr>
+<td><strong>扣掉净现金后的 FCF 口径</strong></td>
+<td>（306.74 − 124.16）÷ 36.91</td>
+<td><strong>4.9 倍</strong></td>
+<td><strong>20.3 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>386.41 ÷ 27.12</td>
+<td><strong>14.3 倍</strong></td>
+<td><strong>7.02 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>306.74 ÷ 8.70（TTM、FY26、FY25 平均）</td>
+<td><strong>35.3 倍</strong></td>
+<td><strong>2.83 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里的数字从 2.83 到 20.3，差了七倍。</strong>这不是算错了，这是这家公司的全部真相所在。</p>
+<p><strong>先说最悲观的那行。</strong>三年平均口径 35.3 倍——过去三期的真实净利润是 1444 万、1338 万、<strong>−171 万</strong>。三年平均只有 870 万。而且这还是挑了好的三年：如果把 FY2024 那个 −6261 万算进来，四年平均直接变成负数。<strong>这家公司在 2022 财年赚过 1.19 亿，现在赚 1444 万，只剩九分之一。</strong>任何说"21 倍市盈率不贵"的人，都得先回答：你买的是哪一年的盈利能力？</p>
+<p><strong>再说最乐观的那行。</strong>扣掉净现金后 4.9 倍自由现金流——你花 3.07 亿买下整家公司，当天就能从账上拿走 1.24 亿现金，净成本 1.83 亿，而这堆资产每年产生 3691 万自由现金流。<strong>五年回本。</strong>这个算法没有作弊：现金是真的（1.24 亿），零有息负债是真的，3691 万 FCF 也是真的。</p>
+<p><strong>那到底信哪个？</strong>关键在于 FCF 为什么是净利润的 2.6 倍：折旧 2063 万 vs 资本开支 1055 万。这个缺口能持续多久？答案是——<strong>只要这家公司不再开新店，就能一直持续；而一旦它需要重新装修 730 家已经十几年的老店，缺口立刻消失</strong>。零售店面的装修寿命大约 7–10 年。所以那 3691 万 FCF 里，有一部分是<strong>在吃老本</strong>，是把过去资本开支形成的资产折旧掉却不补回去。真实的可持续 FCF，大概在净利润（1444 万）和当期 FCF（3691 万）之间，我倾向于 2500 万左右——对应扣现金后 <strong>7.3 倍</strong>，年回报 13.7 元。</p>
+<p><strong>这 X 块钱有多少真回到你口袋？</strong>这是 Zumiez 最漂亮的部分。它不分红，但 TTM 花了 <strong>1903 万</strong> 回购股票，占自由现金流的 52%，也占市值的 6.2%。股本一年减少 9.74%。<strong>你什么都不做，手里股份占公司的比例每年自动涨接近 10%。</strong>剩下的钱既没有拿去乱并购，也没有拿去开新店（资本开支只有 1055 万，是六年最低），就是躺在账上。这是一家已经放弃增长、开始清算式回报股东的公司——对小市值零售股来说，这反而是最诚实的选择。</p>
+<p><strong>这个 X 未来会变大还是变小？</strong>两股相反的力：</p>
+<ul>
+<li><strong>往上的力</strong>：股本每年少 10%，同样的利润摊到更少的股份上，EPS 自动涨。43% 的畸高税率如果因为欧洲止血而回落到正常的 25%，净利润会从 1444 万跳到 1907 万——<strong>光是税率正常化就值 32% 的利润增长</strong>。</li>
+<li><strong>往下的力</strong>：营收 9.38 亿，比 FY2022 的 11.84 亿少了 21%，四年没恢复。TTM 增速 +4.68% 看着在回暖，但那是从谷底反弹，不是趋势。ROIC 只有 <strong>4.12%，低于 WACC 的 5.91%</strong>——<strong>这家公司每投一块钱进生意里，创造的价值是负的</strong>。这就是为什么它停止开店、转而回购是对的：它自己也知道，把钱还给股东比投进去更值。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真的，但便宜的原因也是真的——你买的是一个正在缓慢清算的现金堆，不是一门有前途的生意。</strong></p>
+<p>具体点说：3.07 亿市值里有 1.24 亿是现金，零有息负债，扣完现金后不到 5 倍自由现金流，管理层一年回购掉近 10% 的股份。这套组合在小盘股里是罕见的干净——报表里没有任何粉饰，SBC 老老实实扣着，"一次性费用"每年 200 万从不作假，唯一的大额减值是 FY2024 真刀真枪关店关出来的。按这些数字，投 100 块一年拿回 13–20 块，绝对说得过去。</p>
+<p>但另一边的账你也得认：营收比四年前少两成、ROIC 4.12% 打不过 5.91% 的资金成本、三年平均市盈率 35 倍、欧洲那块 1.5 亿营收的生意八成还在亏（43% 税率是它留下的指纹）、9000 名员工人均创造利润 <strong>1605 美元</strong>——一个店员干一整年，替股东赚的钱不够买一部手机。最要命的是这门生意本身：<strong>卖给 12–24 岁年轻人的商场服饰店，是零售业里最难守的一块阵地</strong>，潮流三年一换，Amazon 和 Shein 在旁边虎视眈眈，而 Zumiez 唯一的武器是"我们的店员真的会滑板"。</p>
+<p>所以怎么判：<strong>这是一笔可以下手、但要清楚自己在下什么注的便宜货。</strong>赌的不是 Zumiez 会重新增长——它不会。赌的是它在收缩的这些年里，能靠回购让你手里的份额涨得比生意萎缩得快。TTM 数据显示这个赛跑目前是赢的：股本 −9.74%，营收 +4.68%。<strong>只要这两个数字保持这个方向，你就在赚钱；哪天营收重新掉进负数而回购停了，故事立刻结束。</strong></p>
+<p>归档：<strong>便宜 · 一般</strong>。价格上真便宜（扣现金 5 倍 FCF，全场少见）；生意质量撑不起"好生意"三个字——ROIC 4.12% 低于 5.91% 的资金成本，这一条就把它钉死在"一般"档，但账干净、无有息负债、没有硬伤，够得上留在观察名单里。</p>
+</div></body></html>

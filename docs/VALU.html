@@ -1,0 +1,356 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VALU · 价值线公司（Value Line, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VALU</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">主业在死,利润八成靠EAM信托,日成交仅15万美元</div><h1>VALU · 价值线公司（Value Line, Inc.）</h1>
+<p>市值 3.437 亿美元 | 当前股价 $36.63 | 行业：消费服务 / 投资研究出版 | TTM 截止 2026 年 4 月 30 日（该公司财年 4 月底结束，所以这份 TTM 恰好等于刚结束的 FY2026 完整财年）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Value Line 财报上分成三块营收（Print、Digital、Copyright Fees），但<strong>这三块加起来一年只赚 403 万美元的经营利润，而公司一年的净利润是 2163 万</strong>。也就是说，看财报上写着「营收」的那三门生意，只贡献了这家公司利润的一小角。真正撑起利润的第四件事，压根没出现在营收里。所以这家公司实质上做四件事，我一件一件讲。</p>
+<h3>生意一：印刷版《价值线投资调查》(Print) — TTM 营收 845 万美元</h3>
+<p>这是 1931 年就在卖的东西，九十五年了，形式基本没变：一本按周寄到你信箱的纸质活页册子。</p>
+<p>具体是这样运作的：Value Line 有一个 106 人的公司（对，整个上市公司只有 106 名员工），其中一批分析师负责盯住大约 1700 家美股。每家公司做成<strong>一整页</strong>，这一页上密密麻麻印着这家公司过去 15 年的每股营收、每股利润、每股账面价值、股息、利润率、ROE，还有未来 3–5 年的预测值，再加上一段几百字的文字点评。最出名的是右上角那两个数字：<strong>Timeliness（及时性）排名 1–5</strong> 和 <strong>Safety（安全性）排名 1–5</strong>。1 代表未来 12 个月最可能跑赢大盘，5 代表最可能跑输。</p>
+<p>订户是谁？典型画像是：一位 60 多岁、自己管着几十万到几百万美元退休金的美国散户，不用 Bloomberg 终端、也不信 YouTube 上的荐股，但愿意每年花几百美元买一本「有人替我把 1700 家公司都算过一遍」的册子。还有相当一部分订户是<strong>公共图书馆</strong>——美国很多县立图书馆的参考书架上就摆着 Value Line 的活页夹，这是机构订阅，一订几十年不换。</p>
+<p>怎么收钱：个人订户全套年费大约 700–800 美元，图书馆和机构版更贵。按 845 万美元营收倒推，付费的印刷版订户大概在<strong>一万多户</strong>这个量级。</p>
+<p>为什么在萎缩：老订户在自然减少（字面意义上的——他们在老去），而新的年轻散户不会为一本按周寄来的纸册子付 700 美元。Print 这条线五年从 1125 万掉到 845 万，跌掉了四分之一。</p>
+<h3>生意二：数字版订阅 (Digital) — TTM 营收 1541 万美元</h3>
+<p>同样的内容，搬到网站和 App 上，加了筛选器、可下载的 Excel、组合跟踪工具。价格通常比纸质版便宜一些，也允许只买某一个板块（比如只订「小盘股专版」或「ETF 专版」）。</p>
+<p>这条线是三块里最大的一块，占营收 46%。它承担了一个很关键的角色：<strong>接住从纸质版流失下来的老订户</strong>。一个订了二十年纸质版的老先生，某天觉得册子太厚了、想在 iPad 上看，就转成数字版——公司没丢掉他，只是每年从他身上少收一两百美元。</p>
+<p>问题是，Digital 自己也在萎缩：15.89 → 16.27 → 16.13 → 15.90 → 15.41，五年几乎原地踏步后开始下滑。这说明<strong>数字版接住的流失，还赶不上数字版自己的流失</strong>。原因不难理解：一个 2026 年的散户想要「1700 家公司的标准化财务页」，Yahoo Finance、stockanalysis.com、券商 App 全都免费给，而且更新更快。Value Line 唯一还卖得动的，是那个用了六十年、有学术论文背书的 Timeliness 排名——这是品牌，不是数据。</p>
+<h3>生意三：版权授权费 (Copyright Fees) — TTM 营收 959 万美元</h3>
+<p><strong>这是三条线里利润率最高、也最像「印钞机」的一条。</strong> 它是这么回事：</p>
+<p>别人要用 Value Line 的名字和指数去做金融产品，得付 Value Line 授权费。最典型的例子是<strong>芝加哥期权交易所（CBOE）</strong>——CBOE 有一个交易了几十年的期货合约叫「Value Line 综合指数期货」，用的是 Value Line 编制的等权重指数。每一手合约成交，CBOE 都要按约定给 Value Line 分钱。</p>
+<p>还有一类是 ETF 和结构化产品：某家资产管理公司想发一只「按 Value Line Timeliness 排名选股」的 ETF，就要付授权费——通常是按该产品管理规模的一个固定基点数（比如每年 AUM 的 0.05%）收。</p>
+<p>这条线的美妙之处在于<strong>几乎零边际成本</strong>：分析师反正要给 1700 家公司排名（Print 和 Digital 都要用），排完了再授权给第三方，不多花一分钱。959 万营收里绝大部分直接变成利润。</p>
+<p>但它也在跌：1338 → 1346 → 1207 → 1040 → 959，五年跌了 28%。原因是 Value Line 综合指数期货的成交量在长期萎缩（这个老合约被标普和罗素的指数产品挤掉了），而挂钩 Value Line 排名的 ETF 规模也不大。</p>
+<h3>生意四（财报上找不到、却贡献了六成半利润）：EAM 信托的利润权益 — TTM 权益法收益 1897 万美元</h3>
+<p>这一件事要从 2009 年说起。那年 SEC 查出 Value Line 在近二十年里通过一家关联的经纪商，向自家共同基金的持有人收取了 2400 多万美元的虚假交易佣金——本质上是拿基民的钱补贴自己。案子和解后，<strong>SEC 事实上把 Value Line 赶出了资产管理业务</strong>。</p>
+<p>于是 2010 年做了一次结构手术：Value Line 把管理那批「Value Line 品牌共同基金」的业务整个装进一个独立的信托——<strong>EULAV Asset Management Trust（简称 EAM）</strong>，交给管理层去经营。Value Line 这家上市公司<strong>不再参与经营、不再有投票权</strong>，但保留了一份合同权利：按 EAM 每期的管理费收入提取一个固定比例，外加 EAM 调整后利润的一份分成，同时持有 EAM 20% 的非投票权益。</p>
+<p>翻译成大白话：<strong>Value Line 现在是 EAM 的「收租的房东」。</strong> 它不管基金怎么运作、不管谁当基金经理、不管买什么股票，只在每个季度末伸手，从 EAM 管理费收入里拿走约定的那一份。</p>
+<p>这份"租金"有多大？TTM 是 <strong>1897 万美元</strong>，而三条正经业务线加起来的经营利润只有 403 万。也就是说：</p>
+<blockquote>
+<p><strong>Value Line 这家公司，五分之四的利润来自一份它自己不经营、不控制、只负责收钱的合同。</strong></p>
+</blockquote>
+<p>而且这笔租金还在涨：1113 万（FY22）→ 1328 万（FY24）→ 1832 万（FY25）→ 1897 万（TTM）。为什么涨？因为 EAM 管理费收入 = 基金规模 × 费率，而过去几年美股一直在涨，基金规模跟着水涨船高。<strong>这意味着 VALU 的核心利润，本质上是一个杠杆化的美股 beta 敞口</strong>——股市涨，它涨；股市跌 30%，这 1897 万也会跟着缩水 30%，而它占了公司利润的 65%。</p>
+<h3>第五项资产：8647 万美元的现金和证券组合</h3>
+<p>顺带一提，公司账上还有 <strong>8647 万美元的现金和有价证券</strong>，总债务只有 227 万，净现金 8419 万——<strong>占市值的 24.5%</strong>。这笔钱每年产生大约 640 万美元的利息、股息和已实现收益（税前利润里除去主业 403 万和 EAM 1897 万，剩下的部分）。</p>
+<h3>一张表看清钱从哪来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占营收</th>
+<th>对税前利润的贡献</th>
+<th>占利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>印刷版订阅</td>
+<td>845 万</td>
+<td>-3.8%</td>
+<td>25.3%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>数字版订阅</td>
+<td>1541 万</td>
+<td>-3.1%</td>
+<td>46.1%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>版权授权费</td>
+<td>959 万</td>
+<td>-7.8%</td>
+<td>28.7%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三条线合计（出版主业）</strong></td>
+<td><strong>3345 万</strong></td>
+<td><strong>-4.7%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>403 万</strong>（经营利润）</td>
+<td><strong>13.7%</strong></td>
+</tr>
+<tr>
+<td>EAM 信托利润权益</td>
+<td>不计入营收</td>
+<td>+3.5%</td>
+<td>—</td>
+<td><strong>1897 万</strong></td>
+<td><strong>64.5%</strong></td>
+</tr>
+<tr>
+<td>自有证券组合收益</td>
+<td>不计入营收</td>
+<td>—</td>
+<td>—</td>
+<td><strong>643 万</strong></td>
+<td><strong>21.8%</strong></td>
+</tr>
+<tr>
+<td><strong>税前利润合计</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>2943 万</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（财报只按这三条线披露营收，不披露分部利润，所以三条线各自的利润率无法拆开——上表的 403 万是三条线合计的经营利润，是公司实际披露的数字，不是估算。EAM 和证券组合两项按利润表和现金流量表的调整项倒推，属于<strong>估算</strong>，但误差很小。）</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）：没有。</strong> 这一点值得单独说——现金流量表里<strong>根本没有「股权激励」这一行</strong>，五年都没有。106 个员工，一家 92% 股份被创始人家族控股的公司，不给员工发股票。对小股东来说这是纯粹的好消息：你的股份没有被稀释走。股本一年只变动 -0.19%（也就是说几乎完全没动）。</p>
+</li>
+<li>
+<p><strong>一次性项目：有一项，1500 万级别的"投资出售收益"每年都在。</strong> 现金流量表里 "Loss (Gain) From Sale of Investments" 这一行 TTM 是 <strong>-369 万</strong>（负数=从利润里减掉的收益，说明利润表里有 369 万的证券已实现收益）。往回看五年：-369、-56、-29、+13、+140 万，<strong>方向和金额都在乱跳</strong>。这是公司卖掉自己组合里的股票债券实现的收益，不是经营成果。单看 TTM 一期分不清它是「真一次性」还是「年年都有的一次性」，但可以确定它<strong>不可预测</strong>，做估值时应该剔掉。</p>
+</li>
+<li>
+<p><strong>资本化的支出：几乎没有。</strong> 五年的资本开支合计不到 25 万美元，TTM 是零。这家公司的"资产"是 106 个人的脑子和一个 95 年的品牌，不需要买设备。</p>
+</li>
+<li>
+<p><strong>回购与稀释：回购 93 万，SBC 为零，比值无穷大——但金额太小，不构成回馈。</strong> 93 万美元的回购只占市值的 0.27%。真正回到股东口袋的是分红：TTM 派了 <strong>1223 万美元</strong>（每股约 $1.30，股息率 3.56%），是回购的 13 倍。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差：净利润 2163 万，经营现金流 1858 万，差 305 万。</strong> 差额不大，但成因值得看清楚，因为它揭示了 EAM 那笔钱到底是不是真现金：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>2163</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>129</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td><strong>− EAM 权益法收益</strong></td>
+<td><strong>−1897</strong></td>
+<td>会计上确认的利润，本身不是现金</td>
+</tr>
+<tr>
+<td><strong>+ 从 EAM 实际收到的现金分配</strong></td>
+<td><strong>+1941</strong></td>
+<td>（现金流量表 "Other Operating Activities"）</td>
+</tr>
+<tr>
+<td>− 已实现证券出售收益</td>
+<td>−369</td>
+<td>现金计在投资活动里，不算经营</td>
+</tr>
+<tr>
+<td>± 营运资金变化（应收、预收、税）</td>
+<td>−109</td>
+<td>主要是预收订阅费减少 125 万</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1858</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>关键在中间那两行</strong>：会计上确认了 1897 万的 EAM 收益，同期实际从 EAM 收到的现金是 1941 万——<strong>比确认的还多</strong>。所以这笔"租金"是<strong>实打实的现金进账，不是纸面数字</strong>。这一点很重要：很多靠权益法收益撑利润的公司，钱是永远拿不出来的，VALU 不是。</p>
+<p>顺带看一眼：预收订阅费（Unearned Revenue）一年减少了 125 万。这是订阅生意的领先指标——<strong>预收在减少，说明新签和续订的合同金额在缩水</strong>，验证了三条线都在萎缩。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3.437 亿 ÷ 2163 万</td>
+<td><strong>15.9 倍</strong></td>
+<td><strong>$6.29</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不发布调整后利润</td>
+<td>同 GAAP，15.9 倍</td>
+<td>$6.29</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>3.437 亿 ÷（2163 万 − 369 万证券出售收益 × 73.5% 税后）= ÷ 1892 万</td>
+<td><strong>18.2 倍</strong></td>
+<td><strong>$5.50</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>3.437 亿 ÷ 1858 万</td>
+<td><strong>18.5 倍</strong></td>
+<td><strong>$5.41</strong></td>
+</tr>
+<tr>
+<td><strong>企业价值口径（扣掉 8419 万净现金后）</strong></td>
+<td>2.595 亿 ÷ 1892 万</td>
+<td><strong>13.7 倍</strong></td>
+<td><strong>$7.29</strong></td>
+</tr>
+<tr>
+<td>企业价值 ÷ 出版主业经营利润</td>
+<td>2.595 亿 ÷ 403 万</td>
+<td><strong>64.4 倍</strong></td>
+<td>$1.55</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>3.437 亿 ÷（2163+2069+1902）÷3 = ÷ 2045 万</td>
+<td><strong>16.8 倍</strong></td>
+<td><strong>$5.95</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三年平均那一行说明当前利润不在高点</strong>——16.8 倍对 15.9 倍，差距很小，说明这家公司的利润这几年是稳步爬升的（1902 → 2069 → 2163 万），没有周期性虚高。这和第一部分的发现并不矛盾：<strong>主业在跌，但 EAM 的租金涨得更快，把总利润托住了。</strong></p>
+<p><strong>那个 64.4 倍是全表最刺眼的数字。</strong> 它的意思是：如果你把公司账上 8419 万净现金和 EAM 那份合同的价值全都当成零，光为那三条出版业务付钱，你付的是 64 倍。反过来说，市场其实<strong>完全没在为出版业务定价</strong>——它给的 3.44 亿市值，基本就等于「8419 万现金 + EAM 租金流的现值」，出版业务算白送的。这是个合理的定价方式，因为出版主业确实在系统性地死掉。</p>
+<h3>你投 100 块，一年能拿回多少？</h3>
+<p>按最保守的真实口径（剔掉不可预测的证券出售收益），<strong>公司一年替你赚 $5.50</strong>。</p>
+<p>这 $5.50 的去向，可以精确算出来：</p>
+<ul>
+<li><strong>$3.56 以现金分红发到你手上</strong>（TTM 派息 1223 万 ÷ 市值 3.437 亿 = 3.56%）</li>
+<li><strong>$0.27 通过回购变成你手里股票的价值</strong>（回购 93 万 ÷ 市值）</li>
+<li><strong>剩下 $1.67 留在公司里</strong> —— 去向很明确：TTM 净买入了 <strong>1533 万美元的证券</strong>。也就是说，留下的钱既没有投进主业（资本开支为零），也没有去收购，而是<strong>买了更多股票和债券放着</strong>。</li>
+</ul>
+<p>所以你实际到手的现金回报是 <strong>3.83%</strong>，剩下的部分在公司账上变成了一个越来越大的证券组合（现金和投资五年从 5783 万涨到 8647 万）。</p>
+<p><strong>这个 $5.50 未来会变大还是变小？</strong> 要拆成两半看，而且两半的方向是相反的：</p>
+<ul>
+<li><strong>出版主业（占利润 14%）：确定性地变小。</strong> 三条线全部下跌，五年营收从 4053 万跌到 3345 万（-17.5%），经营利润从 1147 万跌到 403 万（<strong>-65%</strong>）。注意后者跌得远比前者快——因为出版是重固定成本生意（分析师工资、编辑部），营收跌一块钱，利润跌得更多。按当前斜率，<strong>出版主业的经营利润在三到四年内会归零甚至转负</strong>。</li>
+<li><strong>EAM 租金（占利润 65%）：完全取决于美股。</strong> 它涨是因为基金规模涨，基金规模涨是因为股市涨。如果美股在未来五年横盘或下跌，这 1897 万会缩水，而且没有任何缓冲。</li>
+</ul>
+<p>结论：<strong>这 $5.50 的稳定性，取决于你对美股未来五年的看法，而不是取决于 Value Line 这家公司做了什么。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>账面上 15.9 倍看着便宜，扣掉那 24.5% 的净现金后是 13.7 倍，确实不贵——但这不是一家出版公司，而是一个「正在死掉的出版业务 + 一份收美股 beta 租金的合同 + 8400 万证券组合」的三合一包裹，而且这个包裹几乎买不到也卖不掉。</strong></p>
+<p>三件事决定了它值不值：</p>
+<ol>
+<li><strong>你买的其实是 EAM 那份合同。</strong> 主业利润三四年内会归零，届时 100% 的利润都来自 EAM 和证券组合。愿意的话，你可以把 VALU 理解成一只「收管理费提成的类 ETF」，13.7 倍 EV 市盈率、3.56% 股息、24.5% 现金垫，这个价格并不离谱。</li>
+<li><strong>但你对这份合同没有任何控制权。</strong> 公司不经营 EAM，不能换基金经理，不能提高费率。合同条款怎么修改、EAM 业绩烂了怎么办，小股东说了不算——伯纳德家族持有 <strong>92.04%</strong> 的股份，剩下 7.96% 才是外面的人。</li>
+<li><strong>最要命的是流动性。</strong> 自由流通股只有 <strong>746,840 股</strong>，日均成交量 <strong>4,094 股</strong>——按 $36.63 算，这只股票<strong>一天成交额只有 15 万美元</strong>。这意味着：如果你投 10 万美元进去，你就占了全天成交额的三分之二，买的过程会自己把价格推上去；想卖的时候如果市场情绪不好，你可能要花几周才能出清。对绝大多数人来说，<strong>这不是一只可以正常买卖的股票</strong>。</li>
+</ol>
+<p>价格上它算公道，生意本身有硬伤：主业在结构性萎缩，利润押在一份自己不控制的合同上，加上事实上无法交易的流动性。数字上的便宜是真的，但便宜有它的理由。</p>
+</div></body></html>

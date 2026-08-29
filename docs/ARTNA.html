@@ -1,0 +1,345 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARTNA · Artesian Resources（阿蒂西恩水务）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ARTNA</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">15.6倍+3.59%股息+连涨32年，账最干净；但ROIC5.4%仅比资金成本高0.2个点</div><h1>ARTNA · Artesian Resources（阿蒂西恩水务）</h1>
+<p>市值 3.68 亿美元 / 股价约 35.6 美元 / 行业：受监管的水务公用事业 / TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Artesian 是特拉华州最大的自来水公司。它成立于 1905 年，现在给特拉华、马里兰、宾夕法尼亚三州约 30 万人供水，公司总共只有 274 名员工。</p>
+<p>它做两件事，一大一小。</p>
+<h3>生意一：受监管的自来水与污水处理（占 93.3%）</h3>
+<p><strong>这门生意是什么：</strong> 州政府划一块地给你，说"这块地上的自来水只能你来供，别人不许进来"，同时说"你不能爱收多少收多少，涨价要我批准"。这叫「受监管的公用事业」。</p>
+<p>具体运作：Artesian 从地下水井和水库取水，在自己的水厂做过滤消毒，通过埋在地下的一千多英里管道送到每家每户的水表，每两个月抄一次表，按用量开账单。特拉华州一个普通四口之家一年大概交 600 到 800 美元水费。TTM 全年收了 1.0915 亿美元。</p>
+<p><strong>它怎么定价，这是全篇最关键的机制。</strong> 它不是市场定价，是这么算的：</p>
+<blockquote>
+<p>允许收入 ＝ 运营成本 ＋ 折旧 ＋ 税 ＋（我埋在地下的资产净值 × 州监管机构批准的回报率）</p>
+</blockquote>
+<p>那个"埋在地下的资产净值"叫<strong>费率基数（rate base）</strong>，回报率通常在 9%–10% 之间。所以这门生意的逻辑非常反直觉：<strong>你想多赚钱，唯一的办法是往地下多埋管子。</strong> 每花 1 美元换一条老水管、建一座新水厂，费率基数就大 1 美元，明年允许收的水费就多 9 分钱。至于居民用了多少水，反而没那么重要（用得少了可以申请调价补回来）。</p>
+<p>这解释了报表上最扎眼的一件事：<strong>TTM 经营现金流 4,026 万，资本开支 5,844 万，自由现金流是负 1,818 万。而且过去六年年年为负。</strong> 一家利润率 20% 的公司常年"倒贴钱"，在别的行业是危险信号，在这里是<strong>商业模式本身</strong>——它就是靠不停花钱扩大资产规模来长大的。</p>
+<p><strong>护城河是什么：</strong> 你不可能在别人家门口再挖一套管网。这是法律和物理共同保障的独家经营权。客户流失率接近零，坏账率极低（不交水费会被停水），需求跟经济周期基本无关——2008 年金融危机、2020 年疫情，人照样喝水冲厕所。这就是它 Beta 只有 0.32、股价波动只有大盘三分之一的原因。</p>
+<p><strong>天花板也很清楚：</strong> 特拉华州只有一百万人。这门生意的增长上限＝当地新建住宅数 ＋ 监管机构允许的调价幅度 ＋ 收购邻近的小水厂。过去五年营收从 9,086 万涨到 1.1694 亿，年化 <strong>5.2%</strong>。这就是它一辈子的速度。</p>
+<h3>生意二：不受监管的杂项（占 6.9%）</h3>
+<p>TTM 806 万美元，其中最有意思的是<strong>管道保修计划（Service Line Protection Plan）</strong>。</p>
+<p>这是一门保险生意：从马路上的市政总管到你家墙根这一段自来水管和下水管，法律上归房主所有——爆了，挖开草坪修好的费用（通常两三千美元）由房主自己出。Artesian 卖给房主一个月几美元的计划，坏了它免费来修。</p>
+<p>这门生意好在三点：现金先收后花、边际成本接近零（修水管的工人本来就有）、退订率极低（每月几美元，没人记得取消）。它还包括帮周边小镇代运营水厂、承接开发商的管网建设、以及一块农田上的污水回用业务。</p>
+<p><strong>这一门虽然只占 6.9%，但它是不受监管的</strong>——赚多少是自己的，不用交给监管机构核定。它在缓慢变大（FY2021 600 万 → TTM 806 万）。</p>
+<h3>两门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>占比</th>
+<th>同比（FY2025 vs FY2024）</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>受监管水务与污水</td>
+<td>109.15</td>
+<td>93.3%</td>
+<td>+4.2%</td>
+<td>州授权独家经营，回报率由监管定</td>
+</tr>
+<tr>
+<td>不受监管业务（管道保修等）</td>
+<td>8.06</td>
+<td>6.9%</td>
+<td>+9.8%</td>
+<td>自由定价，高毛利</td>
+</tr>
+<tr>
+<td>分部间抵销</td>
+<td>−0.26</td>
+<td>−0.2%</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>116.94</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>+4.6%</strong></td>
+<td>经营利润率 <strong>31.99%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报未按分部披露利润。合并口径的经营利润率 31.99%、净利率 20.19%——这是受监管公用事业的典型水平，高得稳定但也高得没有想象空间（赚多了监管会让你降价）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分会很短，因为<strong>这家公司的账几乎没有可以剥的东西</strong>。这本身就是一个重要的结论。</p>
+<p><strong>股权激励（SBC）：32 万美元，占净利润 1.4%。</strong>
+几乎可以忽略。对比一下：Genesco 的 SBC 占净利润 61%，IA 占 14.5%。一家 274 人的水务公司不需要用股票抢人才，管理层拿的是现金工资。<strong>这是最干净的一种利润。</strong></p>
+<p><strong>一次性项目：没有。</strong>
+TTM 现金流量表里没有资产减值、没有重组费用、没有诉讼和解、没有并购费用。往前翻五年也基本没有（唯一一笔是 FY2022 的 634 万现金收购，收了一家小水厂）。</p>
+<p><strong>资本化的支出：有，而且是主体，但完全正当。</strong>
+5,844 万资本开支全部是实体资产——换水管、建水塔、装水表。折旧摊销 1,401 万，只有资本开支的 24%。这个巨大的缺口不是会计游戏，而是这门生意的本质：<strong>它每年埋进地下的钱是账面折旧的四倍。</strong> 这些钱明年会变成更大的费率基数，进而变成更高的允许收入。这跟软件公司把研发费资本化藏成本是完全不同的两件事。</p>
+<p><strong>回购与稀释：没有回购，股本 YoY 增加 0.18%。</strong>
+公司不回购（公用事业公司很少回购，钱都拿去埋管子了），但也几乎不稀释——一年增发 0.18%，是员工购股计划的零头。对比 IA 每年稀释 3.12%，这一项 Artesian 好得多。</p>
+<p><strong>利润和现金流的差：净利润 2,361 万，经营现金流 4,026 万。</strong></p>
+<p>差额 1,665 万，来源清清楚楚（百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>23.61</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>14.01</td>
+<td>管道水厂的账面折旧，不出现金</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>0.35</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>0.32</td>
+<td>微不足道</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>0.41</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>0.88</td>
+<td></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−0.67</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 所得税相关</td>
+<td>0.06</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产变动</td>
+<td>1.14</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他经营项目</td>
+<td>−0.01</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>40.26</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>几乎全部差额就是折旧摊销这一项。</strong> 没有神秘科目、没有几千万说不清的"其他经营性资产净变动"（对比 Genesco 那笔占了 46% 经营现金流的 6,692 万）。这份现金流量表是全批三家里最诚实的一份。</p>
+<p><strong>但有一件事必须挖出来，否则会误判这家公司：融资活动里那笔「其他融资活动 ＋3,443 万」是什么？</strong></p>
+<p>它连续六年为正且逐年变大（FY2021 1,580 万 → FY2024 2,044 万 → FY2025 2,609 万 → TTM 3,443 万）。在水务公用事业里，这个位置几乎只可能是一样东西：<strong>建设补助与开发商预付款（CIAC，Contributions in Aid of Construction）</strong>——一个开发商要在特拉华州盖 300 套新房，他必须先掏钱让 Artesian 把主管道铺到小区门口。这笔钱是白给的，管道所有权归 Artesian，但它不计入收入（会计上冲减资产原值），也不进费率基数（不能拿它去要回报）。</p>
+<p><strong>这一笔改变了整个自由现金流的画面：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>计算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表面自由现金流</td>
+<td>4,026 万 − 5,844 万</td>
+<td><strong>−1,818 万</strong></td>
+</tr>
+<tr>
+<td>扣掉开发商出钱的那部分资本开支</td>
+<td>4,026 万 −（5,844 万 − 3,443 万）</td>
+<td><strong>＋1,625 万</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>也就是说，<strong>5,844 万的资本开支里，有约 3,443 万不是股东掏的，是开发商掏的。</strong> 真正由公司自己承担的扩建支出只有约 2,401 万，低于 4,026 万的经营现金流。所以这家公司并不是"年年烧钱、靠借新还旧发股息"，它实际上是有正现金流的——只是这笔关键资金被记在了融资活动里，不看这一行就会得出完全错误的结论。</p>
+<p><strong>这一项是推断，不是财报明写的科目名。</strong> 依据是：金额规模、六年连续为正、逐年增长的形态，以及水务行业里这个科目位置的通用惯例。方向上我有把握，精确构成需要看 10-K 才能确认。</p>
+<p><strong>债务：</strong> 有息债务 1.855 亿，现金 980 万，净负债 1.757 亿。Debt/EBITDA 3.60 倍，利息保障 4.19 倍。对普通公司这算高，对受监管公用事业是正常水平——因为现金流可预测性极高，监管机构还允许把利息成本转嫁进水费。真正的风险不是还不上，是<strong>利率上升期借新还旧的成本变高，而水费调价要等监管批准，中间有时滞</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 3.68 亿美元，企业价值 5.44 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3.68 亿 ÷ 2,361 万</td>
+<td><strong>15.6 倍</strong></td>
+<td><strong>6.41 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不披露调整后净利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目，SBC 仅 32 万已按 GAAP 扣除</td>
+<td><strong>15.6 倍</strong></td>
+<td><strong>6.41 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>自由现金流为负 1,818 万</td>
+<td>不适用</td>
+<td>负</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣除开发商补助后）</strong></td>
+<td>3.68 亿 ÷ 1,625 万</td>
+<td><strong>22.6 倍</strong></td>
+<td><strong>4.42 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>5.44 亿 ÷ 3,741 万</td>
+<td>14.5 倍</td>
+<td>6.88 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>3.68 亿 ÷ 2,227 万</td>
+<td><strong>16.5 倍</strong></td>
+<td><strong>6.05 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行：TTM 赚 2,361 万、FY2025 赚 2,282 万、FY2024 赚 2,039 万，平均 2,227 万。<strong>当期 15.6 倍、三年平均 16.5 倍，只差 6%。</strong> 这个"两个数字几乎一样"本身就是最有价值的信息——它证明这家公司的利润没有周期，没有高点也没有低点，去年赚多少今年就赚多少加 4%。Genesco 那两个数字差了四倍，IA 差了 37%，Artesian 差 6%。</p>
+<p><strong>所以，你现在投 100 块进去，公司一年替你赚多少？</strong></p>
+<p><strong>按最保守的三年平均口径，6.05 元。</strong> 按当期口径 6.41 元。按现金口径（扣掉开发商出资后的真实自由现金流）4.42 元。</p>
+<p><strong>这 6 块钱里，有多少真正回到你口袋？</strong></p>
+<p><strong>3.59 元直接进你口袋</strong>——股息率 3.59%，每股一年派 1.28 美元，派息率 55.57%，而且<strong>已经连续 32 年提高股息</strong>（每年涨 4% 左右，TTM 涨了 4.06%）。这是全批三家里唯一一家真正给钱的。</p>
+<p>剩下的约 2.5 元留在公司，去处一目了然：全部埋进地下变成新管道。这笔钱不是浪费——它进入费率基数，明年按 9%–10% 的允许回报率变成新的收入。这就是公用事业的复利机器：<strong>留存 2.5 元，明年多赚 0.23 元。</strong></p>
+<p><strong>这 6 块钱未来会变大还是变小？</strong> 会缓慢变大，速度大致锁定在每年 4%–6%，来源是三样：① 换掉老管道扩大费率基数；② 特拉华州新建住宅带来的新用户（开发商还替你出钱铺管）；③ 每隔几年向监管机构申请一次调价。它不会突然翻倍，也几乎不可能腰斩。</p>
+<p><strong>但必须说清楚一个残酷的数字：投入资本回报率 5.40%，加权平均资金成本 5.20%。</strong> 两者只差 0.2 个百分点。翻译过来：<strong>这家公司每投入 1 美元，创造的价值只比它的融资成本高一点点，几乎不创造经济价值。</strong> 这不是管理层无能，这是监管制度设计出来的结果——监管机构的工作就是让公用事业刚好赚到合理回报，不多不少。所以你买它，买的不是"一门会创造超额价值的好生意"，买的是<strong>一张能跟着通胀慢慢变大的、极度稳定的债券</strong>。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价。这是全批三家里唯一一家可以买了不用天天看的。</strong></p>
+<p>15.6 倍市盈率、3.59% 股息、连续 32 年涨息、账上找不出一处需要剥的会计游戏（SBC 只占利润 1.4%）、当期利润和三年平均利润只差 6%、Beta 0.32、坏账率接近零、需求跟经济周期无关。<strong>投 100 块，一年赚 6 块，其中 3.6 块当年就以现金形式给你，剩下 2.4 块埋进地下明年再给你多赚一点。</strong></p>
+<p>两个必须清醒的地方。第一，<strong>它永远不会让你发财</strong>：ROIC 5.40% vs WACC 5.20%，监管制度保证了它赚不到超额利润，增长上限就是特拉华州的人口和监管批的调价，年化 4%–6%，仅此而已。买它的正确心态是"买一张会涨的债券"，不是"买一家会长大的公司"。第二，<strong>别被表面的负自由现金流吓跑，也别忽视它背后的杠杆</strong>：负 1,818 万的自由现金流看着像在烧钱，实际上是因为 5,844 万资本开支里约 3,443 万是开发商出的；但 3.60 倍的 Debt/EBITDA 和 4.19 倍的利息保障也是真的，如果利率长期高企而监管调价滞后，利润会被利息侵蚀几个点。</p>
+<p>一句话：<strong>一家没什么想象力但也几乎不会出事的公司，在一个不贵的价格上。</strong> 适合放进"买了就忘"的那一格，不适合期待它带来什么惊喜。</p>
+</div></body></html>

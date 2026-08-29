@@ -1,0 +1,303 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TCMD · Tactile Systems Technology（触觉医疗）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TCMD</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">21倍买的不是机器，是Medicare的E0652报销代码</div><h1>TCMD · Tactile Systems Technology（触觉医疗）</h1>
+<p><strong>市值</strong> 5.25 亿美元 ｜ <strong>股价</strong> 约 $23.16（22.65M 股） ｜ <strong>行业</strong> 医疗科技 / 家用医疗器械 ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日：2026 年 6 月 30 日</strong>（最近四个季度滚动，下同）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Tactile 只做一件事的两个版本：<strong>把原本必须去医院、由治疗师用手做的物理治疗，变成一台机器塞进病人家里，然后向保险公司开账单。</strong></p>
+<p>它不按事业部披露利润，只披露两条产品线的营收。TTM 3.5031 亿美元营收里，淋巴水肿约占 86%，气道清理约占 14%。</p>
+<h3>生意一：淋巴水肿气压泵（Flexitouch Plus / Entre）—— 营收约 3.0 亿美元，占 86%</h3>
+<p><strong>这是什么病。</strong> 乳腺癌病人做完手术，腋下的淋巴结被一并切掉了。淋巴液本来靠这些淋巴结往回流，路断了，胳膊就开始肿，肿到袖子穿不进去、皮肤发硬、反复感染。这个病治不好，只能一辈子管着。传统办法是每周去诊所两三次，让治疗师用手一寸一寸往心脏方向推，一次 45 分钟，一次一两百美元，而且一停下来就复发。</p>
+<p><strong>Tactile 卖的东西。</strong> 一套充气服（胳膊的是袖套，腿的是裤腿，还有做头颈部的）加一个手提箱大小的控制器。充气服内部分成十几个气室，控制器按编好的顺序一节一节充气泄气，从手指往肩膀推，模仿治疗师那双手的动作。病人在自己家沙发上一天用一小时，看着电视就做完了。</p>
+<p><strong>钱从哪来——这是理解这家公司的关键。</strong> 掏钱的不是病人，是保险公司。流程是这样的：Tactile 的销售代表常年跑伤口护理中心、静脉曲张诊所、肿瘤科和淋巴水肿治疗师的诊室，说服医生开处方；医生开了处方，Tactile 直接把设备寄到病人家，然后<strong>自己去跟 Medicare、Medicaid 或商业保险公司报销</strong>，用的是 E0652 这个报销代码（"带校准梯度压力的分段式气压装置"）。一台设备报下来大约四五千美元，一次性卖断，病人自己基本不掏钱或只掏共付额。</p>
+<p>所以这门生意的三方是错开的：<strong>做决定的是医生，用的是病人，付钱的是保险公司</strong>，Tactile 谁都得伺候。它 1086 个员工里一大半是销售和报销专员——后者的工作就是跟保险公司扯皮，把被拒的单子一遍遍改材料再报。</p>
+<p><strong>护城河在哪、有多深。</strong> 不在技术上——气压泵的原理几十年前就有了。护城河是两样东西：一是那份 E0652 报销代码和常年做出来的临床数据（他们刚发了头颈部淋巴水肿的 6 个月数据，还有 236 人的试验证明机器做出来的效果和治疗师亲手做的差不多），这些数据是让保险公司愿意批钱的凭证；二是那支几百人的销售队伍和报销后台，新进来的人要重头建一遍。<strong>但这条护城河的地基是保险报销率，不是专利。</strong> Medicare 哪天把 E0652 的报销价砍 20%，这家公司的利润表当场就要重写。</p>
+<h3>生意二：气道清理背心（AffloVest）—— 营收约 5,000 万美元，占 14%</h3>
+<p><strong>这是什么病。</strong> 囊性纤维化、支气管扩张、肌肉萎缩症这类病人，肺里的痰咳不出来，堆着就感染、就住院。传统办法是家属每天用手拍背半小时，或者穿一件靠气泵充放气来震胸腔的背心——问题是那种背心必须插电，人被拴在墙插座上。</p>
+<p><strong>Tactile 卖的东西。</strong> AffloVest 是一件背心，上面装了 8 个小马达，直接靠机械振动敲胸腔，<strong>用电池，能背着走</strong>。孩子可以一边写作业一边穿，成年人可以一边做饭一边穿。2026 年他们刚推了下一代产品。</p>
+<p><strong>怎么收钱——和上一门不一样。</strong> 这条线主要卖给 DME（家用医疗器械经销商），由经销商去跟保险公司报销。所以 Tactile 面对的是几家大经销商的进货节奏，不是终端病人。第二季度这条线营收 1,210 万、同比掉了 7%，公司的解释是经销商为了换代产品在清老库存——但按 TTM 看它其实同比涨了 32%，说明真实需求没问题，是渠道库存在抖。<strong>代价是这条线的季度数字不可信，只能看 TTM。</strong></p>
+<h3>两条线的钱（TTM，截至 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>淋巴水肿（Flexitouch/Entre）</td>
+<td>约 3.00 亿</td>
+<td>约 +12%</td>
+<td>86%</td>
+<td>约 13%（<strong>估算</strong>）</td>
+<td>约 3,900 万</td>
+</tr>
+<tr>
+<td>气道清理（AffloVest）</td>
+<td>约 0.50 亿</td>
+<td>约 +32%</td>
+<td>14%</td>
+<td>约 6%（<strong>估算</strong>）</td>
+<td>约 300 万</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3.5031 亿</strong></td>
+<td><strong>+17.2%</strong></td>
+<td>100%</td>
+<td>10.0%（实际）</td>
+<td>3,503 万</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只披露到营收，不披露分部利润。上表利润率是按整体 10.0% 的经营利润率、结合"直销直报保险毛利更高、经销渠道要让利"的常识拆出来的<strong>估算值</strong>，不是公司数字。</p>
+</blockquote>
+<p>值得单说一句毛利率：<strong>76.8%</strong>（FY2021 是 71.2%，五年爬了 5.6 个点）。76.8% 的毛利最后只剩 10.0% 的经营利润，中间 66.8 个点全花在销售和管理上——<strong>这家公司的成本结构说明它本质是一家医疗销售公司，产品是它的入场券，不是它的壁垒。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 839 万美元，<strong>占净利润 2,487 万的 33.7%</strong>。这是真钱——它稀释你手里的股份。GAAP 里已经扣了，本文所有口径都不加回。占比三分之一在小盘医疗器械里不算离谱，但也绝不能忽略。</li>
+<li><strong>一次性项目</strong>：TTM 这一期干净，没有大额诉讼、减值或重组。<strong>但注意 FY2023 那个 2,852 万的净利润是假象</strong>——那年经营利润只有 1,557 万，净利润却比经营利润还高一大截，是一笔递延所得税估值备抵转回（一次性的账面税收利得）撑出来的。任何拿 FY2023 当基数算增长的说法都要打问号。TTM 的实际税率 33.4%，是正常纳税状态。</li>
+<li><strong>资本化的支出</strong>：TTM 买无形资产花了 315 万，另有 623 万的现金收购（一笔小并购）。规模不大，不构成粉饰。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 636 万，同期 SBC 839 万，<strong>比值 0.76 —— 回购连员工发的股都没抵完</strong>。不过看股本本身：一年下来股数减少了 3.83%（FY2025 那年砸了 2,656 万回购），所以历史上是真回购过的；但最近一个季度股数又涨了 2.21%（那笔小并购发了股）。<strong>结论：这家公司会回购，但不是每年都回购，今年这一轮属于走过场。</strong></li>
+<li><strong>利润和现金流的差</strong>：净利润 2,487 万，经营现金流 3,055 万，自由现金流 2,682 万。差额不大，但里面有值得看的东西：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>24.87</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>6.71</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>8.39</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失</td>
+<td>0.08</td>
+</tr>
+<tr>
+<td>＋ 其他经营项（主要是递延税）</td>
+<td>8.59</td>
+</tr>
+<tr>
+<td><strong>＝ 未计营运资金前的现金流</strong></td>
+<td><strong>48.64</strong></td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td><strong>-10.04</strong></td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td>0.27</td>
+</tr>
+<tr>
+<td>－ 应付账款减少</td>
+<td>-0.19</td>
+</tr>
+<tr>
+<td>－ 应交税金变动</td>
+<td>-0.44</td>
+</tr>
+<tr>
+<td>－ 其他经营性资产</td>
+<td>-7.69</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>30.55</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-3.73</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>26.82</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两处要盯着：</strong> 第一，应收账款一年多占用了 1,004 万现金，相当于净利润的 40%。营收涨 17% 带动应收上升是正常的，但这家公司的应收就是"等保险公司付钱"，账期一拉长就变成坏账风险，<strong>下几个季度这个数继续膨胀就是红灯</strong>。第二，"其他经营项"这个 859 万的口袋和递延税有关，属于非现金的账面调整，不是真赚回来的钱。</p>
+<p>好消息是资本开支只有 373 万——<strong>这门生意不吃钱</strong>，赚的现金基本都能拿出来。资产负债表也干净：现金 6,985 万、有息负债 1,436 万，<strong>净现金 5,549 万，占市值 10.6%</strong>，负债权益比 0.06。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 5.2463 亿，企业价值 4.6914 亿（市值减净现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>5.2463 亿 ÷ 2,487 万</td>
+<td><strong>21.1 倍</strong></td>
+<td><strong>4.74 元</strong></td>
+</tr>
+<tr>
+<td>公司口径（加回 SBC 等，<strong>估算</strong>）</td>
+<td>5.2463 亿 ÷ 约 3,330 万</td>
+<td>15.8 倍</td>
+<td>6.35 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>TTM 无大额一次性项目，SBC 已按 GAAP 扣除不加回</td>
+<td><strong>21.1 倍</strong></td>
+<td><strong>4.74 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>5.2463 亿 ÷ 2,682 万</td>
+<td>19.6 倍</td>
+<td>5.11 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>4.6914 亿 ÷ 3,503 万</td>
+<td><strong>13.4 倍</strong></td>
+<td><strong>7.47 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>5.2463 亿 ÷ 2,031 万（TTM/FY25/FY24 平均）</td>
+<td><strong>25.8 倍</strong></td>
+<td><strong>3.87 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>三年平均刻意跳过了 FY2023 那个被税收利得撑起来的 2,852 万，用的是 TTM 2,487 万、FY2025 1,909 万、FY2024 1,696 万的平均值 2,031 万。</p>
+</blockquote>
+<p><strong>说人话：</strong> 你现在投 100 块进 Tactile，按最保守的口径（三年平均真实利润）算，公司一年替你赚 <strong>3.87 块</strong>；按最新一年的实际利润算，是 <strong>4.74 块</strong>；如果你不介意用"扣掉净现金后的企业价值"这个更贴近生意本身的算法，是 <strong>7.47 块</strong>。</p>
+<p><strong>这 4.74 块里，有多少真回到你口袋？</strong> TTM 没有分红，回购只花了 636 万——按市值算约 1.2%，还被 839 万的股权激励抵掉了。所以<strong>几乎全部利润都留在公司里</strong>。留下来干了什么？资本开支只花了 373 万，无形资产 315 万，小并购 623 万，同时还了 2,475 万的债——<strong>主要是在还债和攒现金，不是在扩产</strong>。对一个净现金 5,549 万、负债率已经极低的公司来说，继续攒现金的边际价值不高，这笔钱正在闲置。</p>
+<p><strong>这个 4.74 块未来是变大还是变小？</strong> 大概率变大，但幅度取决于两件事。变大的理由：营收还在 17% 增长，毛利率五年爬了 5.6 个点，而经营利润率从 FY2022 的 -0.37% 一路升到 10.0%——<strong>这家公司的故事就是经营杠杆</strong>，销售队伍规模基本定型了，每多卖一台的增量成本很低，营收再涨 30% 利润可能翻倍。变小的理由只有一个，但足够致命：<strong>Medicare 调低 E0652 的报销价</strong>。这门生意的定价权不在公司手里，在监管机构手里。</p>
+<p>另外两个信号值得记一笔：股价 52 周涨了 76.12%，也就是说 21 倍是在大涨之后的 21 倍，不是被市场遗忘的便宜货；同时<strong>空头持有 11.26% 的流通股、需要 8.4 天才能平掉</strong>，这个比例在小盘股里偏高，说明有一批人正在赌报销率这件事会出问题。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜也不算贵，价格大体公道——但你买的不是一台机器，是一份保险报销代码。</strong></p>
+<p>21 倍 GAAP、13.4 倍 EV/EBIT、17% 的增速、5,549 万净现金、几乎不吃资本开支，这个组合在医疗器械里算合理，往乐观了说经营杠杆还能再放一段。但按三年平均利润算是 25.8 倍，股价已经先涨了 76%，便宜是没有的。真正要想清楚的是：这家公司 76.8% 的毛利里，有多少是产品挣的，有多少是 Medicare 允许它挣的——<strong>答案偏向后者，而这件事不由它决定。</strong> 想买就等报销政策明朗，别在 76% 涨幅之后追。</p>
+<hr />
+<p><em>分析日期：2026-08-29 ｜ 全榜名次：1040 / 1244 ｜ 数据来源：stockanalysis.com 财报页（TTM 截至 2026-06-30）</em></p>
+</div></body></html>

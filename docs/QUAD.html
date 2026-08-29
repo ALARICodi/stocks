@@ -1,0 +1,305 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QUAD · Quad/Graphics（阔德印刷）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">QUAD</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">16倍是假的真实28倍，一半利润靠卖厂房，营收连跌四年</div><h1>QUAD · Quad/Graphics（阔德印刷）</h1>
+<p><strong>市值</strong> 5.19 亿美元 ｜ <strong>股价</strong> 约 $10.09（51.46M 股，A/B 双重股权） ｜ <strong>行业</strong> 商业服务 / 商业印刷 ｜ <strong>交易所</strong> NYSE
+<strong>TTM 口径截止日：2026 年 6 月 30 日</strong>（最近四个季度滚动，下同）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Quad 自称是"营销体验公司"，但把营收表拆开只有一门生意：<strong>开着全美最大的一批印刷厂，替零售商和杂志社印纸。</strong></p>
+<p>财报按地理分部披露，不按业务分：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国印刷及相关服务</td>
+<td>21.93 亿</td>
+<td>-5.9%</td>
+<td><strong>92.3%</strong></td>
+</tr>
+<tr>
+<td>国际（欧洲/拉美）</td>
+<td>1.84 亿</td>
+<td>-46.3%</td>
+<td>7.7%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>23.77 亿</strong></td>
+<td><strong>-8.0%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>国际那条线一年砍掉近一半（FY2024 还有 3.43 亿），是因为他们连续卖掉了欧洲的工厂。这不是生意萎缩，是主动断臂——但断完之后，<strong>这家公司 92% 的命押在一件事上：美国人还印不印纸。</strong></p>
+<h3>主业：印刷厂（约 22 亿营收，占 92%）</h3>
+<p><strong>具体在印什么。</strong> 四类东西，都是纸：</p>
+<ol>
+<li><strong>零售商促销单页和商品目录。</strong> 一家连锁超市要在感恩节前给全美 2,000 万个家庭邮箱塞一张八页彩色促销单。Quad 接下来的活是：拿到超市的商品数据库和图片，自己的设计团队排版（这一步叫"预印服务"），然后在威斯康星的巨型轮转印刷机上一小时印几十万份，同时按邮政编码分拣、打上地址、装卡车送到邮局。一单这样的活报价从几十万到几千万美元不等，按印张数和纸张定价，纸价涨了大部分能转嫁给客户。</li>
+<li><strong>杂志。</strong> 美国还在出纸质版的杂志，绝大部分是 Quad 或它的对手印的。</li>
+<li><strong>直邮广告和账单。</strong> 信用卡公司寄给你的那封"预批准额度"信、保险公司的续保通知，很多出自 Quad 的数据中心——他们拿着客户的名单，做数据清洗、变量印刷（每封信上的名字和额度都不一样），然后交邮局。</li>
+<li><strong>书籍和包装标签。</strong></li>
+</ol>
+<p><strong>它为什么还活着。</strong> 印刷是重资产、规模决定成本的生意：一台八色热固轮转印刷机上千万美元，开起来必须满负荷跑。行业二十年一直在整合——竞争对手要么破产要么被并购，剩下的几家反而在收缩的市场里拿到更大的份额。所以 Quad 的营收每年跌 8-10%，<strong>毛利率却基本没跌（TTM 21.6%，FY2021 是 19.3%，反而升了）</strong>，经营利润率还从 3.0% 升到 4.5%。它的做法是关厂、卖厂、把订单集中到剩下的厂里跑满。</p>
+<p><strong>它在往哪转。</strong> 公司在讲一个故事：从"印刷厂"变成"营销服务商"——帮客户做媒介采买、做零售店内布置、做数据分析和名单管理。这些业务确实存在，也确实增长，但<strong>它们被埋在"美国印刷及相关服务"这个 21.93 亿的口袋里，公司不单独披露规模</strong>。从整体营收还在以 6-8% 下滑判断，新业务的增长远远填不上印刷的窟窿。</p>
+<h3>财报没披露的部分，怎么估</h3>
+<p>Quad 不披露分部利润，只有整体数字。整体经营利润 1.075 亿、利润率 4.5%。按行业常识粗略拆（<strong>以下是估算，不是公司数字</strong>）：美国印刷贡献几乎全部经营利润（约 1.05 亿，利润率约 4.8%），国际那块在剥离过程中大体打平或微亏。</p>
+<p><strong>4.5% 的经营利润率是理解这家公司的核心数字</strong>——每印 100 块钱的活，扣掉纸、油墨、电、工人、机器折旧，只剩 4.5 块。这不是一门有定价权的生意，是一门比谁的机器转得更满的生意。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这一部分是本篇的重点，因为 <strong>Quad 的 3,120 万净利润里，有一半以上不是印刷赚来的。</strong></p>
+<ul>
+<li><strong>卖楼卖厂的收益：TTM 计入利润的资产处置收益 1,610 万美元。</strong> 净利润才 3,120 万——<strong>超过一半的账面利润来自处置固定资产</strong>。现金流量表上更直白：TTM 卖厂房设备收回现金 3,170 万，而同期资本开支只有 4,620 万。这不是偶发：FY2025 卖了 3,680 万、FY2024 卖了 4,910 万、FY2021 卖了 1.263 亿。<strong>关厂、卖地、把收益记进利润表，是这家公司常规的年度动作。</strong> 单期口径分不清"真一次性"和"年年都有的一次性"——但连着五年出现的东西，性质上更接近后者，而它终有卖完的一天。</li>
+<li><strong>折旧远大于资本开支</strong>：TTM 折旧摊销 7,380 万，资本开支 4,620 万，<strong>只投了折旧的 63%</strong>。翻译过来：机器在变老，公司在收割，不在补充。FY2021 折旧还是 1.573 亿，现在 7,380 万——固定资产基数五年缩掉一半多。这既是"轻装上阵"，也是"资产在消失"。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 700 万，占净利润 22.4%。按 GAAP 已扣，不加回。</li>
+<li><strong>重组减值</strong>：TTM 400 万，不大。但 FY2024 有 7,490 万，那年净亏 5,090 万——关厂的账年年在结。</li>
+<li><strong>回购与稀释——这一条很难看</strong>：TTM 回购 740 万，同期 SBC 700 万，<strong>比值 1.06，回购只够抵消员工发股</strong>。更糟的是抵都没抵住：<strong>股数一年反而涨了 4.08%。</strong> 你花钱回购、股数还在增加，等于股东被稀释的同时还替公司买了单。</li>
+<li><strong>分红</strong>：TTM 派息 1,720 万，按市值算股息率约 3.3%。这是唯一真正回到股东口袋的现金。</li>
+<li><strong>利润和现金流的差</strong>：净利润 3,120 万，经营现金流 9,660 万，自由现金流 5,040 万。差得很大，逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>31.2</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>73.8</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>1.6</td>
+</tr>
+<tr>
+<td><strong>－ 资产处置收益（冲回，因为这不是经营现金）</strong></td>
+<td><strong>-16.1</strong></td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td>＋ 股权激励（非现金）</td>
+<td>7.0</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>12.7</td>
+</tr>
+<tr>
+<td><strong>＝ 未计营运资金前的现金流</strong></td>
+<td><strong>114.2</strong></td>
+</tr>
+<tr>
+<td>－ 应收账款增加</td>
+<td>-4.0</td>
+</tr>
+<tr>
+<td>＋ 存货减少</td>
+<td><strong>+24.0</strong></td>
+</tr>
+<tr>
+<td>－ 应付账款减少</td>
+<td><strong>-31.1</strong></td>
+</tr>
+<tr>
+<td>－ 其他经营性资产</td>
+<td>-6.5</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>96.6</strong></td>
+</tr>
+<tr>
+<td>－ 资本开支</td>
+<td>-46.2</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>50.4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三处要看：</strong> 第一，现金流之所以远高于利润，主因是 7,380 万折旧——<strong>这是过去投下去的钱在慢慢还本，不是新赚的</strong>。第二，存货减少 2,400 万带来的现金是一次性的，库存不可能年年降。第三，应付账款减少 3,110 万意味着<strong>付供应商付得比以前快了</strong>，这通常是供应商收紧账期的信号，对一家有 4.7 亿负债的公司来说值得留意。</p>
+<p><strong>负债表才是真正的紧箍咒</strong>：现金只有 830 万，有息负债 4.695 亿，<strong>净负债 4.612 亿——是市值的 89%</strong>。利息保障倍数 2.45 倍（经营利润 1.075 亿，利息约 4,400 万）。流动比率 0.87，即流动资产盖不住流动负债。账面权益 1.245 亿，扣掉商誉无形之后的<strong>有形账面价值只剩约 540 万</strong>（市净率 4.17、有形市净率 96 倍）——这家公司的净资产已经基本被债务吃光了。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 5.1924 亿，<strong>企业价值 9.8044 亿（市值 + 4.612 亿净负债）——企业价值几乎是市值的两倍，任何只看市盈率的判断在这里都会失真。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>5.1924 亿 ÷ 3,120 万</td>
+<td>16.6 倍</td>
+<td>6.01 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（<strong>估算</strong>）</td>
+<td>5.1924 亿 ÷ 约 4,500 万（加回重组、无形摊销）</td>
+<td>11.5 倍</td>
+<td>8.70 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>5.1924 亿 ÷ 1,850 万（3,120 万 − 卖资产收益 1,610 万税后约 1,270 万）</td>
+<td><strong>28.1 倍</strong></td>
+<td><strong>3.56 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>5.1924 亿 ÷ 5,040 万</td>
+<td>10.3 倍</td>
+<td>9.71 元</td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/EBIT</strong></td>
+<td>9.8044 亿 ÷ 1.075 亿</td>
+<td><strong>9.1 倍</strong></td>
+<td><strong>10.97 元</strong></td>
+</tr>
+<tr>
+<td>企业价值 / 自由现金流</td>
+<td>9.8044 亿 ÷ 5,040 万</td>
+<td><strong>19.5 倍</strong></td>
+<td>5.13 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>5.1924 亿 ÷ 243 万（TTM 3,120 万、FY25 2,700 万、FY24 <strong>-5,090 万</strong> 的平均）</td>
+<td><strong>213 倍</strong></td>
+<td><strong>0.47 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话：</strong> 你现在投 100 块进 Quad，账面上一年赚 6.01 块，看起来不错；但<strong>把卖厂房的钱剔掉，只剩 3.56 块</strong>；再往前看三年，这家公司平均一年只赚 243 万美元——<strong>投 100 块一年赚 0.47 块，接近零。</strong> 三年里有一年（FY2024）是亏 5,090 万的。</p>
+<p>自由现金流口径的 9.71 块看起来最漂亮，但它有一个致命的口径问题：<strong>FCF 是给全体资本提供方的，而这家公司的资本里有 4.6 亿是债主的。</strong> 正确的看法是企业价值除以自由现金流 = <strong>19.5 倍</strong>——你为一家营收连跌四年、每年跌 8-10% 的公司的整体资产，付了 19.5 倍自由现金流。这个价格对一门增长的生意合理，对一块正在融化的冰不合理。</p>
+<p><strong>这些钱有多少回到你口袋？</strong> 分红 1,720 万（股息率 3.3%）是实打实的。回购 740 万被 SBC 全额抵消，且股数反而增加，视同零。剩下的自由现金流去了哪里？TTM 净还债 5,510 万——<strong>利润的主要去向是还债主，不是还股东。</strong> 这在负债 4.7 亿、利息保障 2.45 倍的情况下是正确的选择，但它意味着未来几年股东能拿到的只有那 3.3% 股息。</p>
+<p><strong>这个 3.56 块未来变大还是变小？</strong> 变小的压力压倒性：营收连续四年下滑（-8.1%、-9.7%、-9.4%、-8.0%），自由现金流一年掉 29.6%，可卖的厂房卖一处少一处，折旧在快速缩小意味着这块"现金流补贴"会逐年变薄。变大的可能性有两个：一是关厂降本跑得比营收下滑更快（过去两年确实做到了，经营利润率从 3.0% 升到 4.5%）；二是那 4.6 亿债务如果能持续压缩，同样的经营利润会有更多流向股权。<strong>这是一个典型的杠杆化清算故事：赌的是"缩得比跌得快"，而不是"生意会好起来"。</strong></p>
+<p>一个反面数据：股价 52 周涨了 57.41%，远期市盈率 7.26 倍——市场已经在给"缩得比跌得快"这个剧本定价了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>16 倍市盈率是假的，真实是 28 倍；便宜是杠杆和卖厂房凑出来的幻觉——好价格配的是一门正在融化的生意，不值。</strong></p>
+<p>三个数字足够说明问题：净利润的一半以上来自处置固定资产；企业价值是市值的近两倍，所以 10 倍自由现金流实际是 19.5 倍；三年平均利润几乎为零。这家公司的管理层把一个衰退行业管得相当漂亮——毛利率没跌、利润率还升了、债务从 9.4 亿压到 4.7 亿——但<strong>再好的手艺也改变不了 92% 的营收来自"美国人还印多少纸"这件事</strong>。有形净资产已经归零，可卖的厂房在减少，折旧红利在变薄，剩下能给股东的只有 3.3% 的股息。想赌管理层继续缩得比市场跌得快可以，但那是赌博，不是投资，而且现在的入场价已经先涨了 57%。</p>
+<hr />
+<p><em>分析日期：2026-08-29 ｜ 全榜名次：1041 / 1244 ｜ 数据来源：stockanalysis.com 财报页（TTM 截至 2026-06-30）</em></p>
+</div></body></html>

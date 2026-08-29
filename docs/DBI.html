@@ -1,0 +1,332 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DBI · Designer Brands（美国鞋类零售商，DSW 母公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DBI</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">3.77倍市现率是清库存挤的，三年平均利润是负的，利息保障只有1.71倍</div><h1>DBI · Designer Brands（美国鞋类零售商，DSW 母公司）</h1>
+<p>市值 2.79 亿美元 / 股价约 5.49 美元 / 行业：零售（鞋类）/ TTM 截止 2026 年 5 月 2 日
+企业价值（市值+净负债）14.6 亿美元 · 全榜第 1125 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报把公司拆成两块：<strong>零售（Retail）</strong> 和 <strong>品牌组合（Brand Portfolio）</strong>，另有一项内部抵消。</p>
+<h3>生意一：DSW 鞋类折扣仓储店（零售，TTM 营收 26.56 亿，占 91.5%）</h3>
+<p>这是公司的命根子，剩下的都是配菜。</p>
+<p><strong>它具体在干什么：</strong> 你在美国郊区的购物中心里会看到一家叫 <strong>DSW（Designer Shoe Warehouse）</strong> 的店，面积一两万平方英尺，进门是一排排开架的鞋盒货架，没有柜姐、没有人给你拿码，你自己上手翻——这就是它的全部商业模式。名牌鞋（Nike、Adidas、Steve Madden、Skechers、Crocs、UGG、Birkenstock）用比百货公司便宜两三成的价格摆在货架上，货是从品牌方的过季库存、超产批次、专门为折扣渠道生产的款里收来的。美国和加拿大加起来大约 500 家店（加拿大那边叫 The Shoe Company / Shoe Warehouse，还有魁北克的 Rubino）。</p>
+<p><strong>钱是怎么进来的：</strong> 一双原价 120 美元的鞋，DSW 从品牌方或中间商手里以 55–65 美元拿到，标价 89.99 美元卖出去。毛利率整体 44.1%（TTM），也就是说卖 100 块钱的鞋，进货成本 56 块。一家店一年做 500 万美元左右的生意，扣掉租金、店员工资、水电，剩下的才是店铺层面的利润。</p>
+<p><strong>客户为什么非来不可：</strong> 靠一个叫 <strong>DSW VIP</strong> 的会员制度。买满一定金额积分换代金券，会员贡献了绝大部分销售额。这是它对抗亚马逊的唯一武器——鞋子要试穿，尺码和舒适度网上买不准，退货率高得吓人，所以线下开架自选店还有存在的理由。但这个理由<strong>每年都在变薄</strong>：营收从 FY2023 的 33.15 亿一路掉到 TTM 的 29.02 亿，四年跌掉 12%，没有一年是增长的。</p>
+<p><strong>关键的一句：</strong> 这门生意不缺现金流，缺的是「为什么明年会比今年好」的理由。</p>
+<h3>生意二：品牌组合（TTM 营收 3.81 亿，占 13.1%）</h3>
+<p><strong>它具体在干什么：</strong> 公司自己拥有或者租来一批鞋类品牌的商标，设计、找中国和越南的代工厂生产，然后<strong>批发给别的零售商</strong>（梅西百货、诺德斯特龙、Zappos 等），同时也供给自家 DSW 门店。手里的牌子包括 <strong>Vince Camuto</strong>（女鞋，2018 年花 3.75 亿收 Camuto Group 拿来的）、<strong>Keds</strong>（帆布鞋，2023 年从 Wolverine 手里买的）、<strong>Topo Athletic</strong>（跑鞋，同年收购），加上 <strong>Jessica Simpson</strong>、<strong>Lucky Brand</strong> 这类授权经营的牌子，以及只在 DSW 卖的自有标 Kelly &amp; Katie、Mix No. 6。</p>
+<p><strong>钱是怎么进来的：</strong> 一双批发价 30 美元的 Vince Camuto 高跟鞋卖给梅西，梅西标价 89 美元。批发的毛利率比零售低，但不用付租金、不用雇店员。公司买这些品牌的算盘是：<strong>同一双鞋，自家品牌自家卖，毛利可以吃两道</strong>。</p>
+<p><strong>问题在于：</strong> 这块 FY2026 比 FY2025 掉了 9.0%（3.63 亿 vs 3.99 亿），是全公司下滑最快的部分。TTM 相比 FY2026 回了 5.1%，算是止血，但离「收购时讲的故事」还差得远。为了买 Camuto、Keds、Topo，账上留下了约 <strong>2.1 亿美元商誉和无形资产</strong>——这个数字后面会再出现一次，很重要。</p>
+<h3>两块生意的钱（TTM，截止 2026-05-02，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>上一完整年度同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>零售（DSW 等）</td>
+<td>2,656</td>
+<td>−3.3%</td>
+<td>91.5%</td>
+<td>约 4%（估算）</td>
+<td>约 106（估算）</td>
+</tr>
+<tr>
+<td>品牌组合</td>
+<td>381.5</td>
+<td>−9.0%</td>
+<td>13.1%</td>
+<td>约 3%（估算）</td>
+<td>约 11（估算）</td>
+</tr>
+<tr>
+<td>内部抵消</td>
+<td>−135.7</td>
+<td>—</td>
+<td>−4.7%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,902</strong></td>
+<td><strong>−1.6%</strong></td>
+<td>100%</td>
+<td><strong>2.57%</strong></td>
+<td><strong>74.45</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露到营收，不披露分部经营利润，上表两个分部的利润率是按整体 2.57% 的经营利润率和零售/批发通常的成本结构<strong>估算</strong>的，不是财报数字。同比用的是 FY2026 对 FY2025 两个完整年度（TTM 只比 FY2026 晚三个月，比不出增速）。</p>
+</blockquote>
+<p>整体经营利润率 <strong>2.57%</strong>：卖 100 块钱的鞋，最后剩 2 块 5 毛 7。这是一个几乎没有缓冲垫的数字——成本涨 3%，公司就归零。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1,936 万美元，是 GAAP 净利润 1,060 万的 <strong>1.83 倍</strong>。也就是说这家公司发给管理层和员工的股票，比它给股东赚的钱还多。GAAP 已经把它当成本扣了，这是对的，我这里不加回。</p>
+<p><strong>一次性项目</strong>：资产减值和重组费用 147 万，金额不大。但注意 FY2025 那一年是 1,834 万——<strong>过去五年每一年都有这一项</strong>（1.72 / 4.32 / 4.83 / 18.34 / 4.42 / 1.47），这不是「一次性」，这是关店和减值的年费。另有股权投资亏损 277 万。只看 TTM 一期无法判断今年这个小数字是常态还是运气，但看五年序列，它更像运气。</p>
+<p><strong>资本化的支出</strong>：无异常。资本开支 3,425 万，主要是门店改造。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 <strong>482 万</strong>，同期 SBC <strong>1,936 万</strong>，比值 <strong>0.25</strong>。这是全篇最刺眼的数字之一——回购连抵消员工发股的四分之一都不到。股本一年只减少了 0.58%。对比 FY2024（回购 1.20 亿）和 FY2023（回购 1.55 亿），公司现在<strong>已经没有钱回购了</strong>，现金全部拿去还债（TTM 净还债 4,935 万）。</p>
+<p><strong>利润和现金流的差</strong>：净利润 1,060 万，经营现金流 <strong>1.08 亿</strong>，差了十倍。这个差额必须逐项拆开：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>这是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>10.6</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>58.7</td>
+<td>门店装修和货架的账面折旧，不出现金</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>1.5</td>
+<td>关店的账面损失</td>
+</tr>
+<tr>
+<td>+ 股权投资亏损</td>
+<td>2.8</td>
+<td>参股公司的账面亏损</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>19.4</td>
+<td>发股票不出现金，但<strong>稀释你</strong></td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>21.9</td>
+<td>主要是租赁相关的非现金调整</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−19.1</td>
+<td>批发客户欠的钱变多了</td>
+</tr>
+<tr>
+<td><strong>+ 存货减少</strong></td>
+<td><strong>+37.6</strong></td>
+<td><strong>清库存挤出来的一次性现金</strong></td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−26.5</td>
+<td>提前付了供应商的钱</td>
+</tr>
+<tr>
+<td>+ 其他营运资金</td>
+<td>+1.4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>108.2</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−34.3</td>
+<td>门店改造</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>73.9</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚这张表的两个要害：</p>
+<p>第一，1.08 亿经营现金流里，<strong>5,870 万是折旧、1,940 万是股权激励</strong>，这两项加起来 7,810 万，占了七成多。折旧对应的是真实的门店老化——迟早要花钱重装；股权激励对应的是你手里股份被稀释。它们不出现金，但都不是「白赚的」。</p>
+<p>第二，<strong>存货减少贡献了 3,762 万</strong>。这是清库存换来的一次性现金，卖光了就没有了，而且库存降下去意味着门店可选的货变少。把这笔剔掉，正常年份的自由现金流大约是 <strong>3,600 万</strong>，不是 7,390 万。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2.788 亿 ÷ 0.106 亿</td>
+<td><strong>26.3×</strong></td>
+<td><strong>3.80 元</strong></td>
+</tr>
+<tr>
+<td>公司调整后（估算）</td>
+<td>加回减值 147 万、股权投资亏损 277 万（税后约 310 万）</td>
+<td>约 20.3×</td>
+<td>约 4.92 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>只加回真一次性减值（税后约 110 万），SBC 按 GAAP 全额扣除</td>
+<td><strong>23.8×</strong></td>
+<td><strong>4.20 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>2.788 亿 ÷ 0.739 亿</td>
+<td>3.77×</td>
+<td>26.5 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除清库存）</strong></td>
+<td>2.788 亿 ÷ 0.363 亿</td>
+<td><strong>7.7×</strong></td>
+<td><strong>13.0 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>14.6 亿 ÷ 0.745 亿</td>
+<td><strong>19.6×</strong></td>
+<td><strong>5.11 元</strong></td>
+</tr>
+<tr>
+<td>正常税率口径</td>
+<td>税前 2,455 万按 25% 缴税 → 净利 1,841 万</td>
+<td>15.1×</td>
+<td>6.61 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>2.788 亿 ÷ 三年平均净利 <strong>−277 万</strong></td>
+<td><strong>无意义（负数）</strong></td>
+<td><strong>亏损</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行是这份分析里最重要的一句话。TTM 净利 1,060 万、FY2026 亏 837 万、FY2025 亏 1,055 万，<strong>三年平均是负的 277 万</strong>。这家公司过去三年合计不赚钱，今年这 1,060 万是刚刚从水面下冒出头的一口气，不是常态利润。</p>
+<p>再说「正常税率」那一行：TTM 交了 1,395 万所得税，而税前利润只有 2,455 万——<strong>实际税率 57%</strong>。这么高不正常，通常是递延所得税资产计提减值准备加上一堆不可抵扣项造成的。如果按正常 25% 算，净利润是 1,841 万，市盈率 15.1 倍。市场给的<strong>远期市盈率 12.73 倍</strong>说明分析师就是这么算的——他们赌税率回归正常、利润率回到 4%。</p>
+<p><strong>那么，你现在投 100 块进去，一年能拿回多少？</strong></p>
+<p>按最保守的真实口径（剔除障眼法后 23.8 倍），公司一年替你赚 <strong>4.20 元</strong>。这 4.20 元里，真正回到你口袋的是：分红 974 万 ÷ 2.788 亿 = 每 100 块 <strong>3.49 元</strong>，回购 482 万 = 每 100 块 <strong>1.73 元</strong>。合计 5.22 元——<strong>发出去的比赚到的还多</strong>，差额是靠清库存挤出来的现金在垫。</p>
+<p>剩下的现金去哪了？TTM 净还债 4,935 万。公司现在的头等大事不是回报股东，是<strong>把 12.26 亿的债务压下去</strong>。账上现金只有 5,010 万，利息保障倍数 <strong>1.71 倍</strong>——经营利润 7,445 万，其中约 4,350 万直接付给了债主。经营利润再掉 40%，公司就付不起利息了。</p>
+<p>这个「一年赚 4.20 元」未来大概率<strong>变大还是变小</strong>？两种可能：
+- 变大的路径：税率回归正常（+2.4 元）、利润率从 2.57% 回到 FY2022 的 6.2%（利润翻三倍）。市场现在赌的是这条。
+- 变小的路径：营收继续每年跌 2–4%（已经跌了四年），而 12.26 亿债务的利息是刚性的。ROIC 只有 <strong>2.68%</strong>，低于资本成本 <strong>3.60%</strong>——<strong>公司每投一块钱进去，是在毁灭价值，不是创造价值</strong>。</p>
+<p>还有一个数字必须点破：市净率 0.99 倍看着像捡便宜（用一块钱买一块钱净资产），但<strong>有形资产市净率是 4.02 倍</strong>。差额说明 2.82 亿账面净资产里，约 <strong>2.1 亿是收购 Camuto、Keds、Topo 留下的商誉和无形资产</strong>，真正的有形净资产只有 6,930 万。哪天品牌减值，那「一块钱净资产」就凭空蒸发。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>不便宜，而且这是一张杠杆化的彩票，不是一门可以拿着不动的生意。</strong></p>
+<p>表面上 3.77 倍市现率像白捡，但那是清库存挤出来的一次性现金；按企业价值算是 19.6 倍 EBIT——为一家连续四年萎缩、经营利润率只有 2.57%、利息保障 1.71 倍的鞋店付这个价，没有任何便宜可占。三年平均利润是负的，说明现在这点利润连「常态」都算不上。股价过去一年涨了 44.9%，涨的全是「税率回归 + 利润率回到 2022 年」的希望，不是涨出来的利润。</p>
+<p>真正致命的是资本回报：ROIC 2.68% 低于资金成本 3.60%，加上回购只有股权激励的四分之一——公司赚的钱既不能扩张，也不能回馈股东，只能拿去还那 12.26 亿的债。这不是价值股，这是一个赌注：赌它能在债务把它压垮之前把利润率修回去。赌对了翻倍，赌错了归零。</p>
+<p><strong>劝等，不劝买。</strong></p>
+</div></body></html>

@@ -1,0 +1,383 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OFLX · 欧米茄柔性管（Omega Flex, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OFLX</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">23倍买一个连跌五年的生意，5%股息率是掏家底发的</div><h1>OFLX · 欧米茄柔性管（Omega Flex, Inc.）</h1>
+<p><strong>市值</strong> 2.73 亿美元 ｜ <strong>当前股价</strong> 约 $27.01（10.09 百万股） ｜ <strong>行业</strong> Producer Manufacturing（柔性金属软管制造） ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日：2026 年 6 月 30 日</strong>（最近四个季度滚动，下同）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>答案是：只做一件事——把"必须一节一节拧起来的硬管"换成"整卷拉过去的软管"。</strong></p>
+<p>财报口径上 Omega Flex 只报一个经营分部，连按产品线的营收拆分都不披露，只披露地区。所以下面产品线部分是业务描述，<strong>不带数字</strong>；带数字的只有地区表。</p>
+<h3>这门生意具体是什么</h3>
+<p>想象一个水电工要给一栋新盖的独栋房子接燃气。<strong>传统做法（黑铁管）</strong>：他把一根根刚性钢管量好尺寸切断，两头用套丝机车出螺纹，再拧上弯头、三通，每个接口抹上密封膏拧紧。一栋普通住宅从燃气表拉到灶台、热水器、壁炉、烘干机，前前后后要做二三十个螺纹接口，一个人干一整天。每个接口都是一个潜在漏气点，验收要打压保压。</p>
+<p><strong>Omega Flex 卖的东西叫 TracPipe</strong>：一卷波纹不锈钢管，外面包一层黄色聚乙烯护套，像电缆一样盘在轴上。安装工从燃气表那头把它拉开，像穿电线一样从楼板搁栅之间穿过去，到灶台那头剪断，两头各卡一个专用接头。<strong>二十多个接口变成两个，一整天的活变成两三个小时。</strong></p>
+<p>这就是它全部的商业逻辑：<strong>卖的不是钢管，是水电工的工时。</strong> 管材本身比黑铁管贵不少，但人工省下来的钱远超材料差价，所以在美国人工贵的地方它就赢。</p>
+<p><strong>钱从哪来</strong>：Omega Flex 不卖给房主，也不卖给建筑商。它卖给管道/暖通批发商（Ferguson 这类），批发商卖给水电承包商。一栋普通独栋住宅大概用一百多英尺管子加十几个接头，几百美元的货值。它没有直销、没有工程队，172 个员工做了 9659 万美元营收，<strong>人均营收 56 万美元</strong>——这是一家轻资产的材料公司，不是工程公司。</p>
+<h3>几条主要产品线（描述性，无营收数字）</h3>
+<p><strong>1. CounterStrike——护城河真正在的地方。</strong> CSST 这个品类在 2000 年代出过大麻烦：雷击落在房子附近时，电涌会从旁边的金属构件"跳弧"到薄壁不锈钢管上，直接烧穿一个洞，而洞的另一边是燃气——集体诉讼打了很多年。Omega Flex 的解法是 CounterStrike：黑色护套里加一层导电层，把电能沿管身摊开而不是集中在一点击穿。这个产品卖得比普通黄管贵，<strong>而且很多地方的建筑规范和保险公司验收条款直接点名"必须用带电涌防护的 CSST"</strong>。规范里点名字，就是最硬的护城河——你不是在跟竞争对手比价格，你是被写进了法规。</p>
+<p><strong>2. MediTrac——医院医用气体管。</strong> 医院要给每间病房接氧气、医用空气、负压吸引。传统做法是硬紫铜管，每个接口要持证钎焊工充氮气保护焊，一个接口十几分钟，一条走廊四十个接口。MediTrac 是成卷的波纹管，同样一条走廊两个接口就完事。客户是医院新建和改造工程。</p>
+<p><strong>3. DoubleTrac / DEF-Trac——加油站地下双层管。</strong> 法规要求加油站的地下输油管必须有二次包容：里面的管漏了，外面那层要能兜住，还要有传感器报警。这是一条卖给合规需求的线。</p>
+<p><strong>4. 工业软管——最老的业务。</strong> 各种工业场合的柔性金属软管，量不大。</p>
+<h3>唯一有数字的拆分：地区（FY2025）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>营收（百万美元）</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>92.95</td>
+<td>94.6%</td>
+</tr>
+<tr>
+<td>英国</td>
+<td>2.36</td>
+<td>2.4%</td>
+</tr>
+<tr>
+<td>加拿大</td>
+<td>2.08</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>0.90</td>
+<td>0.9%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>98.30</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表就是这家公司最大的风险说明书：94.6% 的生意压在美国住宅建筑上。</strong> 它没有第二条腿。</p>
+<h3>整体营收和利润（TTM 截止 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>TTM</th>
+<th>上年同期(FY2025)</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>96.59</td>
+<td>98.30</td>
+<td><strong>−4.08%</strong></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>55.81</td>
+<td>59.00</td>
+<td>毛利率 57.8%（上年 60.0%）</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>13.52</td>
+<td>16.93</td>
+<td>经营利润率 <strong>14.0%</strong>（上年 17.2%）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>11.86</td>
+<td>14.83</td>
+<td>−20.0%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>但真正要看的是五年这条线：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>FY21</th>
+<th>FY22</th>
+<th>FY23</th>
+<th>FY24</th>
+<th>FY25</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>130.01</td>
+<td>125.49</td>
+<td>111.47</td>
+<td>101.68</td>
+<td>98.30</td>
+<td>96.59</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>35.06</td>
+<td>31.02</td>
+<td>25.80</td>
+<td>21.57</td>
+<td>16.93</td>
+<td>13.52</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>26.20</td>
+<td>23.62</td>
+<td>20.76</td>
+<td>18.01</td>
+<td>14.83</td>
+<td>11.86</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>营收连跌五年，从 1.30 亿跌到 0.97 亿，跌了 25.7%；经营利润从 3506 万跌到 1352 万，跌了 61.4%。</strong></p>
+<p>利润跌得比营收快 2.4 倍，原因很具体：毛利率只掉了 4.9 个百分点（62.7% → 57.8%），但<strong>费用没跟着营收缩</strong>。FY21 期间费用 4647 万，占营收 35.7%；TTM 期间费用 4229 万，占营收 43.8%。<strong>五年里营收少了 3342 万，费用只砍掉 418 万。</strong> 一家 172 人的公司，砍无可砍——这就是营收下滑对小公司的杀伤力。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节很短，因为这家公司的账几乎是全市场最干净的一批。</strong></p>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM <strong>33 万美元</strong>，占净利润 <strong>2.8%</strong>。这个比例低到可以忽略。对比后面 NAGE 那种 SBC 吃掉 80% 经营利润的公司，差别是天壤之别。管理层拿的是现金工资，不是印股票给自己。</li>
+<li><strong>一次性项目</strong>：<strong>没有。</strong> 没有诉讼和解、没有重组、没有资产减值、没有并购费用。现金流量表里连"资产处置损益"这一行都是空的。</li>
+<li><strong>资本化支出</strong>：<strong>没有。</strong> 不做软件资本化、不做研发资本化。资本开支 TTM 171 万，和折旧摊销 136 万基本相当——<strong>这就是纯维护性开支，机器坏了换机器，没有一分钱是在为增长投资。</strong></li>
+<li><strong>回购与稀释</strong>：<strong>回购 = 0。</strong> 融资活动现金流里只有一项：分红 −1373 万。回购/SBC 比值 = 0。股本 1009 万股，同比零变化。好消息是不稀释，坏消息是股东回报<strong>全靠分红这一条腿</strong>。</li>
+<li><strong>利润和现金流的差</strong>：几乎没有差，做一张对账表：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>11.86</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>1.36</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>0.33</td>
+</tr>
+<tr>
+<td>− 坏账拨备转回</td>
+<td>−0.16</td>
+</tr>
+<tr>
+<td>＋ 其他经营项</td>
+<td>0.35</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−1.04</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−0.39</td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>0.94</td>
+</tr>
+<tr>
+<td>− 其他经营资产变动</td>
+<td>−0.70</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>12.54</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1.71</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>10.83</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 1186 万，经营现金流 1254 万，自由现金流 1083 万——三个数字挤在一起，说明这家公司报出来的利润就是真金白银。</strong> 营运资金变动合计只占用了 119 万，对一家近亿美元营收的制造企业来说小到可以不看。</p>
+<p><strong>但这一节最重要的一句话不在上面，在分红上：TTM 分红 1373 万，自由现金流只有 1083 万。分红是自由现金流的 127%。</strong></p>
+<p>多出来的 290 万从哪来？从家底里掏。现金及投资从 5323 万降到 4791 万，净现金从 4847 万降到 4337 万——<strong>这是过去五年里净现金第一次下降（−4.88%）</strong>。前四年这个数字一直在涨。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 2.7255 亿，企业价值 2.2918 亿（市值减去 4337 万净现金）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>272.55 ÷ 11.86</td>
+<td><strong>22.98×</strong></td>
+<td><strong>$4.35</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不发布调整后利润</td>
+<td>同 GAAP 22.98×</td>
+<td>$4.35</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔，SBC 已在 GAAP 内扣除</td>
+<td><strong>22.98×</strong></td>
+<td><strong>$4.35</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>272.55 ÷ 10.83</td>
+<td>25.17×</td>
+<td>$3.97</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>229.18 ÷ 13.52</td>
+<td><strong>16.95×</strong></td>
+<td><strong>$5.90</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>272.55 ÷ 14.90（TTM/FY25/FY24 均值）</td>
+<td><strong>18.29×</strong></td>
+<td><strong>$5.47</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最值得停下来看的是最后一行。</strong></p>
+<p>大多数公司做三年平均，倍数会变高——因为当期利润处在高点，一平均就露馅（比如 NVDA 当期 34 倍、三年平均 73.5 倍）。<strong>Omega Flex 反过来：当期 22.98 倍，三年平均只有 18.29 倍。</strong></p>
+<p>意思很直白：<strong>它现在的利润不是高点，是低点。</strong> 你付的 23 倍是拿一个正在被压扁的分母算出来的。如果建筑周期回来、营收回到 1.1 亿、经营利润回到 2100 万，同样的股价对应的就是 14 倍左右。</p>
+<p>而 EV/EBIT 只有 16.95 倍，比 22.98 倍的 PE 低一大截——差额来自那 4337 万净现金，占市值 15.9%。<strong>你买这只股票，每付 100 块，有 16 块是买的银行存款。</strong></p>
+<h3>说人话：投 100 块，一年能拿回多少</h3>
+<p><strong>按最保守的自由现金流口径，公司一年替你赚 3.97 块。</strong></p>
+<p>这 3.97 块怎么分配？答案很特别——<strong>它给你 5.04 块。</strong></p>
+<p>分红总额 1373 万 ÷ 市值 27255 万 = <strong>股息率 5.04%</strong>（每股 $1.36，股价 $27.01）。也就是说，公司赚了 3.97 块，却发给你 5.04 块，<strong>多出的 1.07 块是从存钱罐里拿的</strong>。</p>
+<p>留在公司里再投资的钱是多少？<strong>零。</strong> 资本开支 171 万只够换换旧机器，投资活动现金流全年就这一项，没有并购、没有扩产、没有研发资本化。这家公司已经不投资了，它在<strong>清算式地把现金交还给股东</strong>。</p>
+<p>那这 3.97 块未来是变大还是变小？</p>
+<p><strong>大概率继续变小，至少短期内。</strong> 理由三条：
+1. 营收连跌五年，还没看到止跌的季度；
+2. 费用已经砍到 172 个人，再砍就伤到销售能力；
+3. 结构性逆风——新建住宅的电气化（热泵替代燃气炉、电磁灶替代燃气灶）直接减少燃气管道的安装需求，这不是周期，是趋势。</p>
+<p><strong>所以那 5.04% 的股息率是个诱饵。</strong> 它现在靠 4791 万现金垫着，按每年 290 万的缺口能撑十几年；但如果利润再掉 30%，缺口就变成 600 万，撑不了那么久。<strong>管理层要么砍分红，要么继续掏家底——而 65.17% 的股份在内部人手里，他们大概率会选择继续发</strong>（分红是他们自己的现金流），这对小股东未必是好事：家底掏空了，那 16 块钱的"银行存款折价"也就没了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好公司，坏时候，还不够便宜——现在不值得买，但值得记下来。</strong></p>
+<p>这确实是一门好生意：57.8% 的毛利率、26.96% 的投入资本回报率（WACC 只有 6.63%）、172 个人干出近亿美元营收、账上一分钱一次性项目都没有、SBC 只占利润 2.8%、净现金 4337 万、产品被写进建筑规范。这些都是真的。</p>
+<p>问题全在两个数上：<strong>营收连跌五年还没停</strong>，以及 <strong>23 倍市盈率</strong>。</p>
+<p>23 倍是给增长的公司付的价钱。你付 23 倍，买到的是一个每年缩水 4%、利润五年掉了 55%、分红比赚的现金还多 27% 的生意。EV/EBIT 17 倍和三年平均 18 倍确实比表面便宜，但那是"如果周期回来"的价格，不是"现在"的价格——而这轮下滑里掺着燃气电气化这条不会回头的结构性趋势。</p>
+<p><strong>什么价格才有意思？</strong> 如果股价再跌 35% 到 17 块附近（EV/EBIT 约 10 倍、净现金占市值 25%），那时候你付的钱基本等于"买存款送一个还在赚 1200 万的生意"，那才是可以下手的位置。现在 27 块，你付的是"周期一定会回来"的钱，而没有人知道它回不回来。</p>
+</div></body></html>
