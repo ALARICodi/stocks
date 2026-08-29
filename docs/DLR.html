@@ -1,0 +1,236 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DLR · 数字房产信托（Digital Realty Trust）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DLR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">25倍FFO+2.6%股息,年稀释3.5%,AI已在价里</div><h1>DLR · 数字房产信托（Digital Realty Trust）</h1>
+<p>市值 $700 亿 / 股价 $185.47 / 数据中心 REIT / TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是一家地产信托（REIT），下面用 FFO/AFFO 口径而不是市盈率。</strong> 原因：REIT 的净利润被巨额房产折旧压得很低（今年折旧 20 亿、净利润才 7.6 亿），而楼本身维护得当并不会真的一年坏掉 5%，所以行业通行做法是把折旧加回来、扣掉卖楼的一次性损益，得到 FFO（营运现金收益）——它才是 REIT 真实的「赚钱能力」。表面 89 倍的市盈率没有参考意义。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>Digital Realty 是全球最大的数据中心房东之一：在全球 25 个国家有 300 多座数据中心，本质上做的是一门生意——<strong>盖机房、通电通网，然后把「放服务器的位置 + 电力 + 制冷」租出去</strong>。但财报把它拆成三块，各有各的味道。</p>
+<h3>1. 成熟机房出租（Stabilized，占营收 69%）</h3>
+<p>这是压舱石。所谓「成熟」就是已经出租得七七八八、进入稳定收租状态的机房。客户分两类：</p>
+<ul>
+<li><strong>散租（Colocation）</strong>：一家银行要把交易系统放在离交易所近的地方，来租 50 个机柜，每个机柜按功率收钱，比如 5 千瓦的机柜一个月收 $1,000 上下，另收电费和网络互联费。这类客户粘性极高——服务器搬家要停机、重新布线、重新审计合规，没人愿意折腾，所以续租率常年在 80% 以上，房东每年还能涨价 2-4%。</li>
+<li><strong>整租（Hyperscale）</strong>：微软、亚马逊、甲骨文这种云巨头，一签就是一整栋楼、10 兆瓦起步，合同 10-15 年。单价比散租便宜，但量大稳定。</li>
+</ul>
+<p>数据中心房东比写字楼房东多一道护城河：<strong>电和互联</strong>。一座 100 兆瓦的机房要跟电网谈专线、建变电站，现在美国很多电网排队接入要等 4-7 年——DLR 手里已经拿到的电力容量本身就是稀缺资产。另外它的机房里聚集了几千家网络运营商和企业，客户之间拉根光纤直连（叫 interconnection）也要按月付费，这部分几乎是纯利润。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>上年(FY25)全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成熟机房</td>
+<td>$46.7 亿</td>
+<td>$42.7 亿</td>
+<td>69%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. 爬坡机房（Non-Stabilized，占营收 26%）</h3>
+<p>刚建好或还在招租的机房。AI 热潮下这块是增长引擎：FY2024 收 14.5 亿、FY2025 收 17.0 亿、TTM 17.4 亿。新机房一旦租满就划入「成熟」池子。眼下 AI 训练集群对高功率机房需求爆炸，DLR 的新机房基本是「边建边被订走」，在建项目的预租率在七成以上——这是营收增速从 FY2024 的 0% 拉到 TTM +19% 的主因。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>上年(FY25)全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>爬坡机房</td>
+<td>$17.4 亿</td>
+<td>$17.0 亿</td>
+<td>26%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3. 代管费和其他（Fee Income，占营收 5%）</h3>
+<p>DLR 这几年缺钱扩张，发明了一个新玩法：把建好的机房打包卖一部分股权给黑石、GI Partners 这类私募基金（自己留小股 + 继续当管理人），一边回笼现金，一边收管理费。这块 TTM 收 3.7 亿，比 FY2025 全年的 1.4 亿翻了一倍多——说明「卖楼收管理费」的模式在加速。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>上年(FY25)全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>代管费及其他</td>
+<td>$3.7 亿</td>
+<td>$1.4 亿</td>
+<td>5%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>分部利润财报只披露到营收</strong>，下面的利润率按整体口径：TTM 经营利润（EBIT）约 12 亿，经营利润率约 18%；加回折旧后 EBITDA 约 32 亿，EBITDA 利润率约 47%——房东生意的典型形状：账面利润薄、现金利润厚。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $1.02 亿,占净利润 13%。当真实成本扣。对 REIT 来说这个比例不算过分。</li>
+<li><strong>一次性项目</strong>：TTM 卖楼收益 $0.72 亿、资产减值 $0.79 亿，基本对冲。但要点破一件事：<strong>DLR 的「卖楼收益」是年年都有的</strong>——FY2025 卖楼赚 9.96 亿、FY2024 赚 5.96 亿、FY2023 赚 9.01 亿。这不是一次性，这是商业模式的一部分（资本循环：卖旧楼股权养新楼）。所以看它哪年净利润暴涨，先查是不是那年卖楼卖多了——FY2025 净利润 12.7 亿里，卖楼收益占了 10 亿。<strong>剔掉卖楼，它的经常性账面利润其实非常薄。</strong></li>
+<li><strong>资本化的支出</strong>：房东生意的大头本来就在资本开支里（见下），没有软件资本化之类的花招。</li>
+<li><strong>回购与稀释</strong>：<strong>零回购，反向操作——TTM 增发新股拿回来 $30 亿现金</strong>，股本一年膨胀 3.47%。你持有 DLR，每年你的份额被稀释 3% 以上，这是它扩张的固定资金来源，不是偶发。</li>
+<li><strong>利润和现金流的差</strong>：净利润 7.6 亿 vs 经营现金流 29.7 亿，差 22 亿。对账很干净：净利润 7.6 + 折旧摊销 20.3 + SBC 1.0 − 卖楼收益 0.7 + 减值 0.8 + 应付款增加 3.7 − 应收款增加 2.4 − 其他 0.6 ≈ 29.7 亿。差额几乎全是折旧——REIT 的正常形状。</li>
+<li><strong>但现金流的真话在投资活动里</strong>：经营现金流 29.7 亿，TTM 盖楼买地花了 34.7 亿，另花 22.7 亿收购——<strong>主业收的租连盖新楼都不够，缺口靠增发 30 亿新股 + 卖楼回笼 7 亿补</strong>。stockanalysis 页面上「自由现金流 = 经营现金流」是因为它把 REIT 的盖楼支出归进了收购项，真实的自由现金流扣完扩张开支是<strong>负的</strong>。</li>
+</ul>
+<hr />
+<h2>三、值多少钱：FFO/AFFO 口径</h2>
+<p>先自算 FFO（净利润 7.58 + 折旧摊销 20.3 − 卖楼收益 0.72 + 减值 0.79）≈ <strong>$27.9 亿</strong>，每股约 $7.4。AFFO（再扣维护性资本开支和直线租金调整，按同行约 92% 折算）<strong>估算约 $25.7 亿</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率（参考，对 REIT 无意义）</td>
+<td>89 倍</td>
+<td>$1.1</td>
+</tr>
+<tr>
+<td><strong>市值 / FFO（自算）</strong></td>
+<td><strong>25 倍</strong></td>
+<td><strong>$4.0</strong></td>
+</tr>
+<tr>
+<td>市值 / AFFO（估算）</td>
+<td>27 倍</td>
+<td>$3.7</td>
+</tr>
+<tr>
+<td>市值 / 经营现金流</td>
+<td>23.6 倍</td>
+<td>$4.2</td>
+</tr>
+<tr>
+<td>EV / EBITDA（算上 182 亿净负债）</td>
+<td>27.5 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>市值 / 三年平均 FFO（FY23-25 平均约 $22 亿）</td>
+<td>32 倍</td>
+<td>$3.1</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按 FFO 口径公司一年替你赚 4 块钱。</strong> 其中约 2.5 块以分红发到你手上（股息率 2.6%，派息占 FFO 六成），剩下 1.5 块留在公司盖新楼。但注意两个减项：股本每年稀释 3.5%，等于把你的份额悄悄摊薄；净负债 182 亿是 EBITDA 的 5.7 倍、利息覆盖只有 2.65 倍，利率每高一年，借新还旧就多吃掉一块 FFO。</p>
+<p>这 4 块钱未来会不会变大？<strong>会，AI 需求是真的</strong>——营收增速从 0% 拉到 19%，新机房预租率高，涨价能力也在恢复。但增长的钱不是自己赚出来的，是发股票和卖楼凑出来的，所以「每股」FFO 的增速远低于公司整体：过去五年每股分红几乎没涨（$4.66 → $4.88），股东真正拿到手的增长非常有限。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>这是门真实的好赛道生意——电力和互联构成实打实的护城河，AI 需求让它十年来第一次有了像样的涨价能力。但作为股东你拿到的是：25 倍 FFO 的价格、2.6% 的股息、每年 3.5% 的稀释、5.7 倍杠杆，而且盖楼的钱永远不够、永远在增发。AI 的故事已经充分反映在价格里，每股回报的增长却远追不上公司规模的增长。<strong>生意一般偏上，价格偏贵，现在买是替 AI 热度买单，不是捡便宜。</strong></p>
+</div></body></html>

@@ -1,0 +1,259 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NOW · ServiceNow（服务即刻）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NOW</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">真实口径106倍投100赚9毛，SBC比净利润还大，好公司坏价格</div><h1>NOW · ServiceNow（服务即刻）</h1>
+<p>市值 $1,496 亿 / 股价 $144.71 / 行业：企业软件（SaaS） / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>ServiceNow 实质上只做一门生意：<strong>卖一套让大公司内部"派活、跟单、销单"全自动化的订阅软件</strong>。财报把它拆成三块披露，但前两块是同一个平台的不同模块。</p>
+<h3>生意一：数字工作流订阅（Digital Workflow，约占营收 76%）</h3>
+<p>大白话讲：任何一家几万人的大公司，内部每天都在发生海量的"有人要办事"——员工电脑坏了要报修、新人入职要开邮箱开权限发工牌、客户投诉要转给对的部门、安全部门发现漏洞要派人修。传统做法是发邮件、打电话、Excel 跟踪，一件事在五个部门之间踢皮球。ServiceNow 卖的就是把这些流程全部搬进一个系统：员工在门户上点"申请"，系统自动判断该派给谁、多久必须办完、超时自动升级给主管，办完自动关单留痕。</p>
+<p>举个具体例子：一家 10 万人的银行买它的 ITSM（IT 服务管理）模块，全行所有"电脑坏了/装软件/要权限"的工单都走这个系统，一年付 ServiceNow 大约 300 万到 500 万美元订阅费。用顺手之后，HR 部门说"入职流程也想这么管"，再加买 HR 模块；客服部门再加买 CSM 模块——这就是它的经典扩张路径：<strong>从 IT 部门这个"桥头堡"进去，一个部门一个部门往外卖</strong>。大客户年费从 100 万美元起步，最大的客户一年付它 2,000 万美元以上，续约率常年在 98% 左右——因为全公司的流程都跑在上面，换掉它等于把神经系统换了，没人敢动。</p>
+<p>近一年它把宝押在 AI 上：卖"AI 员工"（Now Assist / AI Agent），让系统不光派单还能自己把简单工单办掉（自动重置密码、自动回复常见问题），按用量加价收费。TTM 内它还花了 <strong>98 亿美元现金做收购</strong>（财报页只披露总额，这是它历史上最大的一笔），并为此新借了 60 亿美元债——从净现金 77 亿变成净负债 17 亿，明显是在为 AI 布局下重注。</p>
+<ul>
+<li>财报只按分部披露到营收。FY2024：数字工作流 $9,422M。</li>
+</ul>
+<h3>生意二：ITOM 运维产品（约占营收 10%）</h3>
+<p>同一平台上偏"机器管机器"的部分：自动发现公司有多少台服务器、哪个应用跑在哪台机器上、云账单花在哪了（FY2024 营收 $1,224M）。买家还是那批 CIO，本质是订阅的另一个 SKU。</p>
+<h3>生意三：实施服务（Professional Services &amp; Other，TTM $419M，占 2.8%）</h3>
+<p>帮客户把系统装起来、调流程的人力服务，基本不赚钱甚至贴钱做——目的是让订阅续下去。大部分实施活儿外包给了埃森哲、德勤这些合作伙伴。</p>
+<p><strong>订阅合计占营收约 97%，这是一门极纯粹的订阅生意。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部（TTM）</th>
+<th>营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅（工作流+ITOM）</td>
+<td>$14,313M</td>
+<td>约 +22%</td>
+<td>97.2%</td>
+<td>财报不单独披露</td>
+</tr>
+<tr>
+<td>实施服务</td>
+<td>$419M</td>
+<td>+6%</td>
+<td>2.8%</td>
+<td>财报不单独披露</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$14,732M</strong></td>
+<td><strong>+22.2%</strong></td>
+<td>100%</td>
+<td>$1,826M（利润率 12.4%）</td>
+</tr>
+</tbody>
+</table></div>
+<p>分部利润按整体估算：订阅毛利率约 80%+，服务基本盈亏平衡（估算，财报只披露到营收）。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）：TTM $2,185M，是净利润（$1,670M）的 131%，占营收 14.8%。</strong> 这是全篇最刺眼的数字——公司发给员工的股票比赚给股东的钱还多三成。GAAP 已扣，本文所有口径不加回。</li>
+<li><strong>一次性项目</strong>：TTM 有一笔 <strong>$355M 的出售投资收益</strong>（税前），不是经营赚来的，算真实利润时要剔掉。另外 98 亿美元收购带来的无形资产摊销已开始压毛利率（74.8%，比上年的 77.5% 掉了近 3 个点），这部分未来几年会一直在。</li>
+<li><strong>资本化的支出</strong>：软件开发资本化金额不大，CapEx 全年 $728M（占营收 5%），干净。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $4,019M ÷ SBC $2,185M = <strong>1.84 倍</strong>。不到 3 倍——回购里将近六成只是在对冲员工发股，真正回馈股东的不到一半；股本一年只降了 0.40%。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $1,670M，经营现金流 $5,308M，差了 3.2 倍，必须对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流（TTM）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>$1,670M</td>
+</tr>
+<tr>
+<td>+ 折旧摊销（含收购摊销）</td>
+<td>$1,739M</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>$2,185M</td>
+</tr>
+<tr>
+<td>− 出售投资收益（非经营）</td>
+<td>−$355M</td>
+</tr>
+<tr>
+<td>+ 预收订阅款增加（客户先付钱）</td>
+<td>$1,061M</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−$440M</td>
+</tr>
+<tr>
+<td>− 其他营运资金及杂项</td>
+<td>−$552M</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>$5,308M</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看穿了说：<strong>$5.3B 现金流里，$2.2B 是靠"用股票代替现金发工资"省出来的，$1.1B 是客户预付款的时间差。</strong> 真正属于股东的现金生成能力（FCF $4,580M 再剔掉 SBC）约 $2.4B。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,496亿 ÷ $1,670M</td>
+<td>90.4</td>
+<td>¥1.1</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（SBC 加回，估算）</td>
+<td>1,496亿 ÷ 约$3,400M</td>
+<td>约44</td>
+<td>¥2.3</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>1,496亿 ÷ ($1,670M − 税后投资收益约$253M)</td>
+<td><strong>约106</strong></td>
+<td><strong>¥0.9</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,496亿 ÷ $4,580M</td>
+<td>32.7</td>
+<td>¥3.1</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>$1,514亿 ÷ $1,826M</td>
+<td>82.9</td>
+<td>¥1.2</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1,496亿 ÷ 三年平均$1,635M</td>
+<td>91.5</td>
+<td>¥1.1</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那行还得打个折：FY2023 的 $1,731M 里含一笔巨额一次性税务收益（递延税资产转回），剔掉后三年平均更低、倍数还要更高。也就是说<strong>这家公司无论看哪一年，真实盈利从来没便宜过</strong>。</p>
+<p>大白话：<strong>你现在投 100 块进去，按剔除障眼法的真实口径，公司一年替你赚 9 毛钱。</strong> 最慷慨的自由现金流口径也就 3 块 1，而这 3 块里将近一半是靠发股票省出来的工资。赚到的钱基本不分红（没有股息），回购又大半用来对冲稀释，真正回到你口袋的接近零——钱都留在公司里搞 AI 收购（TTM 砸了 98 亿美元）。这个赌注如果成了，X 会变大；但市场用 90 倍已经把"成了"的大部分提前付过钱了——forward PE 31.9 倍是建立在 Non-GAAP（假装 SBC 不是钱）加上未来一年大幅增长的双重假设上的。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意本身是顶级的——98% 续约率、22% 增速、客户被平台锁死，但价格是按"AI 转型完美成功"付的：真实口径 100 多倍，投 100 块一年赚不到 1 块钱，SBC 比净利润还大，好公司配了个坏价格，贵得没道理，不值。</p>
+</div></body></html>

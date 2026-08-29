@@ -1,0 +1,218 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SHOP · Shopify（购物驿站）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SHOP</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">电商收水电费的完美生意，真实124倍已透支多年</div><h1>SHOP · Shopify（购物驿站）</h1>
+<p>市值 $1,967 亿 / 股价 $152.90 / 行业：电商基础设施软件 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报分「订阅方案」和「商家服务」两个分部，本质是<strong>先用软件把商家圈进来，再从商家的每一笔流水里抽成</strong>——第二门生意才是主引擎。</p>
+<h3>生意一：订阅方案——开店的「房租」（占营收 22.8%）</h3>
+<p>任何人想开一家网店，不用懂代码，在 Shopify 上注册、挑个模板、上传商品照片，一天之内店就开起来了——收款、购物车、库存、订单管理全是现成的。为此商家按月交「房租」：小卖家基础版每月 $39；生意做大了升级到高级版每月几百美元；像 Gymshark、SKIMS 这种年销数亿美元的品牌用 Shopify Plus，每月 $2,500 起。全球有几百万商家在交这笔月费。这门生意的妙处在于<strong>商家搬家的代价极高</strong>——店铺装修、商品数据、客户名单、支付流程、装的几十个插件全在 Shopify 上，换平台等于把店拆了重开，所以只要商家不倒闭，月费几乎不会断。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 口径</th>
+<th>营收</th>
+<th>增速（FY2025 对 FY2024）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>订阅方案</td>
+<td>$30.3 亿</td>
+<td>+17.1%</td>
+<td>22.8%</td>
+<td>财报不分拆，软件类利润率高（估算）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：商家服务——从每笔流水里抽成（占营收 77.2%）</h3>
+<p>这才是 Shopify 的印钞机。商家的店开起来之后，顾客每刷一次卡，钱都从 Shopify Payments 过一道：<strong>每笔交易收大约 2.9% + 30 美分</strong>，付给卡组织和银行的通道费之后，Shopify 自己留下几十个基点的差价。一家年流水 500 万美元的女装店，光支付手续费一年就给 Shopify 交十几万美元——比它的月费多几十倍。在这条主管道之外还挂着一串抽水的小管道：Shopify Capital 给缺钱的商家放短期贷款（按日销售额自动扣还）、跨境工具 Markets 抽汇率和关税服务费、打折卖运费标签赚差价、分期付款、线下 POS 刷卡机。<strong>商家卖得越多，Shopify 抽得越多</strong>——这门生意跟全平台商品流水（GMV，一年三千多亿美元）直接挂钩，TTM 增速 34.8%，比订阅快一倍。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 口径</th>
+<th>营收</th>
+<th>增速（FY2025 对 FY2024）</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商家服务</td>
+<td>$102.4 亿</td>
+<td>+34.8%</td>
+<td>77.2%</td>
+<td>低于订阅（支付有通道成本），估算</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>（财报只披露到分部营收；整体经营利润率 17.8%，两个分部的利润按此口径无法精确分拆，文中不硬编数字。）</p>
+<p>值得一提的背景：2023 年它把自建物流业务（仓库、配送）整体卖掉，认了 $13.4 亿的出售损失，从「什么都自己干」退回轻资产模式。这一刀切得对——现在全公司资本开支一年只有 <strong>$2,500 万</strong>（对，百万级，营收的 0.2%），是本批三家里最轻的资产模式。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM $4.8 亿，占净利润 25%、占营收 3.6%。在高增长软件公司里算克制（CrowdStrike 是营收的 23%）。GAAP 已扣，不加回。</p>
+<p><strong>一次性项目 / 投资损益污染</strong>：这是看 Shopify 利润表<strong>最要紧的一件事</strong>。它账上持有 Affirm、Global-E 等被投公司的股票，市值波动直接进净利润：FY2022 因此巨亏 34.6 亿，FY2024 靠浮盈多报了近 10 亿。TTM 里含投资出售收益约 $3.75 亿（减去股权投资损失 $0.36 亿，净增厚约 $3.4 亿）。<strong>把这块剔掉，真实净利润约 $15.9 亿，比报表数低 18%</strong>。它的净利润五年里从 +29 亿到 −35 亿再到 +19 亿地大幅摆动，大半是这个原因——看这家公司要盯经营利润（TTM $23.7 亿，连续三年高速改善：2.6 → 12.5 → 19 → 23.7 亿）。</p>
+<p><strong>资本化的支出</strong>：几乎没有，研发全费用化，资本开支 $2,500 万。干净。</p>
+<p><strong>回购与稀释</strong>：TTM 财务活动流出 $28.2 亿，其中还清了 $10.4 亿可转债，剩余约 $19 亿按现金流倒推是回购（财报页未单列，标注估算）；对应 SBC $4.8 亿，<strong>回购/SBC 约 4 倍，股本一年净减 0.74%</strong>——2026 年起从「年年稀释」转成了真回购，这是股东待遇的实质改善。</p>
+<p><strong>利润和现金流的差</strong>：净利润 $19.3 亿 vs 经营现金流 $23.8 亿，差额不大，对账一句话说清：加回 SBC $4.8 亿和折旧 $0.3 亿，扣掉投资收益 $3.4 亿（非经营）、应收增加 $2.2 亿，再加应付增加 $2.6 亿等杂项，正好对上。<strong>没有靠预收款或赊账粉饰的痕迹，自由现金流 $23.5 亿是真的。</strong></p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1,967 亿 ÷ 19.3 亿</td>
+<td>102.0</td>
+<td>¥0.98</td>
+</tr>
+<tr>
+<td>公司口径（加回 SBC 的 Non-GAAP，估算）</td>
+<td>1,967 亿 ÷ 约23 亿</td>
+<td>约86</td>
+<td>¥1.17</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong>（剔投资收益 $3.4 亿）</td>
+<td>1,967 亿 ÷ 15.9 亿</td>
+<td><strong>123.7</strong></td>
+<td><strong>¥0.81</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1,967 亿 ÷ 23.5 亿</td>
+<td>83.6</td>
+<td>¥1.20</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,914 亿 ÷ 23.7 亿</td>
+<td>80.9</td>
+<td>¥1.24</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1,967 亿 ÷ 17.3 亿</td>
+<td>113.9</td>
+<td>¥0.88</td>
+</tr>
+</tbody>
+</table></div>
+<p>（注意真实市盈率<strong>比</strong> GAAP 还高——投资浮盈把报表利润托高了，这跟多数公司的方向相反。）</p>
+<p>大白话：<strong>你现在投 100 块进去，按剔完水分的真实口径，公司一年替你赚 8 毛 1；按最客气的现金流口径也就 1 块 2。</strong> 这 1 块多里，2026 年起有相当一部分开始通过回购还给股东（股本已在净减少），其余留在公司里——好在它的再投资几乎不花钱（资本开支约等于零），钱主要变成账上现金（净现金 $53 亿）和继续扩张的弹药。利润未来大概率继续变大：营收还在 32% 地涨，经营利润率从 3% 一路爬到 17.8% 还没到头（同类支付公司能到 25%+）。但要撑起当前市值，这个「变大」必须以每年 30% 的速度持续很多年，中间不能撞上电商增速放缓、亚马逊/TikTok 抢流量、支付费率被压任何一件事。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意本身接近完美：商家搬不走、流水自动抽成、资本开支约等于零、现金流真实、开始真回购，是「电商世界收水电费」的模式。但价格把这一切全买光了——<strong>真实市盈率 124 倍、三年平均 114 倍，投 100 块一年赚 8 毛</strong>，股价横盘一年（+9%）就是市场自己也在犹豫。这是教科书式的「好公司、坏价格」：<strong>利润率改善的故事再讲三年、股价原地不动，估值才刚回到讲道理的区间。现在买等于替前面的人站岗，不值。</strong></p>
+</div></body></html>

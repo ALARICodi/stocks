@@ -1,0 +1,273 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VRT · Vertiv（维谛技术）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VRT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">58倍坐在AI周期顶上，三年平均130倍，等恐慌日</div><h1>VRT · Vertiv（维谛技术）</h1>
+<p>市值 $990 亿 / 股价 $257 / 行业：数据中心电力与散热设备 / TTM 截止 2026-06-30</p>
+<h2>一、它到底做几件事</h2>
+<p>一句话定位：<strong>AI 数据中心的"电和冷"，它是卖水人里最纯正的一个。</strong> 英伟达卖芯片，Vertiv 卖让芯片不断电、不烧掉的全套家当。它的前身是艾默生电气的网络能源部门（Emerson Network Power），2016 年被私募基金买走改名，2020 年借壳上市——所以它不是创业公司，是一家有几十年家底的老牌制造商，正好站在了 AI 的风口正中央。</p>
+<p>财报按"产品"和"服务"两个分部披露：</p>
+<h3>1. 产品（Products）—— 占营收 80%</h3>
+<p>大白话：微软要建一个 100 兆瓦的 AI 数据中心（大约装 5 万块 GPU），光有芯片和厂房不够，还缺两样命根子：</p>
+<p><strong>电</strong>——GPU 训练大模型时，供电哪怕闪断几毫秒，几个星期的训练成果就废了。所以每个机房都要装 UPS 不间断电源（市电一断、大电池瞬间顶上，撑到楼下柴油发电机启动）、配电柜、母线槽。一栋 AI 机房光电力设备就要几千万美元，Vertiv 就卖这个，全球前三（对手是施耐德电气和伊顿）。</p>
+<p><strong>冷</strong>——一个 AI 机架功率超过 100 千瓦，相当于 50 台家用电暖器挤在一个衣柜里，传统吹冷风已经压不住了，必须"液冷"：给芯片贴上水冷板，用管道把热水抽出去。Vertiv 是英伟达 GB200 服务器官方参考设计的液冷合作方之一，卖冷量分配单元（CDU）、精密空调、整套散热系统。液冷是当前全行业增速最快的品类。</p>
+<p>一单的量级：一个超大规模数据中心项目，电力+散热合同常见 2-4 亿美元。客户就是那几个熟脸：微软、亚马逊、Meta 这类云商，以及托管商（隔壁刚分析的 Equinix 就是它客户）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>年度增速*</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品</td>
+<td>$91.8 亿</td>
+<td>+31.4%</td>
+<td>80%</td>
+<td>财报不拆分部利润；整体 20.0%，产品估算约 18%（<strong>估算</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. 服务与备件（Services &amp; Spares）—— 占营收 20%，年金生意</h3>
+<p>大白话：设备装完不是结束，是收费的开始。UPS 里的电池 3-5 年必须换一批，精密空调要定期保养，机房 7×24 不能停，出事要两小时内到场——Vertiv 在全球养着几千名服务工程师，签的是按年收费的维保合同。<strong>装机量越滚越大，这块收入就像房租一样自动往上走</strong>，利润率比卖设备高，且完全不看资本开支周期的脸色。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>年度增速*</th>
+<th>占比</th>
+<th>经营利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务与备件</td>
+<td>$23.1 亿</td>
+<td>+14.5%</td>
+<td>20%</td>
+<td>估算 25%+（<strong>估算</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<p>*增速用 FY2025 对 FY2024 年度数计算。全公司 TTM 营收 $114.8 亿、同比 +26.2%，经营利润率 20.0%——三年前只有 13%，涨价能力和规模效应都是真的。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 <strong>$0.52 亿，占净利润 3%</strong>——制造业的老实文化，跟软件公司动辄 30% 完全两个世界。基本没有稀释把戏。</li>
+<li><strong>一次性项目</strong>：TTM 没有重组、减值、大额诉讼。账面干净。</li>
+<li><strong>资本化的支出</strong>：无软件/内容资本化把戏；capex $4.2 亿（营收的 3.7%），其中一部分是为液冷扩产能。</li>
+<li><strong>回购与稀释</strong>：TTM 回购只有 $0.27 亿（FY2024 曾回购 $6.2 亿），回购/SBC ≈ 0.5，股本一年 +1.06%——轻微稀释，主要精力在扩张不在回馈。分红 $0.86 亿，聊胜于无。TTM 另花 <strong>$14.6 亿现金做补强收购</strong>（机柜、电力配套厂商）。</li>
+<li><strong>利润 vs 现金流对账</strong>（TTM，单位亿美元）——<strong>这张表里藏着全篇最重要的发现</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>17.3</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>+3.9</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>+0.5</td>
+</tr>
+<tr>
+<td>－应收账款增加</td>
+<td>−8.1</td>
+</tr>
+<tr>
+<td>－存货增加（为交付备货）</td>
+<td>−10.8</td>
+</tr>
+<tr>
+<td>＋应付账款增加</td>
+<td>+8.0</td>
+</tr>
+<tr>
+<td><strong>＋客户预收款增加</strong></td>
+<td><strong>+23.7</strong></td>
+</tr>
+<tr>
+<td>－税与其他</td>
+<td>−0.9</td>
+</tr>
+<tr>
+<td><strong>＝经营现金流</strong></td>
+<td><strong>33.5</strong></td>
+</tr>
+<tr>
+<td>－资本开支</td>
+<td>−4.2</td>
+</tr>
+<tr>
+<td><strong>＝自由现金流</strong></td>
+<td><strong>29.3</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看到没有：<strong>29.3 亿自由现金流里，有 23.7 亿是客户提前打来的订金</strong>。云商们排队抢产能，下单先付大笔预付款——这是真现金、也是订单火爆的铁证，但它是"预支未来的收入"，不是本期赚到的利润。把这笔剔掉，跟当期利润匹配的自由现金流只有约 6 亿（存货和应收也在为暴增的交付垫资）。<strong>现金流表读出来的不是"利润质量高"，而是"需求爆炸"——两回事，都重要。</strong></p>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>990 ÷ 17.3</td>
+<td>58 倍</td>
+<td>1.7 元</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP（加回并购摊销等）</td>
+<td>约 990 ÷ 19</td>
+<td>约 52 倍</td>
+<td>1.9 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性、SBC 已扣且极小</td>
+<td><strong>58 倍</strong></td>
+<td><strong>1.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（含预收款红利）</td>
+<td>990 ÷ 29.3</td>
+<td>34 倍</td>
+<td>3.0 元*</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>992 ÷ 22.9</td>
+<td>43 倍</td>
+<td>2.3 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>990 ÷ 7.6（FY23 4.6 + FY24 5.0 + FY25 13.3 的平均）</td>
+<td><strong>130 倍</strong></td>
+<td>0.8 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>*自由现金流口径被 23.7 亿预收款一次性增量美化，真实持续水平在 1.7-3.0 元之间靠下。</p>
+<p>三年平均那行是全表最有价值的一行：<strong>当前 58 倍，三年平均 130 倍</strong>——差了一倍多，说明现在的 17 亿利润是坐在 AI 资本开支超级周期顶上的利润，不是常态。别忘了这家公司 2022 年才刚被上一轮成本上涨打得净利只剩 7,700 万美元（当年成本涨了转嫁不出去）——它对周期的敏感度是有案底的。</p>
+<p><strong>大白话：你现在投 100 块进去，按真实口径公司一年替你赚约 1.7 块。</strong> 其中分红只有几分钱，回购约等于没有，剩下的全部投进扩产能和收购——这在当下是对的（客户拿着钱排队等货）。这个 1.7 块未来会不会变大？只要 AI 建设潮不停，会，而且快：营收 +26%、在手订单和预收款都创纪录、华尔街给的远期市盈率 33 倍赌利润一年内接近翻倍。但反过来，<strong>它本质是卖设备的周期性制造商</strong>——云商资本开支一旦刹车（哪怕只是增速放缓），订单、预收款、估值会一起收缩，股价一年涨 98%、Beta 高达 2.08，跌起来也会是双倍速。</p>
+<h2>四、一句话结论</h2>
+<p>这是 AI 卖水人里基本面最硬的公司之一——ROIC 37.6%、净负债接近零、股权激励只有利润的 3%、还有一块跟着装机量滚雪球的服务年金；但 58 倍市盈率、三年平均口径 130 倍、股价一年翻倍，<strong>价格已经把"景气周期永不回头"当成了前提，好生意、不便宜，现在买是在赌周期，想要它就等云商资本开支恐慌的那一天</strong>。</p>
+</div></body></html>

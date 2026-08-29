@@ -1,0 +1,231 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BE · Bloom 能源（Bloom Energy）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BE</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">253倍利润三年平均还亏损,年稀释24%,买的是信仰</div><h1>BE · Bloom 能源（Bloom Energy）</h1>
+<p>市值 $621 亿 / 股价 $210.77 / 燃料电池发电设备 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>Bloom 卖一种叫「Energy Server」的发电箱子：固体氧化物燃料电池（SOFC），把天然气（也能烧沼气、氢气）<strong>不经过燃烧、直接用电化学反应变成电</strong>。一台模块冰箱大小、功率约 300 千瓦，像搭积木一样拼成阵列放在客户自己的院子里，插上天然气管道就发电，效率比燃气轮机高、不冒明火、几个月就能装好。</p>
+<p>它为什么突然值 620 亿？一句话：<strong>AI 机房等不起电网</strong>。美国现在新建数据中心向电网申请接入，排队 4-7 年是常态；而 AI 巨头的 GPU 明年就要通电。Bloom 的箱子是眼下少数「一年内就能上线的大功率现场电源」，于是订单爆了——甲骨文的 AI 数据中心、美国电力公司 AEP（签了最高 1 吉瓦的框架协议）、Equinix 这样的机房运营商都在买。一单的画面大概是：某数据中心要 50 兆瓦现场供电，付 Bloom 约 1.5-2 亿美元买设备，再付安装费，然后签 15-20 年的维保合同按年付钱。</p>
+<p>财报分四块：</p>
+<h3>1. 卖设备（Product，占营收 84%）</h3>
+<p>主发动机。TTM 收 $26.1 亿，而 FY2025 全年才 $15.3 亿、FY2024 只有 $10.9 亿——<strong>营收整体同比 +91%</strong>，基本全是这块拉的。卖给数据中心、电力公司、工厂、医院，海外主要靠韩国 SK 集团的合资渠道。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>FY2025 全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备</td>
+<td>$26.1 亿</td>
+<td>$15.3 亿</td>
+<td>84%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. 安装（Installation，占 7%）</h3>
+<p>把箱子运到现场、打地基、接管道接电。TTM 收 $2.1 亿。历史上这块基本不赚钱，是为了卖设备顺带做的。</p>
+<h3>3. 维保服务（Service，占 8%）</h3>
+<p>燃料电池的电堆是消耗品，跑 5 年左右衰减到要换芯。客户签长期维保合同，Bloom 按年收钱、到期换电堆。TTM 收 $2.5 亿。<strong>这块历史上常年亏损</strong>——换电堆的成本比收的服务费还高，近两年才勉强爬到盈亏线附近。装机量越滚越大，这块是未来的经常性收入，也是未来的经常性成本。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>FY2025 全年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安装</td>
+<td>$2.1 亿</td>
+<td>$2.0 亿</td>
+<td>7%</td>
+</tr>
+<tr>
+<td>维保</td>
+<td>$2.5 亿</td>
+<td>$2.3 亿</td>
+<td>8%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>4. 卖电（Electricity，占 1%）</h3>
+<p>少量项目 Bloom 自己持有设备、按度卖电。TTM 收 $0.4 亿，还在收缩。</p>
+<p><strong>分部利润财报只披露到营收</strong>，整体口径：TTM 毛利率 31.7%，经营利润 $3.65 亿（利润率 11.7%）——这是公司上市以来<strong>第一次全年口径盈利</strong>。FY2025 经营利润才 $0.9 亿，FY2023 之前年年亏损。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM <strong>$1.98 亿，占净利润 $2.45 亿的 81%</strong>。股价一年涨三倍，员工的股票包跟着膨胀（FY2024 才 0.82 亿，FY2025 涨到 1.55 亿）。当真实成本扣掉后，利润薄得多。</li>
+<li><strong>一次性项目</strong>：TTM 资产减值重组 $0.35 亿、合资公司投资亏损 $0.53 亿。但翻历史：FY2023 减值 1.3 亿、FY2022 减值 1.1 亿——<strong>「一次性」减值在这家公司年年发生</strong>，不加回。</li>
+<li><strong>资本化的支出</strong>：没有明显花招。</li>
+<li><strong>回购与稀释</strong>：<strong>零回购，股本一年膨胀 24.65%</strong>。FY2025 发了 25 亿可转债，转股加上股权激励，股东的份额一年被摊薄近四分之一。这是全篇最狠的一个数字：就算公司利润翻倍，摊到每股也只剩涨五成。</li>
+<li><strong>利润和现金流的差</strong>：净利润 2.45 亿 vs 经营现金流 7.38 亿，看着现金流很壮，拆开就露馅：净利润 2.45 + 折旧摊销 0.64 + SBC 1.98 + 减值 0.35 + 合资亏损 0.53 + 其他 1.17 − 应收账款增加 2.94 − 存货增加 0.92 + 应付款增加 1.59 + <strong>客户预付款增加 3.37</strong> ≈ 7.38 亿。<strong>关键在预付款那 3.37 亿</strong>：客户排队抢产能、提前打款，钱先进账、货还没发——这是「借来的现金流」，货发出去就得吐回来。把预付款变化剔掉，经营现金流只有约 4 亿。自由现金流账面 6.25 亿（资本开支仅 1.1 亿），同样吃了预付款的红利。</li>
+</ul>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>621 亿 ÷ 2.45 亿</td>
+<td><strong>253 倍</strong></td>
+<td>$0.40</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP（估算：加回 SBC+减值）</td>
+<td>621 亿 ÷ 约 5.3 亿</td>
+<td>117 倍</td>
+<td>$0.85</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>减值年年有、不加回，≈GAAP</td>
+<td>≈250 倍</td>
+<td>$0.40</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>621 亿 ÷ 6.25 亿（含预付款红利）</td>
+<td>99 倍</td>
+<td>$1.00</td>
+</tr>
+<tr>
+<td>剔掉预付款后的现金流口径</td>
+<td>621 亿 ÷ 约 2.9 亿</td>
+<td>≈215 倍</td>
+<td>$0.47</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>622 亿 ÷ 3.65 亿</td>
+<td>170 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>FY23 亏 3.0 亿、FY24 亏 0.3 亿、FY25 亏 0.9 亿</td>
+<td><strong>三年平均是亏损，倍数为负</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 4 毛钱。</strong> 这 4 毛没有一分变成分红（不派息），也没有回购，全留在公司里扩产能——而且你的份额每年还被新发的股票稀释两成多。全表最有分量的是最后一行：<strong>这家公司三年平均是亏钱的，TTM 是它这辈子第一次像样地盈利</strong>，你付 250 倍买的是「第一年赚钱」。</p>
+<p>市场当然不是按现在的利润买的：52 周股价 +314%，远期市盈率 60 倍，意味着市场赌它利润在两三年里翻四倍、然后继续高增长十年。AI 缺电是真的、订单是真的、91% 的营收增速也是真的——但这门生意本质是<strong>卖发电硬件</strong>，毛利率 32%，对手（燃气轮机的 GE Vernova、卡特彼勒，将来还有电网自己）都不是吃素的，客户预付款催出来的产能一旦撞上需求放缓，硬件公司的估值杀起来是不讲道理的。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>生意本身这两年是真起来了：AI 缺电给了它十五年来第一次「产品供不应求」的地位，第一次盈利、第一次现金流转正。但 620 亿市值对应 2.45 亿利润、三年平均还是亏损，外加每年 24% 的股本稀释和占利润八成的股权激励——<strong>这个价格买的不是公司，是信仰。就算 AI 电力的故事全部兑现，现在的价也已经预支了未来十年。贵得没道理。</strong></p>
+</div></body></html>

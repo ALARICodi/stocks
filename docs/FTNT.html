@@ -1,0 +1,258 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FTNT · 飞塔（Fortinet）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FTNT</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意顶级账最干净,但59倍是股价一年翻倍买出来的</div><h1>FTNT · 飞塔（Fortinet）</h1>
+<p>市值 $1218 亿 / 股价约 $166 / 网络安全 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>Fortinet 是全球出货量第一的防火墙公司（按台数算，不是按金额），创始人谢青（Ken Xie）1996 年就在做防火墙，2000 年创办 Fortinet 至今仍是 CEO，内部人持股 15.6%。财报分三个分部，实质上是"卖盒子＋盒子上的两份年费"：</p>
+<h3>1. 产品（防火墙硬件），TTM $26.7 亿，占 35%</h3>
+<p>防火墙是什么：一家 300 人的制造企业，办公网络连着外网，黑客扫描、员工误点钓鱼邮件、勒索软件，全从这个口进来。企业买两台 FortiGate 防火墙（一主一备，中端型号一台几千到几万美元）装在网络出口，所有进出流量先过它：识别并拦掉攻击流量、挡掉员工访问的危险网站、把分公司和总部之间的流量加密。</p>
+<p>Fortinet 的独门武器是<strong>自研安全芯片（ASIC）</strong>：别家（Palo Alto、Check Point）用通用 CPU 跑安全检测，Fortinet 自己设计专用芯片，同样的价格吞吐量高几倍。翻译成生意语言：<strong>同样性能它卖得比对手便宜一半还更赚钱</strong>（毛利率 80%）。所以它在预算敏感的中小企业、连锁门店、分支机构市场按性价比通吃，全球装机量 70 多万客户。</p>
+<p>2026 年正赶上一波<strong>换机潮</strong>：2020-21 年疫情期远程办公抢购的防火墙陆续到了五年换代期，旧型号停止支持，客户必须换新。这直接体现在数字上——产品收入 TTM 26.7 亿，比 2025 全年（22.2 亿）还多，明显加速。但要记住：换机潮是脉冲，不是新常态。</p>
+<h3>2. 安全订阅，TTM $27.9 亿，占 37% —— 印钞机在这里</h3>
+<p>设备是躯壳，订阅是灵魂。防火墙拦截攻击靠的是"特征库"——今天全世界新冒出来的病毒、钓鱼网站、漏洞攻击手法，Fortinet 的 FortiGuard 实验室每天分析后推送到全球所有设备上。这个更新服务按年收费，<strong>一台设备每年再交设备价的两到四成</strong>。不续订？设备还能用，但只能拦去年的攻击，等于裸奔——所以续费率极高。客户买一台 1 万美元的防火墙，五年生命周期里再付 2-3 万美元的订阅和支持，这才是完整账单。这两年还叠加了 SASE（云端安全接入）和 AI 安全运营等新订阅产品，是增长最快的一块。</p>
+<h3>3. 技术支持及其他，TTM $20.7 亿，占 28%</h3>
+<p>FortiCare 支持合同：7×24 热线、坏件换新、固件升级。也是按年收费的经常性收入。</p>
+<p><strong>订阅＋支持合计 48.6 亿，占总收入 65%，都是先收钱后服务的经常性收入</strong>——客户签约就把三年的钱预付了，这是它现金流远超利润的原因（见第二部分）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>FY2025 全年（参照）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品（硬件）</td>
+<td>$26.7 亿</td>
+<td>35%</td>
+<td>$22.2 亿</td>
+</tr>
+<tr>
+<td>安全订阅</td>
+<td>$27.9 亿</td>
+<td>37%</td>
+<td>$26.3 亿</td>
+</tr>
+<tr>
+<td>技术支持及其他</td>
+<td>$20.7 亿</td>
+<td>28%</td>
+<td>$19.5 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$75.3 亿（+18.8%）</strong></td>
+<td>100%</td>
+<td>$68.0 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按分部披露利润；整体营业利润率 32.4%，硬件毛利率低于订阅，利润大头在订阅（估算）。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 2.96 亿，占净利润 14%。在软件公司里算克制的（很多同行 SBC 占利润五成以上）。GAAP 已扣，当真实成本。</p>
+<p><strong>一次性项目</strong>：没有大额一次性。要指出一个藏在利润里的"非主业"项：税前利润率（34.9%）反而高于营业利润率（32.4%），差额主要是账上 40.7 亿净现金趴出来的利息收入（一年约 2 亿）。这是真钱，但不是防火墙生意赚的，判断主业时应看营业利润。</p>
+<p><strong>资本化的支出</strong>：没有大额资本化。资本开支 TTM 仅 2.8 亿（数据中心和办公楼），占收入 3.7%——芯片是自己设计、台积电代工，不用建晶圆厂，轻资产。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 29.7 亿 ÷ SBC 2.96 亿 = <strong>10 倍</strong>——这是真回购，不是抵消员工发股的表演。股本一年实缩 3.4%。不分红，股东回报全走回购。账上净现金 35 亿，没有还债压力。</p>
+<p><strong>利润和现金流的差</strong>：净利润 21.2 亿 vs 经营现金流 34.0 亿 vs 自由现金流 31.2 亿——FCF 比净利润高 47%，差额要对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>21.2</td>
+</tr>
+<tr>
+<td>＋折旧摊销（含无形）</td>
+<td>5.3</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td><strong>＋递延收入增加（客户预付的订阅款）</strong></td>
+<td><strong>+11.1</strong></td>
+</tr>
+<tr>
+<td>－应收/存货等营运资金占用</td>
+<td>-6.6</td>
+</tr>
+<tr>
+<td>＝经营现金流</td>
+<td>34.0</td>
+</tr>
+<tr>
+<td>－资本开支</td>
+<td>-2.8</td>
+</tr>
+<tr>
+<td><strong>＝自由现金流</strong></td>
+<td><strong>31.2</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看清楚最大的一项：<strong>11.1 亿是客户预付的未来几年的订阅费</strong>。收钱是真收了，但服务还没提供、利润还没赚到——它是"未来收入的定金"，不是当期赚到的钱。所以 P/FCF 39 倍没有表面那么便宜，真实的赚钱能力更接近净利润口径。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1218亿 ÷ 21.2亿</td>
+<td><strong>58.7</strong></td>
+<td>¥1.70</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回 SBC（估算）</td>
+<td>约50–52</td>
+<td>约¥1.95</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无大额一次性，= GAAP</td>
+<td><strong>58.7</strong></td>
+<td><strong>¥1.70</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1218亿 ÷ 31.2亿（含11亿预收款红利）</td>
+<td>39.1</td>
+<td>¥2.56</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1183亿 ÷ 24.4亿</td>
+<td>48.5</td>
+<td>¥2.06</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1218亿 ÷ 15.8亿（FY23-25平均）</td>
+<td><strong>77.0</strong></td>
+<td>¥1.30</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>投 100 块进去，按真实口径公司一年替你赚 1.7 块。</strong> 没有分红；回购一年注销约 2.4% 的股份，等于这 1.7 块基本都以回购形式回到你口袋，公司扩张几乎不需要留钱（轻资产的好处）。这个 1.7 会变大吗？会——收入还在 19%增长，换机潮＋SASE 都在推。但注意两件事：一，<strong>股价 52 周涨了 112%</strong>，58.7 倍是股价翻倍买出来的，不是利润掉出来的；二，三年平均口径 77 倍在提醒你，当期利润被换机潮垫高了，换机潮 2027 年退坡后增速会露出真实水位。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>生意是顶级的——净现金、ROIC 58%、真回购、创始人掌舵、65%经常性收入，这批 50 倍段里账最干净的公司；但 59 倍是股价一年翻倍、换机潮垫高利润双重作用买出来的价格，把未来三四年的增长预支完了。<strong>好公司，坏价格，回调再看</strong>。</p>
+</div></body></html>

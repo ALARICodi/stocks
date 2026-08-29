@@ -1,0 +1,270 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DDOG · Datadog（数据狗）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DDOG</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">生意真好，484倍是信仰价，SBC是净利润4.6倍</div><h1>DDOG · Datadog（数据狗）</h1>
+<p>市值 $851 亿 / 股价约 $237 / 行业：科技服务（云监控 SaaS）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上 Datadog 只有一个分部（只按地区拆：北美 72%、国际 28%），实质上也确实是<strong>一门生意：卖「云上系统的体检仪表盘」</strong>，只是这块仪表盘上挂了二十多个收费模块。</p>
+<p><strong>这门生意是什么？</strong> 想象一家做外卖平台的公司，App 背后是 AWS 上的 2000 台云服务器、几百个微服务、十几个数据库。任何一环卡住，用户下单就转圈圈，每宕机一小时损失几百万。Datadog 卖的就是盯住这一切的眼睛：你在每台服务器上装一个它的小探针（agent），所有机器的 CPU、内存、每一次接口调用、每一条报错日志，全部实时汇到 Datadog 的仪表盘上。凌晨三点支付接口变慢，它自动报警、并告诉你慢在哪一行代码、哪个数据库查询。</p>
+<p><strong>怎么收钱？</strong> 按用量订阅，三大主力产品各有各的计价表：
+- <strong>基础设施监控</strong>：按主机数收，每台服务器每月 $15–23。2000 台就是每月 3–4.6 万美元。
+- <strong>APM（应用性能监控）</strong>：追踪每一次用户请求穿过几十个微服务的完整路径，也按主机收，每台每月 $31–40。
+- <strong>日志管理</strong>：按量收，摄入约 $0.10/GB、按保留天数另收。大客户一天产几个 TB 日志，这一项常常是账单里最大的一块。</p>
+<p>在这三大件之外还挂着安全监控（Cloud SIEM）、拨测、真实用户监控、以及 2025 年起力推的 <strong>LLM 可观测性</strong>（监控 AI 应用调用大模型的成本、延迟、幻觉率——AI 公司集体上云养肥了这条新线，这轮 31% 的增速里有它的功劳）。套路是经典的「先上车后加购」：客户先买一个模块，用顺了逐个加，公司披露的净收入留存率长期在 110% 以上——<strong>老客户什么都不干，明年自动多付 10%+</strong>，因为云用量只会涨。</p>
+<p><strong>客户为什么非买不可？</strong> 自建这套系统要养一支专职团队，而且开源拼装货（Prometheus + Grafana + ELK）在跨服务追踪上远不如一体化的 Datadog 顺手。工程师用惯了就不想换，换掉它意味着重写所有报警规则和仪表盘——迁移成本就是护城河。竞品是 Splunk（被思科收购）、Dynatrace、New Relic 和云厂商自带工具，Datadog 在中大型云原生客户里是公认首选。</p>
+<p><strong>钱的全貌（TTM，单一分部）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>上年同期</th>
+<th>同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>$39.67 亿</td>
+<td>约 $30.2 亿</td>
+<td>+31.5%</td>
+</tr>
+<tr>
+<td>毛利润</td>
+<td>$31.55 亿（毛利率 79.5%）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GAAP 经营利润</td>
+<td>$0.19 亿（经营利润率 0.5%）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GAAP 净利润</td>
+<td>$1.78 亿（净利率 4.5%）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>毛利率 80% 说明这生意本身极好；经营利润率 0.5% 说明赚的钱几乎全部花在了销售和研发上——其中很大一块是发给员工的股票。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM $8.23 亿，是 GAAP 净利润（$1.78 亿）的 <strong>4.6 倍</strong>，占营收 21%。这是全篇最大的一个数字：Datadog 每收 100 块钱，就有 21 块以股票形式发给了员工。GAAP 已经扣了它（所以经营利润才只剩 0.19 亿），公司对外吹的 Non-GAAP 利润把它加回去了——那是骗人的，这些股票实打实稀释你的持股。</p>
+<p><strong>一次性项目</strong>：TTM 有 $0.48 亿投资出售收益（非经营所得，剔真实利润时应扣掉）。无大额诉讼、重组、减值。</p>
+<p><strong>资本化的支出</strong>：TTM 有 $1.09 亿「购买无形资产」，主要是资本化的软件开发费——这部分研发花销没进当期利润表，也没被算进常规 CapEx 口径的自由现金流。不算大，但方向是让利润和 FCF 都好看一点。</p>
+<p><strong>回购与稀释</strong>：TTM 回购为 <strong>零</strong>。SBC $8.23 亿全额变成新股，股本一年膨胀 1.66%（约 $14 亿市值的稀释）。回购/SBC 比值 = 0，在「真回馈股东」这项上得分为零——你的持股每年被动缩水。</p>
+<p><strong>利润和现金流的差</strong>：净利润 $1.78 亿 vs 经营现金流 $12.29 亿，差了 6 倍，必须对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>对账（TTM）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>+$1.78 亿</td>
+</tr>
+<tr>
+<td>加回折旧摊销</td>
+<td>+$1.52 亿</td>
+</tr>
+<tr>
+<td><strong>加回股权激励</strong></td>
+<td><strong>+$8.23 亿</strong></td>
+</tr>
+<tr>
+<td>剔除投资出售收益</td>
+<td>−$0.48 亿</td>
+</tr>
+<tr>
+<td>坏账拨备等杂项</td>
+<td>+$0.59 亿</td>
+</tr>
+<tr>
+<td>应收账款增加（客户欠的钱变多）</td>
+<td>−$2.41 亿</td>
+</tr>
+<tr>
+<td><strong>预收款增加（客户提前付的钱）</strong></td>
+<td><strong>+$3.41 亿</strong></td>
+</tr>
+<tr>
+<td>应付款及其他营运资金</td>
+<td>−$0.34 亿</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>$12.29 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看明白了：$12.29 亿现金流里，$8.23 亿是「用股票代替现金发工资」省出来的，$3.41 亿是客户预付的明年的钱。这两项都是真现金，但<strong>前者的代价由股东用稀释来付</strong>。把 SBC 当真实成本扣掉，自由现金流从 $11.82 亿缩水到约 $3.6 亿——这才是这门生意每年真正替股东攒下的钱。</p>
+<p>另外注意：GAAP 净利润 $1.78 亿本身也不是主业赚的。经营利润只有 $0.19 亿，净利润主要来自 $50 亿现金存款的利息和投资收益。<strong>主业在 GAAP 口径下就是打平，仅此而已。</strong></p>
+<p><strong>资产负债表</strong>：现金及投资 $49.85 亿，总负债 $12.78 亿（可转债，利率近零），净现金 $37.08 亿。账上非常健康，这点没得挑。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>851 亿 ÷ 1.78 亿</td>
+<td><strong>479 倍</strong></td>
+<td>0.21 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC+摊销后约 10.9 亿（估算）</td>
+<td>约 78 倍</td>
+<td>1.28 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>851 亿 ÷（1.78 − 0.48 投资收益）亿</td>
+<td><strong>约 654 倍</strong></td>
+<td>0.15 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>851 亿 ÷ 11.82 亿</td>
+<td>72 倍</td>
+<td>1.39 元</td>
+</tr>
+<tr>
+<td>扣 SBC 后的自由现金流</td>
+<td>851 亿 ÷ 约 3.6 亿</td>
+<td>约 237 倍</td>
+<td>0.42 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>814 亿 ÷ 0.19 亿</td>
+<td>4,231 倍</td>
+<td>≈0 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>851 亿 ÷ 三年平均净利润 1.13 亿</td>
+<td><strong>约 751 倍</strong></td>
+<td>0.13 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 1 毛 5。</strong> 按对股东最友好的口径（自由现金流，且不追究 SBC）也只赚 1 块 4；追究 SBC 就只剩 4 毛。这些钱一分不分红、一分不回购，全部留在公司里——其中约一半又以股票形式发给了员工。</p>
+<p>这个价格买的全部是未来：市场赌它未来十年维持 25–30% 增速、且经营利润率从 0.5% 爬到 25% 以上。做到了，现在的 72 倍 FCF 能消化；增速掉到 15%，股价腰斩起步。华尔街给的远期市盈率 89.5 倍，意思是连最乐观的分析师都承认要按两年后的利润算才勉强讲得通。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>生意是真好——80% 毛利率、31% 增速、客户欠不掉、净现金 37 亿，云监控赛道的头牌；但 484 倍 GAAP、剔掉 SBC 后两百多倍的真实倍数，是把未来十年的完美执行全部预付了，<strong>好公司，贵得没道理，这个价位买它不是投资是信仰</strong>。</p>
+</div></body></html>

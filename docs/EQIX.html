@@ -1,0 +1,271 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EQIX · Equinix（易昆尼克斯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EQIX</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">十字路口垄断位，29倍AFFO偏贵，年稀释1.4%</div><h1>EQIX · Equinix（易昆尼克斯）</h1>
+<p>市值 $1,031 亿 / 股价 $1,044 / 行业：数据中心 REIT / TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是一家房地产信托（REIT），下面用 FFO/AFFO 口径而不是市盈率。</strong> 原因：REIT 名下全是房子和机房，会计上每年要计提巨额折旧把利润压得很低，但地产和机房并不真的一年坏掉 4%——所以 GAAP 净利润严重低估它的真实赚钱能力，看 67 倍市盈率会得出完全错误的结论。行业通用的做法是把折旧加回来（叫 FFO），再扣掉真正要花的维护性开支（叫 AFFO），用这个数替代净利润。</p>
+</blockquote>
+<h2>一、它到底做几件事</h2>
+<p>Equinix 本质上是<strong>全球互联网的"房东 + 交换机"</strong>，在 30 多个国家开了 260 多个叫 IBX 的数据中心。它实质上做三门生意，外加一笔安装费收入。</p>
+<h3>1. 机柜托管（Colocation）—— 占营收 69%</h3>
+<p>大白话：<strong>它不卖服务器、不卖云，它出租"放服务器的柜子"，连电带空调带保安。</strong></p>
+<p>具体到一单是这样的：一家跨国银行要在东京、伦敦、纽约三地跑低延迟交易系统，自建机房要买地、装柴油发电机、拉三路市电、配 7×24 保安，没有三五年下不来。于是它找 Equinix，在三个城市各租 10 个机柜，把自己的服务器搬进去。每个机柜月租大约 800～3,000 美元，外加按度数计的电费，这家银行一年付 Equinix 几十万美元。Equinix 承诺 99.999% 不断电（一年最多断 5 分钟），柴油发电机能顶 48 小时。</p>
+<p>客户为什么非它不可、而且搬不走：<strong>Equinix 的机房是"全球网络的十字路口"</strong>——所有大电信运营商、AWS/Azure/谷歌云的入口、各大交易所的撮合引擎，都在它的机房里。你把服务器放在这里，跟全世界连接的延迟最低。搬去别家便宜机房，等于把店从火车站搬到郊区。所以它的客户流失率常年只有每季度 2% 上下，涨价客户也认。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>年度增速*</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>机柜托管</td>
+<td>$68.5 亿</td>
+<td>+6.9%</td>
+<td>69%</td>
+<td>估算约 15-18%</td>
+<td>估算 $11 亿上下</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2. 互联（Interconnection）—— 占营收 18%，全公司最好的生意</h3>
+<p>大白话：你的机柜和别人的机柜都在 Equinix 机房里,想直连？<strong>Equinix 派人拉一根几米长的光纤，从此每月收你约 300 美元</strong>——一根线的成本几乎为零，收的是"撮合费"。全球 48 万多条这样的连接在给它交月租。</p>
+<p>举例：一家做视频 App 的公司，服务器托管在 Equinix，要把数据直接送进 AWS 而不走公网（更快更安全），就买一条 cross-connect 连到同一栋楼里的 AWS 入口，月付 300 美元。它同时还要连 Azure、连 CDN 商、连当地电信——一家中型互联网公司在一个机房里挂着几十条线是常态。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>年度增速*</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>互联</td>
+<td>$17.5 亿</td>
+<td>+9.0%</td>
+<td>18%</td>
+<td>估算 60%+</td>
+<td>估算 $10 亿上下</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3. 代管基础设施（Managed Infrastructure）—— 占营收 5%</h3>
+<p>替不想自己管机器的客户代运维、出租裸金属服务器等。TTM 营收 $4.6 亿，<strong>已经连续两年零增长</strong>（FY2024 $4.67 亿 → FY2025 $4.66 亿 → TTM $4.61 亿），是三门生意里唯一不长的，好在占比小。</p>
+<h3>4. 非经常性收入（安装费等）—— 占营收 6%</h3>
+<p>新客户进场的一次性安装、布线费，TTM $5.9 亿。年年都有，跟着新签单走。</p>
+<p><em>分部增速用 FY2025 对 FY2024 的年度数计算（数据源的 TTM 分部数没有上年同期可比列），全公司 TTM 总营收 $99.0 亿、同比 +10.9%。财报分部只披露到营收，利润率是按互联类业务高毛利、托管类业务重资产的结构估算的，</em><em>没有精确分部利润</em>*。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $5.31 亿，<strong>相当于净利润的 35%</strong>，不小。GAAP 里已扣，下文一律不加回。</li>
+<li><strong>一次性项目</strong>：TTM 资产减值 $0.86 亿；但 FY2024 也减值了 $2.33 亿——<strong>这是"年年都有的一次性"</strong>，单期口径无法判断哪年是真干净的，按经常性成本看待更稳妥。出售资产收益 $0.18 亿，忽略不计。</li>
+<li><strong>资本化的支出</strong>：作为 REIT，它的大头开支（建机房 TTM $65.3 亿）本来就全部资本化，这正是折旧巨大的原因，不算障眼法，但要在 AFFO 里算清楚（见下）。</li>
+<li><strong>回购与稀释</strong>：<strong>零回购。股本一年反而增加 1.41%</strong>——FY2024 还增发了 $17.6 亿股票。回购/SBC 比值 = 0。这是 REIT 的常态（利润按法律要求大部分分红分掉了，扩张只能靠发债+增发），但你要清楚：<strong>你的持股每年被稀释约 1.4%，这会吃掉一部分每股回报</strong>。</li>
+<li><strong>利润 vs 现金流对账</strong>（TTM，单位亿美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>15.3</td>
+</tr>
+<tr>
+<td>＋折旧摊销（大头是机房和机电设备）</td>
+<td>+21.9</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>+5.3</td>
+</tr>
+<tr>
+<td>＋减值等非现金项</td>
+<td>+1.0</td>
+</tr>
+<tr>
+<td>－营运资金变化及其他</td>
+<td>−3.6</td>
+</tr>
+<tr>
+<td><strong>＝经营现金流</strong></td>
+<td><strong>39.4</strong></td>
+</tr>
+<tr>
+<td>－建机房资本开支（净）</td>
+<td>−61.8</td>
+</tr>
+<tr>
+<td><strong>＝自由现金流</strong></td>
+<td><strong>约 −22 亿（负）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意这个负数</strong>：它一年经营赚回 39 亿现金，却花 62 亿建新机房（正押注 AI 算力扩张），缺口靠 TTM 净发债 $19 亿 + 少量发股补。分红 $19.6 亿本身经营现金流付得起，但"一边借钱扩张、一边分红、一边增发"这个组合意味着：扩张一旦回报不达标，债（已 $234 亿）就是纯负担。</p>
+<h2>三、REIT 口径：FFO / AFFO（替代市盈率）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率（仅供对照，REIT 上无意义）</td>
+<td>1,031 ÷ 15.3</td>
+<td>67 倍</td>
+<td>1.5 元</td>
+</tr>
+<tr>
+<td>FFO 口径</td>
+<td>净利 15.3 + 折旧 21.9 − 售产收益 0.2 + 减值 0.9 ≈ 38 亿</td>
+<td><strong>27 倍</strong></td>
+<td>3.7 元</td>
+</tr>
+<tr>
+<td><strong>AFFO 口径（最接近真实可分的钱，估算）</strong></td>
+<td>FFO − 维护性资本开支（估约 3 亿*） ≈ 35 亿</td>
+<td><strong>约 29 倍</strong></td>
+<td><strong>3.4 元</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径 P/OCF</td>
+<td>1,031 ÷ 39.4</td>
+<td>26 倍</td>
+<td>3.8 元</td>
+</tr>
+<tr>
+<td>EV/EBIT（算上 224 亿净债务）</td>
+<td>1,254 ÷ 23.5</td>
+<td>53 倍</td>
+<td>1.9 元</td>
+</tr>
+<tr>
+<td>三年平均净利口径</td>
+<td>1,031 ÷ 10.4（FY23-25 平均）</td>
+<td>99 倍</td>
+<td>1.0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>维护性资本开支公司口径约占营收 2-3%，数据源不单列，按 3 亿估算并明确标注为估算。三年平均那行看起来吓人，但对 REIT 同样受折旧失真影响，参考意义有限；真正该看的是中间三行——</em><em>FFO/AFFO/经营现金流三个口径互相印证，都在 26-29 倍之间</em>*，这不是巧合，说明它真实身价就在这个区间。</p>
+<p><strong>大白话：你现在投 100 块进去，按 AFFO 口径公司一年替你赚约 3.4 块。</strong> 其中约 1.9 块以分红形式真的打到你账上（股息率 1.9%，派息约占 AFFO 的 56%），剩下的钱连同新借的债一起，全部投进了新机房。这个 3.4 块未来大概率变大——AI 让数据中心供不应求，它过去五年营收年年增 6-15%，AFFO 每股长期以 7-10% 的速度爬。但两个压回报的因素也是真的：每年 1.4% 的股本稀释，和 4.8 倍 EBITDA 的债务（利息覆盖只有 4.7 倍，利率每高一年，借新还旧就贵一分）。</p>
+<p><strong>债务结构</strong>：总债 $234 亿，Debt/EBITDA 4.8 倍——在 REIT 里属正常水平但不算轻，投资级评级靠的是客户粘性和合同现金流的稳定性。出租率数据源未披露，从流失率极低和涨价能力看不是问题。</p>
+<h2>四、一句话结论</h2>
+<p>生意本身是顶级的——"互联网十字路口"的垄断位，客户搬不走、涨价认、AI 还在推着需求走；但 29 倍 AFFO 的价格已经把这些优点都收了钱，投 100 块年赚 3.4 块、还要被每年 1.4% 的增发稀释，<strong>这是好公司、合理偏贵的价格，现在买占不到便宜，值得放进观察名单等它跌</strong>。67 倍的市盈率是折旧造出来的假贵，别被吓到；但 29 倍 AFFO 也绝不是便宜。</p>
+</div></body></html>

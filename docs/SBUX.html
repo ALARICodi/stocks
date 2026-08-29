@@ -1,0 +1,256 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SBUX · 星巴克</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SBUX</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">利润腰斩出的62倍,分红142%靠卖中国资产撑</div><h1>SBUX · 星巴克</h1>
+<p>市值 $1229 亿 / 股价约 $108 / 连锁咖啡·消费服务 / TTM 截止 2026-06-28</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>财报的分部披露是按产品分的（饮料/食品/其他），但按实际的生意逻辑，星巴克是三门生意：</p>
+<h3>1. 自营咖啡店（营收大头，约八成收入）</h3>
+<p>全球约 4 万家门店里约一半是星巴克自己开、自己雇人、自己收钱的。一家典型的北美自营店：一天卖五六百单，一杯拿铁 5-6 美元，加上三明治蛋糕，客单价约 7-8 美元，一家店一年做 150 万美元左右的生意。房租、咖啡豆、牛奶、人工全是星巴克自己扛，扛完剩下的才是利润——所以这门生意对客流量极度敏感：客流掉 5%，利润可能掉 15%，因为房租和排班砍不动。</p>
+<p>它的独门武器是会员储值体系：北美约三成交易来自星享会员的 App 预点单和储值卡。顾客先把钱充进卡里再慢慢喝，星巴克手里常年趴着十几亿美元的"顾客预付款"，等于顾客给它发了一笔无息贷款。</p>
+<p>现在这门生意正在动大手术。2024 年 9 月从 Chipotle 挖来的 CEO Brian Niccol 搞「Back to Starbucks」改革：砍掉约三成的花哨菜单、恢复陶瓷杯和手写名字、给门店加人手、翻新门店。这些全是花钱的动作——这正是 TTM 利润腰斩的主因（重组费、关店减值、加人工）。赌的是把"排队 20 分钟的外卖窗口"变回"愿意坐下来的咖啡馆"，换回客流。</p>
+<h3>2. 授权店 + 中国业务（卖牌子收租）</h3>
+<p>机场、超市、酒店里的星巴克多数是授权店：别人出钱开店雇人，星巴克收授权费、再把咖啡豆、糖浆、杯子卖给他们。不承担房租人工，利润率远高于自营，但单店贡献的收入少得多。</p>
+<p>这里有个 TTM 内发生的大事：<strong>2025 年底星巴克把中国零售业务的控股权（约六成）卖给了博裕资本，自己留下约四成股份并继续收品牌授权费</strong>。现金流量表里 TTM 有 25.4 亿美元的"出售业务收款"就是这笔钱。翻译一下：星巴克承认自己在中国打不过瑞幸们了，把最难啃的直营生意交给本地资本，自己退回到"收租"模式。这让报表少了一块收入、也少了一块亏损拖累，还回笼一笔现金——TTM 里拿这笔钱还掉了 40.7 亿美元债务。</p>
+<h3>3. 渠道业务（超市货架上的星巴克)</h3>
+<p>你在超市买到的瓶装星冰乐、家用咖啡豆和胶囊，不是星巴克自己生产铺货的：2018 年雀巢付了 71.5 亿美元买断了星巴克门店外的全球销售权，瓶装饮料则和百事合资。星巴克躺着收授权金和分成。这是三门生意里最省心的一块，但体量小。</p>
+<h3>产品口径的钱（财报只按产品拆分，分部利润未披露）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>产品线</th>
+<th>TTM 营收</th>
+<th>占比</th>
+<th>上一财年(FY2025)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>饮料</td>
+<td>$228.6 亿</td>
+<td>60%</td>
+<td>$225.4 亿</td>
+</tr>
+<tr>
+<td>食品</td>
+<td>$73.6 亿</td>
+<td>19%</td>
+<td>$70.5 亿</td>
+</tr>
+<tr>
+<td>其他（渠道/授权等）</td>
+<td>$81.2 亿</td>
+<td>21%</td>
+<td>$76.0 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$383.4 亿（+4.5%）</strong></td>
+<td>100%</td>
+<td>$371.8 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报没按分部披露利润，整体 TTM 营业利润率 10.4%——两年前是 15.4%，改革的钱都是从这里流出去的。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 3.64 亿美元，占净利润 18%。GAAP 已扣，当真实成本，不加回。</p>
+<p><strong>一次性项目</strong>：TTM 有 3.42 亿美元资产减记和重组费（关店、改革）＋ 2.12 亿美元资产出售损失。注意：星巴克这两年<strong>年年都有重组费</strong>，单期口径没法把它当"真一次性"——Niccol 的手术还没做完，明年大概率还有。另外 TTM 有效税率飙到 35.6%（正常年份约 24%），有一次性税务因素，也压低了当期净利。</p>
+<p><strong>资本化的支出</strong>：没有大额软件/内容资本化。倒是要注意反方向的事：TTM 资本开支只有 13.4 亿，去年同期口径是 27.8 亿——腰斩一半是中国业务出表、一半是开店放缓。所以 TTM 自由现金流 36.4 亿的"反弹"有相当部分是<strong>少花钱</strong>带来的，不是生意变好。</p>
+<p><strong>回购与稀释</strong>：TTM 回购只有 0.7 亿美元，除以 SBC 3.6 亿 = <strong>0.2 倍</strong>——回购基本停了，股本还在微增（+0.32%）。钱去哪了？<strong>分红 28.1 亿，比净利润 19.8 亿还多，派息率 142%</strong>。分红超过利润的部分，靠的是现金流和卖中国业务的钱。资产负债表上净债务 188 亿、股东权益是<strong>负的 77 亿</strong>——过去十年借钱回购把家底掏空了，现在轮到借钱和卖资产来撑分红。</p>
+<p><strong>利润和现金流的差</strong>：净利润 19.8 亿 vs 经营现金流 49.9 亿，差 30 亿，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>19.8</td>
+</tr>
+<tr>
+<td>＋折旧摊销</td>
+<td>16.7</td>
+</tr>
+<tr>
+<td>＋股权激励</td>
+<td>3.6</td>
+</tr>
+<tr>
+<td>＋减值/重组/出售损失（非现金）</td>
+<td>5.5</td>
+</tr>
+<tr>
+<td>＋其他经营项目（主要是经营租赁相关）</td>
+<td>15.4</td>
+</tr>
+<tr>
+<td>－营运资金变动等</td>
+<td>-11.1</td>
+</tr>
+<tr>
+<td><strong>＝经营现金流</strong></td>
+<td><strong>49.9</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>差额是真实的：门店折旧和租赁摊销是过去花的钱，现金流角度当期确实不用再掏。星巴克的利润是真现金，这点没问题——问题在利润本身太薄。</p>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>1229亿 ÷ 19.8亿</td>
+<td><strong>62.0</strong></td>
+<td>¥1.61</td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回重组减值等（估算）</td>
+<td>约45–50</td>
+<td>约¥2.1</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>加回真一次性出售损失/减值（税后约3.6亿），重组费按年年都有不加回</td>
+<td><strong>约52.5</strong></td>
+<td><strong>¥1.90</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>1229亿 ÷ 36.4亿（注：capex腰斩有水分，按正常开支算约41倍）</td>
+<td>33.8</td>
+<td>¥2.96</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1418亿 ÷ 39.8亿</td>
+<td>35.7</td>
+<td>¥2.80</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>1229亿 ÷ 32.5亿（FY23-25平均）</td>
+<td><strong>37.9</strong></td>
+<td>¥2.64</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按剔除障眼法的真实口径，公司一年替你赚不到 2 块钱。</strong> 这 2 块里，分红形式发给你约 2.3 块——对，分红比利润还多，多出来的部分是卖中国业务和现金流垫的，这个玩法长期持续不下去。未来这个数会不会变大？华尔街赌会：远期市盈率 36.6 倍，隐含明年利润要反弹七成。反弹的来源是改革费用退坡＋北美客流回暖，前者比较确定，后者到今天还没在同店数据里真正证明。</p>
+<p>还要说一句三年平均口径的 37.9 倍：<strong>就算 Niccol 完全成功、利润回到改革前水平，你现在付的价格也是 38 倍</strong>——对一家收入一年只涨 4.5%的成熟连锁，38 倍本身就不便宜。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>62 倍买的是利润腰斩谷底的星巴克，分红 142%靠卖中国资产撑着，股东权益是负的；就算翻盘成功也只是回到 38 倍——牌子是真金字招牌，价格把翻盘剧本全价买断了，<strong>很贵，等它</strong>。</p>
+</div></body></html>
