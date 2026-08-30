@@ -1,0 +1,186 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MTCH · Match Group（Tinder / Hinge 母公司）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MTCH</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">8.4倍FCF+近10%股东回报,赌Hinge接棒停滞的Tinder</div><h1>MTCH · Match Group（Tinder / Hinge 母公司）</h1>
+<p>市值 95.4 亿美元 / 股价 41.58 美元 / 行业：科技服务·互联网 / TTM 截止 2026-06-30（任务2 · 市盈率 0–15 倍段 · 榜内第 129 名）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报按品牌拆成四个分部再加一小块广告，实质上是<strong>同一门生意的四个牌子：让单身的人在手机上互相看照片配对，想要更多曝光和权限就掏钱</strong>。全球在线交友市场它一家占了近四成，第二名 Bumble 不到它的零头。</p>
+<h3>生意一：Tinder —— 交友界的麦当劳（TTM 营收 18.67 亿，占 53%）</h3>
+<p>左滑不喜欢、右滑喜欢、互相右滑就配对聊天——这个交互就是 Tinder 发明的。免费能用，但每天右滑次数有限、你也不知道谁喜欢了你。想解锁就付钱：<strong>Tinder Plus/Gold/Platinum 订阅每月约 10–40 美元</strong>（Gold 能直接看「谁已经喜欢你」名单，是最畅销档），另有单次付费道具——花几美元买一个 Boost 让你的照片半小时内插队到全城人的卡堆最上面。全球约 900 万付费用户（估算，占月活约两成），人均每月贡献约 17 美元。用户为什么付钱？因为交友软件是个赢家通吃的网络效应生意：<strong>单身的人都在哪，你就必须去哪</strong>，Tinder 在绝大多数国家就是那个「哪」。</p>
+<p>但要说实话：<strong>Tinder 在缩</strong>。营收 2024 年 19.41 亿 → 2025 年 18.63 亿（-4%），TTM 18.67 亿刚刚企稳；付费用户连续三年个位数下滑，年轻一代嫌它「太快餐」，疫情后交友软件整体有退潮情绪。新管理层 2025 年起换了 CEO（Zillow 创始人 Spencer Rascoff），在砍冗员、加 AI 选照片/防杀猪盘功能，目前止住了跌但没恢复增长。</p>
+<h3>生意二：Hinge —— 接棒的增长引擎（TTM 营收 7.69 亿，占 22%）</h3>
+<p>口号是「Designed to be deleted」（设计出来就是为了让你删掉它）：不搞无限滑动，每天限量推荐，逼你认真填资料、按具体内容评论对方，定位「想认真谈的人」。在英语市场是增长最快的主流交友 App。<strong>TTM 营收 7.69 亿，对比 FY2025 的 6.91 亿、FY2024 的 5.50 亿，一年 +25% 以上</strong>，付费用户约 180 万（估算）还在涨，人均付费比 Tinder 还高（订阅 33–50 美元/月的档位卖得动）。Tinder 每年掉的营收，Hinge 一家就补上还有余——这是这家公司估值没有塌掉的核心理由。</p>
+<h3>生意三：Evergreen &amp; Emerging —— 一堆老牌子慢慢收割（FY2025 营收 5.94 亿，占 17%）</h3>
+<p>Match.com、OkCupid、Plenty of Fish、Meetic 这些上一代交友网站，用户在老化，公司明确定位为「收割现金，不投增长」，营收每年 -8% 左右，顺便孵化几个新苗子（射手 Archer、精英向 The League）。</p>
+<h3>生意四：MG Asia —— 日本和其他（FY2025 营收 2.67 亿，占 8%）</h3>
+<p>主力是日本的 Pairs（日本婚恋合规市场的头部）和视频社交 Azar。日本市场还行，整体缓降。另有约 0.65 亿广告收入（Indirect）——免费用户看的广告。</p>
+<p><strong>合计</strong>：TTM 营收 35.09 亿（+1.7%），毛利率 75%，经营利润 10.97 亿（利润率 31.3%），净利润 7.08 亿。<strong>成本结构里最扎眼的一项：App Store/Google Play 抽成</strong>，Tinder 的收入七成以上走应用内支付，苹果谷歌抽走 15–30%，是仅次于人力的最大成本。2025 年美国法院裁决放开外部支付链接后公司在引导用户绕开抽成，每省 1 个点都是纯利。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2.41 亿，<strong>占净利润 34%，是三家里最重的</strong>。互联网公司通病，一律当真实现金成本，GAAP 已扣。好在从 2024 年的 2.67 亿开始逐年往下走。</li>
+<li><strong>一次性项目</strong>：TTM 减值与重组费 0.25 亿（裁员 13% 的遣散费为主），金额小；2022 年那笔 2.94 亿减值是收购 Hyperconnect（Azar 母公司）买贵了的计提。单期口径无法判断重组费是否年年发生，但量级不影响结论。</li>
+<li><strong>资本化的支出</strong>：几乎没有，资本开支一年 0.66 亿（服务器和办公室），研发全部费用化。轻资产到极致。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 7.46 亿 ÷ SBC 2.41 亿 = <strong>3.1 倍，过线，是真回购</strong>；股本一年净缩 6.49%。2025 年起还开始派息，TTM 派了 1.82 亿（股息率约 1.9%）。回购 + 分红合计 9.28 亿，等于把自由现金流的八成还给了股东。</li>
+<li><strong>利润和现金流的差</strong>：净利润 7.08 亿 vs 经营现金流 12.08 亿，差 5 亿，对账（单位亿美元）：净利润 7.08 + 折旧摊销 0.91 + SBC 2.41 + 减值重组 0.25 + 其他非现金 0.61 + 营运资金净流入 0.81（用户预付订阅费，先收钱后服务）= 12.08。<strong>自由现金流 11.42 亿，是净利润的 1.6 倍</strong>——但记住其中 2.4 亿的「多出来」是 SBC 撑的，把 SBC 当现金扣掉后真实股东现金流约 9 亿。</li>
+<li><strong>负资产负债表</strong>：账面净资产是负的（从 IAC 分拆时的会计处理 + 连年回购注销），所以市净率、ROE 都显示不出来。看 ROIC 25.8%、ROCE 31.5%——生意本身的资本回报率非常高。净债务 30.8 亿，约 2.7 年自由现金流，不重。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>95.4 亿 ÷ 7.08 亿</td>
+<td>14.7</td>
+<td>6.8 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（调整后 EBITDA 口径）</td>
+<td>EV ÷ 调整后 EBITDA 约 12.6 亿</td>
+<td>约 10</td>
+<td>——（口径含水，仅列出）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>减值重组 0.25 亿量级太小，不调整</td>
+<td><strong>14.7</strong></td>
+<td><strong>6.8 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>95.4 亿 ÷ 11.42 亿</td>
+<td>8.4</td>
+<td>12.0 元</td>
+</tr>
+<tr>
+<td>扣 SBC 后的现金流口径</td>
+<td>95.4 亿 ÷ (11.42−2.41)</td>
+<td>10.6</td>
+<td>9.4 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>126.3 亿 ÷ 10.97 亿</td>
+<td>11.5</td>
+<td>8.7 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>(6.52+5.51+6.13)÷3 = 6.05 亿</td>
+<td>15.8</td>
+<td>6.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 15.8 倍 vs 当期 14.7 倍，差得不多——<strong>当前利润不是周期高点，就是常态水平略偏上</strong>（利润率改善靠的是裁员和砍营销，不是收入涨）。顺便看一眼历史：这公司 2021 年市值 374 亿、134 倍市盈率，如今 95 亿、14.7 倍——典型的「跌落神坛后开始像正经生意一样被定价」。</p>
+<p>大白话：<strong>你投 100 块进去，按 GAAP 利润一年替你赚 6.8 块，按扣掉 SBC 的真实现金流算约 9.4 块。</strong> 其中约 7.8 块（回购）+ 1.9 块（分红）真金白银回到你口袋——股东回报率接近 10%，剩下的基本没有再投资需求（这生意不需要资本）。这个数未来变大还是变小？取决于一场拔河：Hinge 每年 +25% 能不能一直跑赢 Tinder 和老牌子每年 -4% 的下滑。过去两年 Hinge 赢了（总营收微增 + 利润率提升），但 Tinder 占 53%，它若再次加速下滑，Hinge 也兜不住。</p>
+<h2>第四部分：一句话结论</h2>
+<p>75% 毛利、几乎零资本开支、ROIC 26% 的赢家通吃生意，8.4 倍自由现金流、近 10% 的股东回报率，账也干净——<strong>按价格说是便宜的</strong>。但便宜的原因也真实存在：主品牌 Tinder 三年没增长、整个品类被年轻人质疑「是不是过气了」，SBC 还在吃掉三分之一利润。赌的就是一件事：Hinge 继续以 25% 的速度接棒。以当前价格，这个赌注的赔率是划算的——<strong>公道偏便宜，Hinge 是唯一需要盯的仪表</strong>。</p>
+</div></body></html>

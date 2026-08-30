@@ -1,0 +1,220 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AGNC · AGNC 投资（抵押 REIT）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AGNC</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">花129买100块的7倍杠杆债券,13%股息一半是退本金</div><h1>AGNC · AGNC 投资（抵押 REIT）</h1>
+<p>市值 $129.2 亿 / 股价约 $10.87 / 抵押房地产投资信托（mREIT）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是抵押 REIT，<strong>市盈率和普通 REIT 的 FFO 口径在它身上都不适用</strong>，下面用「有形净值 + 利差 + 杠杆」这套口径。原因：它的 GAAP 利润里塞满了债券价格波动的账面盈亏（2022 年亏 13 亿、今年赚 21 亿，同一门生意），而它又不是收租的房东，没有房子没有租金，FFO 无从谈起。它本质上是<strong>一只上市的杠杆债券基金</strong>，看基金就看三样：净值、分红从哪来、杠杆多高。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>就一件事，54 个员工就把它干完了。</strong></p>
+<p>AGNC 的全部生意用一句话说完：<strong>借短钱、买长债、赚利差</strong>。具体流程是这样的：</p>
+<ol>
+<li><strong>买什么</strong>：它买的是"机构抵押贷款证券"（Agency MBS）。美国老百姓的房贷被房利美、房地美这两家政府背景的机构打包成债券卖出来，<strong>本息由这两家机构担保</strong>——也就是说房主断供了机构照样赔付，<strong>信用风险约等于美国国债</strong>。AGNC 现在持有约 900 亿美元这种债券，收益率大约 5.5-6%。</li>
+<li><strong>钱从哪来</strong>：自己的本钱（有形净资产）只有约 100 亿美元，剩下 800 亿靠"回购协议"借——把手里的债券抵押给大银行，借隔夜到几个月的短期资金，成本大约 4.3-4.5%。<strong>杠杆 7 倍多</strong>：1 块钱本金撬 7 块多的债券。</li>
+<li><strong>赚什么</strong>：买入的债券收 5.5-6%，借钱付 4.3-4.5%，中间一个多点的利差，乘以 7 倍杠杆，理论上一年能赚本金的 15-20%。这就是它 ROE 19.8% 的全部来源。</li>
+<li><strong>防什么</strong>：短借长贷最怕利率飙升（借钱成本瞬间涨、手里长债跌价）。所以它用利率互换、国债期货做对冲，把一部分利率风险锁掉。<strong>对冲做得好坏直接决定生死</strong>——2022 年美联储暴力加息，它净值一年掉了三成，就是对冲没能全盖住。</li>
+</ol>
+<p>客户是谁？<strong>没有客户。</strong> 它不服务任何人，收入全部来自金融市场。你买它的股票，等于把钱交给一个 54 人的团队去做杠杆债券套利，顺便每月给你发 0.12 美元/股的"工资"。</p>
+<h3>钱的全貌（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>上年同期参照</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 营收（含账面盈亏）</td>
+<td>2,401</td>
+<td>973（FY24全年）</td>
+<td>数字暴涨是债券价格回升的账面收益，不是生意变好</td>
+</tr>
+<tr>
+<td>GAAP 净利润</td>
+<td>2,090</td>
+<td>731（FY24全年）</td>
+<td>同上，五年序列：649 / -1,295 / 32 / 731 / 1,509</td>
+</tr>
+<tr>
+<td>每月分红</td>
+<td>$0.12/股，年 $1.44</td>
+<td>已多年未变</td>
+<td>股息率 13.2%</td>
+</tr>
+<tr>
+<td>有形净值/股</td>
+<td>约 $8.4</td>
+<td>—</td>
+<td>股价 $10.87 = 有形净值的 <strong>1.29 倍</strong></td>
+</tr>
+<tr>
+<td>总债务</td>
+<td>89,945</td>
+<td>60,956（FY24末）</td>
+<td>债务/权益 <strong>7.17 倍</strong></td>
+</tr>
+<tr>
+<td>股本变化</td>
+<td><strong>一年增发 +22.4%</strong></td>
+<td>—</td>
+<td>不断发新股买更多债券</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：54 个员工，金额可忽略。没有。</li>
+<li><strong>一次性项目</strong>：<strong>它的整张利润表都是"波动性项目"。</strong> TTM 净利润 21 亿里，扣掉利差净收入后其余全是债券和衍生品的市值变动。单期口径无法区分"真赚了"和"账面浮盈"——这不是它做假，是这门生意的利润天生就是这个形状。看它别看利润，看<strong>每股有形净值的变化</strong>：净值涨才是真赚。</li>
+<li><strong>资本化的支出</strong>：无。</li>
+<li><strong>回购与稀释</strong>：<strong>方向和普通公司完全相反——一年增发 22.4% 的新股</strong>（回购收益率 -22.4%）。给它说句公道话：只要增发价高于每股净值（现在 1.29 倍，是高于），增发对老股东每股净值是<strong>增厚</strong>的，这是 mREIT 的标准玩法。但它也暴露了商业模式的本质：<strong>这门生意自己不产生成长，规模全靠不停向市场伸手要钱。</strong></li>
+<li><strong>利润和现金流的差</strong>：经营现金流 TTM 只有 8.9 亿，对不上 21 亿的"净利润"，再次印证利润大头是账面盈亏。而分红一年要付出约 15-16 亿（1.44 × 11 亿股）——<strong>分红超过经营现金流，缺口靠增发新股的钱补</strong>。这句话请读两遍：新股东的本金在给老股东发"股息"。这不是庞氏（资产是真实的、净值是可验证的），但<strong>13.2% 的"股息率"里有相当一部分实质是把你自己的本金按月退给你</strong>。长期数据是铁证：2013 年它每股净值超过 25 美元、月分红 0.30 美元；今天净值 8.4 美元、月分红 0.12 美元——<strong>十几年里净值和分红都缩掉了三分之二</strong>，投资者拿到的高股息，很大程度是本金的分期返还。</li>
+</ul>
+<h2>第三部分：值多少钱——杠杆债券基金口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股价 / 每股有形净值</td>
+<td><strong>1.29 倍</strong></td>
+<td><strong>你花 129 块买 100 块的债券组合</strong>。历史上它多数时间在 0.9–1.1 倍之间，1.29 倍处在十年高位区</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>13.2%</td>
+<td>但见上文：一部分是本金返还</td>
+</tr>
+<tr>
+<td>利差净收益覆盖分红？</td>
+<td>大致覆盖但无余量</td>
+<td>利差收益约等于分红支出，利差收窄一点就得靠账面盈亏或增发凑</td>
+</tr>
+<tr>
+<td>杠杆</td>
+<td>7.2 倍</td>
+<td>利率急升 1 个点，净值可能掉 10-15%</td>
+</tr>
+<tr>
+<td>GAAP 市盈率</td>
+<td>5.79 倍</td>
+<td><strong>无意义</strong>，分母是含账面盈亏的利润</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>129亿 ÷ 7.8亿(FY23-25均值) = 16.6 倍</td>
+<td>拉平波动后其实一点不便宜</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话总结</strong>：你投 100 块进去，实际买到约 78 块的债券净值（其余 22 块是给市场情绪付的溢价）。这 78 块靠 7 倍杠杆吃利差，顺风年份（利差宽、利率稳）能真赚 12-15 块，逆风年份（2022 那种）能真亏 20-30 块，<strong>长期平均下来大约赚 8-10 块，跟它承诺的 13 块分红对不上，差额从净值里扣</strong>——所以净值十年缩了三分之二。未来这个数取决于美联储：降息周期对它是顺风（融资成本降、债券涨价），眼下确实处在相对舒服的环境里，这也是市场肯给 1.29 倍溢价的原因。但为周期顺风付十年高位的溢价，历史上从来不是好买卖。</p>
+<h2>第四部分：一句话结论</h2>
+<p>这不是一门生意，是一只收 13% "股息"、实际长期回报只有一半、其余按月退你本金的 7 倍杠杆债券基金——现在还要你为 100 块的净值付 129 块，<strong>溢价买周期顶部的顺风，不值</strong>；想吃利率下行的红利，直接买债券基金比它便宜也比它安全。</p>
+</div></body></html>

@@ -1,0 +1,209 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PAYP · PayPay（日本二维码支付，美股 ADS）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PAYP</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">13倍是负所得税戏法，真实约26倍，垄断和增长是真的</div><h1>PAYP · PayPay（日本二维码支付，美股 ADS）</h1>
+<p>市值 103.5 亿美元 / 股价约 15.3 美元（ADS）/ 支付+金融服务 / TTM 截止 2026-06-30（财年 3 月止，报表为日元，按 ¥162≈$1 换算）</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>PayPay 是日本的「支付宝」。2018 年由软银和雅虎日本合资创立，靠「花 100 亿日元大撒币」的返现活动三年烧出了日本二维码支付的垄断地位：注册用户约 7000 万——<strong>日本一半以上的人口装了这个 App</strong>——线下扫码支付市场份额约三分之二。2025 年 12 月刚以 ADS 形式在纳斯达克上市，软银系仍是绝对控股股东，公众流通盘只占三分之一左右。</p>
+<p>财报分两个分部：</p>
+<h3>生意一：支付（FY2026 营收 3112 亿日元，占 82%）</h3>
+<p>大白话讲：东京一家拉面店在收银台立一张 PayPay 二维码牌子，客人扫码付 1000 日元，拉面店要把大约 1.6%–1.98% 交给 PayPay 当手续费——一碗面抽走十几二十日元。全日本几百万家店铺（从 7-11 到路边摊）都收 PayPay，一年经手的交易额十几万亿日元，每一笔都雁过拔毛。除了抽成，商家想在 App 里发优惠券拉客、想第二天就拿到货款（快速清算）都要另外付钱；用户之间转账、企业发工资进 PayPay 余额，也在这个盘子里。这门生意的厉害之处在于<strong>两边都跑不掉</strong>：客人装它是因为到处都能用，店家收它是因为客人都用——经典的网络效应，日本市场已经打扫干净，主要对手（乐天Pay、d払い）份额远远落后。</p>
+<h3>生意二：金融服务（FY2026 营收 724 亿日元，占 19%）</h3>
+<p>支付只是入口，赚大钱靠往入口里塞金融产品：<strong>PayPay 卡</strong>（信用卡，绑在 App 里循环授信，赚利息和刷卡分成）、<strong>PayPay 银行</strong>（存款、消费贷、房贷，上市前重组时装进了上市主体）、<strong>PayPay 证券</strong>（App 里一键买股票基金）、保险分销。一个每天用 PayPay 买咖啡的上班族，顺手把工资卡换成 PayPay 银行、分期用 PayPay 卡、零钱买点基金——获客成本几乎为零，这是传统银行做梦都想要的漏斗。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>FY2026 营收（亿日元）</th>
+<th>同比</th>
+<th>占比</th>
+<th>利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>支付</td>
+<td>3112</td>
+<td>+25%</td>
+<td>82%</td>
+<td>财报只披露到营收，利润未细拆</td>
+</tr>
+<tr>
+<td>金融服务</td>
+<td>724</td>
+<td>+35%</td>
+<td>19%</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>抵消项</td>
+<td>-29</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>整体 TTM：营收 4016 亿日元（+27.6%），经营利润 940 亿（FY2025 才 355 亿，一年翻了 2.6 倍——烧钱期彻底结束，规模效应开始碾压固定成本），账面净利润 1230 亿。</p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>⚠️ 全篇最重要的一条：净利润比税前利润还高。</strong> TTM 税前利润约 940 亿日元，净利润却有 1230 亿——所得税是<strong>负 290 亿</strong>。这不是 PayPay 找到了避税魔法，而是把早年亏损攒下的递延税资产一次性确认进了利润表（会计上确认「以后少交的税」今天全记成收益）。这 290 亿是纸面一次性收益，明年不会再有。<strong>13.3 倍的账面市盈率就是被它压低的</strong>，这家公司出现在「0–15 倍」筛选段里纯属会计假象。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 20 亿日元，占净利不到 2%，可忽略。</li>
+<li><strong>经营现金流看着巨大但不是股东的钱</strong>：TTM 经营现金流 2341 亿日元，比净利还高一倍——主要是「应付账款 +1805 亿」，即替商家代收、还没结算出去的钱趴在账上形成的浮存金，随交易规模涨。这是支付公司的常态，<strong>不能当成可分配的自由现金流</strong>。同理，投资现金流 -4999 亿也主要是银行子公司拿存款去配债券贷款，不是烧钱。</li>
+<li><strong>回购与稀释</strong>：没有回购、基本没有分红；股本一年增加 15.2%（上市发新股 + 重组注资）。现阶段股东回报为零，全部利润留在公司滚增长。</li>
+<li><strong>负债 7660 亿日元</strong>：大头是 PayPay 银行的资金来源和信用卡应收款的融资，属于金融业务的原料，不是经营出问题借的债。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 ÷ 1230 亿日元</td>
+<td>13.3 倍</td>
+<td>7.5 元</td>
+</tr>
+<tr>
+<td>公司口径（未另设 Non-GAAP）</td>
+<td>同上</td>
+<td>13.3 倍</td>
+<td>7.5 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>市值 ÷（税前 940 亿 × 正常税率约 69%）≈ 650 亿日元</td>
+<td><strong>约 26 倍</strong></td>
+<td><strong>3.9 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>浮存金失真，无意义</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>金融负债混入 EV，参考值 25.3 倍</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ 三年平均净利约 490 亿（FY24 亏、FY25 362、FY26 1150）</td>
+<td>约 34 倍</td>
+<td>2.9 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按剔除税务戏法后的真实口径，公司一年替你赚不到 4 块</strong>——这 4 块一分钱都不分给你，全留在公司里继续投金融业务。买它的理由只有一个：这 4 块正在以每年接近翻倍的速度变大（经营利润 FY25→FY26 从 355 亿到 800 亿，TTM 已到 940 亿），垄断地位摆在那，日本无现金化还有一半路没走完。风险也清楚：增长一旦降速，26 倍马上显贵；软银说了算的治理结构、上市一年就增发 15% 的股本，都不是小股东的朋友。</p>
+<h2>四、一句话结论</h2>
+<p>日本移动支付的事实垄断者，生意是一等一的好，但「13 倍」是负所得税变出来的戏法——真实口径 26 倍上下，买的是增长兑现，不是便宜，想按价值股的价钱捡它的人要等。</p>
+</div></body></html>

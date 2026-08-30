@@ -1,0 +1,221 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CHRD · Chord Energy（和弦能源）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CHRD</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">巴肯霸主+0.33倍杠杆+真回购,破净10倍,但一切系于油价</div><h1>CHRD · Chord Energy（和弦能源）</h1>
+<p>市值 79.9 亿美元 / 股价约 146 美元 / 页岩油气开采 / TTM 截止 2026-06-30</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>Chord 实质上只做一件事：<strong>在北达科他州的巴肯（Bakken）盆地打井采油</strong>。这家公司本身就是一部页岩行业的整合史——2020 年油价崩盘时 Oasis 和 Whiting 两家先后破产重组，2022 年合并成 Chord，2024 年再吞下 Enerplus，2025 年又从埃克森手里买了一块威利斯顿盆地资产，现在是整个巴肯最大的采油商。财报按产品分四行，实质是一门半生意：</p>
+<p><strong>1. 采油卖油（占净营收约七成）—— 真正的主业</strong></p>
+<p>在自有租权的土地上用水平井+压裂技术采油。一口典型的巴肯水平井打下去花七八百万美元，头一年产量最高，之后每年递减三四成，所以页岩公司必须不停打新井才能维持产量——这决定了它的商业模式：<strong>资本开支不是"扩张选项"而是"生存必需"</strong>。采出来的原油通过管道运到炼厂，按 WTI 基准价减一点运输折价卖掉。伴生的天然气和凝析液（NGL）顺手也卖，占比不大。公司不决定油价，只决定成本——巴肯的盈亏平衡油价大约在每桶四五十美元，WTI 在 70 以上时日子很滋润，跌破 55 就难看。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收(毛口径)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原油</td>
+<td>41.2 亿</td>
+<td>+16%</td>
+<td>65%</td>
+</tr>
+<tr>
+<td>天然气 + NGL</td>
+<td>3.7 亿</td>
+<td>+4%</td>
+<td>6%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2. 转手买卖油气（占约三成）—— 看着大，其实是过路生意</strong></p>
+<p>从第三方买油再转卖（凑管道运量、平衡物流），TTM 做了 18.3 亿——这行数字唬人，但买进卖出价差极薄，基本不贡献利润，看营收规模时应该把它剔掉。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>转手购销</td>
+<td>18.3 亿</td>
+<td>+87%</td>
+<td>29%</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 2950 万，占净利润 3.5%——能源公司不靠股票发工资，这项干净。</li>
+<li><strong>一次性项目</strong>：TTM 本身很干净（减值≈0），但<strong>往前看一年就是照妖镜：FY2025 计提了 5.39 亿资产减值</strong>，把全年净利润从大几亿直接打到 4270 万（当年 PE 一度显示 123 倍）。油价跌、井的账面价值就减记，这在页岩行业是周期性必然事件，不是意外。</li>
+<li><strong>折旧大于资本开支的假象</strong>：TTM 折旧摊销 15.4 亿 &gt; 资本开支 14.0 亿。别高兴太早——折旧里含并购时资产升值的摊销，而且<strong>每年还有一笔"补充库存"的收购</strong>（TTM 花 5.58 亿从埃克森买资产，前几年年年有类似动作）。对一家资产会枯竭的公司，买储量就是变相的维持性开支。把收购算进去，真实自由现金流约 6.3 亿，不是账面的 11.9 亿。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 3.13 亿 + 分红 2.97 亿 = 6.1 亿还给股东，占净利润 73%；SBC 只有 0.3 亿，<strong>回购/SBC 超过 10 倍，是真回购</strong>，股本一年净减 3%。管理层执行"杠杆低于 0.5 倍时把 FCF 的 75% 还给股东"的框架，说到做到。</li>
+<li><strong>利润和现金流的差</strong>：净利润 8.4 亿 → 加折旧摊销 15.4 亿 → 加 SBC 0.3 亿 → 营运资金变化 +0.6 亿 → 其他 +1.3 亿 → 经营现金流 25.9 亿。差额全是折旧（非现金），对账干净，没有藏东西。</li>
+<li><strong>资产负债表是同行里的优等生</strong>：总债务 15 亿，净债务 8.9 亿，仅为 EBITDA 的 0.33 倍，利息保障 11.4 倍。上一轮油价崩盘破产过的公司，这一轮把杠杆管得死死的。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>79.9 亿 ÷ 8.41 亿</td>
+<td>9.9 倍</td>
+<td>10.1 块</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>TTM 无重大一次性项目，同 GAAP</td>
+<td>9.9 倍</td>
+<td>10.1 块</td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>79.9 亿 ÷ 11.9 亿</td>
+<td>6.7 倍</td>
+<td>14.9 块</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣每年买储量的钱）</td>
+<td>79.9 亿 ÷ 约 6.3 亿</td>
+<td>约 12.7 倍</td>
+<td>7.9 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>88.8 亿 ÷ 11.3 亿</td>
+<td>7.9 倍</td>
+<td>12.7 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>79.9 亿 ÷（10.2+8.5+0.4）/3 ≈ 6.4 亿</td>
+<td><strong>12.6 倍</strong></td>
+<td>7.9 块</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td>0.96 倍</td>
+<td>破净</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 12.6 倍 vs 当期 9.9 倍：<strong>当期利润处在油价景气段的偏高位</strong>，三年平均里那个 0.4 亿的 FY2025 才是油价不配合时的样子。这两个数之间的差距就是油价波动的振幅。</p>
+<p><strong>大白话：你现在投 100 块进去，按当期利润一年替你赚 10 块，按三年平均（含一次油价低谷）算是 8 块。</strong> 其中约 7.6 块通过分红（3.7 块）+回购（3.9 块）真金白银回到你口袋——还钱比例在整个批次里数一数二。但这个数字的前提写在油价上：WTI 站在 70 美元上方它就是印钞机，跌回 55 美元它就变成 FY2025 那个勉强保本的样子。公司自己能控制的（成本、杠杆、还钱纪律）都做到了近乎满分，唯一控制不了的恰好是决定一切的那个变量。</p>
+<h2>第四部分：一句话结论</h2>
+<p>页岩行业里把"自己能管的事"管到最好的一家：巴肯霸主地位、0.33 倍杠杆、真回购真分红、账干净得挑不出毛病，破净加 10 倍利润是真便宜——但买它本质上是买一张油价看涨凭证，油价决定你赚 15% 还是白坐三年，这不是缺点，是这门生意的物理属性，想清楚再上车。</p>
+</div></body></html>

@@ -1,0 +1,236 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>COLB · 哥伦比亚银行系统（Columbia Banking System / Umpqua Bank）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">COLB</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">五年并购把EPS越并越薄21%,剔商誉1.56倍PB,不如同段WAL</div><h1>COLB · 哥伦比亚银行系统（Columbia Banking System / Umpqua Bank）</h1>
+<p>市值 $85.1 亿 / 股价 $30.07 / 银行（太平洋西北区域银行） / TTM 截止 2026-06-30 / 任务2（0–15倍段）第 139 名</p>
+<blockquote>
+<p>这是金融企业，下面用 <strong>市净率 PB + ROE</strong> 口径而不是市盈率，原因同业：银行的利润是杠杆撬出来的利差，得看「按几倍净资产买入、净资产每年生多少利」。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>一门生意：<strong>美国西海岸的社区商业银行</strong>，门店品牌叫 Umpqua Bank，网点从华盛顿州、俄勒冈（大本营）铺到加州、爱达荷、内华达、亚利桑那，总资产约 700 亿美元（按 ROA 1.21%、净利 7.1 亿倒推平均资产约 590 亿，加上 2025 年下半年新并入的部分，当前约 700 亿），是太平洋西北地区最大的区域银行。</p>
+<p>生意本体和所有社区银行一样：波特兰一家木材加工厂把经营账户开在 Umpqua，账上趴着低息活期存款；西雅图一个开发商找它贷 800 万美元盖联排别墅，利率 7% 出头。收借款人的利息、付储户零头利息，中间的息差就是收入大头，再加财富管理和账户手续费。客户为什么选它：西北地区经济（科技外溢、港口贸易、农林业）里的中小企业要的就是「客户经理认识我、审批不用去纽约」的本地银行，这层关系是它的护城河。</p>
+<p>但看懂 COLB 的关键不是生意本体，而是它<strong>连续三场大并购的履历</strong>：</p>
+<ul>
+<li><strong>2023 年 2 月</strong>：老 Columbia 与俄勒冈的 Umpqua Holdings 对等合并（约 500 亿资产的联合体），品牌留 Umpqua、上市代码留 COLB；</li>
+<li><strong>2025 年下半年</strong>：又吞下南加州的 Pacific Premier Bancorp（约 180 亿资产），把版图从西北推进洛杉矶——代价是<strong>增发股票，过去一年股本膨胀了 32.9%</strong>；</li>
+<li>每次并购的说辞都一样：砍重复成本、挤出协同。</li>
+</ul>
+<p>那么成绩单如何？<strong>把时间拉长看，这台并购机器没有为每股创造价值</strong>：2021 年（并购狂欢开始前）EPS 是 3.21 美元，五年、两场大并购之后，TTM EPS 是 2.55 美元——<strong>每股利润比五年前还低 21%</strong>。总资产翻了一倍多，股东按股份算到手的利润反而缩了。这不是会计噪音，这是这家公司的核心事实。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>关键数字（TTM）</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>25.1 亿（+33.9%，Pacific Premier 并表所致）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>7.09 亿（EPS 2.55，EPS 同比只 +1%——利润涨 29%，全被增发吃掉）</td>
+</tr>
+<tr>
+<td>总资产</td>
+<td>约 700 亿</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>二、把会计障眼法剥掉（银行版）</h2>
+<ul>
+<li><strong>一次性项目</strong>：TTM 里裹着 Pacific Premier 的并购会计——收购当天要一次计提被购贷款的预期坏账（压利润），随后几年「购买会计增值」逐季回冲（抬利润），FY2025 的 ROE 被压到 8.5%、现在回弹到 11.0% 就有这层作用。<strong>单期口径分不清多少是真实盈利能力、多少是并购会计的回冲</strong>，这类连环并购银行的报表天生浑浊。</li>
+<li><strong>稀释</strong>：<strong>过去一年股本 +32.9%</strong>，五年累计翻倍以上。分红倒是大方：每股 $1.48，股息率 4.92%，派息率 58%——在银行里算高派息，但注意这个派息率没给资本留多少缓冲，下一场并购多半还得增发。</li>
+<li><strong>回购</strong>：约等于零，QoQ 微降 1.95% 是刚开始的小动作。</li>
+<li><strong>商誉</strong>：PB 1.13 倍 vs P/TBV 1.56 倍——差了 38%，连环并购攒下的商誉不小（每股净资产 26.70 元里约 7 元是无形的），买错一次就减值。</li>
+<li><strong>现金流</strong>：银行口径无异常，OCF 与利润匹配。</li>
+<li><strong>数据源未提供</strong> NIM、CET1、拨备覆盖率，不编数。定性说：西北地区贷款组合里商业地产占比不低，这是市场对西海岸银行普遍压价的原因之一。</li>
+</ul>
+<p>五年 ROE 轨迹：15.4%（2021）→ 12.9% → 9.3% → 10.6% → 8.5% → 11.0%（现在）。<strong>方向是往下的：并购前它是 15% 的银行，并购后在 9–11% 里打转。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ROE</td>
+<td>11.03%</td>
+<td>平庸，且低于自己并购前的水平</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>1.21%</td>
+<td>合格</td>
+</tr>
+<tr>
+<td>PB</td>
+<td>1.13 倍</td>
+<td>自己五年区间 1.07–1.56 的下沿附近</td>
+</tr>
+<tr>
+<td>P/TBV</td>
+<td>1.56 倍</td>
+<td>剔掉商誉后不便宜</td>
+</tr>
+<tr>
+<td>派息率</td>
+<td>58%（股息率 4.92%）</td>
+<td>高息但缓冲薄</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>9.63 倍</td>
+<td>分析师在赌 Pacific Premier 协同兑现</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>三、回报换算（银行口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>结果</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率参考</td>
+<td>股价 ÷ EPS 2.55</td>
+<td>11.81 倍</td>
+<td>8.5 元</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>分析师预期（协同全年化）</td>
+<td>9.63 倍</td>
+<td>10.4 元</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（银行主口径）</strong></td>
+<td>11.03% ÷ 1.13</td>
+<td>—</td>
+<td><strong>9.8 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 85.1 亿 ÷ 三年平均净利润 4.8 亿（FY23–25：3.5/5.3/5.5 亿）</td>
+<td>17.8 倍</td>
+<td>5.6 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按 1.13 倍价格买了 88 块净资产（其中约 23 块是并购商誉），每年生出约 9.8 块利润，其中 4.9 块以分红实打实到手</strong>——这个到手比例在银行里算高的。但剩下留存的 4.9 块，交到的是一个<strong>五年里让每股利润缩水 21% 的管理层</strong>手里，它的再投资记录是负分。三年平均口径 17.8 倍有并购费用压低分母的成分，不能全信，但即便按远期 9.6 倍，也要先信「这次协同真能兑现、而且不再有下一次大增发」。</p>
+<p>未来变大还是变小：Pacific Premier 的成本协同 2026–27 年逐步兑现，短期 EPS 大概率往上走；但长期这就是一台 ROE 10% 上下、每隔两三年增发一次的机器，没有证据它会变成别的东西。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>一台五年里把每股利润越并越薄的并购机器，唯一实在的是 4.9% 的现金股息：按净资产算价格不贵（1.13 倍 PB 在自己区间下沿），但剔掉商誉是 1.56 倍、按三年平均利润是 17.8 倍——<strong>看着便宜、细看没便宜可占，同一个段位里 WAL 质地高一截、价格还更低，没有理由选它：想吃西海岸银行股息的另说，其他人等它证明协同兑现再来。</strong></p>
+</div></body></html>

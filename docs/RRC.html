@@ -1,0 +1,278 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RRC · Range Resources 山脉资源</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RRC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">30年井位+最低成本线,13倍真实口径公道,赌气价不崩</div><h1>RRC · Range Resources 山脉资源</h1>
+<p>市值 $96.9 亿 / 股价 $41.5 / 行业：天然气开采 / TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>一门生意：在宾夕法尼亚州的页岩层里打井，采出天然气和「湿气」副产品，卖给电厂、出口商和化工厂。</strong></p>
+<p>Range Resources 是 Marcellus 页岩气田的开拓者——2004 年它打出了 Marcellus 第一口现代页岩井，从此把阿巴拉契亚山区变成了全球最大的天然气产区。今天它在宾州西南部拥有约 50 万英亩核心区块，日产折合约 22 亿立方英尺天然气当量。</p>
+<p><strong>具体怎么干？</strong> 在一块井场上垂直钻下去约 2500 米，再水平拐弯钻 3-5 公里，用高压水砂把页岩压裂出裂缝，气顺着裂缝流出来。一口井造价约 600-700 万美元，头一年产量最猛，之后逐年衰减，靠不断打新井维持总产量。RRC 的独门资产是<strong>井位库存</strong>：它囤的核心区块按当前打井速度够打 30 年以上，是全行业最长的——同行做完存货得去买地，它不用。</p>
+<p><strong>产出来的东西分三样卖（这是它和纯气企的关键区别）：</strong></p>
+<ul>
+<li><strong>干气（甲烷，TTM 销售额 18.9 亿美元，占约 62%）</strong>：通过管道卖给中西部和东海岸的电厂、燃气公用事业公司，以及墨西哥湾的 LNG 出口终端。定价挂 NYMEX 期货基准，一单是「每百万英热单位若干美元」。2026 年气价回暖的两大推手：LNG 出口产能持续投产（美国的气变成欧洲、亚洲的气），以及 AI 数据中心带来的电力需求增量——宾州本地已有多个燃气电厂扩建项目。</li>
+<li><strong>NGL 液化气副产品（乙烷、丙烷、丁烷，TTM 销售额 10.4 亿美元，占约 34%）</strong>：RRC 的区块是「湿气」区，采出来的气里混着这些液体成分，分离出来单卖。乙烷卖给化工厂做塑料原料，丙烷冬天供暖、还大量装船从费城附近的 Marcus Hook 码头出口欧洲。RRC 是美国东北部最大的 NGL 出口商——这块业务让它比纯干气同行（如 EQT）多一条不完全同步波动的收入线。</li>
+<li><strong>凝析油（TTM 1.5 亿美元，占 5%）</strong>：零头。</li>
+</ul>
+<p><strong>为什么说它是低成本生产商？</strong> 核心区块岩层厚、单井产量高，加上已建成的管道和加工产能，全维持成本在每千立方英尺 2 美元上下的行业低位——气价 2 美元它饿不死（2024 年低谷全年仍赚 2.65 亿），气价 4 美元它大赚。这就是商品生意里唯一靠得住的护城河：别人亏损你还有利润。</p>
+<p><strong>钱的情况（TTM，百万美元）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入构成</th>
+<th>TTM</th>
+<th>上年(FY2025)</th>
+<th>同比</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>天然气销售</td>
+<td>1,886</td>
+<td>1,730</td>
+<td>+9%</td>
+<td>量稳价涨</td>
+</tr>
+<tr>
+<td>NGL 销售</td>
+<td>1,038</td>
+<td>979</td>
+<td>+6%</td>
+<td>出口欧亚</td>
+</tr>
+<tr>
+<td>油/凝析油</td>
+<td>146</td>
+<td>106</td>
+<td>+38%</td>
+<td>占比小</td>
+</tr>
+<tr>
+<td>衍生品公允价值收益</td>
+<td>166</td>
+<td>122</td>
+<td>—</td>
+<td>纸面为主，第二部分拆</td>
+</tr>
+<tr>
+<td>购气转售等</td>
+<td>200</td>
+<td>173</td>
+<td>—</td>
+<td>低毛利过手生意</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>3,270</strong></td>
+<td>2,989</td>
+<td>+17%</td>
+<td>经营利润率 37.6%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按产品线拆利润；整体 TTM 经营利润 12.3 亿美元，净利润 8.59 亿。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 4,790 万美元，占净利润 5.6%。不算过分，照扣。</li>
+<li><strong>一次性项目 / 衍生品纸面收益——本篇最需要剥的一层</strong>：TTM 营收里有 1.66 亿美元「衍生品公允价值收益」，这是气价对冲合约按市价重估的账面数，含未实现部分，气价一动方向就翻——FY2023 它是 +8.2 亿，FY2022 是 -11.9 亿，波动比主业还大。把它税后剔掉（约 1.3 亿），真实经营性净利润约 7.3 亿美元。单期口径分不清已实现和未实现的比例，这里按全额剔除做保守处理。</li>
+<li><strong>资本化的支出</strong>：油气行业按成功努力法把打井成本资本化，这是行业规则不是花招；关键看折旧是否跟上——TTM 折旧 3.96 亿 vs 资本开支 6.79 亿，产量在增长期，正常。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 2.37 亿美元 ÷ SBC 0.48 亿 = <strong>4.9 倍，是真回购</strong>；股本一年实缩 1.7%，另派息 9,000 万（股息率约 0.9%）。回购+股息合计约 3.3 亿美元，占自由现金流的一半，另一半拿去还了债。</li>
+<li><strong>利润和现金流的差</strong>：净利润 8.59 亿 vs 经营现金流 13.59 亿，差 5 亿，需要对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>859</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>396 + 4</td>
+</tr>
+<tr>
+<td>+ SBC</td>
+<td>48</td>
+</tr>
+<tr>
+<td>+ 递延所得税及衍生品调整等（其他经营项）</td>
+<td>174</td>
+</tr>
+<tr>
+<td>− 营运资金增加（应收款等）</td>
+<td>−123</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,359</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−679</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>680</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>值得单说一句：利润表记了 2.41 亿所得税（税率 21.9%），但其中相当部分是递延税——页岩企业有巨额累计亏损抵扣，现金税远低于账面税，这是现金流比净利润高的原因之一，属于合法的时间差而非造假。<strong>资产负债表是这家公司过去五年最大的成就</strong>：净债务从 2021 年的 27.6 亿降到 10.2 亿，Debt/EBITDA 仅 0.59，气价再崩一次它也不会像 2015、2020 年那样被逼到墙角（当年它一度背 40 亿债，股价从 90 跌到 2 块——现在的 RRC 和那时不是同一家公司的资产负债表）。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>96.9亿 ÷ 8.59亿</td>
+<td>11.5</td>
+<td>8.7 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司口径剔衍生品波动，与下行「真实」一行同向</td>
+<td>≈13</td>
+<td>≈7.5 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>96.9亿 ÷（8.59亿 − 税后约1.3亿衍生品纸面收益）</td>
+<td><strong>13.3</strong></td>
+<td><strong>7.5 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>96.9亿 ÷ 6.80亿</td>
+<td>14.2</td>
+<td>7.0 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（96.9亿 + 10.2亿净债）÷ 12.3亿</td>
+<td>8.7</td>
+<td>11.5 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>96.9亿 ÷ 前三年(FY23-25)平均5.93亿</td>
+<td>16.3</td>
+<td>6.1 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话说清楚</strong>：你投 100 块进去，按剔掉衍生品纸面收益的真实口径，公司一年替你赚约 7.5 块。其中约 3.4 块通过回购和分红真回到你口袋，约 3.5 块拿去还债（还债等于把公司从债主手里一点点买回来给你，也是实的），剩下的留在地里打新井。三年平均口径 16.3 倍比当期 13.3 倍高一截，说明当前利润处在气价周期的偏上沿——但不像油轮那种十倍振幅的极端周期：它 2024 年最惨的坑底也赚 2.65 亿，没有亏损年，低成本+NGL 双线收入把利润的下限垫住了。</p>
+<p>这个 7.5 块未来变大还是变小？两股力在拔河：向上是 LNG 出口和数据中心用电这两个真实增长的需求（宾州就在需求现场），向下是全行业看到高气价一起增产的老毛病。RRC 手里 30 年井位意味着它是少数不需要为增长买单的玩家，但气价本身谁也说不准。</p>
+<h2>第四部分：一句话结论</h2>
+<p>这是商品行业里少见的「体面标的」：全行业最长的井位库存、最低档的成本线、修复完毕的资产负债表、4.9 倍于 SBC 的真回购，13 倍真实市盈率对着 LNG 和 AI 电力两个真实的需求顺风——不是捡便宜，但价格公道，属于「用合理价格买一门下限被垫高的周期生意」。前提想清楚：它的利润永远跟着气价走，三年平均 16 倍提醒你现在买入是在周期偏上沿上车，愿意拿着穿越气价波动的人才适合持有。</p>
+</div></body></html>

@@ -1,0 +1,204 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PBF · PBF 能源（PBF Energy）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PBF</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">6倍是火灾保险赔付撑的,真实22倍,涨170%后赌加州关停潮</div><h1>PBF · PBF 能源（PBF Energy）</h1>
+<p>市值 85 亿美元 / 股价约 71 美元（<strong>一年涨了 170%</strong>） / 行业：独立炼油厂 / TTM 截止 2026 年 6 月 30 日</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>PBF 实质上只做<strong>一门生意：买原油、炼成油品、赚中间的价差</strong>，外加一个自用的物流附属。</p>
+<h3>生意一：炼油（TTM 收入 343.5 亿，占约 99%）</h3>
+<p>它在美国拥有六座炼油厂（新泽西两座、俄亥俄托莱多、路易斯安那沙尔梅特、加州托伦斯和马丁内斯），日加工能力约 100 万桶，是美国第四大独立炼油商。这些厂全是 2010 年代从埃克森、雪佛龙这些巨头手里<strong>打折买来的老厂</strong>——巨头嫌利润薄、环保负担重甩掉的资产，PBF 的商业模式就是「捡别人不要的厂，靠周期吃饭」。</p>
+<p>生意的算法很简单：一桶原油进厂约 75 美元，炼成汽油、柴油、航空煤油卖出去约 90 美元，中间 15 美元叫「裂解价差」，扣掉每桶约 8–10 美元的能源、人工、催化剂、维护费，剩下的才是利润。<strong>价差它一分钱做不了主</strong>——原油价格 OPEC 定，成品油价格市场定，它是纯粹的价格接受者。价差好的年份（2022 年俄乌冲突）一年赚 29 亿，价差差的年份（2024–2025）连亏两年合计 7 亿。过去五个财年的净利润序列是：+2.3 亿、+28.8 亿、+21.4 亿、−5.3 亿、−1.6 亿——<strong>这不是一家公司的成长曲线，是心电图</strong>。</p>
+<p>眼下它站在心电图的上坡段：2026 年上半年炼油价差大幅回暖，核心原因是<strong>加州两座竞争对手的炼油厂宣布关停</strong>（菲利普斯 66 洛杉矶厂、瓦莱罗贝尼西亚厂），加州油品供应收紧，而 PBF 恰好在加州有两座厂（托伦斯、马丁内斯），是这波关停潮的直接受益者。股价一年涨 170% 涨的就是这个故事。</p>
+<h3>生意二：物流（PBF Logistics，对外收入约 0.2 亿）</h3>
+<p>自家炼油厂配套的储罐、码头、管道，收入几乎全是内部关联交易（3.8 亿收入里 3.6 亿被抵消），对外可以忽略。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>343.7 亿美元（同比 +13.5%）</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>6.9 亿（利润率 2.0%）</td>
+</tr>
+<tr>
+<td>净利润（GAAP，含大额营业外收益）</td>
+<td>13.5 亿</td>
+</tr>
+<tr>
+<td>EBITDA</td>
+<td>9.7 亿</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>最大的障眼法：净利润 13.5 亿比经营利润 6.9 亿高出近一倍。</strong> 税前利润 18.1 亿 − 经营利润 6.9 亿 = <strong>约 11 亿美元的营业外收益</strong>。背景：2025 年 2 月它的加州马丁内斯炼油厂发生大火，之后一年多陆续收到巨额财产保险赔付——这笔钱大概率就是营业外收益的主体（数据源未逐项披露，此为按公开事件的推断）。另有 0.9 亿卖资产收益。<strong>保险赔付是赔你烧掉的厂,不是生意赚的钱，明年不会再有。</strong> 剔掉这约 11 亿、按正常税率重算，真实经营性净利润约 3.5–4 亿美元——<strong>表面 6.2 倍的市盈率，真实约 22 倍</strong>。</li>
+<li><strong>一次性项目</strong>：除上述外无大额减值（FY2021 曾有 6.7 亿减值转回类项目，历史常态就是大起大落）。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 3500 万，不重要。</li>
+<li><strong>回购与稀释</strong>：TTM <strong>回购为零</strong>（2023–2024 价差好时回购过 8.6 亿，价差一差立刻停），股本一年反而 +3.7%——低谷发股、高峰回购，方向做反了的资本运作。分红一年约 1.3 亿（收益率约 1.5%）。值得一提：墨西哥首富卡洛斯·斯利姆的家族基金近两年持续增持，已是最大外部股东——有人陪跑，但人家的成本比现价低得多。</li>
+<li><strong>利润和现金流的差</strong>：TTM 经营现金流 16.6 亿，看着漂亮，但里面同样混着保险赔付现金；资本开支 9.1 亿（老厂维护费用越来越高，FY2024 才 3.9 亿，马丁内斯重建推高了开支），自由现金流 7.4 亿。<strong>炼油厂的资本开支是刚性的</strong>——不花就出安全事故，马丁内斯那场火就是最贵的一课。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>85 亿 ÷ 13.5 亿</td>
+<td>6.2 倍</td>
+<td>16.2 元</td>
+</tr>
+<tr>
+<td>华尔街远期口径</td>
+<td>分析师赌 2026 全年价差维持高位</td>
+<td>3.9 倍（远期）</td>
+<td>25.7 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>85 亿 ÷ 约 3.8 亿（剔保险赔付等营业外收益）</td>
+<td><strong>≈22 倍</strong></td>
+<td><strong>≈4.5 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>85 亿 ÷ 7.4 亿（内含保险现金）</td>
+<td>11.5 倍</td>
+<td>8.7 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>（85 亿 + 净债 16 亿）÷ 9.7 亿</td>
+<td><strong>10.5 倍</strong></td>
+<td>—（炼油行业正常年景 5–6 倍）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>85 亿 ÷ 4.8 亿（FY23 +21.4、FY24 −5.3、FY25 −1.6 亿的均值）</td>
+<td><strong>17.6 倍</strong></td>
+<td><strong>5.7 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>全表要害在 EV/EBITDA 那行</strong>：炼油商正常估值 5–6 倍 EBITDA，PBF 现在 10.5 倍——按周期股「低倍数时贵、高倍数时便宜」的反直觉规律，这个读数说明市场已经把「加州关停潮带来的好年景」全部提前计价了。</p>
+<p>大白话：<strong>你现在投 100 块进去，按剔除保险赔付的真实口径，公司一年替你赚 4 块半；按穿越周期的三年平均算，只有 5 块 7。</strong> 真正回到你口袋的只有 1 块 5 的分红，回购是零。想赚钱只能赌两件事：加州炼厂关停后价差维持高位、别的厂别再着火——第一件有可能成（结构性利好是真的），第二件 2025 年刚失败过一次。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>表面 6 倍是火灾保险赔付撑出来的，真实 22 倍、EV/EBITDA 10.5 倍——你在为一家五年里两年亏损、回购随价差关停、涨了 170% 的心电图公司付出周期股的顶格价钱。加州关停潮的利好是真的，但已经在价格里了；这种公司的正确买点是它亏损、被人唾弃、股价个位数的时候（2024 年底就是），不是现在。偏贵。</p>
+</div></body></html>

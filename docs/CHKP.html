@@ -1,0 +1,245 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CHKP · Check Point 软件技术</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CHKP</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">13倍FCF+16%市值是净现金+真回购，但行业涨12%它只长5%</div><h1>CHKP · Check Point 软件技术</h1>
+<p>市值 $141 亿 / 股价约 $138 / 网络安全（科技服务）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Check Point 是一家以色列网络安全公司，1993 年成立，发明了世界上第一款商用防火墙。三十多年过去，它实质上还是围着「防火墙 + 挂在防火墙上的订阅服务」做三门生意。</p>
+<h3>生意一：卖防火墙盒子（网络安全网关）</h3>
+<p>这是最容易理解的一门：卖硬件。产品线叫 Quantum，是一台台装在企业机房里的物理设备——所有进出公司网络的流量都要从这台盒子过一遍，它负责把黑客攻击、病毒、钓鱼流量拦在门外。</p>
+<p>具体到一单生意：一家有 5000 名员工的制造企业要建新总部，网络部门会采购两台 Quantum 高端网关做主备（单台十几万美元），再给八个分厂各配一台小型号（每台几千到几万美元），一次性付款一百多万美元。买盒子的钱是一次性确认的收入——这就是财报里「Products &amp; Licenses」那一块。</p>
+<ul>
+<li><strong>钱</strong>（财报按产品线拆分，TTM）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>网关及其他产品/许可</td>
+<td>约 $5.3 亿</td>
+<td>约 +5%（按 FY2025 口径）</td>
+<td>19%</td>
+</tr>
+</tbody>
+</table></div>
+<p>这门生意十年没怎么涨——2021 年卖 $5.1 亿、TTM 约 $5.3 亿。防火墙盒子是存量市场，大家换机时才买。</p>
+<h3>生意二：安全订阅（增长引擎）</h3>
+<p>盒子拦攻击靠的是「知道什么是攻击」，而攻击天天翻新。所以 Check Point 卖订阅：ThreatCloud 威胁情报（全球几十万台 Check Point 设备发现的新攻击，实时同步给所有客户）、Harmony 系列（管员工的手机、笔记本、邮箱安全——比如自动识别并拦下伪装成 CEO 的钓鱼邮件）、CloudGuard（企业把系统搬上 AWS/Azure 后，云上资产的安全防护）、还有这两年新收购来的 SASE（远程办公安全上网）和 AI 安全（新买的 Lakera，防止员工把公司机密喂给 ChatGPT 这类工具）。</p>
+<p>收钱方式是按年订阅：还是上面那家 5000 人的制造企业，买完盒子后每年再付 40–60 万美元订阅费，覆盖威胁情报更新 + 5000 个员工终端 + 邮箱防护。不续费，盒子就退化成一台只会按死规则放行的哑设备——所以续费率很高。</p>
+<ul>
+<li><strong>钱</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全订阅</td>
+<td>$12.86 亿</td>
+<td>+9.5%</td>
+<td>46.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p>这是全公司唯一还在像样增长的部分，也已经是最大的收入来源。</p>
+<h3>生意三：软件更新与维护（收租）</h3>
+<p>老客户为已购软件付的年度维护费：出了 bug 给修、软件出新版本给升级、设备坏了给换。按许可费的约 20% 每年收取。</p>
+<ul>
+<li><strong>钱</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>软件更新与维护</td>
+<td>$9.52 亿</td>
+<td>约 0%（FY2025 +0.6%）</td>
+<td>34.4%</td>
+</tr>
+</tbody>
+</table></div>
+<p>$9.5 亿收入几乎零增长——这就是一笔坐着收的租金，来自全球十几万家还在用 Check Point 的企业。租金稳定，但租客数量不再增加。</p>
+<p><strong>合计：TTM 总营收 $27.6 亿，同比 +4.6%；经营利润 $8.02 亿，经营利润率 29%。</strong> 财报没有披露分部利润，按产品结构估算：维护业务利润率最高（近乎纯利），订阅次之，硬件最低（毛利率约 80% vs 软件 95%+）——此为估算。</p>
+<p>一句话总结商业模式：<strong>装机量就是护城河</strong>。十几万企业客户的防火墙已经插在机房里、安全策略已经配好、IT 团队已经培训过，换成竞品要停机、要重配、要重新培训，所以维护费和订阅费年年照付。但同一个原因反过来也成立：别人家的客户也不迁过来。于是全行业以 12%+ 的速度增长时，Check Point 只有 5%——<strong>Palo Alto、Fortinet、CrowdStrike 在抢增量市场，Check Point 在守存量</strong>。2024 年底创始人 Gil Shwed 卸任 CEO，新 CEO Nadav Zafrir（前以色列 8200 部队网络司令）上任后开始花钱买增长（一年多收购了 Cyberint、Veriti、Lakera 三家公司），经营利润率因此从 34% 降到 29%。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $2.34 亿，占净利润 22%，且在快速膨胀（2021 年才 $1.2 亿，四年翻倍）。GAAP 已扣，本文一律不加回。公司宣传的 Non-GAAP EPS 把这 $2.34 亿加了回去——那是每年真实送出去的股份，不能当它不存在。</li>
+<li><strong>一次性项目·所得税是重点</strong>：<strong>TTM 所得税是负 $1.06 亿——不是交税，是收到了税务收益</strong>。倒推：税前利润约 $9.43 亿，净利润却有 $10.49 亿。Check Point 正常年份有效税率约 13–18%，按 15% 算正常化净利润约 $8.0 亿。也就是说，<strong>账面净利润被一次性税务项目（大概率是税务和解或递延税资产释放）抬高了约 $2.5 亿，抬高幅度 30%</strong>。FY2025 净利润同比 +29% 而经营利润 −5%，全部差距都在这里。单期口径无法确认该项目的确切性质，但可以确认它不会年年发生。</li>
+<li><strong>资本化的支出</strong>：没有明显的软件开发费资本化，研发全部费用化，这点干净。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $14.2 亿 ÷ SBC $2.34 亿 = <strong>6.1 倍，是真回购</strong>。股本一年实缩 4.4%。值得注意的是 FY2025 公司史上首次发债 $19.7 亿（此前三十年零负债）来加码回购——手上明明有 $42 亿现金投资，还要借钱回购，主要是海外现金回美/回以色列有税务成本。发债后仍是净现金 $22 亿。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 $10.49 亿、经营现金流 $11.33 亿、自由现金流 $11.03 亿（资本开支只有 $0.3 亿，软件公司的美德）。对账：净利润 10.49 + 折旧摊销 0.85 + SBC 2.34 − 应收增加 0.7 − 税务时间差 1.49 + 递延收入增加 1.04 − 其他 0.9 ≈ 11.33。核心是<strong>订阅客户先付全年的钱</strong>（递延收入 TTM 增加 $1 亿），现金流质量好。但注意：现金流没有被税务收益抬高（那是非现金项目），所以「现金流 ≈ 净利润」这个表象下，其实是<strong>现金流真实、净利润偏高</strong>。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>141.2 ÷ 10.49</td>
+<td>13.5</td>
+<td>¥7.4</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 后约 $12.8 亿</td>
+<td>约 11</td>
+<td>（虚的，不算）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>141.2 ÷ 8.0（税务正常化后）</td>
+<td><strong>17.6</strong></td>
+<td><strong>¥5.7</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>141.2 ÷ 11.03</td>
+<td>12.8</td>
+<td>¥7.8</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(141.2 − 22.3净现金) ÷ 8.02</td>
+<td>14.8</td>
+<td>¥6.7</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>141.2 ÷ 9.1（2023/2024/TTM 均值）</td>
+<td>15.5</td>
+<td>¥6.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按剔除税务红包后的真实口径，公司一年替你赚约 5.7 块；按现金流口径能到 7.8 块</strong>（现金流口径更接近真相，因为订阅预收款是实打实进账的）。这笔钱的去向非常清楚：几乎全部通过回购还给你——TTM 回购 $14.2 亿超过了净利润，股数每年减 4.4%，等于回报里有大半直接兑现。不分红。剩下的钱在买公司（一年 $2.8 亿收购），买来的都是补短板的小公司。</p>
+<p>X 未来变大还是变小？营收 +5% × 股数 −4% ≈ 每股收益年增 9% 左右，能缓慢变大——前提是新 CEO 的收购别把利润率继续往下砸（已经从 34% 掉到 29%），以及防火墙存量市场别加速萎缩。</p>
+<h2>第四部分：一句话结论</h2>
+<p>一台还在稳定吐现金的收租机器：13 倍 FCF、市值 16% 是净现金、6 倍于 SBC 的真回购，账（除了那笔税务红包）干净得像教科书——但它在一个 12% 增长的行业里只长 5%，是份额被 Palo Alto 和 Fortinet 年年蚕食的守成者，股价一年跌 27% 跌出来的这个估值，是市场对「新 CEO 买增长能不能成」投的不信任票。<strong>值这个价，不算便宜可占</strong>：你买到的是 7–8% 的现金回报率加缓慢的每股增长，放着观察可以，指望重估翻身需要先看到订阅增速重新上双位数。</p>
+</div></body></html>

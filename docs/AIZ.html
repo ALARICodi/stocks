@@ -1,0 +1,266 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AIZ · Assurant（安信龙保险）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AIZ</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">隐形收费站ROE18%真回购，但一年涨32%把低估涨没了</div><h1>AIZ · Assurant（安信龙保险）</h1>
+<p>市值 $141 亿 / 股价约 $286 / 特种保险 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是保险企业，第三部分用市净率 PB + ROE 口径而不是普通市盈率，原因是保险公司的利润建立在承保杠杆和投资组合之上，账面净资产才是本钱。不过 Assurant 比较特殊——它一大半收入其实更像「收服务费」而不是「扛风险」，所以市盈率口径也一并给出，两边对照着看。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Assurant 不卖你熟悉的那种人寿险或车险，它做的是四门「藏在别人生意里的保险」——你大概率用过它的服务，但从没听过它的名字。</p>
+<h3>生意一：手机碎屏险和以旧换新（Connected Living）</h3>
+<p>你在 T-Mobile 或 Verizon 买手机时，店员问「要不要加每月 18 美元的设备保护计划？碎屏、丢失、进水都管」——你点头的那一刻，背后承保和理赔的就是 Assurant。运营商挂名收钱，Assurant 干活：核保、定价、接理赔电话、48 小时内寄替换机。它在美国运营着巨大的翻新中心，收回的旧手机修好后卖到二手市场，以旧换新（trade-in）的物流和翻新也是它做——运营商搞「旧 iPhone 抵 800 美元换新机」活动，旧机回收、检测、定价、转售整条链是 Assurant 在跑。此外还有家电和消费电子的延保（在零售商买洗衣机时加购的三年延保，不少也是它承保）。</p>
+<p>一单的经济账：一个 5000 万用户的运营商，假设 15% 用户买保护计划，每人每月 15–18 美元，一年就是十几亿美元保费流水，Assurant 从中赚承保利润（收的保费减赔出去的手机）加服务费。手机保险赔付可控（免赔额 99–249 美元设计得让你不敢随便报案），这门生意利润率稳定，几乎没有天灾风险。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connected Living</td>
+<td>$58.5 亿</td>
+<td>+8.8%</td>
+<td>43.5%</td>
+</tr>
+</tbody>
+</table></div>
+<p>全公司最大、增长最快的一块。风险点：客户极度集中——丢掉一家大运营商就是重伤（好在与 T-Mobile 的合约已续到 2030 年）。</p>
+<h3>生意二：汽车延保（Global Automotive）</h3>
+<p>你在美国车行买二手车，销售劝你花 2500 美元买个「两年不限里程机械故障保障」——这份合同多半由 Assurant 承保或管理。它通过几万家汽车经销商卖车辆服务合同（VSC）和 GAP 险（车被偷或全损时，赔保险赔款和车贷余额之间的差额）。经销商赚佣金，Assurant 扛赔付。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Global Automotive</td>
+<td>$42.0 亿</td>
+<td>约 0%</td>
+<td>31.2%</td>
+</tr>
+</tbody>
+</table></div>
+<p>近三年原地踏步：新车销量平淡 + 修车通胀（零件和工时费大涨）把赔付成本顶上去，承保利润被挤压，公司这两年一直在提价重定价，利润率在缓慢修复中。</p>
+<h3>生意三：房贷强制房屋险（Homeowners）</h3>
+<p>美国银行放房贷时要求房子必须有保险。如果房主的保单断了（忘缴费、被保险公司拒续），银行有权直接替房主买一份——保费翻倍、直接从月供里扣，这叫 lender-placed insurance（强制置放险）。Assurant 是这个细分市场的老大，跟各大房贷服务商系统直连，自动监测几千万套房子的保单状态，断保即刻补上。近两年佛州、加州保险公司大规模撤出，普通房主买不到保险的越来越多，这门生意反而越做越大。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Homeowners</td>
+<td>$23.0 亿</td>
+<td>+4.8%</td>
+<td>17.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p>这是全公司唯一真正「扛天灾」的部分：保的房子集中在佛州、德州，飓风一来就是大额赔付——2022 年飓风 Ian 让全公司净利润从 6.4 亿砸到 2.8 亿，就是这块干的。</p>
+<h3>生意四：租客险及其他（Renters and Other）</h3>
+<p>公寓管理公司要求租客必须有租客险，顺手卖你一份月费 15–25 美元的——背后多是 Assurant。TTM 营收 $5.9 亿，占 4.4%，稳定小生意。</p>
+<p><strong>合计：TTM 总营收 $134.6 亿（+9.4%），净利润 $10.6 亿，净利率 7.8%。</strong> 财报分部利润披露口径为调整后 EBITDA，本文按整体估算：Connected Living 和 Renters 利润率最稳，Homeowners 利润率最高但逢大灾年归零甚至倒贴，Automotive 目前利润率最薄——此为估算。</p>
+<p>商业模式一句话：<strong>它是嵌在运营商、车行、银行流程里的「隐形收费站」</strong>。客户是 T-Mobile、大银行这种巨头，一旦系统对接完成、理赔网络铺好，换掉它的成本极高（换供应商意味着几千万用户的保单迁移）；但反过来，大客户也拿捏着它的命脉，续约谈判时压价是常态。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM $0.92 亿，占净利润 8.7%，规模克制，五年只从 0.67 亿涨到 0.92 亿。GAAP 已扣，不加回。</li>
+<li><strong>一次性项目</strong>：TTM 没有大额一次性损益。历史上要留意两笔：2021 年净利润 $13.6 亿是卖掉殡葬保险业务（Global Preneed）的一次性收益吹起来的，不可比；2022 年 $2.8 亿是飓风 Ian 砸的。<strong>天灾对它不是「一次性」而是「每隔几年必来一次的经常性项目」</strong>——TTM 恰逢温和灾年，当期利润处在「没挨打」的状态，这点在估值时必须打折扣。</li>
+<li><strong>资本化的支出</strong>：无异常，资本开支 $2.2 亿主要是理赔系统和翻新中心，正常。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 $4.1 亿 ÷ SBC $0.92 亿 = <strong>4.5 倍，真回购</strong>；另派息 $1.8 亿（股息率约 1.2%）。股本一年实缩 1.5%。回购 + 股息合计约 $5.9 亿，占净利润 56%——一半利润真金白银还了股东。</li>
+<li><strong>利润 vs 现金流</strong>：净利润 $10.6 亿、经营现金流 $18.7 亿。差额主要来自保险公司的天然属性：先收保费后赔付，保险准备金增加（TTM +$3.1 亿）和再保应收回收（+$5.1 亿）都是先进现金。<strong>保险公司的经营现金流常年大于净利润是常态而非美德</strong>，不能按 P/OCF 7.5 倍去想象它有多便宜——那些现金里有一部分是将来要赔出去的。</li>
+</ul>
+<h2>第三部分：保险口径 + 市盈率对照</h2>
+<p><strong>核心指标（保险口径）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>什么意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>2.31</td>
+<td>净资产约 $61 亿，你按 2.3 倍价格买</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>4.77</td>
+<td>账面一半以上是收购来的商誉</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>18.3%</td>
+<td>每 100 块本钱一年赚 18.3 块，特种险里属于优等生</td>
+</tr>
+<tr>
+<td>ROE × (1/PB) 年回报</td>
+<td><strong>7.9%</strong></td>
+<td>投 100 块市值，对应赚 7.9 块</td>
+</tr>
+<tr>
+<td>股本变化</td>
+<td>−1.5%/年</td>
+<td>真回购在缩股</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>市盈率对照（它的服务费属性使 PE 也有参考价值）：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>140.9 ÷ 10.55</td>
+<td>13.4</td>
+<td>¥7.5</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>TTM 无一次性项目，但按「正常灾年」给天灾折扣约 10%</td>
+<td>约 14.8</td>
+<td>¥6.8</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>140.9 ÷ 8.1（2023/2024/TTM 均值）</td>
+<td>17.3</td>
+<td>¥6.9→<strong>这个更接近跨越灾年的真实水平</strong></td>
+</tr>
+<tr>
+<td>经营现金流口径</td>
+<td>保险公司此口径失真，不采用</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，风平浪静的年份它赚 7.5 块，摊平飓风年大约 6.5–7 块。</strong> 其中约 4 块以回购+股息形式直接回你口袋，剩下的留在公司里继续滚（过去五年 ROE 从 11% 爬到 18%，留存的钱用得不错）。这个回报建立在承保杠杆上：总资产 $410 亿对净资产 $61 亿，飓风大年时利润会剧烈缩水（2022 年实演过一次，EPS −78%），但它跟银行不同——大部分利润来自手机和汽车延保这种跟金融市场、跟天气都无关的服务费，抗周期性比典型财险公司好一截。</p>
+<p>X 会变大还是变小？大概率缓慢变大：手机保护随换机周期拉长（人们更愿意保旧手机）稳定增长，汽车延保重定价后利润率在修复，强制房屋险受益于佛州加州的保险危机。EPS 五年年化增速目标公司给的是双位数，过去三年实际做到了。</p>
+<h2>第四部分：一句话结论</h2>
+<p>一家被名字耽误的好公司：听着是保险，实际是嵌在运营商和银行流程里的收费站，18% 的 ROE、克制的 SBC、真回购、管理层说到做到——但股价一年涨了 32%，正好把「灾年低估」涨成了「平年公道」，13.4 倍是温和灾年的利润，摊平飓风后真实约 15–17 倍。<strong>值这个价，买入没有便宜可占，回调到 PB 2 倍以下（约 $250）才谈得上机会</strong>；放进观察名单等飓风季的错杀是对它最合理的用法。</p>
+</div></body></html>

@@ -1,0 +1,225 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WTFC · 温特拉斯特金融（Wintrust Financial）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WTFC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">好银行但PB1.45五年最贵，ROE12%踩9倍杠杆，年回报8块4</div><h1>WTFC · 温特拉斯特金融（Wintrust Financial）</h1>
+<p>市值 103.2 亿美元 / 股价 152.95 美元 / 行业：银行（芝加哥地区银行控股集团） / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是银行，下面用市净率、ROE、ROA 口径而不是普通市盈率，原因是：银行的"营收"是利息差，利润建立在十几倍杠杆之上，普通公司那套市盈率算法会把它算得虚假地便宜。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Wintrust 是芝加哥都会区最大的本地银行集团，做三门生意：社区银行（占营收 74%）、保费贷款（19%）、财富管理（8%）。</p>
+<h3>生意一：社区银行——TTM 营收 20.6 亿，占 74%</h3>
+<p>它的打法在美国银行业里很独特：<strong>不用一块统一招牌，而是养着 15 个本地品牌</strong>——Lake Forest 银行、Hinsdale 银行、Barrington 银行……每个芝加哥富裕郊区一个"自己镇上的银行"。镇上的牙医诊所、汽车经销商、五金连锁店老板走进去，见到的行长就住在本地、在教堂和学校董事会里都认识人；但柜台背后的风控、IT、资金全是 Wintrust 集团统一的。<strong>用大银行的成本，卖社区银行的人情</strong>——这是它 30 年来从零做到约 680 亿美元总资产的核心配方。</p>
+<p>钱怎么赚的和所有银行一样：吸收本地居民和企业约 5 分利的存款，放给本地中小企业做经营贷、设备贷、商业地产贷，收 7 个多点的利息，中间赚约 2.5 个点的息差。一单典型生意：一家郊区的连锁餐饮公司要开三家新店，从 Hinsdale 银行贷 400 万美元买设备装修，按月付息，公司的日常流水账户也开在这里——存贷两头都被抓住。</p>
+<h3>生意二：保费贷款（Specialty Finance）——TTM 营收 5.4 亿，占 19%</h3>
+<p>这是 Wintrust 藏着的<strong>全美最大的商业保费融资公司</strong>（First Insurance Funding）。生意逻辑：一家运输公司每年商业保险要交 80 万美元保费，保险公司要求一次付清，但运输公司不想一次抽走 80 万现金流——Wintrust 替它垫付给保险公司，运输公司分 9–10 个月还本付息。<strong>这种贷款几乎坏不了账</strong>：万一客户断供，保单退保，保险公司把未使用的保费直接退给 Wintrust。抵押品是现金性质的，坏账率常年只有几个基点。这门生意全国性开展（不局限芝加哥），是它比普通地区银行利润更稳的秘密。另外还做寿险保费融资（高净值人群用保单加杠杆）和设备租赁。</p>
+<h3>生意三：财富管理——TTM 营收 2.1 亿，占 8%</h3>
+<p>给社区银行抓来的企业主客户管钱：证券经纪、信托、投资顾问。管理和代管资产几百亿美元，按资产规模抽管理费。这门生意本身平庸，但作用是<strong>把客户粘死</strong>——存款、贷款、身家都在你这，他一辈子不会换银行。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>社区银行</td>
+<td>20.6 亿</td>
+<td>+4%</td>
+<td>74%</td>
+<td>息差收入为主</td>
+</tr>
+<tr>
+<td>保费贷款等专项金融</td>
+<td>5.4 亿</td>
+<td>+7%</td>
+<td>19%</td>
+<td>全国性，低风险抵押</td>
+</tr>
+<tr>
+<td>财富管理</td>
+<td>2.1 亿</td>
+<td>+12%</td>
+<td>8%</td>
+<td>手续费收入</td>
+</tr>
+<tr>
+<td>合计（抵消后）</td>
+<td>27.6 亿</td>
+<td>+11%</td>
+<td>100%</td>
+<td>净利润 8.48 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报未按分部披露利润；按行业常态，社区银行贡献利润大头，保费贷款利润率更高。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉（银行版）</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表未单列，并在其他项里，说明金额对 8.5 亿净利润无实质影响。但注意<strong>股本一年增加了 1.25%</strong>——它没回购，还在小幅增发（部分来自并购付股票和员工计划），股东每年被稀释 1 个多点，等于利润增速要打个九八折。</li>
+<li><strong>拨备（银行版的"利润调节阀"）</strong>：TTM 计提坏账拨备 1.02 亿，占税前利润 8%，连续四年稳定在 0.8–1.1 亿——没有靠少提拨备虚增利润的迹象（对比 2021 年全行业倒拨回补利润，它也回补过 5900 万，那年利润有水分，但那是五年前）。</li>
+<li><strong>一次性项目</strong>：TTM 有 3270 万投资出售收益，占净利润不到 4%，无关大局。</li>
+<li><strong>利润是真的吗</strong>：银行的净利润质量看 ROA——<strong>1.25% 的总资产回报率在美国银行业属于良好</strong>（1% 是及格线），且从 0.98% 一路改善到 1.25%，五年没有一年倒退。经营现金流 TTM 16.4 亿，比净利润还高，利息是真金白银收进来的。</li>
+<li><strong>资本充足</strong>：净负债仅 2 亿（现金投资 43 亿 vs 债务 45 亿），控股公司层面杠杆干净。风险都在银行资产负债表本身——680 亿资产对 75 亿净资产，<strong>9 倍杠杆，这是银行的天性而不是它的问题</strong>，但经济衰退时利润会跟着芝加哥中小企业的死活剧烈波动。</li>
+</ul>
+<hr />
+<h2>第三部分：估值——银行口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>数值</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>103.2亿 ÷ 75.3亿净资产</td>
+<td>1.45 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>剔除并购商誉后</td>
+<td>1.66 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE 净资产回报率</td>
+<td>8.48亿 ÷ 75.3亿</td>
+<td>12.2%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（真实回报）</strong></td>
+<td>12.2% ÷ 1.45</td>
+<td>—</td>
+<td><strong>8.4 元</strong></td>
+</tr>
+<tr>
+<td>市盈率参考</td>
+<td>103.2亿 ÷ 8.48亿</td>
+<td>12.2 倍</td>
+<td>8.2 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>103.2亿 ÷ 7.63亿（FY23–25均值）</td>
+<td>13.5 倍</td>
+<td>7.4 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你投 100 块买它的股票，实际是花 145 块的价格买了 100 块的银行净资产，这 100 块净资产一年赚 12 块 2，折到你头上就是一年 8 块 4。这 8 块 4 里，以分红形式回到口袋的只有 1 块出头（派息率约 15%，收益率 1.3% 左右），<strong>没有回购</strong>，剩下的全部留存下来变成放更多贷款的资本——这正是它净利润五年翻近一倍（4.4 亿→8.5 亿，年均 +14%）的燃料。只要芝加哥经济不出事，这个 8 块 4 大概率逐年变大。</p>
+<p>但两点要泼冷水：<strong>第一，这 12.2% 的 ROE 站在 9 倍杠杆上</strong>，2008 年式的衰退来了，中小企业贷款和商业地产贷款的坏账会把它一年利润吞掉大半（不至于伤筋动骨——它 2008–2010 年也没亏过年度，但利润会砍半）。<strong>第二，PB 1.45 倍是它自己五年来最贵的价格</strong>——2023 年只要 1.05 倍，现在市场已经把"好学生"的溢价给足了。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这是一家真材实料的好银行——独特的多品牌打法、几乎不坏账的保费贷款护城河、ROA 五年连升、利润年均增 14%——但 1.45 倍 PB 是它五年来最贵的时刻，投 100 块年赚 8 块 4 建立在 9 倍杠杆之上：<strong>生意站得住，价格只能算公道，想要便宜得等下一次市场恐慌</strong>。</p>
+</div></body></html>

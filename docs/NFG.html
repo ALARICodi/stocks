@@ -1,0 +1,223 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NFG · National Fuel Gas（国民燃气）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NFG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">11.5倍是气价景气倍数,FCF口径35倍,今年还在增发稀释</div><h1>NFG · National Fuel Gas（国民燃气）</h1>
+<p>市值 78.9 亿美元 / 股价约 83 美元 / 天然气一体化（开采+管道+城燃）/ TTM 截止 2026-06-30（财年 9 月截止）</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>NFG 是美股里少见的"天然气全产业链一家包办"：自己在宾夕法尼亚打井采气，气从自家的集输管道汇入自家的州际管道，最后一部分卖进自家在纽约州西部的城市燃气网络。1902 年创立，总部布法罗。财报分三个段：</p>
+<p><strong>1. 上游开采+集输（Seneca Resources）—— 利润引擎，占营收约一半</strong></p>
+<p>子公司 Seneca 在宾州的马塞勒斯/尤蒂卡页岩区打水平井采天然气，年产量几千亿立方英尺，是阿巴拉契亚地区的中型玩家。这门生意的经济学：打一口井花上千万美元，采出的气按 Henry Hub 基准价卖（公司会用期货锁一部分价），阿巴拉契亚的气成本全美最低，但离墨西哥湾的 LNG 出口终端远，卖价要打折。配套的集输管道（把井口的气收拢加压）也算在这个段里，赚固定费率。<strong>这个段决定了 NFG 的利润波动</strong>：气价好的年份（比如 TTM 这一年，LNG 出口和数据中心用电拉高气价）利润爆表，气价崩的年份直接减值——2024 财年就减了 5.19 亿，把当年全公司净利润打到只剩 7800 万。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>上游+集输</td>
+<td>12.85 亿</td>
+<td>+9%</td>
+<td>51%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2. 城市燃气（Utility）—— 给布法罗人烧暖气，占37%</strong></p>
+<p>给纽约州西部和宾州西北约 75 万户家庭企业送天然气，冬天烧暖气是刚需。电价一样受州监管：投多少管网资产、按核定回报率赚多少，旱涝保收但天花板锁死。最近一轮费率调整（涨价）获批，是 TTM 利润改善的第二个来源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>城燃</td>
+<td>9.38 亿</td>
+<td>+15%</td>
+<td>37%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>3. 州际管道+储气库（Pipeline &amp; Storage）—— 收过路费，占11%</strong></p>
+<p>Supply Corp 和 Empire 两条受联邦监管的州际管道，把阿巴拉契亚的气往加拿大边境和东海岸送，按长期合同收固定运输费，跟气价几乎无关，是三块里最稳的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>管道+储气</td>
+<td>2.81 亿</td>
+<td>+2%</td>
+<td>11%</td>
+</tr>
+</tbody>
+</table></div>
+<p>一体化的真实好处：自家气走自家管道，中间环节的利润全留在体内，而且上游亏钱时管道和城燃能兜底——这让它敢连续 56 年年年加息股息（美股"股息之王"名单成员）。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 仅 1880 万，占净利润 2.8%，干净。</li>
+<li><strong>一次性项目</strong>：TTM 这十二个月本身没有减值，但<strong>这家公司的减值是周期性复发的</strong>：FY2024 减 5.19 亿、FY2025 再减 1.42 亿、FY2021 减 0.76 亿——气价一崩，Seneca 的井就减记。看它必须默认"每几年来一次大减值"是商业模式的一部分。当期 11.5 倍市盈率对应的是气价景气年的利润。</li>
+<li><strong>今年在悄悄补血</strong>：TTM 增发了 3.38 亿美元普通股（股本 +2.4%）、净增 8.18 亿债务，账上现金从 4300 万堆到 12.4 亿。数据源看不出用途——大概率是给管道扩建/上游开发预筹资金。对股东的直接影响：<strong>别人家在回购，它在稀释你</strong>。</li>
+<li><strong>回购与稀释</strong>：TTM 回购仅 700 万美元 vs SBC 1880 万，回购聊胜于无；加上增发，股东收益率约等于只有那 2.68% 的股息。</li>
+<li><strong>利润和现金流的差（这是全篇最要紧的表）</strong>：净利润 6.75 亿 → 加折旧摊销 4.82 亿 → 加 SBC 0.19 亿 → 营运资金及其他约 -0.04 亿 → 经营现金流 12.7 亿；<strong>再减资本开支 10.5 亿 → 自由现金流只剩 2.22 亿</strong>。打井+修管道年年吃掉经营现金流的八成以上，过去五年 FCF 合计不到 7 亿，而同期分红就付了 9 亿多——<strong>56 年加息股息的另一面是：股息有相当一部分年份靠借债维持</strong>。市盈率 11.5 倍看着便宜，市现率（P/FCF）35 倍才是现金口径的真相。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>78.9 亿 ÷ 6.75 亿</td>
+<td>11.5 倍</td>
+<td>8.7 块</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>TTM 无减值，但利润处在气价景气位，按"减值周期平摊"估算约 5 亿常态利润</td>
+<td>约 16 倍（估算）</td>
+<td>6.3 块</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>78.9 亿 ÷ 2.22 亿</td>
+<td><strong>35.5 倍</strong></td>
+<td><strong>2.8 块</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>102.2 亿 ÷ 10.4 亿</td>
+<td>9.8 倍</td>
+<td>10.2 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>78.9 亿 ÷（4.77+0.78+5.19）/3 ≈ 3.58 亿</td>
+<td>22.1 倍</td>
+<td>4.5 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 22 倍 vs 当期 11.5 倍，差了近一倍——中间隔着一个 FY2024 的气价崩盘年。真实回报大概率落在 4.5 和 8.7 之间，取 6 块左右比较诚实。</p>
+<p><strong>大白话：你现在投 100 块进去，账面上公司一年替你赚 8.7 块，但按含一轮气价低谷的平均水平只有 5–6 块，而真正以现金形式回到你口袋的只有 2.7 块股息</strong>——剩下的全部被打进下一批井和管道里。这个再投资赚不赚？ROIC 9.9% 对 5.4% 的资金成本，是赚的，但赚得不惊艳。未来的变量：LNG 出口和数据中心用电确实在结构性抬高天然气需求（利好上游），但只要气价回落一次，减值和利润腰斩就会重演一次。</p>
+<h2>第四部分：一句话结论</h2>
+<p>半只脚站在管制生意里的天然气公司，56 年加息股息证明它穿越过所有周期，账也不脏——但 11.5 倍是气价景气年的倍数，现金口径 35 倍、三年平均 22 倍才是全貌，今年还在增发稀释而不是回购，价格算公道，别当便宜货买，买它等于半买公用事业半赌气价。</p>
+</div></body></html>

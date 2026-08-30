@@ -1,0 +1,290 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GL · 环球人寿（Globe Life）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">GL</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">11.5倍ROE21%每年还股东7%,便宜因增员模式有监管阴影</div><h1>GL · 环球人寿（Globe Life）</h1>
+<p>市值 $132.8 亿 / 股价约 $173 / 人寿与补充健康保险 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是保险公司，下面用<strong>市净率 + ROE + 承保利润 + 浮存金</strong>这套口径，而不是普通市盈率那套。原因：保险公司的"营收"里一大块是保费和投资收益混在一起的，利润有一半来自拿客户的钱去投资，单看市盈率会漏掉杠杆和投资组合的风险。不过 GL 的利润非常稳定（不像财险公司靠天吃饭），所以市盈率在它身上参考价值比一般保险公司高，文末两种口径都给。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>财报把公司切成五个"分部"，但那其实是<strong>五条卖保险的渠道</strong>。按产品看，GL 实质上只做两门生意，外加一个附带的投资盘：</p>
+<h3>生意一：卖给工薪阶层的小额人寿保险（约占保费 70%）</h3>
+<p>先说这生意具体长什么样。GL 的客户不是中产白领，是<strong>美国的蓝领工人、工会会员、退伍军人家庭</strong>——月收入三四千美元、银行没什么存款的人。卖的保单也小：典型的一张终身寿险保单，<strong>保额 1 万到 5 万美元，月缴保费 30 到 60 美元</strong>。这个保额在中产眼里不够看（中产买的定期寿险动辄保 50 万），但对一个蓝领家庭来说，它管的是最现实的事：万一家里挣钱的人没了，这笔钱够办葬礼、够还清卡债、够撑几个月房租。</p>
+<p>这门生意通过三条渠道卖：</p>
+<ul>
+<li><strong>American Income（美国收入人寿）</strong>：GL 最大、最赚钱的渠道，TTM 保费 19.6 亿美元。玩法很独特——它跟<strong>工会、警察协会、退伍军人组织</strong>签合作，拿到会员名单，然后由专属代理人上门推销："你们工会给你争取了一份免费的意外险福利，我来帮你登记"——登记完顺势推销正式的寿险保单。代理人全是佣金制，超过 1 万人，靠层层招募扩张（这个模式的争议后面会讲）。工会客户的好处是<strong>续保率高、价格不敏感</strong>：工人认"工会推荐"这块牌子，保单平均能缴十几年。</li>
+<li><strong>Direct to Consumer（直邮/网络直销）</strong>：TTM 保费 10.6 亿美元，不用代理人，靠寄信、电视广告和网站直接卖，主打"不用体检、回答几个问题就能投保"的小额寿险。典型客户是 50 岁以上、想给自己留笔身后钱的人。这条渠道<strong>已经五年零增长</strong>（2021 年 10.4 亿 → 现在 10.6 亿），获客成本涨、直邮回复率降，公司自己也承认它的角色越来越像"给代理渠道供线索"。</li>
+<li><strong>Liberty National</strong>：TTM 保费 5.9 亿美元，传统的地推代理渠道，主攻美国南方小城镇，年增速 3-4%，不好不坏。</li>
+</ul>
+<p>寿险这门生意的赚钱逻辑：一张保单收 40 年保费，前几年的保费几乎全是成本（佣金 + 准备金），<strong>从第五年起变成纯利润流</strong>。所以 GL 的利润基本是"过去三十年卖出的所有保单"在按月吐钱，当期新卖多少对当期利润影响很小——这就是它利润出奇稳定的原因（2021 到现在净利润从 10.3 亿平稳走到 12.1 亿，连疫情都只造成一年波动）。</p>
+<h3>生意二：补充健康险（约占保费 30%）</h3>
+<ul>
+<li><strong>United American</strong>：TTM 保费 7.6 亿美元，<strong>全公司增速最快的板块（同比 +12%）</strong>。主力产品是 Medicare Supplement（医保补充险）：美国 65 岁以上老人有联邦医保，但医保有自付缺口，这个险种专门填缺口，月缴 100-200 美元。老龄化直接推着它涨。</li>
+<li><strong>Family Heritage</strong>：TTM 保费 5.0 亿美元，同比 +5%。卖<strong>癌症险、重疾险、意外险</strong>这类"确诊就赔一笔现金"的保单，客户还是蓝领家庭，代理人地推。有个聪明的设计：很多保单带"没出险就退还保费"条款，客户觉得"不亏"，续保率极高。</li>
+</ul>
+<p>补充健康险的利润率比寿险低（赔付率高、且医疗通胀会侵蚀），但胜在增长快。</p>
+<h3>附带的投资盘：浮存金</h3>
+<p>客户预缴的保费在赔付之前趴在 GL 账上，形成约 <strong>210 亿美元的投资组合</strong>（几乎全是投资级公司债，久期很长）。TTM 净投资收益 11.5 亿美元，占总营收 19%。这几年利率高，新钱的收益率在爬坡，这块是顺风。</p>
+<h3>各分部的钱（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 保费/收入</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>承保利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>American Income</td>
+<td>1,958</td>
+<td>+2.2%</td>
+<td>32%</td>
+<td>~780（利润率 ~40%，全司最肥）</td>
+</tr>
+<tr>
+<td>Direct to Consumer</td>
+<td>1,058</td>
+<td>0%</td>
+<td>17%</td>
+<td>~250</td>
+</tr>
+<tr>
+<td>Liberty National</td>
+<td>587</td>
+<td>+1.1%</td>
+<td>9%</td>
+<td>~155</td>
+</tr>
+<tr>
+<td>United American</td>
+<td>755</td>
+<td>+12.2%</td>
+<td>12%</td>
+<td>~95（Medicare 补充险利润薄）</td>
+</tr>
+<tr>
+<td>Family Heritage</td>
+<td>497</td>
+<td>+4.6%</td>
+<td>8%</td>
+<td>~180</td>
+</tr>
+<tr>
+<td>净投资收益</td>
+<td>1,151</td>
+<td>+1.9%</td>
+<td>19%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>合计营收</td>
+<td>6,192</td>
+<td>+5.2%</td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意：财报只披露分部保费到营收级别，上表承保利润列是按公司历年披露的各渠道承保利润率水平估算的，不是精确数字。</strong> 结构性的结论可靠：American Income 一个渠道贡献了全公司承保利润的一半左右。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表里没有单列，金额小到不构成议题——GL 的销售队伍是佣金制代理人，不发股票；管理层股权激励每年约三四千万美元，占净利润 3% 上下。<strong>这是少见的 SBC 干净的公司。</strong></li>
+<li><strong>一次性项目</strong>：TTM 里没有大额一次性损益。但有一件<strong>必须知道的历史事件</strong>：2024 年 4 月做空机构 Fuzzy Panda 发报告，指控 American Income 渠道存在代理人伪造保单、虚增销售的系统性问题，股价一天腰斩。之后司法部曾问询，公司 2024 年中披露司法部已表示不再推进；股价此后两年基本收复失地（近 52 周 +23%）。做空报告指控的"幽灵保单"若属实会体现为退保率异常，但从财报看续保和保费增长没有断裂。这事定性：<strong>没有实锤成会计问题，但代理人层层招募的模式（接近传销式增员）是真实存在的声誉和监管软肋。</strong></li>
+<li><strong>资本化的支出</strong>：无软件/内容资本化议题。倒是有一个保险业特有的类似操作：新保单的获取成本（佣金）按会计准则递延到未来几十年摊销（DAC），TTM 摊销 4.5 亿美元。GL 做了几十年，摊销和新增基本对冲，没有藏利润。</li>
+<li><strong>回购与稀释</strong>：<strong>这是 GL 最漂亮的一栏。</strong> TTM 回购 8.8 亿美元，SBC 按 4 千万算，<strong>回购是 SBC 的 20 倍以上</strong>——教科书级的真回购。股本一年实缴减少 5.4%，过去五年每年都回购 4.5-10 亿美元从不间断。加上分红 0.9 亿美元，TTM 合计还给股东 9.7 亿美元，等于市值的 <strong>7.3%</strong>。</li>
+<li><strong>利润和现金流的差</strong>：经营现金流 13.9 亿 &gt; 净利润 12.1 亿，方向健康。对账很简单：净利润 12.1 亿 + 摊销 4.8 亿 + 保险准备金增提 6.0 亿 − 其他经营项(主要是递延获取成本的新增) 10.3 亿 ≈ 13.9 亿。保险公司准备金增提是"先把利润存起来将来赔付"，GL 每年增提 6-8 亿且逐年放缓（说明存量保单在成熟），没有靠少提准备金虚增利润的迹象。</li>
+</ul>
+<h2>第三部分：值多少钱——保险口径</h2>
+<p>先给保险股该看的表：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>2.16 倍</td>
+<td>保险股 PB 超过 2 就不便宜，除非 ROE 特别高</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>2.34 倍</td>
+<td>商誉不多，账干净</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>20.95%</td>
+<td><strong>全美人寿保险公司里的顶级水平</strong>（同行普遍 10-13%）</td>
+</tr>
+<tr>
+<td>ROE ÷ PB（投100块的真实年回报）</td>
+<td><strong>9.7 块</strong></td>
+<td>你花 2.16 元买 1 元净资产，这 1 元每年赚 0.21 元</td>
+</tr>
+<tr>
+<td>杠杆水平</td>
+<td>债务/权益 0.56，利息覆盖 11.7 倍</td>
+<td>对保险公司而言算克制</td>
+</tr>
+</tbody>
+</table></div>
+<p>再给市盈率口径的对照（GL 利润稳定，这套在它身上不失真）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>132.8亿 ÷ 12.1亿</td>
+<td>11.5</td>
+<td>8.7 块</td>
+</tr>
+<tr>
+<td>公司口径（剔除投资损益的经营利润）</td>
+<td>与 GAAP 差异不大</td>
+<td>~11</td>
+<td>~9 块</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>无重大障眼法可剔</td>
+<td><strong>11.5</strong></td>
+<td><strong>8.7 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>132.8亿 ÷ 12.3亿</td>
+<td>10.8</td>
+<td>9.3 块</td>
+</tr>
+<tr>
+<td>EV/EBIT</td>
+<td>164.5亿 ÷ 16.5亿</td>
+<td>10.0</td>
+<td>10.0 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>132.8亿 ÷ 10.7亿(FY23-25均值)</td>
+<td>12.4</td>
+<td>8.1 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均口径 12.4 倍 vs 当期 11.5 倍，<strong>差距很小——说明当期利润不是周期高点，是正常水位</strong>。这跟利润靠存量保单按月吐钱的商业模式对得上。</p>
+<p><strong>大白话总结</strong>：你现在投 100 块进去，按最保守的口径，公司一年替你赚 8 到 9 块。这 8-9 块里，<strong>约 7.3 块以回购+分红的形式实打实回到你口袋</strong>（这个比例在整个美股都算高的），剩下的留在公司里滚投资组合。这个 8-9 块未来大概率<strong>缓慢变大</strong>：保费每年涨 4-5%，浮存金收益率随高利率环境爬坡，股本每年缩 5% 会机械性推高每股利润（过去一年 EPS +20% 就是利润 +5% 加回购 +5% 加上年低基数凑出来的）。风险不在利润表，在<strong>代理人模式的监管尾巴</strong>——如果哪天监管认定 American Income 的增员模式违规，最肥的那块利润会受伤。</p>
+<h2>第四部分：一句话结论</h2>
+<p>11.5 倍买一家 ROE 21%、利润像钟表一样稳、每年把市值的 7% 还给股东的保险公司，<strong>这个价是公道偏便宜的</strong>；它便宜的原因也明摆着——做空报告留下的阴影和"卖保险像搞传销"的增员模式，让市场永远不肯给它保险股的平均估值。只要你接受"这门生意有点土、有点灰，但客户真金白银续保了三十年"这个事实，现在的价格是可以留着观察的。</p>
+</div></body></html>

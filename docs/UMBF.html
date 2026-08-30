@@ -1,0 +1,240 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UMBF · UMB Financial（UMB金融）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">UMBF</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">12倍是卖投资垫的,真实14.5倍;HSA+基金托管是真护城河</div><h1>UMBF · UMB Financial（UMB金融）</h1>
+<p>市值 109.8 亿美元 / 股价约 144.6 美元 / 区域银行（总部密苏里州堪萨斯城）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p>这是金融企业，下面用市净率 PB、ROE 这套口径而不是普通市盈率，原因是：银行的"营收"里一大半是利息，利润建立在十几倍杠杆之上，普通公司的市盈率框架会严重失真。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>UMB 是一家 1913 年创立的家族色彩浓厚的银行（Kemper 家族经营了四代），根据地在堪萨斯城，2025 年 1 月用约 20 亿美元的全股票交易吞下了 Heartland Financial，网点从 8 个州扩到 13 个州，资产规模从约 500 亿美元跳到近 700 亿。财报按三个分部披露：</p>
+<p><strong>1. 商业银行（Commercial Banking）—— 给中西部的中型企业放贷和管钱</strong></p>
+<p>这是最大的一块。典型客户是堪萨斯、密苏里、德州一带年营收几千万到几亿美元的私营企业——比如一家农机经销商要备货，找 UMB 借 2000 万美元的流动资金贷款，按基准利率加两三个点付息；同时把公司的收付款、代发工资、账户管理全交给 UMB 做，每月再付一笔"财资管理"服务费。银行赚两头：贷款利息减去存款利息的差价（利差），加上服务费。Heartland 并进来的主要就是这类社区商业银行业务。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商业银行</td>
+<td>15.30 亿</td>
+<td>+&gt;100%（并购所致）</td>
+<td>54%</td>
+<td>财报只披露到营收，利润按整体口径估算约 7 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2. 机构银行（含医疗健康服务）—— 全行的皇冠明珠，收费生意</strong></p>
+<p>这块跟传统银行几乎不是一回事，是三门收费的"管家"生意：
+- <strong>基金服务</strong>：共同基金、对冲基金找 UMB 做托管和行政——基金的钱放在 UMB 的账上、每天的净值由 UMB 核算、申购赎回由 UMB 过账，按资产规模抽万分之几的费。基金自己不能碰钱是监管要求，所以这生意有强制性。
+- <strong>企业信托</strong>：市政府发债券修路，法律要求有个受托人替债券持有人盯着还本付息，UMB 就是干这个的，一单收几万到几十万美元年费。
+- <strong>医疗储蓄账户（HSA）托管</strong>：美国人配合高免赔额医保开的免税存钱账户，UMB 是全美最大的 HSA 托管行之一。这生意的妙处是：几百万个小账户的钱沉淀在 UMB 账上，几乎不用付利息（储户在乎的是免税不是利息），UMB 转手去放贷或买债，利差几乎全是净赚，另外每个账户还收月费。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>机构银行</td>
+<td>7.69 亿</td>
+<td>+10%</td>
+<td>27%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>3. 个人银行（Personal Banking）—— 网点、房贷、私人银行</strong></p>
+<p>给个人开户、发信用卡、放房贷，加上给富人做财富管理。中规中矩的零售银行业务。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人银行</td>
+<td>5.15 亿</td>
+<td>+14%</td>
+<td>18%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合计 TTM 营收 28.1 亿美元，同比 +44%——注意这个 44% 几乎全是把 Heartland 并表并出来的，不是自己长出来的。</strong> 机构银行那 27% 的收费收入是 UMB 区别于普通区域银行的地方：利率涨跌它都收费，抗周期。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：现金流量表未单列（并在其他项里），银行业 SBC 通常占净利润低个位数百分比，不构成重大扭曲。</li>
+<li><strong>一次性项目（这是本篇最重要的一条）</strong>：TTM 净利润 9.17 亿里含<strong>约 2.02 亿美元"出售投资收益"</strong>（税前）。看五年序列：2023、2024 年这一项是亏损，2025 年起突然变成大额收益——这是并购后重整投资组合卖出来的，不是年年有的经营利润。按 20.7% 税率剔除后，<strong>真实经营性净利润约 7.6 亿</strong>。另外 FY2025 计提的信贷损失拨备 1.55 亿里有一部分是并购日按会计规则一次性补提的（CECL 规则要求收购时把对方贷款的预期损失全提一遍），这压低了 2025 年利润——两个方向的失真部分抵消。</li>
+<li><strong>并购摊销</strong>：折旧摊销从并购前的 5300 万/年跳到 1.45 亿/年，多出来的主要是收购 Heartland 产生的无形资产（核心存款价值）摊销。这是真实成本，GAAP 已扣，不加回。</li>
+<li><strong>回购与稀释</strong>：TTM 回购仅 4000 万美元，而为并购<strong>增发了 27% 的股本</strong>。这一年是稀释年不是回购年——净利润涨 37%，每股收益只涨 3%，中间的差全被新股吃掉了。另外 2025 年发了 2.94 亿优先股，每年要付两千多万优先股息，排在普通股东前面。</li>
+<li><strong>利润和现金流的差</strong>：TTM 经营现金流 10.9 亿 &gt; 净利润 9.4 亿，差额主要是拨备（1.03 亿，非现金）和折旧摊销（1.45 亿）加回、再减去卖投资的收益（2.02 亿，归入投资活动）。对账是干净的，利润有现金支撑。</li>
+</ul>
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>12.05 倍</td>
+<td>投 100 块年赚 8.3 块</td>
+</tr>
+<tr>
+<td><strong>剔除卖投资收益后的真实市盈率</strong></td>
+<td><strong>约 14.5 倍</strong></td>
+<td><strong>投 100 块年赚 6.9 块</strong></td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>1.42 倍</td>
+<td>花 142 块买 100 块净资产</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>2.01 倍</td>
+<td>剔掉并购商誉后，花 201 块买 100 块硬资产</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>12.3%</td>
+<td>净资产年回报率</td>
+</tr>
+<tr>
+<td>ROTCE（估算）</td>
+<td>约 16.8%</td>
+<td>有形净资产回报率</td>
+</tr>
+<tr>
+<td>ROE ÷ PB 口径年回报</td>
+<td>约 8.7 块 / 100 块</td>
+<td>银行版"盈利收益率"</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>约 22 倍</td>
+<td>参考意义有限：公司规模并购后翻了近倍，历史利润基数不可比</td>
+</tr>
+</tbody>
+</table></div>
+<p>数据源未提供净息差和 CET1 资本充足率，无法核验资本缓冲厚度，此处如实说明。</p>
+<p><strong>大白话：你现在投 100 块进去，按剔除卖投资收益的真实口径，公司一年替你赚约 7 块。</strong> 这 7 块里，只有约 1.4 块以分红形式发给你（派息率 15%，股息率 1.38%——低得反常，因为 UMB 的传统是把钱留下来滚规模，它已经连续 33 年年年加息股息但每次加得很抠），回购基本没有，剩下 5 块多全部留在银行里放大资产负债表。这个 7 块未来会不会变大？看两件事：Heartland 整合能不能兑现成本节约（方向对，但 2025 年的合并成本还在消化），以及那 27% 的收费业务继续以 10% 出头的速度长（这块最扎实）。ROE 12.3% 建立在约 8 倍杠杆之上，经济衰退、贷款坏账起来时会剧烈缩水——这是所有银行的宿命，UMB 不例外。</p>
+<h2>第四部分：一句话结论</h2>
+<p>好银行，公道价：机构托管+HSA 那 27% 的收费生意是真护城河，账干净、拨备诚实、33 年不间断加息股息说明管理层不撒谎；但 12 倍市盈率是卖投资收益垫出来的，真实口径 14.5 倍、有形市净率 2 倍在区域银行里绝不便宜，买它买的是"并购整合兑现+收费业务继续长"，值这个价，但没有便宜可占。</p>
+</div></body></html>

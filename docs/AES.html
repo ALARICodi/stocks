@@ -1,0 +1,208 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AES · AES电力</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AES</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">5.5倍是负税率拼的,EV口径17倍,连续5年借钱分红</div><h1>AES · AES电力</h1>
+<p>市值 105.1 亿美元 / 股价约 14.7 美元 / 公用事业·独立发电 / TTM 截止 2026-06-30</p>
+<p><strong>先把最扎眼的数字放在最前面：表面市盈率 5.5 倍，但企业价值 416 亿是市值 105 亿的四倍——你买的"便宜"只是 330 亿债务上面薄薄一层股权。</strong> 这份分析主要就是拆这个幻觉。</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>AES 是一家全球发电公司，1981 年创立于弗吉尼亚，在十几个国家拥有电厂。财报只分两个段：</p>
+<p><strong>1. 非管制发电（Non-Regulated）—— 全球卖电+新能源开发，收入大头</strong></p>
+<p>两块拼在一起：
+- <strong>国际电厂</strong>：在智利、哥伦比亚、巴拿马、多米尼加、越南等地拥有燃气、水电和煤电厂，跟当地电网或大用户签长期购电协议（PPA）卖电。典型合同是"未来 15 年按每度电固定价格供电"，收入稳定但资产砸在政治和汇率波动的国家。
+- <strong>美国新能源开发</strong>：这是故事的核心。AES 是给数据中心供绿电的头部玩家之一——亚马逊、微软、谷歌要给数据中心配可再生能源，AES 负责找地、建光伏+储能电站、签 10–20 年 PPA。一个典型项目：建一个 500 兆瓦光伏配储能的电站花十几亿美元（几乎全靠项目贷款和税收股权融资），建成后按合同价卖电给一家云厂商，年收电费几千万到上亿美元。此外还持有储能系统集成商 Fluence 的大笔股权。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>非管制</td>
+<td>88.3 亿</td>
+<td>+8%</td>
+<td>68%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2. 管制公用事业（Regulated）—— 美国两家州属电网</strong></p>
+<p>AES Indiana 和 AES Ohio，给印第安纳、俄亥俄约百万户家庭和企业供电，电价由州监管机构核定，赚的是"准许回报率"——投多少资产、按核定比例赚多少，稳定但天花板锁死。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>管制</td>
+<td>42.3 亿</td>
+<td>+5%</td>
+<td>32%</td>
+</tr>
+</tbody>
+</table></div>
+<p>生意本身不难懂：<strong>难看的全在资产负债表上</strong>——总债务 329 亿，比五年前的 190 亿多了 73%，因为新能源电站全是借钱建的，而且还在以每年六七十亿美元的资本开支继续建。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>这家公司的第二部分比第一部分重要。</p>
+<ul>
+<li><strong>净利润比税前利润还高 11 亿——全篇最大的障眼法</strong>：TTM 全公司税前利润只有 7.08 亿，归属股东的净利润却是 18.72 亿。两个来源：一是所得税是<strong>负的 3.78 亿</strong>（新能源税收抵免），二是剩下约 8 亿的缺口来自合伙会计——新能源项目的税收股权合伙人按会计规则先"吸收"账面亏损，这些亏损从少数股东权益里扣，归母利润反而被顶高。这些不是卖电赚来的钱。</li>
+<li><strong>资产减值年年都有</strong>：TTM 5.97 亿，过去五年每年 3 亿到 17 亿不等，从没断过。这是教科书式的"年年都有的一次性"——国际电厂和煤电资产轮流爆雷，必须当经常性成本看。</li>
+<li><strong>出售资产/投资收益</strong>：TTM 合计约 3.2 亿收益，也是常年项目（不断卖电站股权回血）。</li>
+<li><strong>股权激励（SBC）</strong>：现金流量表未单列，相对上面几项无关紧要。</li>
+<li><strong>回购与稀释</strong>：零回购，股本微增。分红 TTM 付了 5.02 亿——<strong>而自由现金流是负 17.2 亿，这 5 亿分红一分钱都不是赚来的，全靠当年净增的 18.7 亿新债垫付</strong>。股息增速已经从每年 5% 降到 0.5%，等于管理层自己承认快撑不住了。</li>
+<li><strong>利润和现金流的差（对账）</strong>：净利润 18.7 亿 → 加折旧摊销 16.3 亿 → 加减值 6.0 亿 → 减出售收益 3.2 亿 → 加营运资金及其他约 12.5 亿 → 经营现金流 50.3 亿。经营现金流本身不差（电厂折旧大），<strong>但资本开支 67.5 亿一口吃掉全部还倒欠 17 亿</strong>，这已经是连续第五年自由现金流为负，五年合计烧掉约 131 亿美元，全靠发债补。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>105.1 亿 ÷ 18.72 亿</td>
+<td>5.5 倍</td>
+<td>18.1 块（假的）</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率</td>
+<td>剔税收抵免顶利润、减值当经常成本、按估算约 7–9 亿可持续归母利润</td>
+<td><strong>约 12–15 倍（估算）</strong></td>
+<td>约 7–8 块</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为负 17.2 亿</td>
+<td>无意义</td>
+<td><strong>-16.4 块（在烧你的钱）</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>416 亿 ÷ 24.4 亿</td>
+<td><strong>17.1 倍</strong></td>
+<td>5.9 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>105.1 亿 ÷ 三年平均 9.4 亿</td>
+<td>11.1 倍</td>
+<td>9.0 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>企业价值口径是对这家公司最诚实的一行：把债一起算上，这门生意 17 倍，<strong>比大多数 PE 30 倍的正经公用事业还贵</strong>（人家不用年年减值、现金流是正的）。另外三个危险数字：利息保障倍数只有 1.7 倍（经营利润刚够付 1.7 次利息）、债务/EBITDA 高达 8 倍、投入资本回报率 3.5% 低于它自己 4.9% 的资金成本——<strong>这家公司每投一块钱进去，创造的回报还不够本钱的利息，规模越大毁值越多</strong>。</p>
+<p><strong>大白话：你现在投 100 块进去，表面上公司一年替你赚 18 块，实际按保守口径只有 7 块左右，而现金口径上它一年还要倒烧掉你 16 块。</strong> 那 4.8% 的股息看着诱人，但它是借新债发的，不是赚来的——股息增速已冻结在 0.5%，利率环境稍微收紧或某个国际项目再爆一次雷，第一个被砍的就是它。给数据中心供绿电的故事是真的、订单也是真的，但故事的果实大部分归债主和税收股权合伙人，普通股东排在最后。</p>
+<h2>第四部分：一句话结论</h2>
+<p>全场最便宜的市盈率是全场最深的陷阱：5.5 倍是负税率和合伙会计拼出来的，把 330 亿债务算上它其实比正经公用事业还贵，连续五年借钱度日、借钱分红，投的每一块钱赚的都不够利息——别被表面便宜骗进来。</p>
+</div></body></html>

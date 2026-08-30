@@ -1,0 +1,233 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WAL · 西部联盟银行（Western Alliance Bancorporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WAL</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">人效顶级+无商誉,1.12倍PB是五年最低,交着挤兑记忆税</div><h1>WAL · 西部联盟银行（Western Alliance Bancorporation）</h1>
+<p>市值 $84.6 亿 / 股价 $78.53 / 银行（凤凰城，全国性专业银行） / TTM 截止 2026-06-30 / 任务2（0–15倍段）第 138 名</p>
+<blockquote>
+<p>这是金融企业，下面用 <strong>市净率 PB + ROE</strong> 口径而不是市盈率，原因是：银行赚的是利差，利润靠约 8 倍杠杆撬出来，得看「按几倍净资产买入、净资产每年生多少利」。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>总部在亚利桑那凤凰城，总资产约 890 亿美元，全美前 30。但别把它当成一家「亚利桑那的地方银行」——WAL 的打法在美国银行业里是独一份的：<strong>不靠网点撒网吸储户，而是挑十几个别人做不好的专业细分市场，每个市场派一支专家队伍全国收割</strong>。它只有 3,800 名员工（同等规模银行的几分之一），人均创收 92.5 万美元、人均利润 25.7 万美元——这两个数在美国银行业接近顶级。</p>
+<p>具体做哪些细分生意，举三个最有代表性的：</p>
+<p><strong>按揭仓单贷款（mortgage warehouse）</strong>：全美的独立房贷公司放贷时，手里得先垫资——客户签了 40 万美元的房贷合同，房贷公司要先把 40 万付给卖家，两三周后才能把这笔贷款打包卖给房利美回款。这两三周的垫资就找 WAL 借，WAL 按天计息、以那笔房贷做抵押，风险极低、周转极快。WAL 是这个市场全国前几名。</p>
+<p><strong>业主协会（HOA）存款</strong>：美国几千万套公寓和社区都有业主协会，收着物业费、攒着维修基金，这些钱要找地方存。WAL 专门做 HOA 管理公司的生意，一家管理公司签下来就带来几百个协会的存款——<strong>低成本、极其粘的存款</strong>，这是银行最值钱的原料。</p>
+<p><strong>AmeriHome 房贷平台</strong>（2021 年 10 亿美元买来的）：自己不开门店，从全美几百家小房贷公司手里收购刚放出来的房贷，打包卖给房利美/房地美，留下服务权按月抽服务费。这块业务让 WAL 的报表有个怪相：<strong>经营现金流常年是巨额负数（TTM 为 -15.3 亿）</strong>——因为收进来待转卖的房贷在会计上计入经营现金流出，卖出回款记在别处。这不是失血，是房贷流水线的库存周转，银行股本来就不能看现金流量表。</p>
+<p>数据源的分部拆法（S&amp;P 口径）：商业银行条线 TTM 营收 12.5 亿、消费相关条线（含 AmeriHome）24.3 亿、公司及其他 -1.9 亿，合计 34.9 亿（+11.7%）。</p>
+<p><strong>必须交代的一段历史</strong>：2023 年 3 月硅谷银行倒闭那周，WAL 因为同样有大量无保险存款，被挤兑传闻打到单日腰斩、股价最低摸到 18 美元（现在 78）。它是那场风暴里活下来的：一周内公开存款数据自证、拉来流动性、随后两年把无保险存款占比大幅压低、资本垫厚。<strong>代价是 ROE 从危机前的 20%+ 永久性降到了 13% 上下</strong>——多揣的流动性和资本是保命钱，也是拖累收益的死重。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>关键数字（TTM）</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>34.9 亿（+11.7%）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>9.71 亿（EPS 8.87，同比 +16.5%）</td>
+</tr>
+<tr>
+<td>总资产（按 ROA 倒推）</td>
+<td>约 890 亿</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>二、把会计障眼法剥掉（银行版）</h2>
+<ul>
+<li><strong>一次性项目</strong>：TTM 无大额减值或重组披露；利润增长（+16.5%）主要来自息差业务扩张和费用收入回升，不是账面戏法。</li>
+<li><strong>稀释与回购</strong>：股本一年<strong>减少 0.73%</strong>——危机后头两年为补资本还略有增发，现在已转为微幅回购。分红 $1.68/股（股息率 2.1%），派息率只有 19%，大头利润留存下来长资产。</li>
+<li><strong>商誉</strong>：PB 1.12 倍 vs 有形口径 P/TBV 1.23 倍——两者只差 10%，说明<strong>账上几乎没有商誉水分</strong>（对比：同段位的 ONB 差了 53%）。你按 1.12 倍买到的净资产是实的。</li>
+<li><strong>现金流量表为负</strong>：上面说过，是 AmeriHome 房贷库存的会计记法，不是经营恶化。银行看 ROE/ROA/资本充足率，不看 OCF。</li>
+<li><strong>数据源未提供</strong> NIM、CET1、拨备覆盖率，不编数。定性说：WAL 的息差历来高于同行（专业贷款定价高），2023 年后资本充足率主动垫到监管要求之上。</li>
+</ul>
+<p>五年 ROE 轨迹把这家银行的故事讲完了：2021 年 21.5% → 2022 年 20.5% →（危机）→ 2023 年 12.6% → 2024 年 12.3% → 2025 年 13.5% → 现在 13.0%。<strong>危机前它是全美盈利能力最强的银行之一，危机后是一家「优秀但戴着镣铐」的银行，镣铐正一年比一年松。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ROE</td>
+<td>13.02%</td>
+<td>高于 0–15 倍段银行同行（ONB 10.6%、COLB 11.0%）</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>1.09%</td>
+<td>合格线之上</td>
+</tr>
+<tr>
+<td>PB</td>
+<td>1.12 倍</td>
+<td><strong>处在自己五年区间（1.12–2.24）的最底部</strong></td>
+</tr>
+<tr>
+<td>P/TBV</td>
+<td>1.23 倍</td>
+<td>几乎无商誉，净资产是实的</td>
+</tr>
+<tr>
+<td>派息率</td>
+<td>19%（股息率 2.1%）</td>
+<td>利润大头留存长资产</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>7.58 倍</td>
+<td>分析师预期利润还要涨 17%</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>三、回报换算（银行口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>结果</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率参考</td>
+<td>股价 ÷ EPS 8.87</td>
+<td>8.86 倍</td>
+<td>11.3 元</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>分析师预期</td>
+<td>7.58 倍</td>
+<td>13.2 元</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（银行主口径）</strong></td>
+<td>13.02% ÷ 1.12</td>
+<td>—</td>
+<td><strong>11.6 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 84.6 亿 ÷ 三年平均净利润 8.1 亿（FY23–25：7.1/7.7/9.6 亿）</td>
+<td>10.4 倍</td>
+<td>9.6 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，等于按 1.12 倍的价格买了 89 块实打实的净资产（没商誉水分），这 89 块每年生出约 11.6 块利润。</strong> 只有 2.1 块以分红到手，剩下 9 块多留在银行里滚资产——过去五年它资产端的成长记录（营收从 20 亿到 35 亿）说明留存的钱确实在长利润，不是趴着。三年平均口径 10.4 倍也不难看，因为它的「三年平均」是危机后被镣铐压着的三年，不是周期红利的三年——<strong>这跟 SFD 那种「当期好看、平均难看」正好相反，它的平均值是被低估的，不是被美化的。</strong></p>
+<p>风险也要说透：① 这 11.6% 建立在 8 倍杠杆上，衰退年头会剧烈缩水；② 2023 年 3 月已经证明过，它的储户结构在恐慌时刻跑得比社区银行快——虽然现在无保险存款占比已大幅下降，但市场没忘，这就是 1.12 倍 PB 的来历；③ 按揭相关业务占比高，房贷市场冰封的年份（比如 2023–24 高利率期）这块引擎会熄火。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>全美人效最高的专业银行之一，ROE 13% 还在往上爬、账上几乎没商誉、远期 7.6 倍，却卖在自己五年估值区间的最底部——市场还在为 2023 年 3 月那周的挤兑记忆收恐惧税：<strong>便宜是真的，这是 0–15 倍段银行堆里质地最好的一档，值得买入观察；前提是你能接受银行股在下一次恐慌里跌得比谁都快的天性。</strong></p>
+</div></body></html>
