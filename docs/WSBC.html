@@ -1,0 +1,197 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WSBC · WesBanco 银行</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WSBC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">并购机器买规模不买每股利润,EPS十年原地,同价位处处有更好</div><h1>WSBC · WesBanco 银行</h1>
+<p>市值 38.8 亿美元 / 股价约 40 美元 / 行业：区域银行（西弗吉尼亚） / TTM 截止 2026 年 6 月 30 日</p>
+<p><strong>这是银行，第三部分用 PB + ROE 口径而不是普通市盈率</strong>——银行利润建立在约 8 倍杠杆上，要看的是净资产回报率和你为净资产付的倍数。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>WesBanco 是总部在西弗吉尼亚州惠灵市的一家 150 多年历史的老银行，通过几十年不断收购小银行，把网点铺到了西弗吉尼亚、俄亥俄、宾州、肯塔基、印第安纳、马里兰、田纳西七个州。它实质上做<strong>两门生意，外加一个必须看懂的「并购循环」</strong>：</p>
+<h3>生意一：社区银行（TTM 收入 10.3 亿，占 99%）</h3>
+<p>标准的存贷生意：吸收小城镇居民和企业的存款（成本低、粘性高——阿巴拉契亚地区的储户不爱搬家），放贷给本地企业主、商业地产（社区购物中心、公寓楼、仓库）和家庭房贷，赚存贷利差。客户画像：俄亥俄河谷一家五金批发商贷 200 万扩仓库、匹兹堡近郊一栋公寓楼东家贷 800 万做再融资。中规中矩，没有特色专长（对比同段位 BOKF 的能源贷款），坏账历史温和。</p>
+<h3>生意二：信托与投资（TTM 收入 0.3 亿，占 3%）</h3>
+<p>替本地富裕家庭管遗产信托、卖投资产品，管理资产几十亿美元，是利差之外的一点手续费补充，聊胜于无。</p>
+<h3>「并购循环」——这家银行的真正商业模式</h3>
+<p>它的增长从来不靠自然生长，靠<strong>每隔两三年吞并一家小银行</strong>：发自己的股票当货币，买下对方的存款和网点，砍掉重复的后台省成本。最近一单是 2025 年初完成的 Premier Financial（俄亥俄的银行），<strong>股本一年膨胀 26%</strong>，总资产跳上 270 亿美元。这个模式的数学要算清楚：收购做大了「公司」，但<strong>每股</strong>收益十年原地踏步——EPS 序列：FY2021 年 3.53 → 3.02 → 2.51 → 2.26 → 2.23 → TTM 3.46。TTM 的跳升是 Premier 并表满一年+整合费用出清+成本协同兑现的一次性台阶，站上台阶后，每股赚的钱和五年前几乎一样。<strong>股东坐了五年过山车，回到原地。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总收入</td>
+<td>10.5 亿美元（同比 +51%，全是并表效应）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>3.3 亿（EPS 3.46）</td>
+</tr>
+<tr>
+<td>ROE / ROA</td>
+<td>9.0% / 1.29%</td>
+</tr>
+<tr>
+<td>净资产</td>
+<td>41.1 亿（每股 40.53，正好等于股价）</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>商誉——账上最大的软肋</strong>：PB 恰好 1.00 倍，但 <strong>P/TBV（剔掉商誉的有形净资产口径）是 1.78 倍</strong>——每股 40.53 的账面净资产里，约 18 块是历次收购攒下的商誉和无形资产。序列收购者的通病：账面「净资产」有将近一半是纸面的，哪次收购买贵了、减值一次，账面就要缩水一截。按有形口径算，ROTCE 约 14%（在有形净资产上其实赚得不难看，这是并购模式的另一面：用商誉换来的存款确实在产生利润）。</li>
+<li><strong>一次性项目</strong>：FY2025 含 Premier 整合费用（裁员、系统合并），压低了当年 EPS（2.23），TTM 已出清。这类费用在它身上是「每隔两三年来一次的一次性」。</li>
+<li><strong>股权激励（SBC）</strong>：银行口径下不构成问题。</li>
+<li><strong>回购与稀释</strong>：谈不上回购——<strong>股本一年 +26%</strong>（全股票收购的代价）。它的资本回馈只有分红：每股 1.52 美元、收益率 <strong>3.76%</strong>，派息率 44%，连续多年每年小涨几分钱，安全但增长龟速（年增 2.7%）。</li>
+<li><strong>利润和现金流的差</strong>：银行口径无异常，不展开。</li>
+</ul>
+<hr />
+<h2>第三部分：估值（PB + ROE 口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数字</th>
+<th>换算成投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>1.00 倍（按账面价买）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>1.78 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE（TTM，含协同的新台阶）</td>
+<td>9.0%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（你的钱的真实收益率）</strong></td>
+<td>9.0% ÷ 1.00</td>
+<td><strong>约 9.0 元</strong></td>
+</tr>
+<tr>
+<td>有形口径 ROTCE ÷ P/TBV</td>
+<td>约 14% ÷ 1.78</td>
+<td>约 8.1 元</td>
+</tr>
+<tr>
+<td>参考：GAAP 市盈率</td>
+<td>11.7 倍（远期 11.1 倍，没人预期增长）</td>
+<td>8.6 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按账面价买下一台年回报 9 块的银行机器</strong>，其中 3.8 块以分红到手，剩下留存给管理层攒下一次收购的弹药——而过去五年的记录说明，这些弹药买回来的是「更大的银行」，不是「每股更多的利润」。这 9 块建立在 8 倍杠杆上，衰退年会缩水。和同段位银行摆在一起：ONB 也是 9.0 块（同样的并购机器模式）、BOKF 7.9 块但质量高一档、CNA/MTG 是 9.5–11 块的保险替代——它在这张桌上没有任何一项排第一。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>一台按账面价出售、年回报 9 块的银行并购机器：分红 3.76% 是真的、坏账历史温和是真的，但 EPS 十年原地踏步也是真的，账面净资产里近半是商誉、刚为最新一单稀释了 26% 的股本，股价还刚涨完 23%——不贵得离谱，但同样的钱在这个段位处处有更好的选择，没有便宜可占。偏贵。</p>
+</div></body></html>

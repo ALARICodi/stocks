@@ -1,0 +1,216 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VAL · Valaris（瓦拉里斯海上钻井）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VAL</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">6.4倍是负税魔术第二次表演,真实20-33倍,FCF为负还刚涨75%</div><h1>VAL · Valaris（瓦拉里斯海上钻井）</h1>
+<p>市值 59.9 亿美元 / 股价约 86 美元 / 海上钻井服务 / TTM 截止 2026-06-30</p>
+<p><strong>开门见山：6.4 倍市盈率是一笔负 5.9 亿美元的"所得税"吹出来的——TTM 税前利润只有 3.4 亿，净利润却报 9.4 亿。</strong> 这份分析主要拆这个魔术，以及为什么它已经是第二次表演了。</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>Valaris 是全球船队最大的海上钻井承包商，由 Ensco 和 Rowan 2019 年合并而来，2020 年油价崩盘时破产，2021 年重组出场（当年账面亏 45 亿、老股东几乎清零，现在的股票是重组后的新股）。它自己不采一滴油——<strong>它是石油公司的"包工头"：拥有几十座海上钻井装置，按天出租给埃克森、雪佛龙、巴西国油这些甲方去打井</strong>。财报分三个段：</p>
+<p><strong>1. 浮式装置（Floaters）—— 深水钻井船，最大也最凶险的一块</strong></p>
+<p>十几艘钻井船和半潜式平台，在巴西、圭亚那、墨西哥湾、西非的深海作业。一艘第七代钻井船造价超过 5 亿美元，租金（日费率）在周期底部 15 万美元/天、顶部 50 万+/天，波动就是这么野。一份典型合同：巴西国油租一艘船打两年井，总价四五亿美元。日费率取决于全球有多少艘船闲着——船多人少时甲方压价到你亏现金，船紧时你漫天要价。TTM 这块营收<strong>同比下滑 16%</strong>，部分船只合同到期后出现空窗。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比(剔除JV抵消后)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>浮式装置</td>
+<td>10.6 亿</td>
+<td>-16%</td>
+<td>49%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2. 自升式平台(Jackups)—— 浅水的"腿式"平台</strong></p>
+<p>几十座平台在北海、中东、亚太的浅水区作业，日费率 8–15 万美元，波动比深水温和。其中很大一块业务是跟沙特阿美的 50/50 合资公司 ARO Drilling——Valaris 把平台租给 ARO、ARO 再服务阿美。<strong>注意：财报里 ARO 那 5.5 亿营收在"对账抵消"行里被整体剔除</strong>（合资公司按权益法核算，不并表），所以看营收构成时别把它重复算进去。沙特这几年削减钻井计划，对这块是持续的逆风。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自升式平台</td>
+<td>8.7 亿</td>
+<td>-5%</td>
+<td>41%</td>
+</tr>
+<tr>
+<td>其他（管理服务等）</td>
+<td>2.1 亿</td>
+<td>+9%</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>负所得税魔术（全篇核心）</strong>：TTM 所得税是<strong>负 5.9 亿美元</strong>——不是少交税，是把破产时积累的巨额亏损结转（NOL）确认成递延税资产、一次性计入利润。税前 3.4 亿 → 净利润 9.4 亿，凭空多出 6 亿纸面利润。<strong>而且这是惯犯</strong>：2023 财年它同样靠税收利益把不到 1 亿的税前利润报成 8.65 亿净利润（当年 PE 显示 5.78 倍）。这家公司的 GAAP 市盈率连续多年"看着便宜"，每次都是同一个魔术。现金流量表把戏拆得很干净：TTM"其他经营项目"一栏 -7.56 亿，就是把这笔非现金税收利益从现金流里倒扣出去。</li>
+<li><strong>出售资产收益</strong>：TTM 还有 1.27 亿卖旧船的收益，也是一次性的。</li>
+<li><strong>股权激励（SBC）</strong>：2900 万，占真实利润比例不小（见下），但相对税收魔术是小数。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 1.04 亿，股本 -1.8%，无分红。回购是真的，但规模对市值不到 2%。</li>
+<li><strong>利润和现金流的差（最诚实的一张表）</strong>：净利润 9.4 亿 → 倒扣非现金税收利益约 7.6 亿 → 扣卖船收益 1.3 亿 → 加折旧 1.65 亿 → 经营现金流只有 3.58 亿；<strong>资本开支 3.83 亿（船要定期进坞大修+新船交付）→ 自由现金流负 2400 万</strong>。纸面赚 9.4 亿的公司，现金口径一分钱没赚。</li>
+<li><strong>利息保障仅 2.65 倍</strong>，ROIC 6.9% 低于 8.9% 的资金成本——跟 AES 一样，创造的回报不够本钱的利息。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>59.9 亿 ÷ 9.4 亿</td>
+<td>6.4 倍</td>
+<td>15.7 块（假的）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 3.4 亿 − 卖船收益 1.3 亿，按 15% 正常税率</td>
+<td><strong>约 33 倍</strong></td>
+<td><strong>约 3 块</strong></td>
+</tr>
+<tr>
+<td>不剔卖船、只按正常税率</td>
+<td>3.4 亿 × 0.85 ≈ 2.9 亿</td>
+<td>约 21 倍</td>
+<td>4.8 块</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为负 2400 万</td>
+<td>无意义</td>
+<td><strong>-0.4 块</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>66.2 亿 ÷ 2.6 亿</td>
+<td><strong>25.5 倍</strong></td>
+<td>3.9 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年 GAAP 平均 7.4 亿（但三年里两年靠税收魔术）</td>
+<td>8.1 倍（同样失真）</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p>分析师看得明白：Forward PE 14 倍（他们不信税收魔术会重演），平均目标价 69 美元——<strong>比现价低 20%</strong>，而股价过去一年已经涨了 75%。</p>
+<p><strong>大白话：你现在投 100 块进去，公司真实的年赚钱能力是 3–5 块，现金口径是负的，一分钱分红没有。</strong> 多头的故事是：全球深水钻井船供给出清（十年没造新船）、圭亚那巴西的深水开发排队、日费率下一轮往上——这个故事可能是真的，但它值多少钱已经被这轮 75% 的涨幅预支了大半，而 TTM 营收 -13%、沙特砍单、浮式装置空窗说明下一轮还没来，现在是青黄不接的档口。</p>
+<h2>第四部分：一句话结论</h2>
+<p>比 AES 更极端的假便宜标本：6.4 倍市盈率里有 6 亿是破产遗产变的纸面魔术（还是五年内第二次表演），真实口径 20–33 倍、现金流为负、利息保障 2.6 倍，股价还刚涨完 75% 站在分析师目标价上方 20%——买它不是捡便宜，是接盘一个讲了一半的周期故事。</p>
+</div></body></html>

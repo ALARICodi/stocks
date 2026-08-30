@@ -1,0 +1,207 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CRUS · 凌云逻辑（Cirrus Logic）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CRUS</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">剔现金10倍是真便宜,但九成收入命悬苹果路线图</div><h1>CRUS · 凌云逻辑（Cirrus Logic）</h1>
+<p>市值 54.4 亿美元 / 股价约 108 美元（刚经历一轮急跌，远低于 200 日均线） / 行业：模拟芯片设计（无晶圆厂） / TTM 截止 2026 年 6 月 27 日（财年 3 月底结账）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>总部在得州奥斯汀的芯片设计公司，自己不建厂（设计好交给台积电等代工），财报分两个产品线，但<strong>真正要懂的是一句话：它约九成的收入来自同一个客户——苹果</strong>。财报里那个占营收近九成的「客户 A」就是苹果，这个结构十几年没变过。它实质上是「苹果音频与传感部门的编外供应商」。</p>
+<h3>生意一：音频芯片（Audio，TTM 收入 11.7 亿，占 57%）</h3>
+<p>你 iPhone 里的声音几乎都经过它的芯片：<strong>音频功率放大器</strong>（把喇叭推响还不失真、不烧线圈，每台 iPhone 里有两三颗）和<strong>智能音频编解码器</strong>（把数字信号转成模拟声音、处理麦克风降噪，每台一颗）。单颗芯片卖苹果大概一两美元，一年两亿多台 iPhone 加上 iPad、Mac，凑出 11 亿多美元。苹果为什么十几年不换它：音频是「花小钱办大事」的部件——整机成本占比不到 1%，但音质翻车用户立刻听得出来，而它在低功耗高保真这个细分里做了四十年，性能最好、供货最稳，苹果犯不着为省几毛钱冒险。这块五年横盘（iPhone 出货量见顶），是台稳定但不增长的机器。</p>
+<h3>生意二：高性能混合信号（HPMS，TTM 收入 8.8 亿，占 43%）</h3>
+<p>这是它近年的增长引擎，还是卖给苹果，但品类在扩：<strong>摄像头控制器</strong>（iPhone 镜头的自动对焦和光学防抖闭环控制芯片）、<strong>电池电源管理芯片</strong>（快充控制、电量计）。逻辑是「在同一台 iPhone 里多塞几颗自己的芯片」——单机价值量从几年前的 3–4 美元提到 6–7 美元。这块五年从 5.9 亿长到 8.8 亿（+48%），FY2026 还在 +10%。此外它在往 Windows 笔记本音频、通用电源芯片方向做多元化，起了几年，收入占比仍然只有个位数——<strong>离「摆脱苹果」还差着数量级</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>20.5 亿美元（同比 +6.3%）</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>52.8%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>4.7 亿（利润率 23.1%）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>4.3 亿（EPS 五年从 5.5 涨到 8.2）</td>
+</tr>
+<tr>
+<td>ROIC</td>
+<td>28.5%</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>报表干净</strong>：税前利润略高于经营利润的部分是 10 亿现金存款的利息，真实且可持续；税率 15.6% 正常。五年利润逐级上行（FY23 的 1.8 亿低谷含 9600 万一次性重组，那年是安卓客户退出的调整年）。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 8160 万，占净利润 <strong>19%</strong>——芯片设计公司抢人贵，这个比例不低，GAAP 已扣、不加回，但要知道利润里有这么大一块是先发出去的股票换来的。</li>
+<li><strong>一次性项目</strong>：无。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 2.5 亿（是 SBC 的 3.1 倍），股本一年实际减少 3.8%，五年回购从没停过。<strong>不分红</strong>，股东回报全走回购通道，约占净利润六成。</li>
+<li><strong>利润和现金流的差</strong>：TTM 净利润 4.3 亿 vs 经营现金流 6.0 亿 vs 自由现金流 5.7 亿——<strong>FCF 比净利润还高三成</strong>（SBC 加回 + 资本开支只有 2600 万，设计公司不养厂），利润全是真现金还有富余。</li>
+<li><strong>资产负债表</strong>：净现金 <strong>10.4 亿美元，占市值 19%</strong>，几乎无债。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>54.4 亿 ÷ 4.3 亿</td>
+<td>13.2 倍</td>
+<td>7.6 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC（骗人的，SBC 是真成本）</td>
+<td>≈10 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>没有水分可剔，就是 GAAP</td>
+<td><strong>13.2 倍</strong></td>
+<td><strong>7.6 元</strong></td>
+</tr>
+<tr>
+<td><strong>剔净现金口径</strong></td>
+<td>（54.4 − 10.4 亿）÷ 4.3 亿</td>
+<td><strong>10.2 倍</strong></td>
+<td><strong>9.8 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>EV 44 亿 ÷ 5.7 亿 FCF</td>
+<td>7.7 倍</td>
+<td>13.0 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>54.4 亿 ÷ 3.4 亿（FY24–26 均值，且是上行的三年）</td>
+<td>16.0 倍</td>
+<td>6.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，19 块是现金，81 块买生意；这门生意一年替你赚约 9.8 块（按现金流口径 13 块），没有一分是纸面的。</strong> 其中约 4.6 块通过回购实际注销股份回到你身上，不发分红。三年平均口径 16 倍比当期贵，是因为利润这三年一直在涨——对它这不是周期虚高的信号，是生意在变好。</p>
+<p><strong>但所有这些数字都悬在一根线上</strong>：苹果。风险不是苹果倒闭，是苹果<strong>自己做芯片</strong>——它干过不止一次：自研电源芯片直接废掉了英国的 Dialog Semiconductor（曾经也是「苹果概念股」，最后打折卖身），自研基带挤走高通的故事也在上演。音频十五年没被动手，理由（价值量小、性能门槛高）至今成立，苹果和它还签着多年供货协议——但奥斯汀这家公司每天早上醒来，命运都攥在库比蒂诺的路线图会议里。最近股价急跌（RSI 21）、做空盘 7.5%，市场担心的正是这个。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>数字上无可挑剔：剔现金 10 倍、现金流口径 7.7 倍、ROIC 28%、利润全现金、年年回购——放任何行业都是便宜货；但九成收入来自唯一客户，且这个客户有亲手废掉供应商的前科，这不是「风险偏高」，是<strong>命悬一线的结构缺陷</strong>，市盈率便宜三分之一就是市场给这根线标的价。想赌苹果十年内不自研音频芯片，现价赔率其实不错；不想把身家系在别人家路线图上，再便宜也绕开。便宜，但有硬伤。</p>
+</div></body></html>

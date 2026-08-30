@@ -1,0 +1,198 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DHT · DHT Holdings（DHT油轮）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DHT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">烂行业模范生但6.7倍是租金顶部读数,三年平均17倍,PB历史顶部</div><h1>DHT · DHT Holdings（DHT油轮）</h1>
+<p>市值 31.7 亿美元 / 股价约 19.7 美元 / 原油油轮航运 / TTM 截止 2026-06-30</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>DHT 只做一件事，做得极其纯粹：<strong>拥有约 24 艘超大型油轮（VLCC），把中东和美洲的原油运到亚洲</strong>。一艘 VLCC 长 330 米、一次装 200 万桶油——够中国用两个小时。生意模式一句话：船在手，租给壳牌、中石化、托克这些货主，按天收租。</p>
+<p>关键数字是<strong>日租金（spot rate）</strong>，它的波动野得没边：市场上船多货少时 2 万美元/天（不够付油钱和船员工资），船紧时 10 万+/天。一艘船的运营盈亏线大约 2.5–3 万/天——<strong>日租金 3 万以下全行业流血，8 万以上人人印钞</strong>。2026 上半年就是印钞行情：对俄油伊朗油"影子船队"的制裁把几百艘旧船踢出正规市场、OPEC+ 增产拉长运距，VLCC 现货租金冲上高位——TTM 营收暴涨 43%、净利润 4.74 亿（是过去三年平均的 2.6 倍），股价一年涨 70%。</p>
+<p>DHT 在这个臭名昭著的烂行业里是个模范生：
+- <strong>杠杆全行业最低</strong>：债务仅 4.4 亿（0.76 倍 EBITDA）——航运公司破产从来不是因为没生意，是因为高杠杆撞上低租金，DHT 把这条命门锁死了；
+- <strong>股本纪律</strong>：五年零增发（航运公司增发摊薄是家常便饭）；
+- <strong>100% 派息政策</strong>：每季度把净利润全额派给股东——赚多少分多少，TTM 股息率 9.5%。租金好时你吃满，租金崩时股息同步归零，公司不装"稳定分红"的样子，诚实。
+- 注册马绍尔群岛，<strong>税率约 0</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>三年平均</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>8.0 亿（+43%）</td>
+<td>5.6 亿</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>4.74 亿</td>
+<td>1.85 亿</td>
+</tr>
+<tr>
+<td>日租金环境</td>
+<td>历史高位</td>
+<td>中高位</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>账本身干净</strong>：无 SBC 扭曲、无投资收益、无税收魔术（本来就不交税）、无增发稀释。DHT 的 6.7 倍市盈率不是会计化出来的——<strong>是周期化出来的</strong>。化妆品不在报表里，在日租金里。</li>
+<li><strong>资本开支的真相</strong>：TTM 资本开支 4.16 亿（多为新船订单付款），把自由现金流压到只剩 3600 万。这不是维持性开支（是扩船队），但提醒你：这门生意每条船 1.2 亿美元、20 年报废，赚来的钱一大块永远要变成新钢板。</li>
+<li><strong>利润和现金流的差</strong>：净利润 4.74 亿 + 折旧 0.97 亿 ≈ 经营现金流 4.52 亿（差额是营运资金），对账干净。</li>
+<li><strong>市净率 2.38 倍</strong>：油轮股常年绕净值交易（船的市价决定公司价值），2.4 倍账面是这家公司历史上的顶部区域——虽然账面船值低于当前市场船价，这个溢价仍说明市场按"好日子持续"定价。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>31.7 亿 ÷ 4.74 亿</td>
+<td>6.7 倍</td>
+<td>15.0 块（租金顶部读数）</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>31.7 亿 ÷ 1.85 亿</td>
+<td><strong>17.2 倍</strong></td>
+<td><strong>5.8 块</strong></td>
+</tr>
+<tr>
+<td>五年平均（含 2021 亏损年）</td>
+<td>31.7 亿 ÷ 约 1.83 亿</td>
+<td>17.3 倍</td>
+<td>5.8 块</td>
+</tr>
+<tr>
+<td>自由现金流口径（扩张期）</td>
+<td>31.7 亿 ÷ 0.36 亿</td>
+<td>87 倍（失真,扩船队所致）</td>
+<td>——</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>34.5 亿 ÷ 5.8 亿</td>
+<td>5.9 倍</td>
+<td>（分母同为顶部值）</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td>2.38 倍</td>
+<td>自己历史的顶部区域</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，今年它派给你 9 块半现金，看着是全场最爽的——但这 9 块半的前提是日租金停在历史高位。</strong> 按穿越周期的平均水平，这门生意一年赚 6 块左右，租金崩的年份是 0。100% 派息政策意味着你完整承接周期的每一面：好年吃肉，坏年连汤都没有。9.7% 的空头赌的就是租金均值回归+新船订单潮（好日子催生的订单三年后变成压租金的新运力——航运百年来的死循环）。现在买它，等于赌制裁+长运距这个组合能再撑两三年。</p>
+<h2>第四部分：一句话结论</h2>
+<p>烂行业里的模范生：低杠杆、零稀释、赚多少分多少的诚实派息，账挑不出一根刺——但 6.7 倍是日租金历史顶部的倍数，三年平均口径 17 倍，市净率也站在自己历史顶部，股价刚涨完 70%；船东的钱要在租金崩、船价折、无人问津时买才赚得安稳，现在是反着的时刻。</p>
+</div></body></html>

@@ -1,0 +1,183 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BFH · Bread Financial（面包金融）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BFH</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">8.3倍17%ROE一年回购10.7%股本，次贷同行里账最硬</div><h1>BFH · Bread Financial（面包金融）</h1>
+<p>市值 $40.6 亿 / 股价约 $106 / 行业：消费金融（商店联名信用卡）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是金融企业（放贷机构），用 ROE、市净率、拨备口径</strong>，市盈率作辅助。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Bread Financial（前身 Alliance Data）只做一门生意：<strong>替零售品牌发信用卡，赚卡上的高利息</strong>。你在美国逛 Victoria's Secret，收银员问"办张我们的卡今天打九折？"——那张印着品牌 logo 的卡，实际的发卡方、放贷方、催收方都是 Bread。它手里攥着几十个这样的品牌合约：Ulta（美妆）、Wayfair（家具）、Signet（Zales/Kay 珠宝）、AAA（汽车协会）、Dell、Caesars 赌场……贷款组合约 $185 亿。</p>
+<p><strong>这门生意具体怎么运转，三方各取所需</strong>：
+- <strong>品牌方</strong>要的是复购——办卡客户消费频次高一截，品牌还能从利息收入里分一杯羹（分润条款），自己不担坏账；
+- <strong>消费者</strong>要的是当场折扣和积分，代价是这种卡的利率是全市场最狠的一档：<strong>年化 29% 起步</strong>，忘还款再收滞纳金；
+- <strong>Bread</strong>吃中间：29% 的利息收入，减去约 4% 的资金成本、约 8% 的坏账核销、运营开销和给品牌的分润，剩下的就是利润。TTM 拨备计提 $12.9 亿——是净利润的 2.3 倍，<strong>每年先赔掉两个自己再赚钱</strong>，这是次贷级客群（平均信用分 640 上下）的生意常态。</p>
+<p><strong>资金从哪来（跟 OneMain 的关键区别）</strong>：早年靠发债，这几年转向<strong>自营网络储蓄银行吸收 FDIC 保险存款</strong>——现在大部分贷款靠存款输血，比债券市场稳得多。母公司层面债务从 2021 年的 $76 亿砍到 $33 亿，账上现金反超债务 $4 亿——<strong>净现金状态</strong>，这轮去杠杆是过去三年管理层最大的功劳。</p>
+<p><strong>最近的两阵顺风</strong>（解释了股价一年 +62%）：监管方面，CFPB 把滞纳金砍到 $8 的新规 2025 年被法院废掉——那条规矩若落地会直接削掉它两成利润；信用方面，坏账率从 2024 年高点回落。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：约 $3,000 万上下，占净利润 5%。低。</li>
+<li><strong>一次性项目</strong>：TTM 窗口干净。历年 EPS 大起大落（$16 → $4.5 → $14.4 → $5.5 → $10.9）不是造假，是三股力量来回搅：卖出售业务的一次性利得（FY23 卖 BJ's 卡组合）、回购自家折价债券的损益、拨备随经济松紧大幅摆动。<strong>看它必须看跨周期平均，单年数字都是噪音。</strong></li>
+<li><strong>回购与稀释——全案最亮的一行</strong>：<strong>股本一年缩 10.7%</strong>（最近一个季度就缩 5.8%），按市值算一年回购 $4 亿上下，是 SBC 的十几倍，外加小额分红（股息率 0.8%）。<strong>合计每年约 11% 的市值真金白银回到股东手里</strong>，而且是在 1.2 倍市净率的价位上回购——每一块钱回购都在给留下的股东增厚。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $5.66 亿 vs 经营现金流 $21.9 亿，差额大头是拨备 $12.9 亿非现金加回，放贷行业正常结构，不用对账。</li>
+<li><strong>资本充足</strong>：有形净资产约 $26.7 亿，撑 $185 亿贷款，有形资本比率约 14%——比 OneMain（约 7%）厚一倍，在次贷放贷商里算穿了厚棉袄。</li>
+</ul>
+<hr />
+<h2>第三部分：放贷机构口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率（辅助）</td>
+<td>8.3 倍 / Forward 8.5 倍</td>
+<td>次贷卡生意的常驻区间</td>
+</tr>
+<tr>
+<td>市净率 PB</td>
+<td>1.22</td>
+<td>在 1.2 倍净资产回购自家股票</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>1.52</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td><strong>17.4%</strong></td>
+<td>高，且这次不是踩着薄资本挤出来的</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>2.57%</td>
+<td>放贷生意里的优等水平</td>
+</tr>
+<tr>
+<td>TTM 信贷拨备</td>
+<td>$12.9 亿</td>
+<td>净利润的 2.3 倍；客群就是这个成色</td>
+</tr>
+<tr>
+<td>三年平均市盈率</td>
+<td>约 8.1 倍</td>
+<td>连坏账高峰年都摊进去仍是个位数</td>
+</tr>
+<tr>
+<td>股东回报</td>
+<td><strong>约 11%/年</strong></td>
+<td>回购 10%+ 分红 0.8%，全场最高一档</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>投 100 块的年回报</strong>：市盈率倒数 12 块，ROE × (1/PB) 口径 14.3 块，取保守口径 <strong>12 块</strong>，其中约 <strong>11 块以回购+分红的形式真金白银兑现</strong>——兑现率接近 100%，本榜罕见。未来这个数的变数：顺风是坏账继续回落、滞纳金新规已死、降息压资金成本；逆风两条：<strong>衰退</strong>（失业率上去，640 分客群的坏账率翻倍，利润瞬间蒸发，2022/2024 年都演过）；<strong>品牌合约风险</strong>（这门生意的命脉是零售伙伴——Victoria's Secret 若倒闭或续约时被 Synchrony 抢走，对应的贷款组合直接萎缩，而它的伙伴名单里实体零售占比不低）。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜——同样是次贷生意，它比 OneMain 多给了三样东西：存款输血、净现金母公司、一年 10.7% 的真回购。</strong> 8.3 倍买 17% ROE，跨周期平均也只有 8 倍，管理层用三年把资产负债表从"危险"修到"厚实"，然后开足马力在净资产附近回购——资本运用教科书级。它依然是"衰退一来先挨打"的周期品，品牌伙伴的兴衰是额外的死穴，但在 0–15 倍段的次贷同行里，这是资产负债表最硬、股东兑现最实的一家。股价一年涨了六成，好消息兑现了一部分，但估值仍没离开便宜区。</p>
+</div></body></html>

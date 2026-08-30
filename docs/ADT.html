@@ -1,0 +1,210 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ADT · ADT Inc.（美国家庭安防第一品牌）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ADT</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">真实现金流5倍,年还股东16%市值,但债比市值大四成</div><h1>ADT · ADT Inc.（美国家庭安防第一品牌）</h1>
+<p>市值 $55.1亿 / 股价约 $7.5 / 行业：安防服务 / TTM 截止 2026-06-30</p>
+<h2>一、它到底做几件事</h2>
+<p>ADT 是美国"家里装警报器"的代名词，150 年历史（前身是 1874 年的电报公司），蓝色八角形 logo 插在草坪上本身就是防贼广告。瘦身之后（2023 年把商用安防卖了 16 亿、太阳能业务认亏关掉），现在就剩一门核心生意加一个配套：</p>
+<h3>生意一：家庭安防监控订阅（占营收 84%，TTM 43.4亿，现金奶牛）</h3>
+<p><strong>640 万个家庭每月付约 $50–60</strong>，ADT 的六个监控中心 7×24 小时盯着他们家的门磁、烟感、摄像头。半夜警报响了，值班员 30 秒内打电话核实，确认有事就代你报警——<strong>卖的不是硬件是"有人替你盯着"</strong>，这是它跟 Ring 这类自助摄像头的本质区别。收入特征教科书级的好：月费预付（预收款 TTM +2.1 亿）、合同 3 年起、<strong>84% 营收是纯经常性收入</strong>，衰退期没人为了省 $50 拆家里的警报系统。跟 Google 深度绑定（Google 2020 年投了 4.5 亿美元，Nest 摄像头全线接入 ADT 系统），跟 State Farm 保险合作（保险公司补贴客户装 ADT，因为能降赔付率——State Farm 还持有 ADT 约 15% 股份）。</p>
+<h3>生意二：上门安装与设备（占营收 16%，TTM 8.2亿，获客环节）</h3>
+<p>安装工上门布线装设备，收的钱通常覆盖不了成本——<strong>安装是亏本拉新，靠后面 8 年的月费赚回来</strong>。行业术语叫"订阅获客模式"：每拉一个新客先垫 $1,200 左右（设备+人工+佣金），约 2 年多月费回本，客户平均留 8 年。这决定了它报表的独特长相（见第二部分）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM营收</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>监控与相关服务（订阅）</td>
+<td>$43.4亿</td>
+<td>+1.5%</td>
+<td>84%</td>
+</tr>
+<tr>
+<td>安装、产品及其他</td>
+<td>$8.2亿</td>
+<td>+11%</td>
+<td>16%</td>
+</tr>
+<tr>
+<td>太阳能（已关停）</td>
+<td>0</td>
+<td>—</td>
+<td>0%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>$51.7亿</strong></td>
+<td>+2.1%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>增长只有 2%——安防渗透率饱和，它的角色是收租不是开疆。真正的威胁是 DIY 阵营（Ring $200 自装+$10 月费）从下面掏客户，ADT 的应对是绑住"要专业监控+保险折扣"的中高端家庭，这几年守得住（客户流失率约 13%/年，稳定十年了），但价格战天花板始终悬着。</p>
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>报表长相怪，先解释</strong>：折旧摊销高达 16.5 亿（营收的 32%）——大头是把获客成本资本化再按客户生命周期摊销。所以它 EBITDA 27 亿看着吓人肥，净利只有 6.1 亿。<strong>别用 EBITDA 估值</strong>（4.9 倍毫无意义），获客支出是实打实年年要花的钱。</li>
+<li><strong>真实自由现金流要手算</strong>：经营现金流 21.6 亿 −设备资本开支 5.4 亿 −<strong>购买客户合同（报表记在"无形资产"里，实为获客开支）5.0 亿</strong> = <strong>约 11 亿</strong>。表面 P/FCF 3.4 倍漏算了第三项，真实约 5 倍——仍然非常便宜。</li>
+<li><strong>一次性项目</strong>：TTM 只有 4,700 万投资损失+1,400 万重组，小。倒是要记住 2023 年的案底：太阳能收购两年亏掉+减值 7 亿多，管理层（Apollo 主导）买东西的手气很差，好在已经割完。</li>
+<li><strong>SBC</strong>：5,500 万，占净利 9%。可以。</li>
+<li><strong>回购与分红</strong>：TTM 回购 7.1 亿（回购/SBC=13 倍），<strong>股本一年实减 7.5%</strong>——大股东 Apollo 在退出，公司直接从它手里批量回购注销，公众股东搭便车。另有股息率约 3%。合计一年把约 16% 的市值还给股东。</li>
+<li><strong>⚠️ 负债是这家公司的另一半故事</strong>：净债务 77.5 亿——<strong>比市值还大 40%</strong>，2.8 倍 EBITDA，利息保障只有 3 倍，TTM 利息吃掉约 4.6 亿（比净利润还多的钱付给了债主）。这是私募股权（Apollo 2016 年杠杆收购）留下的胎记。利率每降一个点，它比谁都受益；反过来债市一紧，股权就是那层被挤压的薄垫。</li>
+<li><strong>坏账拨备 2.2 亿/年</strong>：月费客户赖账的正常损耗，年年都有，不是雷。</li>
+</ul>
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>55.1亿 ÷ 6.13亿</td>
+<td>10.4 倍</td>
+<td>9.6 块</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>一次性项目小，约同GAAP</td>
+<td><strong>约10 倍</strong></td>
+<td><strong>10.0 块</strong></td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>市场共识</td>
+<td>8.0 倍</td>
+<td>12.5 块</td>
+</tr>
+<tr>
+<td><strong>真实自由现金流口径（含获客开支）</strong></td>
+<td>55.1亿 ÷ 约11亿</td>
+<td><strong>约5 倍</strong></td>
+<td><strong>20 块</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>132.6亿 ÷ 13.1亿</td>
+<td>10.1 倍</td>
+<td>9.9 块（把77亿债算上后只是公道）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>55.1亿 ÷ 5.3亿</td>
+<td>10.5 倍</td>
+<td>9.6 块（利润逐年爬升，非高点）</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>投 100 块进去，公司一年产生约 20 块真现金（股权口径），其中约 13 块以分红+回购直接还给你</strong>——这是全榜单最高档的现金回报率之一。为什么市场只给 10 倍？两个原因各占一半：77 亿债务把股权做成了高杠杆薄片（EV 口径看它其实只是公道价），以及 DIY 安防的长期侵蚀担忧。只要月费客户群稳住（十年来一直稳着）、利率不暴走，这 20 块就年年都在。</p>
+<h2>四、一句话结论</h2>
+<p><strong>便宜——一台绑着 77 亿债务的现金印钞机。</strong> 640 万家庭的月费构成 84% 经常性收入，真实现金流口径只卖 5 倍，一年把 16% 市值还给股东，Google 和 State Farm 两个巨头入股背书；代价是利息吞掉的钱比净利润还多、增长只有 2%、Ring 们在楼下叫价。适合能接受杠杆的收息型持有，账要这么记：你买的 100 块里，市场先生已经替你借了 140 块投在这门生意上。</p>
+</div></body></html>

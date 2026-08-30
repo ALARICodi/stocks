@@ -1,0 +1,233 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UBSI · 联合银股（United Bankshares）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">UBSI</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">杠杆最低ROA最高的安稳银行,但1.18倍PB在自己天花板</div><h1>UBSI · 联合银股（United Bankshares）</h1>
+<p>市值 $64.7 亿 / 股价 $47.60 / 银行（西弗吉尼亚，中大西洋—东南部） / TTM 截止 2026-06-30 / 任务2（0–15倍段）第 169 名</p>
+<blockquote>
+<p>这是金融企业，下面用 <strong>市净率 PB + ROE</strong> 口径而不是市盈率，原因同业。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>一门生意：<strong>中大西洋到东南部的社区商业银行</strong>，品牌 United Bank，总部在西弗吉尼亚州查尔斯顿，总资产约 330 亿美元。地盘从西弗吉尼亚老家（当地市占率第一）铺到弗吉尼亚、华盛顿特区都会圈、马里兰、两卡罗来纳、佐治亚（2025 年初并购亚特兰大的 Piedmont 银行进的场）到佛罗里达——一半是增长缓慢但存款忠诚的山区老家，一半是人口流入的新南方城市。</p>
+<p>生意本体不用多讲：查尔斯顿的煤机服务商、华盛顿郊区的政府承包商、亚特兰大的物流公司，把经营账户放它这儿，再从它这儿贷几百万周转——收息差加手续费，和上一家 FNB 是同一门手艺。它真正与众不同的是两件事：</p>
+<p><strong>第一，它是美国银行业著名的「分红贵族」</strong>——连续 50 多年年年提高每股分红，全美国的银行里这个纪录数一数二。半个世纪意味着：穿越了 1980 年代储贷危机、2008 年金融海啸、2020 年疫情、2023 年地区银行挤兑，一次都没断。当前股息率 3.19%，派息率 41.5%。</p>
+<p><strong>第二，它是拿真金白银当床垫睡觉的保守派</strong>。看资产负债表：账上现金加投资 20.8 亿，借款只有 8 亿——<strong>净现金为正（+12.8 亿）</strong>，这在银行里极其罕见（银行天性是能借多低息的钱就借多满）。EV（52 亿）比市值（65 亿）还低，全场仅见。代价也明摆着：留着不用的资本压着收益率，ROE 只有 9.5%。</p>
+<p>历史上它也是个连环并购者（几十年里吞了 30 多家小银行），但风格和 COLB 那种蛇吞象完全不同：小口、慢吃、从不勉强，股本一年只变动 ±1%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>关键数字（TTM）</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>12.5 亿（+14.9%）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>5.14 亿（EPS 3.66，同比 +29%）</td>
+</tr>
+<tr>
+<td>总资产</td>
+<td>约 330 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 利润 +29% 同样要打折听：利率顺风＋2025 年初 Piedmont 并表的全年化，不是它的常态速度。它的常态看五年 ROE：8.2% → 7.9% → 7.6% → 8.9% → 9.5%——<strong>一家常年 8–9.5% 的银行，比 FNB 高半个身位，靠的是 ROA 1.55%（全批银行里最高）而不是杠杆。</strong></p>
+<hr />
+<h2>二、把会计障眼法剥掉（银行版）</h2>
+<ul>
+<li><strong>一次性项目</strong>：TTM 无大额重组减值；Piedmont 并表带来的同比失真已提示。</li>
+<li><strong>稀释与回购</strong>：股本一年 +0.86%（并购发的），季度环比已在回购收缩（-1.2%）。<strong>分红是它的主菜：股息率 3.19%，连续 50+ 年递增</strong>，派息率 41.5% 留有余地。</li>
+<li><strong>商誉</strong>：几十年小并购攒了不少：PB 1.18 vs P/TBV 1.87，差了 58%——每股净资产 40.33 元里约 15 元是商誉无形。和 FNB 一个毛病。</li>
+<li><strong>杠杆水平</strong>：ROA 1.55% 全场最高、ROE 却只有 9.5%——说明它用的杠杆比同行低得多（约 6 倍 vs 行业 8–10 倍）。<strong>同样的 9.5% ROE，UBSI 的含金量比高杠杆同行高</strong>：衰退来了它的利润缩水幅度会小于同行，这是这家银行真正的卖点。</li>
+<li><strong>现金流</strong>：银行口径无异常。</li>
+<li><strong>数据源未提供</strong> NIM、CET1、拨备覆盖率，不编数。定性：净现金为正的资产负债表本身就是资本充足的旁证。</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ROE</td>
+<td>9.47%</td>
+<td>平庸——但用的是最低的杠杆</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>1.55%</td>
+<td><strong>全批次银行最高</strong>，资产端赚钱能力真强</td>
+</tr>
+<tr>
+<td>PB</td>
+<td>1.18 倍</td>
+<td>自己五年区间 0.98–1.20 的<strong>最上沿</strong></td>
+</tr>
+<tr>
+<td>P/TBV</td>
+<td>1.87 倍</td>
+<td>剔商誉后明显不便宜</td>
+</tr>
+<tr>
+<td>派息率</td>
+<td>41.5%（股息率 3.19%）</td>
+<td>50+ 年连续递增</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>12.67 倍</td>
+<td>几乎无改善预期</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>三、回报换算（银行口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>结果</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率参考</td>
+<td>股价 ÷ EPS 3.66</td>
+<td>13.00 倍</td>
+<td>7.7 元</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>分析师预期</td>
+<td>12.67 倍</td>
+<td>7.9 元</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（银行主口径）</strong></td>
+<td>9.47% ÷ 1.18</td>
+<td>—</td>
+<td><strong>8.0 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 64.7 亿 ÷ 三年平均净利润 4.0 亿（FY23–25：3.7/3.7/4.6 亿）</td>
+<td>16.2 倍</td>
+<td>6.2 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按 1.18 倍价格买了 85 块净资产（其中约 31 块是商誉），每年生出约 8 块利润，其中 3.2 块以分红到手</strong>——而且这 3.2 块有半个世纪的记录背书，明年几乎必然比今年多一点。剩下 4.8 块留存，管理层的历史记录是小心翼翼地买小银行，不败家但也不出彩。</p>
+<p>问题在价格：<strong>8.0 元的年回报是这三家银行里最低的</strong>（WAL 11.6、FNB 9.5、ONB 9.0），而它的 PB 正站在自己五年区间的顶点（1.18 vs 历史 0.98–1.20）——52 周涨了 23% 之后，市场已经把「最安全」三个字计满了价。安全从来不免费，但现在这个溢价，把未来几年的回报率买薄了。</p>
+<p>未来变大还是变小：利率正常化后息差红利会吐一部分回去；Piedmont 整合和东南部扩张是慢变量。大概率就是每年 7–9 块的水平线，靠分红递增一点点垫高。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>全场睡得最安稳的银行：净现金为正、杠杆全场最低、ROA 全场最高、分红连涨半个世纪，衰退来了它最抗揍——但 13 倍市盈率、1.18 倍 PB 站在自己五年估值的天花板上，投 100 块年回报只有 8 块，是三家银行里<strong>质量最好、价格也最贵</strong>的一家：<strong>好东西，贵了，等它跌回 1 倍 PB 以下再收，现在买等于为安全感付全价。</strong></p>
+</div></body></html>

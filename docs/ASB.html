@@ -1,0 +1,230 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ASB · 联合银行（Associated Banc-Corp）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ASB</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">9%ROE银行卖出史上最高1.06倍PB,还叠一笔用途不明的14%增发</div><h1>ASB · 联合银行（Associated Banc-Corp）</h1>
+<p>市值 $57.7 亿 / 股价 $30.92 / 银行（威斯康星） / TTM 截止 2026-06-30 / 任务2（0–15倍段）第 187 名</p>
+<blockquote>
+<p>这是金融企业，下面用 <strong>市净率 PB + ROE</strong> 口径而不是市盈率，原因同业：银行利润是杠杆撬出来的利差，要看「按几倍净资产买入、净资产每年生多少利」。</p>
+</blockquote>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>一门生意：<strong>威斯康星州最大的本土银行</strong>，总部绿湾（就是橄榄球包装工队那个绿湾），总资产约 470 亿美元，网点铺满威斯康星，延伸到明尼苏达和伊利诺伊。按分部拆是两块：企业与商业专营（TTM 营收 6.43 亿——给中西部的奶制品厂、造纸厂、设备制造商做贷款和现金管理，还有商业地产）、社区与消费（10.5 亿——个人账户、房贷、小微企业），另有资金管理条线的抵销项。</p>
+<p>生意本体是标准的中西部存贷手艺，不用赘述。看懂 ASB 要看它这三年干的两件大事：</p>
+<p><strong>第一件：两轮「割肉换血」。</strong> 2023 年末和 2024 年末，它两次把账上低收益的老债券和低息房贷<strong>亏本卖掉</strong>，把回笼的钱转投高收益资产。代价直接打在利润表上：FY2023 净利润 1.70 亿、FY2024 只剩 1.11 亿（资金管理分部当年营收 <strong>-5.88 亿</strong>，就是卖资产的亏损计在这里），两年 ROE 被压到 4.5% 和 2.8%。这属于「早疼早利索」的自残式手术——把过去低利率时代的错误一次认掉。TTM 净利润 4.92 亿（ROE 回到 9.7%）就是手术后的成绩：确实见效了。</p>
+<p><strong>第二件：刚刚大幅增发。</strong> 股本同比 +7.2%，其中<strong>最近一个季度就增了 14%</strong>——这是一笔大额增发，数据源没写用途（银行增发通常为并购或补资本）。不管用途是什么，对现有股东就是实打实的稀释：手术刚见效，蛋糕先切走一块。<strong>单期口径无法判断这笔增发换回了什么，这是本篇最大的未知数。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>关键数字（TTM）</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>15.6 亿（+50%，低基数反弹，非常态）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>4.92 亿（EPS 2.85）</td>
+</tr>
+<tr>
+<td>总资产</td>
+<td>约 470 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>真实速度看五年 ROE：8.7% → 9.1% → 4.5% → 2.8% → 9.9% → 现在 9.7%——<strong>剔掉手术两年，这就是一家常年 9% 上下的银行</strong>，和 FNB 同一档。</p>
+<hr />
+<h2>二、把会计障眼法剥掉（银行版）</h2>
+<ul>
+<li><strong>一次性项目</strong>：TTM 里已无大额卖资产亏损（手术完成），当前利润是干净的运营利润；但<strong>同比增速（EPS +264%）全是低基数幻觉</strong>，别当真。</li>
+<li><strong>稀释与回购</strong>：上面说的增发是主角：FY2025 稀释 8.7%、过去一年再稀释 7.2%（其中最近一季 +14%）。分红每股 $0.96，股息率 3.10%，派息率 34%——分红是真的，但一边分红一边增发，等于左手发钱右手收回去一部分。</li>
+<li><strong>商誉</strong>：PB 1.06 vs P/TBV 1.38，差了 30%——有商誉但比 FNB/UBSI 轻。</li>
+<li><strong>现金流</strong>：银行口径无异常。</li>
+<li><strong>数据源未提供</strong> NIM、CET1、拨备覆盖率，不编数。定性：两轮重组后资产端收益率已修复，这正是 ROE 从 2.8% 回到 9.7% 的引擎。</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ROE</td>
+<td>9.70%</td>
+<td>手术后回到常态，但常态也就 9% 出头</td>
+</tr>
+<tr>
+<td>ROA</td>
+<td>1.05%</td>
+<td>及格线</td>
+</tr>
+<tr>
+<td>PB</td>
+<td>1.06 倍</td>
+<td><strong>它五年历史区间是 0.76–0.85，现在 1.06 已在区间之上</strong>——市场把手术成功计价计满了</td>
+</tr>
+<tr>
+<td>P/TBV</td>
+<td>1.38 倍</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>派息率</td>
+<td>34%（股息率 3.10%）</td>
+<td>安全</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>9.87 倍</td>
+<td>尚有小幅改善预期</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>三、回报换算（银行口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>结果</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市盈率参考</td>
+<td>股价 ÷ EPS 2.85</td>
+<td>10.84 倍</td>
+<td>9.2 元</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>分析师预期</td>
+<td>9.87 倍</td>
+<td>10.1 元</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（银行主口径）</strong></td>
+<td>9.70% ÷ 1.06</td>
+<td>—</td>
+<td><strong>9.2 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 57.7 亿 ÷ 三年平均净利润 2.5 亿（FY23–25：1.7/1.1/4.6 亿，含手术亏损）</td>
+<td>23.3 倍</td>
+<td>4.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，按 1.06 倍买了 94 块净资产，每年生出约 9.2 块，其中 3.1 块分红到手。</strong> 三年平均口径 23 倍难看是因为把手术费算进去了，不必按字面理解；但它提醒你一件事：这家银行<strong>上一次犯错（低利率时代囤长债）的账单就值两年利润</strong>，而你没有办法确认它以后不再犯。</p>
+<p>真正扎手的是价格坐标：五年来市场从来只给它 0.76–0.85 倍净资产——比 FNB 还低半档——现在手术成功加银行板块行情，一口气给到了 1.06 倍，<strong>历史上从没这么贵过</strong>。而它手术后的 ROE（9.7%）和手术前（9.1%）其实只差半个点：<strong>资产端修好了，商业模式没变</strong>。叠加刚发生的 14% 增发悬案，现在买它，等于按史上最高估值买一家刚证明过自己会犯大错、且正在稀释你的 9% ROE 银行。</p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>割肉换血的手术做得果断、也确实见效，但市场把功劳簿写得太满：一家常年 9% ROE 的威斯康星银行，五年里从没值过 0.9 倍净资产，现在卖 1.06 倍，还叠着一笔用途不明的 14% 大增发——<strong>手术成功≠脱胎换骨，史上最贵的价格买史上同一家银行，偏贵，等增发用途揭晓、估值回到 0.9 倍以下再看。</strong></p>
+</div></body></html>

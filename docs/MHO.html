@@ -1,0 +1,212 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MHO · M/I 房屋（M/I Homes）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MHO</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">零净债的保守建房商,但毛利下滑+减值刚开场,公平价非恐慌价</div><h1>MHO · M/I 房屋（M/I Homes）</h1>
+<p>市值 $38.3 亿 / 股价 $151.4 / 住宅建筑商 / TTM 截止 2026-06-30 / 任务2（0–15倍段）第 246 名</p>
+<hr />
+<h2>一、它到底做几件事</h2>
+<p>一门生意加一个配套：<strong>在美国 18 个都会区盖新房卖给家庭</strong>，1976 年从俄亥俄州哥伦布起家，年交付约 9,000 套，全美第 12 大建房商。</p>
+<h3>生意本体：盖房卖房（TTM 营收 41.4 亿）</h3>
+<p>流程是建房商的标准流水线：买地（或用期权锁地）→ 修路通水电分块 → 盖房 → 卖给买家。一套房均价约 48 万美元，主打「首次置业+首次改善」价位带。两个地理分部：</p>
+<ul>
+<li><strong>北方（TTM 18.2 亿，占 44%）</strong>：哥伦布（大本营，当地市占率第一）、辛辛那提、印第安纳波利斯、芝加哥、底特律、明尼阿波利斯。中西部楼市的特点是<strong>便宜且稳</strong>——没有阳光地带的暴涨暴跌，本地就业扎实（俄亥俄这几年吃到英特尔建厂等制造业回流红利）。</li>
+<li><strong>南方（TTM 23.2 亿，占 56%）</strong>：德州四城（达拉斯、休斯敦、奥斯汀、圣安东尼奥）、卡罗来纳、佛罗里达（坦帕、奥兰多、萨拉索塔）、纳什维尔。人口流入带，量大，但眼下也是<strong>降价促销最狠的战场</strong>。</li>
+</ul>
+<p>为什么这门生意能赚钱但没有护城河：新房需求由「人口 + 房贷利率」决定，建房商彼此的房子差异不大，拼的是拿地眼光和周转速度。M/I 的口碑是「保守的好学生」——不高杠杆囤地、聚焦自己深耕了几十年的市场。</p>
+<h3>配套：自营房贷（TTM 1.26 亿）</h3>
+<p>给自家买房人做按揭再转卖，顺带卖产权保险。真实作用是<strong>促销工具</strong>：眼下最重要的卖房手段就是「利率买断」——公司贴钱把买家头几年的房贷利率从 7% 买到 5%，这笔贴息成本正在吃掉全行业的毛利率。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>关键数字（TTM，及趋势）</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>42.6 亿（<strong>-5%</strong>）</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td><strong>20.9%，从 2024 年的 25.1% 一路下滑</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>3.17 亿（EPS 11.89，<strong>较峰值 -40%</strong>）</td>
+</tr>
+<tr>
+<td>存货减值</td>
+<td>TTM <strong>4,767 万，去年同期只有 924 万——减值开始了</strong></td>
+</tr>
+<tr>
+<td>净债务</td>
+<td>仅 2.65 亿（现金 7.39 亿 vs 债 10 亿），Debt/Equity 0.31</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这组数字合起来就是一句话：楼市下行周期已经确认开始，而它的账本足够硬扛过去。</strong></p>
+<hr />
+<h2>二、把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励</strong>：1,763 万，占净利润 5.6%，干净。</li>
+<li><strong>一次性项目 / 减值</strong>：TTM 存货减值 4,767 万（占税前利润 11.5%）——这不是障眼法，是<strong>周期信号</strong>：房价撑不住的社区，地和半成品房按市价往下砍。按建房商的历史剧本，下行期这个数字会继续变大，2008 年那轮全行业砍掉了几成账面值。M/I 这轮的敞口比同行小（期权锁地比例高），但方向躲不掉。</li>
+<li><strong>利润和现金流的差</strong>：净利润 3.17 亿 vs 经营现金流仅 2.07 亿——差额是<strong>存货又增加了 2.06 亿</strong>（地和在建房）。下行期还在净投入存货，这是管理层对长期的下注，也是短期现金流的包袱。</li>
+<li><strong>回购与稀释</strong>：<strong>股本一年 -4.84%</strong>，回购是 SBC 的十几倍，不派股息——利润的三分之二左右在持续回购。建房商里它和 NVR 是最早学会「下行期埋头回购」的那批。</li>
+<li><strong>资产负债表</strong>：净债务几乎为零，利息资本化后利润表里基本看不到利息负担。<strong>2008 年式的灭顶风险在它身上不存在</strong>，最坏情形是利润缩水+账面减值，不是资金链断裂。</li>
+</ul>
+<hr />
+<h2>三、市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>股价 151.4 ÷ EPS 11.89</td>
+<td><strong>12.73</strong></td>
+<td>7.9 元</td>
+</tr>
+<tr>
+<td>公司 Non-GAAP</td>
+<td>与 GAAP 基本无差</td>
+<td>≈12.7</td>
+<td>7.9 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>减值是真损失不加回，≈GAAP</td>
+<td><strong>≈12.7</strong></td>
+<td><strong>7.9 元</strong></td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>分析师预期（继续缓降）</td>
+<td>11.14</td>
+<td>9.0 元</td>
+</tr>
+<tr>
+<td>市净率（建房商的锚）</td>
+<td>股价 ÷ 每股净资产 127.88</td>
+<td><strong>1.18 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ 三年平均净利润 4.77 亿（FY23–25：4.7/5.6/4.0 亿）</td>
+<td><strong>8.02</strong></td>
+<td>12.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，公司一年替你赚约 8 块，其中约 5 块用来回购注销股份</strong>。注意这次三年平均口径（8 倍）比当期（12.7 倍）<strong>便宜</strong>，但别高兴太早——它平均的是 2023–25 三个丰年，是「过去好日子」的均值，不是「周期中枢」；真正的周期中枢大概在两者之间。建房商的正确锚是净资产：1.18 倍 PB，处在建房商板块的中游，既没有恐慌折价、也没有复苏溢价。</p>
+<p>往前看的两股力量：往下——毛利率还在掉、减值刚开头、利率买断贴息看不到尽头；往上——美国新房存量性短缺是十年级别的事实、降息周期一旦真来建房商利润会 V 型反弹、而它零负债+年吞 5% 股本的姿势可以安全地等。<strong>这是一张「用干净资产负债表等降息」的票，赌的是时间不是生存。</strong></p>
+<hr />
+<h2>四、一句话结论</h2>
+<p>建房商里的保守好学生：零净负债、期权锁地、下行期埋头回购，2008 式风险不存在；但毛利率下滑和存货减值才刚开场，12.7 倍的当期利润还会再缩，1.18 倍 PB 也谈不上恐慌价——<strong>公道：现在买是公平价格买一台能安全穿越下行的机器，想要便宜，等减值把同行打出恐慌折价的那天再出手。</strong></p>
+</div></body></html>

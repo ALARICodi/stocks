@@ -1,0 +1,213 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PARR · Par Pacific（帕尔太平洋）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PARR</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">4.6倍是裂解价差顶部读数,常态11倍,股价已翻1.3倍计入关厂利好</div><h1>PARR · Par Pacific（帕尔太平洋）</h1>
+<p>市值 39.5 亿美元 / 股价约 79 美元 / 炼油+物流+加油站 / TTM 截止 2026-06-30</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>Par Pacific 是一家"捡别人不要的炼厂"起家的公司——总部休斯顿，资产全在美国大陆西部和夏威夷。财报分三个段，实质是一门主生意带两个配套：</p>
+<p><strong>1. 炼油（Refining）—— 占收入九成七，利润的发动机</strong></p>
+<p>四座炼厂，每座都有讲究：
+- <strong>夏威夷 Kapolei（9.4 万桶/日）</strong>：全州唯一的大型炼厂，准垄断。夏威夷的汽油、航空煤油（檀香山机场+珍珠港军方是大客户）基本由它供应，竞争对手只有跨洋运来的成品油——运费就是它的护城河。原油从亚洲和美洲进口，炼完直接卖进本岛。
+- <strong>华盛顿塔科马、蒙大拿比林斯、怀俄明纽卡斯尔</strong>：三座小炼厂，各自守着一块内陆或西北的区域市场，靠"离消费者近、外人运油进来贵"吃饭。</p>
+<p>炼油这门生意的经济学一句话：<strong>赚的是"裂解价差"——原油和成品油之间的差价，公司自己完全定不了价</strong>。2024 年价差塌了，全年亏 3300 万；2026 年风向逆转：<strong>菲利普斯66洛杉矶炼厂、瓦莱罗湾区炼厂相继宣布关停，美国西海岸约六分之一的炼能在退出市场</strong>，幸存者的价差被推上天——TTM 净利润 8.57 亿就是这么来的，也是股价一年暴涨 130% 的原因。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>炼油</td>
+<td>83.7 亿</td>
+<td>97%（毛口径）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>2. 物流（Logistics）</strong>——自有的码头、油罐、管道，把原油运进来、成品油送出去，主要服务自家炼厂，按量收费，稳定小利润。</p>
+<p><strong>3. 零售（Retail）</strong>——夏威夷和太平洋西北约 120 家加油站+便利店（Hele、nomnom 品牌），卖自家炼的油，年收入 6 亿，是利润波动的缓冲垫。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM 营收</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>物流</td>
+<td>3.1 亿</td>
+<td>4%</td>
+</tr>
+<tr>
+<td>零售</td>
+<td>6.1 亿</td>
+<td>7%</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：1680 万，占净利润 2%，干净。</li>
+<li><strong>一次性与顺风项</strong>：TTM 里有 5300 万权益投资收益（持有的 Laramie 天然气公司股权增值，非现金）；库存项 TTM 增加 4.13 亿——油价上行期炼厂的先进先出记账会产生账面库存收益，利润里有一部分是"库存涨价"而非"炼油赚价差"。两项都朝同一个方向：<strong>TTM 利润被周期顶+账面因素放大</strong>。</li>
+<li><strong>税的真相（对它有利的一条）</strong>：利润表按 23.3% 计提所得税，但 Par 手里握着破产重组时代留下的巨额亏损结转（NOL），<strong>实际现金税负远低于账面</strong>——现金流量表"其他经营项目"+3.17 亿里大头就是不用真掏的递延税。这家公司现金赚钱能力比利润表还强一点，是本批少见的"利润表低估现金"的方向。</li>
+<li><strong>回购与稀释</strong>：无分红，但 TTM 回购掉 <strong>6.8% 的股本</strong>，回购/SBC 超过 20 倍——赚了钱全用来买自己，对股东是实打实的。</li>
+<li><strong>利润和现金流的差</strong>：净利润 8.57 亿 → 加折旧 1.44 亿 → 加递延税等 3.17 亿 → 减库存和应收占用约 7.2 亿 → 经营现金流 5.55 亿。差额主要是价差暴涨期营运资金被占用（油贵了，同样的库存要压更多钱），不是利润造假。</li>
+<li><strong>资产负债表</strong>：净债务 9.49 亿，仅 0.79 倍 EBITDA，利息保障 17 倍——2024 年那种亏损年也压不垮它。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>39.5 亿 ÷ 8.57 亿</td>
+<td>4.6 倍</td>
+<td>21.7 块（周期顶的假象）</td>
+</tr>
+<tr>
+<td>剔除权益收益后</td>
+<td>8.57 − 0.53 亿</td>
+<td>4.9 倍</td>
+<td>20.3 块</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>（7.29 − 0.33 + 3.69）/3 ≈ 3.55 亿</td>
+<td><strong>11.1 倍</strong></td>
+<td><strong>9.0 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>39.5 亿 ÷ 4.12 亿</td>
+<td>9.6 倍</td>
+<td>10.4 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>49.0 亿 ÷ 11.4 亿</td>
+<td>4.3 倍</td>
+<td>23.3 块（同为顶部数字）</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td>1.96 倍</td>
+<td>2024 年底才 0.77 倍</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 11 倍才是这家公司的本来面目——三年里含一个亏损年（2024）和一个暴利年（TTM），炼油就是这样的生意。</p>
+<p><strong>大白话：你现在投 100 块进去，按 TTM 它一年替你赚 21 块——但这是西海岸关厂潮+价差暴涨的巅峰读数；按含亏损年的三年平均，是 9 块。</strong> 到手方式是回购（年化约 7% 的股本消失），没有分红。真正的问题是定价基准：西海岸炼能退出是<strong>结构性</strong>的（关掉的厂不会回来），所以未来的"常态"利润确实应该比历史高——但股价一年涨 130%、市净率从 0.77 涨到 1.96，市场已经把这个新常态大部分付过钱了。9.5% 的空头在赌价差回落，分析师目标价只比现价高 5%。</p>
+<h2>第四部分：一句话结论</h2>
+<p>生意布局其实聪明（夏威夷准垄断+三个内陆利基市场+巨额 NOL 免税），账干净、回购凶、债务轻——但 4.6 倍是裂解价差历史顶部的倍数，常态口径 11 倍，而你是在股价翻完 1.3 倍、市净率翻完 2.5 倍之后到场的；结构性利好是真的，便宜已经不是了，追这种周期股的巅峰读数历史上很少有好下场。</p>
+</div></body></html>

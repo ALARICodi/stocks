@@ -1,0 +1,196 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AGO · Assured Guaranty（确保担保）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AGO</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">0.6倍净资产+十年注销3/4股本,回购数学自动兑现便宜</div><h1>AGO · Assured Guaranty（确保担保）</h1>
+<p>市值 33.2 亿美元 / 股价约 75.5 美元 / 行业：金融担保保险（债券保险） / TTM 截止 2026 年 6 月 30 日</p>
+<p><strong>这是金融担保企业，第三部分用 PB（市净率）口径而不是市盈率</strong>，原因是：它的利润被保费摊销节奏和一次性回收款扭曲，而它的商业模式本质是「一堆净资产 + 一本几十年慢慢释放利润的保单账本」，看你为每一块净资产付了多少钱才是对的算法。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>AGO 是 2008 年金融危机的<strong>幸存者独苗</strong>：昔日债券保险三巨头（MBIA、Ambac、FGIC）全在次贷里翻了船，只有它活着并吃下了整个行业。它做<strong>两门生意</strong>：</p>
+<h3>生意一：债券保险（Financial Guaranty，TTM 收入 8.1 亿，占主体）</h3>
+<p>给债券「担保还钱」。典型一单：加州一个学区发 2 亿美元 30 年期市政债修学校，评级 A，投资者要求 4.5% 利率；学区花一笔保费（债券面值的 1–2%，一次性收几百万美元）买 AGO 的保险，债券就变成 AA 级（跟着 AGO 的评级走），利率降到 4.1%——省下的利息比保费多，学区划算；万一学区真还不上钱，AGO 替它按期付本息。保费一次收进来，按保单存续期几十年慢慢确认成收入，所以它的收入极其平滑、可预测。</p>
+<p>在保的账本：几千亿美元面值的市政债（美国城市、学区、水务）、基建债和少量结构化产品。<strong>市政债违约率历史上接近于零</strong>，最大的一次考验是波多黎各破产（它赔了、打了多年官司、最后靠回收款反而赚了钱，2023 年的利润高峰就是这么来的）。这门生意的阿喀琉斯之踵是尾部风险：平稳三十年，赶上一次系统性危机就是生死题——2008 年全行业的下场就是教材。</p>
+<p><strong>行业现状必须说透</strong>：危机前一半的新发市政债都买保险，危机后跌到 5–10%，再没回去过。所以这是一门<strong>不增长、但也死不掉</strong>的生意——每年新承保的保费大致补上老保单释放掉的，收入十年横盘在 8 亿上下。</p>
+<h3>生意二：资产管理（TTM 收入 1.3 亿）</h3>
+<p>把自营的资管业务并进了 Sound Point Capital 换了约三成股权，坐享分成。规模小，当利息外的补充。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总收入</td>
+<td>8.1 亿美元</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>3.5 亿（EPS 7.54）</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td><strong>6.7%（结构性偏低，这是本案的核心矛盾）</strong></td>
+</tr>
+<tr>
+<td>净资产</td>
+<td>55.8 亿（<strong>每股 126.25 美元，股价只有 75.5</strong>）</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>利润的波动是摊销和回收款的节奏，不是经营恶化</strong>：净利润序列 3.9 亿→1.2 亿→7.3 亿→3.7 亿→5.0 亿→TTM 3.5 亿，大起大落主要是波多黎各回收款、公允价值变动、资管交易一次性收益（FY2023 的 2.75 亿）这类科目。<strong>常态化的利润就是 3.5–4 亿一年</strong>，别拿单年当趋势。</li>
+<li><strong>股权激励</strong>：全公司 367 人，SBC 规模对利润无关痛痒。</li>
+<li><strong>回购——这家公司的全部灵魂，必须放大看</strong>：<strong>股本一年注销 10.0%</strong>。过去十年它把股本从约 1.8 亿股买剩 4400 万股，<strong>回购掉了四分之三个公司</strong>。数学是无敌的：净资产每股 126 块，市场只卖 75 块，公司每花 75 块回购就地赚 51 块账面价值，<strong>BVPS 靠这一个动作每年机械式增厚 8–10%</strong>——ROE 只有 6.7% 的公司，每股账面价值却以两位数复利增长，全靠管理层十几年如一日在折价区坚定回购。另有分红 1.52 美元（收益率 2%，连续十年每年 +10%）。</li>
+<li><strong>利润和现金流的差</strong>：保险口径无异常。真正要盯的科目是准备金——市政债信用几十年温和，暂无恶化迹象。</li>
+</ul>
+<hr />
+<h2>第三部分：估值（PB 口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>0.60 倍</strong></td>
+<td>花 60 块买 100 块净资产，P/TBV 相同（无商誉水分）</td>
+</tr>
+<tr>
+<td>调整账面价值口径</td>
+<td>更低</td>
+<td>公司口径的 ABV（含未赚保费）每股 170 美元上下，对应约 0.45 倍</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>6.7%</td>
+<td>低——这是市场只肯给 0.6 倍的理由</td>
+</tr>
+<tr>
+<td>ROE ÷ PB（你的钱的真实收益率）</td>
+<td>6.7% ÷ 0.60</td>
+<td><strong>约 11.1 元 / 100 块</strong></td>
+</tr>
+<tr>
+<td>参考：GAAP 市盈率</td>
+<td>10.0 倍</td>
+<td>8.3 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>33.2 亿 ÷ 5.4 亿（FY23–25 均值，含一次性高峰）</td>
+<td>6.2 倍（虚低，剔一次性约 9 倍）</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你投 100 块进去，买到 167 块的净资产，这份净资产一年生出约 11 块利润</strong>——是本段位所有金融股里你的钱的真实收益率最高的一家。而且它回馈你的方式最聪明：2 块分红到手，剩下的大头拿去按六折价回购注销——每回购一股，你手里那股的账面价值就被动增厚一分。这个飞轮转了十几年：股价原地徘徊，每股净资产却从 40 涨到 126。代价是两条：<strong>生意本身不增长</strong>（收入十年横盘），以及<strong>尾部风险永远悬着</strong>（下一次市政债系统性危机来临时，0.6 倍的折价会瞬间显得不够深——2008 年 MBIA 们也曾看起来很便宜）。市场给六折不是看走眼，是给「三十年平安 + 一次灭顶」的赔率定价。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>0.6 倍净资产买 2008 年大洗牌的唯一幸存者，配上一台十年注销四分之三股本的回购绞盘机——ROE 只有 6.7% 的平庸生意，被折价+回购的数学改造成了每股价值两位数复利的机器，这是本段位「便宜且便宜得有机制兑现」的少数标的：不需要行业复苏、不需要估值修复，只要管理层继续在折价区回购，你的每股价值就自动往上走。买它要接受两件事：生意永不增长、市政债的百年一遇风险由你兜底。便宜。</p>
+</div></body></html>

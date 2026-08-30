@@ -1,0 +1,203 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TDS · 电话数据系统（Telephone and Data Systems）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TDS</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">12倍是卖UScellular画的,主业亏损FCF为负,远期88倍</div><h1>TDS · 电话数据系统（Telephone and Data Systems）</h1>
+<p>市值 38.7 亿美元 / 股价约 34 美元（一年跌 16%） / 行业：电信（光纤宽带 + 铁塔） / TTM 截止 2026 年 6 月 30 日</p>
+<p>先把最重要的话放在最前面：<strong>筛选器给它的 12 倍市盈率是彻底的幻觉。</strong> 这家公司 2025 年 8 月把家里最值钱的东西——UScellular 的无线通信业务——卖给了 T-Mobile（44 亿美元），TTM 利润表里的「净利润」几乎全部是这笔买卖的一次性收益；剩下的主业当期是<strong>经营亏损</strong>的。华尔街的远期市盈率是 <strong>88 倍</strong>，这才是市场对它「卖完家当后还能赚多少」的真实判断。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>TDS 是芝加哥 Carlson 家族控制的电信控股公司（家族靠超级投票权股把持公司，外人买的是没话语权的普通股）。卖掉无线业务后，家里还剩<strong>两门生意 + 一堆现金</strong>：</p>
+<h3>生意一：TDS Telecom 光纤宽带（TTM 收入 10.1 亿，占 81%）</h3>
+<p>在威斯康星、明尼苏达这些中西部州的小城镇和乡村做固网宽带——大电信公司看不上的市场。正在做的事是<strong>把老铜线网络翻建成光纤</strong>：过去几年每年砸四五亿美元资本开支拉光纤，目标是把光纤覆盖做到两百万户量级。商业模式：小镇家庭每月付 50–70 美元装千兆光纤，没有几家竞争对手（农村市场通常是「唯一一根光纤」的自然垄断），装上就是十年的稳定月费。这门生意本身不差，但<strong>眼下正处在「先花钱、后收钱」的投入期</strong>：收入基本横盘（1.0 亿上下五年没动，光纤新增用户抵消铜线流失），利润被折旧和建设费用压着。</p>
+<h3>生意二：Array 数字基建（铁塔，TTM 收入 2.1 亿，占 17%）</h3>
+<p>UScellular 卖掉无线业务后没有清算，改名 <strong>Array Digital Infrastructure</strong>，留下了约 4400 座通信铁塔和一批没卖完的频谱牌照，TDS 持有其约四分之三股权。铁塔租给 T-Mobile（签了 15 年长约）等运营商收租，收入在快速爬坡（TTM +31%）。另外还有陆续卖剩余频谱给 AT&amp;T、Verizon 的进账。这是纯资产生意：塔就在那里，收租，几乎没有增长故事，但现金流会越来越稳。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06，继续经营口径）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>12.6 亿美元（同比 +3.8%）</td>
+</tr>
+<tr>
+<td><strong>经营利润</strong></td>
+<td><strong>-3400 万（亏损）</strong></td>
+</tr>
+<tr>
+<td>报表净利润</td>
+<td>3.5 亿（几乎全是卖资产收益，见第二部分）</td>
+</tr>
+<tr>
+<td>经营现金流 / 自由现金流</td>
+<td>1.1 亿 / <strong>-4.5 亿（负）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>利润表整个是障眼法</strong>：经营利润 -3400 万，税前利润却是 +7.7 亿——中间约 8 亿全是营业外：<strong>卖资产收益 5.5 亿 +频谱出售等一次性进项</strong>。TTM 现金流量表里「资产剥离+其他投资活动」进账 48 亿，这是卖 UScellular 和频谱的钱到账。<strong>这些钱明年没有，后年也没有。</strong> 剔掉之后，这家公司当期的真实经营利润是<strong>负数</strong>。</li>
+<li><strong>现金流也要看穿</strong>：经营现金流从往年的 11 亿级掉到 1.1 亿（会赚现金的无线业务出表了），资本开支 5.6 亿（光纤建设），<strong>自由现金流 -4.5 亿</strong>——主业当下在烧钱建网，靠卖资产的存款度日。</li>
+<li><strong>资产负债表是唯一的亮点</strong>：卖资产还了 20 亿债，现在<strong>净现金 +9.5 亿</strong>，PB 0.95 倍（有形口径 1.62 倍）。它是一个「资产打折盒子」：0.95 倍的价格买光纤网络 + 四千座铁塔的多数股权 + 净现金 + 没卖完的频谱。</li>
+<li><strong>股权激励</strong>：1800 万，无关紧要。</li>
+<li><strong>回购与稀释</strong>：不回购，股本一年 +4.2%。分红在 2023 年被砍过一刀（老股东记忆犹新），现在的派息聊胜于无。<strong>Carlson 家族控股结构意味着资产折价可能永远不兑现</strong>——家族没有卖公司清算的义务，愿意慢慢建光纤。</li>
+<li><strong>少数股东权益</strong>：Array 约四分之一的权益属于外部股东，看 TDS 报表时铁塔和频谱的果实要打七五折。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>38.7 亿 ÷ 3.5 亿</td>
+<td>8.6 倍</td>
+<td>11.6 元（假的）</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>经营利润为负</td>
+<td><strong>无法计算（亏损）</strong></td>
+<td><strong>≈0 或为负</strong></td>
+</tr>
+<tr>
+<td>华尔街远期口径</td>
+<td>分析师对明年的共识</td>
+<td><strong>88.3 倍</strong></td>
+<td>1.1 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为 -4.5 亿</td>
+<td>无法计算</td>
+<td>负</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td>股价 vs 每股净资产 35.6</td>
+<td><strong>0.95 倍</strong></td>
+<td>—（资产口径）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年继续经营口径全是亏损或微利</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，当期这家公司一年替你赚的钱约等于零，甚至还在倒贴建设费。</strong> 你买到的是打 95 折的一堆资产：一张建到一半的乡村光纤网、四千座收着 T-Mobile 十五年租金的铁塔（的四分之三）、9.5 亿净现金和一些频谱。赌的是三五年后光纤建成、铁塔满租，利润从零爬到「值 38 亿市值」的水平——远期 88 倍意味着这条爬坡路刚刚起步。中间没有分红安慰（被砍过），没有回购，家族说了算。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>筛选器里的 12 倍是卖 UScellular 的钱画出来的海市蜃楼——真实情况是主业经营亏损、自由现金流为负、远期 88 倍，你买的不是低估值利润流，是一个 Carlson 家族控制的「资产重组盒子」按 0.95 倍净资产出售。资产是真资产（光纤+铁塔+现金），但兑现要等多年光纤建设铺完，且控股家族没有义务帮你兑现折价。这不属于「便宜的利润」，属于「打折的资产赌局」——对本筛选框架的读者：绕开，想赌资产重估的另说。按盈利口径，很贵。</p>
+</div></body></html>

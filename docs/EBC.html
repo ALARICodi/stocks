@@ -1,0 +1,206 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EBC · Eastern Bankshares（波士顿最大的社区银行）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EBC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">还原税率后15.6倍不便宜,ROE仅9.4%,买整合兑现的期票</div><h1>EBC · Eastern Bankshares（波士顿最大的社区银行）</h1>
+<p>市值 $48.8亿 / 股价约 $22.3 / 行业：区域银行 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>这是一家银行，用 PB、ROE 口径而不是普通市盈率</strong>（原因同银行通例：利润是杠杆的产物，脱离净资产没法比较）。年回报按「ROE ×（1/PB）」换算，且要记住这建立在约 8 倍杠杆上，衰退时会剧烈缩水。</p>
+</blockquote>
+<h2>一、它到底做几件事</h2>
+<p>Eastern Bank 是<strong>波士顿的百年老店（1818 年创立，比美联储还老一个世纪）</strong>，直到 2020 年才从"互助制"（无股东、储户共有）改制上市，一口气募了 18 亿美元。这个出身决定了它的两个特征：<strong>资本多到花不完，以及上市后不停买同行</strong>——五年里连吞三家：Century Bancorp（2021）、Cambridge Bancorp（2024）、HarborOne（2025 年 11 月并表）。现在是大波士顿地区市占率第一的社区银行，总资产约 280 亿美元。生意就是社区银行的标准两件套：</p>
+<h3>生意一：存贷利差（收入大头）</h3>
+<p>在马萨诸塞和新罕布什尔的几百个网点吸储，贷给本地中小企业、做居民房贷和商业地产贷款。波士顿是全美最富的都会区之一（教育、医疗、生物科技），存款基础厚、坏账文化保守。<strong>社区银行的命门商业地产贷款</strong>它有一定敞口，但组合里办公楼占比不高，目前拨备正常。</p>
+<h3>生意二：财富管理（小而增长）</h3>
+<p>2024 年买 Cambridge Bancorp 主要就是为了它的私人银行和财富管理牌照（Cambridge Trust 品牌），给波士顿的富裕家庭管钱收年费。已把原保险经纪业务卖给 Gallagher 套现（2023 年，账面赚了约 2.5 亿美元一次性收益）——一卖一买，把手续费业务从保险换成了财富管理。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>关键数字</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总资产</td>
+<td>约$280亿</td>
+<td>ROA 1.33%反推</td>
+</tr>
+<tr>
+<td>TTM 净利</td>
+<td>$3.76亿</td>
+<td><strong>有水分，见下</strong></td>
+</tr>
+<tr>
+<td>净资产</td>
+<td>$42.8亿</td>
+<td>每股$19.62</td>
+</tr>
+<tr>
+<td>员工</td>
+<td>2,450人</td>
+<td>波士顿+新罕布什尔网点</td>
+</tr>
+</tbody>
+</table></div>
+<h2>二、把会计障眼法剥掉</h2>
+<p>这份 TTM 报表是<strong>三股一次性力量叠加的产物</strong>，逐个拆：</p>
+<ul>
+<li><strong>营收"翻倍"是并购口径跳变</strong>：TTM 营收 11 亿 vs 上财年 7 亿——HarborOne 2025 年 11 月并表，两家银行的收入叠在了一起，不是生意突然变好。股本也因此一年膨胀 8.1%（换股收购付的）。</li>
+<li><strong>前两年利润被"压低"过</strong>：FY24/25 净利只有 1.2 亿/0.9 亿，因为管理层主动把账上低息老债券割肉卖掉（一次性认亏），换成高收益资产——<strong>过去的利润被故意做矮，现在的利润因此长高</strong>，TTM 的 3.76 亿里有这部分"反弹"。</li>
+<li><strong>税率只有 6.4%</strong>：正常银行 21–24%。低税率来自并购和割券损失的税务抵扣，不可持续。<strong>按正常税率还原，真实净利约 3.1 亿，真实市盈率约 15.6 倍</strong>（表面 12.8 倍）——比看上去贵三分之一。</li>
+<li><strong>商誉</strong>：连买三家攒下的。PB 1.14 vs P/TBV 1.62，差额就是商誉——每股 19.6 元净资产里约 6 元是"买来的溢价"。</li>
+<li><strong>分红与回购</strong>：股息率约 2.3%，并购间隙做回购（本季度股本 -1.9%）。资本充足是它的家底，分红记录尚短（2020 年才上市）。</li>
+<li><strong>数据源未提供 NIM、CET1、拨备覆盖率</strong>，不编数。定性判断：互助制出身+连续并购后仍有余力回购，资本充足无虞。</li>
+</ul>
+<h2>三、值多少钱：PB × ROE 口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>1.14 倍</td>
+<td>银行业中位偏上</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>1.62 倍</td>
+<td>剔商誉后不算便宜</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>9.44%</td>
+<td>平庸——被并购整合期+超额资本双重稀释</td>
+</tr>
+<tr>
+<td>表面市盈率</td>
+<td>12.8 倍</td>
+<td>含低税率水分</td>
+</tr>
+<tr>
+<td><strong>还原正常税率后市盈率</strong></td>
+<td><strong>约15.6 倍</strong></td>
+<td>银行里偏贵了</td>
+</tr>
+<tr>
+<td>远期市盈率</td>
+<td>11.1 倍</td>
+<td>市场赌整合红利兑现</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>约2.3%</td>
+<td>记录尚短</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>年回报换算</strong>：ROE 9.44% ÷ PB 1.14 = <strong>投 100 块，一年赚约 8.3 块</strong>（还原税率后约 7 块），其中 2.3 块分红到手。这个数排在本会话做过的银行中游：不如 CBSH 的成色（人家 14.7% ROE 只用七折杠杆），好在你付的 PB 也低一半。</p>
+<p><strong>看多的账</strong>：HarborOne 整合完 + 割券置换的高收益资产满年化 + 超额资本继续回购，ROE 从 9% 修到 11–12%，远期 11 倍就兑现了——这正是股价 52 周涨 30% 在提前计价的东西。<strong>看空的账</strong>：连续三次并购的整合从没歇过，7.1% 的股份被做空，赌的就是"买来的增长缝不平"。</p>
+<h2>四、一句话结论</h2>
+<p><strong>公道价，买的是"整合兑现"的期票。</strong> 波士顿市占率第一的百年招牌、花不完的资本、敢把烂债券割肉换仓的管理层，都是加分项；但当下真实成色只有 9% 的 ROE 和还原后 15 倍多的市盈率，涨了 30% 之后便宜已经被吃掉了。它比平庸银行好、比 CBSH 那种差——想买波士顿的复苏故事这价格可以接受，想捡便宜这里已经没有。</p>
+</div></body></html>

@@ -1,0 +1,185 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SBLK · Star Bulk Carriers（星散海运，干散货船东）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SBLK</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">烂行业里最像样的玩家，但52周涨完60%已不是低谷价</div><h1>SBLK · Star Bulk Carriers（星散海运，干散货船东）</h1>
+<p>市值 34.0 亿美元 / 股价 30.48 美元 / 行业：运输·干散货航运 / TTM 截止 2026-06-30（任务2 · 市盈率 0–15 倍段 · 榜内第 262 名）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>一门生意：拥有全球最大的美股上市干散货船队（约 150 艘），把铁矿石、煤炭、粮食、铝土矿从卖家的港口运到买家的港口，按天收运费。</strong> 希腊船东世家 Pappas 家族掌舵（内部人持股 20%），雅典运营，2024 年吞并了同行 Eagle Bulk 之后规模登顶。</p>
+<p>这门生意的机制要讲透，因为它决定了这家公司「不由自己做主」的程度：</p>
+<ul>
+<li><strong>船队构成</strong>：从 21 万吨的 Capesize（好望角型，专跑巴西/澳洲→中国的铁矿石）到 6 万吨级的 Supramax（灵活跑粮食、化肥、钢材），全谱系覆盖。一艘 Capesize 新造价约 7000 万美元，寿命 25 年。</li>
+<li><strong>收入 = 船数 × 日租金</strong>：日租金由波罗的海指数（BDI）定价，<strong>它对价格没有任何发言权</strong>。同一艘 Capesize，2021 年高峰一天能赚 8 万美元，2023 年低谷一天 1.2 万——收入端十倍波动是这个行业的常态。租金的驱动因素说到底就三个：中国要不要盖楼炼钢（铁矿石需求）、全球粮食和煤炭贸易流向、以及<strong>船厂手里还压着多少新船订单</strong>（供给）。</li>
+<li><strong>成本端</strong>：每艘船每天运营成本约 5000 美元（船员、保养、保险）+ 燃油（大部分转嫁给租家）+ 利息。Star Bulk 的规模优势体现在采购议价和岸端管理摊薄，另有一百多艘船装了脱硫塔——烧便宜的高硫油、赚高低硫价差，一年能多挤出几千万美元。</li>
+<li><strong>眼下的周期位置</strong>：2026 年干散货市场走强（新船订单占existing船队比例处在历史低位、环保新规逼老船减速拆解、大西洋矿石增量），股价 52 周 +60%。TTM 净利 2.87 亿处在「中游偏上」——比 2021–22 疯狂期（5.7–6.8 亿）低一半，比 2023/2025 低谷（1.7 亿/0.8 亿）高一倍多。</li>
+</ul>
+<p><strong>资本纪律是它和散兵游勇船东的区别</strong>：公司章程式的浮动分红政策——每艘船留足最低现金后，<strong>多出来的经营现金流按公式分掉</strong>（TTM 分红 1.16 亿 + 回购 0.76 亿；2022 年丰年曾一年分掉 6.7 亿）；这几年还持续卖旧船回笼（TTM 卖船收入 1.89 亿）、净还债 1.5 亿，把净债务从 2021 年的 11.4 亿压到 6.8 亿，Debt/EBITDA 只有 1.4——<strong>在一个惯性加杠杆炒船的行业里，它选择把周期红利还给股东和资产负债表</strong>。</p>
+<p><strong>钱（TTM）</strong>：营收 12.03 亿（+6.3%）、经营利润 3.36 亿（利润率 27.9%）、净利润 2.87 亿（航运公司免所得税——船舶注册地制度，全行业如此）、自由现金流 2.87 亿。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>一次性项目</strong>：TTM 卖船净收益约 0.03 亿（FY2024 曾有 0.43 亿卖船收益、FY2025 有 0.18 亿卖船亏损）——常态化的船队更新损益，量级小，不调整。<strong>报表本身干净，脏的是周期</strong>：TTM 2.87 亿不能当常态，它的五年净利润序列是 6.8 → 5.7 → 1.7 → 3.0 → 0.8 亿，<strong>周期中枢大约 2.5–3 亿，眼下恰好在中枢附近</strong>——这是它和 CENX（利润全靠政策尖峰）的本质区别。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 0.17 亿，占净利润 6%，克制。</li>
+<li><strong>资本化的支出</strong>：资本开支 1.68 亿（船坞特检 + 环保改装 + 新船分期），略低于折旧 1.90 亿——船队在净收缩换代，没有拿维护性开支装增长的把戏。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 0.76 亿 + 分红 1.16 亿 ≈ 自由现金流的三分之二还给股东，股本一年缩 3.7%。浮动分红的含义要说白：<strong>丰年大分、荒年停分</strong>（FY2025 只分了 0.34 亿），把它当固定收息股会失望。</li>
+<li><strong>利润 vs 现金流</strong>：经营现金流 4.55 亿 &gt; 净利润 2.87 亿，差额主要是 1.9 亿折旧（船是过去买的）,含金量正常。</li>
+<li><strong>资产负债表</strong>：净债务 6.8 亿 = 2.4 年自由现金流，行业里最干净的梯队；下一轮低谷它是有资格抄底买船的那一方，而不是被债主逼着贱卖船的那一方。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>34.0 亿 ÷ 2.87 亿</td>
+<td>12.0</td>
+<td>8.4 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无重大一次性，即当期口径</td>
+<td><strong>12.0</strong></td>
+<td><strong>8.4 元</strong></td>
+</tr>
+<tr>
+<td>华尔街预期口径</td>
+<td>押 2027 运价继续走强</td>
+<td>7.7</td>
+<td>12.9 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>34.0 亿 ÷ 2.87 亿</td>
+<td>11.9</td>
+<td>8.4 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>40.8 亿 ÷ 3.36 亿</td>
+<td>12.2</td>
+<td>8.2 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>(1.74+3.05+0.84)÷3 = 1.88 亿</td>
+<td><strong>18.1</strong></td>
+<td>5.5 元</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td>1.35 倍账面（船队市值在强市高于账面，实际约 1.1 倍船队净值,估算）</td>
+<td>—</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 18 倍 vs 当期 12 倍：<strong>你付的价格已经预支了「周期继续向上」的一段</strong>。1.35 倍账面也在它历史区间（0.7–1.1）的上沿之外——52 周 +60% 之后，这不是低谷价，是中期看多价。</p>
+<p>大白话：<strong>你投 100 块进去，眼下的运价水平下公司一年赚 8 块半，其中约 5–6 块通过浮动分红+回购还你；运价若如期走强，明年能赚到 13 块；运价掉头（中国地产再坐一波、或船东集体下新船订单），缩回 3–5 块、分红同步缩水</strong>。它的「便宜」完全取决于你对干散货周期的判断——低订单簿 + 环保拆船的供给逻辑是真的，但这个逻辑已经涨在股价里 60% 了。</p>
+<h2>第四部分：一句话结论</h2>
+<p>同样是强周期商品股，它是 CENX 的反面教材式对照：报表干净、杠杆压到行业最低、丰年老老实实把现金还给股东、周期低谷有余粮抄底——<strong>行业烂（无定价权、十倍波动），但玩家是这个烂行业里最像样的</strong>。问题只在入场时点：52 周涨完 60%，1.35 倍账面、三年平均 18 倍，当下买入等于押注周期继续上行，安全边际已经不厚。想配航运周期，它是首选标的、但不是首选时点——回到 1 倍账面以下才是它给过无数次的「白送价」。公道，生意一般。</p>
+</div></body></html>

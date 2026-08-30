@@ -1,0 +1,205 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VIPS · 唯品会（Vipshop Holdings）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VIPS</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">42%市值是净现金,生意只卖3.7倍EV/EBIT,主业缓缩但回购真</div><h1>VIPS · 唯品会（Vipshop Holdings）</h1>
+<p>市值 74.7 亿美元 / ADS 约 13.5 美元（一年跌了 20%） / 行业：中国折扣电商（在纽交所上市的中概股） / TTM 截止 2026 年 6 月 30 日（财报以人民币记账）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>唯品会做<strong>两门生意：线上品牌特卖 + 线下奥特莱斯商场</strong>，本质是同一件事的线上线下两个版本——<strong>帮品牌清库存，赚折扣差价</strong>。</p>
+<h3>生意一：Vip.com 线上特卖（FY2025 收入 1015 亿人民币，占 96%）</h3>
+<p>商业模式是「线上奥特莱斯」：耐克、阿迪、波司登这些品牌每季总有 20–30% 的货卖不完，压在仓库里占钱。唯品会按吊牌价的 2–4 折<strong>买断或代销</strong>这些过季库存，挂到 App 上按 5–7 折限时特卖，三天卖完一档换下一档。举例：某运动品牌 3 万件过季羽绒服吊牌价 1000 元，唯品会 300 元收进来 550 元卖出去，一档活动几天清空，品牌回了血、消费者省了钱、它赚 250 元毛利差。它的主力用户是二三线城市 30–45 岁的女性，复购率极高——付费会员「超级 VIP」贡献了近半 GMV。</p>
+<p>和淘宝京东拼多多的区别：它不做全品类平台，只做「品牌折扣」这个切口，自建仓储物流（顺丰配送）、正品保险。这个模式 2015 年前后风光过（股价是现在的六倍），后来被拼多多的百亿补贴和抖音直播间清库存前后夹击，<strong>核心收入从 2021 年的 1142 亿一路缩到 1015 亿</strong>，这三年分别 -3.9%、-2.3%、-0.8%——还在缩，但缩幅逐年收窄，像是在筑底。</p>
+<h3>生意二：杉杉奥特莱斯（FY2025 收入 41 亿人民币，占 4%）</h3>
+<p>2019 年收购的线下奥莱商场连锁（全国二十多个城市的杉杉奥特莱斯广场），收租金和销售扣点。这是报表里唯一在增长的板块：FY2025 +23%，从 2021 年的 16 亿翻到 41 亿。逻辑和线上一模一样——中国消费降级时代，品牌清库存的需求只增不减。体量还小，但方向是对的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06）</th>
+<th>数字（人民币）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>1051 亿（同比 -0.8%）</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>23.4%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>80.3 亿（利润率 7.6%）</td>
+</tr>
+<tr>
+<td>净利润（GAAP，含大额营业外收益）</td>
+<td>103.2 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>分部利润财报未细拆，按常识估算：利润几乎全部来自线上主业，杉杉奥莱微利。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>最大的障眼法</strong>：TTM 净利润 103 亿<strong>高于</strong>经营利润 80 亿。税前利润约 153 亿 − 经营利润 80 亿 = <strong>约 72 亿人民币的营业外收益</strong>，其中大头落在 2026 年上半年（TTM 的 EPS 同比 +56%，而经营利润基本没动）。数据源里能看到的明细只有投资处置和股权投资收益的常规几亿，<strong>这笔集中出现的大额收益（约 60 亿量级）看不出来源，属于投资/重估类的一次性横财</strong>——利息收入（330 亿现金存款的利息）是经常性的，其余别当成年年有。剔掉横财、按正常税率算，<strong>真实经营性净利润约 65–70 亿人民币（合 9–10 亿美元），表面 4.4 倍的市盈率，真实约 7.5–8 倍</strong>。</li>
+<li><strong>股权激励（SBC）</strong>：FY2025 高达 <strong>17.3 亿人民币，占净利润的 24%</strong>——这是账本上最难看的一行。核心生意不增长，管理层股票照发，五年从 10 亿涨到 17 亿。按真实利润口径它吃掉四分之一。</li>
+<li><strong>一次性项目</strong>：FY2023–2022 有些减值重组（1.5–2.4 亿级别），规模不大。</li>
+<li><strong>回购与稀释</strong>：股本一年实际减少 <strong>4.25%</strong>——回购是真的（近年每年 7–10 亿美元力度），另有年度分红（2026 年 4 月除息）。回购约是 SBC 的 3 倍以上，方向正确，力度扎实。</li>
+<li><strong>利润和现金流的差</strong>：FY2025 净利润 72 亿 vs 经营现金流 75 亿，看着健康，但要点破一个结构：<strong>应付账款一年就减少 22 亿</strong>——收入缩，欠供应商的钱跟着缩，营运资金持续放血，这是「生意变小」在现金流量表上的投影。FY2025 自由现金流 55 亿人民币（约 7.7 亿美元），比净利润低，成色尚可但在逐年走低（123 亿→64 亿→55 亿）。</li>
+</ul>
+<p><strong>资产负债表是它最硬的底牌</strong>：现金及投资 329 亿人民币，扣掉全部债务后<strong>净现金 213 亿人民币（约 31.4 亿美元）——占市值的 42%</strong>。你花 74.7 亿美元买它，其中 31.4 亿是现金。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>74.7 亿 ÷ 15.2 亿美元</td>
+<td>4.4 倍</td>
+<td>22.7 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回 SBC 的口径（骗人的，SBC 是真成本）</td>
+<td>≈4 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>74.7 亿 ÷ 约 9.5 亿（剔横财、SBC 已扣）</td>
+<td><strong>≈7.9 倍</strong></td>
+<td><strong>≈12.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>74.7 亿 ÷ 约 7.7 亿</td>
+<td>9.7 倍</td>
+<td>10.3 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（74.7 亿 − 净现金 31.4 亿）÷ 11.8 亿</td>
+<td><strong>3.7 倍</strong></td>
+<td><strong>27.3 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>74.7 亿 ÷ 10.8 亿（FY23–25 均值）</td>
+<td>6.9 倍</td>
+<td>14.4 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>全表要害在 EV/EBIT 那行</strong>：把现金刨掉，你为这门生意本身只付了 43 亿美元，它一年产出 12 亿美元经营利润——<strong>做生意的部分只卖 3.7 倍</strong>。这是全任务2 到目前为止罕见的真便宜读数。</p>
+<p>大白话：<strong>你现在投 100 块进去，42 块是现金，58 块买生意；按剔除水分的真实口径，这门生意一年替你赚约 12.7 块。</strong> 其中约 8–10 块通过回购+分红实际回到你口袋（股本每年实缩 4%+），成色是真的。代价是三个折扣叠在一起：中概股的 VIE 结构风险（你买的是开曼壳的合约权益，不是公司本身）、核心收入连缩三年还没回正、SBC 吃掉真实利润的四分之一。这个 12.7 块未来往哪走：主业缩幅在收窄、杉杉奥莱在长，大概率横盘微跌——但按 3.7 倍 EV/EBIT 的价格，它不需要增长就够便宜。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>这是「便宜得有道理，但便宜是真便宜」的典型：主业温和萎缩、SBC 发得过分、中概折价一个不少，可 42% 市值是净现金、生意部分只卖 3.7 倍 EV/EBIT、回购真金白银每年注销 4% 股本——按最保守口径你也在拿 12% 以上的真实收益率。不指望它重回增长，只要中国人还需要清库存、它还肯把赚的钱还给股东，这个价格就是给足了安全边际的便宜货。</p>
+</div></body></html>

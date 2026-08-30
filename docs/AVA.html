@@ -1,0 +1,183 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AVA · Avista（阿维斯塔电力）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AVA</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">5.2%息垄断收租债券，1.12倍净资产，山火是尾部风险</div><h1>AVA · Avista（阿维斯塔电力）</h1>
+<p>市值 $31.5 亿 / 股价约 $37.6 / 行业：受监管公用事业（电+燃气）/ TTM 截止 2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Avista 是华盛顿州斯波坎市的百年老电力公司（1889 年创立），做的是<strong>受政府监管的垄断生意</strong>：在划给它的地盘里，电和天然气只有它一家卖。两个分部：</p>
+<h3>生意一：Avista Utilities（97% 收入）</h3>
+<p><strong>这是什么</strong>：给华盛顿州东部、爱达荷州北部、俄勒冈州一角的约 42 万户供电、38 万户供气。斯波坎的家庭冬天取暖、Coeur d'Alene 的锯木厂开机器，电都从它的线上来。它的发电结构是个特色：<strong>一半是水电</strong>——斯波坎河上的一串百年水坝，发电成本几乎为零，让它的电价在全美排最低的一档。</p>
+<p><strong>这门生意的赚钱规则跟普通公司完全不同，值得讲透</strong>：它不能随便定价。州监管委员会核定它的"费率基数"（rate base，即投进电网的资产净值），然后允许它在这个基数上赚约 9.4–9.8% 的股本回报——<strong>利润是政府批出来的，不是市场竞争出来的</strong>。所以它的成长公式很机械：多修电网变电站 → 费率基数变大 → 获批的利润跟着变大，每年 4–6%，像时钟一样。<strong>但 Avista 有个老毛病：常年赚不满</strong>——实际 ROE 只有 8.3%，比获批的 9.5% 低一截，原因是华盛顿州监管出了名的抠（成本涨了要等下一轮费率听证才能转嫁，中间的差额股东自己吞，行话叫"监管时滞"）。最近几年 WA 改成多年期费率计划，情况在改善——TTM 利润 $2.27 亿比 FY25 的 $1.93 亿跳了一截，就是新费率落地的效果。</p>
+<h3>生意二：阿拉斯加电力（AEL&amp;P，3% 收入）</h3>
+<p>朱诺市（阿拉斯加州府）的垄断电力公司，也是水电，$5,000 万营收，安静的小金库。</p>
+<p><strong>两个远期变量</strong>：往好处想，斯波坎周边在谈数据中心落地，若成真费率基数增速会上台阶；往坏处想，<strong>山火</strong>——它的电线杆立在西北山林里，2020 年 Malden 山火烧掉一个镇，诉讼追责的阴影（加州 PG&amp;E 因山火破过产）是整个西部电力股估值被压着的共同原因。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：$1,100 万，占净利润 5%。低。</li>
+<li><strong>一次性项目</strong>：无大额一次性。TTM 有效税率只有 11.7%——不是花招，公用事业把税收抵免（可再生能源等）返还给费率是常规操作。</li>
+<li><strong>资本化的支出</strong>：这行生意的本质就是资本化——每年 $6.5 亿砸进电网（营收的三分之一），折旧只摊回 $2.8 亿。<strong>所以自由现金流常年为负</strong>（TTM -$1.04 亿），缺口靠发债+增发股票补：债务五年从 $26 亿爬到 $34 亿，股本一年增发 2.8%。<strong>这不是经营恶化，是公用事业的标准商业模式</strong>——监管允许的回报覆盖资金成本，砸得越多赚得越多；但它也意味着两件事：分红本质上是"左手向资本市场借、右手发给你"；利息覆盖只有 2.4 倍，利率每高一年，利润表就多疼一年。</li>
+<li><strong>回购与稀释</strong>：没有回购，只有稀释（+2.8%/年，用于填资本开支缺口）。股东回报的全部来源是<strong>分红：每股约 $1.96/年，股息率 5.2%</strong>，连续二十多年小步上调，派息率约 70%。</li>
+<li><strong>利润和现金流的差</strong>：净利润 $2.27 亿 vs 经营现金流 $5.46 亿，差额就是折旧 $2.81 亿——教科书式的干净，垄断生意没动机粉饰。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>31.5 亿 ÷ 2.27 亿</td>
+<td>13.6</td>
+<td>¥7.3</td>
+</tr>
+<tr>
+<td>Forward PE</td>
+<td>增发摊薄后</td>
+<td>14.4</td>
+<td>¥6.9</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无需调整</td>
+<td><strong>13.6</strong></td>
+<td><strong>¥7.3</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>FCF 为负（商业模式使然）</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA</td>
+<td>65.1 亿 ÷ 6.43 亿</td>
+<td>10.1</td>
+<td>行业中位约 11–12</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>31.5 亿 ÷ 2.0 亿（FY23–25 平均）</td>
+<td>15.8</td>
+<td>¥6.3</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td><strong>1.12 倍</strong>（公用事业板块普遍 1.7–2 倍）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>说人话</strong>：你投 100 块，它一年替你赚 7.3 块，<strong>其中 5.2 块以分红实发到手</strong>，剩下 2 块留在电网里按监管公式滚 4–6% 的增长——合起来是一张"5.2% 票息 + 每年涨一点"的准债券。这个回报的确定性在本榜单里数一数二（垄断+政府定价+电费没人赖账），但天花板也焊死了：监管公式决定它永远不会爆发。1.12 倍净资产、13.6 倍利润在公用事业里属于便宜的一档，便宜的原因也明白：小盘、华盛顿监管抠、山火尾部风险、外加利率高企时 5.2% 股息对着 4%+ 的国债没多少吸引力。买它实质是两个判断：利率会往下走（利好所有收租股）、西北不烧大山火。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>公道——一张 5.2% 票息、年涨 4–6% 的垄断收租凭证，按行业偏低的价格挂牌。</strong> 生意本身无可挑剔的稳（水电+垄断+政府定价），价格也没泡沫；但它不是能变富的东西，是让钱不缩水的东西，而且挂着山火这个小概率大伤害的尾巴。适合当组合里的压舱石、替代债券的仓位；想赚增长的钱，看别处。</p>
+</div></body></html>

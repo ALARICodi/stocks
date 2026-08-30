@@ -1,0 +1,169 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CACC · Credit Acceptance（次级车贷）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CACC</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">30年吞掉八成股本的收割机，公道价，4倍杠杆+官司悬顶</div><h1>CACC · Credit Acceptance（次级车贷）</h1>
+<p>市值 61.8 亿美元 / 股价约 595 美元 / 行业：金融·消费信贷 / TTM 截止 2026-06-30（任务2 · 市盈率 0–15 倍段 · 榜内第 180 名）</p>
+<blockquote>
+<p>这是放贷公司，看它要用<strong>放贷口径</strong>：市净率、ROE、杠杆倍数、坏账拨备，市盈率仅作参考——它的「利润」是用 4 倍杠杆和一套复杂的坏账预测算出来的数字。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>只做一门生意，做了五十多年：借钱给美国信用最差的那批人买二手车。</strong> 它的口号就是生意本身——「人人都能获批」（Guaranteed Credit Approval）。</p>
+<p>具体运作长这样。一个信用分 500 出头（美国平均约 715）、刚从破产记录里爬出来的仓库工人，走进密歇根一家二手车行，看中一辆 1.4 万美元的旧皮卡。银行和正规车贷公司看都不看他。车行老板打开 Credit Acceptance 的系统（全美约 1.5 万家合作车行装了它），几分钟出结果：批，年利率 22–25%，贷 5 年，月供约 400 美元。</p>
+<p>钱怎么分是这门生意的精髓，它的主力模式不是「买断贷款」而是<strong>「预付 + 分成」</strong>：
+- CACC 当场把贷款额的一半左右（约 7000 美元）预付给车行——车行立刻落袋，卖车利润已经到手；
+- 之后 CACC 负责收款。收回来的钱先还它自己的预付款、再扣服务费，<strong>剩下的 80% 返给车行</strong>（行话叫 dealer holdback）。
+- 妙处在激励对齐：车行想拿到后面那笔分成，就不能把明知还不起的客户塞进来——<strong>把「筛选骗子」的活外包给了最了解客户的车行</strong>。</p>
+<p>CACC 从第一天就假设客户会大面积违约——它给每笔贷款预测的回收率只有合同金额的 65–70%，<strong>定价时就把三分之一收不回来算进去了</strong>。只要实际回收不比预测差太多，25% 的名义利率扣掉坏账、扣掉 6.5% 左右的资金成本，还能剩下厚厚一层。这套「预测—定价—收款」模型喂了五十年数据，是它真正的护城河；第二条护城河是周期纪律：竞争对手在信贷宽松年份杀价抢量、衰退时集体爆掉退场，它反着来——别人疯狂时收缩，别人死掉时放量。</p>
+<p><strong>钱（TTM）</strong>：收款端总收入 23.30 亿（财务费 21.59 亿 + 附加保险保费 0.96 亿 + 其他 0.75 亿），减坏账拨备 5.80 亿、利息支出约 4.1 亿（估算）、运营费用后，税前利润 6.50 亿、净利润 5.02 亿。贷款组合约 80 亿美元，靠 63 亿债务（资产证券化 + 循环额度）撬动，<strong>杠杆约 4 倍</strong>（净资产仅 15.9 亿）。</p>
+<p>必须直说这门生意的另一面：收不回钱时它是<strong>全美起诉自己客户最勤快的公司之一</strong>——批量法庭传票、工资扣押、上门拖车。2023 年纽约州检察长和 CFPB（消费者金融保护局）联合起诉它「掠夺性放贷」（案件仍在走）。你买这家公司，就是在买一台合法但难看的穷人收割机，监管的达摩克利斯之剑永远悬着。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>坏账拨备是最大的利润调节阀（要害）</strong>：现行 CECL 会计要求贷款一放出去就把预期终身损失全额计提，导致放量年份利润被压扁、收缩年份利润虚胖。看它的年份序列就懂：2021 年拨备只有 800 万（政府发钱，穷人个个按时还款）→ 净利 9.58 亿虚高；2023–2024 年把 2021–2022 年发的烂单子补计提 7–8 亿 → 净利被砸到 2.5–2.9 亿虚低；TTM 拨备回落到 5.80 亿 → 净利 5.02 亿回到中间。<strong>GAAP 利润三年翻倍的「高增长」是会计钟摆回摆，不是生意变好</strong>。公司自己按现金流口径算的调整后净利润常年比 GAAP 稳得多，约 5–5.5 亿。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 0.45 亿，占净利润 9%。照扣。</li>
+<li><strong>一次性项目</strong>：无重大项。诉讼若和解，赔款量级参考同行案例在几千万到几亿美元之间，单期无法预估，记为悬而未决。</li>
+<li><strong>回购与稀释</strong>：<strong>这是全美股最极端的回购食人族之一：1992 年上市时 4600 万股，现在只剩 1038 万股——三十年吃掉自己近 80% 的股本</strong>。TTM 回购 6.19 亿（÷ SBC 0.45 亿 = 14 倍），股本一年缩 9.4%。从不分红，理由是回购免税更划算。内部人还持股 15.8%。</li>
+<li><strong>利润和现金流的差</strong>：经营现金流 12.25 亿远大于净利润 5.02 亿，但对放贷公司这个对比没有意义——收回老贷款算现金流入、放出新贷款算投资流出（TTM 净放贷 -5.38 亿）。真实的自由现金流 ≈ 经营现金流 − 净放贷 ≈ 6.9 亿，和调整后利润量级吻合，<strong>利润是真钱</strong>，只是年份间的分布被 CECL 扭曲。</li>
+<li><strong>杠杆</strong>：债务/净资产 3.96 倍，是本批三家里唯一的高杠杆放贷模型。它的负债主要是资产证券化（把贷款打包卖给债券投资人，坏账超额部分先亏债权人的钱），比银行的活期存款稳定得多，2008 年、2020 年都安然滚过——但 4 倍杠杆配次级客户，容错空间就是比别人小，这是结构性事实。</li>
+</ul>
+<h2>第三部分：估值（放贷口径为主）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>3.88 倍（净资产 15.9 亿）</td>
+<td>ROE÷PB = 31.9÷3.88 ≈ <strong>8.2 元</strong></td>
+</tr>
+<tr>
+<td>市盈率 GAAP TTM</td>
+<td>13.1 倍</td>
+<td>7.6 元</td>
+</tr>
+<tr>
+<td>公司调整后口径（现金流法）</td>
+<td>约 11–12 倍（估算）</td>
+<td>8.5 元</td>
+</tr>
+<tr>
+<td>预期市盈率</td>
+<td>11.6 倍</td>
+<td>8.6 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>(2.86+2.48+4.24)÷3 = 3.19 亿 → 19.3 倍</td>
+<td>5.2 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 19.3 倍那行要拆开读：分母是被 CECL 补计提砸到谷底的 2023–2024 年，<strong>低估了常态盈利</strong>；反过来 ROE 31.9% 用的是回购缩到极小的净资产，<strong>高估了资本回报的可复制性</strong>。取中：常态净利约 4.5–5 亿，对应 12–14 倍。</p>
+<p>大白话：<strong>你投 100 块进去，常态年份公司替你赚 7–8 块，一分不分红，全部拿去回购注销——你的持股比例每年自动 +9%</strong>。这个数未来变大还是变小？生意端偏顺风：银行和同行在次贷车贷上持续收缩，它的放贷单量在涨、单价利差稳住了；风险端两把剑：失业率大升会让回收率跌破预测（历史上还没失手过，但杠杆 4 倍容不得大失手），以及纽约州/联邦的掠夺性放贷诉讼落地方式未知。</p>
+<h2>第四部分：一句话结论</h2>
+<p>按生意质量，这是本批最强的一家：五十年验证的定价模型、把风控外包给车行的分成结构、30% 的 ROE、三十年吞掉八成股本的回购纪律——标准的「难看但极赚钱」。按价格，13 倍 GAAP、约 12 倍常态利润，处在它自己十年估值带的中间，<strong>不便宜也不贵</strong>。真正要你决定的不是估值,是两件事你能不能睡得着：4 倍杠杆压着全美信用最差的借款人，和一场没判的掠夺性放贷官司。能睡着，它值得进观察名单；睡不着，绕开。公道，好生意配着一颗雷。</p>
+</div></body></html>

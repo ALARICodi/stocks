@@ -1,0 +1,201 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MTG · MGIC 投资（MGIC Investment）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MTG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">9.7倍公道，赌房价不2008式崩盘，股本五年缩四成回购绞盘</div><h1>MTG · MGIC 投资（MGIC Investment）</h1>
+<p>市值 63.6 亿美元 / 股价约 31 美元 / 行业：私人房贷保险（PMI） / TTM 截止 2026 年 6 月 30 日</p>
+<p><strong>这是保险企业，第三部分用 PB + ROE 口径而不是普通市盈率</strong>，原因是：它的利润取决于「赔付率」这个随房价周期剧烈摆动的数字，当期市盈率在赔付低谷年会显得便宜得离谱，必须看净资产回报和你为净资产付的价钱。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>MGIC 只做<strong>一门生意：给首付不够的美国购房者的房贷做违约保险</strong>。它是这个行业的发明者（1957 年在密尔沃基创立，比联邦住房金融体系的现代形态还老），现在是全美六家私人房贷保险商（PMI）之一。</p>
+<p>生意的运转方式，用一单讲透：一对小夫妻买 40 万美元的房子，只攒出 5% 首付（2 万），贷 38 万。房利美/房地美的规矩是<strong>首付不足 20% 的贷款必须买房贷保险</strong>才收购，于是放贷银行给这笔贷款投保 MGIC。保费由小夫妻出——每月约 95 美元（贷款额的 0.3% 每年），加在月供里，直到房子净值攒够 20% 为止（通常五到十年）。作为交换，如果小夫妻断供、房子被法拍且卖价不够还贷，MGIC 赔银行损失的头 25%（约 9.5 万美元封顶）。</p>
+<p><strong>这门生意的数学</strong>：它承保着约 3000 亿美元的房贷（insurance in force），每年收 10 亿出头的保费和投资收益。成本端只有两块——542 个员工的运营费（对，全公司只有五百人，人均利润 131 万美元）和赔付。<strong>当下赔付几乎是零</strong>：疫情以来美国房价大涨，断供的人卖房就能还清贷款，根本走不到理赔那步。所以 TTM 经营利润率高达 77%、净利率 59%——这不是它经营得好，是年景好。</p>
+<p><strong>这门生意的另一面</strong>：2008 年房价下跌 30% 时，同样这家公司一年赔掉几十亿，股价从 70 美元跌到 1 美元，差点破产。金融危机后行业换了活法——资本新规（PMIERs）逼着多留资本、按贷款风险动态定价、把尾部风险分保给再保险公司——比 2008 年那版结实得多，但<strong>「房价大跌它就大亏」的本性没变，这是刻在商业模式里的</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标（TTM，截止 2026-06）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总收入（保费+投资收益）</td>
+<td>12.0 亿美元（五年横盘，2021 年就是 11.9 亿）</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>7.1 亿</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>13.9%</td>
+</tr>
+<tr>
+<td>净资产</td>
+<td>50.1 亿（每股 24.27）</td>
+</tr>
+</tbody>
+</table></div>
+<p>收入五年零增长要说破：美国高利率把购房量和贷款量摁死了，新保单进量少，但存量保单也没人提前还贷（谁舍得放弃 3% 的老房贷），一进一出打平。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2400 万，占净利润 3.4%，干净。</li>
+<li><strong>一次性项目</strong>：无。投资出售损益每年几百万到千万级，忽略。<strong>真正的「口径问题」不在一次性项目，而在赔付率</strong>：当期利润是按「几乎零赔付」的年景赚出来的，这是周期性虚高，不是会计造假——下面第三部分单独算。</li>
+<li><strong>准备金释放</strong>：保险公司的老把戏是把往年多提的赔付准备金放出来充当当期利润。数据源里 TTM 准备金变化 +4000 万（小幅增提），<strong>没有靠放准备金粉饰</strong>，加分。</li>
+<li><strong>回购与稀释——全篇最亮眼的一行</strong>：TTM 回购 <strong>7.8 亿美元，股本一年实际注销 11.5%</strong>；五年下来股本从 3.4 亿股缩到 2.05 亿股，<strong>缩了 40%</strong>。加上分红 1.3 亿（每股 0.68 美元，收益率 2.2%，连年上调 14%+），TTM 合计回馈股东 9.1 亿——<strong>超过了当年净利润（7.1 亿）</strong>，多出来的部分是在把资本还给股东（监管资本有富余，子公司往上分红）。EPS 五年从 1.85 涨到 3.20，利润本身没怎么涨，<strong>全是回购挤出来的</strong>——这是「生意不增长但股东照样赚钱」的教科书案例。</li>
+<li><strong>利润和现金流的差</strong>：净利润 7.1 亿 ≈ 经营现金流 7.1 亿 ≈ 自由现金流 7.1 亿（资本开支只有 150 万——保险公司不需要厂房），利润全是真现金。</li>
+</ul>
+<hr />
+<h2>第三部分：估值（PB + ROE 口径）</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数字</th>
+<th>换算成投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 PB</td>
+<td>1.28 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>有形市净率 P/TBV</td>
+<td>1.27 倍（几乎没商誉，账极干净）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>ROE（TTM，零赔付年景）</td>
+<td>13.9%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（你的钱的当期收益率）</strong></td>
+<td>13.9% ÷ 1.28</td>
+<td><strong>约 10.9 元</strong></td>
+</tr>
+<tr>
+<td>参考：GAAP 市盈率</td>
+<td>9.7 倍</td>
+<td>10.3 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>63.6 亿 ÷ 7.4 亿（FY23–25 均值，三年全是好年景）</td>
+<td>8.6 倍</td>
+</tr>
+<tr>
+<td><strong>按中周期赔付毛估</strong></td>
+<td>赔付率回到正常水平（两三成保费），利润约打七折</td>
+<td>≈13 倍</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意三年平均口径在这里失灵</strong>：FY23–25 三年全是零赔付的好年景，平均出来还是好年景，看不出周期底部的样子。所以额外加了最后一行毛估——赔付正常化后年回报约 7.5 块，这才是保守答案。</p>
+<p>大白话：<strong>你现在投 100 块进去，好年景下公司一年替你赚约 10.9 块，而且罕见地全数还给你还有找零</strong>（回购+分红超过利润，TTM 股东实收折合 14 块）。按赔付回归正常算，年回报约 7.5 块。真正的尾部风险不是「利润降三成」，而是房价全国性大跌的年份——那种年份它不是少赚，是大亏，2008 年验证过一次。好在这次它的资本垫厚得多、保单里的房子平均都有厚厚的净值缓冲（这几年房价涨出来的），同样的跌幅远不会伤得像上次那么重。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>五百人的公司承保三千亿房贷，零赔付年景里躺着赚 59% 净利率，然后把赚的钱一分不留全回购注销——股本五年缩四成，EPS 靠这个翻了七成，1.28 倍净资产、9.7 倍利润的标价并不过分；你付的是公道价，买的是「美国房价不发生 2008 式崩盘」这张赌票，外加一台把资本还给股东的绞盘机。接受这个赌注，它就是这个段位里股东回报纪律最好的公司之一；不接受，就绕开整个行业。</p>
+</div></body></html>

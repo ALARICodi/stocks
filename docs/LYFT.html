@@ -1,0 +1,210 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LYFT · 来福车（Lyft）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LYFT</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">2.5倍是递延税幻象，税前仍亏540万，13年没赚过经营利润</div><h1>LYFT · 来福车（Lyft）</h1>
+<p>市值 67.0 亿美元 / 股价 17.70 美元 / 行业：网约车平台 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p><strong>先把最重要的话放在最前面：筛选器显示的 2.5 倍市盈率是彻头彻尾的会计幻象。</strong> 它 TTM 净利润 28.7 亿美元里，28.7 亿来自一笔不产生一分钱现金的递延税调整——税前利润其实是<strong>负 540 万美元，这家公司经营上还没赚钱</strong>。下面全篇按真实口径拆。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Lyft 实质上做一门生意：北美网约车市场的<strong>万年老二</strong>（对手是 Uber），外加两个小尾巴。</p>
+<h3>生意一：网约车平台——FY2025 营收 59 亿，占 93%</h3>
+<p>乘客打开 App 叫车，司机开自己的车来接，Lyft 从每单车费里抽成。一单典型账目：乘客付 25 美元，司机拿约 17 美元，剩下约 8 美元名义上归 Lyft——但其中 3–4 美元要拿去付<strong>保险</strong>（网约车的商业保险贵得惊人，每单的保险成本是这门生意最大的暗坑，Lyft 为此在账上滚着几十亿美元的保险准备金），再扣掉补贴、退款、支付手续费，真正到手的毛利约 38%。年撮合总交易额（Gross Bookings）约 170 亿美元，营收 68 亿。</p>
+<p>它只在美国加拿大打（Uber 在全球 70 国），市占率约四分之一对 Uber 的四分之三。<strong>规模劣势是结构性的</strong>：司机哪边单多去哪边，乘客哪边车快用哪边，双边网络滚起来强者恒强。Lyft 的活法是做"更便宜的备胎"和差异化场景（女性司机匹配、老年人服务、和 DoorDash 结盟送会员权益）。2025 年花约 2 亿欧元买下欧洲打车 App <strong>FREENOW</strong>（覆盖 9 国 150 城的出租车叫车平台），第一次踏出北美——这步棋是对的，但体量还小。</p>
+<h3>生意二：共享单车/滑板车 + 租车——FY2025 营收 4.2 亿，占 7%</h3>
+<p>纽约 Citi Bike 等城市共享单车系统的运营方，外加给没车的司机租车跑单的 Flexdrive。常年不温不火，占比小。</p>
+<h3>生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>营收(FY2025)</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>网约车平台(含FREENOW)</td>
+<td>59.0 亿</td>
+<td>93%</td>
+<td>TTM 整体营收 +10.8%</td>
+</tr>
+<tr>
+<td>单车/滑板车/租车</td>
+<td>4.2 亿</td>
+<td>7%</td>
+<td>平淡</td>
+</tr>
+<tr>
+<td>合计 TTM</td>
+<td>67.7 亿</td>
+<td>100%</td>
+<td><strong>经营利润 -1.0 亿（仍是亏的）</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>28.7 亿"净利润"的真相（本篇的全部意义）</strong>：Lyft 创业 13 年亏出了巨额累计亏损，这些亏损攒着可以抵未来的税（叫递延税资产）。以前审计上认为"这公司可能永远盈利不了，这堆抵税券当废纸处理"；2025 年底公司连续几个季度接近盈亏平衡后，会计上改判"未来大概率能用上了"，于是<strong>把 28.7 亿美元的抵税券一次性记回资产负债表，从利润表里过了一道</strong>。这就是 2.5 倍市盈率的全部来历——<strong>没有一分钱现金流入，纯粹是把过去 13 年的亏损换了个姿势重新讲了一遍</strong>。剔掉它，TTM 税前利润 -540 万：<strong>这家公司至今没有在 GAAP 口径下经营赚钱</strong>。</li>
+<li><strong>股权激励（SBC）</strong>：TTM 3.10 亿。经营亏损 1.0 亿是<strong>扣完 SBC 后</strong>的数字——也就是说，不给员工发股票的话生意赚 2.1 亿，发完就亏。好消息是 SBC 从 2022 年的 7.5 亿砍到 3.1 亿，方向是对的；坏消息是公司吹的"调整后 EBITDA 盈利"全靠把这 3.1 亿加回去装看不见。</li>
+<li><strong>自由现金流 11 亿的成色（第二个必须拆的数）</strong>：经营现金流 12.0 亿远高于税前利润 ≈0，差在哪？对账：亏损 ≈0 → 加 SBC 3.1 亿 → 加折旧 1.5 亿 → <strong>加"其他经营资产负债变动"7.9 亿——这主要是保险准备金的增加</strong>：每单收进来的保险费先存着，赔付要一两年后才发生，中间这笔钱趴在账上像浮存金一样滚大。业务增长多快，这个"现金流"就有多好看，但它是<strong>欠着未来赔付的负债，不是利润</strong>。把水分挤掉，真实的可持续自由现金流量级在每年 4–6 亿之间，不是 11 亿。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 8.6 亿，是 SBC 的 2.8 倍，股本一年实缩 4.9%——这是真回购，管理层在用保险浮存金撑起来的现金买自家股票，17% 的空头盘对面它在对着干。</li>
+<li><strong>一次性项目</strong>：除税务巨象外，还有 5700 万投资出售收益等零碎，不重要。</li>
+</ul>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>67亿 ÷ 28.7亿</td>
+<td>2.3</td>
+<td><strong>假的，别看</strong></td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前利润 -540万</td>
+<td><strong>算不出（亏损）</strong></td>
+<td><strong>≈0 元</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>加回SBC等，调整后净利约7亿</td>
+<td>~9.6</td>
+<td>10.4 元（含水）</td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>67亿 ÷ 11.1亿</td>
+<td>6.0</td>
+<td>16.6 元（保险浮存金撑的）</td>
+</tr>
+<tr>
+<td>自由现金流口径（挤水后估）</td>
+<td>67亿 ÷ 约5亿</td>
+<td>~13</td>
+<td>~7.5 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY23–25：-3.4亿、+0.2亿、+28.4亿(假)</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你投 100 块进去，按最诚实的口径（GAAP 税前），它今年替你赚 <strong>0 块</strong>。乐观一点、信它的调整口径并把保险浮存金的水挤掉，一年替你赚 7 块上下——但这 7 块的前提是它继续每年从员工工资里省下 3 亿改发股票、保险赔付不超预期、并且 <strong>Waymo 们的无人出租车别来抢它的命</strong>（这是悬在整个行业头上的剑，而老二挨的第一刀总是最深的）。好的一面也要说全：营收还在双位数增长、现金是正的、股本在实缩、17.7 美元的股价只有 2021 年上市热潮时的四成，市场没在给它任何梦想溢价。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p>2.5 倍市盈率是递延税资产一次性入账画出来的海市蜃楼，真身是一家 13 年没在 GAAP 口径赚过经营利润、活在 Uber 阴影和无人车威胁下的老二——<strong>现金流转正、回购真实、估值不含梦想，作为投机筹码有它的逻辑，但按"投 100 块一年赚几块"的标准，它现在的答案是零</strong>。</p>
+</div></body></html>
