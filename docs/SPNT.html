@@ -1,0 +1,393 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SPNT · SiriusPoint Ltd（天狼星点）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SPNT</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">5.98倍是假的：45%利润来自卖Armada一次性；真实1.23倍PB赚12%ROE</div><h1>SPNT · SiriusPoint Ltd（天狼星点）</h1>
+<p><strong>市值</strong> 28.09 亿美元 ｜ <strong>股价</strong> 约 $24.18（1.1617 亿股）｜ <strong>行业</strong> 金融 / 百慕大再保险与特种保险 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NYSE</p>
+<blockquote>
+<p><strong>这是一家保险公司，下面不用市盈率，用"市净率 × 净资产收益率"的口径。</strong> 原因：保险公司的当期利润完全取决于两件跟经营能力无关的事——今年有没有飓风，以及债券和股票的浮盈浮亏怎么记账。同一家公司同一门生意，遇上一个平静的年份利润能翻倍，遇上一场大灾直接亏损。用某一年的利润去除市值，得到的数字几乎没有信息量。保险公司真正的价值锚是<strong>账面净资产（你花多少钱买到 1 块钱的净资产）</strong>，以及<strong>这块净资产每年能生出多少钱（ROE）</strong>。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>SiriusPoint 是 2021 年由两家公司合并来的：Third Point Re（对冲基金大佬 Dan Loeb 搞的再保险公司，特点是保费收来的钱交给他的基金去投资）和 Sirius Group（一家有百年历史的传统特种保险公司）。合并之后经历了三年的混乱——2022 年亏了 4.03 亿——然后新管理层用了三年时间做减法：切断和对冲基金的关联投资、卖掉一堆参股的代理公司、把资金投回普通债券。<strong>读它的财报，本质上是在读一个"清理烂摊子"的进度条。</strong></p>
+<p>现在真正在做的是两门生意：</p>
+<h3>生意一：Reinsurance 再保险（TTM 营收 10.59 亿，占 41%）</h3>
+<p><strong>这件事具体是什么</strong>：给别的保险公司当保险公司。举个具体的例子：佛罗里达有一家小型房屋保险公司，承保了 5 万套海边房子，一年收 2 亿美元保费。它最怕的是一场四级飓风把 5 万套房子一次性全打了——那要赔 30 亿，它当场破产。于是它花 3,000 万美元向 SiriusPoint 买一份再保险合同，条款写明"单次灾害损失超过 5 亿美元的部分，由 SiriusPoint 承担，上限 10 亿"。没有飓风的年份，SiriusPoint 白拿这 3,000 万；有飓风的年份，它赔出去 10 亿。</p>
+<p><strong>它承保的具体品类</strong>：财产巨灾（飓风、地震）、意外与健康险（比如给旅游保险公司做再保险）、航空航天（卫星发射保险，一颗卫星炸了赔 2 亿）、海运货物。</p>
+<p><strong>这门生意怎么赚钱</strong>：两块。第一块叫<strong>承保利润</strong>——收上来的保费减去赔出去的钱和成本，剩下的是净赚。第二块叫<strong>浮存金投资收益</strong>——保费今天收到，理赔可能三五年后才付，这笔在手里趴着的钱拿去买国债和公司债，利息全归自己。当前美国短期利率约 4%，SiriusPoint 手上大约 60 亿美元的投资资产，光利息一年就有 2.7 亿左右，<strong>这是它现在最稳的一块利润来源，也是 2022 年之后利率上行送给所有保险公司的红利。</strong></p>
+<h3>生意二：Insurance &amp; Services 保险与服务（TTM 营收 15.38 亿，占 59%）</h3>
+<p><strong>这件事具体是什么</strong>：直接卖保单给企业，不通过再保险这层。具体品类包括：给建筑承包商的责任险（一个工人从脚手架摔下来，公司赔）、给中小企业的职业责任险（会计师做错账被客户告，保险赔律师费和赔偿）、给环境工程公司的污染责任险、以及大量的意外与健康险（比如给雇主提供的员工事故补充险）。</p>
+<p><strong>它怎么获客</strong>：几乎不自己招销售，而是通过 <strong>MGA（管理型总代理）</strong>。MGA 是一种小公司，它有某个细分领域的专业能力（比如"专做卡车队保险"或"专做宠物医疗险"），但自己没有承保牌照和资本金。它去找 SiriusPoint 说"你把承保能力借给我，我用你的名义出保单，赔付风险你担，我收 20% 的手续费"。SiriusPoint 提供的是"资产负债表"，MGA 提供的是"客户和专业判断"。SiriusPoint 一度参股了几十家这样的 MGA。</p>
+<p><strong>2025 年最大的一件事就发生在这里</strong>：它把全资子公司 <strong>ArmadaCorp Capital（一家做团体医疗补充险的 MGA）以 2.5 亿美元卖给了 Ambac</strong>，2025 年 11 月 1 日交割，一次性确认了 <strong>2.224 亿美元的税前收益</strong>。同时保留了到 2030 年的承保合作关系——也就是说，卖掉了收手续费的那家公司，但继续做它背后的承保方。</p>
+<h3>钱怎么分的（TTM，截至 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>最近完整财年同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insurance &amp; Services 保险与服务</td>
+<td>1,538</td>
+<td><strong>+28.4%</strong></td>
+<td>59.2%</td>
+</tr>
+<tr>
+<td>Reinsurance 再保险</td>
+<td>1,059</td>
+<td>+6.2%</td>
+<td>40.8%</td>
+</tr>
+<tr>
+<td>Corporate（未分摊/投资等）</td>
+<td>37.6</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>分部计量口径重分类</td>
+<td>109.6</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计（含未分摊投资收益等）</strong></td>
+<td><strong>3,001</strong></td>
+<td><strong>+7.4%</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（保险公司不按分部披露"经营利润率"，它披露的是综合成本率，见下。）</p>
+<p><strong>核心承保指标（公司口径）</strong>：
+- <strong>核心综合成本率（Core Combined Ratio）</strong>：2026 年上半年 <strong>90.1%</strong>，比去年同期改善 2.3 个百分点；二季度单季 91.4%。</p>
+<p><strong>综合成本率怎么读</strong>：这是保险业最重要的一个数字，含义是"每收 100 块保费，赔出去和花掉多少"。90.1% 意味着<strong>每收 100 块保费，赔付加费用花掉 90.1 块，净赚 9.9 块</strong>——而且这 9.9 块是在投资收益之外的、纯靠承保挣的钱。<strong>超过 100% 就是承保亏钱，只能靠投资收益补。</strong> 行业里 90% 出头算是相当健康的水平，说明这家公司现在挑生意挑得不错，2022 年那种烂摊子确实清理掉了。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>① 2.224 亿的一次性处置收益 —— 本篇最重要的一件事</h3>
+<p>TTM 净利润 4.947 亿美元里，<strong>有 2.224 亿来自卖掉 Armada 这一笔，占净利润的 45%</strong>（现金流量表上以"Gain on Sale of Assets −222.4"的形式被从经营现金流里剔了出去，证明它不是经营挣的钱）。</p>
+<p>这一笔是<strong>真正的一次性</strong>——一家公司只能卖一次。所以：</p>
+<ul>
+<li>报表 TTM 净利润：<strong>4.947 亿</strong></li>
+<li>剔除处置收益后的<strong>经营性净利润</strong>：约 <strong>2.72 亿</strong></li>
+</ul>
+<p>用哪个数看这家公司？<strong>必须用 2.72 亿。</strong> 交叉验证一下：公司自己公布的 2026 年二季度单季净利润是 6,900 万、ROE 12.0%、经营性 ROE 13.8%——单季 6,900 万年化就是 2.76 亿，和我算出的 2.72 亿几乎完全对上。<strong>说明剔除处置收益后的口径是对的。</strong></p>
+<p><strong>这意味着财经网站上那个 5.98 倍的市盈率是彻头彻尾的假象</strong>，它把一次性卖资产的钱当成了年年都有的利润。真实的经营性市盈率是 <strong>10.3 倍</strong>。</p>
+<h3>② 股权激励（SBC）</h3>
+<p>TTM 4,010 万美元，占经营性净利润 14.7%。金额在快速上升（FY2024 是 2,070 万，FY2025 3,590 万，TTM 4,010 万，两年翻倍）。<strong>按 GAAP 已扣除，当真实成本处理，不加回。</strong></p>
+<h3>③ 回购与稀释：这一项做得很漂亮</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>上一完整财年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购金额</td>
+<td>9,770 万</td>
+<td>4.971 亿</td>
+</tr>
+<tr>
+<td>同期 SBC</td>
+<td>4,010 万</td>
+<td>3,590 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>2.44 倍</strong></td>
+<td><strong>13.8 倍</strong></td>
+</tr>
+<tr>
+<td><strong>股本变化（同比）</strong></td>
+<td><strong>−13.31%</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>股数一年真实减少了 13.31%</strong>，这是三家里最猛的。更重要的是另一件事：<strong>优先股从 2 亿美元清零了</strong>（资产负债表上 Total Preferred Equity 从 FY2025 的 2 亿变成 TTM 的 0），优先股股息也从每年 1,600 万降到 TTM 的 1,060 万。<strong>把优先股赎干净、把股数砍掉 13%，这是把资本结构真正简化了。</strong></p>
+<p>（背景：2025 年公司回购了原大股东 CM Bermuda 手里的全部股份，那是 4.97 亿回购的主体。）</p>
+<h3>④ 一次性项目</h3>
+<p>除了上面那 2.224 亿处置收益，还有 4,450 万的投资出售收益（Gain on Sale of Investments）。保险公司<strong>年年都有</strong>投资买卖的盈亏（往前看：FY2025 −3,170 万、FY2024 +1,780 万、FY2023 −6,020 万、FY2022 +4.009 亿），<strong>这一类不能当一次性剔除，它是保险生意的一部分</strong>——但它也说明：这家公司的利润天生就带着 ±3 亿量级的波动。</p>
+<h3>⑤ 准备金这件事，单期报表看不出来</h3>
+<p>保险公司最大的会计操纵空间在"未决赔款准备金"（TTM 57.50 亿）。管理层如果今年少提一点准备金，利润立刻变好看，三年后窟窿才暴露；反之亦然。TTM 的"保险准备金变动"是 <strong>−6,710 万</strong>（减少），而 FY2025 是 +1.286 亿（增加）——<strong>从一期数字判断不出这是良性释放（过去提多了，现在还回来）还是恶性挤压（为了做利润而少提）</strong>。这家公司 2022 年亏 4.03 亿，很大一部分就是准备金补提。<strong>这是它最需要长期跟踪的一个数字，也是我给不出确定判断的一项。</strong></p>
+<h3>⑥ 利润和现金流的差（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>494.7</td>
+</tr>
+<tr>
+<td>− <strong>卖 Armada 的处置收益（非经营）</strong></td>
+<td><strong>−222.4</strong></td>
+</tr>
+<tr>
+<td>− 投资出售收益</td>
+<td>−44.5</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>10.2</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>40.1</td>
+</tr>
+<tr>
+<td>− 应收（保费/分保）增加</td>
+<td>−316.5</td>
+</tr>
+<tr>
+<td>＋ 未到期保费增加</td>
+<td>265.7</td>
+</tr>
+<tr>
+<td>＋ 递延税变动</td>
+<td>23.7</td>
+</tr>
+<tr>
+<td>− 保险准备金减少</td>
+<td>−67.1</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产净变化</td>
+<td>185.4</td>
+</tr>
+<tr>
+<td>＋ 其他</td>
+<td>−6.5</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>265.9</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>保险公司的现金流和利润天然对不上（保费先收、赔款后付），这张表主要看两点：<strong>处置收益 2.224 亿被清清楚楚地扣掉了</strong>（证明它确实不是经营现金），以及<strong>经营现金流 2.66 亿和经营性净利润 2.72 亿几乎相等</strong>——这说明剔除处置收益后的利润是有现金支撑的，没有虚增。</p>
+<hr />
+<h2>第三部分：保险股口径（市净率 / ROE，不用市盈率）</h2>
+<p><strong>为什么换口径</strong>：见开头。下面用保险股真正的估值框架。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>怎么算 / 什么意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市值</td>
+<td>28.09 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>普通股账面净资产</td>
+<td>22.76 亿</td>
+<td>资产 126.52 亿 − 负债 103.75 亿</td>
+</tr>
+<tr>
+<td><strong>每股账面价值 BVPS</strong></td>
+<td><strong>$19.59</strong></td>
+<td>公司口径（剔除 AOCI）$19.48</td>
+</tr>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td><strong>1.23 倍</strong></td>
+<td>花 1.23 块买 1 块钱净资产</td>
+</tr>
+<tr>
+<td>有形账面价值市净率 P/TBV</td>
+<td>1.33 倍</td>
+<td>扣掉商誉和无形资产后</td>
+</tr>
+<tr>
+<td>报表 ROE（含处置收益）</td>
+<td>23.07%</td>
+<td><strong>虚高，不能用</strong></td>
+</tr>
+<tr>
+<td><strong>经营性 ROE（剔除处置收益）</strong></td>
+<td><strong>约 12.0%</strong></td>
+<td>2.72 亿 ÷ 22.76 亿；与公司公布的 Q2 单季 ROE 12.0% 完全吻合</td>
+</tr>
+<tr>
+<td>公司口径「经营性 ROE」</td>
+<td>13.8%（Q2 2026）</td>
+<td>公司还额外剔除了投资盈亏</td>
+</tr>
+<tr>
+<td><strong>核心综合成本率</strong></td>
+<td><strong>90.1%</strong>（2026 上半年）</td>
+<td>每收 100 块保费净赚 9.9 块</td>
+</tr>
+<tr>
+<td>债务 / 权益</td>
+<td>0.31 倍</td>
+<td>保险公司里属于低杠杆</td>
+</tr>
+<tr>
+<td>资产 / 权益（真实经营杠杆）</td>
+<td><strong>5.6 倍</strong></td>
+<td>126.52 亿 ÷ 22.76 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>换算成「投 100 块，一年赚多少」</h3>
+<p>保险股的算法是 <strong>ROE ÷ 市净率</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>用哪个 ROE</th>
+<th>计算</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报表 ROE 23.07%（含卖 Armada）</td>
+<td>23.07% ÷ 1.23</td>
+<td><strong>18.7 元</strong> ← 假的，一次性</td>
+</tr>
+<tr>
+<td><strong>经营性 ROE 12.0%（本文采用）</strong></td>
+<td>12.0% ÷ 1.23</td>
+<td><strong>9.7 元</strong></td>
+</tr>
+<tr>
+<td>公司口径经营 ROE 13.8%</td>
+<td>13.8% ÷ 1.23</td>
+<td>11.2 元</td>
+</tr>
+<tr>
+<td>参考：市盈率口径（经营性利润 2.72 亿）</td>
+<td>28.09 亿 ÷ 2.72 亿 = 10.3 倍</td>
+<td>9.7 元（与上面自洽）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>你现在投 100 块进去，按最保守的经营性口径，公司一年替你赚 9.7 元。</strong></p>
+<p><strong>⚠️ 这 9.7 元建立在 5.6 倍杠杆之上。</strong> 这句话的含义要说透：SiriusPoint 用 22.76 亿的自有资本，撬动了 126.52 亿的总资产（其中 57.5 亿是欠着的未决赔款、21.2 亿是还没赚到的未到期保费）。<strong>顺风的时候，5.6 倍杠杆把 2% 的资产回报率放大成 12% 的股东回报率；逆风的时候，同样的杠杆能在一年内吃掉两成净资产。</strong> 2022 年就是活例子：那年亏 4.03 亿，相当于当时净资产的 19%，账面价值一年缩水近两成。这不是理论风险，这家公司四年前刚发生过。</p>
+<p><strong>这 9.7 元里有多少回到你口袋</strong>：普通股不分红（TTM 分红 1,060 万全部是优先股股息），但 TTM 回购了 9,770 万、股数减少 13.31%。<strong>股数减少 13% 意味着即使公司总利润一分不涨，你的每股收益也涨 15%</strong>——这是目前它回报股东的主要形式，而且因为价格只有 1.23 倍账面价值，回购是轻微增厚的（回购价越接近或低于 1 倍账面，回购越划算；1.23 倍属于"不亏但也不占大便宜"）。</p>
+<p><strong>这个 9.7 元未来变大还是变小</strong>？
+- <strong>变大的力量</strong>：综合成本率还在改善（同比好了 2.3 个百分点），说明承保纪律在生效；优先股赎完之后不再有那 1,600 万的固定支出；保险与服务分部同比 +28.4%，是在长的那一块。
+- <strong>变小的力量</strong>：这轮"硬市场"（保费涨价周期）从 2023 年开始已经走了三年，2026 年财产险的费率已在松动，再保险行业整体正在从"提价"转向"降价"；利率如果回落，那 60 亿投资资产的利息收入会直接缩水；再加上任何一年的巨灾都可能把 12% 的 ROE 一次性打成负数。
+- <strong>不确定项</strong>：准备金充足度，单期报表看不出来。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>5.98 倍市盈率是个陷阱——净利润里 45% 是卖掉 Armada 那一笔不会再有的钱，把它剔干净之后是 10.3 倍市盈率、1.23 倍账面价值、12% 的经营性净资产回报率，也就是投 100 块一年赚 9.7 块。这个价格是公道的，不是便宜的。</strong></p>
+<p>值得肯定：90.1% 的综合成本率说明承保是真赚钱的（不是靠投资撑着）；一年砍掉 13.3% 的股数、把 2 亿优先股赎清，管理层在资本结构上做的事很干净；从 2022 年亏 4 亿到现在稳定 12% ROE，三年清理烂摊子是有成效的。</p>
+<p>不能忽视：5.6 倍的资产杠杆意味着<strong>这 12% 的回报在一场大飓风面前是脆的</strong>——2022 年它就用一年亏掉了 19% 的净资产；准备金是否充足，从外部看不透；再保险的提价周期正在见顶，未来两年的费率环境大概率不如过去三年。</p>
+<p><strong>买它相当于用 1.23 倍账面价格，买一家刚刚修好、但还没经历过下一场大灾考验的保险公司。</strong> 想赚这 9.7% 的人，需要能接受某一年账面价值缩水两成而不动摇。</p>
+</div></body></html>

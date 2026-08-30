@@ -1,0 +1,529 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TDC · Teradata（天睿资讯）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TDC</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">6倍是SAP赔款做出的假象，真实15倍买营收五年缩水12%的公司</div><h1>TDC · Teradata（天睿资讯）</h1>
+<p><strong>市值</strong> 26.76 亿美元 ｜ <strong>当前股价</strong> $28.77 ｜ <strong>行业</strong> 科技服务（企业数据仓库软件） ｜ <strong>交易所</strong> NYSE
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日 ｜ <strong>任务2 排名</strong> 第 300 名（市盈率 0–15 倍段）</p>
+<blockquote>
+<p><strong>⚠️ 先说结论里最重要的一件事：这家公司的市盈率现在显示 6.05 倍，是假的。</strong> 真实数字是 15.0 倍。中间那 9 倍的差距，来自一笔跟经营完全无关的一次性收入。整篇分析的核心就是把这笔钱找出来、剥掉、然后看剩下的公司值多少钱。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Teradata 卖的东西，说到底只有一样：<strong>一个能让全世界最大的那批公司同时跑几千个复杂查询而不崩溃的数据库</strong>。它 1979 年成立，比甲骨文的数据库还早，长期是「企业数据仓库」这个品类的定义者。5,100 名员工，一年营收 16.9 亿美元。</p>
+<p>财报把营收拆成四项，但那是<strong>按合同类型</strong>拆的，不是按生意拆的。按生意实质，它做的是<strong>两门半</strong>：</p>
+<h3>生意一：让大公司的所有数据待在一个地方，然后随便问问题</h3>
+<p><strong>这件事到底是什么。</strong> 想象美国一家全国性零售连锁，5000 家店、2 亿张会员卡、每天 8000 万笔交易。这些数据分散在收银系统、库存系统、电商系统、会员系统、供应链系统里，格式各不相同。现在市场部想问一个问题：</p>
+<blockquote>
+<p>「过去 18 个月，在东南部各州，同时买过 A 品牌婴儿奶粉和 B 品牌尿布、并且在过去 90 天内至少来过 3 次线下店、但从未用过我们 App 的会员，有多少人？他们平均客单价多少？如果给他们发 5 美元 App 优惠券，历史上类似人群的转化率是多少？」</p>
+</blockquote>
+<p>这个问题要同时扫过几十亿行交易记录、做多轮关联、还要跟历史活动数据比对。在普通数据库里跑，要么跑几个小时，要么直接跑挂。<strong>Teradata 的全部价值就是让这个问题在几分钟内出结果，而且是在市场部、财务部、供应链部同时各自跑着几百个类似问题的情况下还不崩。</strong></p>
+<p><strong>它的技术核心叫「工作负载管理」（workload management）</strong>——这是个很不性感但极难做的东西。它要在几千个并发查询之间做仲裁：CEO 的报表优先级最高必须 30 秒内出、财务的月结批处理可以慢但不能失败、某个分析师写错的一条会扫全表的烂 SQL 必须被自动限流否则会拖垮整个系统。<strong>Teradata 做了 40 年，这套调度逻辑里沉淀的东西是新公司三五年补不上的。</strong></p>
+<p><strong>客户是谁、怎么收钱。</strong> 客户名单是全球最大的那批企业：主要航空公司、大型电信运营商、大型商业银行、全国性零售商、大型保险公司。<strong>典型合同规模是每年 200 万到 2000 万美元</strong>，签 3–5 年，按数据量和计算能力定价。以前是卖一台专用硬件机柜放在客户机房里（perpetual license + hardware），现在主推的是 <strong>VantageCloud</strong>——同样的软件跑在 AWS、Azure、Google Cloud 上，客户按年订阅。</p>
+<p><strong>为什么客户不走。</strong> 因为搬家的成本高到荒谬。一家大银行在 Teradata 上积累了 20 年的数据模型、几万个存储过程、几千张报表、上百个下游系统的接口，全都写死在 Teradata 特有的 SQL 方言上。搬到 Snowflake 意味着要把这几万个东西全部重写并逐个验证结果一致——这是一个要 3–5 年、花几千万美元、而且中途出错会让公司报表出问题的项目。<strong>所以 Teradata 的老客户走得极慢。</strong></p>
+<p>这也正是它的困境所在：<strong>老客户走得慢，新客户一个都不来。</strong></p>
+<p><strong>在财报里对应的是</strong>：Subscription Software Licenses（订阅软件许可，TTM 2.77 亿）+ Services and Other（服务与其他，TTM 12.19 亿，这里面主要是订阅服务、云托管和维护支持）+ Perpetual Software Licenses/Hardware（永久许可与硬件，TTM 仅 0.13 亿，正在归零）。合计约 15.09 亿，<strong>占总营收 89.2%</strong>。</p>
+<h3>生意二：Consulting Services（咨询服务）—— 全公司最诚实的一个指标</h3>
+<p><strong>这件事到底是什么。</strong> 客户买了数据库，还需要人帮他们把数据模型设计出来、把老系统的数据搬进来、把业务问题翻译成能跑的 SQL、培训自己的团队。Teradata 派自己的顾问上门做这些事，按人天收费——<strong>一个高级顾问一天大约 2000–2500 美元</strong>。</p>
+<p><strong>为什么这个数字比营收更重要。</strong> 咨询收入直接对应一件事：<strong>客户现在有没有在这个平台上做新项目。</strong>维护费是惯性，客户不做任何事也照付；咨询费是意愿，客户只有在扩展、迁移、建新应用的时候才会掏。</p>
+<p>看它的五年轨迹：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>咨询收入（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>376</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>311</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>296</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>248</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>201</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>182</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年腰斩还多，从 3.76 亿掉到 1.82 亿，跌了 52%。</strong>这不是「公司主动收缩低毛利业务」能解释的幅度。这个数字在说一句很明确的话：<strong>客户已经不在 Teradata 上做新东西了。他们在续维护、在等合同到期、在别的地方（Snowflake、Databricks、BigQuery）建新的东西。</strong></p>
+<h3>半门生意：正在归零的硬件</h3>
+<p>Perpetual Software Licenses、Hardware and Other，TTM 只剩 1300 万美元，从 FY2021 的 7700 万一路掉下来。这是老模式的残骸，五年内会归零。不值得单独讨论，但它的消失本身说明「卖机柜」的时代彻底结束了。</p>
+<h3>四项收入的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入项</th>
+<th>TTM（百万美元）</th>
+<th>对上一完整财年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Services and Other（订阅服务、云托管、维护）</td>
+<td>1,219</td>
+<td>+4.0%</td>
+<td>72.1%</td>
+</tr>
+<tr>
+<td>Subscription Software Licenses（订阅软件许可）</td>
+<td>277</td>
+<td>+1.5%</td>
+<td>16.4%</td>
+</tr>
+<tr>
+<td><strong>Consulting Services（咨询服务）</strong></td>
+<td><strong>182</strong></td>
+<td><strong>−9.5%</strong></td>
+<td>10.8%</td>
+</tr>
+<tr>
+<td>Perpetual Licenses / Hardware（永久许可与硬件）</td>
+<td>13</td>
+<td>−23.5%</td>
+<td>0.8%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,691</strong></td>
+<td><strong>+1.7%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报不披露分部经营利润，下面的判断为估算。</strong> 从整体 61.32% 的毛利率和收入结构估算：软件许可部分毛利率应在 90% 以上，云托管在 60%–70%，咨询业务毛利率通常在 20%–30%（人力成本刚性）。<strong>这意味着咨询收入的萎缩对利润的伤害小于对营收的伤害</strong>——这是公司经营利润率能从 FY2022 的 6.5% 提到 TTM 的 14.96% 的原因之一。</p>
+<h3>把五年的营收摆在一起看</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>总营收（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>1,917</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>1,795</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>1,833</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>1,750</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>1,663</td>
+</tr>
+<tr>
+<td><strong>TTM</strong></td>
+<td><strong>1,691</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>五年从 19.17 亿掉到 16.91 亿，缩水 11.8%。</strong> TTM 相对 FY2025 微微回升 1.7%，是这五年里唯一一个正数——是转机还是噪音，一期数据说不清。但趋势线是明确向下的。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>那 2.8 亿美元是从哪来的——本篇最重要的一段</h3>
+<p>先看三个对不上的数字：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经营利润（Operating Income）</td>
+<td>253</td>
+</tr>
+<tr>
+<td><strong>税前利润（Pretax Income）</strong></td>
+<td><strong>591</strong></td>
+</tr>
+<tr>
+<td>净利润</td>
+<td><strong>458</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>经营利润 2.53 亿，税前利润 5.91 亿——中间凭空多出 3.38 亿。</strong>做生意赚的钱只有 2.53 亿，税前却是 5.91 亿，多出来的部分跟卖数据库没有任何关系。</p>
+<p>再看现金流：<strong>TTM 经营现金流 7.61 亿，而 FY2025 只有 3.05 亿，FY2024 是 3.03 亿，FY2023 是 3.75 亿。</strong>一家营收零增长的公司，经营现金流一年之内翻了 2.5 倍。</p>
+<p>答案是：<strong>2026 年 2 月 19 日，Teradata 与 SAP 就长达八年的诉讼达成和解，SAP 支付 4.8 亿美元。</strong>（Teradata 2018 年起诉 SAP 窃取商业秘密并涉嫌反垄断，核心指控是 SAP 在双方合作期间接触到 Teradata 的技术后开发了竞品 HANA。）</p>
+<p>拆开这笔钱：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SAP 支付总额</td>
+<td>480</td>
+</tr>
+<tr>
+<td>减：律师费及诉讼相关支出</td>
+<td>−121</td>
+</tr>
+<tr>
+<td><strong>税前净额</strong></td>
+<td><strong>359</strong></td>
+</tr>
+<tr>
+<td>减：一次性所得税</td>
+<td>−79</td>
+</tr>
+<tr>
+<td><strong>税后净额</strong></td>
+<td><strong>280</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这 2.80 亿，单季就让 GAAP 每股收益增加了 2.90 美元。</strong>而公司 TTM 全部的 EPS 才 4.75 美元——<strong>也就是说，这家公司过去 12 个月账面利润的 61%，是 SAP 打的一场官司赔出来的，不是卖数据库赚的。</strong></p>
+<p><strong>剥掉之后：真实净利润 = 458 − 280 = 1.78 亿美元。</strong></p>
+<p>现金流那边也一样：公司披露这笔和解在税后净额上给经营现金流和自由现金流带来约 <strong>3.02 亿美元</strong>的贡献（税款一半在 2026 年二季度支付、剩下一半分在三、四季度，所以截至 6 月底的 TTM 里实际流入还要略高于此，估算在 3.3 亿左右）。</p>
+<p><strong>剥掉之后：真实自由现金流 ≈ 736 − 330 ≈ 4.06 亿美元。</strong></p>
+<h3>股权激励：这才是真正吃利润的那一项</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权激励（SBC）</td>
+<td><strong>121</strong></td>
+</tr>
+<tr>
+<td>剔除和解后的真实净利润</td>
+<td>178</td>
+</tr>
+<tr>
+<td><strong>SBC 占真实净利润</strong></td>
+<td><strong>68%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>每赚 100 块真实利润，就有 68 块是以股票形式发给员工的。</strong>按本篇的一贯口径，SBC 一律当成真实的现金成本——它稀释你的股份，GAAP 已经扣了，公司在 Non-GAAP 里把它加回来那是骗人的。而 Teradata 的 Non-GAAP 恰恰把这 1.21 亿全额加了回去，这是它 Forward PE 只有 10.70 的主要来源。</p>
+<h3>回购：只是在抵消员工发股</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>142</td>
+</tr>
+<tr>
+<td>股权激励</td>
+<td>121</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>1.17</strong></td>
+</tr>
+<tr>
+<td>股本实际变化</td>
+<td><strong>−0.98%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这个比值 1.17，几乎就是 1。</strong>按第二部分的判断标准：接近 1 意味着回购只是在把员工手里新发的股票买回来注销，不是在回馈股东；大于 3 才叫真回购。<strong>花了 1.42 亿，股本只减少了 0.98%。</strong></p>
+<p>对比一下同批分析的 TBBK：那家 TTM 回购 4.04 亿，股本减少 9.52%，那才是真回购。Teradata 这 1.42 亿，本质上是股权激励的现金结算，只是绕了个圈子从现金流量表的融资活动里走。</p>
+<h3>一次性项目：还债</h3>
+<p>TTM 内公司偿还了 <strong>5.37 亿美元</strong>债务，总债务从 5.57 亿降到 0.99 亿，从净负债 0.64 亿变成<strong>净现金 3.15 亿</strong>。这笔钱的来源就是 SAP 的和解款。<strong>这是一个正确的决定</strong>——用一次性的横财去消灭永久性的负债，比拿去回购或者做并购都更稳妥。资产负债表现在是干净的。</p>
+<h3>利润和现金流的逐项对账</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>458</td>
+<td>其中 280 是 SAP 和解</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>93</td>
+<td>非现金</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td>＋ <strong>股权激励 SBC</strong></td>
+<td><strong>121</strong></td>
+<td>会计上加回，但它是真实成本</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>69</td>
+<td>主要是递延所得税</td>
+</tr>
+<tr>
+<td>＋ 应收账款减少</td>
+<td>37</td>
+<td>收回了老客户的欠款</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−41</td>
+<td>付掉了供应商欠款</td>
+</tr>
+<tr>
+<td>＋ 递延收入增加</td>
+<td>39</td>
+<td>客户预付的订阅费</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>−17</td>
+<td></td>
+</tr>
+<tr>
+<td>＝ <strong>经营现金流</strong></td>
+<td><strong>761</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−25</td>
+<td>极低，公司几乎不需要再投资</td>
+</tr>
+<tr>
+<td>＝ <strong>自由现金流</strong></td>
+<td><strong>736</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表里最值得注意的两行：</strong></p>
+<p><strong>第一，折旧摊销 9300 万，资本开支只有 2500 万。</strong>折旧是 3.7 倍于资本开支——这意味着公司在用完老资产而不补充新的。对一家纯软件公司这部分正常（软件公司本来就不需要重资产），但也说明它没有在做任何需要大额投入的转型动作。</p>
+<p><strong>第二，递延收入 +3900 万。</strong>这一项是好消息：客户预付的订阅费在增加，说明订阅模式的转换确实在推进，不是全面溃败。FY2024 这一项是 −7000 万（客户预付款在减少），现在转正了。这是全篇为数不多的正面信号。</p>
+<h3>有形净资产：几乎没有</h3>
+<p><strong>P/TBV 是 13.65 倍</strong>——股东权益 5.93 亿里，剔掉商誉和无形资产之后剩下的有形净资产只有约 2 亿。这是过去十年持续大额回购（FY2021–FY2025 五年回购了 12.9 亿美元）把净资产掏空的结果。<strong>这不算问题</strong>（软件公司的价值不在账面资产上），但它意味着这家公司<strong>没有清算价值可言，估值完全建立在未来现金流上</strong>——而未来现金流正在萎缩。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p><strong>市值 26.76 亿美元，企业价值 23.61 亿美元（因为有 3.15 亿净现金）。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GAAP TTM 市盈率</strong></td>
+<td>26.76 亿 ÷ 4.58 亿 GAAP 净利润</td>
+<td><strong>5.8 倍</strong></td>
+<td><strong>17.1 元</strong> ← 假的</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（按 2026 指引反推，估算）</td>
+<td>26.76 亿 ÷ 约 2.50 亿调整后净利润</td>
+<td>10.7 倍</td>
+<td>9.3 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>26.76 亿 ÷（4.58 − 2.80 一次性和解）= ÷ 1.78 亿</td>
+<td><strong>15.0 倍</strong></td>
+<td><strong>6.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（剔除和解）</td>
+<td>26.76 亿 ÷ 约 4.06 亿真实 FCF</td>
+<td>6.6 倍</td>
+<td>15.2 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（再把 SBC 当现金扣掉）</strong></td>
+<td>26.76 亿 ÷（4.06 − 1.21）= ÷ 2.85 亿</td>
+<td><strong>9.4 倍</strong></td>
+<td><strong>10.6 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>23.61 亿 ÷ 2.53 亿经营利润</td>
+<td>9.3 倍</td>
+<td>10.7 元</td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>26.76 亿 ÷（1.78 + 1.30 + 1.14）/3 = ÷ 1.41 亿</td>
+<td><strong>19.0 倍</strong></td>
+<td><strong>5.3 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表从上到下，同一家公司从 5.8 倍变成 19.0 倍。</strong>这七个数字全都是对的，区别只在于分母里放了什么。</p>
+<p><strong>最后一行三年平均口径最有价值</strong>：TTM 剔除和解后 1.78 亿、FY2025 是 1.30 亿、FY2024 是 1.14 亿，三年平均 1.41 亿。<strong>按平均利润算是 19 倍。</strong>注意这三年的利润是<strong>逐年上升</strong>的（114 → 130 → 178），说明利润率在改善（经营利润率从 12.51% 提到 14.96%）——这是通过裁员和砍咨询业务实现的，营收在跌但利润在涨。<strong>这种「靠省钱赚出来的增长」有天花板，成本砍到底就没有下一刀了。</strong></p>
+<h3>你现在投 100 块进去，一年赚多少</h3>
+<p><strong>按最保守的真实口径（三年平均利润），公司一年替你赚 5.3 元。</strong>
+<strong>按当期真实净利润口径，一年替你赚 6.7 元。</strong>
+<strong>按扣掉股权激励后的真实自由现金流口径，一年替你赚 10.6 元。</strong></p>
+<p><strong>取哪个？</strong>我倾向于自由现金流口径的 10.6 元更接近真相，理由是：Teradata 的 GAAP 净利润被 9300 万的折旧摊销压低了（其中相当一部分是历史并购和资本化开发的摊销，不消耗现金），而它的资本开支只有 2500 万。一家软件公司的真实盈利能力用现金流衡量更准。<strong>但必须把 1.21 亿的 SBC 扣掉——不扣就是自欺欺人。</strong></p>
+<p><strong>所以：投 100 块，一年真实赚约 10.6 元，相当于 9.4 倍市盈率。</strong></p>
+<h3>这 10.6 元有多少回到你口袋</h3>
+<ul>
+<li><strong>股息：0 元。</strong>公司不发股息。</li>
+<li><strong>回购：约 1.0 元。</strong>TTM 回购 1.42 亿，但股本只减少 0.98%——因为其中 1.21 亿被员工的新发股票吃掉了。所以真正让你的股份变大的部分，只有约 0.98%，即 100 块里的 1 元。</li>
+<li><strong>还债：约 20 元（一次性）。</strong>5.37 亿还债 ÷ 26.76 亿市值 = 20%。这是 SAP 那笔横财的去向，是真实的股东价值创造，但只发生这一次。</li>
+<li><strong>剩下的约 9.6 元留在公司账上</strong>，变成现在那 3.15 亿的净现金。</li>
+</ul>
+<p><strong>换句话说：这家公司现在每年产生的真实现金，绝大部分既不发给你、也没有让你的股份明显变大，而是躺在账上。</strong>净现金 3.15 亿占市值的 11.8%。管理层拿这笔钱做什么，是接下来最大的变量——买回股票（好）、做并购转型（风险高）、还是继续攒着（浪费）。</p>
+<h3>这个 10.6 元未来变大还是变小</h3>
+<p><strong>大概率变小，理由有三条：</strong></p>
+<p><strong>第一，营收还在萎缩。</strong>五年从 19.17 亿到 16.91 亿。TTM 微涨 1.7% 不足以确认拐点。</p>
+<p><strong>第二，利润的增长来自省钱，而省钱有底。</strong>经营利润率从 6.5% 提到 14.96%，靠的是砍咨询团队（人数直接对应咨询收入腰斩）和整体裁员。这条路还能走一两年，然后就走不动了。</p>
+<p><strong>第三，也是最根本的：竞争格局是结构性不利的。</strong>Snowflake、Databricks、以及三大云厂商自带的数据仓库（Redshift、BigQuery、Synapse），拿走了几乎所有新增的数据分析工作负载。Teradata 的 VantageCloud 是在守，不是在攻——它的目标是「让老客户上云的时候还是选我」，而不是「抢新客户」。<strong>咨询收入五年腰斩，就是这场仗正在输的最直接证据。</strong></p>
+<p><strong>唯一往上的力量</strong>是老客户的黏性确实极强，搬家成本高到很多公司永远不会搬。这意味着 Teradata 可能会像很多老一代企业软件公司一样，用 10–15 年的时间慢慢缩小，同时一路吐出现金。<strong>它不会突然死掉，它会慢慢变小。</strong></p>
+<h3>一个必须提的市场信号</h3>
+<p><strong>空头持仓占流通股 23.17%</strong>——这是一个非常高的比例。同时股价过去 52 周涨了 36.35%。这两件事同时成立，意味着：市场上有一大批人押它继续衰退，而股价的上涨（很大程度上是 SAP 和解带来的）让这些空头承受了压力。<strong>这种结构下股价的波动会被放大，涨跌都不完全反映基本面。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>6 倍市盈率是一场误会，真实价格是 15 倍——买一家营收五年缩水 12%、咨询收入五年腰斩的公司，15 倍不便宜。</strong></p>
+<p>它账面上那 4.58 亿净利润里，有 2.80 亿是 SAP 打输官司赔的一次性横财，占了 61%。剥掉之后真实利润是 1.78 亿，市盈率立刻从 5.8 倍变成 15.0 倍；按三年平均利润算是 19.0 倍。同期股权激励是 1.21 亿，吃掉真实利润的 68%，而 1.42 亿的回购只够抵消这笔发股，股本一年才减少 0.98%——<strong>这不是回馈股东，是替员工的股票结账。</strong></p>
+<p>生意本身的判断很清楚：<strong>它的护城河是真的，但护的是一座正在退潮的城。</strong>老客户搬不走（几万个存储过程重写要 3–5 年），所以它不会突然死；但新客户一个不来（咨询收入从 3.76 亿掉到 1.82 亿，五年腰斩，这是客户「不在这个平台上做新东西了」的铁证），所以它也长不回去。过去三年利润逐年上升，靠的全是砍成本，而成本砍到底就没有下一刀。</p>
+<p><strong>公平地说，它不是没有可取之处</strong>：净现金 3.15 亿（用和解款还清了 5.37 亿债务，这是正确的决定）、EV/EBIT 只有 9.3 倍、扣掉 SBC 之后仍有 2.85 亿的真实自由现金流、递延收入转正说明订阅转型没有崩盘。<strong>如果它以 8 倍真实市盈率交易，这会是一笔像样的「烟蒂」生意</strong>——买一家慢慢缩小但一路吐现金的公司，只要买得够便宜就赚钱。</p>
+<p>但现在是 15 倍，而且股价一年涨了 36%（涨的是那笔一次性的钱）。<strong>你付的是成长股的估值，买的是一台正在减速的印钞机。这个价格上没有安全边际，还是等吧。</strong></p>
+</div></body></html>

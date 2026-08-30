@@ -1,0 +1,204 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DBRG · DigitalBridge（数字桥集团）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DBRG</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">10倍是基金标记吹的,费类利润17-25倍,AI基建募资潮的成长期权</div><h1>DBRG · DigitalBridge（数字桥集团）</h1>
+<p>市值 30.3 亿美元 / 股价约 16 美元 / 另类资产管理（数字基础设施）/ TTM 截止 2026-06-30</p>
+<h2>第一部分：它到底做几件事</h2>
+<p>DigitalBridge 的前身是地产投资公司 Colony Capital——2019 年 Marc Ganzi 入主后把旧资产全部卖光，改造成一家只做<strong>数字基础设施的私募基金管理公司</strong>。今天它自己几乎不拥有资产（员工仅 300 人、资本开支 57 万美元/年），做的是"替大钱管钱"的生意：</p>
+<p><strong>核心业务：募集基金买数据中心、铁塔、光纤，收管理费</strong></p>
+<p>养老金、主权基金想投 AI 时代的数据中心但自己不会买，就把钱交给 DigitalBridge 的基金。DBRG 旗下组合公司个个是行业腰部以上玩家：DataBank（美国边缘数据中心）、Vantage（超大规模数据中心，微软谷歌的房东）、Switch、Zayo（光纤骨干网）、Vertical Bridge（美国最大私营铁塔公司）等。收费模式和所有私募一样两层：
+- <strong>管理费</strong>：按承诺资本/在管资产每年收约 1%，旱涝保收、随募资规模滚大——这是全公司唯一稳定的收入线，四年翻倍：1.81 → 1.73 → 2.64 → 3.30 → 3.74 亿；
+- <strong>业绩分成（carried interest）</strong>：基金赚了超额收益抽 20%——这条线是过山车：账面标记涨就确认、跌就倒冲，FY2025 一口气<strong>倒冲了 -3.76 亿</strong>，TTM 又转正。</p>
+<p><strong>另有自有资金跟投</strong>：公司资产负债表上放着约十几亿美元自家基金份额，TTM 这块标记升值贡献了 2.0 亿"本金投资收益"——同样是纸面标记。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 收入构成</th>
+<th>金额</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>管理费</td>
+<td>3.74 亿</td>
+<td><strong>真实、稳定、增长中</strong></td>
+</tr>
+<tr>
+<td>业绩分成</td>
+<td>0.36 亿</td>
+<td>标记游戏,五年里两年为大负</td>
+</tr>
+<tr>
+<td>本金投资收益</td>
+<td>2.00 亿</td>
+<td>标记游戏</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>0.23 亿</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p>顺风是真的：AI 数据中心建设潮让"数字基建"成了机构资金最想配置的资产类别，DBRG 募资水涨船高。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>10 倍市盈率是标记涨出来的（核心）</strong>：TTM 净利润 2.80 亿里约 2.4 亿来自业绩分成+本金投资的<strong>账面标记</strong>。看五年 GAAP 序列：-3.86、-3.82、+1.25、+0.12、+0.81、TTM +2.80 亿——这不是一门每年赚 2.8 亿的生意，是一门费类利润约 1.2 亿（估算，按管理费 3.74 亿 × 行业常见约 30–35% 费类利润率）+一堆随市场标记摆动的敞口。<strong>Forward PE 27 倍就是分析师把标记剔掉后的答案。</strong></li>
+<li><strong>历史包袱</strong>：2021–22 两年合计亏 7.7 亿是 Colony 旧资产清理的遗产，跟现在的模式无关，但提醒你这个管理层敢做剧烈转型，也真烧过股东的钱。</li>
+<li><strong>股权激励与稀释</strong>：股本年增 4.9%——资管公司用股票付工资是常态，但这里没有回购对冲，实打实稀释。分红几乎为零（0.25%）。</li>
+<li><strong>利润和现金流的差</strong>：经营现金流 1.79 亿 &lt; 净利润 2.80 亿——差额正是不产生现金的标记收益，印证上面的拆解。</li>
+<li><strong>资产负债表干净</strong>：公司层面净现金 1.89 亿（债 3.2 亿 vs 现金 5.1 亿），跟 2021 年背 53 亿债的 Colony 时代判若两人。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>30.3 亿 ÷ 2.80 亿</td>
+<td>10.0 倍</td>
+<td>10.0 块（标记垫的）</td>
+</tr>
+<tr>
+<td><strong>剔除标记后按费类利润（估算）</strong></td>
+<td>30.3 亿 ÷ 约 1.2 亿</td>
+<td>约 25 倍</td>
+<td>4.0 块</td>
+</tr>
+<tr>
+<td>扣掉账上投资再看费business</td>
+<td>(30.3 − 约 10 亿投资和净现金) ÷ 1.2 亿</td>
+<td><strong>约 17 倍</strong></td>
+<td>5.9 块</td>
+</tr>
+<tr>
+<td>Forward PE（分析师口径）</td>
+<td>27.1 倍</td>
+<td>3.7 块</td>
+<td></td>
+</tr>
+<tr>
+<td>三年平均 GAAP</td>
+<td>30.3 亿 ÷ 1.24 亿</td>
+<td>24.4 倍</td>
+<td>4.1 块</td>
+</tr>
+<tr>
+<td>市净率 / 有形市净率</td>
+<td>1.92 / 2.90 倍</td>
+<td>——</td>
+<td>——</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，账面说它一年赚 10 块，拆开看：稳定的管理费生意贡献约 4 块，剩下 6 块是基金标记的浪，明年可能是负的。</strong> 分红没有、回购没有，赚的钱滚回基金跟投。买它的真实逻辑不是收息，是赌两件事：AI 基建募资潮把管理费再翻一倍（过去四年做到了），以及某天基金退出时那 20% 的业绩分成从纸面变成真钱。这两件事都有可能，但你付的价（费类利润约 17–25 倍）已经是"照常增长"的价，股价一年也涨了 39%。</p>
+<h2>第四部分：一句话结论</h2>
+<p>站在 AI 基建风口的收费站，方向对、资产负债表也洗干净了，但 10 倍市盈率是基金标记吹的泡——按真实费类利润算 17–25 倍，价格只能算公道；它本质是一张"数字基建募资潮持续+业绩分成终将兑现"的成长期权，波动会像它的 GAAP 利润表一样野，当成长股拿可以，当便宜货捡是误会。</p>
+</div></body></html>

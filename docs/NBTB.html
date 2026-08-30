@@ -1,0 +1,462 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NBTB · NBT Bancorp（NBT 银行控股）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NBTB</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">1.38倍账面、拨备只占营收2.6%、股息3.1%，干净但天花板低靠并购长大</div><h1>NBTB · NBT Bancorp（NBT 银行控股）</h1>
+<p><strong>市值</strong> 26.79 亿美元 ｜ <strong>当前股价</strong> $51.55 ｜ <strong>行业</strong> 金融（社区银行） ｜ <strong>交易所</strong> NASDAQ
+<strong>TTM 口径截止日</strong> 2026 年 6 月 30 日 ｜ <strong>任务2 排名</strong> 第 299 名（市盈率 0–15 倍段）</p>
+<blockquote>
+<p><strong>这是一家银行，第三部分不用市盈率那一套，改用市净率 PB / 有形账面市净率 P/TBV / ROE / ROA / 拨备 / 派息率口径。</strong> 原因是银行利润里最大的一块弹性来自「今年准备提多少坏账」，那是管理层的估计值，不是客观事实；而净资产是实打实垫在贷款下面的自有资金，用它当分母更难被粉饰。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>NBT Bancorp 是 1856 年成立于纽约州诺威奇（Norwich, NY）的社区银行控股公司，旗下是 NBT Bank，约 170 家网点，铺在纽约州上州、宾州东北部、新英格兰南部这一带——也就是纽约市以北那片人口不增长、也不太减少、大城市银行懒得去的地方。<strong>2,303 名员工，管着约 160 亿美元资产，一年赚 2.14 亿美元。</strong></p>
+<p>它实质上做<strong>两门半生意</strong>：</p>
+<h3>生意一：Banking（社区银行）—— 收本地人的存款，放本地人的贷款</h3>
+<p><strong>这件事到底是什么。</strong> 这是银行最古老的形态，没有任何花哨的地方：在锡拉丘兹、宾汉姆顿、伯灵顿、水牛城这些中小城市开支行，收当地居民的支票账户和储蓄账户，然后把钱贷给当地人和当地生意。</p>
+<p><strong>具体是怎么赚钱的。</strong> 举个真实体量的例子：纽约州尤蒂卡一位在医院工作了 20 年的护士，工资卡在 NBT，支票账户常年趴着 8000 美元，<strong>银行付她的利息接近 0</strong>。同一条街上有家开了 30 年的家族农机经销商，要贷 150 万美元买一块地扩展场地，NBT 按 7.2% 的固定利率借给他，期限 15 年。<strong>这中间 7 个百分点的差价，就是这家银行的全部生意。</strong>行话叫净息差（NIM）。NBT 有约 130 亿美元的存款，绝大部分是这种低息的本地核心存款。</p>
+<p>它的贷款主要分四类：<strong>商业房地产贷款</strong>（本地的小商场、诊所楼、公寓楼）、<strong>商业与工业贷款</strong>（给本地企业的设备和周转贷款）、<strong>住宅按揭</strong>、以及 <strong>间接汽车贷款</strong>——最后这一类比较有特色：NBT 和几百家汽车经销商签约，你在经销商那里买车，销售员当场给你办的车贷有相当比例是 NBT 出的钱，经销商拿一笔介绍费。这类贷款笔数多、单笔小、分散度高，坏账可预测性强。</p>
+<p><strong>为什么客户不走。</strong> 不是因为利率好——大银行的利率经常更好。是因为一个在诺威奇开了三代人饭店的老板，他的贷款员认识他爸爸；因为要贷款翻新厨房时，摩根大通的算法会拒他，NBT 的支行经理会开车过去看一眼厨房然后批。<strong>社区银行的护城河是「关系」和「本地信息」，这个东西在人口稳定的小城市非常牢固，在增长快的大都市几乎不值钱。</strong>这也决定了 NBT 的天花板：它所在的市场基本不增长，它想变大只有一条路——<strong>买别人</strong>。</p>
+<p><strong>它确实一直在买。</strong> 2025 年它收购了水牛城的 Evans Bancorp，这是 TTM 营收暴涨 22.41% 的主要原因（不是内生增长）。这一点在第二部分要展开。</p>
+<p><strong>TTM 营收 6.477 亿美元，占全公司 89.5%。</strong></p>
+<h3>生意二：Retirement Plan Administration（退休计划管理）—— 这家银行最值钱的非典型资产</h3>
+<p><strong>这件事到底是什么。</strong> 美国的中小企业要给员工办 401(k) 退休计划，法律和税务上极其麻烦：谁能参加、公司配比多少、有没有超过法定上限、有没有对高管过度倾斜（要跑一套叫 nondiscrimination testing 的合规测试）、每年要向劳工部报 5500 表、员工离职时钱怎么走。绝大部分只有 60 个员工的公司搞不定这套，也不想搞。</p>
+<p>NBT 旗下的 <strong>EPIC Retirement Plan Services</strong> 就是替它们搞这套的第三方管理商（TPA）。</p>
+<p><strong>具体怎么收钱。</strong> 一家康涅狄格州有 120 名员工、401(k) 账户总额 1800 万美元的工程公司，把整个计划外包给 EPIC。EPIC 收两类费用：一是<strong>按人头收的固定管理费</strong>（比如每个参与账户每年 40 美元，加一笔每年 4000 美元的基础服务费）；二是<strong>按资产规模收的比例费</strong>（比如资产的 0.10%，1800 万就是 1.8 万美元）。加起来一年大约 2.7 万美元，客户签的是多年合同，换供应商意味着几百个员工账户要整体迁移、历史合规记录要交接，麻烦到几乎没人主动换。</p>
+<p><strong>为什么这块对一家银行特别值钱</strong>，有三个理由，每一条都很关键：</p>
+<ol>
+<li><strong>它是纯手续费收入，跟利率一点关系没有。</strong> 银行最大的软肋是「利率一变，全年利润就变」。这块收入不受影响。</li>
+<li><strong>它几乎不占用资本。</strong> 银行放一笔贷款要按监管规定压一笔自有资金在下面；管理 401(k) 计划一分钱资本都不用压。这意味着这块业务的资本回报率在数学上接近无穷大。</li>
+<li><strong>它不承担信用风险。</strong> 经济衰退时贷款会坏，但公司还是得报 5500 表，费还是得交。</li>
+</ol>
+<p><strong>TTM 营收 6874 万美元，占 9.5%，对上一完整财年增长 3.1%，五年翻了一倍多（FY2023 是 5124 万）。</strong> 对一家 PB 只有 1.38 倍的社区银行来说，账面上完全没有为这块业务给出溢价。</p>
+<h3>半门生意：All Other</h3>
+<p>保险代理、财富管理和总部层面的零碎收支。TTM 营收 740 万美元，占 1.0%，可以忽略。</p>
+<h3>两门半生意的钱</h3>
+<p>（银行的「营收」= 净利息收入 + 非利息收入，即已扣掉付给存款人的利息之后的净额）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>对上一完整财年</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Banking 社区银行</td>
+<td>647.7</td>
+<td>+9.7%</td>
+<td>89.5%</td>
+<td>增长主要来自并购，非内生</td>
+</tr>
+<tr>
+<td>Retirement Plan Administration 退休计划管理</td>
+<td>68.7</td>
+<td>+3.1%</td>
+<td>9.5%</td>
+<td>纯手续费、不占资本、不担信用风险</td>
+</tr>
+<tr>
+<td>All Other</td>
+<td>7.4</td>
+<td>−6.7%</td>
+<td>1.0%</td>
+<td>保险代理等零碎</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>723.8</strong></td>
+<td><strong>+8.9%</strong></td>
+<td>100%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报只按板块披露营收，不披露板块经营利润，涉及板块盈利能力的判断为估算。</strong> 按行业通行水平估算，退休计划管理业务的税前利润率通常在 20%–30%，低于银行主业的 40% 左右，但因为几乎不占资本，它的<strong>资本回报率</strong>远高于银行主业。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>22% 的营收增长里，有多少是真的</h3>
+<p>这是本篇第一个必须拆开的数字。TTM 营收 7.238 亿，同比 <strong>+22.41%</strong>；净利润 2.142 亿，EPS <strong>+47.11%</strong>。放在一家社区银行身上，这是不可能的内生增速。</p>
+<p>真相是：<strong>2025 年 NBT 完成了对 Evans Bancorp（水牛城，约 22 亿美元资产）的收购。</strong> 证据在股本上——<strong>流通股一年增加了 8.56%</strong>（从约 47.9 百万股增到 51.96 百万股）。这是典型的换股并购：发新股买下对方，营收和利润按合并口径全额并入，分子变大了 22%，分母（股本）也变大了 8.56%。</p>
+<p>所以：
+- <strong>公司层面</strong>营收 +22.41%，是真的，但主要是买来的
+- <strong>每股层面</strong>才是股东真正拿到的：EPS 从 $3.33 涨到 $4.08，<strong>+22.5%</strong>（不是 +47%，那个 47% 是 TTM 对 FY2025 的错位口径造成的，实际每股增速要打对折看）
+- <strong>剔除并购后的内生增长</strong>，从退休计划管理板块 +3.1%、以及行业整体的存贷增速判断，大约在 <strong>3%–5%</strong> 的量级</p>
+<p>这不是造假，并购是合法的增长方式，NBT 三十年来一直靠买小银行长大，也确实买得不错（历次收购之后 ROE 都能回到并购前水平以上）。但<strong>看它的时候必须换成每股口径，用公司整体口径会高估一倍</strong>。</p>
+<h3>拨备：这一项非常干净</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>期间</th>
+<th>信用损失拨备（百万美元）</th>
+<th>占当期营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td>−8.26（转回）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>17.15</td>
+<td>3.4%</td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>25.27</td>
+<td>5.2%</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>19.61</td>
+<td>3.5%</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>32.25</td>
+<td>4.9%</td>
+</tr>
+<tr>
+<td><strong>TTM（截至 2026-06）</strong></td>
+<td><strong>18.58</strong></td>
+<td><strong>2.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>FY2025 那笔 3225 万里有相当一部分是并购 Evans 时按会计准则对收购来的贷款一次性计提的「第一天拨备」（CECL day-one provision）——买下别人的贷款组合，必须立刻按自己的模型重估一遍坏账，这笔计提在会计上是并购的成本，不是资产恶化。<strong>TTM 回落到 1858 万、占营收 2.6%，这是一个非常温和的水平</strong>，说明贷款质量正常，没有隐患在酝酿。</p>
+<p>对比一下同批分析的 TBBK：那家的拨备占营收 26%，是 NBT 的十倍。这就是「一家保守的社区银行」和「一家高杠杆的专业贷款商」的区别。</p>
+<h3>利润和现金流的差</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>214.15</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>36.17</td>
+</tr>
+<tr>
+<td>＋ 信用损失拨备（非现金计提）</td>
+<td>18.58</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动</td>
+<td>11.59</td>
+</tr>
+<tr>
+<td>＋ 贷款出售净变化</td>
+<td>3.75</td>
+</tr>
+<tr>
+<td>− 其他经营资产净变化</td>
+<td>−28.15</td>
+</tr>
+<tr>
+<td>＋ 处置损益等</td>
+<td>−0.04</td>
+</tr>
+<tr>
+<td>＋ 其他小项</td>
+<td>5.61</td>
+</tr>
+<tr>
+<td>＝ <strong>经营现金流</strong></td>
+<td><strong>261.66</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−16.05</td>
+</tr>
+<tr>
+<td>＝ <strong>自由现金流</strong></td>
+<td><strong>245.61</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 2.14 亿 → 自由现金流 2.46 亿，现金流比利润还多 15%。</strong> 这是健康的形态：差额主要来自 3617 万的折旧摊销（其中一大块是并购形成的无形资产摊销，是纯会计费用，不花钱），减去 2815 万的经营资产变动。<strong>没有任何「利润好看但收不到钱」的迹象。</strong></p>
+<p>值得注意的是折旧摊销从 FY2021 的 1988 万涨到 TTM 的 3617 万，<strong>接近翻倍</strong>——这正是连续并购的会计痕迹：每买一家银行，就要把对方的客户关系、核心存款价值确认成无形资产，然后在往后几年里摊销掉。这笔摊销压低了 GAAP 利润但不消耗现金，所以 NBT 的真实盈利能力其实比 GAAP 净利润显示的略强一些。</p>
+<h3>股权激励、一次性项目、资本化支出</h3>
+<ul>
+<li><strong>股权激励</strong>：规模很小，未在现金流量表中单列到需要讨论的量级。这一项没有问题。</li>
+<li><strong>一次性项目</strong>：TTM 内无重大诉讼、重组或减值单列项目。并购相关费用已在 FY2025 消化。</li>
+<li><strong>资本化的支出</strong>：银行没有软件资本化这类问题，资本开支 1605 万美元，主要是网点和 IT 设备。</li>
+<li><strong>有效税率</strong> 22.77%，正常。</li>
+</ul>
+<h3>回购与稀释：这家公司靠分红，不靠回购</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回购股票</td>
+<td>28.23</td>
+</tr>
+<tr>
+<td>派发股息</td>
+<td><strong>77.18</strong></td>
+</tr>
+<tr>
+<td>股本变化</td>
+<td><strong>+8.56%</strong>（并购发股，净稀释）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购 ÷ 股权激励的比值在这里意义不大</strong>（股权激励几乎可以忽略），真正的结构是：<strong>回馈股东的主渠道是股息（7718 万），回购（2823 万）只是零头，而并购发的新股（约 +8.56%）在数量上盖过了两者之和。</strong></p>
+<p>换句话说：<strong>你作为股东，每年拿到 3.10% 的现金股息，同时你手里的股份被稀释了 8.56%——但换回来的是一家 22 亿资产的银行并入了报表。</strong>这笔交易划不划算，取决于 Evans 买得贵不贵。从结果看，ROE 从 FY2025 的 9.89% 升到 TTM 的 11.42%，是升的，说明这次买得不亏。</p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>怎么理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率 <strong>PB</strong></td>
+<td><strong>1.38 倍</strong></td>
+<td>用 1.38 元买 1 元净资产</td>
+</tr>
+<tr>
+<td>有形账面市净率 <strong>P/TBV</strong></td>
+<td><strong>1.86 倍</strong></td>
+<td>剔掉并购商誉后是 1.86 倍，比 PB 高，因为账上有约 5 亿商誉和无形资产</td>
+</tr>
+<tr>
+<td><strong>ROE</strong>（净资产收益率）</td>
+<td><strong>11.42%</strong></td>
+<td>五年最高（FY2023 只有 9.14%）</td>
+</tr>
+<tr>
+<td><strong>ROTCE</strong>（有形净资产收益率，估算）</td>
+<td><strong>约 14.9%</strong></td>
+<td>用净利润 ÷ 有形净资产（约 14.4 亿）估算</td>
+</tr>
+<tr>
+<td><strong>ROA</strong>（总资产收益率）</td>
+<td><strong>1.33%</strong></td>
+<td>略高于社区银行 1.0%–1.2% 的平均水平</td>
+</tr>
+<tr>
+<td>隐含杠杆（ROE ÷ ROA）</td>
+<td><strong>8.6 倍</strong></td>
+<td>每 1 元自有资金撬动 8.6 元资产，比同业保守</td>
+</tr>
+<tr>
+<td>市盈率 PE（参考）</td>
+<td>12.63 倍</td>
+<td></td>
+</tr>
+<tr>
+<td>每股账面价值</td>
+<td>$37.42</td>
+<td>股价 $51.55</td>
+</tr>
+<tr>
+<td><strong>股息</strong></td>
+<td><strong>$1.60／股，3.10%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>派息率</strong></td>
+<td><strong>39.21%</strong></td>
+<td>赚 100 块发 39 块，留 61 块</td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>0.48</td>
+<td>波动只有大盘的一半</td>
+</tr>
+</tbody>
+</table></div>
+<h3>你投 100 块进去，一年赚多少</h3>
+<p>银行的年回报按 <strong>ROE ÷ PB</strong> 换算：</p>
+<p><strong>11.42% ÷ 1.38 = 8.28%</strong> —— 你投 100 块，公司一年替你赚 <strong>8.28 元</strong>。</p>
+<p>（用有形口径核对更严格一些：ROTCE 约 14.9% ÷ P/TBV 1.86 = <strong>8.01%</strong>。两条路都落在 8% 附近，结论稳定。用每股口径再核一次：EPS $4.08 ÷ 股价 $51.55 = 7.91%。三个口径一致。）</p>
+<p><strong>这 8.28 元里，有多少真进你口袋？</strong></p>
+<ul>
+<li><strong>3.10 元以现金股息形式直接打给你</strong>（每股 $1.60，一年四次）</li>
+<li><strong>约 0.35 元通过回购</strong>（TTM 回购 2823 万 ÷ 市值 26.79 亿 = 1.05%，但同期并购发股稀释 8.56%，所以这一项实际上被抵消掉了，净效果是负的）</li>
+<li><strong>剩下约 5 元留在公司</strong>，变成新增的股东权益，用来支撑更多贷款、或者攒着买下一家银行</li>
+</ul>
+<p>所以对 NBT 的股东来说，<strong>真正落袋的是那 3.10% 的股息，其余的价值要通过「公司一直买得不亏」来兑现</strong>。过去三十年 NBT 的并购记录是好的，但这是一个必须持续下注的假设，不是自动兑现的。</p>
+<h3>这个 8.28% 建立在什么之上</h3>
+<p><strong>8.6 倍杠杆，这在银行里算保守的。</strong> ROA 1.33% 是靠真实的经营效率赚出来的（略高于同业平均），不是靠把杠杆加到 12 倍硬撑。Beta 0.48 也印证了这一点——市场把它当低风险资产定价。</p>
+<p><strong>ROE 11.42% 是这家公司五年来的最高值</strong>（FY2023 是 9.14%，FY2024 是 9.53%）。这个高点来自两个因素：一是高利率环境下净息差扩张，二是 Evans 并购带来的规模效应。<strong>如果美联储进入降息周期，净息差会收窄，ROE 大概率回落到 10% 上下</strong>，那时候按 1.38 倍 PB 算的回报会掉到 7.2%。这是最需要盯的风险。</p>
+<h3>这个 8.28% 未来变大还是变小</h3>
+<p><strong>往上的力量</strong>：退休计划管理业务在稳定增长且不占资本；Evans 并购的成本协同（关网点、并系统）通常在并购后第二年才完全体现，还有一点利润没释放；公司连续多年提高股息，管理层对现金流有信心。</p>
+<p><strong>往下的力量</strong>：降息会压缩净息差；纽约州上州的市场本身不增长，内生增长天花板在 3%–5%；继续靠并购增长意味着继续发股稀释；商业房地产贷款占比不低，如果本地小商业地产走弱会有压力。</p>
+<p><strong>净判断：8% 上下的回报大致是这家公司的稳态水平，往上往下都不会太远。</strong> 它不是一家会给你惊喜的公司，它是一家你可以睡着觉持有的公司。</p>
+<h3>对比一下同批的 TBBK</h3>
+<p>同样市值 26.8 亿、同样在 0–15 倍市盈率段、同样是银行，两家的形态完全相反：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>NBTB</th>
+<th>TBBK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PB</td>
+<td><strong>1.38 倍</strong></td>
+<td>3.82 倍</td>
+</tr>
+<tr>
+<td>ROE</td>
+<td>11.42%</td>
+<td>29.63%</td>
+</tr>
+<tr>
+<td>杠杆</td>
+<td>8.6 倍</td>
+<td>11.5 倍</td>
+</tr>
+<tr>
+<td>拨备占营收</td>
+<td><strong>2.6%</strong></td>
+<td>26.4%</td>
+</tr>
+<tr>
+<td>股息</td>
+<td><strong>3.10%</strong></td>
+<td>无</td>
+</tr>
+<tr>
+<td>债务/权益</td>
+<td><strong>0.28</strong></td>
+<td>1.36</td>
+</tr>
+<tr>
+<td>年回报</td>
+<td>8.28%</td>
+<td>7.76%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回报率几乎一样（8.28% vs 7.76%），但一个是用 1.38 倍账面、8.6 倍杠杆、2.6% 拨备赚来的，另一个是用 3.82 倍账面、11.5 倍杠杆、26% 拨备赚来的。</strong>这就是为什么同一个「12 倍市盈率」在两家公司身上的含金量完全不同。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>一家没有任何故事、也没有任何暗雷的社区银行，8.28% 的年回报里有 3.1% 是当场发到你手上的现金，这个价格是公道的。</strong></p>
+<p>它最值得说的地方有三处：<strong>拨备只占营收 2.6%</strong>（同批的 TBBK 是 26%），说明资产端是干净的；<strong>杠杆只有 8.6 倍、债务权益比 0.28</strong>，说明这 11.42% 的 ROE 不是硬加杠杆撑出来的；<strong>旗下的 EPIC 退休计划管理业务贡献了 9.5% 的营收，纯手续费、不占资本、不担信用风险</strong>，而 1.38 倍的 PB 里完全没有为这块给出溢价。</p>
+<p>它的问题也很清楚，而且没有解法：<strong>纽约州上州这个市场不增长。</strong>内生增速 3%–5% 到头了，所以它必须靠不停买小银行来长大——TTM 那个 22% 的营收增长几乎全是买来的，代价是股本一年稀释 8.56%。这个模式过去三十年跑得不错（这次买 Evans 之后 ROE 从 9.89% 升到 11.42%），但它要求管理层每隔几年就做对一次并购决策，做错一次就要还回去好几年。</p>
+<p>另外一个必须盯的点：<strong>11.42% 的 ROE 是五年最高，靠的是高利率带来的净息差扩张。</strong>降息周期一到，这个数字大概率回到 10% 左右，年回报会从 8.28% 掉到 7.2%。</p>
+<p><strong>买它的理由不是它会涨多少，是它大概率不会出事，同时每年给你 3.1% 的现金。</strong> 1.38 倍账面买一家 ROE 11%、杠杆保守、账干净、连续多年提息的银行，这笔账算得过来——<strong>值这个价，但也仅仅是值这个价，没有明显的便宜可占。</strong></p>
+</div></body></html>

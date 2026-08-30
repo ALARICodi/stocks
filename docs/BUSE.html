@@ -1,0 +1,399 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BUSE · 第一布西（First Busey Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BUSE</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">资本厚账干净，但两年跑了23亿存款，低拨备是并购会计送的</div><h1>BUSE · 第一布西（First Busey Corporation）</h1>
+<p>市值 25.0 亿美元 · 股价 30.29 美元（2026-08-28 收盘，一年内上涨 22.88%） · 行业：金融业（区域性银行控股公司） · TTM 截止日期：2026-06-30</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率（PB）、有形账面价值市净率（P/TBV）和净资产收益率（ROE）的组合，而不是市盈率。</strong>原因是银行的"利润"里有一项完全由管理层判断的东西叫<strong>坏账拨备</strong>——今年少提一点，利润立刻变好看。市盈率是这个游戏的下游，会被玩坏。而账面价值（资产减负债）是相对硬的东西。</p>
+<p><strong>这家公司还有第二层特殊性，必须先说：它在 2025 年 3 月完成了一笔改变体量的收购，把资产规模从约 120 亿美元推到约 171 亿。</strong>这意味着<strong>这家公司的所有历史数字都不可比</strong>，而且并购会计会在收购后头两年系统性地美化利润。本篇有很大篇幅在处理这件事。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>First Busey 是一家 1868 年成立于伊利诺伊州 Urbana 的区域银行，如今在<strong>伊利诺伊、密苏里、印第安纳、堪萨斯、俄克拉荷马、德州、佛罗里达</strong>等地开分行。1,833 名员工，TTM 营收 7.83 亿美元，净利 2.12 亿。按 1.24% 的资产收益率倒推，<strong>它管着大约 171 亿美元的资产</strong>。</p>
+<p><strong>它的近况由一笔交易定义：2025 年 3 月，Busey 完成了对 CrossFirst Bankshares 的收购。</strong>这笔交易在现金流表上留下了清晰的痕迹——FY2025 有 <strong>3.858 亿美元的收购支出</strong>、<strong>2.075 亿美元的优先股发行</strong>，以及<strong>股本一年增加 27.79%</strong>。</p>
+<p>CrossFirst 是一家总部在堪萨斯州的商业银行，主打德州、俄克拉荷马、科罗拉多、亚利桑那这些<strong>西南部快速增长的市场</strong>。收购的战略逻辑很清楚：<strong>Busey 原本困在伊利诺伊这个人口停滞、财政困难的老工业州，它需要买一张通往阳光带的门票。</strong></p>
+<p>这解释了 TTM 营收同比 <strong>+40.96%</strong> 这个惊人的数字——<strong>这不是内生增长，这是把另一家银行的收入并进来了。</strong>任何看到"营收增长 41%"就兴奋的人，都误读了这家公司。</p>
+<p>它做三门生意：</p>
+<h3>1. 银行业务（Banking）——TTM 7.005 亿，占 89.5%</h3>
+<p>标准的存贷生意，钱的流向值得说清楚：</p>
+<p>一个伊利诺伊州 Champaign 的家庭把 8 万美元存进 Busey 的储蓄账户，银行付他约 1.5% 的利息（1,200 美元）。银行转手把这 8 万贷给本地一家做农机维修的公司，年利率 7.5%，一年收 6,000 美元利息。<strong>中间 4,800 美元的差价就是银行的主要收入</strong>，这个差价除以生息资产的比例叫"净息差"（NIM）。</p>
+<p><strong>财报页不提供 Busey 的净息差数字。</strong>按营收结构倒推——净利息收入约 6.0 亿到 6.3 亿，生息资产约 155 亿——<strong>净息差大致在 3.9%–4.1%</strong>（这是<strong>估算</strong>，不是财报数字）。这个水平比上一篇分析的 Trustmark（约 3.6%–3.7%）高，主要贡献来自 CrossFirst 的商业贷款——<strong>商业和工业贷款的利率通常高于住房抵押贷款。</strong></p>
+<p><strong>它贷给谁：</strong>伊利诺伊的农业和农机、大学城的商业地产（Busey 的老巢 Champaign-Urbana 是伊利诺伊大学所在地）、以及现在通过 CrossFirst 接手的德州和堪萨斯的商业与工业贷款。<strong>贷款分类明细财报页不披露，这是本次分析的真实盲区</strong>——尤其是并购进来的 CrossFirst 贷款组合的质量，外部完全看不见。</p>
+<h3>2. 财富管理（Wealth Management）——TTM 7,530 万，占 9.6%</h3>
+<p>给本地富裕家庭和农场主做投资顾问、信托、退休金管理。一个卖掉了几百英亩农地的家族有 1,200 万美元，交给 Busey 的信托部门打理，每年按资产规模收 0.8%–1%，也就是十万美元左右。</p>
+<p><strong>这门生意的性质跟银行主业完全不同：不占用银行资本、不承担信贷风险、收入随资产市值上涨自动增长、客户关系常常跨代不流失。</strong>TTM 相对上一完整财年 +7.3%，增速高于银行主业。<strong>它是这家银行财报里质量最高的一块钱。</strong></p>
+<h3>3. FirsTech（支付处理）——TTM 2,197 万，占 2.8%</h3>
+<p><strong>这一门最有意思，也最容易被忽略。</strong></p>
+<p>FirsTech 不是银行业务，是一家<strong>账单支付处理公司</strong>。你交水电费、有线电视费、市政费的时候，那笔钱要从你的账户流到公用事业公司的账户——中间需要有人做清算、对账、客服。FirsTech 就做这个：它替中西部的公用事业公司、市政府、保险公司处理账单支付，按每笔交易收几毛到几块钱的手续费。</p>
+<p><strong>为什么值得单独说？</strong>因为这是一门<strong>科技公司的生意长在银行体内</strong>：它不占用资本、没有信贷风险、不受利率周期影响、收入随交易笔数稳定增长。同类的独立支付公司在市场上能卖到 15–25 倍市盈率，而它埋在一家 12 倍市盈率的银行里。</p>
+<p><strong>但要泼一盆冷水</strong>：这门生意 TTM 只增长了 1.5%，五年来营收从 1,971 万涨到 2,197 万——<strong>五年只涨了 11%，基本是停滞的。</strong>它是块好资产，但它没在长。而且 2.8% 的占比太小，改变不了这家公司的估值。</p>
+<h3>三门生意的钱</h3>
+<p>（TTM = 截至 2026-06-30；"对比"栏用刚结束的完整财年 FY2025，两者错开半年。<strong>注意：FY2025 只包含 CrossFirst 从 3 月起的约 10 个月，所以这个对比同时混合了"并购贡献"和"内生增长"，无法拆开。</strong>）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万）</th>
+<th>对比上一完整财年</th>
+<th>占总营收</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>银行业务</td>
+<td>700.52</td>
+<td>+20.2%</td>
+<td>89.5%</td>
+<td>吃利差，占资本，担信用风险</td>
+</tr>
+<tr>
+<td>财富管理</td>
+<td>75.30</td>
+<td>+7.3%</td>
+<td>9.6%</td>
+<td>收管理费，不占资本，无信贷风险</td>
+</tr>
+<tr>
+<td>FirsTech 支付处理</td>
+<td>21.97</td>
+<td>+1.5%</td>
+<td>2.8%</td>
+<td>科技生意，但五年没怎么长</td>
+</tr>
+<tr>
+<td>其他（内部抵销等）</td>
+<td>−14.96</td>
+<td>—</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>782.83</strong></td>
+<td><strong>+40.96%（对齐口径）</strong></td>
+<td><strong>100%</strong></td>
+<td>净利率 27.09%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不披露分部利润。<strong>但有一件事可以确定：银行业务那 +20.2% 里，绝大部分是 CrossFirst 并表带来的，不是 Busey 自己长出来的。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一部分是本篇的核心。Busey 报出来的 2.12 亿净利润和 +41% 的营收增长，需要非常仔细地拆。</strong></p>
+<p><strong>股权激励（SBC）</strong>：财报现金流页未单列该项目，说明规模小到不用单独列示。对一家 1,833 人的区域银行属正常。<strong>不构成隐藏成本。</strong></p>
+<p><strong>一次性项目</strong>：TTM 的"投资出售收益"只有 <strong>171 万美元</strong>（现金流表 "Gain (Loss) on Sale of Investments"），资产出售 14 万，资产减值 3 万——<strong>全部是零头，可以忽略。</strong></p>
+<p><strong>这一点值得表扬，而且反差明显</strong>：上一篇分析的 Trustmark，TTM 靠卖债券贡献了 2,600 万（占净利 9.1%）的收益。<strong>Busey 的 TTM 利润里没有这种成分</strong>，往前看 FY2025（1,218 万）、FY2024（1,496 万）、FY2023（1,661 万）都有，但 TTM 几乎归零。<strong>这说明它现在的利润更"干净"——纯粹来自放贷和收费。</strong></p>
+<p><strong>坏账拨备——这是全篇最关键的一项，必须展开</strong>：</p>
+<p>TTM 的信用损失拨备是 <strong>670 万美元</strong>。</p>
+<p>单看这个数字，容易得出"太低了"的结论。但这家公司的历史是这样的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>信用损失拨备</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td><strong>−1,510 万</strong>（转回）</td>
+<td>疫情拨备释放</td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td>462 万</td>
+<td></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>286 万</td>
+<td></td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>750 万</td>
+<td>并购前，资产约 120 亿</td>
+</tr>
+<tr>
+<td><strong>FY2025</strong></td>
+<td><strong>5,274 万</strong></td>
+<td><strong>并购当年，暴增 7 倍</strong></td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>670 万</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>FY2025 那笔 5,274 万是这张表的钥匙，它解释了两件事。</strong></p>
+<p><strong>第一，它解释了 FY2025 为什么利润那么难看。</strong>FY2025 净利润只有 1.254 亿，比并购前的 FY2024（1.137 亿）几乎没增长，而资产规模涨了 40%——就是因为这一年吞掉了 5,274 万的拨备和并购费用。</p>
+<p><strong>第二，也是更重要的：它解释了 TTM 的利润为什么那么好看。</strong></p>
+<p>美国的银行会计准则（CECL）有一条规定：<strong>收购一家银行时，必须在交易完成当天，对被收购方的整个贷款组合按未来预期损失一次性提足拨备</strong>——业内叫 "Day 1 CECL"。也就是说，<strong>CrossFirst 那几十亿贷款未来几年可能产生的坏账，Busey 在 2025 年就一次性全提完了。</strong></p>
+<p><strong>后果是：接下来的两三年里，这批贷款即使正常产生坏账，也不需要再提新的拨备——因为账上已经备好了。</strong>这让并购后的年份，利润看起来特别漂亮。</p>
+<p><strong>所以 TTM 那 670 万的拨备，不是"经济好得不用提坏账"，而是"去年已经替今年提过了"。</strong></p>
+<p>这是完全合法、完全符合准则的会计处理。<strong>但对一个投资者来说，意义是：Busey 现在的 2.12 亿净利润里，有一块是"会计时间差"送的，它会在两三年后消失。</strong></p>
+<p><strong>正常化的估算</strong>：Busey 现在管着约 171 亿资产，贷款规模按银行业惯例约占 65%，即<strong>约 110 亿美元</strong>（这是<strong>估算</strong>，财报页不提供贷款余额）。一个正常经济周期里，商业银行的年化信用成本约为贷款余额的 0.25%——<strong>也就是约 2,750 万美元的年度拨备</strong>。</p>
+<p>TTM 只提了 670 万，<strong>少提了约 2,080 万税前，按 23.09% 税率折算，税后约 1,600 万，占净利润的 7.5%。</strong></p>
+<p>这个调整会在第三部分单独列出。</p>
+<p><strong>存款的流向——这是全篇第二个关键发现，而且它是个警报</strong>：</p>
+<p>看融资活动的两个数字：</p>
+<ul>
+<li><strong>TTM 存款净减少 6.729 亿美元</strong></li>
+<li><strong>FY2025 存款净减少 16.47 亿美元</strong></li>
+</ul>
+<p><strong>两年之内，这家银行流失了 23 亿美元的存款。</strong></p>
+<p><strong>为什么这件事重要？</strong>因为存款是银行最便宜的资金来源。储户的活期和储蓄账户只需要付 0%–2% 的利息；存款跑了，银行要么缩减贷款规模（收入减少），要么用更贵的钱（同业拆借、大额存单，成本 4%–5%）来补——<strong>两条路都吃利润。</strong></p>
+<p><strong>对比一下上一篇的 Trustmark：同期存款净增 9.554 亿。</strong>一家在流入 9.6 亿，一家在流出 6.7 亿——<strong>这是两家银行之间最本质的差别，比它们市盈率的差别重要得多。</strong></p>
+<p><strong>为什么会流失？</strong>最可能的解释是<strong>并购整合的客户流失</strong>：CrossFirst 的客户发现自己的银行被伊利诺伊的一家银行买了，App 换了、客户经理换了、产品条款变了，一部分人就把钱搬走了。这在银行并购里非常常见，通常在两到三年内趋于稳定。<strong>TTM 的流出（6.73 亿）已经比 FY2025（16.47 亿）小了六成，说明失血在放缓——但还没停。</strong></p>
+<p>对应的，<strong>贷款也在收缩</strong>：投资活动里"贷款净减少"TTM 是 <strong>5.957 亿美元</strong>（正数表示贷款余额在下降）。<strong>存款跑了，贷款也跟着缩，这家银行的资产负债表在整体收缩。</strong></p>
+<p><strong>回购与稀释</strong>：</p>
+<p><strong>TTM 回购 1.832 亿美元</strong>——这个规模不小，占市值的 7.3%。同时普通股股息 8,914 万，优先股股息 1,890 万（优先股是并购时发的那 2.075 亿）。<strong>返还合计 2.913 亿，占市值 11.6%。</strong></p>
+<p>但统计页上写着 <strong>"股本一年增加 27.79%"</strong>——<strong>这同样是并购造成的，不是持续稀释。</strong>Busey 用增发股票支付了收购 CrossFirst 的一部分对价。最近一个季度股本环比 <strong>减少 2.78%</strong>，说明并购完成后公司在积极回购。</p>
+<p><strong>这里有一个必须点出的矛盾</strong>：<strong>一家存款在流失、资产负债表在收缩的银行，同时在用市值 7.3% 的规模回购股票。</strong></p>
+<p>两种解读：<strong>乐观</strong>——管理层认为并购整合已经稳住，多余资本还给股东是对的；<strong>悲观</strong>——用回购来对冲并购稀释造成的每股收益摊薄，让数字好看，而这些资本本可以用来稳住存款基础。<strong>从派息率只有 43.44%、账面价值仍在增长看，资本状况应该撑得住，但这是推断。</strong></p>
+<p><strong>利润和现金流的差</strong>：银行的经营现金流和净利润天生对不上（放贷收存款被分到投资和融资活动里）。TTM 经营现金流 2.277 亿 vs 净利 2.121 亿，差 1,560 万，主要是折旧摊销（3,215 万）和其他经营资产变动（−4,059 万）的抵销。<strong>这张表在银行身上没有诊断价值，真正的信息在上面存款和贷款那两个数里。</strong></p>
+<hr />
+<h2>第三部分：银行口径的估值</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>数值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市净率（PB）</td>
+<td><strong>1.06 倍</strong></td>
+<td>账面净资产 23.8 亿，每股 28.65 美元</td>
+</tr>
+<tr>
+<td>有形账面价值市净率（P/TBV）</td>
+<td><strong>1.31 倍</strong></td>
+<td>有形账面约 19.1 亿，每股约 23.12 美元；差额是并购留下的商誉</td>
+</tr>
+<tr>
+<td>净资产收益率（ROE）</td>
+<td><strong>9.63%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>有形普通股权益回报率（ROTCE）</td>
+<td><strong>约 11.1%</strong></td>
+<td>2.121 亿 ÷ 19.1 亿</td>
+</tr>
+<tr>
+<td>资产收益率（ROA）</td>
+<td><strong>1.24%</strong></td>
+<td>超过 1% 算合格</td>
+</tr>
+<tr>
+<td>净息差（NIM）</td>
+<td><strong>约 3.9%–4.1%（估算）</strong></td>
+<td>财报页不提供，按营收结构倒推</td>
+</tr>
+<tr>
+<td>杠杆倍数</td>
+<td><strong>约 7.2 倍</strong></td>
+<td>171 亿资产 ÷ 23.8 亿净资产（同业普遍 10–12 倍，这个偏保守）</td>
+</tr>
+<tr>
+<td>一级核心资本充足率（CET1）</td>
+<td><strong>数据源不提供</strong></td>
+<td>见下方说明</td>
+</tr>
+<tr>
+<td>派息率</td>
+<td><strong>43.44%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>股息率</td>
+<td><strong>3.43%</strong></td>
+<td>每股 1.04 美元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>把 ROE 换算成"投 100 块的年回报"，公式是 ROE ÷ PB：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>计算</th>
+<th>投 100 块年回报</th>
+<th>对应市盈率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>报表口径</td>
+<td>9.63% ÷ 1.06</td>
+<td><strong>9.08 元</strong></td>
+<td>11.8 倍</td>
+</tr>
+<tr>
+<td><strong>拨备正常化后</strong></td>
+<td><strong>8.90% ÷ 1.06</strong></td>
+<td><strong>8.40 元</strong></td>
+<td><strong>12.7 倍</strong></td>
+</tr>
+<tr>
+<td>有形账面口径（ROTCE）</td>
+<td>11.1% ÷ 1.31</td>
+<td><strong>8.47 元</strong></td>
+<td>11.8 倍</td>
+</tr>
+<tr>
+<td>拨备正常化 + 有形账面口径</td>
+<td>10.3% ÷ 1.31</td>
+<td><strong>7.86 元</strong></td>
+<td>12.7 倍</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>见下</td>
+<td><strong>约 6.0 元</strong></td>
+<td><strong>16.6 倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>逐行解释：</strong></p>
+<p><strong>第一行</strong>是报表告诉你的：这家银行赚 9.63% 的净资产回报，你花 1.06 倍账面价格买，年回报 9.08 元。</p>
+<p><strong>第二行</strong>把上面算过的拨备缺口（税后约 1,600 万）扣掉：净利从 2.121 亿降到 <strong>1.961 亿</strong>，ROE 降到 8.90%，年回报 <strong>8.40 元</strong>。</p>
+<p><strong>第三、四行</strong>换用有形账面价值。<strong>为什么要看这个口径？</strong>因为 Busey 账上 23.8 亿的净资产里，有约 4.7 亿是收购 CrossFirst 时产生的<strong>商誉</strong>——那是"当年多付的钱"，不是能拿来放贷、也不是能在破产时变现的东西。<strong>监管算资本充足率时也不认商誉。</strong>用有形账面看，倍数从 1.06 涨到 1.31，年回报从 8.40 降到 <strong>7.86 元</strong>。<strong>这个 7.86 元是本篇最诚实的数字。</strong></p>
+<p><strong>第五行——三年平均利润口径，这是全表唯一的历史口径，但在这家公司身上它坏掉了，必须说清楚为什么：</strong></p>
+<p>TTM 2.121 亿、FY2025 1.254 亿、FY2024 1.137 亿，三年平均 <strong>1.504 亿</strong>，对应 <strong>16.6 倍</strong>。</p>
+<p><strong>这个 16.6 倍看起来很吓人，但它是个假警报</strong>，因为三年里的公司完全不是同一家：</p>
+<ul>
+<li><strong>FY2024（1.137 亿）</strong>：并购前的 Busey，资产只有约 120 亿——<strong>规模只有现在的七成</strong>；</li>
+<li><strong>FY2025（1.254 亿）</strong>：并购当年，被 5,274 万拨备和并购费用砸了一个坑；</li>
+<li><strong>TTM（2.121 亿）</strong>：并购后第一个完整年，享受着 Day 1 CECL 的会计红利。</li>
+</ul>
+<p><strong>三年平均把"小公司"、"坑年"、"红利年"混在一起平均，得出的数字没有意义。</strong></p>
+<p><strong>但历史口径的失效本身，恰恰是这家公司最大的问题：你没有任何一个可信的历史锚点，来判断这家新的、体量大了 40% 的 Busey 正常年份能赚多少。</strong>并购前的 Busey 常年 ROE 在 8.5%–10.4% 之间；并购后的第一年是 9.63%。<strong>唯一能说的是：并购并没有让这家银行的赚钱效率变好，它只是变大了。</strong></p>
+<p><strong>关于 CET1 的坦白</strong>：一级核心资本充足率是判断银行"抗不抗得住坏账"的最关键单一指标，监管红线是 7%（含缓冲），美国区域银行通常在 10%–12%。<strong>本次使用的数据源不提供这个数字。</strong>能拿到的替代证据是：杠杆只有 7.2 倍（同业普遍 10–12 倍，<strong>这一条相当有说服力，说明资本很厚</strong>）、ROA 1.24%（良好）、派息率 43%（合理）、并购时还发了 2.075 亿优先股补充资本。<strong>这几条间接指向资本状况稳健，甚至可能过剩——这也解释了为什么它敢在这个时候花 1.83 亿回购股票。但这是推断，不是证实。</strong></p>
+<p><strong>所以：你现在投 100 块进去，按最保守的口径（把坏账拨备恢复到正常水平、并按有形账面价值计算）算，这家银行一年替你赚 7.86 元。</strong></p>
+<p>这 7.86 元里：</p>
+<ul>
+<li><strong>约 3.4 元以现金股息发到你手上</strong>（股息率 3.43%）；</li>
+<li><strong>约 7.3 元通过回购变成你持股比例的上升</strong>（TTM 回购 1.832 亿 ÷ 25.01 亿市值）；</li>
+<li>两项相加已经超过 7.86 元——<strong>这家公司返还给股东的钱超过了它赚的钱</strong>，差额来自并购后释放出来的过剩资本。<strong>这是可持续的吗？不是。这是一次性的资本返还，不是常态。</strong></li>
+</ul>
+<p><strong>必须说明这 7.86 元是怎么来的：它建立在 7.2 倍杠杆之上。</strong>Busey 用 23.8 亿自有资本撬动 171 亿资产。<strong>这个杠杆比同业低（这是好事），但仍然意味着：贷款只要坏掉 2.8%（约 3 亿美元），这家银行一年半的利润就没了。</strong>而它刚刚吞下一个自己不熟悉的市场（德州、堪萨斯、俄克拉荷马）的贷款组合，<strong>那批贷款的质量，外部投资者现在还看不见。</strong></p>
+<p><strong>这个 7.86 元未来会变大还是变小？我的判断是先小后大，但"先小"这一段可能有两三年：</strong></p>
+<ul>
+<li><strong>往下的力量（近期占上风）</strong>：Day 1 CECL 的会计红利会在两三年内耗尽，拨备必须回到正常水平；<strong>存款还在流失（TTM −6.73 亿）</strong>，资产负债表在收缩；降息周期会压缩净息差，而 89.5% 的收入靠利差；1.83 亿的回购是并购后过剩资本的一次性释放，不会年年有。</li>
+<li><strong>往上的力量</strong>：CrossFirst 带来的德州、堪萨斯、俄克拉荷马市场，人口和企业数量增速远高于伊利诺伊——<strong>这笔收购的战略逻辑是对的，只是需要时间兑现</strong>；并购的成本协同（关闭重叠分行、合并系统）通常在第二、三年才充分释放；财富管理 +7.3% 在稳定增长；7.2 倍的低杠杆意味着还有加杠杆的空间。</li>
+<li><strong>需要盯的一个数</strong>：<strong>下几个季度的存款净变动。</strong>如果转正，说明整合成功，这只股票会重新定价；如果继续流出，说明 CrossFirst 的客户在持续离开，那这笔 40% 规模的收购就买贵了。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>1.06 倍市净率买一家刚吞下同行、资本厚实、正在大手笔回购的区域银行，价格是公道的——但它的 9.63% ROE 有两块并购会计送的水分，而更麻烦的是这家银行两年流失了 23 亿存款。</strong></p>
+<p>它扎实的地方是实的：<strong>杠杆只有 7.2 倍，比同业低了三到四成，资本厚得让人放心</strong>；TTM 利润里几乎没有"卖债券"这类粉饰（这一点比上一篇的 Trustmark 干净）；1.83 亿的回购加 8,900 万股息，一年返还了市值的 11.6%；FirsTech 和财富管理这两块不占资本的生意加起来占营收 12.4%；<strong>收购 CrossFirst 拿到德州和堪萨斯这些增长市场的门票，战略方向是对的。</strong></p>
+<p>它的问题也是实的，而且是同一件事的两面：<strong>这笔并购把公司做大了 40%，但没做好——存款两年流失 23 亿，贷款跟着收缩 6 亿，而 TTM 那 670 万的低拨备是"去年一次性提足"的会计时间差送的，两三年后要还回去。</strong>把这块水分挤掉，真实回报从 9.08 元降到 7.86 元。同时，因为并购，你<strong>没有任何可信的历史数据</strong>来判断这家新公司正常年份该赚多少——三年平均口径算出来的 16.6 倍是个假警报，但假警报本身就说明你看不清。</p>
+<p><strong>这不是一家有硬伤的银行——它资本厚、账干净、方向对。它是一家正处在整合期、结果还没揭晓的银行。</strong>你付的 1.06 倍市净率，正好是"整合可能成功也可能不成功"这个不确定性的合理价格。</p>
+<p><strong>要买它，你实际上是在赌一件具体的事：CrossFirst 的客户会不会继续把钱搬走。</strong>这个答案会在接下来几个季度的存款数字里揭晓，而不在任何一个估值倍数里。</p>
+</div></body></html>

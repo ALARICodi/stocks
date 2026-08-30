@@ -1,0 +1,406 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ETOR · eToro 集团</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ETOR</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔现金只5.9倍还回购市值10%，但赌加密不退潮+不降息</div><h1>ETOR · eToro 集团</h1>
+<p>市值 24.7 亿美元 · 股价 31.03 美元（2026-08-28 收盘，2025 年 5 月上市，一年内下跌 30.3%） · 行业：科技服务（在线券商 / 社交交易平台） · TTM 截止日期：2026-06-30</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p><strong>先处理一个必须最先处理的问题：这家公司的"营收"是假的。</strong></p>
+<p>财报上写着 TTM 营收 <strong>118.7 亿美元</strong>，市销率（PS）只有 <strong>0.21 倍</strong>——看起来像是白菜价买下一家超大规模的公司。<strong>这两个数字都毫无意义，你在任何地方看到都要直接忽略。</strong></p>
+<p>原因在这里：eToro 卖加密货币采用的是<strong>毛额记账</strong>。一个用户在 App 上花 10,000 美元买比特币，eToro 先自己花 9,950 美元从交易所买入，再以 10,000 美元卖给用户。<strong>会计上，这 10,000 美元全部计入"营收"，那 9,950 美元计入"成本"，eToro 真正赚到的是中间的 50 美元。</strong></p>
+<p>所以那 118.7 亿营收里，<strong>110.6 亿（93.2%）是这种加密货币的过账金额</strong>。把它换算成人话：eToro 一年帮用户过手了 110 亿美元的加密货币，从中赚了几亿的价差。<strong>它的真实收入规模不是 118.7 亿，是 9 到 10 亿。</strong></p>
+<p>按真实口径，市销率不是 0.21 倍，是 <strong>2.6 倍左右</strong>。这个数字对一家券商来说仍然不贵，但它跟"0.21 倍"是两个世界。<strong>任何一个按 PS 筛选出这只股票的量化模型，都被这套会计规则骗了。</strong></p>
+<p>清理完这一层，看它到底做什么：</p>
+<p>eToro 是一家 2007 年成立于以色列的<strong>社交交易平台</strong>，全球约 4,000 万注册用户，1,520 名员工——<strong>人均创造 17.2 万美元利润，这个效率在金融业里属于顶尖水平。</strong>它的产品是一个手机 App，你在上面可以买美股、ETF、加密货币、外汇、大宗商品。</p>
+<p><strong>它跟 Robinhood、盈透证券最大的不同，是"跟单交易"（CopyTrader）这个功能。</strong></p>
+<p>具体是这样的：平台上有一批公开业绩的"明星交易员"，他们的持仓、收益率、回撤全部公开。一个葡萄牙的普通用户看中了某个德国交易员过去两年 40% 的收益率，点一个按钮，投入 2,000 美元"跟单"——<strong>从此这个德国人每买一次股票，这个葡萄牙人的账户自动按比例买同样的股票。</strong>被跟的交易员按跟单资金规模从 eToro 拿分成（最高每年 1.5%），eToro 从每笔交易的点差里赚钱。</p>
+<p><strong>这个功能是 eToro 真正的护城河，而且它不是技术护城河，是社交网络护城河。</strong>一个积累了 5,000 名跟单者的交易员，不会离开 eToro 去别的平台重新开始——他的粉丝、他的公开业绩记录、他的分成收入全在这里。<strong>平台上有成千上万这样的人，他们把用户锁在了平台上。</strong>Robinhood 有更好的美股执行，盈透有更低的费率，但它们复制不了这个东西。</p>
+<h3>它靠什么收钱——五条收入线</h3>
+<p>财报把收入拆成六项，我按性质归成三类来讲：</p>
+<h4>第一类：交易价差（真正的主业）</h4>
+<p><strong>（1）股票、商品、外汇的净交易收入：TTM 4.957 亿美元，同比 +24.1%</strong></p>
+<p>eToro 宣传"零佣金买股票"，这是真的——但它靠<strong>点差</strong>赚钱。你在 eToro 上买苹果股票，它给你的报价比市场中间价高一点点；卖出时低一点点。一笔 5,000 美元的交易，价差可能是 3 到 8 美元。听起来很少，但乘以每天几百万笔就不少了。外汇和大宗商品的点差更宽，杠杆产品还要收隔夜融资费。</p>
+<p><strong>这一项 TTM 增长 24.1%，是全公司增长最快、也是质量最高的一块。</strong>它说明用户在从加密转向股票——这对 eToro 是好事，因为股票业务比加密业务稳定得多。</p>
+<p><strong>（2）加密货币的价差：包含在那 110.6 亿的毛额里，TTM 同比 −14.8%</strong></p>
+<p>上面解释过的过账生意。<strong>营收从 129.75 亿掉到 110.59 亿，跌了 14.8%——这是全公司营收下滑 9.55% 的唯一原因。</strong></p>
+<p><strong>（3）加密衍生品净交易收入：TTM 1.085 亿美元，同比 −12.5%</strong></p>
+<p>给欧洲和其他允许的地区的用户提供加密货币的杠杆合约。这块波动极大：FY2024 是<strong>亏损</strong> 1.31 亿，FY2022 是盈利 2.19 亿。<strong>它本质上是 eToro 拿自己的钱跟用户对赌的残余头寸</strong>，赚是赚，但不该按持续利润看待。</p>
+<h4>第二类：吃利息（这一类是本篇最关键的发现）</h4>
+<p><strong>（4）用户存款的净利息收入：TTM 2.127 亿美元，同比 −0.3%</strong></p>
+<p>用户账户里有大量没投出去的闲置现金。eToro 把这些钱存进银行或买短期国债，赚 4%–5% 的利息，只给用户很少甚至零利息。<strong>这笔钱是纯利润，零成本、零风险、零人力。</strong></p>
+<p><strong>（5）其他利息收入：TTM 3,607 万美元，同比 +20.0%</strong></p>
+<p>这是 eToro <strong>自己账上</strong>那 9.46 亿现金赚的利息。</p>
+<p><strong>（6）货币转换及其他：TTM 1.086 亿美元，同比 +13.1%</strong></p>
+<p>一个英国用户用英镑买美股，eToro 帮他换汇，收 0.5% 的转换费。这是一门相当好的生意——用户几乎察觉不到，成本接近于零。</p>
+<h3>三类收入的钱</h3>
+<p>（TTM = 截至 2026-06-30；"上年"栏用刚结束的完整财年 FY2025，错开半年，只看方向）</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入项</th>
+<th>TTM（百万美元）</th>
+<th>同比方向</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股票/商品/外汇净交易收入</td>
+<td>495.71</td>
+<td><strong>+24.1%</strong></td>
+<td>主业，最健康</td>
+</tr>
+<tr>
+<td>加密货币收入（<strong>毛额</strong>）</td>
+<td>11,059</td>
+<td><strong>−14.8%</strong></td>
+<td>过账金额，非真实收入</td>
+</tr>
+<tr>
+<td>加密衍生品净交易收入</td>
+<td>108.49</td>
+<td>−12.5%</td>
+<td>波动极大，曾经巨亏</td>
+</tr>
+<tr>
+<td>用户存款净利息收入</td>
+<td>212.70</td>
+<td>−0.3%</td>
+<td><strong>纯利率红利</strong></td>
+</tr>
+<tr>
+<td>货币转换及其他</td>
+<td>108.60</td>
+<td>+13.1%</td>
+<td>高毛利，低感知</td>
+</tr>
+<tr>
+<td>其他利息收入（自有现金）</td>
+<td>36.07</td>
+<td>+20.0%</td>
+<td><strong>纯利率红利</strong></td>
+</tr>
+<tr>
+<td><strong>GAAP 毛利润（真实口径参考）</strong></td>
+<td><strong>445.52</strong></td>
+<td>—</td>
+<td>扣掉加密进货成本后</td>
+</tr>
+<tr>
+<td><strong>净利润</strong></td>
+<td><strong>261.44</strong></td>
+<td>+21.2%</td>
+<td>净利率（按毛利算）58.7%</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>除了最上面那个"毛额记账"的巨型障眼法之外，<strong>这家公司的账干净得出人意料</strong>。逐项过：</p>
+<p><strong>股权激励（SBC）</strong>：TTM <strong>1,872 万美元</strong>，占净利润 <strong>7.2%</strong>。</p>
+<p><strong>这个数字值得单独说，因为它跟历史反差极大</strong>：FY2022 是 1.27 亿、FY2023 是 6,614 万、FY2024 是 2,715 万、FY2025 是 1,615 万。<strong>四年之内从 1.27 亿降到不到 2,000 万，降了 85%。</strong></p>
+<p>原因是上市前那几年 eToro 曾试图通过 SPAC 上市（后来失败了），期间发了大量期权，那些成本在前几年集中摊销完了。<strong>现在的 SBC 水平（占净利 7.2%）在科技行业里属于极低——软件公司普遍在 30% 到 100% 之间。</strong>这是实打实的加分项。</p>
+<p><strong>一次性项目</strong>：TTM 没有诉讼和解、没有重组费用、没有资产减值、没有并购费用（只有一笔 1,555 万的小额收购）、没有税务一次性调整。<strong>一家刚上市一年的公司，利润表能这么干净是少见的。</strong></p>
+<p><strong>资本化的支出</strong>：资本开支 TTM 只有 <strong>718 万美元</strong>。这是一家一年赚 2.6 亿的公司，资本开支不到 1,000 万——<strong>它几乎不需要投入资本就能赚钱</strong>，这是纯软件平台生意的典型特征，也是 ROIC 能到 12.81% 的原因。</p>
+<p><strong>回购与稀释——这一项要分两半看，非常容易误读</strong>：</p>
+<p>统计页上写着 <strong>"股本一年增加 97.10%"</strong>，看起来像是灾难性的稀释。<strong>但这是 IPO 造成的，不是持续稀释。</strong>eToro 在 2025 年 5 月上市，那一年发行了 3.84 亿美元的新股——上市前后的股本自然翻倍。<strong>这是一次性事件，不会重演。</strong></p>
+<p>真正该看的是最近一个季度：<strong>股本环比减少 2.62%</strong>。以及 TTM 的回购：</p>
+<p><strong>TTM 回购 2.487 亿美元，同期 SBC 只有 1,872 万美元——比值 13.3 倍。</strong></p>
+<p>标准是这样的：这个比值接近 1，说明回购只是在抵消发给员工的股票；大于 3 才算真回购。<strong>eToro 是 13.3 倍——每回购 100 块，只有 7.5 块用于填 SBC 的坑，92.5 块是实打实地注销股票。</strong></p>
+<p>而且规模惊人：<strong>2.487 亿的回购，相当于市值的 10.1%。</strong>一家上市才一年多的公司，一年就买回了自己十分之一的股份。<strong>这个动作本身就是管理层在说"我们认为股价太便宜了"。</strong></p>
+<p><strong>利润和现金流的差</strong>：净利润 2.614 亿，经营现金流 3.108 亿，自由现金流 3.036 亿。<strong>现金流比利润还高</strong>，逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>261.44</td>
+<td>起点</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+13.31</td>
+<td>极少，几乎没有重资产</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+18.72</td>
+<td>发股票不花现金</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>−4.71</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他净经营资产变动</td>
+<td>−98.05</td>
+<td>券商的客户资金和保证金流动</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+119.85</td>
+<td>同上，方向相反</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>310.75</strong></td>
+<td>完全对上</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−7.18</td>
+<td><strong>只有 718 万</strong></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>303.57</strong></td>
+<td><strong>是净利润的 116%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>自由现金流达到净利润的 116%，这是全篇最硬的一个数字。</strong>它说明报出来的利润是真现金，不是应收账款、不是资本化的费用、不是会计估计。一家券商能做到这一点是正常的（它不赊账），但仍然值得肯定。</p>
+<p><strong>唯一的盲区必须说清楚</strong>：资产负债表显示"现金 9.46 亿、债务 3,501 万、净现金 9.11 亿"。<strong>但券商的资产负债表上，公司自有资金和客户托管资金的界限，在这个数据源里看不清楚。</strong>监管要求客户资金隔离存放，理论上不该混进公司资产，但我无法从财报页确认这 9.46 亿里有多少是真正属于股东的。<strong>下面第三部分里所有用到"净现金"的计算，都建立在这 9.11 亿是公司自有资金这个假设上。如果实际自有现金显著更少，EV 口径的估值会难看不少。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>24.68 亿 ÷ 2.614 亿</td>
+<td><strong>9.44 倍</strong></td>
+<td><strong>10.59 元</strong></td>
+</tr>
+<tr>
+<td>网站显示的 PE</td>
+<td>每股口径（EPS 2.78，含 IPO 前较少股数的加权）</td>
+<td>11.18 倍</td>
+<td>8.94 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不单列调整后利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>无一次性项目可剔，SBC 已按 GAAP 扣除</td>
+<td><strong>9.44 倍</strong></td>
+<td><strong>10.59 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>24.68 亿 ÷ 3.036 亿</td>
+<td><strong>8.13 倍</strong></td>
+<td><strong>12.30 元</strong></td>
+</tr>
+<tr>
+<td><strong>企业价值口径 EV/净利</strong></td>
+<td>（24.68 亿 − 净现金 9.11 亿）÷ 2.614 亿</td>
+<td><strong>5.95 倍</strong></td>
+<td><strong>16.80 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/自由现金流</td>
+<td>15.60 亿 ÷ 3.036 亿</td>
+<td><strong>5.14 倍</strong></td>
+<td><strong>19.46 元</strong></td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>24.68 亿 ÷ 三年平均净利 2.232 亿</td>
+<td><strong>11.06 倍</strong></td>
+<td><strong>9.04 元</strong></td>
+</tr>
+<tr>
+<td><strong>五年平均利润口径（补充）</strong></td>
+<td>24.68 亿 ÷ 五年平均净利 0.940 亿</td>
+<td><strong>26.3 倍</strong></td>
+<td><strong>3.80 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表要分成"好消息"和"坏消息"两半读，两半都是真的。</strong></p>
+<p><strong>好消息在 EV 那两行。</strong>eToro 账上有 9.11 亿净现金，占市值的 <strong>36.9%</strong>。也就是说，你花 24.68 亿买下这家公司，当场就能拿回 9.11 亿现金，<strong>实际为这门生意付的钱只有 15.60 亿</strong>。用这个数除以利润，是 <strong>5.95 倍</strong>；除以自由现金流，是 <strong>5.14 倍</strong>。</p>
+<p><strong>这是一家零负债、几乎不需要资本开支、ROE 19.5%、ROIC 12.8%、一年产生 3 亿真现金的平台公司，剔掉现金后只卖 5.9 倍利润。</strong>单看这一段，它便宜得离谱。</p>
+<p><strong>坏消息在最后两行，而且这个坏消息足够大。</strong></p>
+<p>三年平均利润口径是 11.06 倍，跟当期的 9.44 倍差不多——看起来利润很稳定。<strong>但三年这个窗口在这家公司身上太短了，短到具有欺骗性。</strong>把窗口拉到五年：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>财年</th>
+<th>净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2021</td>
+<td><strong>亏损 2.657 亿</strong></td>
+</tr>
+<tr>
+<td>FY2022</td>
+<td><strong>亏损 2.150 亿</strong></td>
+</tr>
+<tr>
+<td>FY2023</td>
+<td>盈利 0.153 亿</td>
+</tr>
+<tr>
+<td>FY2024</td>
+<td>盈利 1.924 亿</td>
+</tr>
+<tr>
+<td>FY2025</td>
+<td>盈利 2.157 亿</td>
+</tr>
+<tr>
+<td>TTM</td>
+<td>盈利 2.614 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这不是一条"稳定增长"的曲线，这是一条加密货币的价格曲线。</strong>2021–2022 是加密熊市，eToro 两年亏掉 4.8 亿；2023 年之后加密回暖，它一路赚到 2.6 亿。<strong>五年平均利润只有 9,400 万，对应 26.3 倍市盈率。</strong></p>
+<p><strong>所以真正的问题不是"eToro 便宜不便宜"，而是"现在是周期的哪个位置"。</strong>而 TTM 的数据已经在闪红灯：<strong>加密收入同比 −14.8%，加密衍生品 −12.5%，全公司营收 −9.55%。</strong>加密热度正在退潮，而这一次退潮的利润影响还没完全体现在 TTM 里。</p>
+<p><strong>还有第二个隐忧，可能比加密周期更重要：这家公司的利润里有多少是利率给的？</strong></p>
+<p>把 TTM 所有跟利率直接挂钩的收入加起来：</p>
+<ul>
+<li>用户存款净利息收入：<strong>2.127 亿</strong></li>
+<li>其他利息收入（自有现金）：<strong>0.361 亿</strong></li>
+<li>经营利润（2.132 亿）到税前利润（3.099 亿）之间那 <strong>0.967 亿的营业外净收入</strong>——这基本上就是投资收益和利息</li>
+</ul>
+<p><strong>这三项合计约 3.45 亿，而全公司的税前利润只有 3.099 亿。</strong></p>
+<p>这个对比需要小心解读（利息收入也有对应成本，不能简单相减），但方向是明确的：<strong>eToro 目前的盈利能力，有非常大一块来自"高利率环境下，替用户保管闲置现金能白赚 4%"这件事。</strong>一旦美联储降息 200 个基点，这块收入会直接腰斩，而它几乎是零成本的纯利润——<strong>减少多少，税前利润就减少多少。</strong></p>
+<p><strong>所以：你现在投 100 块进去，按 GAAP 口径算，公司一年替你赚 10.59 元；如果按剔掉账上现金后的企业价值口径算，是 16.80 元。</strong></p>
+<p>这笔钱的去向非常清楚，而且是全篇最让人舒服的部分：</p>
+<ul>
+<li><strong>约 10.1 元通过股票回购直接回到你口袋</strong>（TTM 回购 2.487 亿 ÷ 24.68 亿市值）；</li>
+<li><strong>不分红</strong>（成长期公司，合理）；</li>
+<li><strong>只有约 0.3 元投进了资本开支</strong>（718 万）；</li>
+<li>剩下的留在账上，继续累积那 9 亿多的现金堆。</li>
+</ul>
+<p><strong>这个 10.59 元未来会变大还是变小？我的判断是短期变小，长期取决于两件 eToro 自己控制不了的事。</strong></p>
+<p><strong>往下的力量（近期占上风）</strong>：加密交易量在退潮（营收已经连续下滑）、降息会直接吃掉利息收入这块纯利润、加密衍生品这块随时可能从盈利 1.08 亿翻转成亏损（FY2024 就亏了 1.31 亿）。</p>
+<p><strong>往上的力量</strong>：股票/外汇业务同比 +24.1%，正在替代加密成为主引擎——<strong>这是这家公司最重要的一条趋势线</strong>；货币转换 +13.1%；4,000 万用户的基数还在增长；13.3 倍 SBC 的激进回购每年自动增厚每股收益；跟单交易的社交网络效应是真实的，且随时间加强。</p>
+<p><strong>最需要盯的一个数</strong>：下几个季度里，"股票/商品/外汇净交易收入"能不能继续保持 20% 以上的增速。<strong>如果能，eToro 就是在完成从"加密赌场"到"综合券商"的转型，5.95 倍的 EV 估值是白送；如果这条线也跟着加密一起掉头向下，那五年平均口径的 26.3 倍才是它真实的样子。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>剔掉账上那 9.11 亿现金之后，这家公司只卖 5.95 倍利润、5.14 倍自由现金流，还在用市值 10% 的规模回购股票——这个价格是便宜的，但它便宜得有理由：你买的是一台跟加密货币周期和美联储利率同时绑定的赚钱机器。</strong></p>
+<p>先说清楚它好在哪，因为这些是实的：零负债、账上净现金占市值 37%、自由现金流是净利润的 116%、SBC 只占净利 7.2%、资本开支不到 1,000 万、ROE 19.5%、一年回购市值的 10.1%、1,520 人创造 2.6 亿利润。<strong>跟单交易的社交网络是真护城河，股票业务 +24% 的增速证明它正在摆脱对加密的依赖。</strong></p>
+<p>再说清楚风险，因为它同样是实的：<strong>这家公司五年里有两年巨亏，五年平均利润只有 9,400 万——对应 26 倍市盈率。</strong>当前 TTM 营收已经在下滑（−9.55%），加密收入 −14.8%。同时它相当一部分利润来自"高利率下白赚客户闲置资金的利息"，降息周期会直接拿走这一块。</p>
+<p><strong>这不是一家质量有硬伤的公司——它的账干净、现金充沛、管理层在积极还钱给股东。它是一门周期性极强的好生意，现在处在周期的中后段，价格给了折扣。</strong>如果你相信加密和交易活跃度不会回到 2022 年那种冰点，这个价格是划算的；如果你不确定，那就记住五年平均那一行写的是 26 倍。</p>
+<p><strong>便宜是真便宜，但便宜的是一张周期票，不是一张永续票。</strong></p>
+</div></body></html>

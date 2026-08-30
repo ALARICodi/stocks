@@ -1,0 +1,323 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WAFD · 华盛顿联邦银行控股（WaFd, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WAFD</a></div>
+<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">0.98倍市净率看着像捡钱，8.5%的ROE就是它只值这个价的原因</div><h1>WAFD · 华盛顿联邦银行控股（WaFd, Inc.）</h1>
+<p><strong>市值</strong> 26.70 亿美元 ｜ <strong>股价</strong> $36.09（2026-08-28 收盘）｜ <strong>行业</strong> 区域性银行（Banks - Regional）｜ <strong>TTM 截止</strong> 2026-06-30（财年结束于每年 9 月 30 日）</p>
+<blockquote>
+<p><strong>这是一家银行，下面第三部分用市净率（PB）、净资产收益率（ROE）这套口径，而不是市盈率。</strong> 原因很简单：银行的"利润"是用别人的钱（存款）撬出来的，同样赚 1 块钱，一家用 10 倍杠杆、一家用 20 倍杠杆，风险完全不是一回事，市盈率看不出这个差别。市净率 + ROE 能把"你花多少钱买到多少净资产"和"这堆净资产一年能生多少"分开看，才是买银行该用的尺子。市盈率会在表里保留一行做参照。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>WaFd 是 1917 年在西雅图成立的储贷机构（thrift），前身叫 Washington Federal，2023 年 9 月改名 WaFd。它只有一个法定分部——银行业务，财报不按业务线拆营收。<strong>所以下面不是抄财报的分部表，而是按它的贷款账簿结构（2026-06-30，总放款 216.33 亿美元）拆出来的四门生意，利润归属是我按各类贷款的定价差异估算的，财报没给这个数，我明确标注为估算。</strong></p>
+<p>先说这门生意的底层逻辑，因为后面所有数字都建在这上面。WaFd 的钱是这么赚的：它从 200 多家分行（主要在华盛顿、俄勒冈、爱达荷、犹他、内华达、亚利桑那、新墨西哥、加州、得州这九个西部州）收进 209.32 亿美元存款，平均付给储户大约 2.5%–3% 的利息；然后把这笔钱放出去做贷款，平均收 5.5%–6% 的利息。两头一减，就是净息差。TTM 的总收入（净利息收入 + 手续费）是 7.61 亿美元，除以 275 亿左右的平均总资产，<strong>约合 2.8%</strong>——这是我用总收入/总资产算出来的近似值，不是财报口径的净息差，但足够看出问题：<strong>2.8% 在美国区域银行里属于偏低的一档</strong>，好的社区银行能做到 3.5% 以上。</p>
+<p>低在哪？低在它的存款结构。它 209.32 亿存款里，<strong>不付利息的活期存款只有 26.47 亿，占 12.6%</strong>；剩下 182.85 亿全是付息存款（定期存单、货币市场账户、储蓄账户）。对照一下：一家优秀的商业银行，不付息存款能占三成以上。不付息存款是银行最值钱的东西——那是免费的原材料。WaFd 的原材料 87% 要花钱买，这一条基本决定了它 ROE 只有 8.5% 的命运，后面第三部分会算给你看。</p>
+<h3>生意一：单户住宅按揭 —— 老本行，最大的一块</h3>
+<p><strong>这件事具体是什么：</strong> 你在西雅图买一套 80 万美元的房子，首付 20 万，找 WaFd 借 60 万，30 年期，利率 6.5%。跟大多数银行不一样的是——<strong>WaFd 不把这笔贷款卖给房利美，它自己留在账上吃 30 年利息</strong>。全美大部分银行做按揭是"过一手就卖"（origin-and-sell），赚一笔千分之几的手续费就走；WaFd 是老派储贷社的做法，贷款放出去就是自己的资产，一年收你 3.9 万利息，付给储户 1.5 万，净赚 2.4 万，年年如此。</p>
+<p>好处是收入稳定、复购不需要重新获客；坏处是<strong>利率风险全在自己身上</strong>——2021 年放出去的 3% 房贷，现在还躺在账上，而它今天为存款要付 2.5%+，这批老贷款几乎不赚钱。这就是为什么它的净息差被压得这么低。</p>
+<p>这块大约占放款的 30%–35%（约 65–75 亿），是它最古老、坏账率最低的一块。</p>
+<h3>生意二：多户住宅公寓贷款 —— 2024 年买来的，也是最大的风险敞口</h3>
+<p><strong>这件事具体是什么：</strong> 一个开发商在加州圣何塞持有一栋 120 户的公寓楼，估值 4500 万美元，他找 WaFd 借 2700 万（六成杠杆），期限 7 年，利率 6.2%，用租金流还本息。银行看的不是开发商这个人，是这栋楼每年能收多少租金——120 户 × 每户每月 2800 美元 × 12 个月 × 出租率 95% ≈ 383 万年租金，扣掉物业、税、维修约 150 万，剩 233 万，足够覆盖每年约 200 万的还款，那就放。</p>
+<p>这块生意 WaFd 原本就有，<strong>2024 年 2 月吞下 Luther Burbank Savings 之后规模翻了一倍多</strong>——Luther Burbank 是加州一家专做多户公寓贷款的储贷社，总资产约 80 亿。收购的痕迹在报表上一眼可见：总资产从 FY2023 的 224.75 亿跳到 FY2024 的 280.60 亿，商誉从 3.05 亿涨到 4.11 亿。</p>
+<p><strong>这是全公司最需要盯的地方。</strong> 多户公寓贷款在 2021 年的低利率环境下按 3.5% 的资金成本做的模型，现在到期要按 6%+ 再融资，很多楼的租金涨幅跟不上利息涨幅。加州还有租金管制的问题。目前财报上还没出事（后面会说拨备数字），但这是一颗慢引信。</p>
+<p>估计占放款的 25%–30%。</p>
+<h3>生意三：商业地产与建筑贷款 —— 利率最高、也最容易出事的一块</h3>
+<p><strong>这件事具体是什么：</strong> 两类。一类是商业地产（CRE）：一个业主要买下博伊西一个 8 万平方英尺的社区购物中心，售价 1800 万，借 1200 万，租户是超市、药房、几家餐馆，靠租金还款。另一类是建筑贷款（construction）——这个更有意思：开发商要在凤凰城盖 60 套联排别墅，总造价 2400 万，WaFd 承诺一条 1600 万的额度，<strong>但不是一次给钱</strong>，是随工程进度分批放：地基完工放 300 万、上梁放 400 万、封顶放 400 万……每一笔放款前银行都派人去现场验工。利率通常挂钩 SOFR 加点，浮动，能到 8%–9%，是全公司利率最高的一块。而且只放 18–24 个月，房子卖掉就还钱。</p>
+<p>WaFd 在西部小城市的建筑贷款上是有真本事的——这是它一百年来最核心的差异化能力，本地关系、懂当地的地价和工期。但建筑贷款也是所有贷款品种里第一个在衰退中爆掉的，2008 年就是它。</p>
+<p>估计占放款的 20%–25%。</p>
+<h3>生意四：商业与工业贷款 + 消费贷 + 保险经纪 —— 零头</h3>
+<p>C&amp;I 贷款是借给中小企业买设备、周转的钱：一家波特兰的食品加工厂要买两条包装线，230 万，借 180 万五年期。还有房屋净值贷款（HELOC）、消费贷、汽车贷。另外它还有一块小小的保险经纪业务，替客户卖财产险和商业险赚佣金——这块<strong>几乎不占资本、纯赚手续费</strong>，是报表上最健康的一块，可惜太小。</p>
+<p>估计合计占放款 15% 左右。</p>
+<h3>钱的分布（TTM，截止 2026-06-30）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（估算）</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单户住宅按揭</td>
+<td>~2.3 亿</td>
+<td>~30%</td>
+<td>利率最低、坏账最少、自己持有到期</td>
+</tr>
+<tr>
+<td>多户公寓贷款</td>
+<td>~2.2 亿</td>
+<td>~29%</td>
+<td>Luther Burbank 带来的，最大的隐藏风险</td>
+</tr>
+<tr>
+<td>商业地产与建筑贷款</td>
+<td>~2.1 亿</td>
+<td>~28%</td>
+<td>利率最高（8%–9%），周期性最强</td>
+</tr>
+<tr>
+<td>C&amp;I + 消费贷 + 保险</td>
+<td>~1.0 亿</td>
+<td>~13%</td>
+<td>保险佣金是唯一不占资本的收入</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>7.61 亿</strong></td>
+<td><strong>100%</strong></td>
+<td>同比 +5.54%</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>上表的分拆是估算。</strong> 财报只披露到"总营收 7.61 亿"这一个数字，没有按贷款品种披露收入和利润。我按各类贷款的市场定价差异和 WaFd 的账簿结构反推，误差可能不小，别拿它当精确数字用。<strong>总数 7.61 亿、同比 +5.54% 是财报原文。</strong></p>
+</blockquote>
+<p><strong>费用端一句话：</strong> 总营收 7.61 亿，经营利润 3.49 亿，意味着一年的运营开支约 4.13 亿，<strong>成本收入比约 54%</strong>。银行业里 55% 以下算合格，60% 以上算臃肿。WaFd 在及格线上，不算优秀——1,979 名员工养 275 亿资产的摊子，人均管 1,394 万资产，效率一般。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>银行的报表跟制造业不一样，最容易注水的地方不是"一次性项目"，而是<strong>坏账拨备</strong>——银行可以通过少提拨备来把利润做高。所以这一节的重点跟别的公司不同。</p>
+<p><strong>股权激励（SBC）</strong>：现金流量表里没有单列这一项，说明金额小到没被单独披露。WaFd 只有 1,979 名员工，且是传统储贷机构而非科技公司，股权激励占净利润的比例大概率在 2% 以内。<strong>不构成实质影响。</strong></p>
+<p><strong>坏账拨备 —— 这才是要盯的地方</strong>：TTM 计提信用损失准备 <strong>2,150 万美元</strong>，上一财年（FY2025）只提了 775 万。<strong>一年之内提了三倍。</strong> 这不是坏事，是诚实——说明它自己也看到多户公寓和商业地产的账簿在变紧。但另一个角度看：2,150 万对着 216.33 亿的放款，只有 <strong>0.10%</strong>，绝对水平仍然很低。账上的贷款损失准备金总额是 <strong>2.148 亿，覆盖率 0.99%</strong>（准备金/总放款）。这个覆盖率对一家以住宅按揭和抵押贷款为主的银行来说是正常偏低的，因为抵押物实打实；但如果加州多户公寓真的开始违约，1% 的覆盖率经不起几笔大额损失。<strong>结论：目前没有粉饰迹象，但缓冲很薄。</strong></p>
+<p><strong>一次性项目</strong>：TTM 有一笔 735 万美元的资产出售收益、95 万的资产减值，都是零头。<strong>Luther Burbank 的并购整合费用主要发生在 FY2024</strong>（那一年净利润跌到 1.854 亿，比前后年份都低），TTM 期内已经基本消化完。<strong>只看 TTM 单期看不出这些是不是年年都会发生</strong>，但对一家不做并购的年份来说，这类金额应该会归零。</p>
+<p><strong>回购与稀释 —— 这是全篇最亮的一个数字</strong>：TTM 回购普通股 <strong>1.7438 亿美元</strong>，同期发行股票只有 537 万。股本从一年前减少了 <strong>5.75%</strong>，最近一个季度又减了 2.02%。</p>
+<p>回购/股权激励的比值：因为 SBC 小到没被单列，这个比值实际上远大于 3，<strong>这是货真价实的回购，不是给员工发股票的遮羞布</strong>。而且它是<strong>在 0.98 倍市净率、也就是低于账面价值的价格上回购</strong>——每回购 1 美元，剩下股东的每股账面价值就增厚一点。这是回购最该发生的场景。</p>
+<p>但要看到另一面：TTM 回购 1.7438 亿 + 普通股股息 8,104 万 + 优先股股息 1,462 万 = <strong>总共派出 3.30 亿现金</strong>，而同期归属普通股股东的净利润只有 <strong>2.272 亿</strong>（净利润 2.4185 亿减去优先股股息 1,462 万）。<strong>派息率 112%——它在动用存量资本回购。</strong> 这解释了为什么它的存款一年掉了 4.545 亿、总资产从 FY2024 的 280.60 亿缩到 275.97 亿：<strong>它在主动缩表，把释放出来的资本还给股东。</strong> 这个策略在 ROE 只有 8.5%、股价低于账面值的时候是理性的（与其把钱留在公司里赚 8.5%，不如折价买回自己的股票），但<strong>不可能永远持续</strong>——回购的燃料是资本缓冲，烧完就得停。</p>
+<p><strong>利润和现金流的差</strong>：净利润 2.4185 亿 vs 经营现金流 2.6751 亿 vs 自由现金流 2.2697 亿。差额很小，逐项看：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>241.85</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>11.82</td>
+</tr>
+<tr>
+<td>+ 信用损失拨备（非现金）</td>
+<td>21.50</td>
+</tr>
+<tr>
+<td>− 资产出售收益</td>
+<td>−7.35</td>
+</tr>
+<tr>
+<td>+ 资产减值</td>
+<td>0.95</td>
+</tr>
+<tr>
+<td>+ 应计利息应收变动</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>+ 所得税变动</td>
+<td>7.62</td>
+</tr>
+<tr>
+<td>− 其他经营性资产变动</td>
+<td>−33.39</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>267.51</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−40.54</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>226.97</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表很干净。</strong> 利润和现金流之间没有黑洞，最大的调节项是 2,150 万的拨备（非现金）和 3,339 万的营运资金变动，都在正常范围。<strong>WaFd 的利润是真钱。</strong> 这一点对一家银行来说很重要，也是它质量档能给到"一般"而不是"有硬伤"的主要原因。</p>
+<hr />
+<h2>第三部分：估值 —— 银行口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数 / 比率</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>市净率 PB</strong></td>
+<td>市值 ÷ 普通股账面净资产（27.2 亿）</td>
+<td><strong>0.98 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>有形账面市净率 P/TBV</strong></td>
+<td>市值 ÷（净资产 − 商誉 4.18 亿 − 无形 0.25 亿）= 22.8 亿</td>
+<td><strong>1.17 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE</strong></td>
+<td>净利润 ÷ 平均净资产</td>
+<td><strong>8.50%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ROE ÷ PB（核心口径）</strong></td>
+<td>8.50% ÷ 0.98</td>
+<td>—</td>
+<td><strong>8.67 元</strong></td>
+</tr>
+<tr>
+<td><strong>ROTCE ÷ P/TBV</strong></td>
+<td>归普通股利润 2.272 亿 ÷ 有形净资产 22.8 亿 = 9.97%，÷1.17</td>
+<td>—</td>
+<td><strong>8.52 元</strong></td>
+</tr>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>26.70 亿 ÷ 归普通股 2.272 亿</td>
+<td>11.75 倍</td>
+<td>8.51 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>26.70 亿 ÷ 2.2697 亿</td>
+<td>11.77 倍</td>
+<td>8.50 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>26.70 亿 ÷ 三年平均归普通股利润 1.983 亿</td>
+<td><strong>13.47 倍</strong></td>
+<td><strong>7.42 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（三年平均 = TTM 2.4185 亿、FY2025 2.1144 亿、FY2024 1.8542 亿三者平均 2.129 亿，各年减去 1,462 万优先股股息 → 1.983 亿）</p>
+<p><strong>注：银行没有 EV/EBIT 这个口径。</strong> 对银行来说"净负债"这个概念不成立——存款和借款是它的原材料，不是负担。企业价值 5.34 亿美元这个数字在 stockanalysis 上有列，但对银行没有分析意义，忽略它。</p>
+<p><strong>其余口径：</strong> 拨备覆盖率 0.99%（准备金 2.148 亿 / 放款 216.33 亿）；总收入/总资产约 2.8%（净息差的近似值，估算）；ROA 0.94%（银行业 1.0% 是及格线，它差一点）；不付息存款占比 12.6%（弱）；股息率 2.99%；有效税率 21.83%。CET1 核心一级资本充足率财报数据源未提供，从 27.2 亿普通股权益对 275.97 亿总资产（杠杆 10.1 倍）看，资本水平在监管线之上且不紧张。</p>
+<h3>说人话</h3>
+<p><strong>你现在投 100 块进 WaFd，按最保守的口径（三年平均利润）算，公司一年替你赚 7.42 元；按当期口径算是 8.5–8.7 元。</strong></p>
+<p>这 8.5 元里，钱是怎么分的：
+- <strong>约 3.0 元以现金股息发给你</strong>（股息率 2.99%，每股 1.08 美元）
+- <strong>约 6.5 元通过回购间接回到你手里</strong>（TTM 回购 1.74 亿 ÷ 市值 26.7 亿）——注意这个数字大于它当年赚的钱，是在动用存量资本
+- <strong>实际留在公司里再投资的是负数</strong>——它在缩表，不是在扩张</p>
+<p>所以严格说，你拿到手的现金回报（9.5 元）暂时<strong>高于</strong>公司真实赚钱能力（8.5 元）。这个差额来自缩表释放的资本，是一次性的红利，不是可持续的。</p>
+<p><strong>这个 8.5 元未来大概率变大还是变小？</strong> 我的判断是<strong>小幅变大，但很慢</strong>。三个原因：
+1. <strong>老低息贷款在自然到期</strong>。2020–2021 年放出的 3% 房贷每到期一笔，就能按 6%+ 重新放出去，净息差会缓慢往上爬。这是时间的朋友。
+2. <strong>回购在低于账面价值的地方进行</strong>，每股账面价值和每股收益会被动增厚。股本一年减 5.75%，这一条单独就贡献了 EPS 增长的大半——TTM EPS 增长 20.98%，但净利润只增长了约 14%，差额全是股本缩小。
+3. <strong>但 ROE 8.5% 这个天花板短期打不破</strong>。存款结构决定了它的资金成本，除非它能大幅增加不付息的商业活期存款，否则 ROE 很难上 10%。而它没有明显的路径去做这件事——它的客户是买房的人和小开发商，不是需要在银行放大额营运资金的企业。</p>
+<p><strong>最大的下行风险是加州多户公寓。</strong> Luther Burbank 那 80 亿资产带来的公寓贷款账簿，是在 2021 年前后的低利率环境里做出来的。这些贷款到期再融资时，如果租金涨幅覆盖不了 6%+ 的新利率，业主会选择违约把楼扔给银行。0.99% 的拨备覆盖率经不起这个场景。TTM 拨备已经提高到上年的三倍，说明管理层自己也在往这个方向看。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>公道，不便宜。</strong> 0.98 倍市净率听起来像捡钱——低于账面价值买一家 109 岁的西雅图银行——但 8.5% 的 ROE 就是它只值这个价的原因：一家 ROE 8.5% 的银行，理论合理市净率就在 0.85 倍上下，0.98 倍不但不是折价，还略高一点点。真正让它值得多看两眼的不是估值，是那个<strong>在低于账面价值的地方一年回购掉 5.75% 股本</strong>的动作——这是把不赚钱的资本还给股东的正确做法，管理层在这件事上是清醒的。</p>
+<p>但清醒不等于有救。这门生意的根本问题是原材料太贵（87% 的存款要付利息），管理层能做的只有缩表、回购、等老贷款到期，做不到把 ROE 提到 12%。而它账上还压着一笔 2024 年买来的加州多户公寓贷款，1% 的拨备覆盖率是这个故事里最薄的一层纸。</p>
+<p><strong>能拿，别指望。</strong> 收着 3% 的股息、看着股本一年缩 5%、等净息差慢慢爬——三五年下来大概能有个 8%–10% 的年化，跟一只债券差不多，但比债券多一份加州公寓的尾部风险。</p>
+</div></body></html>

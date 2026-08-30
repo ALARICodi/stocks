@@ -1,0 +1,312 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DAC · 达纳俄斯航运（Danaos Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DAC</a></div>
+<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">5.1倍0.68倍PB是真便宜，但赚的钱全砸进27艘新船</div><h1>DAC · 达纳俄斯航运（Danaos Corporation）</h1>
+<p>市值 27.4 亿美元 · 股价 150.71 美元（18.20 百万股）· 行业：海运（集装箱船东）· 交易所 NYSE
+TTM 口径截止日：2026 年 6 月 30 日（公司财年为自然年，最近四个季度滚动）
+注册地马绍尔群岛，总部希腊比雷埃夫斯，创始人兼 CEO John Coustas，家族持股 53.79%</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Danaos 只做一件生意的两个版本：<strong>买船，然后把船连人带油一起租给别人开，按天收租</strong>。它不做货运代理、不揽货、不管货物卖给谁。它是房东，不是搬家公司。</p>
+<h3>生意一：把集装箱船租给班轮公司（TTM 营收 9.48 亿美元，占 89.9%）</h3>
+<p>先说清楚集装箱航运的分工。你在网上买的东西从越南漂到洛杉矶，跑这条线的是马士基、地中海航运、达飞、赫伯罗特、以星这些<strong>班轮公司</strong>——它们有航线、有码头合同、有客户。但它们不一定自己买船：全球大约一半的集装箱船运力是从独立船东那里租来的。Danaos 就是这类船东里最大的几家之一。</p>
+<p>具体怎么收钱：Danaos 和班轮公司签一份<strong>定期租船合同（time charter）</strong>，期限通常 2 到 5 年，租金按天算，<strong>不管这一天船装满还是空跑，班轮公司都得付</strong>。Danaos 负责配船员、做保养、买保险、进船厂检修；班轮公司负责烧的油、港口费、货怎么装。</p>
+<p>举个具体的数：截至 2025 年底它有 <strong>75 艘集装箱船，合计 47.7 万 TEU</strong>（TEU = 一个 20 英尺标准集装箱的位置）。TTM 集装箱业务收入 9.48 亿美元，摊到 75 艘船、365 天，<strong>平均每艘船每天进账约 3.46 万美元</strong>。这只是全船队的粗平均——实际上一艘 1.3 万 TEU 的大船在 2021—2022 年那波疯狂行情里能签到每天 8—10 万美元、一签五年，而一艘 2,200 TEU 的支线小船可能只有每天 1.5 万美元。Danaos 的运气在于它在 2021—2022 年运价见顶时把大量船签了长约，这批合同的租金到今天还在按当年的高价往账上走。</p>
+<p>这门生意的本质是<strong>用一次性的钢铁投入，换一串写进合同的现金流</strong>。买一艘船花 1 亿美元，签一份五年每天 4 万美元的合同，五年就是 7,300 万美元的租金收入，扣掉船员、保养、保险（一天大概 7,000—8,000 美元），五年净落袋约 5,800 万美元，船五年后还能卖或者继续租。风险不在这五年里，风险在<strong>第六年</strong>——合同到期时市场是什么价，没人知道。</p>
+<h3>生意二：把好望角型散货船租出去（TTM 营收 1.07 亿美元，占 10.1%）</h3>
+<p>2024 年起 Danaos 花钱买了 <strong>10 艘好望角型（Capesize）散货船，合计 175.5 万载重吨</strong>，另有 2 艘在造。好望角型是散货船里最大的一档，一艘装 18 万吨，主要跑两条线：巴西/西澳的铁矿石运到中国，以及印尼/澳洲的煤炭。之所以叫"好望角型"，是因为它太大过不了巴拿马运河和苏伊士运河，从大西洋到太平洋只能绕好望角。</p>
+<p>收钱方式跟集装箱船一样，也是按天租。TTM 这块收入 1.07 亿美元，10 艘船 365 天，<strong>平均每艘每天约 2.93 万美元</strong>。</p>
+<p>这块业务的意义不在赚钱多少（只占十分之一），而在<strong>分散风险</strong>：集装箱运价和干散货运价的周期不同步——集装箱看的是欧美消费和补库存，散货看的是中国钢铁产量和粮食贸易。同时踩两个周期，两个一起塌的概率比一个塌小。</p>
+<h3>两门生意的账（TTM，截至 2026-06-30，单位：百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>vs 上一完整财年</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集装箱船租赁</td>
+<td>948.0</td>
+<td>−0.8%</td>
+<td>89.9%</td>
+<td>约 49%（估算）</td>
+<td>约 465</td>
+</tr>
+<tr>
+<td>好望角型散货船</td>
+<td>107.1</td>
+<td>+23.0%</td>
+<td>10.1%</td>
+<td>约 42%（估算）</td>
+<td>约 45</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>1,055</strong></td>
+<td><strong>+1.2%</strong></td>
+<td>100%</td>
+<td>48.3%（实际）</td>
+<td>509.7</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只按分部披露营收，不披露分部经营利润。上表分部利润率是按整体 48.3% 的经营利润率和两类船的成本结构估算的——散货船是新买的、折旧基数更高，利润率给低几个点。<strong>这两列是估算，不是财报数字。</strong></p>
+<p>增速那一列是 TTM（截至 2026 年 6 月）比 FY2025（截至 2025 年 12 月），两者重叠半年，不是严格的同比。</p>
+</blockquote>
+<p><strong>看这张表最该注意的是"−0.8%"</strong>：占九成的主业收入已经不涨了。2021—2022 年签的那批天价长约正在陆续到期，新签的价格再高也难超过当年的顶。散货那 +23% 是买船买出来的（船队从无到有），不是租金涨出来的。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li>
+<p><strong>股权激励（SBC）</strong>：TTM 1,813 万美元，占净利润 3.4%。这是家船东公司，不是硅谷，发股票的量很小，而且已经在 GAAP 利润里扣掉了。按规矩它就是真实成本，不加回。<strong>这一项干净。</strong></p>
+</li>
+<li>
+<p><strong>一次性项目</strong>：TTM 里有两笔要拎出来。<strong>出售投资的收益 5,306 万美元</strong>——Danaos 手里长期持有以星航运（ZIM）等公司的股票，卖掉的价差直接进了利润表，这跟出租船一分钱关系没有。另有<strong>资产减值/重组 177 万</strong>和<strong>权益法投资亏损 129 万</strong>，金额小。<strong>单看 TTM 这一期无法判断"卖投资赚钱"是否年年发生</strong>——事实上 FY2021 有一笔 5.40 亿美元的投资出售收益（那年净利润 10.53 亿，比营收 6.90 亿还高），FY2022 反而是 1.80 亿的亏损。所以这项<strong>波动极大、不可预测</strong>，做估值时必须剔掉。</p>
+</li>
+<li>
+<p><strong>资本化的支出</strong>：没有软件或内容资本化。船本身的资本开支走投资活动，账上是干净的固定资产，不存在把费用藏进资产的空间。<strong>没有。</strong></p>
+</li>
+<li>
+<p><strong>回购与稀释</strong>：TTM 回购 2,935 万美元，同期 SBC 1,813 万美元，<strong>比值 1.62</strong>。按规矩，接近 1 说明回购只是在抵消员工发股，大于 3 才算真回馈。1.62 属于<strong>中间偏弱</strong>——回购确实让股本净减少了 3.14%，但力度不大。真正回股东口袋的大头是分红：TTM 派息 6,486 万美元，每股约 3.56 美元，<strong>股息率 2.36%</strong>。分红加回购合计 9,421 万，占市值 3.44%。</p>
+</li>
+<li>
+<p><strong>利润和现金流的差</strong>：净利润 5.408 亿，经营现金流 7.156 亿，差 1.75 亿。逐项对账（百万美元）：</p>
+</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>金额</th>
+<th>累计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>540.80</td>
+<td>540.80</td>
+</tr>
+<tr>
+<td>＋折旧摊销（船在账上按 25—30 年折旧）</td>
+<td>+165.28</td>
+<td>706.08</td>
+</tr>
+<tr>
+<td>＋其他摊销（租约无形资产等）</td>
+<td>+46.31</td>
+<td>752.39</td>
+</tr>
+<tr>
+<td>＋股权激励（非现金）</td>
+<td>+18.13</td>
+<td>770.52</td>
+</tr>
+<tr>
+<td>＋资产减值</td>
+<td>+1.77</td>
+<td>772.29</td>
+</tr>
+<tr>
+<td><strong>−出售投资的收益（真金白银但不是主业）</strong></td>
+<td><strong>−53.06</strong></td>
+<td>719.23</td>
+</tr>
+<tr>
+<td>＋权益法投资亏损</td>
+<td>+1.29</td>
+<td>720.52</td>
+</tr>
+<tr>
+<td>−其他经营调整</td>
+<td>−23.67</td>
+<td>696.85</td>
+</tr>
+<tr>
+<td>＋营运资金净变化（应收 +3.3、存货 −1.0、应付 +1.5、预收租金 −22.3、其他 +37.2）</td>
+<td>+18.76</td>
+<td><strong>715.61 = 经营现金流</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表读下来的结论是：<strong>Danaos 的利润是真现金，没有藏东西</strong>。1.75 亿的差额几乎全部来自折旧摊销（2.12 亿）——船是真的在变旧，这笔折旧不是假的，只是它今天不花钱、将来要花钱重置。</p>
+<p><strong>但真正要命的不在这张表里，在下一行</strong>：TTM 资本开支 <strong>5.19 亿美元</strong>，经营现金流 7.16 亿，<strong>自由现金流只剩 1.97 亿</strong>。原因是那 27 艘在造的集装箱船（合计 17.3 万 TEU）和 2 艘在造散货船正在按进度付款。按现在的双燃料新船造价粗估，<strong>这批订单的总金额大约在 25—30 亿美元（估算）</strong>——接近它整个公司的市值。TTM 已经净新增了 4.59 亿美元借款来填这个洞。</p>
+<p>也就是说：<strong>账面上 20.7 万美元的"净现金"是个瞬间快照，不是安全垫</strong>。这家公司正在把未来三四年赚的每一分钱、外加一大笔新债，全部押在"三四年后交船时集装箱租金还这么高"上。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 27.43 亿美元，企业价值 27.22 亿美元（净现金 2,072 万，所以两者几乎相等）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2,743 ÷ 540.8</td>
+<td><strong>5.10</strong></td>
+<td><strong>19.6 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司不单独发布调整后 EPS</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2,743 ÷（540.8 − 53.06 投资收益 + 1.29 + 1.77） = 2,743 ÷ 490.8</td>
+<td><strong>5.59</strong></td>
+<td><strong>17.9 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2,743 ÷ 196.66</td>
+<td><strong>13.95</strong></td>
+<td><strong>7.2 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,722 ÷ 509.74</td>
+<td><strong>5.34</strong></td>
+<td><strong>18.7 元</strong></td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2,743 ÷（540.8＋494.6＋505.1）/3 = 2,743 ÷ 513.5</td>
+<td><strong>5.34</strong></td>
+<td><strong>18.7 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>补一个航运股必看的口径：<strong>市净率 0.68</strong>。每股账面净值 222.86 美元，股价 150.71 美元——<strong>你花 68 块钱，买到 100 块钱的船</strong>。ROE 14.14%，ROIC 12.81%。</p>
+<p><strong>三年平均那一行是这张表里最值钱的一行，而这次它给的是好消息</strong>：5.34 倍，跟当期的 5.10 倍几乎一样。这说明<strong>现在这个利润不是一个孤峰</strong>——过去三年（5.41 亿 / 4.95 亿 / 5.05 亿）稳得像条直线。原因就是前面说的长约：2021—2022 签的五年合同把 2023—2026 的收入锁死了，运价崩了它也照收。</p>
+<p><strong>说人话：你现在投 100 块进去，按最保守的真实口径（剔掉卖股票的一次性收益），公司一年替你赚 17.9 块。</strong></p>
+<p>这 17.9 块里，<strong>只有 3.4 块真的回到你口袋</strong>（2.36 块分红 + 1.07 块回购），剩下的 <strong>14.5 块全部留在公司里造新船</strong>。这是全篇最关键的一句话：这只股票的 5 倍市盈率，你并不能按 5 倍的速度收回本金；能拿到手的现金回报率是 3.4%，跟一张美国国债差不多。剩下的钱变成了 27 艘还没下水的船。</p>
+<p><strong>这个 17.9 块未来会变大还是变小？</strong> 拆成两股力量：</p>
+<ul>
+<li><strong>往下拉的力</strong>：2021—2022 那批天价长约陆续到期，新船交付集中在 2027—2029 年，而 2028 年前后全球集装箱船新船交付量是历史级的高峰。船多了、租金就低。租金从每天 4 万降到 2.5 万，收入就少四成，而折旧和利息一分不少——利润会被杠杆放大着往下砸。</li>
+<li><strong>往上推的力</strong>：船队从 47.7 万 TEU 增加到 65 万 TEU（+36%），只要新船能签到覆盖成本的租金，营收总量就是涨的；另外红海绕行、老旧船拆解、环保新规（碳强度指标 CII、欧盟碳市场）会持续淘汰老船，这些都在收紧供给。</li>
+</ul>
+<p>我的判断是：<strong>未来两年这个数字守得住（合同锁着），2028 年之后大概率变小</strong>，因为新船交付高峰和老约到期会撞在一起。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真便宜，但便宜的理由也是真的。</strong></p>
+<p>5.1 倍市盈率、0.68 倍市净率、净现金、48% 的经营利润率、三年利润稳如直线——静态看，这是全市场最便宜的一档资产之一。它不是靠会计做出来的：现金流对得上，SBC 很小，唯一的水分（5,300 万投资收益）剔掉后还有 5.6 倍。而且它连税都几乎不用交（马绍尔群岛注册 + 希腊吨位税），17.9% 的税前回报就是税后回报。</p>
+<p>问题在三条：</p>
+<p>第一，<strong>这不是一门可以长期复利的生意，是一次周期押注</strong>。集装箱租金是全球最典型的商品价格，谁也定不了价。它今天的利润来自 2021 年那场百年一遇的供应链堵塞签下的合同，那批合同正在一份份到期。</p>
+<p>第二，<strong>赚的钱你拿不到</strong>。3.4% 的现金回报，其余全部投进 25—30 亿美元的新船订单——在造船价接近历史高位、2028 年交付高峰逼近的时候。这是把周期顶部的现金流，换成周期底部才交付的资产。如果新船交付时租金是每天 2 万而不是 4 万，今天这笔 5 倍市盈率的便宜货会在三年后变成一堆负债。</p>
+<p>第三，<strong>53.79% 的股份在 Coustas 家族手里，公司在册员工只有 4 个人</strong>——船员和管理都外包给家族关联的管理公司。这不必然是坏事（希腊船东行业惯例），但意味着小股东在关联交易费率、分红节奏、要不要下这么大一笔订单这些问题上，一票都投不了。股价 68 折于账面价值，多半就是市场对这套治理结构的报价。</p>
+<p>所以：<strong>值得放进观察名单，不值得当成"5 倍市盈率的白捡便宜"</strong>。买它等于买一份看涨集装箱租金的期权，附赠 2.4% 的股息和一层很厚的资产折价保护。如果你相信 2028 年的运价不会崩，这个价格给了你很大的安全边际；如果你不知道 2028 年运价会怎样——大部分人都不知道——那就该按"周期股在盈利高点显得最便宜"这条老规矩来看待这 5.1 倍。</p>
+<p>真正该盯的信号只有一个：<strong>新船交付时它签的是什么价的合同</strong>。那一天到来之前，所有关于这只股票便宜与否的讨论都只是猜。</p>
+</div></body></html>

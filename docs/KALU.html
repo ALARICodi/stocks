@@ -1,0 +1,377 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KALU · Kaiser Aluminum（凯撒铝业）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KALU</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">11倍靠关税推高的铝价升水撑着，三年平均31倍，公司自己远期PE15.5</div><h1>KALU · Kaiser Aluminum（凯撒铝业）</h1>
+<p><strong>市值</strong> 25.57 亿美元 ｜ <strong>股价</strong> 约 $157.82（1,620 万股）｜ <strong>行业</strong> 有色金属 / 铝材加工 ｜ <strong>TTM 截止</strong> 2026 年 6 月 30 日 ｜ <strong>交易所</strong> NASDAQ</p>
+<blockquote>
+<p><strong>一句话背景</strong>：它不挖矿、不炼铝，它买别人炼好的铝锭，压成板材、挤成型材，卖给波音、可口可乐和福特。<strong>所以铝价涨跌对它的营收影响巨大，对它的真实利润影响却应该很小</strong>——理解这个区别，是看懂这份财报的关键。TTM 营收暴涨 32.8%，但公司自己口径的"转换收入"只涨了 17%。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上它只报一个分部，但按终端客户拆开是四门经济性质完全不同的生意。（下面的收入占比是按公司披露的出货量和转换收入结构估算的，<strong>财报只披露到"美国 vs 海外"两个数字，具体分拆是估算</strong>。）</p>
+<h3>生意一：包装铝卷（最大的一块，约占 4 成）</h3>
+<p><strong>具体是什么</strong>：铝制易拉罐的原材料。你手里那罐可乐，罐身是一整块铝板拉伸出来的，罐盖和拉环是另一种更硬的合金冲出来的。Kaiser 在印第安纳州 Warrick 有一座巨大的轧机——<strong>这是全美仅有的四条铝罐板生产线之一</strong>——把 20 吨重的铝锭反复轧成 0.2 毫米厚、几公里长的铝卷，卷成直径两米的大盘，用卡车运到制罐厂（Ball、Crown 这些公司），制罐厂再冲成罐子卖给可口可乐、百威。</p>
+<p><strong>怎么收钱</strong>：合同是"金属价格 + 转换费"的结构。铝锭多少钱一吨按市场价走，客户全额承担；Kaiser 赚的是<strong>每吨几百到一千多美元的"加工费"</strong>。一卷铝板卖 300 万美元，其中可能 220 万是铝锭成本、80 万是加工费。</p>
+<p><strong>客户为什么非买不可</strong>：制罐板的门槛不在技术在<strong>产能</strong>——全美只有四条线，而一条新线要投 20 亿美元、建 4 年。罐装饮料需求稳定增长（铝罐在抢玻璃瓶和塑料瓶的份额，因为回收率高得多），而供给几乎锁死。Kaiser 2021 年花 6.09 亿美元买下 Warrick 这座厂（现金流量表 FY2021 那笔"Cash Acquisitions −609.2"就是它），2025–2026 年又扩了<strong>涂层铝卷</strong>产能（罐身内壁要喷一层食品级涂料）。TTM 包装出货量 +10%、定价改善，是这轮利润暴涨的主要来源之一。</p>
+<h3>生意二：航空航天与高强度合金（约占 2 成半）</h3>
+<p><strong>具体是什么</strong>：飞机机身蒙皮、机翼梁、起落架结构件用的高强度铝板和铝挤压件。一架波音 737 的机身大约要用 4 吨这样的铝材。</p>
+<p><strong>怎么收钱</strong>：单价远高于包装铝——同样一吨铝，做成罐板加工费可能 800 美元，做成航空板材加工费可能 3,000–5,000 美元。</p>
+<p><strong>客户为什么非买不可</strong>：<strong>这是全公司唯一的真护城河。</strong> 每一种航空铝材都必须通过波音、空客的"材料与工艺规范"认证，认证周期 2–4 年，涉及成千上万次疲劳测试。一旦某个零件的图纸上写了"Kaiser 某某牌号"，改供应商要重走全套认证并报 FAA 批准——飞机制造商几乎不会为了省钱去折腾。TTM 这块在恢复：<strong>客户前两年的去库存结束了</strong>，出货量和价格双升。</p>
+<h3>生意三：通用工程（约占 2 成）</h3>
+<p><strong>具体是什么</strong>：卖给经销商的标准棒材、管材、板材。买家是各种机加工厂——做液压缸的、做半导体设备零件的、做枪械的、做自行车车架的。<strong>这是最没有壁垒的一块</strong>，本质是大宗商品，价格随市场波动。</p>
+<h3>生意四：汽车挤压件（约占 1 成）</h3>
+<p><strong>具体是什么</strong>：车身防撞梁、电池包外壳、车门防撞杆。铝比钢轻一半，电动车为了续航拼命减重，这块曾经被寄予厚望。</p>
+<p><strong>现在的状态</strong>：<strong>TTM 出货量 −11%</strong>。原因是整车厂销量疲软加上高利率压制车贷。这是四门生意里唯一在萎缩的。</p>
+<h3>钱怎么分的（TTM，截至 2026-06-30，单位：百万美元）</h3>
+<p>财报只按地区披露收入：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>地区</th>
+<th>最近完整财年</th>
+<th>上一财年</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国</td>
+<td>3,252</td>
+<td>2,920</td>
+<td>96.4%</td>
+</tr>
+<tr>
+<td>海外</td>
+<td>120.9</td>
+<td>104.0</td>
+<td>3.6%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>TTM 整体</strong>：营收 4,136（+32.83%）、毛利 600.7（14.5%）、经营利润 336.3（<strong>8.1%</strong>）、净利润 227、EPS 13.48。</p>
+<p><strong>但这里必须插一句最重要的话</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>二季度同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净销售额</td>
+<td>大幅增长（TTM 全年 +32.8%）</td>
+</tr>
+<tr>
+<td><strong>转换收入（净销售额 − 金属成本）</strong></td>
+<td><strong>+17%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>差额的那 16 个百分点，不是 Kaiser 赚的钱，是铝价涨了以后原封不动传过去的。</strong> 用净销售额算出来的增长率，有一半是假的。<strong>看这家公司永远要看"转换收入"，不要看"营收"。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<h3>① 铝价和"中西部升水"——本篇最需要盯住的变量</h3>
+<p>美国的铝价 = 伦敦金属交易所（LME）价格 + <strong>中西部升水（Midwest Premium）</strong>。后者是一笔"把铝运到美国中西部仓库并完税"的附加费。</p>
+<p>2025–2026 年，美国对进口铝的 232 条款关税从 10% 一路提到 50%，把中西部升水推到了<strong>历史纪录 2,182 美元/吨</strong>（正常年份约 400–600 美元）。这直接把 Kaiser 的净销售额顶上去了 30%。</p>
+<p>管理层的官方说法是"<strong>金属中性传导</strong>"——铝价涨跌全额转给客户，对我们没影响。<strong>这句话在合同层面是对的，但在会计层面不完全对</strong>：</p>
+<ul>
+<li>升水<strong>上涨</strong>的期间，仓库里那批用旧价买的低价铝，是按新的高价卖出去的，中间产生<strong>库存持有收益</strong>。这是纯粹的账面顺风，不是经营能力。</li>
+<li>升水<strong>下跌</strong>的时候，这个效应会精确地反向发生——<strong>变成库存持有损失</strong>。</li>
+</ul>
+<p><strong>而升水已经开始跌了。</strong> 2026 年 8 月有报道称美国计划削减对加拿大金属的关税，中西部升水随即下滑。加拿大是美国最大的原铝进口来源。</p>
+<p>这条不确定性的严重程度，用一个数字就能说明：<strong>公司自己的远期市盈率是 15.47 倍，而当前市盈率是 11.60 倍——市场（和卖方分析师）预期未来 12 个月的每股收益要比现在低约四分之一。</strong></p>
+<h3>② 股权激励（SBC）与稀释：这一项是红灯</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>股权激励 SBC</td>
+<td>2,040 万</td>
+</tr>
+<tr>
+<td>回购金额</td>
+<td>1,010 万</td>
+</tr>
+<tr>
+<td><strong>回购 ÷ SBC</strong></td>
+<td><strong>0.50 倍</strong></td>
+</tr>
+<tr>
+<td><strong>股本变化（同比）</strong></td>
+<td><strong>+2.74%</strong></td>
+</tr>
+<tr>
+<td>分红</td>
+<td>5,200 万</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>回购只有员工发股的一半，股数一年涨了 2.74%。</strong> SBC 占净利润 9.0%——比例不算离谱，但在利润创纪录、股价一年涨了 98.7% 的年份里还在净稀释股东，说明公司的现金<strong>没有余力</strong>做回购。</p>
+<p>分红 5,200 万（股息率 2.03%）倒是稳定得像钟表——过去五年 46.7 → 50.1 → 50.4 → 50.7 → 51.3 → 52.0，<strong>每年只涨 1%，一分不多给</strong>。这本身是个信号：管理层知道自己的现金流经不起承诺。</p>
+<h3>③ 一次性项目</h3>
+<ul>
+<li><strong>资产出售收益 1,240 万</strong>：往前看 FY2025 710 万、FY2024 290 万、FY2023 1,380 万、FY2022 600 万——<strong>年年都有，不是一次性</strong>。但它确实不是主营业务赚的钱，算真实利润时我扣掉。</li>
+<li><strong>减值与重组 270 万</strong>：金额很小，可忽略（FY2022 曾有 2,370 万）。</li>
+<li><strong>"其他经营活动" 6,740 万</strong>：这一项在现金流量表上逐年放大（FY2024 2,480 万 → FY2025 4,260 万 → TTM 6,740 万），财报页上没有细分。金额相当于净利润的 30%，<strong>是这份财报里唯一一处不透明的地方</strong>。最可能的构成是 LIFO 存货计价调整和递延所得税，但从这四页财报无法确认。</li>
+</ul>
+<h3>④ 资本化的支出：没有</h3>
+<p>铝材加工不存在软件或内容资本化空间。TTM 资本开支 9,890 万，全部是轧机和挤压线的实物投入——比上一财年的 1.369 亿明显收缩了，说明 Warrick 涂层线的大额投资阶段基本结束。</p>
+<h3>⑤ 利润和现金流的差 —— 逐项对账（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>227.0</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>122.9</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>4.7</td>
+</tr>
+<tr>
+<td>− 资产出售收益</td>
+<td>−12.4</td>
+</tr>
+<tr>
+<td>＋ 减值与重组</td>
+<td>2.7</td>
+</tr>
+<tr>
+<td>＋ 股权激励 SBC</td>
+<td>20.4</td>
+</tr>
+<tr>
+<td>＋ 其他经营活动（构成不透明）</td>
+<td>67.4</td>
+</tr>
+<tr>
+<td>＋ 坏账计提</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>− <strong>应收账款增加</strong></td>
+<td><strong>−161.0</strong></td>
+</tr>
+<tr>
+<td>− <strong>存货增加</strong></td>
+<td><strong>−255.2</strong></td>
+</tr>
+<tr>
+<td>＋ 应付账款增加</td>
+<td>198.4</td>
+</tr>
+<tr>
+<td>＋ 其他经营性资产净变化</td>
+<td>−29.5</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>185.9</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−98.9</td>
+</tr>
+<tr>
+<td><strong>＝ 自由现金流</strong></td>
+<td><strong>87.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>净利润 2.27 亿，自由现金流只有 0.87 亿——不到四成。</strong></p>
+<p><strong>差额几乎全部来自营运资金：应收 −1.61 亿、存货 −2.55 亿，应付只回补了 +1.98 亿，净流出 2.18 亿。</strong></p>
+<p>这一项要说清楚：<strong>铝价涨 30%，仓库里同样多的铝、账上同样多的应收，占用的资金就多 30%。</strong> 这不是管理不善，是加工商的宿命——<strong>铝价越涨，它需要垫的钱越多，赚到的会计利润越沉在营运资金里出不来。</strong></p>
+<p>反过来说：如果中西部升水回落，营运资金会释放出一大笔现金（这是唯一的好消息），但同时利润会下降。<strong>两件事必然同时发生。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 25.57 亿，企业价值 35.40 亿（净负债 10.10 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>25.57 亿 ÷ 2.27 亿</td>
+<td><strong>11.3 倍</strong></td>
+<td><strong>8.9 元</strong></td>
+</tr>
+<tr>
+<td>公司口径 Non-GAAP</td>
+<td>Q2 调整后 EPS 5.53 <strong>低于</strong> GAAP 的 5.72</td>
+<td>约 11.6 倍</td>
+<td>约 8.6 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>扣掉资产出售收益（税后约 940 万）后 2.176 亿</td>
+<td><strong>11.7 倍</strong></td>
+<td><strong>8.5 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>25.57 亿 ÷ 0.87 亿</td>
+<td><strong>29.4 倍</strong></td>
+<td><strong>3.4 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>35.40 亿 ÷ 3.363 亿</td>
+<td>10.5 倍</td>
+<td>9.5 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>25.57 亿 ÷ 0.820 亿（FY23 0.679 / FY24 0.657 / FY25 1.125 平均）</td>
+<td><strong>31.2 倍</strong></td>
+<td><strong>3.2 元</strong></td>
+</tr>
+<tr>
+<td>参考：市场自己的预期（远期 PE）</td>
+<td>卖方一致预期</td>
+<td><strong>15.5 倍</strong></td>
+<td>6.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>两处需要专门指出：</strong></p>
+<p><strong>第一，这是少见的"公司调整后利润低于 GAAP 利润"的情况。</strong> 大多数公司的 Non-GAAP 都是往高了调（加回 SBC、加回重组）。Kaiser 的调整后 EPS 比 GAAP 低，说明<strong>它自己也认为 GAAP 利润里含有不该算的顺风</strong>（主要就是金属价格波动带来的账面收益）。<strong>当一家公司主动把自己的利润往低了报，这个信号比任何分析师报告都可信。</strong></p>
+<p><strong>第二，三年平均那一行是全表的重点：31.2 倍。</strong> TTM 的 2.27 亿净利润，是过去三年平均值（0.82 亿）的 <strong>2.77 倍</strong>。而那三年（2023–2025）里，FY2023 和 FY2024 都只有 0.66–0.68 亿，FY2022 甚至是<strong>亏损 0.296 亿</strong>。</p>
+<h3>大白话：你投 100 块进去，一年赚多少</h3>
+<p><strong>按当期真实利润口径，一年替你赚 8.5 元。按自由现金流口径，只有 3.4 元。按三年平均利润口径，3.2 元。</strong></p>
+<p><strong>这三个数字里，8.5 元是最乐观的假设——它要求今天创纪录的铝价升水和创纪录的加工费同时维持下去。而市场自己给出的远期预期是 6.5 元。</strong></p>
+<p>这 8.5 元里回到你口袋的：分红 5,200 万，减去"回购 1,010 万 − SBC 2,040 万"的净稀释约 1,030 万，<strong>净回报股东约 4,170 万 = 市值的 1.6%</strong>。剩下的钱去了哪里？<strong>全部沉在营运资金和资本开支里</strong>——TTM 经营现金流 1.86 亿，付完 0.99 亿资本开支和 0.52 亿分红，还剩 0.35 亿，刚够还掉 0.36 亿的债。</p>
+<p><strong>这个数字未来变大还是变小？</strong></p>
+<ul>
+<li><strong>变小的力量占上风，而且是公司自己承认的</strong>：远期市盈率 15.5 倍高于当前的 11.3 倍，等于市场预期未来一年利润下降约 25%。中西部升水已在 2026 年 8 月因加拿大关税可能下调而开始回落。汽车板块出货量已经 −11%。</li>
+<li><strong>变大的力量存在但慢</strong>：航空航天客户的去库存周期结束了，这块的量价还在恢复，而它是唯一有真壁垒的业务；Warrick 涂层线的产能还在爬坡，包装是长期确定性最高的需求。</li>
+</ul>
+<p><strong>结构性的好消息是：航空和包装这两块（合计约 65% 的转换收入）是有真需求支撑的；结构性的坏消息是：它们的利润被铝价这个跟公司能力无关的变量放大了一倍多，而这个放大器正在往回收。</strong></p>
+<p><strong>最后一条数据背景</strong>：股价 52 周涨了 <strong>98.7%</strong>，现价 157.82 美元，但已经从 50 日均线 169.83 回落了 7%，RSI 只有 42。市场刚刚经历过一次"记录级财报后的兴奋"（Q2 财报当天涨 7.7–10.6%），现在正在消化。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>11.3 倍买的是一家"周期利润被关税放大了一倍"的铝材加工商。把利润拉回三年平均，真实倍数是 31.2 倍；连公司自己的调整后利润都比 GAAP 低，连卖方一致预期都认为明年要跌 25%。这个价格不便宜。</strong></p>
+<p>它有一块真资产：航空航天铝材的客户认证壁垒是货真价实的，全美仅四条罐板产线之一的 Warrick 轧机也是别人短期造不出来的。这两块占了大半个公司，长期需求都在增长。<strong>这不是一家烂公司。</strong></p>
+<p>但它的当期利润里有相当一部分来自三个跟经营能力无关的东西：232 条款关税把中西部升水推到 2,182 美元的历史纪录、由此产生的库存持有收益、以及航空客户去库存结束带来的一次性补库。这三样<strong>已经有两样开始反转</strong>。</p>
+<p>同时账上有 10.1 亿净负债（2.25 倍 EBITDA）、股本还在以 2.74%/年稀释、自由现金流只有净利润的四成、股东净回报只有市值的 1.6%。</p>
+<p><strong>结论：这是"周期高点的合理价"，不是"便宜"。要等的话，等的是中西部升水回到常态、三年平均利润重新变成一个像样的锚之后的价格。</strong></p>
+</div></body></html>
