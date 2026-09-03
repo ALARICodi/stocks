@@ -1,0 +1,332 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NSRGY · 雀巢</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NSRGY</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">营收连跌四年、分红107%、回购砍到零，23.4倍在赌新CEO三年翻身</div><h1>NSRGY · 雀巢</h1>
+<p><strong>市值</strong> 2,489 亿美元（约 2,011 亿瑞郎） | <strong>ADR 股价</strong> 约 101 美元（1 份 ADR = 1 股雀巢普通股，对应瑞士上市股价约 82 瑞郎） | <strong>行业</strong> 非耐用消费品 | <strong>TTM 截止</strong> 2026-06-30 | <strong>财报货币</strong> 瑞士法郎（CHF），市值为美元，本文按 <strong>1 瑞郎 = 1.238 美元</strong>（由数据源自身的换算反推）统一折成瑞郎计算</p>
+<blockquote>
+<p>任务4 · 海外巨头榜第 6 名（全榜 489 家）｜分析日 2026-09-03</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>雀巢是全世界最大的食品公司，2,000 多个品牌。它的财报按<strong>地理大区</strong>分，不按品类分——这本身就说明了它的性质：<strong>它不是一门生意，是一个把几百个本地食品品牌装在一起的收购平台。</strong></p>
+<h3>1. 美洲大区（TTM 收入 361.7 亿瑞郎，占 40.7%）</h3>
+<p>规模最大的一块，核心是三样东西：</p>
+<p><strong>普瑞纳宠物食品（Purina）</strong>——这是雀巢集团里最好的生意，没有之一。它卖的是猫粮狗粮：Pro Plan、Fancy Feast、Friskies、以及美国销量第一的猫砂 Tidy Cats。为什么这门生意好？<strong>因为宠物主人不换牌子。</strong> 狗吃惯了某个牌子，换了会拉肚子、会不吃；主人换牌子的心理成本远高于省下的那几块钱。加上过去十年美国宠物"人性化"的趋势（把狗当孩子养），高端粮的单价一路往上走。这一块的利润率明显高于集团平均。</p>
+<p><strong>咖啡</strong>——雀巢咖啡（Nescafé）速溶粉、Coffee mate 咖啡伴侣、以及跟星巴克签的全球零售授权（超市货架上那些星巴克挂耳和胶囊，是雀巢在卖，一次性付了 71.5 亿美元买断永久授权）。</p>
+<p><strong>冷冻食品和糖果</strong>——DiGiorno 冷冻披萨、Hot Pockets、Stouffer's。这一块在美国是重灾区：消费者转向新鲜和高蛋白，冷冻披萨的销量连年下滑。</p>
+<h3>2. 亚洲/大洋洲/非洲大区 AOA（TTM 收入 204.8 亿瑞郎，占 23.1%）</h3>
+<p>在中国是徐福记、太太乐鸡精、银鹭；在印度是 Maggi 方便面（印度国民食品，一包 12 卢比）；在东南亚是美禄（Milo）麦芽饮料。</p>
+<p>这一块的经济学跟美洲完全不同：<strong>单价极低，靠铺货密度取胜</strong>。Maggi 在印度有 400 多万个零售点，包括村里的小卖部。护城河不在品牌溢价，在于那张几百万个网点的分销网——一个新品牌要覆盖到同样的密度，得烧十年。</p>
+<p>TTM 估算下滑约 1.9%，中国市场（尤其是银鹭花生牛奶、徐福记糖果这些老品牌）的疲软是主要拖累。</p>
+<h3>3. 欧洲大区（TTM 收入 181.6 亿瑞郎，占 20.5%）</h3>
+<p>雀巢的老家。KitKat 巧克力、雀巢咖啡、Buitoni 意面、Herta 火腿。这一块 TTM 估算 +4.8%，是唯一明显正增长的大区——但这个增长几乎全是<strong>提价</strong>，不是多卖了东西。过去两年可可豆和咖啡豆的国际价格都创了历史新高，雀巢把成本转嫁给了消费者。</p>
+<h3>4. 奈斯派索 Nespresso（TTM 收入 64.6 亿瑞郎，占 7.3%）</h3>
+<p><strong>这是雀巢发明的最聪明的一门生意：胶囊咖啡机。</strong></p>
+<p>机器卖你 150 欧元，几乎不赚钱甚至贴钱。真正赚钱的是胶囊——一颗 0.45 欧元，里面 5 克咖啡粉，你在超市买同等品质的咖啡豆，5 克大概 0.08 欧元。<strong>一颗胶囊的毛利率在 80% 以上。</strong> 一个家庭一天喝三颗，一年就是 500 欧元，机器只要不坏就一直买下去。</p>
+<p>雀巢原本靠专利把胶囊锁死（别人的胶囊放不进它的机器），2012 年前后专利在欧洲陆续到期，第三方兼容胶囊涌进来，这门生意的增速就慢下来了。现在 TTM 基本零增长（+0.4%）。</p>
+<h3>5. 雀巢健康科学 + 水与高端饮料</h3>
+<p><strong>健康科学</strong>（TTM 无独立数据，2025 年 65.5 亿瑞郎）——医用营养品（给吞咽困难的病人喝的营养液）、保健品（Nature's Bounty、Garden of Life 维生素）。2026 年起雀巢把这块拆进了各个大区，所以 TTM 表里它这一行是空的，倒推还剩约 37 亿的过渡期余额。这一块过去五年是持续让人失望的：疫情期间高价买了一堆维生素品牌，之后需求退潮，反复计提减值。</p>
+<p><strong>水与高端饮料</strong>（TTM 35.1 亿瑞郎，占 4.0%）——巴黎水（Perrier）、圣培露、Vittel。这一块 2024 年爆出了丑闻：法国监管机构发现雀巢对天然矿泉水做了未申报的过滤处理（法规要求"天然矿泉水"不得处理），罚款加整改。雀巢已经宣布要把这块分拆出去单独上市。</p>
+<h3>各板块合计</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 收入（亿瑞郎）</th>
+<th>估算同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美洲大区</td>
+<td>361.7</td>
+<td>+2.5%</td>
+<td>40.7%</td>
+</tr>
+<tr>
+<td>亚洲/大洋洲/非洲大区</td>
+<td>204.8</td>
+<td>−1.9%</td>
+<td>23.1%</td>
+</tr>
+<tr>
+<td>欧洲大区</td>
+<td>181.6</td>
+<td>+4.8%</td>
+<td>20.5%</td>
+</tr>
+<tr>
+<td>奈斯派索 Nespresso</td>
+<td>64.6</td>
+<td>+0.4%</td>
+<td>7.3%</td>
+</tr>
+<tr>
+<td>水与高端饮料</td>
+<td>35.1</td>
+<td>−1.2%</td>
+<td>4.0%</td>
+</tr>
+<tr>
+<td>健康科学（口径切换中的余额）</td>
+<td>约 37.3</td>
+<td>—</td>
+<td>4.2%</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>2.7</td>
+<td>—</td>
+<td>0.3%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>887.8</strong></td>
+<td><strong>−1.2%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>三点说明</strong>：分板块同比是估算（用 2024 与 2025 的中点近似上年同期）；<strong>大区数字正在口径切换</strong>——2026 年起健康科学被拆进各大区，所以美洲和欧洲的 TTM 数字里已经含了一部分原属健康科学的收入，同比因此偏高，不要过度解读；分板块经营利润雀巢在这四页里没披露。</p>
+<p><strong>整体 TTM 收入 887.8 亿瑞郎，同比 −1.23%。这是连续第四年下滑</strong>：2022 年 947.8 → 2023 年 933.5 → 2024 年 917.2 → 2025 年 898.9 → TTM 887.8，四年少了 60 亿瑞郎。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：1.38 亿瑞郎，占净利润 1.9%。</strong> 小到可以忽略。这一点上雀巢是全场最干净的。</p>
+<p><strong>一次性项目：两笔，性质不同，必须分开处理。</strong></p>
+<ul>
+<li><strong>资产减值与重组 10.16 亿瑞郎</strong>。五年看：2021 年 26.1 亿、2022 年 27.3 亿、2023 年 6.5 亿、2024 年 5.8 亿、2025 年 9.2 亿、TTM 10.2 亿。<strong>年年都有，五年平均约 14 亿</strong>。雀巢每年都在关厂、裁员、给买贵了的品牌计提商誉减值（健康科学那批维生素品牌是重灾区）。这是它作为收购平台的经常性代价，<strong>不加回</strong>。</li>
+<li><strong>资产处置损失 15.01 亿瑞郎</strong>——这一笔要单独看。2024 年是 0.57 亿，2025 年是 2.02 亿，TTM 突然跳到 15.01 亿，是往年的七八倍。这大概率跟水业务的分拆准备、以及一批非核心品牌的出售有关。<strong>这一笔我按真一次性处理，加回。</strong></li>
+</ul>
+<p><strong>权益法投资收益 9.46 亿瑞郎——这是雀巢一笔容易被忽略的隐藏资产。</strong> 它主要来自雀巢持有的<strong>欧莱雅约 20% 的股权</strong>。按当前欧莱雅的市值算，这部分股权的市场价值大约相当于雀巢自身市值的四分之一到三分之一，但在雀巢的资产负债表上只按成本法和权益法记着一个小得多的账面值。<strong>换句话说，你买雀巢的时候，附送了一大块被低估的欧莱雅股票。</strong> 这笔权益法收益是年年都有的经营性收入，不能当一次性剔掉。</p>
+<p><strong>"其他经营项目"32.33 亿瑞郎——这一行需要警惕。</strong> 它占净利润的 43%，而且从 2023 年的 6.6 亿涨到现在的 32.3 亿。里面装的是重组拨备、养老金精算调整、递延税这些不透明的东西。<strong>它不是造假，但它意味着：雀巢当期净利润和当期现金之间，有一大块是靠计提和拨备的时点差撑起来的，可比性差。</strong></p>
+<p><strong>回购与稀释：回购 1.27 亿瑞郎——基本等于停了。</strong> 对照往年：2022 年 106.8 亿、2023 年 52.3 亿、2024 年 46.8 亿、2025 年 2.1 亿、TTM 1.3 亿。<strong>雀巢在三年内把回购从每年一百亿砍到了零。</strong> 原因不难猜：净负债 567 亿瑞郎，Debt/EBITDA 3.67 倍，评级机构盯着，没钱回购了。股本一年只减少 0.12%。</p>
+<p><strong>分红 79.76 亿瑞郎，是净利润 74.40 亿的 107%。</strong> 也就是<strong>雀巢现在分掉的钱比它赚的还多</strong>。自由现金流 125.18 亿还能覆盖（占 64%），所以不算立刻危险，但<strong>这条线上已经没有余量了</strong>。</p>
+<p><strong>利润和现金流的差：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿瑞郎）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>74.4</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>33.7</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>2.4</td>
+</tr>
+<tr>
+<td>＋ 资产处置损失（一次性）</td>
+<td>15.0</td>
+</tr>
+<tr>
+<td>＋ 资产减值与重组</td>
+<td>10.2</td>
+</tr>
+<tr>
+<td>＋ 股权激励</td>
+<td>1.4</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目（重组拨备、养老金、递延税）</td>
+<td>32.3</td>
+</tr>
+<tr>
+<td>− 权益法投资收益（欧莱雅等，非现金）</td>
+<td>−9.5</td>
+</tr>
+<tr>
+<td>＋ 营运资金净变化（应付 +6.6、存货 −6.1、应收 +0.2、其他 +3.1）</td>
+<td>3.9</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>163.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流 163.7 亿是净利润 74.4 亿的 <strong>2.2 倍</strong>，这个倍数在消费品公司里是异常高的（正常在 1.2–1.5 倍）。原因清清楚楚：净利润被 15 亿处置损失、10 亿减值、32 亿各类拨备压低了，而这些都不出现金。<strong>结论是：雀巢的当期利润被低估了，但被低估的原因是它自己每年都在关厂和给买贵的资产减值。</strong></p>
+<p>还有一件必须看的事：<strong>资本开支 38.55 亿瑞郎，只有收入的 4.3%；两年前是 56.38 亿、占收入 6.1%。两年砍了 32%。</strong> 自由现金流 125.18 亿之所以创了近年新高，一大半是靠这个砍出来的。在一个销量本来就在下滑的食品公司里靠削减工厂投资来做高自由现金流，<strong>这是一个警告信号，不是一个优点</strong>。按正常 5.5% 的资本开支率倒推，真实的可持续自由现金流约 115 亿。</p>
+<p><strong>再看一眼利息</strong>：经营利润 137.5 亿，税前利润只有 99.6 亿，中间差掉的 38 亿绝大部分是利息。<strong>这就是 567 亿瑞郎净负债的价格——它每年吃掉雀巢 28% 的经营利润。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 1 瑞郎 = 1.238 美元折算为 <strong>2,011 亿瑞郎</strong>，企业价值 2,577 亿瑞郎（净负债 567 亿）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP（IFRS）TTM 市盈率</td>
+<td>2,011 ÷ 74.4</td>
+<td><strong>27.0 倍</strong></td>
+<td>3.70 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Underlying 口径（估算）</td>
+<td>2,011 ÷ 93.8（加回税后减值与处置损失）</td>
+<td>约 21.4 倍</td>
+<td>约 4.67 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2,011 ÷ 86.0（只加回 15 亿处置损失的税后 11.6 亿；减值年年有不加回）</td>
+<td><strong>23.4 倍</strong></td>
+<td><strong>4.28 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（账面）</td>
+<td>2,011 ÷ 125.2</td>
+<td>16.1 倍</td>
+<td>6.23 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（资本开支还原到正常水平）</strong></td>
+<td>2,011 ÷ 115.0</td>
+<td><strong>17.5 倍</strong></td>
+<td><strong>5.72 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,577 ÷ 146.1</td>
+<td>17.6 倍</td>
+<td>5.67 元</td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>2,011 ÷ 95.1（2024 年 108.8、2025 年 90.3、TTM 86.0 的平均）</td>
+<td><strong>21.2 倍</strong></td>
+<td><strong>4.72 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行有个跟前面几家相反的现象：<strong>它算出来 21.2 倍，比当期的 23.4 倍还便宜。</strong> 意思是——<strong>雀巢现在这一年的利润，是三年里最差的一年</strong>。2023 财年净利润 112.1 亿，现在 74.4 亿，<strong>三年掉了 34%</strong>。</p>
+<p>另外注意数据源给的<strong>远期市盈率是 16.91 倍，而当前是 27.03 倍</strong>。这意味着市场预期雀巢的利润在未来一年要涨 60%。这是一个非常激进的预期，它建立在"一次性项目消失 + 新 CEO 的成本削减见效 + 咖啡可可成本回落"三件事同时发生上。<strong>这个预期能不能兑现，是买雀巢的核心赌注。</strong></p>
+<p><strong>大白话版本：你现在投 100 块进雀巢，按最保守的口径（三年平均真实利润）算，公司一年替你赚 4.72 元。</strong></p>
+<p>这 4.72 元里，<strong>3.97 元以分红的形式回到你口袋</strong>（79.76 亿 ÷ 2,011 亿市值 = 3.97%）——比例高得吓人，因为雀巢已经把利润的 107% 都分掉了，回购归零。留在公司里的钱，主要用来还债和维持工厂。</p>
+<p>这个 4.72 元未来会变大还是变小？</p>
+<ul>
+<li><strong>变大的力量</strong>：新任 CEO（2025 年 9 月上任）宣布裁员 1.6 万人、目标三年省 30 亿瑞郎成本；水业务分拆出去能甩掉一个麻烦；咖啡和可可的原料价格如果从历史高位回落，毛利率能修复两三个点；那 15 亿的处置损失和逐年的减值总有停下来的一天。</li>
+<li><strong>变小的力量</strong>：销量在真实下滑（收入的正增长几乎全靠提价，而提价空间已经用得差不多了）；567 亿净负债的利息每年吃掉经营利润的 28%，而且在高利率下再融资成本更高；美洲的冷冻食品和健康科学两块看不到止跌的迹象。</li>
+<li>还有一个不太被讨论但很实在的问题：<strong>GLP-1 减肥药</strong>。如果全球有几千万人开始长期用司美格鲁肽这类药，他们的零食和甜食摄入量会明显下降。雀巢的糖果、冰淇淋、冷冻披萨正好在这条线上。雀巢自己也在推 Vital Pursuit 这种"配合减肥药吃"的高蛋白食品，但那是防守，不是进攻。</li>
+</ul>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>23.4 倍买一家连续四年营收下滑、分红超过净利润、回购已经砍到零、净负债吃掉四分之一经营利润的食品公司——好品牌，坏时候，坏价格。</strong></p>
+<p>展开说三句：</p>
+<p>第一，品牌资产是真的，普瑞纳宠物食品和 Nespresso 都是教科书级的好生意，账上还附送着一大块被低估的欧莱雅股权。ROIC 12.3% 对比 5.8% 的资本成本，说明这台机器本身还在创造价值。<strong>它不是一家烂公司。</strong></p>
+<p>第二，但它现在的每一项财务指标都在往错的方向走：营收连跌四年、净利润三年掉三分之一、经营利润率从 17% 掉到 15.5%、回购从每年一百亿砍到零、分红率 107%、资本开支砍了三分之一来撑住自由现金流、净负债 3.67 倍 EBITDA。<strong>这不是一家健康公司在便宜的时候，这是一家吃力的公司在不便宜的时候。</strong></p>
+<p>第三，最该记住的一个对照：市场给的远期市盈率是 16.9 倍，当期是 27 倍——<strong>市场已经把"新 CEO 三年扭转局面"这件事提前算进价格里了</strong>。如果扭转成功，你今天买的是 17 倍，还行；如果扭转拖成五年（食品公司的转型从来都是慢的），你买的就是 23–27 倍一个不增长的公司，同时每年拿 3.97% 的股息，而这个股息本身还需要它别继续恶化。<strong>风险回报不划算，等它跌下来再说。</strong></p>
+</div></body></html>

@@ -1,0 +1,346 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>INTC · 英特尔（Intel Corporation）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">INTC</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">剔掉会计噪音真实168倍，Foundry外部收入一年才6亿，股本一年稀释13%</div><h1>INTC · 英特尔（Intel Corporation）</h1>
+<p><strong>市值</strong> $4731.7 亿 ｜ <strong>股价</strong> 约 $90.1（52.5 亿股）｜ <strong>企业价值</strong> $4937.3 亿
+<strong>行业</strong> 电子科技 · 半导体 ｜ <strong>交易所</strong> 纳斯达克
+<strong>TTM 口径截止</strong> 2026 年 6 月 27 日（最近四个季度滚动）
+<strong>任务5 名次</strong> 第 1 名（美股主板亏损公司，按市值排）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>英特尔现在实质上是<strong>三门生意挤在一个壳里</strong>，而且其中一门是另外两门的供应商——这是理解它财报的钥匙。</p>
+<h3>生意一：给个人电脑做大脑（Client Computing Group，CCG）</h3>
+<p>这是最好懂的一门。你去买一台联想、戴尔或惠普的笔记本，机身上贴着"Intel Core Ultra"那块贴纸，里面那颗指甲盖大小的芯片就是英特尔卖的。它不直接卖给你，而是卖给联想、戴尔、惠普、宏碁这些整机厂——一颗中端 Core Ultra 大概 150–250 美元，高端游戏本用的能到 400 美元以上。一台 5000 元的笔记本里，英特尔拿走的大约是 900–1500 元。</p>
+<p>它为什么能收这个价？因为过去三十年全世界的 Windows 软件都是照着英特尔的 x86 指令集编译的。你公司里那套跑了十五年的 ERP、工厂里那台控制机床的老工控机、医院里的影像工作站——换成别的架构就要重新编译、重新测试、重新做认证，成本远超省下的芯片钱。这就是英特尔真正的护城河：不是芯片好，是<strong>别人已经在它身上盖了三十年的房子</strong>。</p>
+<p>麻烦也在这里。这门生意 TTM 收入 333.3 亿美元，比 2025 全年（322.3 亿）只多了 3.4%，而 2021 年它是 410.8 亿——四年掉了 19%。原因有三：一是苹果 2020 年起把 Mac 全换成自研 M 系列芯片，直接带走了每年几十亿美元；二是 AMD 用台积电的先进制程做出了性能更好、更省电的锐龙，在游戏本和高端台式机里抢走了三成以上份额；三是高通和联发科开始做 Windows on ARM 的笔记本芯片。护城河还在，但水位在降。</p>
+<h3>生意二：给数据中心做大脑，外加 AI（Data Center and AI，DCAI）</h3>
+<p>同一颗芯片的逻辑，换个客户。亚马逊、微软、谷歌、阿里这些云厂商买英特尔的至强（Xeon）服务器 CPU，一颗从 1000 美元到 15000 美元不等，一台标准双路服务器里两颗至强就是一两万美元。你在网上刷网页、查数据库、跑一段 Python，背后大概率就是一颗至强在算。企业自建机房也买，一家中型银行一次采购几百台服务器很正常。</p>
+<p>这门生意 TTM 收入 201.7 亿，比 2025 全年的 169.2 亿高出 19.2%，是三门里增长最快的。但要分清楚：<strong>它涨的不是 AI，是普通服务器 CPU 的换机周期</strong>。真正的 AI 训练芯片市场（英伟达的 GPU）英特尔基本没进去——它的 Gaudi 加速器在这一轮里几乎没有存在感。所谓"AI"在这门生意里的真实含义，是"跑 AI 的机器里也需要一颗 CPU 来指挥调度"，英伟达每卖出一台 GPU 服务器，英特尔或 AMD 就顺带卖出两颗 CPU。这是搭便车，不是坐主桌。</p>
+<h3>生意三：帮人（主要是帮自己）造芯片（Intel Foundry）</h3>
+<p>这是最难懂也最烧钱的一门。前两门只负责"设计"，画出电路图；Foundry 是真的有厂房——亚利桑那、俄勒冈、爱尔兰、以色列，一座 12 英寸晶圆厂的造价是两三百亿美元。它把设计图变成硅片：一片 30 厘米的圆盘上刻出几百颗芯片，切开、封装、测试。</p>
+<p>英特尔 2021 年起把这块单独拆出来做成一门"对外做生意"的部门，梦想是学台积电——别人（比如高通、亚马逊）拿设计图来，英特尔代工，按片收费，一片先进制程晶圆两三万美元。</p>
+<p><strong>但这个梦想目前基本没兑现。</strong> 看数字：Foundry TTM 营收 199.3 亿，而同期"分部间抵消"是 <strong>-192.9 亿</strong>。抵消项的意思是"集团内部左手卖给右手的收入，合并报表时要扣掉"。也就是说 Foundry 那 199.3 亿里，大约 <strong>96.8% 是卖给英特尔自己的 CCG 和 DCAI 部门</strong>，真正从外部客户收到的钱只有 6 亿美元出头——不到台积电一个季度收入的 2%。</p>
+<p>所以 Foundry 的真实状态是：一个花了几千亿美元建起来的、目前只服务一个客户（自己）的重资产工厂。它的全部希望押在下一代制程（18A / 14A）能不能追上台积电，并且说服外面的大客户敢把订单交给一个同时还在跟他们竞争的对手。<strong>这是一个赌注，不是一门已经成立的生意。</strong></p>
+<h3>钱：三门生意的账（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>相对 FY2025</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人电脑芯片 CCG</td>
+<td>33,332</td>
+<td>+3.4%</td>
+<td>58.4%</td>
+<td>~25%（估算）</td>
+<td>~8,300（估算）</td>
+</tr>
+<tr>
+<td>数据中心与 AI DCAI</td>
+<td>20,168</td>
+<td>+19.2%</td>
+<td>35.4%</td>
+<td>~15%（估算）</td>
+<td>~3,000（估算）</td>
+</tr>
+<tr>
+<td>芯片代工 Foundry</td>
+<td>19,928</td>
+<td>+11.8%</td>
+<td>34.9%</td>
+<td>大幅为负（估算）</td>
+<td>~-6,000（估算）</td>
+</tr>
+<tr>
+<td>其他（Mobileye、Altera 等）</td>
+<td>2,896</td>
+<td>-18.7%</td>
+<td>5.1%</td>
+<td>微利</td>
+<td>~200（估算）</td>
+</tr>
+<tr>
+<td>分部间抵消</td>
+<td>-19,292</td>
+<td>—</td>
+<td>-33.8%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>57,032</strong></td>
+<td><strong>+7.9%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>7.8%</strong></td>
+<td><strong>4,461</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>财报页只披露到分部营收，不披露分部利润，上表利润率全部是我的估算</strong>，方法是：整体经营利润 44.6 亿是已知的；CCG + DCAI 合计 535 亿营收，参照纯设计公司（AMD）15–25% 的经营利润率倒推出约 110 亿；差额意味着 Foundry 一年仍在亏五六十亿量级。<strong>这几个数字不要当精确值用，只用来看结构：赚钱的是两门设计生意，工厂在吞钱。</strong></p>
+<p>"相对 FY2025"是拿 TTM（截至 2026 年 6 月）跟上一个完整财年（截至 2025 年 12 月）比，两者有半年重叠，不是干净的同比，只用来看方向。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>这一节是英特尔全篇最关键的部分</strong>，因为它 GAAP 上亏了 112.9 亿，经营上却赚了 44.6 亿，两个数字差了 157 亿——不搞清楚这 157 亿是什么，就完全看不懂这家公司。</p>
+<p><strong>先看这个洞有多大。</strong> TTM 经营利润 +44.6 亿，税前利润 <strong>-98.5 亿</strong>，中间凭空少了 143.1 亿。再往下，税前亏了 98.5 亿还要交 14.4 亿的所得税（TTM 实缴税款 13.4 亿），于是净利变成 -112.9 亿。</p>
+<p><strong>这 143 亿是什么？</strong> 财报页上能明确对上的有两笔：出售资产的收益 <strong>+53.2 亿</strong>（主要是把 Altera 的控股权卖给了银湖，投资活动里"资产处置"收到 42.2 亿现金），资产减值与重组 <strong>-43.8 亿</strong>。两笔相抵还剩约 <strong>-140 亿</strong>对不上号。</p>
+<p><strong>这 140 亿没有花掉一分钱现金。</strong> 证据在现金流量表里：从净利润 -112.9 亿倒推经营现金流时，有一行"其他经营活动"加回了 <strong>+155.9 亿</strong>。这是标准的"非现金损失加回"——会计上确认为损失，但钱没出门。</p>
+<p><strong>它大概率是股权交易的会计确认。</strong> 现金流量表里还有两行非常刺眼：融资活动中"发行普通股"流入 <strong>134.1 亿</strong>，同时"支付普通股股息"流出 <strong>143.4 亿</strong>。而英特尔 2025 年就已经彻底停发股息了，2025 全年这一行是 0。一家停了股息的公司不可能一年发出 143 亿股息。这两行几乎肯定是数据源把 2025 下半年那三笔特殊入股（美国政府拿走约 10% 股份、英伟达 50 亿、软银 20 亿）硬塞进了标准科目。<strong>所以：那 140 亿的亏损是股权稀释和资产减值的会计记账，不是生意亏掉的现金。</strong></p>
+<p><strong>股权激励 SBC</strong>：TTM 24 亿，占营收 4.2%。这笔按规矩当真实成本扣（GAAP 已经扣了，别加回）。相对英特尔的体量不算离谱。</p>
+<p><strong>回购与稀释——这是真正扎人的地方。</strong> TTM 回购 8.6 亿，SBC 23.9 亿，回购/SBC = <strong>0.36</strong>。这个比值远小于 1，意思是回购连抵消员工发股都不够。更狠的是股本数字：<strong>流通股一年增加了 13.28%</strong>。也就是说，你去年持有英特尔 1% 的股份，今年在什么都没做的情况下变成了 0.88%——政府、英伟达、软银进来的每一股，都是从老股东身上稀释出来的。这是任务5 里我见过最猛的一次稀释。</p>
+<p><strong>资本化支出</strong>：TTM 资本开支 121.1 亿，比 2024 年的 239.4 亿砍了一半——建厂速度在急刹车。折旧摊销 123.8 亿，两者刚好持平，说明产能扩张已经停了，现在只是在维持。</p>
+<p><strong>利润和现金流的对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（GAAP）</td>
+<td>-11,289</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+12,379</td>
+</tr>
+<tr>
+<td>− 出售资产收益</td>
+<td>-5,323</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+4,380</td>
+</tr>
+<tr>
+<td>− 出售投资收益</td>
+<td>-13</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+2,393</td>
+</tr>
+<tr>
+<td>+ 其他非现金项（股权交易等）</td>
+<td>+15,586</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>-1,674</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>-1,111</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+493</td>
+</tr>
+<tr>
+<td>− 所得税相关变动</td>
+<td>-134</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>-751</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>14,936</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-12,105</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>2,831</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读这张表</strong>：英特尔账面亏 113 亿，实际收进来 149 亿现金——差了 262 亿，其中 124 亿是折旧（过去建厂花的钱在慢慢摊销）、156 亿是不动现金的会计损失。扣掉 121 亿建厂钱，一年真正剩下 <strong>28.3 亿自由现金流</strong>。这是十年来最好的一次（2023、2024 年分别是 <strong>-142.8 亿</strong>和 <strong>-156.6 亿</strong>），但对一个 4732 亿市值的公司来说，28 亿等于什么都不是。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 ÷ TTM 净利 -112.9 亿</td>
+<td><strong>亏损，无意义</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>财报页不提供</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>4731.7 亿 ÷（经营利润 44.6 亿 − 利息 11.5 亿）×(1−15%税) ≈ 28.2 亿</td>
+<td><strong>约 168 倍</strong></td>
+<td><strong>$0.60</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>4731.7 亿 ÷ 28.3 亿</td>
+<td><strong>167.1 倍</strong></td>
+<td><strong>$0.60</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>4937.3 亿 ÷ 44.6 亿</td>
+<td><strong>110.7 倍</strong></td>
+<td>$0.90（对 EV）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年平均净利 = (-187.6, -2.7, -112.9)/3 = <strong>-101.0 亿</strong></td>
+<td><strong>亏损，无意义</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均经营利润口径</td>
+<td>4937.3 亿 ÷ 三年平均 EBIT 13.3 亿</td>
+<td><strong>约 372 倍</strong></td>
+<td>$0.27</td>
+</tr>
+<tr>
+<td>（参考）市场预期的明年</td>
+<td>卖方一致预期的 Forward PE</td>
+<td><strong>54.2 倍</strong></td>
+<td>$1.85</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话讲清楚：</strong></p>
+<p>你现在投 100 块进英特尔，按最保守也最诚实的口径——它一年真正给你赚 <strong>6 毛钱</strong>。不是 6 块，是 6 毛。这个数字两条完全独立的路算出来都是 6 毛（一条走剔除障眼法后的利润，一条走自由现金流），互相印证，不是巧合。</p>
+<p>这 6 毛里有多少回到你口袋？<strong>一分都没有</strong>。英特尔停发股息，回购 8.6 亿还不够抵消员工发股，而股本一年膨胀 13.3%——你不但没收到钱，手里的份额还缩水了。钱去哪了？121 亿全砸进了建厂（资本开支），加上偿还的净债务，全部留在公司里赌 18A / 14A 制程。</p>
+<p><strong>这 6 毛未来会变大还是变小？</strong> 这是全篇唯一真正的问题，答案完全取决于 Foundry。乐观情形：18A 良率过关，微软、亚马逊、苹果里出现哪怕一个真正下单的大客户，Foundry 从每年亏五十亿变成打平甚至微利，那么整体经营利润能从 44.6 亿跳到 100 亿以上，市盈率从 168 倍降到 60 倍左右——这就是市场给出 54.2 倍 Forward PE 时假设的东西。悲观情形：18A 跟 10nm、7nm 一样再拖两年，外部客户继续观望，Foundry 每年吞掉五十亿，四年后英特尔手上是几座折旧完了但没人用的厂房。</p>
+<p><strong>这两种情形之间没有中间地带</strong>，而市场已经按乐观情形定了价——股价过去 52 周涨了 <strong>269.8%</strong>，从 24 块涨到 90 块。你现在买的不是英特尔的现状，是英特尔的翻身故事，而且是在故事讲了一大半、股价已经涨了 2.7 倍之后进场。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>英特尔不会死，但现在这个价格不是买它的时候。</strong></p>
+<p>不会死这一点是确定的：一年 149 亿经营现金流、28 亿正的自由现金流、账上 297 亿现金、净负债 206 亿但利息覆盖率 3.88 倍、还有美国政府当股东——它不存在破产问题。GAAP 上那 113 亿亏损绝大部分是股权交易和减值的会计记账，跟生意本身没关系。</p>
+<p>不该买这一点也同样清楚：<strong>剔掉所有会计噪音之后，这家 4732 亿市值的公司一年真实盈利只有 28 亿，168 倍</strong>。而且这 28 亿里没有一分钱是 Foundry 挣的——Foundry 的外部收入一年只有 6 亿美元，96.8% 的"收入"是左手卖给右手。你付 168 倍的价格，买的是"再给我四年，我把工厂做成台积电"这句话。</p>
+<p>再加上一年 13.3% 的股本稀释——这意味着<strong>就算英特尔的利润明年翻倍，你每股能分到的东西也只涨 76%</strong>，剩下的被新股东拿走了。股价一年涨了 270% 之后，风险和回报已经完全不对称：翻身成功你赚一倍，翻身失败你亏七成。</p>
+<p><strong>该等，不该追。</strong> 值得盯的信号只有一个：Foundry 什么时候公布第一个真正的外部大客户订单，以及那笔订单有多大。在那之前，这就是一张 168 倍的彩票。</p>
+</div></body></html>

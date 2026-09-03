@@ -1,0 +1,304 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SMAWF · 西门子</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SMAWF</a></div>
+<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">ROIC 6.58%低于资本成本9.65%，26.9倍买康采恩：AI电力好，另外三块拖后腿</div><h1>SMAWF · 西门子</h1>
+<p><strong>市值</strong> 2,437 亿美元（约 2,133 亿欧元） | <strong>股价</strong> 约 310 美元（SMAWF 是西门子普通股的美国场外线，对应法兰克福约 271 欧元） | <strong>行业</strong> 生产制造 | <strong>TTM 截止</strong> 2026-06-30（西门子财年 9 月底结束） | <strong>财报货币</strong> 欧元，市值为美元，本文按 <strong>1 欧元 = 1.1425 美元</strong>（由数据源自身的换算反推）统一折成欧元计算</p>
+<blockquote>
+<p>任务4 · 海外巨头榜第 7 名（全榜 489 家）｜分析日 2026-09-03</p>
+<p><strong>取数说明</strong>：SMAWF 这条场外线在数据源上没有财报页（404），本文的财报和现金流数据取自同一家公司的 ADR 线 SIEGY，是同一套合并报表。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>西门子是一个康采恩（Konzern，德国式的多元化工业集团），四门生意几乎互不相干，唯一的共同点是都卖给企业和政府、都不卖给个人。</p>
+<h3>1. 智能基础设施 Smart Infrastructure（TTM 收入 241.0 亿欧元，占 29.7%）</h3>
+<p>现在是最大也最热的一块，卖的是<strong>电从发电厂到插座之间的所有硬件</strong>：中压开关柜、变压器、配电盘、断路器、楼宇自控系统。</p>
+<p>举一个非常具体的例子，也是这块业务这两年爆发的原因：微软要在美国建一座 300 兆瓦的 AI 数据中心。这座数据中心要从电网引电，中间需要一整套中压配电系统——巨型开关柜（负责在故障时几毫秒内切断电路，否则一次短路能烧掉整栋楼的服务器）、不间断电源的切换装置、把 35 千伏降到 400 伏的变压器组。这一套设备的订单金额在几千万到一两亿欧元之间，而且<strong>现在全球的交货周期排到了两三年后</strong>。</p>
+<p>为什么现在卖方市场：AI 数据中心的用电需求在两年内翻了几倍，而全世界能造高压开关柜的公司只有西门子、施耐德、伊顿、ABB 这几家，产能扩不快（这东西的认证周期长、供应链深）。<strong>结果是这块业务的利润率创了历史新高，TTM 收入估算涨了 8.6%</strong>，是四块里最快的。</p>
+<h3>2. 数字工业 Digital Industries（TTM 收入 191.1 亿欧元，占 23.6%）</h3>
+<p>分两半，一半硬一半软。</p>
+<p><strong>硬的一半</strong>是工厂自动化：可编程逻辑控制器（PLC）、伺服电机、工业机器人的控制器。一条汽车焊装线上有几百个 PLC，每个负责控制一段动作。西门子的 S7 系列 PLC 是这个行业的事实标准，全球市占率第一——<strong>工程师从大学起就学它的编程软件（博途 TIA Portal），换品牌等于让全厂电气工程师重新学一门语言</strong>，这是它最硬的护城河。</p>
+<p><strong>软的一半</strong>是工业软件，也是西门子近五年砸钱最狠的方向：NX（三维设计）、Simcenter（仿真）、Teamcenter（产品数据管理），再加上 2025 财年花约 100 亿美元买的 <strong>Altair</strong>（仿真优化）和约 50 亿美元买的 <strong>Dotmatics</strong>（生命科学研发数据）。逻辑是把"设计—仿真—生产"打通成一个订阅制的软件平台，跟达索、PTC、Autodesk 抢地盘。</p>
+<p>这一块 2024–2025 年经历了一轮很难受的周期：中国和欧洲的制造业投资熄火，客户手里的库存要消化，收入从 2023 财年的 206 亿掉到 2025 财年的 178 亿。TTM 回到 191 亿，估算 +5.2%，<strong>刚刚走出谷底</strong>。</p>
+<h3>3. 西门子医疗 Siemens Healthineers（TTM 收入 231.7 亿欧元，占 28.6%）</h3>
+<p>单独在法兰克福上市的子公司，西门子持股约三分之二，并表。</p>
+<p>卖的是医院里最贵的那些机器：CT、核磁共振（MRI）、X 光机、超声，加上体外诊断的试剂和 <strong>Varian 的放疗设备</strong>（2021 年花 164 亿美元买的，是治癌症的直线加速器）。经济学跟罗氏的诊断板块一样——<strong>机器进了医院就换不掉，钱在后面十几年的服务合同和耗材里</strong>。一台 3.0T 核磁卖三四百万美元，之后每年的维保合同又是几十万。</p>
+<p>这一块 TTM 估算只涨了 1.3%，是四块里最慢的。而且它有一个西门子集团层面的悬念：管理层已经宣布要降低持股比例、把 Healthineers 的股份分给股东，<strong>这是一个潜在的价值释放事件</strong>，因为市场对康采恩一向给折价。</p>
+<h3>4. 交通 Mobility（TTM 收入 126.7 亿欧元，占 15.6%）</h3>
+<p><strong>造火车和信号系统。</strong> 德国的 ICE 高铁、埃及那条 2,000 公里的高铁网、纽约地铁的信号改造。</p>
+<p>这是四块里最差的一门生意，原因很具体：<strong>它是项目制的</strong>。一个订单几十亿欧元、交付周期五到八年，中间钢材涨价、罢工、客户改需求，全部由西门子承担。历史上西门子的火车项目吃过大亏（英国的信号项目、德国的 ICE4 延迟交付罚款）。估算经营利润率只有 8.5% 左右，不到智能基础设施的一半。好处是订单能见度极长，坏处是这个生意永远不会有高利润率。</p>
+<h3>各板块合计</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>TTM 收入（亿欧元）</th>
+<th>估算同比</th>
+<th>占比</th>
+<th>估算板块利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>智能基础设施</td>
+<td>241.0</td>
+<td>+8.6%</td>
+<td>29.7%</td>
+<td>约 17%</td>
+</tr>
+<tr>
+<td>西门子医疗</td>
+<td>231.7</td>
+<td>+1.3%</td>
+<td>28.6%</td>
+<td>约 14%</td>
+</tr>
+<tr>
+<td>数字工业</td>
+<td>191.1</td>
+<td>+5.2%</td>
+<td>23.6%</td>
+<td>约 16%</td>
+</tr>
+<tr>
+<td>交通</td>
+<td>126.7</td>
+<td>+6.2%</td>
+<td>15.6%</td>
+<td>约 8.5%</td>
+</tr>
+<tr>
+<td>金融服务与其他抵消</td>
+<td>20.7</td>
+<td>—</td>
+<td>2.5%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>811.1</strong></td>
+<td><strong>+3.6%</strong></td>
+<td>100%</td>
+<td>合并经营利润率 12.4%（真实值）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>同比和板块利润率都是估算</strong>（同比用 2024、2025 两个财年的中点近似上年同期；板块利润西门子在这四页里没披露，按行业常识和整体反推）。注意：上表的板块利润率加总会明显大于合并的 12.4%，差额约 24 亿欧元是<strong>总部费用 + 收购来的无形资产摊销 + 内部抵消</strong>——这正是"康采恩"的成本。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：数据源没有单独一行</strong>，德国工业公司的股权激励规模小，不构成实质稀释。</p>
+<p><strong>一次性项目：TTM 的资产减值为零。</strong> 这一点很干净。但有另一笔要盯：</p>
+<p><strong>资产处置收益 9.35 亿欧元。</strong> 五年看：2021 年 2.86 亿、2022 年 −4.32 亿（亏）、2023 年 9.79 亿、2024 年 9.18 亿、2025 年 8.32 亿、TTM 9.35 亿——<strong>近四年年年都是九亿上下</strong>。西门子每年都在卖东西（业务单元、少数股权、房产），这已经是一门常规操作。按"年年都有的不算一次性"的原则，我下面<strong>不把它剔掉</strong>；但你要知道，<strong>这 9.35 亿占了净利润的 11.8%，不是靠卖 PLC 和开关柜挣的</strong>。</p>
+<p><strong>"其他经营项目"35.14 亿欧元——这是本篇最该警惕的一行。</strong> 对照往年：2023 财年 11.83 亿、2024 财年 16.05 亿、2025 财年 8.01 亿，TTM 突然跳到 35.14 亿。它占净利润的 44%，内容是拨备、养老金、递延税这类不透明的调整。<strong>这不是造假，但它意味着 TTM 的经营现金流里有一大块来自计提的时点差，可持续性未知。</strong></p>
+<p><strong>一个必须澄清的"利润下滑"假象</strong>：TTM 净利润 79.46 亿，比 2025 财年的 96.20 亿<strong>跌了 18.8%</strong>，看起来很吓人。但同期经营利润从 90.92 亿<strong>涨到了 100.22 亿（+10%）</strong>。矛盾在哪？</p>
+<p>在于 <strong>2025 财年那 96.2 亿本身是虚高的</strong>——那一年净利润居然超过了经营利润，只能来自经营利润之外的大额一次性收益（西门子在那个财年卖掉了 Innomotics 电机业务等资产）。所以：<strong>TTM 的 79.5 亿才是常态，2025 财年的 96.2 亿是被一次性收益垫高的。"利润跌了 18.8%"这句话是错的，不要被它误导。</strong></p>
+<p><strong>回购与稀释：这一项有个有意思的对冲。</strong> TTM 回购 34.70 亿欧元，但同期"发行股份"收到 33.11 亿——两笔几乎抵消。净效果是股本一年减少 1.17%。分红 41.65 亿。分红加净回购，股东回报占市值约 2.0%。</p>
+<p><strong>利润和现金流的差：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿欧元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>79.5</td>
+</tr>
+<tr>
+<td>＋ 折旧摊销</td>
+<td>33.2</td>
+</tr>
+<tr>
+<td>＋ 其他摊销</td>
+<td>1.8</td>
+</tr>
+<tr>
+<td>− 资产处置收益</td>
+<td>−9.4</td>
+</tr>
+<tr>
+<td>＋ 其他经营项目（拨备、养老金、递延税）</td>
+<td>35.1</td>
+</tr>
+<tr>
+<td>＋ 营运资金净变化（预收 +10.5、应付 +7.8、应收 −11.2、存货 −4.6、其他 +0.4）</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td><strong>＝ 经营现金流</strong></td>
+<td><strong>143.4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流 143.4 亿是净利润的 1.80 倍，其中 35.1 亿来自那个不透明的"其他经营项目"。<strong>扣掉这一块，倍数就回到 1.36，属于正常范围。</strong> 资本开支只有 24.9 亿（收入的 3.1%，工业集团里算轻的），自由现金流 118.5 亿。</p>
+<p><strong>再看一眼资产负债表：净负债 390 亿欧元，Debt/EBITDA 3.74 倍。</strong> 这个数字要打个折看——西门子有一块金融服务业务（做设备租赁的），它的债是"生息资产对应的负债"，性质跟工业负债不同。但即便扣掉，杠杆仍然不轻，主要来自这几年 Varian、Altair、Dotmatics 三笔大收购。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 1 欧元 = 1.1425 美元折算为 <strong>2,133 亿欧元</strong>，企业价值 2,599 亿欧元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP（IFRS）TTM 市盈率</td>
+<td>2,133 ÷ 79.5</td>
+<td><strong>26.9 倍</strong></td>
+<td>3.72 元</td>
+</tr>
+<tr>
+<td>公司自己吹的"税前摊销前 EPS"口径（估算）</td>
+<td>2,133 ÷ 90.0（加回约 10.5 亿收购无形资产摊销的税后额）</td>
+<td>约 23.7 倍</td>
+<td>约 4.22 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>减值为零，处置收益年年有不剔 → 就是 GAAP</td>
+<td><strong>26.9 倍</strong></td>
+<td><strong>3.72 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2,133 ÷ 118.5</td>
+<td>18.0 倍</td>
+<td>5.55 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>2,599 ÷ 107.3</td>
+<td>24.2 倍</td>
+<td>4.13 元</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>2,133 ÷ 86.2（2024 财年 83.0、2025 财年 96.2、TTM 79.5 的平均）</td>
+<td><strong>24.7 倍</strong></td>
+<td><strong>4.04 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行算出来 24.7 倍，比当期便宜——但这个便宜是假的，因为 2025 财年那 96.2 亿含一次性卖资产收益。<strong>把它剔掉之后，三个年份的常态利润大约都在 80 亿上下，对应的就是 26–27 倍。</strong></p>
+<p>自由现金流口径 18.0 倍是最好看的一个数，但它同样含着那 35.1 亿的"其他经营项目"；剔掉之后自由现金流约 83 亿，对应 25.7 倍。<strong>换句话说，无论从哪个角度绕，西门子都是 25–27 倍。</strong></p>
+<p><strong>这里必须单独说一个数字：ROIC 6.58%，加权资本成本 9.65%。</strong></p>
+<p>这是本批六家公司里唯一一家<strong>投入资本回报率低于资本成本</strong>的。意思是：西门子每往生意里投一块钱，创造出来的回报还不够覆盖这一块钱的机会成本，<strong>从数学上讲是在毁灭价值</strong>。</p>
+<p>原因不神秘：Varian（164 亿美元）、Altair（约 100 亿美元）、Dotmatics（约 50 亿美元）这三笔收购在资产负债表上堆出了巨额商誉，分母被撑大了，而这些资产的利润还没跟上。有形账面价值市净率 14.26 倍——<strong>说明西门子的账面资产里绝大部分是买来的商誉，不是厂房和机器。</strong></p>
+<p>这个指标未来会不会修复，取决于西门子的工业软件整合能不能做成。这需要好几年才能验证。</p>
+<p><strong>大白话版本：你现在投 100 块进西门子，按最保守的口径算，公司一年替你赚 3.7 到 4.0 元。</strong></p>
+<p>这里面大约 <strong>2.0 元通过分红和净回购回到你口袋</strong>，其余留在公司里做收购和研发。</p>
+<p>未来会变大还是变小：
+- <strong>变大</strong>：智能基础设施吃到 AI 数据中心的电力红利，订单排到两三年后，利润率在创新高；数字工业刚走出周期底部；Healthineers 分拆如果落地，能消除一部分康采恩折价。
+- <strong>变小</strong>：三笔大收购的整合风险；交通板块永远拉低集团利润率；390 亿净负债的利息在高利率下不轻；德国和欧洲的制造业基本面并不强。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>26.9 倍买一家 ROIC 低于资本成本的康采恩——AI 电力那块业务是真的好，但你得连着另外三块一起买，还得连着 400 亿欧元的收购商誉一起买。价格偏贵。</strong></p>
+<p>展开说三句：</p>
+<p>第一，<strong>智能基础设施这一块单独拿出来是好东西</strong>。AI 数据中心的电力设备现在是全球性的产能瓶颈，交货排到两三年后，定价权在卖方手里，这个红利至少还能吃两三年。如果西门子只有这一块业务，26.9 倍不算离谱。</p>
+<p>第二，但你买的是一整个康采恩：里面有一块永远只有 8.5% 利润率的火车业务，一块刚走出两年下行周期的自动化业务，一块增速只有 1.3% 的医疗设备业务，还有一层每年吃掉几十亿欧元的总部费用和无形资产摊销。<strong>市场对这种结构给折价是有道理的，而 26.9 倍不是折价，是溢价。</strong></p>
+<p>第三，最该记住的一个数字是 <strong>ROIC 6.58% vs 资本成本 9.65%</strong>。这不是一个季度的波动，是三笔百亿级收购堆出来的结构性结果——有形账面市净率 14.26 倍，说明这家公司的账面资产基本上是商誉。<strong>西门子过去五年的故事是"用股东的钱买软件公司来提高估值倍数"，倍数确实提上去了（历史上它长期在 12–18 倍），但回报率还没跟上。</strong> 我不会在这个价位买它；如果要押 AI 电力设备，同一条赛道上有 ROIC 更干净的选择。</p>
+</div></body></html>

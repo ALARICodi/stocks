@@ -1,0 +1,351 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SNOW · Snowflake（Snowflake Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SNOW</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">增速32%账干净，但假想成熟利润率也要98倍；三年回购49亿股本反涨5.7%</div><h1>SNOW · Snowflake（Snowflake Inc.）</h1>
+<p><strong>市值</strong> $1060.0 亿 ｜ <strong>股价</strong> 约 $305.9（3.466 亿股）｜ <strong>企业价值</strong> $1064.2 亿
+<strong>行业</strong> 科技服务 · 企业软件 ｜ <strong>交易所</strong> 纽交所
+<strong>TTM 口径截止</strong> 2026 年 7 月 31 日（最近四个季度滚动；财年 1 月末结束）
+<strong>任务5 名次</strong> 第 3 名（美股主板亏损公司，按市值排）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Snowflake 本质上<strong>只做一件事</strong>，财报把它拆成两行只是因为其中一小行是配套的人力服务。这一件事讲透比什么都重要。</p>
+<h3>生意一：当全公司数据的唯一那个大池子（Product，占 95.9%）</h3>
+<p>想象一家像阿迪达斯这样的公司。它的数据散在二十个互不相通的地方：全球门店的收银机、自己的官网商城、手机 App、在 Meta 和 Google 投的广告后台、仓库的库存系统、工厂的排产系统、HR 的考勤。现在市场总监问一个再普通不过的问题——"上周在 TikTok 投的那条广告，到底有没有让德国的鞋多卖出去？"——要回答它，你得同时读到广告花费、德国门店流水、官网订单和当时的库存。这四份数据在四套系统里，格式不一样，字段名不一样，时区不一样。</p>
+<p>Snowflake 就是那个"把它们全倒进去的池子"。你把二十个系统的数据都往里灌，之后任何人写一句 SQL 就能同时查到所有东西。</p>
+<p><strong>它怎么收钱——这是理解 Snowflake 的关键。</strong> 它不按人头卖许可证，而是<strong>按用量卖算力</strong>，单位叫"credit（信用点）"。存数据很便宜，一 TB 一个月约 23 美元，基本就是把亚马逊 S3 的成本转手；真正赚钱的是算——你启动一台"虚拟仓库"来跑查询，最小档一小时烧 2 个 credit，最大档（4X-Large）一小时烧 128 个 credit，一个 credit 的价目在 2–4 美元之间。所以：一个分析师随手跑个十分钟的查询，成本几美元；而一家零售集团每天凌晨把全球五年的销售数据重算一遍，一晚上可能烧掉几千美元。客户通常先签一个年度承诺额度（比如一年 200 万美元），然后按用量往下扣。</p>
+<p><strong>这个收费方式意味着 Snowflake 的收入会自己长</strong>：客户的数据每年变多、分析师每年变多、接进来的系统每年变多，账单就自动往上走，不需要销售再去签一次合同。TTM 营收 54.35 亿美元，<strong>同比增长 32.0%</strong>——一家五十多亿美元收入体量的公司还能长三成，这在企业软件里是第一梯队。</p>
+<p><strong>客户为什么走不掉？</strong> 因为搬家的代价是荒谬的。一家用了三年 Snowflake 的公司，里面躺着五年的历史数据、三千条写好的 SQL、两百张搭在上面的 BI 报表、八十个受过训练的分析师，还有四十个下游系统直接从它取数。换成 Databricks 或者 BigQuery，是一个两年起步、几百万美元、期间业务侧看不到任何好处的工程。<strong>这个切换成本是真实的，是 Snowflake 唯一像样的护城河。</strong></p>
+<p><strong>但它的毛利率只有 67.0%，这是全篇最该记住的一个数字。</strong> 一家纯软件公司的毛利率应该在 80–90%（Adobe 89%）。Snowflake 低这么多，是因为<strong>它自己没有服务器</strong>——所有算力都是从亚马逊 AWS、微软 Azure、谷歌 GCP 租来再转卖的。你付 4 美元买一个 credit，其中大约 1.3 美元当场转给了亚马逊。这决定了 Snowflake 的利润率天花板结构性地低于真正的软件公司，<strong>而且它的房东同时就是它的竞争对手</strong>——亚马逊有 Redshift、谷歌有 BigQuery、微软有 Fabric，三家都在卖跟 Snowflake 直接竞争的产品，同时又在收 Snowflake 的租金。</p>
+<p>现在的增长故事叫 AI：客户的数据既然都在 Snowflake 里，那就在 Snowflake 里直接跑大模型（Cortex），不用把数据搬出去。这是市场愿意给它 19.5 倍市销率的原因，也是它跟私有的 Databricks 正面撞车的战场。</p>
+<h3>生意二：帮客户把数据搬进池子（Professional Services，占 4.1%）</h3>
+<p>就是派工程师上门做部署、做数据迁移、做培训，按人天收费。TTM 2.23 亿美元。这类业务在软件公司里基本都是不赚钱甚至微亏的——它存在的意义是让上面那门生意跑起来，不是为了赚钱。</p>
+<h3>钱：两行的账（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>相对 FY2026</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品（按用量的算力订阅）</td>
+<td>5,211</td>
+<td>+16.5%</td>
+<td>95.9%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>专业服务与其他</td>
+<td>223</td>
+<td>+5.6%</td>
+<td>4.1%</td>
+<td>通常微亏（估算）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,435</strong></td>
+<td><strong>同比 +32.0%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>-20.76%</strong></td>
+<td><strong>-1,128</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报页不披露分部利润。"相对 FY2026"是 TTM（截至 2026 年 7 月）对上一完整财年（截至 2026 年 1 月），有半年重叠；<strong>整体那个 +32.0% 才是干净的同比</strong>（TTM 对上一年同期 TTM）。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Snowflake 的账干净得没什么好剥的——没有大额减值、没有诡异的一次性项目、没有资本化的软件开发费。<strong>它只有一个障眼法，但这个障眼法有一栋楼那么大。</strong></p>
+<p><strong>股权激励 SBC：TTM 16.42 亿美元，占营收 30.2%。</strong></p>
+<p>把这个数字放在旁边看：Snowflake TTM 的经营亏损是 <strong>11.28 亿</strong>。也就是说，<strong>如果它用现金而不是股票发工资，这家公司的亏损会更大；反过来说，它整个亏损就是股权激励，一分不多一分不少还有富余。</strong> 每收到 100 块钱，有 30 块是用发新股的方式付给了员工。</p>
+<p>按规矩，SBC 一律当成真实的现金成本扣掉——它稀释你的股份，你手里那份公司每年被切走一块。GAAP 已经扣了，这也是为什么 GAAP 是亏的；公司自己讲的"调整后利润"会把这 16.4 亿加回来变成盈利，<strong>那个数字是假的，别看</strong>。</p>
+<p><strong>回购与稀释——这里有一组极其扎眼的数字。</strong> TTM 回购 13.89 亿，SBC 16.42 亿，<strong>回购/SBC = 0.85</strong>。小于 1，意思是把一年赚的自由现金流几乎全砸进回购，<strong>还不够抵消发给员工的股票</strong>。</p>
+<p>看长期就更清楚了。过去三个完整财年（FY2024–FY2026）Snowflake 一共回购了 <strong>49.4 亿美元</strong>的自己的股票，而同期流通股从 <strong>3.28 亿股增加到 3.37 亿股</strong>，到最新一期是 <strong>3.466 亿股</strong>——<strong>花了近 50 亿美元，股本不但没减少，还涨了 5.7%。</strong> 最近一年股本增加 <strong>3.43%</strong>。这 50 亿美元没有一分钱变成你的份额，它只是把员工手里的股票买回来再发一遍，本质上是<strong>用股东的现金替员工付所得税和变现需求</strong>。</p>
+<p><strong>一次性项目</strong>：TTM 资产减值与重组只有 0.68 亿，可以忽略。没有诉讼、没有并购巨额费用化。</p>
+<p><strong>资本化的支出</strong>：资本开支一年只有 0.58 亿，占营收 1.1%——极度轻资产（服务器是租的）。另有一行"其他摊销" 2.79 亿，是把付给销售人员的佣金分几年摊销，这是 SaaS 的标准做法，不算问题。</p>
+<p><strong>递延收入</strong>：TTM 增加 <strong>2.72 亿</strong>，客户预付的钱在变多，是需求真实的旁证。</p>
+<p><strong>利润和现金流的对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（GAAP）</td>
+<td>-1,091</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+181</td>
+</tr>
+<tr>
+<td>+ 销售佣金等其他摊销</td>
+<td>+279</td>
+</tr>
+<tr>
+<td>+ <strong>股权激励 SBC</strong></td>
+<td><strong>+1,642</strong></td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+7</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>-12</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+73</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>-55</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+26</td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>+272</td>
+</tr>
+<tr>
+<td>− 其他净经营资产</td>
+<td>-67</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>1,253</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-58</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>1,195</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读这张表</strong>：Snowflake 账面亏 10.91 亿，却收进来 12.53 亿现金——<strong>这 23 亿的差额里，16.4 亿就是那笔用股票支付的工资</strong>。所谓"自由现金流 11.95 亿、22% 的自由现金流率"，翻译成大白话是：<strong>它把三成的营收用发股票的方式付掉了，所以现金没出门。把这笔工资按现金算回去，真实自由现金流是 -4.47 亿。</strong></p>
+<hr />
+<h2>第三部分：亏损公司口径</h2>
+<p>Snowflake 属于<strong>真亏</strong>——不是一次性减值造成的账面亏损，是经营本身还没赚钱。但它有个特殊之处：<strong>它不烧现金</strong>。所以下面这张表要连着两个问题一起看。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收 / 同比增速</td>
+<td><strong>54.35 亿 / +32.0%</strong></td>
+<td>亏损公司唯一硬的东西，而且这个数字很硬</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td><strong>-11.28 亿</strong>（-20.8%）</td>
+<td>亏损率在持续收窄，见下</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td><strong>+12.53 亿 / +11.95 亿</strong></td>
+<td>都是正的</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>不烧钱</strong>（自由现金流 +11.95 亿）</td>
+<td>但扣掉用股票发的工资就是 -4.47 亿</td>
+</tr>
+<tr>
+<td>账上现金及投资 − 有息负债</td>
+<td>23.45 − 27.64 = <strong>-4.19 亿</strong></td>
+<td><strong>上市以来第一次净负债</strong>（2025 年发的 23 亿可转债）</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>不适用</td>
+<td>现金流为正，不存在活不下去的问题</td>
+</tr>
+<tr>
+<td>SBC 占营收 / 股本年膨胀</td>
+<td><strong>30.2% / +3.43%</strong></td>
+<td>这才是股东真正在付的钱</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>亏损率在真实地收窄</strong>，这一点必须给它记上：经营利润率 FY2022 <strong>-58.6%</strong> → FY2023 -40.5% → FY2024 -38.8% → FY2025 -40.2% → FY2026 -28.3% → TTM <strong>-20.8%</strong>。四年半改善了 37.8 个百分点，平均一年 8.4 个百分点。这不是画饼，是一条实实在在的曲线。</p>
+<p><strong>假想市盈率——如果它明天就做到成熟软件公司的利润率</strong></p>
+<p>拿谁比？Salesforce 的 GAAP 经营利润率约 <strong>20%</strong>，Adobe 约 <strong>36%</strong>。Snowflake 的毛利率只有 67%（Adobe 是 89%），因为算力是从亚马逊租的，所以它的天花板结构性地低于 Adobe。取中间偏乐观的 <strong>25%</strong> 作为"成熟状态"：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>假设的成熟经营利润率</th>
+<th>假想经营利润</th>
+<th>税后净利（21% 税）</th>
+<th>假想市盈率</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20%（对标 Salesforce）</td>
+<td>10.87 亿</td>
+<td>8.59 亿</td>
+<td><strong>123.4 倍</strong></td>
+<td>$0.81</td>
+</tr>
+<tr>
+<td><strong>25%（基准情形）</strong></td>
+<td><strong>13.59 亿</strong></td>
+<td><strong>10.73 亿</strong></td>
+<td><strong>98.8 倍</strong></td>
+<td><strong>$1.01</strong></td>
+</tr>
+<tr>
+<td>30%（很乐观）</td>
+<td>16.31 亿</td>
+<td>12.88 亿</td>
+<td>82.3 倍</td>
+<td>$1.22</td>
+</tr>
+</tbody>
+</table></div>
+<p>参考口径：市销率 <strong>19.5 倍</strong>、市净率 <strong>54.7 倍</strong>、自由现金流口径 <strong>88.7 倍</strong>、卖方预期的 Forward PE <strong>132.2 倍</strong>、投入资本回报率 ROIC <strong>-14.1%</strong>。</p>
+<p><strong>大白话讲清楚：</strong></p>
+<p><strong>假设 Snowflake 明天早上一觉醒来就变成了成熟的软件公司、利润率一步到位做到 25%，你投 100 块进去，一年也只能赚 1 块钱。</strong></p>
+<p>而它离那一天还有多远？经营利润率要从 <strong>-20.8% 走到 +25%，中间是 46 个百分点</strong>。按过去四年半每年改善 8.4 个百分点的速度，需要<strong>五年半</strong>——而且这个改善会越走越慢，因为 SBC 是结构性的，Snowflake 不可能大幅砍员工股票。</p>
+<p>真实的路径不是"砍成本"，是<strong>"用增长把 SBC 稀释掉"</strong>：SBC 现在占营收 30%，如果营收从 54 亿涨到 163 亿（翻三倍），SBC 就算涨到 20 亿也只占 12% 了，那时候 25% 的经营利润率是有可能的。按每年 30% 的增速，营收翻三倍要 <strong>四年半</strong>。<strong>四年半后，如果一切顺利，Snowflake 净利约 32 亿美元——用今天的 1060 亿市值去除，是 33 倍。</strong></p>
+<p><strong>换句话说：你今天付的这个价格，已经把"四年半后一切完美实现"的结果提前兑现了，兑现完剩下的是 33 倍。</strong> 而这四年半里，<strong>你每年还要被稀释 3.4%，累计约 -15%</strong>——公司业绩涨了 3 倍，你手里的份额少了 15%。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好生意，好增长，账也干净，但这个价格离谱。</strong></p>
+<p><strong>它不会死</strong>，这一点很确定：一年 12.5 亿经营现金流、账上 23 亿现金、只有 4 亿净负债、营收还在以 32% 增长、切换成本真实、递延收入在涨。任务5 里绝大多数公司要担心的"能烧几年"，Snowflake 完全不用回答。</p>
+<p><strong>但活成了也不值这个价。</strong> 把最关键的三个数字并排放着看就够了：</p>
+<ol>
+<li><strong>假想 25% 成熟利润率下是 98.8 倍</strong>——投 100 块年赚 1 块，而美国国债不用等四年半就给你 4 块多；</li>
+<li><strong>股权激励占营收 30.2%</strong>——每收 100 块有 30 块用发新股付掉了，公司三年花了 49 亿回购，股本反而涨了 5.7%；</li>
+<li><strong>毛利率只有 67%</strong>，而且房东（AWS / Azure / GCP）同时是竞争对手，这个天花板改不了。</li>
+</ol>
+<p>再加上一件说不清但躲不掉的事：<strong>Databricks 就在旁边，规模相当、增长可能更快，而且没上市，所以可以不计代价地打价格战。</strong> Snowflake 的 32% 增长是在这个环境下取得的，值得尊重；但它意味着未来的利润率提升会比模型算出来的更难。</p>
+<p><strong>该等。</strong> 这家公司值得放进观察名单的原因不是估值，是它的曲线——经营利润率一年改善 8 个百分点这件事如果继续两年，故事会完全不同。<strong>但在 98 倍假想市盈率、每年 3.4% 稀释的当下，买它就是在替市场的乐观情形付全款。</strong> 值得盯的信号有两个：SBC 占营收比例什么时候跌破 20%，以及股本什么时候开始真的净减少。这两件事之一发生之前，价格上没有便宜可占。</p>
+</div></body></html>

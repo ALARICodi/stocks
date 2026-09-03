@@ -1,0 +1,381 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MRNA · 莫德纳（Moderna, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MRNA</a></div>
+<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">毛利率-66%、营收年跌27.6%；要撑起600亿得营收翻5.4倍，买的是癌症疫苗彩票</div><h1>MRNA · 莫德纳（Moderna, Inc.）</h1>
+<p><strong>市值</strong> $602.1 亿 ｜ <strong>股价</strong> 约 $150.8（3.992 亿股）｜ <strong>企业价值</strong> $545.9 亿
+<strong>行业</strong> 健康科技 · 生物制药 ｜ <strong>交易所</strong> 纳斯达克
+<strong>TTM 口径截止</strong> 2026 年 6 月 30 日（最近四个季度滚动）
+<strong>任务5 名次</strong> 第 8 名（美股主板亏损公司，按市值排）</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Moderna 只有一门真正在收钱的生意，和一个赌注。先说技术，因为不懂技术就完全看不懂这家公司为什么值 600 亿。</p>
+<h3>mRNA 是什么：不送成品，送菜谱</h3>
+<p>传统疫苗的做法是<strong>送成品</strong>：在鸡蛋里或者培养罐里养出病毒，把它杀死或者削弱，再打进你身体，让免疫系统认一遍长相。问题是造一种疫苗要建一套专门的产线，做流感疫苗的厂做不了新冠疫苗，而且从毒株到量产要几个月甚至几年。</p>
+<p>mRNA 的做法是<strong>送菜谱</strong>。mRNA 是细胞里天然存在的一种信使分子，细胞把它当作说明书读：「照这个做一个蛋白质出来」。Moderna 干的事是——<strong>人工写一段说明书，内容是新冠病毒的刺突蛋白怎么做，用一颗脂肪小泡（脂质纳米粒）包好打进你的胳膊。</strong> 你自己的肌肉细胞把它吞进去、读一遍、生产出刺突蛋白挂在细胞表面一两天；免疫系统看到这个陌生形状，记住了、造出抗体；然后那段 mRNA 自己降解消失。</p>
+<p><strong>商业上真正诱人的是产线：不管做的是新冠、流感还是癌症疫苗，脂肪泡、混合、灌装全都一模一样，唯一要换的是那段文字（碱基序列）。</strong> Moderna 曾经说自己是「一家碰巧做药的软件公司」——改一行代码就换一个产品。这就是它 2021 年市值冲到一千多亿的那个故事。</p>
+<h3>生意一：新冠疫苗（Spikevax）——目前唯一的收入来源</h3>
+<p>TTM 产品销售 <strong>20.64 亿美元</strong>，占总收入 <strong>92.6%</strong>。买家是各国政府和美国的药房连锁，按针收费，一针二三十美元。</p>
+<p><strong>但这门生意的曲线是全美股最惨烈的一条：</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>184.71 亿</td>
+<td><strong>192.63 亿</strong></td>
+<td>68.48 亿</td>
+<td>32.36 亿</td>
+<td>19.44 亿</td>
+<td><strong>22.28 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>四年掉了 88%。</strong> 原因不复杂：2021–2022 年是一场全球紧急状态，各国政府不谈价、有多少要多少；现在新冠变成了一种季节性呼吸道疾病，美国每年只有两三成的人去打加强针，而且要跟辉瑞/BioNTech 分这块已经很小的蛋糕。<strong>那 192 亿是一次不会重来的横财，不是一门生意的常态。</strong></p>
+<h3>生意二、三、四：呼吸道合胞病毒疫苗、流感疫苗、联合疫苗</h3>
+<p>RSV 疫苗（mRESVIA）2024 年获批，销量微乎其微——GSK 和辉瑞早两年上市，产品更便宜、医生更熟。流感 mRNA 疫苗三期临床数据阳性，在报批。流感+新冠二合一针剂在推进。</p>
+<p><strong>这几个的共同难题是：它们不是在填补空白，是在抢老玩家的饭碗。</strong> 流感疫苗市场有四家做了五十年、一针只卖十几二十美元、安全数据积累了几十年的对手。Moderna 的 mRNA 流感疫苗必须<strong>明显更好</strong>才有人换，仅仅"一样好"是不够的。</p>
+<h3>赌注：个体化癌症疫苗（与默沙东合作）</h3>
+<p><strong>这是 600 亿市值的真正来源，别的都是配角。</strong></p>
+<p>做法是这样的：一个黑色素瘤病人手术切下肿瘤，把肿瘤组织和他的正常组织各测一次基因，比对出<strong>只有癌细胞有、正常细胞没有的突变</strong>（新抗原）。挑出其中最可能被免疫系统识别的 34 个，写成一段 mRNA，<strong>为这一个病人单独生产一剂药</strong>（几周内完成），配合默沙东的 Keytruda 一起打。</p>
+<p>原理是：免疫系统本来分不清癌细胞和自己的细胞（因为癌细胞就是自己的细胞变的），所以放任它长。这支疫苗相当于给免疫系统一张通缉令，上面画着这个病人的癌细胞独有的 34 个特征。</p>
+<p><strong>二期试验在黑色素瘤上显示出有意义的复发率下降，三期在跑。</strong> 如果成功，这是一个全新的药物门类——<strong>每个病人一支专属的药</strong>，而 mRNA 是目前唯一能在几周内做到这件事的技术。这个赌注的赔率极高，但它是<strong>二元的</strong>：成或不成，中间没有安慰奖。</p>
+<h3>钱：财报页的收入拆分（TTM，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入类型</th>
+<th>TTM 营收</th>
+<th>相对 FY2025</th>
+<th>占总营收</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品销售</td>
+<td>2,064</td>
+<td>+13.5%</td>
+<td>92.6%</td>
+<td>基本全是新冠疫苗</td>
+</tr>
+<tr>
+<td>待命产能费</td>
+<td>114</td>
+<td>+42.5%</td>
+<td>5.1%</td>
+<td>政府付钱让它保留产能待命</td>
+</tr>
+<tr>
+<td>合作收入</td>
+<td>28</td>
+<td>+115%</td>
+<td>1.3%</td>
+<td>默沙东等合作方分摊的研发费</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,228</strong></td>
+<td><strong>+14.6%</strong></td>
+<td><strong>100%</strong></td>
+<td><strong>同比实为 -27.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>"相对 FY2025"是 TTM（截至 2026 年 6 月）对上一完整财年（截至 2025 年 12 月），看起来是正的，但那只是季节性错位——<strong>新冠疫苗销售高度集中在秋冬两季，TTM 窗口比日历年多包了一个旺季。干净的同比是 -27.6%，收入仍在下滑。</strong></p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Moderna 的账没什么好剥的——没有大额减值粉饰、没有可疑的一次性项目、没有资本化的研发费。<strong>它的问题不是账做得花，是生意本身在流血。</strong> 但有两件事必须点出来。</p>
+<p><strong>第一件：毛利率是负的 66%，这不是打错字。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>FY2021</th>
+<th>FY2022</th>
+<th>FY2023</th>
+<th>FY2024</th>
+<th>FY2025</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+75.05%</td>
+<td>+54.78%</td>
+<td>-39.28%</td>
+<td>-85.63%</td>
+<td>-105.76%</td>
+<td><strong>-66.02%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 收入 22.28 亿，销售成本 <strong>36.99 亿</strong>——<strong>每卖出 100 块钱的疫苗，光成本就是 166 块。</strong></p>
+<p>为什么？因为 Moderna 是照着<strong>一年两百亿美元</strong>的需求建的工厂：马萨诸塞州的主厂，加上澳大利亚、加拿大、英国几座由当地政府出资促成的产线。现在实际销售只有 22 亿。<strong>那些厂房、设备、维持无菌环境的运行成本、留守的技术人员——不管有没有订单，钱照花，而按会计规则这些闲置产能的成本要计入销售成本。</strong> 所以毛利率是负的。这不是产品卖亏了，是产能空转的成本压进来了。</p>
+<p>这也解释了 FY2025 的 -105.76% 为什么比 TTM 的 -66.02% 更差：<strong>TTM 里多包了一个销售旺季，摊薄了固定成本。</strong></p>
+<p><strong>第二件：股权激励 4.62 亿，占营收 20.7%。</strong> 在一家一年只收 22 亿的公司里，光发给员工的股票就值 4.62 亿。按规矩当真实成本扣。流通股一年增加 <strong>1.94%</strong>，稀释不算凶（因为账上钱还够，不用增发融资），但这是要长期付下去的。</p>
+<p><strong>一次性项目</strong>：没有。TTM 资产减值为 0，投资处置收益 0.49 亿，都可以忽略。</p>
+<p><strong>烧钱在明显放缓，这是全篇唯一的好消息</strong>：
+- 自由现金流：FY2023 <strong>-38.25 亿</strong> → FY2024 <strong>-40.55 亿</strong> → FY2025 <strong>-20.65 亿</strong> → TTM <strong>-12.44 亿</strong>
+- 资本开支：FY2024 <strong>10.51 亿</strong> → TTM <strong>1.71 亿</strong>（砍了 84%，已经停止建厂）</p>
+<p>管理层在真刀真枪地收缩：砍研发项目、关产线、裁员。<strong>这拖长了跑道，但也意味着那个"平台可以同时做几十个产品"的故事正在被自己放弃。</strong></p>
+<p><strong>利润和现金流的对账（TTM，百万美元）</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（GAAP）</td>
+<td>-3,151</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>+241</td>
+</tr>
+<tr>
+<td>− 投资处置收益</td>
+<td>-49</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC</td>
+<td>+462</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>+51</td>
+</tr>
+<tr>
+<td>+ 应收账款减少</td>
+<td>+13</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>-38</td>
+</tr>
+<tr>
+<td>− 应付账款减少</td>
+<td>-17</td>
+</tr>
+<tr>
+<td>+ 递延收入增加</td>
+<td>+168</td>
+</tr>
+<tr>
+<td>+ 其他净经营资产释放</td>
+<td>+1,247</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>-1,073</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-171</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>-1,244</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>读这张表</strong>：账面亏 31.51 亿，实际只烧掉 12.44 亿现金。差额里有 4.62 亿是股票发的工资，还有 <strong>12.47 亿来自"其他净经营资产释放"</strong>——这是在退订单、解除采购承诺、收回预付款，属于<strong>收缩期的一次性回血，不可持续</strong>。<strong>真实的、可持续的年度烧钱速度接近 25 亿，而不是 12.44 亿。这一点很重要，后面算跑道要用。</strong></p>
+<hr />
+<h2>第三部分：亏损公司口径</h2>
+<p>Moderna 是标准的<strong>真亏</strong>——不是减值造成的账面亏损，是卖一支亏一支、经营现金流为负。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收 / 同比增速</td>
+<td><strong>22.28 亿 / -27.6%</strong></td>
+<td>唯一硬的东西，而且它在缩</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td><strong>-24.36 亿</strong>（-109.3%）</td>
+<td>亏的比收的还多</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td><strong>-10.73 亿 / -12.44 亿</strong></td>
+<td>都是负的</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>12.44 亿</strong>（含 12.47 亿一次性回血）→ <strong>可持续口径约 25 亿</strong></td>
+<td>见上一节</td>
+</tr>
+<tr>
+<td>账上现金及投资 − 有息负债</td>
+<td>69.10 − 12.87 = <strong>+56.23 亿</strong></td>
+<td>净现金充裕，这是它最大的资产</td>
+</tr>
+<tr>
+<td><strong>还能烧几年</strong></td>
+<td>按 12.44 亿算 <strong>4.5 年</strong>；按可持续的 25 亿算 <strong>2.2 年</strong></td>
+<td>真实答案在两者之间，约 <strong>3 年</strong></td>
+</tr>
+<tr>
+<td>SBC 占营收 / 股本年膨胀</td>
+<td><strong>20.7% / +1.94%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>假想市盈率——如果它明天就变成一家正常赚钱的疫苗公司</strong></p>
+<p>拿谁比？成熟的大型生物制药公司（吉利德、安进这一档）净利率约 <strong>25–30%</strong>。给 Moderna 最乐观的 30%：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>假设</th>
+<th>假想净利</th>
+<th>假想市盈率</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>当前营收 22.28 亿 × 30% 净利率</td>
+<td><strong>6.68 亿</strong></td>
+<td><strong>90.1 倍</strong></td>
+<td><strong>$1.11</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>但这个算法其实还太仁慈</strong>，因为它假设收入不再下滑。反过来算一次更能说明问题：</p>
+<p><strong>要让今天这个 602 亿市值对应一个正常的 20 倍市盈率，Moderna 需要每年净赚 30.1 亿美元。按 25% 的净利率倒推，它需要年营收 120.4 亿——是现在的 5.4 倍。</strong> 而它的收入现在还在以每年 27.6% 的速度往下掉，毛利率是 -66%。</p>
+<p><strong>还有一个更冷的数字：卖方一致预期的市销率（Forward PS）是 31.62 倍，高于当前的 27.02 倍。</strong> 市销率算法是市值除以营收，分子不变的情况下这个比值变大只有一个原因——<strong>分析师预计明年的营收还要再跌约 14.5%，跌到 19 亿。</strong></p>
+<p><strong>大白话讲清楚：</strong></p>
+<p>你现在投 100 块进 Moderna，<strong>它一年不但不给你赚钱，还在替你烧钱</strong>。就算它明天早上突然变成一家健康的疫苗公司、按现有 22 亿收入做出 30% 的净利率，你一年也只能赚 <strong>1 块 1</strong>。</p>
+<p><strong>所以买 Moderna 的人买的不是这些数字里的任何一个，而是那个癌症疫苗赌注。</strong> 这一点必须说透：<strong>股价 52 周涨了 526%，而现价约 150.8 美元、50 日均线只有 82.01 美元、200 日均线只有 53.60 美元</strong>——这意味着这轮暴涨绝大部分发生在最近几周，股价站在半年均线的 2.8 倍上。<strong>而同期营收是 -27.6%、毛利率是 -66%、现金还在烧。</strong></p>
+<p><strong>价格和基本面之间这个数量级的背离，不可能来自经营，只能来自市场对某个未来事件的重新定价。</strong> 财报页给不出那个事件是什么。同时 <strong>13.23% 的流通股被做空</strong>（需要 9.92 天才能买回来的量），说明另一边押注它跌的人也押得很重。<strong>这已经不是一只股票，是一张对赌合约。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>技术是真的，钱是真的在烧，而现在这个价格是在赌一个还没揭晓的临床结果。</strong></p>
+<p><strong>它会不会死？三年内不会，但要看它自己踩不踩刹车。</strong> 账上净现金 <strong>56.23 亿</strong>、有息负债只有 12.87 亿、资本开支已经砍到只剩 1.71 亿。按最近一年 12.44 亿的烧速能撑四年半；但那 12.44 亿里有 12.47 亿是退订单收回来的一次性回血，<strong>按可持续口径算年烧 25 亿、跑道约 3 年</strong>。三年之内如果癌症疫苗或者流感疫苗没能变成实际收入，它就要面对增发或者卖资产——而增发时的股价决定了老股东被稀释多少。</p>
+<p><strong>就算活成了值不值这个价？按今天能看到的一切算——不值。</strong> 做到 30% 的净利率也只是 <strong>90 倍市盈率</strong>；要撑起 602 亿市值需要收入从 22 亿涨到 <strong>120 亿（5.4 倍）</strong>；而收入现在每年掉 27.6%，卖方预期明年还要再掉 14.5%。<strong>这三个数字之间没有任何一条现实的桥。</strong></p>
+<p><strong>质量档判"有硬伤"是按规格来的</strong>：在烧钱、毛利率为负、收入连年下滑、且<strong>没有一条清晰的止亏路径</strong>——不管癌症疫苗的故事讲得多好，这一条就足够定档。ROIC -75.99% 对 10.17% 的资本成本，是任务5 里目前最差的一组数字。</p>
+<p><strong>该躲开，除非你是在有意识地买一张彩票。</strong> 如果你确信个体化癌症疫苗的三期会成功，那这是一笔可以理解的、赔率很高的赌注——但要认清它就是赌注：<strong>成了可能翻几倍，不成的话，一家年收入 20 亿、毛利率为负、每年烧 25 亿的公司，值不了 600 亿。</strong> 值得盯的信号只有两个，都跟财报无关：<strong>癌症疫苗三期的读数</strong>，以及<strong>毛利率什么时候转正</strong>（那意味着产能终于跟需求匹配上了）。</p>
+</div></body></html>
