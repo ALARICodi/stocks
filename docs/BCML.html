@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BCML</a></div>
-<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">PB0.98像捡便宜，但ROE只有6.66%，本该更低</div><h1>BCML · BayCom Corp（加州联合商业银行控股公司）</h1>
+<div class="mine" data-t="BCML"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">PB0.98像捡便宜，但ROE只有6.66%，本该更低</div><h1>BCML · BayCom Corp（加州联合商业银行控股公司）</h1>
 <p>市值 3.285 亿美元 · 股价 $30.29（2026-08-28 收盘）· 行业：银行（加州社区银行）· TTM 截至 <strong>2026-06-30</strong></p>
 <blockquote>
 <p><strong>这是一家银行，第三部分用市净率（PB）、有形账面价值市净率（P/TBV）、ROE / ROTCE、净息差（NIM）这套口径，不用市盈率。</strong>
@@ -554,5 +605,5 @@ a{color:var(--accent)}
 <p>你花 100 块买进去，正常年份一年赚 6.80 元，其中 3.96 元现金到手。这个回报在长期国债之上一点点，但你为此承担的是：加州商业地产的信贷风险、两年翻六倍还在上升的坏账拨备、正在流失的免费存款、一笔税务局不认所以八成是罚款的 1050 万损失，以及一个在股价低于账面价值时还停掉回购去发股息的管理层。</p>
 <p>它唯一的真优点是<strong>扛得住</strong>：TCE/TA 11.62%，资本厚得离谱，beta 0.30，股息率 3.96%。这家银行不会倒，股价也不太会剧烈波动。如果你要的是「一个不会爆炸、每年拿 4% 股息」的位置，它做得到。</p>
 <p>但要说值得现在买，不值。<strong>用 1.11 倍有形账面买一家 ROE 6.66%、利润三年原地踏步、坏账正在恶化的银行，你赌的是有人来收购它。这是等，不是投。</strong></p>
-<p>同样是被这轮筛选扫进来的银行股，很多能给到 P/TBV 1.0 以下、ROTCE 11–13%。BayCom 的价格没有反映它 6.66% 的赚钱能力和上升中的信用风险。<strong>等它跌到 $24 以下（P/TBV 0.88 左右）再说，或者等拨备见顶的确凿证据出现。</strong></p>
+<p>同样是被这轮筛选扫进来的银行股，很多能给到 P/TBV 1.0 以下、ROTCE 11–13%。BayCom 的价格没有反映它 6.66% 的赚钱能力和上升中的信用风险。<strong>等它跌到 $24 以下（P/TBV 0.88 左右）再说，或者等拨备见顶的确凿证据出现。</strong></p><script src="user.js"></script>
 </div></body></html>

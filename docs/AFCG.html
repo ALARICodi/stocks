@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AFCG</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">0.44倍净资产真折价，折的是大麻贷款账还要烂多少</div><h1>AFCG · Advanced Flower Capital（高级花资本）</h1>
+<div class="mine" data-t="AFCG"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">0.44倍净资产真折价，折的是大麻贷款账还要烂多少</div><h1>AFCG · Advanced Flower Capital（高级花资本）</h1>
 <p>市值 $8162 万 / 股价约 $3.6 / 行业：金融（大麻行业抵押贷款 REIT） / TTM 截止 2026-06-30</p>
 <p><strong>这是金融/地产企业，下面用市净率 PB、ROE、分红这套口径而不是市盈率</strong>——它的「营收」就是利息收入减信用损失，一笔坏账能把整年收入打成负数（2025 财年真的发生了），市盈率在这种报表上没有意义。</p>
 <hr />
@@ -205,5 +256,5 @@ a{color:var(--accent)}
 </table></div>
 <p>大白话：<strong>你现在投 100 块，买到的是账面 227 块的净资产——听起来是半价捡漏，但这份资产过去两年在以每年 2–11 块的速度亏损缩水</strong>，而不是给你赚钱。乐观情形（新举债的 1 亿放出去、客户不再倒账）下回报能回到年化十几块，且都以分红形式到手；悲观情形是账本继续减记，227 块的「账面」再缩一轮。这笔账成不成立，全押在一件事上：<strong>大麻行业信用最坏的时候是否已经过去</strong>——而这门生意的借款人天然是银行都不敢碰的人。另注意杠杆刚从 0.55 加回 1.10 倍，经济下行时这类高息贷款账本的缩水是加速度的。</p>
 <h2>第四部分：一句话结论</h2>
-<p><strong>0.44 倍净资产是真折价，但折的是「这本贷款账还要烂多少」的价：借款人全是银行拒贷户、连亏两年、分红砍了又砍、外部管理人还在半价增发摊薄你——统计上便宜，商业上站不住，便宜篮子里看看就好，别当宝。</strong></p>
+<p><strong>0.44 倍净资产是真折价，但折的是「这本贷款账还要烂多少」的价：借款人全是银行拒贷户、连亏两年、分红砍了又砍、外部管理人还在半价增发摊薄你——统计上便宜，商业上站不住，便宜篮子里看看就好，别当宝。</strong></p><script src="user.js"></script>
 </div></body></html>

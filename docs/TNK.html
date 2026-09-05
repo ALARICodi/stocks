@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TNK</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">5倍是运价高点倒影，每股4现金是留给船厂的不是你的</div><h1>TNK · Teekay Tankers（迪凯油轮）</h1>
+<div class="mine" data-t="TNK"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">5倍是运价高点倒影，每股4现金是留给船厂的不是你的</div><h1>TNK · Teekay Tankers（迪凯油轮）</h1>
 <p>市值 $30.8 亿 / 股价约 $89 / 行业：原油油轮航运 / TTM 截止 2026-06-30</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -174,5 +225,5 @@ a{color:var(--accent)}
 <p><strong>说人话</strong>：你投 100 块，其中约 38 块直接对应账上现金，<strong>你真正花 62 块买下的船队，按当下运价一年赚 25 块、按平常年份赚 12–16 块</strong>——怎么算都不贵，市净率 1.29 倍也大致就是二手船价的公允值。但三件事必须想明白：<strong>一、5.2 倍永远是运价高点的倒影</strong>——航运股在最便宜的倍数时最危险（利润在顶），运价跌回 $2 万/天，EPS 掉到 $5 一点不奇怪；<strong>二、每股 $34 的现金你多半摸不着</strong>——它是未来五年船队换代的钱，分红政策已经说明了管理层的选择；<strong>三、这是把地缘政治当利润来源的生意</strong>——俄油制裁松动、OPEC 减产、航线改道结束，任何一条都直接砸运价。反过来，中东真出大事时它是全场少数会暴涨的东西（beta -0.23，和大盘负相关，组合里是稀缺的对冲件）。</p>
 <hr />
 <h2>第四部分：一句话结论</h2>
-<p><strong>公道——剔掉现金后 4–8 倍买一支零负债船队，价格本身无可挑剔，但你买的是运价的人质加一张不会兑给你的现金支票。</strong> 它是油轮股里资产负债表最干净、管理最克制的一家，当"油运景气还有下半场+地缘风险对冲"的仓位是合格的；把 5.2 倍当成普通公司的便宜、指望现金分回来，就想错了。周期品的规矩在这里同样适用：买在运价平淡时，卖在人人夸它便宜时——现在更接近后者。</p>
+<p><strong>公道——剔掉现金后 4–8 倍买一支零负债船队，价格本身无可挑剔，但你买的是运价的人质加一张不会兑给你的现金支票。</strong> 它是油轮股里资产负债表最干净、管理最克制的一家，当"油运景气还有下半场+地缘风险对冲"的仓位是合格的；把 5.2 倍当成普通公司的便宜、指望现金分回来，就想错了。周期品的规矩在这里同样适用：买在运价平淡时，卖在人人夸它便宜时——现在更接近后者。</p><script src="user.js"></script>
 </div></body></html>

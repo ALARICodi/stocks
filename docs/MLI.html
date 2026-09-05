@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MLI</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">零负债净现金14亿ROIC37%，17倍不贵但利润站在关税价差高点</div><h1>MLI · 穆勒工业（Mueller Industries）</h1>
+<div class="mine" data-t="MLI"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">零负债净现金14亿ROIC37%，17倍不贵但利润站在关税价差高点</div><h1>MLI · 穆勒工业（Mueller Industries）</h1>
 <p>市值 $147.4 亿 / 股价约 $66.6 / 工业金属制品 / TTM 截止 2026-06-27</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -282,5 +333,5 @@ a{color:var(--accent)}
 <p>大白话:<strong>你投 100 块进去,按剔除一次性收益的真实口径,公司一年替你赚 5.4 块;其中约 1.4 块以分红加回购回到你口袋,剩下的堆在账上或用来买 Nehring 这类资产。</strong> 注意 EV 口径只有 13 倍——市值里有将近一成是趴着的净现金,你实际为生意本身付的价比表面便宜。</p>
 <p>这个 5.4 块未来变大还是变小?两股力对冲:电缆(数据中心/电网)和本土制造回流是顺风;但 21.9% 的经营利润率是历史正常值的两倍,靠的是关税撑起的价差——政策一变、或者铜价大跌,利润就得往 $6 亿的常态回落,那时候倍数就是 22-24 倍。三年平均口径 22.4 倍说的就是这件事。</p>
 <h2>第四部分:一句话结论</h2>
-<p>一家把无聊生意做到极致的公司:零负债、净现金 $14 亿、ROIC 37%、真回购真分红,17 倍的标价对这个质地不算贵,但利润站在关税撑起的高价差上,常态口径 22 倍——值这个价,别指望捡漏,铜价差回落把利润打回原形的那天才是好价格。</p>
+<p>一家把无聊生意做到极致的公司:零负债、净现金 $14 亿、ROIC 37%、真回购真分红,17 倍的标价对这个质地不算贵,但利润站在关税撑起的高价差上,常态口径 22 倍——值这个价,别指望捡漏,铜价差回落把利润打回原形的那天才是好价格。</p><script src="user.js"></script>
 </div></body></html>

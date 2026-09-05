@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RPC</a></div>
-<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">管理费锁十年是真,但SBC比净利还大,增长靠借债买</div><h1>RPC · Ridgepost Capital（瑞奇波斯特资本，原 P10）</h1>
+<div class="mine" data-t="RPC"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">管理费锁十年是真,但SBC比净利还大,增长靠借债买</div><h1>RPC · Ridgepost Capital（瑞奇波斯特资本，原 P10）</h1>
 <p>市值 $9.55 亿 / 股价约 $8.66 / 行业：另类资产管理 / TTM 截止 2026-06-30</p>
 <blockquote>
 <p>这是金融企业（资产管理公司），但它不是银行也不是保险——它靠收管理费赚钱，利润表结构跟普通公司一样，所以第三部分仍用市盈率体系，只是要额外剥掉资产管理行业特有的两层障眼法：并购摊销和天量股权激励。</p>
@@ -262,5 +313,5 @@ a{color:var(--accent)}
 </table></div>
 <p>大白话：<strong>你投 100 块进去，按剥掉摊销、但把股权激励老老实实当成本的真实口径，公司一年替你赚 4 块 7 上下。</strong> 其中约 1 块 75 以股息发回你口袋，1 块 9 花在回购上（但回购基本被员工发股吃掉，别当回报），剩下的连同新借的钱一起拿去收购下一家管理公司。公司自己吹的 8 倍/12 块 4 那个版本，靠的是把比净利润还大的 SBC 加回去，不能信。这个 4 块 7 未来会不会变大？收费锁十年保证它不会突然变小，但内生增长 0.3% 也说明它自己长不动——变大要靠继续借钱买，而杠杆已经 4 倍 EBITDA 了。</p>
 <h2>第四部分：一句话结论</h2>
-<p>这门生意的底子是好的——管理费按承诺资本收、一锁十年，衰退年份都饿不死；但股东拿到手的实惠被两样东西严重稀释：比净利润还大的股权激励，和只能靠举债并购买来的增长。股价一年跌了 30%，21 倍的真实市盈率看着不再离谱，但对一家内生零增长、杠杆 4 倍、SBC 失控的公司来说也谈不上便宜可占。想买收费型资产管理生意，等它证明能不靠借钱长大、或者 SBC 降到净利润一半以下再说——现在这个价，公道偏贵之间，按贵算。</p>
+<p>这门生意的底子是好的——管理费按承诺资本收、一锁十年，衰退年份都饿不死；但股东拿到手的实惠被两样东西严重稀释：比净利润还大的股权激励，和只能靠举债并购买来的增长。股价一年跌了 30%，21 倍的真实市盈率看着不再离谱，但对一家内生零增长、杠杆 4 倍、SBC 失控的公司来说也谈不上便宜可占。想买收费型资产管理生意，等它证明能不靠借钱长大、或者 SBC 降到净利润一半以下再说——现在这个价，公道偏贵之间，按贵算。</p><script src="user.js"></script>
 </div></body></html>

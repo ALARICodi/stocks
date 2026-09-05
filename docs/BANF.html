@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BANF</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">ROA 1.73%同业顶级，2倍PB把质量付足了</div><h1>BANF · 第一银行公司(BancFirst Corporation)</h1>
+<div class="mine" data-t="BANF"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">ROA 1.73%同业顶级，2倍PB把质量付足了</div><h1>BANF · 第一银行公司(BancFirst Corporation)</h1>
 <p>市值 $38.6亿 / 股价约 $115 / 金融(区域银行) / TTM 截止 2026-06-30</p>
 <p><strong>这是金融企业,下面用市净率 PB + 净资产收益率 ROE 口径而不是市盈率,原因是:银行的利润建立在约 8 倍杠杆的资产负债表上,利润质量取决于资产质量和资本厚度,单看市盈率会把一家激进放贷的银行和一家保守的银行看成一样便宜。</strong></p>
 <hr />
@@ -215,5 +266,5 @@ a{color:var(--accent)}
 <p><strong>投 100 块的年回报:ROE × (1/PB) = 13.67% ÷ 1.97 ≈ 6.9 块</strong>(用市盈率倒数算是 6.4 块,同一件事的两种切法)。这 6.9 块里,约 1.7 块当年以分红发给你,剩下约 5 块留在银行里按 13.7% 继续复利——过去五年它的每股净利润就是这么从 $5.03 涨到 $7.41 的(年化 +10.2%),不靠回购、不靠加杠杆,纯靠留存利润滚。</p>
 <p><strong>必须说破的三个风险</strong>:第一,这个回报建立在 7.9 倍杠杆上,银行的本质没变——经济危机时 ROE 会剧烈缩水,只是它的资本垫比别人厚一倍,同样的风暴里它最后一个倒。第二,<strong>利率敏感</strong>:三成资产是趴在美联储的现金,联储每降一次息,这部分收入直接跟着降,TTM 利润有一块是高利率红利,降息周期里 EPS 增速会难看。第三,<strong>州经济绑定油气</strong>:俄克拉何马的经济和油气景气挂钩,油价崩盘年份本地借款人会集体承压,这是它无法分散的原生风险。</p>
 <h2>第四部分:一句话结论</h2>
-<p>同业里资产质量最好的那一档:ROA 1.73% 顶级、杠杆最低、家族持股三成、EPS 十年稳涨,但市场也知道它好,<strong>2 倍净资产的价格把质量都付过费了——公道,谈不上便宜</strong>;适合当作"利率下行周期里看它跌出便宜价"的观察对象,而不是现在追。</p>
+<p>同业里资产质量最好的那一档:ROA 1.73% 顶级、杠杆最低、家族持股三成、EPS 十年稳涨,但市场也知道它好,<strong>2 倍净资产的价格把质量都付过费了——公道,谈不上便宜</strong>;适合当作"利率下行周期里看它跌出便宜价"的观察对象,而不是现在追。</p><script src="user.js"></script>
 </div></body></html>

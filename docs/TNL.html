@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TNL</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账面20倍是拨备砸的,现金流10倍,年还股东11%</div><h1>TNL · 旅行休闲公司(Travel + Leisure Co.)</h1>
+<div class="mine" data-t="TNL"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">账面20倍是拨备砸的,现金流10倍,年还股东11%</div><h1>TNL · 旅行休闲公司(Travel + Leisure Co.)</h1>
 <p>市值 $44.3亿 / 股价约 $72 / 行业:分时度假(消费服务) / TTM 截止 2026年6月30日</p>
 <hr />
 <h2>第一部分:它到底做几件事</h2>
@@ -211,5 +262,5 @@ a{color:var(--accent)}
 <p><strong>大白话:你投 100 块进去,按最保守的账面口径公司一年替你赚 5 块 6;但按它实际收进来的现金算,一年是 10 块。</strong> 而且这 10 块几乎全还给你:约 3 块 4 是股息、7 块 6 是回购注销(TTM 回购+股息占市值 11%)。差额去哪了?利润表上那 4 块多的差,是被坏账拨备和利息吃掉的——如果逾期率企稳,这部分明年就吐回来(远期 PE 8.6 赌的就是这个);如果美国中产继续断供,10 块的现金回报也会缩水。这是一门<strong>买家在赌消费信贷周期</strong>的生意。</p>
 <hr />
 <h2>第四部分:一句话结论</h2>
-<p>账面 19.8 倍是被坏账拨备砸出来的假贵,按现金流只有 10 倍、按三年平均利润 12.8 倍,公司一年拿市值的 11% 回购加分红还给你——<strong>这价格是真便宜</strong>。但便宜的对价写得明明白白:6 倍杠杆、负净资产、客户是borrowing at 15% 利率的美国中产、逾期率正在爬坡、11% 的空头盯着它。生意本身站得住(管理费和 RCI 年费是真现金奶牛),但周期一来会很难看。愿意吃周期风险的人,这个价位值得放进观察名单;想睡安稳觉的,绕开。</p>
+<p>账面 19.8 倍是被坏账拨备砸出来的假贵,按现金流只有 10 倍、按三年平均利润 12.8 倍,公司一年拿市值的 11% 回购加分红还给你——<strong>这价格是真便宜</strong>。但便宜的对价写得明明白白:6 倍杠杆、负净资产、客户是borrowing at 15% 利率的美国中产、逾期率正在爬坡、11% 的空头盯着它。生意本身站得住(管理费和 RCI 年费是真现金奶牛),但周期一来会很难看。愿意吃周期风险的人,这个价位值得放进观察名单;想睡安稳觉的,绕开。</p><script src="user.js"></script>
 </div></body></html>

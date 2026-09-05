@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KO</a></div>
-<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">贵但不荒唐，为「一百年后还在」付的溢价在历史高位</div><h1>KO · 可口可乐公司</h1>
+<div class="mine" data-t="KO"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">贵但不荒唐，为「一百年后还在」付的溢价在历史高位</div><h1>KO · 可口可乐公司</h1>
 <p>市值 3761 亿美元 | 股价约 87.5 美元 | 行业：消费必需品（软饮料） | TTM 截止 2026 年 7 月 3 日</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -307,5 +358,5 @@ a{color:var(--accent)}
 <h2>第四部分：一句话结论</h2>
 <p><strong>贵，但不荒唐——你在为"这家公司一百年后大概率还在"这件事付溢价，而且这个溢价现在处在历史高位。</strong></p>
 <p>29 倍的真实市盈率买一家利润年增 5%–6% 的糖水公司，静态回报只有 3.4%，比美国国债还低。支撑这个价格的唯一理由是确定性：0.34 的 beta（波动只有大盘的三分之一）、42% 的 ROE、1.9% 的股权激励占比、64 年不断的分红纪录、以及一个在 200 个国家印钞的品牌。过去 52 周股价涨了 23.6%，说明市场在动荡时又一次把它当避风港买了进去。</p>
-<p><strong>如果你要的是"睡得着觉"，这个价格值。如果你要的是回报，3.4% 太少了。</strong> 真正需要盯的不是财报，是 GLP-1 药物普及后美国软饮料销量的走势——那是唯一能击穿这台机器的东西，而它已经开始了。</p>
+<p><strong>如果你要的是"睡得着觉"，这个价格值。如果你要的是回报，3.4% 太少了。</strong> 真正需要盯的不是财报，是 GLP-1 药物普及后美国软饮料销量的走势——那是唯一能击穿这台机器的东西，而它已经开始了。</p><script src="user.js"></script>
 </div></body></html>

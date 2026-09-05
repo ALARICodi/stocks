@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">EG</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">PB打95折ROE12.6%，回购是SBC的15倍，但靠天吃饭</div><h1>EG · Everest Group（珠峰再保险集团）</h1>
+<div class="mine" data-t="EG"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">PB打95折ROE12.6%，回购是SBC的15倍，但靠天吃饭</div><h1>EG · Everest Group（珠峰再保险集团）</h1>
 <p>市值 $144.8亿 / 股价约 $378 / 行业：再保险+专业保险 / TTM 截止 2026-06-30</p>
 <blockquote>
 <p><strong>这是保险企业，下面用市净率 PB、ROE、综合成本率这套口径，而不是市盈率</strong>——保险公司的"净利润"里一大块是管理层对未来赔款的估计（准备金），当期利润可以被估计吹大或压小，市盈率单独看会骗人；净资产（账上真金白银的投资组合减掉预估赔款）才是更硬的锚。</p>
@@ -201,5 +252,5 @@ a{color:var(--accent)}
 2. <strong>三年平均口径 8.0 倍和当期 8.0 倍一样</strong>——说明当前利润不是周期高点上的假繁荣（2023 年还赚过 24.9 亿，比现在高）。这跟很多"低 PE 是因为利润在山顶"的周期股不同。
 3. <strong>回报建立在保险杠杆上</strong>：400 多亿投资组合对 152 亿净资产。一年两三场超级巨灾（2022 年就只赚了 5.9 亿），或者责任险准备金再暴一次雷，当年利润可以直接清零。PB 0.95 就是市场为这个风险打的折。</p>
 <h2>四、一句话结论</h2>
-<p>八倍利润、账面价值以下的价格，买全球前十的再保险商，每年 10% 的市值以回购分红还给你，回购是 SBC 的 15 倍——<strong>便宜是真便宜，账也干净</strong>。代价是这门生意永远靠天吃饭：巨灾年利润归零、准备金估错要回头补几十亿，2024 年刚演过一次。它不是能安心拿十年的复利机器，但在当前价格，坏消息已经打进折扣里了。<strong>便宜，值得放进观察名单，买它等于赌"未来几年灾害赔付正常 + 利率不速降"。</strong></p>
+<p>八倍利润、账面价值以下的价格，买全球前十的再保险商，每年 10% 的市值以回购分红还给你，回购是 SBC 的 15 倍——<strong>便宜是真便宜，账也干净</strong>。代价是这门生意永远靠天吃饭：巨灾年利润归零、准备金估错要回头补几十亿，2024 年刚演过一次。它不是能安心拿十年的复利机器，但在当前价格，坏消息已经打进折扣里了。<strong>便宜，值得放进观察名单，买它等于赌"未来几年灾害赔付正常 + 利率不速降"。</strong></p><script src="user.js"></script>
 </div></body></html>

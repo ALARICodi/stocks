@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FPI</a></div>
-<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">利润一半是卖地赚的；12个人一年吃掉1500万管理费</div><h1>FPI · 农田合伙人（Farmland Partners Inc.）</h1>
+<div class="mine" data-t="FPI"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">利润一半是卖地赚的；12个人一年吃掉1500万管理费</div><h1>FPI · 农田合伙人（Farmland Partners Inc.）</h1>
 <p>市值 4.476 亿美元 / 股价约 10.25 美元 / 行业：农地 REIT（房地产信托） / TTM 截止 2026 年 6 月 30 日</p>
 <blockquote>
 <p><strong>这是 REIT（房地产信托），下面不用市盈率当主口径，用 FFO 和 AFFO。</strong>
@@ -484,5 +535,5 @@ a{color:var(--accent)}
 <p>先把生意的账算清楚：这门生意一年产生 1670 万美元自由现金流、1441 万美元 AFFO，你要为它付 4.476 亿美元，<strong>31 倍 AFFO，3.2% 的收益率</strong>——而同一时间美国十年期国债给你的是 4% 出头，无风险。它借着 4.6%–5.4% 的钱买回报 3.4% 的地，投入资本回报率（3.34%）不到资金成本（6.91%）的一半，营收连续四年下降，派出去的股息超过了它自己给的 AFFO 指引上限。报表上那个 18.5 倍的市盈率是假的——把卖地利得剥掉是 40 倍，三年平均剥干净是 118 倍。<strong>作为一门生意，它不值这个价，差得远。</strong></p>
 <p>再把地的账算清楚：70,100 英亩真实存在的美国农地，账面 6.87 亿，而过去三年实际成交比账面高出 26%，所以清算价值大约每股 14.7 美元，现价 10.25 美元。<strong>作为一块地，它打了七折。</strong> 而且管理层这三年一直在做正确的事——卖地、还债、回购、缩股本，把折价一点点变现给股东。</p>
 <p>所以买它的理由只能有一个：<strong>你不是在买一家公司的成长，你是在打赌管理层会继续把这块地拆开卖掉，然后把钱还给你。</strong> 这个赌注不算离谱——他们过去三年确实在这么做，而且做得不错。但它有三个明确的漏洞：那 40% 的加州特种作物地公司自己刚减值过 1782 万，26% 的溢价大概率不适用于它；每拖一年，1500 万的管理费和 1000 万的利息就吃掉一次租金；而「继续卖」是管理层的选择，不是你能强制的合同。</p>
-<p><strong>结论：不便宜。</strong> 想赚这个 30% 的折价，等一个更宽的折价再动手——农地 REIT 的折价在利率高位时经常拉到 40% 以上。而如果你真正想要的是「持有美国农地对抗通胀」，直接买地或买农地基金，比通过这个每年抽走 29.5% 营收的壳去持有它划算得多。</p>
+<p><strong>结论：不便宜。</strong> 想赚这个 30% 的折价，等一个更宽的折价再动手——农地 REIT 的折价在利率高位时经常拉到 40% 以上。而如果你真正想要的是「持有美国农地对抗通胀」，直接买地或买农地基金，比通过这个每年抽走 29.5% 营收的壳去持有它划算得多。</p><script src="user.js"></script>
 </div></body></html>

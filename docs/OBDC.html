@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">OBDC</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">8折买净资产很诱人，可惜净资产正在加速缩水，股息刚砍14%</div><h1>OBDC · 蓝猫头鹰资本公司（Blue Owl Capital Corporation）</h1>
+<div class="mine" data-t="OBDC"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">有硬伤</span></div><div class="note">8折买净资产很诱人，可惜净资产正在加速缩水，股息刚砍14%</div><h1>OBDC · 蓝猫头鹰资本公司（Blue Owl Capital Corporation）</h1>
 <p>市值 56.3 亿美元 ｜ 当前股价 $11.41（2026-08-18 收盘）｜ 行业：金融（BDC / 商业发展公司）｜ 交易所：NYSE
 <strong>TTM 口径：截至 2026 年 6 月 30 日的最近四个季度</strong>（财年为 1–12 月）</p>
 <blockquote>
@@ -429,5 +480,5 @@ a{color:var(--accent)}
 <p><strong>但这些好处全部建立在一个假设上：NAV 不再往下掉。</strong> 而数据说的正好相反——从 15.45 到 14.26，而且 2026 上半年半年跌掉的比 2025 全年还多。<strong>当净资产在缩水时，"折价买净资产"这句话本身就失去了意义</strong>：你以 8 折买入 14.26 的净资产，如果两年后它变成 12.50，你的 11.41 成本对应的是 0.91 倍 PB——折价自己消失了，你什么都没赚到，只是把股息收进了口袋又眼看着本金等额蒸发。</p>
 <p><strong>几个必须记住的硬伤：</strong> ①每年 2.83% 的管理费在你看到任何利润之前被拿走，且不随业绩缩水；②GAAP 净利润只有 NII 的 40%，两者之间那 4.28 亿全是坏账；③收入里 8.7% 是无现金的 PIK、14.5% 是可自由裁量的关联分红；④股息削减是管理层自己承认赚不回来；⑤浮动利率组合在降息周期里收入必然继续下滑，一致预期就是未来三年利润年降 8.5%。</p>
 <p><strong>所以我的定位是：价格公道，生意有硬伤。</strong> 它不属于"便宜到该买"的那一类——市场给的 20% 折价刚好抵掉了看得见的信用损失和费用侵蚀，这是一个价格与风险大致匹配的位置。它更不属于"值得留着观察"的那一类——因为<strong>它的问题不是价格问题，是资产在损耗的问题，而价格再降也修不好损耗</strong>。</p>
-<p><strong>唯一可能改变判断的信号有两个</strong>：一是连续两个季度 NAV 止跌回升；二是公司把回购力度提到每季度 2% 以上（在 0.8 倍 PB 上大手笔回购是管理层最有说服力的表态）。这两件事没发生之前，11% 的股息率只是一个把本金分期还给你的分期付款计划。</p>
+<p><strong>唯一可能改变判断的信号有两个</strong>：一是连续两个季度 NAV 止跌回升；二是公司把回购力度提到每季度 2% 以上（在 0.8 倍 PB 上大手笔回购是管理层最有说服力的表态）。这两件事没发生之前，11% 的股息率只是一个把本金分期还给你的分期付款计划。</p><script src="user.js"></script>
 </div></body></html>

@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ACN</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">AI恐慌砸出的15倍,现金口径9倍,每年真还你7%</div><h1>ACN · 埃森哲（Accenture）</h1>
+<div class="mine" data-t="ACN"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">AI恐慌砸出的15倍,现金口径9倍,每年真还你7%</div><h1>ACN · 埃森哲（Accenture）</h1>
 <p>市值 $1,160 亿 / 股价 $189.61 / IT 咨询与外包 / TTM 截止 2026-05-31</p>
 <hr />
 <h2>一、它到底做几件事</h2>
@@ -270,5 +321,5 @@ a{color:var(--accent)}
 <p>说人话：<strong>你投 100 块，按最保守口径公司一年替你赚 6.3–6.6 块，按现金口径赚 8–10 块。</strong> 其中约 7.1 块是真金白银回到你口袋的——分红 $39 亿 + 净回购 $43 亿，合计 $82 亿，等于市值的 7.1%。剩下的钱拿去收购小公司维持增长。净现金 $18 亿，零负债压力。</p>
 <p>这个回报未来变大还是变小？营收还在以 6–7% 增长，GenAI 订单在爆发。真正的问题是：<strong>AI 到底是埃森哲的下一波施工订单，还是替代它 78 万人的技术</strong>。过去每一波技术浪潮（ERP、上云、移动化）都让它更大，因为企业永远需要人把新技术装进旧组织。但这次 AI 直接瞄准的就是「按人头计费的脑力劳动」本身——这是市场把它从 $325 砍到 $190（一年 −26%）的原因。</p>
 <h2>四、一句话结论</h2>
-<p>一家 ROIC 27%、零净负债、现金流比利润还厚、每年真金白银还你 7% 的公司，只卖 15 倍（现金口径 9 倍）——这价格是 AI 恐慌砸出来的，<strong>便宜是真便宜</strong>。你买它就是在赌一件事：AI 和之前每次技术革命一样需要施工队，而不是让施工队失业。我认为前者概率大——企业的烂系统和官僚组织不会因为大模型出现就自动消失——但这个赌注值得你知道自己押的是什么。</p>
+<p>一家 ROIC 27%、零净负债、现金流比利润还厚、每年真金白银还你 7% 的公司，只卖 15 倍（现金口径 9 倍）——这价格是 AI 恐慌砸出来的，<strong>便宜是真便宜</strong>。你买它就是在赌一件事：AI 和之前每次技术革命一样需要施工队，而不是让施工队失业。我认为前者概率大——企业的烂系统和官僚组织不会因为大模型出现就自动消失——但这个赌注值得你知道自己押的是什么。</p><script src="user.js"></script>
 </div></body></html>

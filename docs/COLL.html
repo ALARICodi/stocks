@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">COLL</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">2.5倍现金流真便宜,但赚的是药品保质期,还背11亿债</div><h1>COLL · Collegium 制药（Collegium Pharmaceutical）</h1>
+<div class="mine" data-t="COLL"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">2.5倍现金流真便宜,但赚的是药品保质期,还背11亿债</div><h1>COLL · Collegium 制药（Collegium Pharmaceutical）</h1>
 <p>市值 $8.24 亿 / 股价 $25.35 / 专科制药（疼痛 + 多动症）/ TTM 截止 2026-06-30</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -265,5 +316,5 @@ a{color:var(--accent)}
 <hr />
 <h2>第四部分：一句话结论</h2>
 <p>按现金流 2.5 倍、EV/FCF 5.8 倍，这是统计意义上的真便宜，市场把它按"冰山融化速度快于买新冰"定价（股价一年 -35%，20% 的股本被做空）；但它的 ADHD 那条腿是真的在长，管理层买药的手艺过去三次都不差。<strong>便宜是真的，风险的名字叫"下一次收购"和 10.9 亿净负债——可以留着观察，别当成安稳生意重仓。</strong></p>
-<p>数据来源：stockanalysis.com（TTM 财报、现金流、估值）；产品拆分来自 <a href="https://www.fool.com/earnings/call-transcripts/2026/08/13/collegium-pharmaceutical-coll-q2-2026-earnings-call-transcript/">Q2'26 财报电话会</a>、<a href="https://ir.collegiumpharma.com/news-releases/news-release-details/collegium-reports-second-quarter-2026-financial-results-and">公司公告</a>、<a href="https://www.quiverquant.com/news/Collegium+Pharmaceutical+Reports+Q2+2026+Results,+Completes+AZSTARYS+Acquisition+and+Raises+Full-Year+Guidance">Quiver 摘要</a></p>
+<p>数据来源：stockanalysis.com（TTM 财报、现金流、估值）；产品拆分来自 <a href="https://www.fool.com/earnings/call-transcripts/2026/08/13/collegium-pharmaceutical-coll-q2-2026-earnings-call-transcript/">Q2'26 财报电话会</a>、<a href="https://ir.collegiumpharma.com/news-releases/news-release-details/collegium-reports-second-quarter-2026-financial-results-and">公司公告</a>、<a href="https://www.quiverquant.com/news/Collegium+Pharmaceutical+Reports+Q2+2026+Results,+Completes+AZSTARYS+Acquisition+and+Raises+Full-Year+Guidance">Quiver 摘要</a></p><script src="user.js"></script>
 </div></body></html>

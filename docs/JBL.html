@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">JBL</a></div>
-<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">2.57%净利率的代工厂，44倍已把赌赢算进去</div><h1>JBL · 捷普（Jabil Inc.）</h1>
+<div class="mine" data-t="JBL"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">2.57%净利率的代工厂，44倍已把赌赢算进去</div><h1>JBL · 捷普（Jabil Inc.）</h1>
 <p>市值 $380.5 亿 / 股价约 $363.1 / 行业：生产制造（电子代工 EMS）/ TTM 截止 2026 年 5 月 31 日</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -415,5 +466,5 @@ a{color:var(--accent)}
 <p><strong>第二，三年常态利润说明当期就是高点。</strong> 剥掉 FY2024 的卖业务收益后，捷普过去三年的常态经营利润是 7.36 亿，而 TTM 是 8.62 亿——<strong>现在是三年最好的一期，不是最差的。</strong> 按常态算，你付的是 51.7 倍。</p>
 <p><strong>第三，那 5.34 亿"经营利润到税前利润之间凭空蒸发"的钱，是这家公司最容易被忽略的问题。</strong> 它吃掉了 31% 的经营利润，占营收的比例四年内翻了近三倍，而且它跟营运资金规模正相关——<strong>营收越涨，这块损耗涨得越快</strong>。这条曲线不修好，营收增长转化成利润增长的效率会一直被打折。</p>
 <p><strong>第四，那个循环有条件。</strong> 现金流靠多欠供应商 14.26 亿撑着，流动比率 0.98、营运资金为负。这在扩张期完全成立，在收缩期会反噬。FY2022 就演过一次：净利润 9.96 亿，自由现金流只剩 2.66 亿。</p>
-<p>要我说：<strong>这是一家好公司，但不是一个好价格。</strong> 我认可管理层的每一个决定，也认可 AI 机柜的需求是真实的。但代工这门生意的天花板是结构性的——你永远只能赚那几个点，任何一次需求放缓都会同时压垮利润率和现金流。<strong>这家公司值得关注的价格在 18–22 倍常态市盈率</strong>（对应 130–160 亿到 190 亿市值区间），一年涨了 65.7% 之后的 380 亿，是把未来两年的好消息一次性预支完了。</p>
+<p>要我说：<strong>这是一家好公司，但不是一个好价格。</strong> 我认可管理层的每一个决定，也认可 AI 机柜的需求是真实的。但代工这门生意的天花板是结构性的——你永远只能赚那几个点，任何一次需求放缓都会同时压垮利润率和现金流。<strong>这家公司值得关注的价格在 18–22 倍常态市盈率</strong>（对应 130–160 亿到 190 亿市值区间），一年涨了 65.7% 之后的 380 亿，是把未来两年的好消息一次性预支完了。</p><script src="user.js"></script>
 </div></body></html>

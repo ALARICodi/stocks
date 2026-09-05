@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">INGR</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">三年平均9.8倍，账全批最干净ROIC13%，便宜因糖浆被妖魔化</div><h1>INGR · 宜瑞安（Ingredion）</h1>
+<div class="mine" data-t="INGR"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">三年平均9.8倍，账全批最干净ROIC13%，便宜因糖浆被妖魔化</div><h1>INGR · 宜瑞安（Ingredion）</h1>
 <p>市值 66.0 亿美元 / 股价 104.62 美元 / 行业：食品配料（玉米深加工） / TTM 截止 2026-06-30</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -225,5 +276,5 @@ a{color:var(--accent)}
 <p><strong>大白话</strong>：你投 100 块，它一年替你赚 9 块——且<strong>三年平均口径反而是 10 块</strong>，说明你不是在利润高点接盘（FY2025 就是历史最好年份，TTM 只略回落）。这 9 块里，约 3 块 2 以分红发给你（股息率 3.2%，连续 14 年增派），约 2 块 8 拿去回购注销，剩下 3 块投进特种淀粉产能——三个去向都说得清、都对股东有利。这个利润未来变大还是变小？两股力量拔河：特种业务和拉美每年往上拱一点，北美糖浆每年往下掉一点，过去五年拔河的结果是经营利润年均+9%。真正的风险不是经营，是<strong>舆论政治化</strong>：如果反糖浆运动真逼着可乐们大规模弃用 HFCS，北美大宗那条腿会瘸得比预期快。市场就是为这个恐惧打的折——股价一年跌 19%，EV/EBITDA 6.4 倍处在它自己十年区间的最低端。</p>
 <hr />
 <h2>第四部分：一句话结论</h2>
-<p>一家人们只要吃饭就绕不开的公司：账本全批最干净（利息覆盖 58 倍）、ROIC 两倍于资金成本、分红回购利落、特种转型真在兑现——11 倍的标价是反糖浆舆论吓出来的，<strong>便宜是真便宜，糖浆的雷也是真雷，但用三成业务的风险换全公司九折再九折的价格，这笔账划算</strong>。</p>
+<p>一家人们只要吃饭就绕不开的公司：账本全批最干净（利息覆盖 58 倍）、ROIC 两倍于资金成本、分红回购利落、特种转型真在兑现——11 倍的标价是反糖浆舆论吓出来的，<strong>便宜是真便宜，糖浆的雷也是真雷，但用三成业务的风险换全公司九折再九折的价格，这笔账划算</strong>。</p><script src="user.js"></script>
 </div></body></html>

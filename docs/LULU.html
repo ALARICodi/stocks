@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">LULU</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">9.7倍买顶级品牌真现金真回购，但美洲熄火利润连降两年</div><h1>LULU · lululemon（露露乐蒙）</h1>
+<div class="mine" data-t="LULU"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">9.7倍买顶级品牌真现金真回购，但美洲熄火利润连降两年</div><h1>LULU · lululemon（露露乐蒙）</h1>
 <p>市值 $137.2亿 / 股价约 $121 / 行业：运动服饰零售 / TTM 截止 2026-05-03</p>
 <p>一年前它还是 30 倍市盈率的成长股明星，52 周股价跌了 41%，跌进了 0–15 倍段。先说清它是什么生意，再看这个"便宜"是馅饼还是陷阱。</p>
 <h2>一、它到底做几件事</h2>
@@ -214,5 +265,5 @@ a{color:var(--accent)}
 <p>注意最后一行的反常：<strong>预期市盈率（11.0）比当期（9.7）还高</strong>——市场预计它明年利润继续跌 10% 以上。这跟三年平均口径（8.3 倍，比当期低）合起来读就是完整故事：过去三年利润比现在高，未来一年利润比现在低，<strong>你买的是一条下行中的利润曲线</strong>，9.7 倍是曲线中间某一点的快照。</p>
 <p>大白话：投 100 块进去，按 TTM 真实口径公司一年替你赚 10.3 块。其中约 8 块通过回购真金白银还给你（不分红），剩下留着开店。资产负债表接近零净负债（现金 15 亿 vs 有息+租赁负债 21 亿），倒闭风险为零。但这 10.3 块<strong>明年大概率变成 9 块</strong>，后年止不止得住，取决于品牌热度和关税，而不是取决于财技。</p>
 <h2>四、一句话结论</h2>
-<p>账是全批次里最干净的一本：真利润、真现金、真回购、零净负债、ROIC 27.7%。9.7 倍的价格对这样的品牌显然便宜——<strong>但便宜的原因也是真的</strong>：本土市场顾客在流失、利润连降两年、市场赌它继续跌（近 10% 的股份被做空）。这是一笔"品牌热度赌局"：如果 lululemon 只是增长放缓的耐克，这价格是白送；如果它是下一个 Under Armour（品牌过气、利润腰斩再腰斩），9.7 倍一点不便宜。以它的品牌力、国际增长和资产负债表，赔率偏向前者。<strong>便宜，值得观察，但要盯住每季美洲可比销售额——那是这笔赌局唯一重要的记分牌。</strong></p>
+<p>账是全批次里最干净的一本：真利润、真现金、真回购、零净负债、ROIC 27.7%。9.7 倍的价格对这样的品牌显然便宜——<strong>但便宜的原因也是真的</strong>：本土市场顾客在流失、利润连降两年、市场赌它继续跌（近 10% 的股份被做空）。这是一笔"品牌热度赌局"：如果 lululemon 只是增长放缓的耐克，这价格是白送；如果它是下一个 Under Armour（品牌过气、利润腰斩再腰斩），9.7 倍一点不便宜。以它的品牌力、国际增长和资产负债表，赔率偏向前者。<strong>便宜，值得观察，但要盯住每季美洲可比销售额——那是这笔赌局唯一重要的记分牌。</strong></p><script src="user.js"></script>
 </div></body></html>

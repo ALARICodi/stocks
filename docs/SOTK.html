@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SOTK</a></div>
-<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">五十年小众手艺零负债，但37倍买4%增长</div><h1>SOTK · Sono-Tek（索诺泰克）</h1>
+<div class="mine" data-t="SOTK"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">五十年小众手艺零负债，但37倍买4%增长</div><h1>SOTK · Sono-Tek（索诺泰克）</h1>
 <p>市值 $0.77 亿 / 股价约 $4.89 / 行业：精密制造设备 / TTM 截止 2026-05-31</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -211,5 +262,5 @@ a{color:var(--accent)}
 <p>大白话：<strong>你投 100 块进去，公司一年替你赚 2 块 7；按三年平均只有 2 块。</strong> 这 2 块 7 一分钱都不分给你——不分红、不回购，全部攒在公司账上。华尔街给的下一年预期市盈率是 57.5 倍，意思是<strong>市场自己都预计它明年利润要跌</strong>——大单驱动的生意，今年交付高峰过了。</p>
 <p>值得说句公道话：市值里有 22% 是趴着不动的净现金，剔掉现金的真实出价是 29 倍买经营利润。但 29 倍买的是一家增速 4%、利润量级 200 万、订单一颠一颠的小设备厂——这个价格隐含的期待是燃料电池/光伏喷涂需求爆发，而过去五年它的收入年化增速只有 4.6%，爆发从没来过。</p>
 <h2>第四部分：一句话结论</h2>
-<p>生意本身挺可爱：五十年小众手艺、零负债、账目干干净净、22% 市值是现金；但 37 倍市盈率（三年平均口径 51 倍）买一家年增 4%、明年利润预计还要跌的小作坊，是<strong>好公司配了个坏价格</strong>——股价一年涨了 46%，把未来好几年的成长提前收走了。等它跌回去再看。</p>
+<p>生意本身挺可爱：五十年小众手艺、零负债、账目干干净净、22% 市值是现金；但 37 倍市盈率（三年平均口径 51 倍）买一家年增 4%、明年利润预计还要跌的小作坊，是<strong>好公司配了个坏价格</strong>——股价一年涨了 46%，把未来好几年的成长提前收走了。等它跌回去再看。</p><script src="user.js"></script>
 </div></body></html>

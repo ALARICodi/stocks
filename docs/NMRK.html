@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NMRK</a></div>
-<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">生意真回暖，但每年稀释16%，SBC是净利润1.9倍</div><h1>NMRK · 纽马克集团（Newmark Group）</h1>
+<div class="mine" data-t="NMRK"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">生意真回暖，但每年稀释16%，SBC是净利润1.9倍</div><h1>NMRK · 纽马克集团（Newmark Group）</h1>
 <p><strong>市值</strong> 39.4 亿美元（全稀释口径，含可换股合伙权益；只算 A/B 类普通股约 29 亿）
 <strong>股价</strong> $16.13（2026-08-19 盘中，前收 $15.18）
 <strong>行业</strong> 商业地产服务（TradingView 归到 Finance，但它不是银行，用市盈率口径没问题）
@@ -360,5 +411,5 @@ a{color:var(--accent)}
 <p>租赁、资本市场、管理服务三条线同时 +17%，40% 的收入是经常性的，这是一家真公司、周期也确实在转向上。但剥掉障眼法后是 20 倍市盈率、三年平均 28 倍——这是给成长股的价格，付给了一家 ROIC(4.64%) 低于资金成本(9.06%)、净负债 20 亿、把接近两倍净利润发成股权激励的周期性中介。回购只有 SBC 的一半，自由现金流是抵押贷款仓储制造的幻觉，那个 7.45 倍的预期市盈率是把稀释成本抹掉之后的产物。</p>
 <p><strong>周期向上的部分是真的，但价格已经把它算进去了，而稀释会把你分到的那份持续拿走。</strong></p>
 <hr />
-<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence / Fiscal.ai），TTM 截止 2026-06-30；收入分线增速与"约 40% 经常性收入"来自公司 2026 Q2 财报电话会。分析日期 2026-08-19。</em></p>
+<p><em>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence / Fiscal.ai），TTM 截止 2026-06-30；收入分线增速与"约 40% 经常性收入"来自公司 2026 Q2 财报电话会。分析日期 2026-08-19。</em></p><script src="user.js"></script>
 </div></body></html>

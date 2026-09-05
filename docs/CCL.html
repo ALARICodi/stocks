@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CCL</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">11倍标价是真的,但同时买下239亿债和衰退风险,赌未来三年不衰退</div><h1>CCL · 嘉年华邮轮（Carnival Corporation）</h1>
+<div class="mine" data-t="CCL"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">11倍标价是真的,但同时买下239亿债和衰退风险,赌未来三年不衰退</div><h1>CCL · 嘉年华邮轮（Carnival Corporation）</h1>
 <p>市值 $339 亿 / 股价约 $24.8 / 行业：邮轮旅游 / TTM 截止 2026-05-31</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -219,5 +270,5 @@ a{color:var(--accent)}
 <p><strong>大白话：你现在投 100 块进去，按 TTM 真实利润算一年替你赚 8.8 块。</strong> 其中约 1.2 块分红发给你（股息率约 1.2%，刚恢复）、1.1 块回购，剩下 6 块多主要拿去还债——还债等于把公司从债主手里一点点赎回来给股东，只要生意不塌，这部分价值迟早体现在股价上。这个 8.8 块未来变大还是变小？顺风是：订票量连创纪录、票价还在涨、利息一年比一年少；逆风是：三年平均口径它只有 4.5 块，现在的利润是十几年来最好的年景，而邮轮是经济衰退时第一批被砍掉的消费，beta 2.34、股价一年跌 23% 已经说明市场在吵这件事。</p>
 <hr />
 <h2>第四部分：一句话结论</h2>
-<p><strong>价格公道，生意一般——11 倍的标价是真的，但你同时买下了 239 亿美元的债和"衰退来了怎么办"的问题。</strong> 现在的嘉年华处在它十年里最好的位置：需求创纪录、私家岛拉高利润率、债务快速下降、重回投资级、分红回购归位，往后每年 $20 亿的还债都在给股东悄悄加杠杆式的回报。但它本质仍是重资产、强周期、靠免税撑利润的生意，疫情已示范过极端情况下股东会被摊薄一半。愿意赌未来三年不衰退的人，这个价位合理甚至偏乐观可期；求稳的人，看看就好。</p>
+<p><strong>价格公道，生意一般——11 倍的标价是真的，但你同时买下了 239 亿美元的债和"衰退来了怎么办"的问题。</strong> 现在的嘉年华处在它十年里最好的位置：需求创纪录、私家岛拉高利润率、债务快速下降、重回投资级、分红回购归位，往后每年 $20 亿的还债都在给股东悄悄加杠杆式的回报。但它本质仍是重资产、强周期、靠免税撑利润的生意，疫情已示范过极端情况下股东会被摊薄一半。愿意赌未来三年不衰退的人，这个价位合理甚至偏乐观可期；求稳的人，看看就好。</p><script src="user.js"></script>
 </div></body></html>

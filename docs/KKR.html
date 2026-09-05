@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KKR</a></div>
-<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">顺风里极好逆风里极难看，价格按顺风永吹定的</div><h1>KKR · KKR &amp; Co. Inc.</h1>
+<div class="mine" data-t="KKR"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">顺风里极好逆风里极难看，价格按顺风永吹定的</div><h1>KKR · KKR &amp; Co. Inc.</h1>
 <p>市值 $1033.6 亿 / 股价约 $115.2（897.64 百万股）/ 行业：金融 — 另类资产管理 + 寿险 / TTM 截止 2026 年 6 月 30 日</p>
 <blockquote>
 <p><strong>这是金融企业，下面不能只用市盈率，原因是：</strong> KKR 的利润里有两块东西会让市盈率骗人。一块是<strong>并表</strong>——它把自己管理的基金和旗下寿险公司整个并进报表，报表上 21.3 亿到 25.8 亿的"营收"里有一大半的最终归属不是 KKR 股东；另一块是<strong>未实现浮盈</strong>，基金里没卖掉的资产每季度重估，涨了就计进当期利润，跌了就变成亏损（2022 年就因此亏了 5.9 亿）。所以下面第三部分会同时给市盈率、市净率／ROE、有形账面价值三套口径，并说明每套口径在什么情况下失真。</p>
@@ -247,5 +298,5 @@ a{color:var(--accent)}
 <p>但把账拆开之后，当下这个价格站不住：</p>
 <p><strong>归属股东的利润只有报表利润的一半多一点</strong>（55.2 亿税后里 25 亿是别人的），而剩下的 29.90 亿里还有相当比例是没卖掉的资产的账面浮盈；<strong>ROE 只有 7.28%，低于它自己 9.12% 的资本成本</strong>——按当期口径它是在毁灭价值，而不是创造价值；<strong>四分之一的股东利润被股权激励拿走，回购只有股权激励的 0.3 倍，股本还在增加</strong>；<strong>股息率 0.68%</strong>，等于不分红。你买它，等于是在 3.63 倍市净率的价格上，买一个当期回报只有 2% 的、带着 0.7 倍负债权益比和一整家寿险公司的杠杆包。</p>
 <p>真正的多头理由只有一条，而且它是一个时点判断而不是价值判断：<strong>积压了三年没能退出的资产，总有一天要卖掉，那一年的业绩报酬会集中爆发。</strong> 这条理由本身是成立的，问题在于"哪一年"完全取决于利率和并购市场的脸色，不取决于 KKR 的努力。你付 34.6 倍的价格去等一个不知道哪年到来的窗口，中间还得承受一次信用周期的考验。股价过去 52 周已经跌了 22.5%，市场在这件事上已经开始改主意了。</p>
-<p><strong>结论：好公司，坏价格，而且是那种"错了会错得很痛"的坏价格。</strong> 这类资产该在信用利差走阔、市场厌恶杠杆、它跌到 1.5–2 倍市净率的时候买，那时候 ROE 7% 配 1.8 倍 PB 能给你 4% 的起始回报，再加上周期反转的弹性——那才是这门生意值得下注的形态。现在的 3.63 倍不是。</p>
+<p><strong>结论：好公司，坏价格，而且是那种"错了会错得很痛"的坏价格。</strong> 这类资产该在信用利差走阔、市场厌恶杠杆、它跌到 1.5–2 倍市净率的时候买，那时候 ROE 7% 配 1.8 倍 PB 能给你 4% 的起始回报，再加上周期反转的弹性——那才是这门生意值得下注的形态。现在的 3.63 倍不是。</p><script src="user.js"></script>
 </div></body></html>

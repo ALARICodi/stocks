@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SEZL</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">25.8倍买43%增长算公道，命门全在次贷坏账一件事上</div><h1>SEZL · Sezzle（先买后付）</h1>
+<div class="mine" data-t="SEZL"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">25.8倍买43%增长算公道，命门全在次贷坏账一件事上</div><h1>SEZL · Sezzle（先买后付）</h1>
 <p>市值 $39.5 亿 / 股价约 $117 / 消费金融科技（BNPL）/ TTM 截止 2026-06-30（分析日 2026-08-19，全榜第 697 名，PE 25.8）</p>
 <blockquote>
 <p>注：行业分类把它归在"科技服务"，但它实质上是一家消费信贷公司。下面市盈率那套仍然适用（它有真实的 GAAP 利润），但要额外盯一个数：坏账。</p>
@@ -267,5 +318,5 @@ a{color:var(--accent)}
 <p>说人话：<strong>你现在投 100 块进去，按真实口径公司一年替你赚 3.9 块</strong>，其中约 1.6 块通过回购真正回到你手里（TTM 回购 $6,680 万，无分红），剩下的垫进了越滚越大的贷款盘子——盘子转得快（6 周一轮），只要坏账率不失控，垫进去的钱是在下蛋的。这个 3.9 块明年大概率变大：收入还在 43% 增长、经营利润率 59%、几乎无净负债（净负债仅 $4,200 万）。<strong>但它变小的方式也很清楚：一场衰退</strong>。客户是信用卡都办不下来的人群，失业率一抬头，18.8% 的坏账率可以很快变成 25%，利润几乎是坏账率的杠杆函数。市场知道这一点——beta 高达 6.8，流通盘的 23% 被做空，8 月 6 日出完财报股价从 $150 上方直接砸到 $117。</p>
 <hr />
 <h2>第四部分：一句话结论</h2>
-<p>数字上这是全榜少见的怪物：43% 增长、59% 经营利润率、ROE 89%、创始人持股一半、真回购，只卖 25.8 倍——<strong>如果只看数字它算便宜</strong>；但这些利润全部建立在"美国低收入年轻人持续还得起 6 周分期"这一件事上，坏账占收入近两成、监管随时可能对消费者费用下手、对手（Affirm、Klarna、PayPal）个个比它大十倍。结论：<strong>价格公道，生意能赚大钱但命门单一</strong>——当成一张高赔率彩票拿着可以，当成压舱石不行；想上车的人应该等衰退恐慌把它砸到 15 倍以下再动手，而不是现在追。</p>
+<p>数字上这是全榜少见的怪物：43% 增长、59% 经营利润率、ROE 89%、创始人持股一半、真回购，只卖 25.8 倍——<strong>如果只看数字它算便宜</strong>；但这些利润全部建立在"美国低收入年轻人持续还得起 6 周分期"这一件事上，坏账占收入近两成、监管随时可能对消费者费用下手、对手（Affirm、Klarna、PayPal）个个比它大十倍。结论：<strong>价格公道，生意能赚大钱但命门单一</strong>——当成一张高赔率彩票拿着可以，当成压舱石不行；想上车的人应该等衰退恐慌把它砸到 15 倍以下再动手，而不是现在追。</p><script src="user.js"></script>
 </div></body></html>

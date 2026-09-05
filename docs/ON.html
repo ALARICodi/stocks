@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ON</a></div>
-<div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">48倍踩在周期底利润上，复苏已提前定价，SiC临价格战</div><h1>ON · 安森美半导体（ON Semiconductor）</h1>
+<div class="mine" data-t="ON"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">48倍踩在周期底利润上，复苏已提前定价，SiC临价格战</div><h1>ON · 安森美半导体（ON Semiconductor）</h1>
 <p>市值 $301.7 亿 / 股价约 $77.5 / 行业：功率与传感半导体 / TTM 截止 2026-07-03</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -276,5 +327,5 @@ a{color:var(--accent)}
 <p>注意一个和 NVDA 相反的现象：<strong>三年平均口径（23 倍）反而比当期（48 倍）便宜一半</strong>——因为 2023–24 是利润高峰、现在是周期底。也就是说 48 倍这个吓人的数字踩在坑底利润上，如果利润回到三年平均水平，估值就是 23 倍。</p>
 <p>大白话：<strong>你现在投 100 块进去，按剔除障眼法的当期口径，公司一年替你赚不到 3 块；如果你信它能回到过去三年的平均水平，算 4.3 块。</strong> 这几块钱里，公司确实在往你口袋还——TTM 回购了市值的 5%，没有分红。但注意它同时在借钱，还的钱有一部分是债换来的。未来这个数会不会变大：会，前提是汽车/工业周期继续回暖且碳化硅不被中国厂商的价格战打穿——比亚迪半导体、天科合达们正在把 SiC 衬底价格一年打掉三成，安森美的「全产业链自制」优势正是建立在衬底贵的年代。</p>
 <h2>第四部分：一句话结论</h2>
-<p>这是一家真有本事的周期股——车载图像传感器全球第一、碳化硅全球前三——但现在 48 倍的市盈率踩在周期底部利润上，股价一年涨了 52%，<strong>复苏已经被提前定价</strong>（华尔街给的 forward PE 21 倍等于默认利润翻倍），而碳化硅正面临中国价格战这个真变量。生意站得住，价格没有便宜可占：<strong>想买周期反转的人来晚了半程，现在的价格是「复苏顺利」的价格，不是「万一不顺利也亏不了多少」的价格。</strong></p>
+<p>这是一家真有本事的周期股——车载图像传感器全球第一、碳化硅全球前三——但现在 48 倍的市盈率踩在周期底部利润上，股价一年涨了 52%，<strong>复苏已经被提前定价</strong>（华尔街给的 forward PE 21 倍等于默认利润翻倍），而碳化硅正面临中国价格战这个真变量。生意站得住，价格没有便宜可占：<strong>想买周期反转的人来晚了半程，现在的价格是「复苏顺利」的价格，不是「万一不顺利也亏不了多少」的价格。</strong></p><script src="user.js"></script>
 </div></body></html>

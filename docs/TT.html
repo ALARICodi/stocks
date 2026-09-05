@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TT</a></div>
-<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">极好的公司，但价格把「极好」算进去了甚至算多了</div><h1>TT · 特灵科技（Trane Technologies plc）</h1>
+<div class="mine" data-t="TT"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">极好的公司，但价格把「极好」算进去了甚至算多了</div><h1>TT · 特灵科技（Trane Technologies plc）</h1>
 <p>市值 $1050.9 亿 / 股价约 $477.6 / 行业：生产制造 — 暖通空调与冷链 / TTM 截止 2026 年 6 月 30 日</p>
 <hr />
 <h2>第一部分：它到底做几件事</h2>
@@ -277,5 +328,5 @@ a{color:var(--accent)}
 <p>好在哪，数字全在上面：ROIC 26.6% 是资本成本的 2.5 倍，自由现金流是净利润的 1.2 倍，SBC 只占利润 3%，回购是 SBC 的 15 倍，账上没有任何需要剥的会计手法，三分之一的收入来自跟周期无关的售后服务。这些指标里随便拿三个出来，放到标普 500 里都是上四分位。</p>
 <p>问题只有一个字：贵。<strong>35.6 倍的真实市盈率对应每年 2.81% 的回报，而它的营收只增长 7%。</strong> 更刺眼的是三年平均口径的 42 倍——这个数字在告诉你，当前 29.5 亿的利润是三年利润快速爬升后的顶点（2023 年才 20.24 亿，两年涨了 46%），你现在是在利润高点上付 35.6 倍。如果这轮由数据中心和能效法规驱动的暖通景气度只是延长了的周期而不是永久的台阶，那 42 倍才是你真正在付的价。</p>
 <p>拿它跟自己的资本成本比更直接：公司自己的 WACC 是 10.58%，而你作为股东买它的收益率只有 2.81%。中间这 7.8 个百分点的差，你只能指望靠利润增长去填——按 7% 的营收增速加 1.5% 的股本缩减，每股利润长期增速大概 9%–11%，勉强够填，但填完你就只剩下"和资本成本持平"，没有安全垫。</p>
-<p><strong>结论：公司值得长期持有，但不值得在 35.6 倍买入。</strong> 这是那种应该放进观察名单、等下一次周期性回调（住宅消化期或货运继续低迷导致的业绩失速）跌到 25 倍出头再动手的标的。现在买，你买到的是一家优秀公司和一个平庸的预期回报。</p>
+<p><strong>结论：公司值得长期持有，但不值得在 35.6 倍买入。</strong> 这是那种应该放进观察名单、等下一次周期性回调（住宅消化期或货运继续低迷导致的业绩失速）跌到 25 倍出头再动手的标的。现在买，你买到的是一家优秀公司和一个平庸的预期回报。</p><script src="user.js"></script>
 </div></body></html>

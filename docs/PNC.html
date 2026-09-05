@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PNC</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">跟USB像素级一致的公道价，利润质量打九五折</div><h1>PNC · PNC 金融服务集团</h1>
+<div class="mine" data-t="PNC"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">跟USB像素级一致的公道价，利润质量打九五折</div><h1>PNC · PNC 金融服务集团</h1>
 <p>市值 966 亿美元 / 股价约 242 美元 / 行业：银行（任务2 · 市盈率 0–15 倍段，榜内第 16 名）/ TTM 截止 2026-06-30</p>
 <blockquote>
 <p><strong>这是金融企业，下面用市净率 PB + 净资产收益率 ROE 口径而不是市盈率</strong>，原因是：银行利润建立在十几倍杠杆之上，「营收」大半是利息，普通公司的市盈率逻辑在这里失真。正确问法是：你按账面价值几倍买入（PB），这堆净资产每年生出多少利润（ROE）。</p>
@@ -230,5 +281,5 @@ a{color:var(--accent)}
 <p>大白话：<strong>你现在投 100 块进去，公司一年替你赚约 7.6 块。</strong> 其中约 5.1 块以分红加回购的形式真正回到你口袋（这点比 USB 大方），剩下约 2.5 块留在公司里支撑扩张——PNC 留存的每一块钱都在买网点、买银行、往新州铺摊子。这个 7.6 未来变大还是变小？顺风是 FirstBank 并表满一年、利率下行释放债券浮亏压力，EPS 预期还有一年 10% 以上的增速；逆风同 USB：十倍杠杆生意，衰退一来 7.6 会变 4。三年平均口径 16.9 倍偏高的原因和 USB 一样——前两年被债券重定位损失压低,不是现在利润虚高。</p>
 <h2>四、一句话结论</h2>
 <p><strong>公道，没有便宜可占。</strong> 13.3 倍市盈率、1.66 倍市净率，三个数（价格、ROE、回报率）跟 USB 几乎像素级一致，但两家的性格完全不同：USB 靠支付手续费的独门生意，PNC 靠一个州一个州买过去的规模野心。PNC 的账上有两根刺——年年重演的「一次性」证券损失、以及并购当年看不清的真实增长——所以同样的价格下它的利润质量要打个九五折。当一只稳健的全国性银行股拿着 2.8% 股息等扩张兑现是成立的，但这个价位买不到超额收益；PB 回到 1.4 倍以下才谈得上便宜。</p>
-<p><em>数据来源：stockanalysis.com，TTM 截止 2026-06-30，分析日期 2026-08-29。分部利润未披露，FirstBank 并表贡献未拆分，文中标注「估算」处为推断。</em></p>
+<p><em>数据来源：stockanalysis.com，TTM 截止 2026-06-30，分析日期 2026-08-29。分部利润未披露，FirstBank 并表贡献未拆分，文中标注「估算」处为推断。</em></p><script src="user.js"></script>
 </div></body></html>

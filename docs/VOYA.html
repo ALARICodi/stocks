@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VOYA</a></div>
-<div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">止损险踩坑修复中，回购+分红年还7.5%真金白银</div><h1>VOYA · Voya Financial（沃亚金融）</h1>
+<div class="mine" data-t="VOYA"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">止损险踩坑修复中，回购+分红年还7.5%真金白银</div><h1>VOYA · Voya Financial（沃亚金融）</h1>
 <p>市值 $90.7 亿 / 股价约 $100 / 金融—退休金与团体保险 / TTM 截止 2026-06-30</p>
 <blockquote>
 <p>这是金融企业，下面用市净率 PB、ROE、调整后经营利润这套口径而不是单纯的市盈率，原因是：保险和退休金公司的 GAAP 净利润里混着投资组合的市价波动和已实现损益，单看 PE 会失真；而它的资产负债表本身就是生意的一部分。</p>
@@ -237,5 +288,5 @@ a{color:var(--accent)}
 <p><strong>大白话：你现在投 100 块进去，按 GAAP 口径公司一年替你赚 5.9 块；按剔除投资波动的调整后口径约赚 8–9 块；其中约 7.5 块是通过回购和分红真正回到你口袋的</strong>——这个「实回报率」在整个榜单里都算高的。市场给的远期 9.5 倍，赌的是止损险提价修复 + OneAmerica 并表增厚兑现，若兑现则 100 块年赚 10 块以上。</p>
 <p>两个必须说的但书：<strong>第一</strong>，这些回报建立在保险杠杆之上（净债务 $36 亿、Debt/Equity 0.69），经济下行或再踩一次承保坑时会剧烈缩水，2024 年就是活例子。<strong>第二</strong>，股价一年涨了 35%，按可比口径的市净率已从历史的 1.0–1.26 区间抬到约 1.4——修复预期已经付过一部分钱了，这不再是去年那个无人问津的便宜货。</p>
 <h2>四、一句话结论</h2>
-<p><strong>价格公道，生意一般偏上。</strong> 退休金记账 + 资产管理这两门是高粘性、资本占用轻的好生意，止损险刚用真金白银证明了自己会踩坑；ROE 只有 10% 上下的杠杆金融股，付 1.9 倍普通股账面不算便宜，但 11–12 倍的调整后利润、一年 7.5% 的回购+分红实回报、外加止损险修复的免费期权，这个价<strong>值它的票价，只是便宜已经被前面涨的 35% 吃掉了</strong>。愿意持有金融股的人可以留着观察，等它回撤或者等修复兑现打脸再做决定。</p>
+<p><strong>价格公道，生意一般偏上。</strong> 退休金记账 + 资产管理这两门是高粘性、资本占用轻的好生意，止损险刚用真金白银证明了自己会踩坑；ROE 只有 10% 上下的杠杆金融股，付 1.9 倍普通股账面不算便宜，但 11–12 倍的调整后利润、一年 7.5% 的回购+分红实回报、外加止损险修复的免费期权，这个价<strong>值它的票价，只是便宜已经被前面涨的 35% 吃掉了</strong>。愿意持有金融股的人可以留着观察，等它回撤或者等修复兑现打脸再做决定。</p><script src="user.js"></script>
 </div></body></html>

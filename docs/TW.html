@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TW</a></div>
-<div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">一流生意二流价格，而且那个25倍标签被美化过</div><h1>TW · Tradeweb Markets（特雷德维）</h1>
+<div class="mine" data-t="TW"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">一流生意二流价格，而且那个25倍标签被美化过</div><h1>TW · Tradeweb Markets（特雷德维）</h1>
 <p>市值 $248.7 亿 / 股价 $106.29 / 行业：金融—电子交易平台 / TTM 截至 2026年6月30日（2026年7月30日发布）</p>
 <blockquote>
 <p>这家公司虽然行业归在"金融"，但它<strong>不是银行、不是保险、不是券商自营</strong>——它不放贷、不承担信用风险、不用自己的钱买卖债券。它是个<strong>收过路费的市场</strong>，商业模式跟纳斯达克交易所、跟支付公司更像。所以下面照常用市盈率口径，不用市净率/ROE 那套。</p>
@@ -401,5 +452,5 @@ a{color:var(--accent)}
 <p>问题全在价格和披露上。<strong>报出来的 25.4 倍是被一笔约 1.92 亿美元的非现金账面收益压低的</strong>——这笔钱没有一分进过公司的银行账户，2026 年上半年也已经不再出现。剔掉之后是 <strong>32.3 倍</strong>，三年平均口径 <strong>30.9 倍</strong>独立印证了这个数字。也就是说，<strong>你实际上是在用 32 倍的价格，买一家收入年增 14% 的公司</strong>。</p>
 <p>32 倍买 14% 增长，在生意质量这么高的前提下不能说是明抢，但<strong>这里面没有留任何安全边际</strong>：一旦债券市场的波动率回归平静、成交量增速从 20% 掉到 8%，收入增速会立刻掉到个位数，而 32 倍的估值撑不住个位数增长。</p>
 <p>市场其实已经在做这件事了——<strong>过去 52 周股价跌了 18.66%</strong>，同期公司利润是增长的。这不是业绩出问题，是估值在往下修。我认为这个修正还没走完。</p>
-<p><strong>适合什么人</strong>：认为债券电子化的长期趋势足以熨平估值风险、且愿意拿五年以上的人。<strong>不适合什么人</strong>：看着"25 倍市盈率，比标普平均还便宜"就下手的人——那个 25 倍不是真的。</p>
+<p><strong>适合什么人</strong>：认为债券电子化的长期趋势足以熨平估值风险、且愿意拿五年以上的人。<strong>不适合什么人</strong>：看着"25 倍市盈率，比标普平均还便宜"就下手的人——那个 25 倍不是真的。</p><script src="user.js"></script>
 </div></body></html>

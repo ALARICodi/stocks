@@ -98,9 +98,60 @@ a{color:var(--accent)}
   .filters .row{gap:6px}
   .fb{font-size:.82em;padding:.45em .6em}
 }
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PYPL</a></div>
-<div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">7倍FCF年注销7%股本,赌按钮不被苹果吃掉</div><h1>PYPL · PayPal（贝宝）</h1>
+<div class="mine" data-t="PYPL"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">7倍FCF年注销7%股本,赌按钮不被苹果吃掉</div><h1>PYPL · PayPal（贝宝）</h1>
 <p>市值 459 亿美元 / 股价约 53.7 美元 / 行业：数字支付 / TTM 截止 2026-06-30</p>
 <p>52 周股价跌了 23%，从 2021 年高点算跌了超过八成。现在 10 倍市盈率、7 倍自由现金流——<strong>这是本批三家里唯一一家"便宜是便宜在市场厌恶上"的公司</strong>，值得把账算细。</p>
 <h2>一、它到底做几件事</h2>
@@ -236,5 +287,5 @@ a{color:var(--accent)}
 <p>大白话：<strong>你投 100 块进去，按最保守的 GAAP 口径公司一年替你赚 10 块 7；而它实际还给股东的是 14 块 7</strong>——把赚的全还给你不够，还把账上存的现金也拿来买自己的股票。按现在的回购速度，五年后同样的利润摊在少三分之一的股本上，就算生意一点不长，每股利润也自动涨 40%+。X 未来变大还是变小：生意本身大概率<strong>慢速变大</strong>（电商大盘还在涨、Venmo 变现在推进），但每股口径因为回购会<strong>明显变大</strong>；风险是黄按钮的份额被 Apple Pay 一年啃一点，啃的速度快过回购的速度，那这就是价值陷阱。</p>
 <h2>四、一句话结论</h2>
 <p>10 倍利润、7 倍自由现金流、每年真金白银注销 7–8% 的股本、利润不在周期高点、账上干净——<strong>这是真便宜</strong>；它换来的是你得接受一门增长只有 5%、正面被苹果攻击的生意，但"平庸"两个字已经在价格里打了对折，"衰败"才会让你亏钱——目前的数据（营收还在涨、用户没流失）支持平庸，不支持衰败。</p>
-<p>数据来源：stockanalysis.com（TTM 截止 2026-06-30，市值为 2026-08-28 收盘）</p>
+<p>数据来源：stockanalysis.com（TTM 截止 2026-06-30，市值为 2026-08-28 收盘）</p><script src="user.js"></script>
 </div></body></html>
