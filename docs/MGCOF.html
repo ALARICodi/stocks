@@ -1,0 +1,398 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MGCOF · 三菱商事（日本）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MGCOF</a></div>
+<div class="mine" data-t="MGCOF"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">巴菲特8倍买的东西现在20倍，一半利润看焦煤铜价，8%股东回报靠卖资产撑</div><h1>MGCOF · 三菱商事（日本）</h1>
+<p>市值 17.95 万亿日元 ≈ 1238 亿美元（按 1 美元 = 145 日元）/ 东京股价 4,902 日元 / 综合商社（资源 + 贸易 + 投资）/ TTM 截止 2026-06-30（财年 4 月–3 月）/ 财报货币：日元，下文全部用日元</p>
+<p>任务4 · 海外巨头榜第 35 名。巴菲特的伯克希尔 2020 年起持股，现在约 10%，是它最有名的股东。场外代号 MGCOF 是日本普通股的场外挂牌，stockanalysis 上要走东京 8058 的路径才有财报。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>先说清楚「综合商社」是什么：它不是一家贸易公司，而是<strong>一个拿着几百家公司股权的投资集团</strong>，这几百家公司横跨煤矿、铜矿、液化天然气、便利店、三文鱼养殖、汽车销售、发电厂。财报上 19.9 万亿的「营收」是把控股子公司的流水全部并进来的数字，没什么意义；<strong>看它只能看净利润</strong>，因为它一大半的利润来自「按持股比例分到的联营公司利润」（现金流量表里「权益法投资收益 4801 亿」），这一项在经营利润之下，所以页面上 4969 亿的「经营利润」远远低估了它真实的赚钱能力。</p>
+<p>财报分八个事业部，我按利润来源合并成四门生意。<strong>分部利润按三菱商事历年披露的各部门净利润比例估算，都是估算。</strong></p>
+<h3>生意 A：矿产资源（Mineral Resources）—— 利润的第一支柱</h3>
+<p><strong>它是什么</strong>：三菱商事持有澳大利亚 BMA 焦煤矿 50%（跟必和必拓合资，全球最大的炼钢用焦煤出口商）、智利和秘鲁几座铜矿的少数股权（Escondida、Los Pelambres、Quellaveco）、澳洲铁矿、加拿大铝土。<strong>它不自己挖矿，它出钱占股，矿由必和必拓、英美资源这些专业矿业公司运营，它按股权比例分利润。</strong></p>
+<p><strong>举个具体例子</strong>：BMA 一年产 6000 万吨焦煤，卖给日本、印度、中国的钢厂。焦煤价格 2022 年冲到每吨 500 美元时，三菱商事这块一年净赚 6000 多亿日元；2025 年跌回 200 美元，利润腰斩到 3000 亿上下。<strong>这门生意的利润完全跟着焦煤和铜价走，三菱商事自己控制不了。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 营收</th>
+<th>同比（FY26 vs FY25）</th>
+<th>占总营收</th>
+<th>贡献净利润（估算）</th>
+<th>占净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.69 万亿日元</td>
+<td>+26.7%</td>
+<td>24%</td>
+<td>约 3000 亿日元</td>
+<td>约 33%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 B：能源与电力（Environmental Energy + Power Solution）—— 液化天然气</h3>
+<p><strong>它是什么</strong>：文莱、马来西亚、俄罗斯萨哈林 2 号、美国 Cameron、加拿大 LNG Canada 这些液化天然气项目的股权，加上荷兰的 Eneco 电力公司（2020 年花 5000 亿买的，欧洲最大的绿电零售商之一）。LNG 项目签的是 20 年长约，日本、韩国的燃气公司照单付款，比煤矿稳得多。</p>
+<p><strong>举个具体例子</strong>：LNG Canada 2025 年投产，三菱商事占 15%，一年 1400 万吨里它分 210 万吨，按长约价卖给日本的燃气公司，一年分几百亿利润，签到 2045 年。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 营收（按 FY26 口径）</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>贡献净利润（估算）</th>
+<th>占净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>约 4.59 万亿日元</td>
+<td>+4%</td>
+<td>23%</td>
+<td>约 2000 亿日元</td>
+<td>约 22%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 C：生活消费（Smart-Life Creation + Food Industry）—— 罗森便利店和三文鱼</h3>
+<p><strong>它是什么</strong>：罗森便利店（2024 年跟 KDDI 各持 50%，退出并表）、三菱食品（日本最大的食品批发商）、挪威 Cermaq 三文鱼养殖（全球第三）、谷物贸易、服装。这块是它「不靠资源价格」的部分，利润薄但稳定。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>贡献净利润（估算）</th>
+<th>占净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.97 万亿日元</td>
+<td>+3%</td>
+<td>25%</td>
+<td>约 1500 亿日元</td>
+<td>约 17%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 D：材料、汽车、城市开发（Materials + Mobility + Urban Development）</h3>
+<p><strong>它是什么</strong>：钢材和化工品贸易（材料）、三菱汽车 20% 股权和东南亚汽车销售网络（Mobility）、亚洲的工业园区和房地产（城市开发）。三块加起来利润跟消费那块差不多。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占总营收</th>
+<th>贡献净利润（估算）</th>
+<th>占净利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.56 万亿日元</td>
+<td>+2%</td>
+<td>28%</td>
+<td>约 2500 亿日元</td>
+<td>约 28%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合起来</strong>：TTM 净利润 8959 亿日元，同比 +12%。<strong>三分之一来自焦煤和铜，五分之一来自 LNG，这家公司一半的利润是资源价格决定的。</strong> FY2023（2023 年 3 月财年）资源价格顶峰时净利润 1.18 万亿，现在 8959 亿，这就是周期。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：日本公司，可忽略。</li>
+<li><strong>一次性项目</strong>：TTM 有 477 亿的投资出售收益。<strong>但综合商社年年都在卖资产</strong>（FY25 卖了 3056 亿、FY24 卖了 2330 亿），这是它的商业模式（买进、养大、卖出）的一部分，单看 TTM 分不清哪些是一次性的。我按最保守的办法把 477 亿税后约 330 亿从真实利润里剔掉。</li>
+<li><strong>资本化的支出</strong>：没有。</li>
+<li><strong>回购与稀释</strong>：现金流量表页融资活动部分没抓全，用股本变化倒推：<strong>股本一年减少 6.25%</strong>，按均价约 4500 日元算，TTM 回购约 1 万亿日元（三菱商事 2025 年宣布了 1 万亿回购计划，跟这个数对得上）；分红按每股 110 日元约 4000 亿。两项合计约 1.4 万亿，<strong>是净利润的 1.5 倍、市值的 8%</strong>。SBC 为零，这是全篇最实在的一个数字。</li>
+<li><strong>利润和现金流的差</strong>：净利润 8959 亿 → 经营现金流 1.81 万亿 → 自由现金流 1.45 万亿（页面 P/FCF 12.4 倍倒推）。经营现金流是净利润的两倍，得对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿日元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>8,959</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>4,156</td>
+<td></td>
+</tr>
+<tr>
+<td>− 权益法投资收益</td>
+<td>−4,801</td>
+<td>联营公司的利润，账面上算你的，现金还在人家手里</td>
+</tr>
+<tr>
+<td>+ 其他经营活动</td>
+<td>6,498</td>
+<td><strong>主要是联营公司实际打过来的分红</strong>——上一行的钱真收到了大部分</td>
+</tr>
+<tr>
+<td>− 投资出售收益</td>
+<td>−477</td>
+<td>现金在投资活动里</td>
+</tr>
+<tr>
+<td>+ 营运资金释放</td>
+<td>3,737</td>
+<td>应收、存货下降，贸易规模缩了</td>
+</tr>
+<tr>
+<td>+ 其他</td>
+<td>41</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>18,113</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−3,675</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>14,438</td>
+<td><strong>比净利润高 60%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>高出来的部分主要是营运资金释放的 3737 亿——贸易缩表放出来的钱，不是年年有。剔掉它，正常年份的自由现金流约 1.07 万亿，仍高于净利润，因为折旧大于资本开支。<strong>综合商社的现金比利润多，这是真的；但 8% 的股东回报里有一部分靠卖资产和缩表撑着，不是全靠赚。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 17.95 万亿日元（2026-09-04），净负债 4.65 万亿，企业价值 23.33 万亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>17.95 万亿 ÷ 8959 亿</td>
+<td>20.0 倍</td>
+<td>5.0 元</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>日本公司不做 Non-GAAP</td>
+<td>同上</td>
+<td>5.0 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>17.95 万亿 ÷（8959 − 330 投资出售收益税后）= ÷ 8629 亿</td>
+<td><strong>20.8 倍</strong></td>
+<td><strong>4.8 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>17.95 万亿 ÷ 1.07 万亿（剔掉营运资金释放）</td>
+<td>16.8 倍</td>
+<td>6.0 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>对商社没意义（利润在经营利润线以下），改用 EV ÷ 税前利润 = 23.33 ÷ 1.23 万亿</td>
+<td>19.0 倍</td>
+<td>5.3 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>17.95 万亿 ÷ 三年平均净利润 9051 亿（FY24 9640、FY25 9507、FY26 8005）</td>
+<td>19.8 倍</td>
+<td>5.0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话</strong>：你现在投 100 块进三菱商事，按真实口径公司一年替你赚 4.8 块。<strong>而它一年真的还给你 8 块</strong>（分红 2.2 块 + 回购 5.8 块）——比赚的还多，差额靠卖资产和贸易缩表放出来的现金。这能持续两三年（它还有大量可以变现的股权），不能持续十年。</p>
+<p><strong>这个 4.8 块未来变大还是变小？</strong> 看焦煤和铜价。焦煤现在每吨 200 美元上下，是五年低位，往下空间不大；铜在高位。LNG Canada 刚投产会贡献增量。所以大概率持平到小涨，但<strong>它三年前的市盈率是 6–7 倍、巴菲特 2020 年买入时不到 8 倍，现在 20 倍</strong>——市值三年从 6.8 万亿涨到 17.95 万亿（2.6 倍），利润反而从 1.18 万亿跌到 8959 亿。<strong>涨的全是估值，一分钱利润都没涨。</strong> 「巴菲特持股 + 日本公司治理改革 + 大回购」三个故事把一家周期性资源投资公司的估值从 7 倍抬到了 20 倍。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>三菱商事的账是真的、回购是真的（一年缩股 6%、零 SBC）、LNG 长约是真的，但它本质上是一家半数利润看焦煤和铜价的资源投资公司，历史上就值 7–12 倍，现在 20 倍是「巴菲特买了」这三个字的溢价。投 100 块一年赚 4.8 块、拿到 8 块——拿到的比赚的多，这种好事靠卖资产撑不了十年。价格偏贵，等资源价格下一轮低谷、市盈率回到 10 倍出头再看。</strong></p><script src="user.js"></script>
+</div></body></html>
