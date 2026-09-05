@@ -1,0 +1,280 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>U · Unity Software（游戏引擎 + 手游广告网络）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">U</a></div>
+<div class="mine" data-t="U"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">引擎护城河真，广告回血真，但股东现金流93倍，为三年后转正预付全款</div><h1>U · Unity Software（游戏引擎 + 手游广告网络）</h1>
+<p>市值 183 亿美元 / 股价约 41.7 美元 / 科技服务·软件 / TTM 截止 2026-06-30 / 分析日 2026-09-05</p>
+<blockquote>
+<p>TTM 净亏损 5.9 亿美元，但经营现金流 +5.5 亿、自由现金流 +5.4 亿。<strong>这是「账面亏」</strong>：亏在收购留下的无形资产摊销、一笔 2.8 亿的减值重组，和 3.4 亿股权激励。第三部分照常做市盈率表，GAAP 那行写「亏损」，主角是剔除障眼法后的口径。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>财报分两个分部：Create（引擎）和 Grow（广告）。TTM 营收 20.3 亿，Grow 占 69%，Create 占 31%。</p>
+<h3>1. Create：卖游戏引擎的使用权（TTM 营收 6.3 亿，占 31%）</h3>
+<p>Unity 引擎是做游戏的「工具箱」：一个三人小团队要做一款手机游戏，不用自己写物理碰撞、光照渲染、跨平台适配这些底层代码，装上 Unity，拖拖拽拽把角色、场景、动作拼起来，一键导出到 iPhone、安卓、Switch、PC。全球约 70% 的手游是用 Unity 做的，《原神》《王者荣耀》《Pokémon GO》《Among Us》都是。</p>
+<p>怎么收钱：按开发者人头收年费。个人和小团队免费或几百美元；公司用 Unity Pro，每个开发者座位一年 2,200 美元；大厂用 Enterprise 版，再谈价。一家 200 人的游戏工作室一年付它几十万美元。除了游戏，汽车厂（做车机界面和虚拟展厅）、建筑设计（做可视化）也在用，这部分叫 Industry，价格更高。2023 年公司曾试图按「游戏安装次数」额外收费，引发开发者集体抵制，2024 年撤回并换了 CEO，这一段是 Create 营收从 2023 年 8.6 亿掉到 6.1 亿的原因。</p>
+<p>客户为什么非买不可：一个团队的全部代码、素材、工作流都建在 Unity 上，换引擎等于重做，切换成本极高。这是它真正的护城河。</p>
+<h3>2. Grow：手游广告网络（TTM 营收 14.0 亿，占 69%）</h3>
+<p>一款免费手游靠什么赚钱？看广告。玩家死了想复活，看一段 30 秒视频广告；广告主（另一家游戏公司、或者 Temu 这样的电商）为这次曝光付钱。Unity 在中间做撮合：它的广告网络（Unity Ads）和 2022 年花 44 亿美元收购的 ironSource（撮合平台 LevelPlay）接入了几十万款游戏，广告主出价、Unity 竞价撮合、抽走一部分差价。<strong>一款月活百万的休闲游戏，通过它一年能分到几百万美元广告收入，Unity 从广告主付的钱里抽约 20%–30%（估算）。</strong></p>
+<p>这块生意 2024 年被 AppLovin 打得很惨（AppLovin 的 AI 投放模型效果更好，广告主把预算挪过去了）。2025 年 Unity 推出自己的 AI 投放模型 Vector，重建了广告匹配系统，效果开始追上来：Grow 营收 TTM 14.0 亿，比 2025 全年的 12.3 亿多 14%，是三年来第一次实质增长。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收(百万美元)</th>
+<th>2025 全年</th>
+<th>变化</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create 引擎</td>
+<td>632</td>
+<td>621</td>
+<td>+2%</td>
+<td>31%</td>
+<td>财报不披露</td>
+</tr>
+<tr>
+<td>Grow 广告</td>
+<td>1,397</td>
+<td>1,228</td>
+<td>+14%</td>
+<td>69%</td>
+<td>财报不披露</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,028</strong></td>
+<td><strong>1,850</strong></td>
+<td><strong>+10%</strong></td>
+<td>100%</td>
+<td>−334（GAAP）</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到营收。整体毛利率 76%。经营亏损 3.3 亿，但里面塞了 4.8 亿折旧摊销（绝大部分是收购 ironSource 留下的无形资产按年摊销）、2.8 亿减值重组、3.4 亿股权激励，下一部分拆。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 3.4 亿美元，占营收 16.9%。2024 年是 6.0 亿，砍了将近一半，这是新管理层最实在的一项改善。<strong>当成现金成本，GAAP 已扣。</strong></li>
+<li><strong>一次性项目</strong>：TTM 减值与重组 2.8 亿（2025 全年只有 0.06 亿，说明集中在 2026 上半年）。财报页看不出是商誉减值还是裁员费用。<strong>单期口径无法判断是否年年发生</strong>——但 Unity 过去五年几乎年年有重组（2023 年裁员 25%，2024 年裁 25%），把它当「经常性的一次性」更稳妥。另有约 2.5 亿非经营损失（税前亏损 5.9 亿 减 经营亏损 3.3 亿），财报页无法拆分，很可能与 2025 年 6.9 亿可转债再融资相关（估算）。</li>
+<li><strong>资本化的支出</strong>：资本开支只有 0.15 亿，没有明显的软件开发费资本化。</li>
+<li><strong>回购与稀释</strong>：回购 0，SBC 3.4 亿，<strong>比值 0</strong>。股本一年膨胀 5.7%。2022–2023 年回购过 17.5 亿，那时股价 100 多美元，现在 41 美元反而不回购了——买贵不买便宜。</li>
+<li><strong>利润和现金流的差</strong>：净利润 −5.9 亿，经营现金流 +5.5 亿，差 11.4 亿，必须对账：净亏损 −5.9 → 加折旧摊销 +4.8 → 加减值重组 +2.8 → 加 SBC +3.4 → 加其他非现金 +0.1 → 减应收款增加 −1.1 → 加递延收入等营运资金 +1.3 → 经营现金流 +5.5。<strong>结论：账面亏损全是非现金项，生意本身一年收进 5.5 亿现金。</strong> 但这 5.5 亿里有 3.4 亿是用股票代替现金付的工资，真正属于股东的现金流约 2 亿。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>亏损</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的调整后 EBITDA</td>
+<td>经营亏损 −3.3 亿 + 折旧摊销 4.8 亿 + SBC 3.4 亿 + 重组 2.8 亿 ≈ 7.7 亿（按公司加回口径重构，估算）；EV 183 亿</td>
+<td>24 倍</td>
+<td>4.2 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>经营亏损 −3.3 亿 + 一次性重组 2.8 亿 = <strong>−0.5 亿</strong>，SBC 不加回</td>
+<td><strong>仍然亏损</strong></td>
+<td><strong>0 元</strong></td>
+</tr>
+<tr>
+<td>真实口径再加回收购无形资产摊销</td>
+<td>上一行 + 约 3.5 亿收购摊销（估算，ironSource 已付清的历史成本）≈ 税前 3.0 亿，税后约 2.4 亿</td>
+<td>76 倍</td>
+<td>1.3 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 183 亿 ÷ FCF 5.4 亿</td>
+<td>34 倍</td>
+<td>2.9 元</td>
+</tr>
+<tr>
+<td>自由现金流扣 SBC 后</td>
+<td>183 亿 ÷（5.4 − 3.4）= 2.0 亿</td>
+<td>93 倍</td>
+<td>1.1 元</td>
+</tr>
+<tr>
+<td>EV/EBIT</td>
+<td>经营亏损</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2024 年 −6.6 亿、2025 年 −4.0 亿、TTM −5.9 亿</td>
+<td>三年都亏</td>
+<td>0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，按最严格的口径（SBC 当成本、只剔除一次性重组），公司一年一分钱都不替你赚；放宽一档、把收购摊销当作已经付过的沉没成本，一年替你赚 1.3 块；按现金流看是 2.9 块，但其中 1.8 块是给员工发的股票。</strong> 这 100 块里没有一分钱以分红或回购回到你口袋，公司留着现金（账上 23.5 亿，正好抵掉 23.2 亿可转债）。</p>
+<p>这个数未来会变大还是变小？大概率变大，理由有三条实打实的：SBC 两年砍了 43%；Grow 靠 Vector 重新增长 14%；重组做完以后 4400 人的成本基数是稳定的。营收再涨 20%、SBC 再降一点，真实口径就能转正。但转正之后也就是几亿美元的利润，对 183 亿市值仍然是 40–60 倍。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>生意站得住，价格站不住。</strong> 引擎的护城河是真的（70% 手游、极高切换成本），广告业务的回血也是真的，管理层砍 SBC 是真改善。但 183 亿市值买一个真实口径还在亏、自由现金流扣掉股票工资只剩 2 亿的公司，是在为「三年后转正」预付全款。93 倍的股东现金流，不值。等它——等真实利润转正、或者股价回到 25 美元以下再看。</p><script src="user.js"></script>
+</div></body></html>

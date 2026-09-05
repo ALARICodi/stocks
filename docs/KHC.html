@@ -1,0 +1,386 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KHC · 卡夫亨氏</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">KHC</a></div>
+<div class="mine" data-t="KHC"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">亏损全是74亿减值,真实10倍6.4%股息;但营收连跌三年、利润两年掉21%,冰在化</div><h1>KHC · 卡夫亨氏</h1>
+<p>市值 295 亿美元 / 股价 24.85 美元 / 消费必需品 · 包装食品 / TTM 截止 2026-06-27 / 任务5(主板亏损公司)第 23 名</p>
+<blockquote>
+<p>亏损 34 亿美元,但经营利润 45 亿、自由现金流 38 亿。<strong>这是典型的「账面亏」:亏损全部来自 74 亿美元的商誉和品牌减值,是会计上承认「当年买贵了」,不是今年生意亏了钱。</strong> 剥掉之后它是一家 10 倍市盈率、6.4% 股息率、营收连跌三年的公司。</p>
+</blockquote>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>财报按三个「加速平台」加一堆「维持品类」拆营收。<strong>实质上是一门生意——把上百年历史的老品牌摆到超市货架上卖——但公司自己把它分成两类对待:要投钱做大的,和只求少掉血的。</strong> 2025 年 9 月公司宣布要把这两类拆成两家独立上市公司,计划 2026 年下半年完成;截至这份 TTM 财报,还是一家。</p>
+<h3>生意一:「味道提升」(Taste Elevation),2025 财年营收 112.8 亿,占 45%</h3>
+<p><strong>这件事是什么。</strong> 番茄酱、蛋黄酱、芥末、沙拉酱、奶油奶酪——所有「浇在别的食物上让它更好吃」的东西。核心是亨氏番茄酱(Heinz):全球最大的番茄酱品牌,美国超市货架每卖出 10 瓶番茄酱大约 6 瓶是它,一瓶 20 盎司卖 4 到 5 美元。还有 Philadelphia 奶油奶酪(美国这个品类基本就等于它)、Grey Poupon 芥末、Kraft 沙拉酱。</p>
+<p><strong>怎么收钱。</strong> 两条渠道。一是卖给沃尔玛、克罗格、好市多这些零售商,零售商再卖给你——沃尔玛一家占卡夫亨氏总销售约 20%,议价权在沃尔玛手里。二是餐饮渠道:麦当劳、Chick-fil-A、几十万家餐馆桌上那个小包番茄酱,论箱卖,一箱 1000 小包几十美元。餐饮渠道对亨氏格外重要,因为<strong>餐馆用什么牌子的番茄酱,顾客回家就买什么牌子</strong>。</p>
+<p><strong>客户为什么非买不可。</strong> 番茄酱是少数「品牌就是产品本身」的品类——「Heinz」在美国人嘴里就是番茄酱的同义词,超市自有品牌的份额抢了几十年也没抢动。这是整个公司最硬的资产,也是拆分后「全球味道提升公司」的核心。2025 财年这块营收 −0.8%,是三大平台里唯一基本持平的。</p>
+<h3>生意二:「方便正餐」(Easy Ready Meals),2025 财年 40.7 亿,占 16%</h3>
+<p><strong>这件事是什么。</strong> Kraft 通心粉奶酪(那个蓝盒子,1.5 美元一盒,美国孩子的童年主食)、Ore-Ida 冷冻薯条和薯饼、Kraft 奶酪粉。卖给同一批零售商,靶客户是「五分钟内要把孩子喂饱」的家长。</p>
+<p><strong>问题在哪。</strong> 这个品类最容易被超市自有品牌替代——通心粉奶酪的配方没有秘密,沃尔玛自家的 Great Value 版本卖 0.9 美元。2025 财年这块 −5.6%,2024 财年 −2.9%,连续下滑,靠涨价撑金额、销量一直在掉。</p>
+<h3>生意三:「实在零食」(Substantial Snacking),2025 财年 15.3 亿,占 6%</h3>
+<p><strong>这件事是什么。</strong> Lunchables(午餐拼盘:几片火腿几片奶酪几片饼干装一盒,卖 3 到 4 美元,进学校午餐袋的产品)和 P3 蛋白零食盒。2025 财年 <strong>−8.2%</strong>,是三个平台里掉得最凶的——2024 年消费者报告测出 Lunchables 铅和钠含量问题,公司随后把它撤出了学校午餐计划,销量一直没恢复。</p>
+<h3>生意四:「维持品类」(Balance),TTM 79.9 亿,占 32%</h3>
+<p>这是公司明说「不追求增长、只求管好现金」的一堆老品牌:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>品类</th>
+<th>TTM 营收(百万美元)</th>
+<th>上年同期(2025 财年)</th>
+<th>同比</th>
+<th>代表品牌</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>饮料</td>
+<td>2,109</td>
+<td>2,095</td>
+<td>+0.7%</td>
+<td>Capri Sun 果汁袋、Kool-Aid 冲剂</td>
+</tr>
+<tr>
+<td>肉制品</td>
+<td>1,863</td>
+<td>1,924</td>
+<td>−3.2%</td>
+<td>Oscar Mayer 热狗、培根</td>
+</tr>
+<tr>
+<td>奶酪</td>
+<td>1,618</td>
+<td>1,657</td>
+<td>−2.4%</td>
+<td>Kraft Singles 芝士片、Velveeta</td>
+</tr>
+<tr>
+<td>甜点</td>
+<td>1,148</td>
+<td>1,123</td>
+<td>+2.2%</td>
+<td>Jell-O 果冻粉、Cool Whip</td>
+</tr>
+<tr>
+<td>咖啡</td>
+<td>897</td>
+<td>867</td>
+<td>+3.5%</td>
+<td>Maxwell House(麦斯威尔)</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>355</td>
+<td>395</td>
+<td>−10.1%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这是拆分后「北美食品杂货公司」的主体</strong>——一堆现金奶牛,牛在慢慢变老。Oscar Mayer 是美国热狗第一品牌,但肉制品在被更便宜的自有品牌和「少吃加工肉」的健康趋势两头夹。</p>
+<p><strong>钱的表(TTM,百万美元):</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>营收</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全公司</td>
+<td>24,900</td>
+<td>25,310</td>
+<td>−1.6%</td>
+<td>100%</td>
+<td>18.0%</td>
+<td>4,491</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报按平台只披露到营收,利润不拆。</strong> 从公司历年北美/国际分部的披露看,北美利润率高于国际,Taste Elevation 利润率高于 Balance——但具体到平台是估算,我不编数字。整体 18% 的经营利润率在包装食品里属于上游(通用磨坊约 17%,金宝汤约 15%),这是 3G 资本 2015 年合并后砍出来的成本结构,<strong>问题从来不是利润率,是销量</strong>。</p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC):TTM 9,500 万美元,占营收 0.4%。</strong> 微不足道,这是一家真的用现金发工资的公司。当现金扣掉,不影响任何结论。</p>
+<p><strong>一次性项目:74 亿美元的资产减值——这就是亏损的全部来源。</strong> 经营利润 44.9 亿是正的,税前利润 −36.6 亿是负的,中间 81.5 亿的差额里,74.05 亿是「资产减值与重组」,剩下约 7.5 亿是利息净支出。这 74 亿是什么:2015 年卡夫和亨氏合并时,账上记了几百亿美元的「商誉」和「品牌价值」,相当于把当年买贵的部分挂在资产里。之后每隔一两年公司就承认一次「这些品牌不值当初那个价」,把一块划掉:2019 年 154 亿、2024 年 37 亿、2025 财年 93 亿、这个 TTM 又 74 亿。<strong>这些钱早在 2015 年就花出去了,今年划掉不影响现金,但它告诉你两件事:一,今年的亏损不是真亏;二,管理层自己在不断下调对这些品牌的估值。</strong> 单期口径分不清它是不是「年年都有」——但看上面那串年份,<strong>它就是年年都有</strong>,这是萎缩型企业的标配。</p>
+<p><strong>资本化的支出:没有。</strong> 食品公司没有可资本化的研发或内容。</p>
+<p><strong>回购与稀释:TTM 回购 2,800 万,SBC 9,500 万,比值 0.3;股本一年 −1.13%。</strong> 回购几乎停了,钱去了两个地方:分红 19 亿、还债 18.3 亿。<strong>对一家有 190 亿负债、EBITDA 55 亿的公司,先还债是对的。</strong> 股本的减少主要是往年回购的结果。</p>
+<p><strong>利润和现金流的差:差 80 亿,但对账极简单。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM(百万美元)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>−3,396</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+7,405</td>
+<td>非现金,是 2015 年花的钱今天划账</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+1,002</td>
+<td>工厂设备折旧,大致等于资本开支 8 亿,真成本</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+95</td>
+<td></td>
+</tr>
+<tr>
+<td>− 递延税等其他</td>
+<td>−1,234</td>
+<td>减值带来的税务收益是账面的,现金上没收到</td>
+</tr>
+<tr>
+<td>+ 营运资金变化</td>
+<td>+749</td>
+<td>应付账款拉长、库存下降,<strong>这部分不可持续</strong></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>4,621</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−805</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>3,816</td>
+<td></td>
+</tr>
+<tr>
+<td>其中营运资金贡献</td>
+<td>−749</td>
+<td>剔掉后<strong>常态自由现金流约 30.7 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>这家公司一年真实赚的现金约 31 到 38 亿美元,比 GAAP 的 −34 亿差了一个减值,比表面的 38 亿又少了一截营运资金的挤压。</strong> 拿 31 亿当底线看。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<p><strong>先定性:这是「账面亏」。</strong> 经营赚钱、现金流为正、亏损全是减值。所以照常做市盈率表,GAAP 那行写「无意义」,主角是剔除障眼法后的口径和自由现金流。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>295 亿 ÷ −34 亿</td>
+<td>亏损,无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司调整后 EPS(剔减值、重组),stockanalysis 汇总的远期倍数</td>
+<td>12.4 倍</td>
+<td>8.1 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>经营利润 44.9 亿 − 利息净支出 7.5 亿 = 税前 37.4 亿,按 23% 税率 → 净利 28.8 亿;295 亿 ÷ 28.8 亿</td>
+<td><strong>10.2 倍</strong></td>
+<td><strong>9.8 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>295 亿 ÷ 38.2 亿(剔营运资金后 30.7 亿 → 9.6 倍)</td>
+<td>7.7 倍</td>
+<td>12.9 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(295 + 163 净负债)÷ 44.9 亿经营利润</td>
+<td>10.2 倍</td>
+<td>9.8 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年真实净利均值约 33.4 亿(2023 年 34.6、2024 年 36.7、TTM 28.8);295 ÷ 33.4</td>
+<td>8.8 倍</td>
+<td>11.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>注意最后一行的方向跟平时相反:三年平均比当期便宜。</strong> 通常这一行用来发现「当期利润是高点」,卡夫亨氏这里发现的是「当期利润是三年低点」——真实净利从 36.7 亿掉到 28.8 亿,两年掉了 21%。<strong>这不是周期性低点,是趋势性下滑</strong>:营收 −1.6%、−3.5%、−3.0% 连跌三年,经营利润率从 21.4% 掉到 18.0%。对一家萎缩的公司,三年平均口径不是「便宜的证据」,是「还会更便宜的证据」。</p>
+<p><strong>大白话:你现在投 100 块进去,按最保守的真实口径(剔营运资金的自由现金流 30.7 亿)算,公司一年替你赚约 10.4 块。</strong> 这 10.4 块里:</p>
+<ul>
+<li><strong>6.4 块以现金分红回到你口袋</strong>(每股 1.60 美元,一年 19 亿,自由现金流的一半。这个分红从 2019 年砍过一次后七年没动过,也没涨过);</li>
+<li>约 4 块用来还债(TTM 净还了 18.3 亿,负债从 218 亿降到 190 亿);</li>
+<li>回购基本为零。</li>
+</ul>
+<p><strong>这 10.4 块未来大概率变小,不是变大。</strong> 理由三条:销量每年掉 3% 到 5%,靠涨价补一半;自有品牌在每一个品类里抢份额;拆分成两家公司会带来一次性成本,并且把「全球番茄酱公司」(好资产)和「北美老品牌公司」(差资产)分开后,持有 KHC 的人拿到的是两张票,差的那张会被市场单独定价。EBITDA 3.15 倍的杠杆在包装食品里算高,利息一年 9 亿吃掉经营利润的 20%。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>便宜是真的,但便宜的是一块在化的冰。</strong> 10 倍真实市盈率、7.7 倍自由现金流、6.4% 股息率且分红只用了一半现金流,数字上是整个消费品板块最便宜的一档。但连跌三年的营收、两年掉 21% 的真实利润、累计几百亿的减值,说明这家公司过去七年一直在「用降价的股价追赶下滑的利润」——2019 年就是 10 倍,现在还是 10 倍,股价从 33 跌到 25。<strong>拿它当高息债券可以(6.4% 现金分红,覆盖两倍),拿它当股票别指望增长。</strong> 归篮上我把它放「便宜」,但不放进值得观察:萎缩中的主业是硬伤,不是价格能补的。如果一定要买,等 2026 下半年拆分落地,单独看「全球味道提升公司」那半——亨氏番茄酱值得单独一个价。</p><script src="user.js"></script>
+</div></body></html>

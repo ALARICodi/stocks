@@ -1,0 +1,375 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TRMB · Trimble（测绘定位 + 建筑工程软件）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">TRMB</a></div>
+<div class="mine" data-t="TRMB"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">跌24%后18倍现金流是十年最便宜，软件一半有护城河，但营收只增6%</div><h1>TRMB · Trimble（测绘定位 + 建筑工程软件）</h1>
+<p>市值 138.7 亿美元 · 股价 59.47 美元 · 工业软件/精密定位 · TTM 截止 2026-07-03（2026-09-05 分析，任务5 · 亏损公司）</p>
+<p><strong>这是账面亏，不是真亏</strong>：TTM 经营利润 6.8 亿、自由现金流 7.7 亿，账面亏 1 亿是因为一笔 5.6 亿的资产减记。第三部分照常做市盈率表。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Trimble 起家是造 GPS 接收机的，现在一半营收来自软件。财报分三个分部：<strong>AECO（建筑工程软件）</strong>、<strong>现场系统（测绘和工程机械定位硬件）</strong>、<strong>运输物流</strong>。实质是两门半生意。</p>
+<h3>A. AECO：建筑行业的设计和管理软件（TTM 营收 15.9 亿，占 42%，增长最快）</h3>
+<p>一栋商业楼从画图到盖完，Trimble 卖好几层软件：
+- <strong>Tekla</strong>：结构工程师用它画钢结构和混凝土的详细施工图，每根梁每颗螺栓的位置，直接输出给钢构厂的切割机。全球大部分体育场和摩天楼的钢结构图是 Tekla 画的。一个席位一年几千美元。
+- <strong>SketchUp</strong>：建筑师和室内设计师画草图的 3D 软件，全球几百万人在用，一年三四百美元一个人。
+- <strong>Viewpoint / Trimble Construction One</strong>：施工总包公司的 ERP——算工程款、管分包、发工人工资、算每个项目赚不赚钱。一家年营收 5 亿美元的承包商一年付几十万美元。
+- <strong>e-Builder</strong>：业主方（学校、医院、政府）管理基建项目资金和进度的软件。</p>
+<p>这些绝大多数已经转成订阅，年度经常性收入（ARR）二十多亿美元、以两位数增长，是整家公司的估值支柱。客户为什么不换：施工图、项目数据都在里面，换软件等于重画。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>AECO</th>
+<th>TTM</th>
+<th>对比 FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>15.9 亿</td>
+<td>15.0 亿，+6%（FY2025 对 FY2024 是 +10%）</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>42%</td>
+<td></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>财报未按分部披露利润，按软件业务估算约 30% 利润率、约 4.8 亿（估算）</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>B. 现场系统：测绘仪器和工程机械导航（TTM 营收 16.4 亿，占 43%）</h3>
+<p>这是硬件老本行：
+- <strong>测绘</strong>：厘米级精度的 GNSS 接收机和全站仪，测绘队用来放线、测地形。一台高端接收机三四万美元，全球测绘市场它跟徕卡（海克斯康）、拓普康三分天下。
+- <strong>机械控制</strong>：给挖掘机、推土机、平地机装上传感器和显示屏，司机看着屏幕挖，土方精度到厘米，不用测量员在旁边插桩。一套系统几万美元，卖给卡特彼勒的经销商和承包商。
+- <strong>农业</strong>（拖拉机自动驾驶）2024 年 4 月已经打包进跟爱科（AGCO）的合资公司，Trimble 拿了 20 亿现金、留 15% 股份，所以 2024 年那 15 亿净利润是卖资产赚的，跟经营无关。</p>
+<p>硬件跟着建筑和基建周期走，毛利率比软件低，但机械控制的数据会流回 AECO 的软件，两边互相锁客户。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>现场系统</th>
+<th>TTM</th>
+<th>对比 FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>16.4 亿</td>
+<td>15.4 亿，+6%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>43%</td>
+<td></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>估算约 25% 利润率、约 4.1 亿（估算）</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>C. 运输物流：卡车运输软件（TTM 营收 5.5 亿，占 15%，在收缩）</h3>
+<p>给货运公司做的：Trimble Maps（卡车专用导航，知道哪座桥限高限重）、运输管理系统、以及 2023 年花 20 亿美元买的欧洲货运撮合平台 Transporeon（货主和车队在上面招标定价）。2025 年把车载终端（ELD）业务卖给了 Platform Science，营收从 7.9 亿掉到 5.5 亿。<strong>TTM 那笔 5.6 亿减记，财报页只给了总额，估计跟这个分部（Transporeon 是在 2023 年高点买的）或农业合资公司的股权减值有关，从这四页上无法确认。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>运输物流</th>
+<th>TTM</th>
+<th>对比 FY2025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>5.5 亿</td>
+<td>5.5 亿，持平（剥离后）</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>15%</td>
+<td></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>估算约 10% 利润率、约 0.6 亿（估算）</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>三个分部估算利润相加约 9.5 亿，减去公司费用和收购摊销，跟 GAAP 经营利润 6.8 亿大致对得上。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.55 亿，占营收 4.1%。对比真实净利润约 4.5 亿，占三分之一。当现金成本扣（GAAP 已扣，下面不加回）。</p>
+<p><strong>一次性项目</strong>：<strong>资产减记 5.6 亿</strong>（TTM）。税前利润 −0.04 亿却交了 1.0 亿的税，说明这笔减记不能抵税——多半是商誉减值。这是真一次性还是年年有？Trimble 过去五年没有过这种量级的减记，但它常年收购（2023 年 Transporeon 20 亿）再剥离（2024 年农业、2025 年 ELD），<strong>买贵了再减记的模式不是第一次</strong>。单期口径只能说：这 5.6 亿本身不会年年发生，但「收购—减记」这个循环是它的常态。</p>
+<p><strong>资本化的支出</strong>：没有大额资本化软件开发费。</p>
+<p><strong>回购与稀释</strong>：<strong>TTM 回购 5.2 亿 ÷ SBC 1.6 亿 = 3.4 倍，算真回购</strong>（FY2025 回购 8.6 亿，用的是卖农业业务的钱）。股本一年减少 3.9%。</p>
+<p><strong>利润和现金流的差</strong>（百万美元，TTM）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−105</td>
+</tr>
+<tr>
+<td>+ 折旧摊销（其中约 1.5 亿是收购来的无形资产摊销）</td>
+<td>+202</td>
+</tr>
+<tr>
+<td>+ 资产减记（非现金）</td>
+<td>+562</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+155</td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>+72</td>
+</tr>
+<tr>
+<td>+ 递延收入增加（订阅预收款）</td>
+<td>+63</td>
+</tr>
+<tr>
+<td>− 应收、存货、其他营运资金增加</td>
+<td>−150</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>+799</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−26</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>+773</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>账面亏 1 亿，真实现金进账 7.7 亿。差在三处：减记 5.6 亿不掏钱、收购摊销 1.5 亿不掏钱、发股票 1.6 亿不掏钱。FY2025 自由现金流只有 3.6 亿，是因为那年交了 3.1 亿卖农业业务的税，<strong>7.7 亿才是正常水平</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>138.7 亿 ÷ −1.0 亿</td>
+<td>亏损，无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>加回减记、SBC、收购摊销后净利润约 7.7 亿（估算）</td>
+<td>约 18 倍</td>
+<td>5.6 块</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>−1.0 亿 + 减记 5.6 亿（不可抵税，全额加回）= 约 4.5 亿，SBC 不加回</td>
+<td><strong>约 31 倍</strong></td>
+<td><strong>3.2 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>138.7 亿 ÷ 7.7 亿</td>
+<td>18 倍</td>
+<td>5.6 块</td>
+</tr>
+<tr>
+<td>自由现金流减 SBC</td>
+<td>138.7 亿 ÷（7.7 − 1.6）亿</td>
+<td>22 倍</td>
+<td>4.5 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>151.1 亿 ÷ 6.8 亿</td>
+<td>22 倍</td>
+<td>4.5 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY2023 3.1 亿、FY2024 剔除卖农业收益后约 1.5 亿、FY2025 4.2 亿，平均约 3 亿（估算）</td>
+<td>约 47 倍</td>
+<td>2.1 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按剔除减记的真实利润算，公司一年替你赚 3.2 块；按现金算是 5.6 块，扣掉发给员工的股票是 4.5 块。</strong> 真实利润和现金差这么多，是因为 1.5 亿收购摊销是过去付的钱在账上慢慢摊——这部分现金确实是你的。这 4.5 块里，TTM 有 3.8 块通过回购回到你手上（回购 5.2 亿 ÷ 市值），不分红；剩下的拿去做小收购（TTM 2.3 亿）和还债（净债务 12.5 亿，1.6 倍 EBITDA，不重）。</p>
+<p>三年平均口径 47 倍看着吓人，是因为 2023–2024 年背着 Transporeon 的 32 亿债务付利息、又在剥离业务，利润被压着。<strong>未来这个 4.5 块大概率变大</strong>：软件 ARR 两位数增长、订阅占比还在升、股本每年缩 4%；风险是建筑周期（硬件那 43%）和它再买贵一个东西。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，不便宜。</strong> 股价一年跌了 24%，把它从 50 倍市现金流压到 18 倍，这是它十年来最便宜的水平；软件那一半是真有护城河的订阅生意，回购是真的，账面亏损是真一次性。但 31 倍真实利润、22 倍扣 SBC 后的现金流，对一家整体营收只增长 6% 的公司来说是公道价而不是便宜价——<strong>它值得放进观察名单，等的是建筑周期再压它一次。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com 利润表 / 现金流量表 / 估值页 / 比率页，TTM 截止 2026-07-03（财年 1 月初结束）。分部利润、Non-GAAP 净利润、5.6 亿减记的性质、三年平均口径均为估算，文中已标注。</em></p><script src="user.js"></script>
+</div></body></html>

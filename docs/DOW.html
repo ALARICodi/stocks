@@ -1,0 +1,385 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DOW · 陶氏化学</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">DOW</a></div>
+<div class="mine" data-t="DOW"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">周期底部六年平均11.5倍+股息4.8%可覆盖，但152亿净债、利息保障1.4倍</div><h1>DOW · 陶氏化学</h1>
+<p>市值 212.7 亿美元 · 股价 29.44 美元 · 大宗化工 · TTM 截止 2026-06-30（2026-09-05 分析，任务5 · 亏损公司）</p>
+<p><strong>这是账面亏，不是真亏</strong>：TTM 净亏 13 亿，但经营现金流正 38.7 亿、自由现金流正 14.6 亿。亏损来自关欧洲工厂的资产减记（15.9 亿）和沙特合资公司的账面损失。第三部分照常做市盈率表，主角是剔除障眼法后的口径和自由现金流口径。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报按三个分部：<strong>包装与特种塑料</strong>、<strong>工业中间体与基础设施</strong>、<strong>高性能材料与涂料</strong>。三门生意底层逻辑一样：<strong>买便宜的美国页岩气副产品（乙烷），裂解成乙烯、丙烯，再往下做成各种塑料和化学品</strong>，卖给全世界的加工厂。它不做终端产品，你家里没有一件东西印着 Dow，但塑料袋、床垫、墙漆、硅胶密封条里都有它的东西。</p>
+<h3>A. 包装与特种塑料（TTM 营收 209.4 亿，占 51%，唯一赚大钱的分部）</h3>
+<p>核心产品是<strong>聚乙烯（PE）颗粒</strong>——就是塑料袋、保鲜膜、洗发水瓶、牛奶桶的原料。陶氏在德州、路易斯安那、加拿大的裂解装置把乙烷变成乙烯，再聚合成一粒粒米粒大小的树脂颗粒，按吨卖给下游做薄膜和吹塑的加工厂。一家做食品包装膜的厂一年可能从它这里买几万吨，每吨一千多美元，价格跟着全球大宗行情走，陶氏没有定价权，<strong>赚的是「美国乙烷比亚洲石脑油便宜」的成本差</strong>。</p>
+<p>同一个分部还卖<strong>弹性体</strong>（运动鞋底、电动车高压线绝缘层用的 Engage）、乙烯和丙烯本身的副产品。它跟沙特阿美合资的 Sadara 工厂也归这里，Sadara 从 2022 年起年年亏，TTM 权益投资损失 7.6 亿大半是它。</p>
+<p>这个分部现在处在十年来的底部：<strong>中国 2020 年以来新建了几千万吨乙烯产能</strong>，全球聚乙烯供过于求，价差压到只够覆盖成本。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>包装与特种塑料</th>
+<th>TTM（2026-06）</th>
+<th>FY2025 全年</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>209.4 亿</td>
+<td>199.7 亿</td>
+<td>+5%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>51%</td>
+<td>50%</td>
+<td></td>
+</tr>
+<tr>
+<td>分部经营利润</td>
+<td>财报未按分部披露，估算约 15 亿（利润率约 7%，2021 年高峰时是 20%+）</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>B. 工业中间体与基础设施（TTM 营收 113.1 亿，占 27%，基本不赚钱）</h3>
+<p>三类东西：<strong>聚氨酯</strong>（MDI 和多元醇——床垫海绵、冰箱和建筑保温泡沫、汽车座椅），<strong>建筑化学品</strong>（瓷砖胶里的纤维素醚），<strong>环氧丙烷、乙二醇</strong>（防冻液、聚酯纤维和饮料瓶的原料）。客户是床垫厂、建材厂、化纤厂，一样是按吨报价的大宗生意，而且比聚乙烯更惨——中国 MDI 产能过剩更严重，欧洲天然气贵让陶氏的欧洲装置完全没有竞争力。</p>
+<p>2025 年陶氏宣布关掉德国 Böhlen 裂解装置、Schkopau 氯碱厂和英国 Barry 硅氧烷厂，就是砍这个分部的欧洲产能，TTM 那 15.9 亿减记大部分来自这里。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>工业中间体与基础设施</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>113.1 亿</td>
+<td>111.6 亿</td>
+<td>+1%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>27%</td>
+<td>28%</td>
+<td></td>
+</tr>
+<tr>
+<td>分部经营利润</td>
+<td>估算约 −1 到 −2 亿</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>C. 高性能材料与涂料（TTM 营收 83.8 亿，占 20%）</h3>
+<p>两块：<strong>有机硅</strong>（从原道康宁接过来的：建筑幕墙密封胶、化妆品里的硅油、电动车电池包的导热胶）和<strong>涂料原料</strong>（丙烯酸乳液，卖给宣伟、PPG 这些油漆厂做乳胶漆的粘结剂）。有机硅本来是陶氏的高毛利业务，2022 年后中国硅氧烷产能翻倍，价格腰斩，现在也只是薄利。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>高性能材料与涂料</th>
+<th>TTM</th>
+<th>FY2025</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>83.8 亿</td>
+<td>81.3 亿</td>
+<td>+3%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>20%</td>
+<td>20%</td>
+<td></td>
+</tr>
+<tr>
+<td>分部经营利润</td>
+<td>估算约 3 亿</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>公司层面 6.9 亿营收是集团保险等杂项。三个分部加总、再扣公司费用，跟利润表 TTM 经营利润 12.5 亿对得上（估算口径）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：现金流量表没单列，按陶氏历年水平估算约 1.5 亿，占营收 0.4%，可以忽略。老牌工业公司，不靠发股票付工资。</p>
+<p><strong>一次性项目</strong>：
+- <strong>资产减记与重组 15.9 亿</strong>（TTM）：关欧洲工厂。这是真一次性？陶氏 2023 年也有 5.3 亿减记、2024 年 1 亿。<strong>关厂这件事年年有，只是 2025 年特别大</strong>——单期口径无法断定明年没有，但 15.9 亿这个量级应该是一次性的。
+- <strong>权益投资损失 7.6 亿</strong>：主要是 Sadara。它 2022 年以来年年亏（6.96 亿、3.87 亿、3.48 亿、4.39 亿、TTM 7.62 亿），<strong>这不是一次性，是年年都有的「一次性」</strong>，下面算真实利润时不剔除。
+- <strong>资产处置损失 1.7 亿</strong>：小，剔除。
+- 税：税前亏 10 亿，净亏 13 亿，<strong>亏损还倒交了 3 亿税</strong>——是海外分部盈利照常交税、亏损部分没法抵扣，还计提了递延税资产减值。这个也是关厂的连带账。</p>
+<p><strong>资本化的支出</strong>：没有。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 0.17 亿，基本停了（2022 年还回购了 23.6 亿）。股本一年增加 1.8%（员工持股计划）。<strong>分红 2025 年 7 月砍了一半</strong>，从每股每季 0.70 美元降到 0.35，TTM 分红 10.1 亿。</p>
+<p><strong>利润和现金流的差</strong>（百万美元，TTM）——这张表是全篇最重要的：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−1,301</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+2,779</td>
+</tr>
+<tr>
+<td>+ 资产减记与重组（非现金）</td>
+<td>+1,587</td>
+</tr>
+<tr>
+<td>+ 权益投资损失（非现金）</td>
+<td>+762</td>
+</tr>
+<tr>
+<td>+ 资产处置损失</td>
+<td>+172</td>
+</tr>
+<tr>
+<td>− 其他</td>
+<td>−299</td>
+</tr>
+<tr>
+<td>+ 营运资金净变化（应收存货增加、应付和其他负债增加）</td>
+<td>+168</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>+3,866</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−2,404</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>+1,462</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>账面亏 13 亿，但折旧 27.8 亿和减记 15.9 亿都不掏钱，<strong>真实经营现金流 38.7 亿</strong>。资本开支 24 亿低于折旧，是因为把加拿大阿尔伯塔的净零裂解装置项目推迟了——<strong>这是在省钱保分红，长期看等于吃老本</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>212.7 亿 ÷ −13.0 亿</td>
+<td>亏损，无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的「经营利润」口径</td>
+<td>剔除减记、重组、处置损失后的净利润，估算约 6 亿</td>
+<td>约 35 倍（估算）</td>
+<td>2.8 块</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 −10.0 亿 + 减记 15.9 亿 + 处置损失 1.7 亿 = 7.6 亿，按 22% 正常税率 ≈ 5.5 亿净利润（<strong>Sadara 损失不剔除</strong>）</td>
+<td><strong>约 39 倍</strong></td>
+<td><strong>2.6 块</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>212.7 亿 ÷ 14.6 亿</td>
+<td>14.5 倍</td>
+<td>6.9 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>364.7 亿 ÷ 12.5 亿</td>
+<td>29 倍</td>
+<td>3.4 块</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2024 年 11.0 亿、2025 年剔减记后约 −5 亿、TTM 5.5 亿，平均约 4 亿（估算）</td>
+<td>约 50 倍</td>
+<td>2 块</td>
+</tr>
+<tr>
+<td><strong>周期口径：六年平均</strong></td>
+<td>2020–2025 六年 GAAP 净利润平均 18.5 亿（含 2021–22 高峰和 2025 亏损）</td>
+<td><strong>11.5 倍</strong></td>
+<td><strong>8.7 块</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按剔除关厂损失后的真实利润算，公司一年只替你赚 2.6 块；按自由现金流算是 6.9 块</strong>——两个数差这么多，是因为折旧 27.8 亿远高于资本开支 24 亿，而且减记后以后折旧会更少。这 6.9 块里，<strong>4.7 块以分红形式发到你手上</strong>（股息率 4.8%，分红 10.1 亿 / 自由现金流 14.6 亿，砍完之后能覆盖了），剩下 2 块多用来还债——净负债 152 亿，利息保障倍数只有 1.4 倍，TTM 还净借了 11.5 亿。</p>
+<p>这个 X 未来变大还是变小？<strong>取决于周期，不取决于陶氏</strong>。它 2021 年赚 63 亿、2022 年 46 亿、现在剔减记赚 5 亿——同一家公司、同一批工厂。乙烯价差从谷底回到中位，利润就翻好几倍；但这轮跟以往不一样的是中国产能过剩是结构性的，谷底可能拖很久。周期口径 11.5 倍、8.7 块回报，是「相信周期会回来」的价格。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，但不是便宜货。</strong> 你买的是一家在周期底部、把分红砍了一半保命的大宗化工厂：按六年平均利润 11.5 倍、股息率 4.8% 且分红能被现金流覆盖，这是公道的；按今天的真实利润 39 倍、净负债 152 亿、利息保障 1.4 倍，这是危险的。<strong>如果你相信乙烯周期三年内回到中位，它是拿着 4.8% 股息等周期的合理选择；如果中国产能过剩是十年的事，它是一家靠推迟投资维持分红的公司。</strong> 两种可能都不小，所以是公道，不是便宜。</p>
+<hr />
+<p><em>数据来源：stockanalysis.com 利润表 / 现金流量表 / 估值页 / 比率页，TTM 截止 2026-06-30。分部利润、SBC、公司经营利润口径均为估算，文中已标注。</em></p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,386 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ELAN · Elanco Animal Health（礼蓝动物保健）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">ELAN</a></div>
+<div class="mine" data-t="ELAN"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">好行业里的负债老二，真实28倍买17%利润率+42亿债，翻身预期先付了钱</div><h1>ELAN · Elanco Animal Health（礼蓝动物保健）</h1>
+<p>市值 122.4 亿美元 / 股价 24.50 美元 / 动物保健 / TTM 截止 2026-06-30 / 任务5 · 主板亏损公司 第 60 名</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Elanco 原来是礼来的动物药部门，2018 年分拆上市，2020 年花 76 亿美元买下拜耳的动物保健业务，成了全球第二大动物药公司（第一是辉瑞分出来的硕腾 Zoetis）。它卖的东西分两大类：<strong>给宠物用的</strong>（主要是狗和猫的驱虫、皮肤病、疼痛药）和<strong>给农场动物用的</strong>（牛、鸡、猪的疫苗、抗生素、饲料添加剂）。财报按动物种类分五块。</p>
+<h3>A. 宠物保健（24.5 亿，占 49%）</h3>
+<p>这是它最值钱的一块，也是增长的来源。产品是宠物主人在宠物医院或线上买的东西：</p>
+<ul>
+<li><strong>驱虫药</strong>：Seresto 项圈（拜耳带来的，一个项圈管 8 个月，一个 60 多美元，全球卖了上亿个）、Advantage 系列滴剂、Credelio 口服驱虫片。2025 年新上的 <strong>Credelio Quattro</strong> 是一片管跳蚤、蜱虫、心丝虫、肠道寄生虫四样的「全能片」，对标硕腾的 Simparica Trio，是这两年增长的主力。</li>
+<li><strong>皮肤病药</strong>：<strong>Zenrelia</strong>，2024 年在美国上市的狗过敏性皮炎口服药（JAK 抑制剂），对标硕腾一年卖十几亿美元的 Apoquel。Zenrelia 便宜一截，但标签上有个黑框警告（打疫苗前要停药），这让一部分医生不敢开。</li>
+<li><strong>疼痛药、耳药、眼药</strong>等。</li>
+</ul>
+<p>宠物药的生意逻辑很好：宠物主人对价格不敏感（给狗治病不还价）、每月或每季度重复购买、经销商是宠物医院和 Chewy 这类电商，毛利率能到 60–70%。<strong>这一块 TTM 增长约 7%，主要靠 Quattro 和 Zenrelia 两个新品。</strong></p>
+<h3>B. 牛（约 12.2 亿，占 24%）</h3>
+<p>卖给牧场和肉牛育肥场的东西：饲料添加剂（Rumensin，让牛长得快）、抗生素、疫苗、驱虫。2024 年新上的 <strong>Experior</strong> 是全球第一个能减少牛排放氨气的饲料添加剂，<strong>Bovaer</strong>（跟帝斯曼合作）是减少牛打嗝排甲烷的——欧洲和美国的碳减排政策正在让牧场主买这类东西。牛的生意跟牛肉价格周期绑在一起，2025–2026 年美国牛存栏处在几十年低位、牛价高，牧场主舍得花钱，这块增长不错。</p>
+<blockquote>
+<p>财报页上「牛」这一行 TTM 显示 40.34 亿，明显是数据错误（上年是 11.25 亿）。我用总营收减其他四块倒推出约 12.2 亿，下文按这个数。</p>
+</blockquote>
+<h3>C. 家禽（9.07 亿，占 18%）</h3>
+<p>卖给养鸡场的球虫药、疫苗、抗生素替代品。养鸡是全球增长最稳的蛋白来源，这块年增 5–8%，利润率不错但不惊艳。</p>
+<h3>D. 猪（3.84 亿，占 8%）</h3>
+<p>疫苗和抗生素，跟猪周期走，这几年在萎缩。</p>
+<h3>E. 合同生产（6,200 万，占 1%）</h3>
+<p>替别人代工，2024 年把水产（鱼药）业务卖给默沙东后留下的尾巴。</p>
+<h3>五块生意的钱（TTM 截止 2026-06-30，百万美元）</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>宠物</td>
+<td>2,450</td>
+<td>约 2,290</td>
+<td>约 +7%</td>
+<td>49%</td>
+<td>约 500（毛利率高，但销售费用也高）</td>
+</tr>
+<tr>
+<td>牛</td>
+<td>约 1,217</td>
+<td>约 1,100</td>
+<td>约 +10%</td>
+<td>24%</td>
+<td>约 250</td>
+</tr>
+<tr>
+<td>家禽</td>
+<td>907</td>
+<td>约 850</td>
+<td>约 +7%</td>
+<td>18%</td>
+<td>约 180</td>
+</tr>
+<tr>
+<td>猪</td>
+<td>384</td>
+<td>约 380</td>
+<td>持平</td>
+<td>8%</td>
+<td>约 50</td>
+</tr>
+<tr>
+<td>合同生产</td>
+<td>62</td>
+<td>约 50</td>
+<td>—</td>
+<td>1%</td>
+<td>约 0</td>
+</tr>
+<tr>
+<td>未分摊：无形资产摊销、研发、总部</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>约 −640</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>5,020</strong></td>
+<td>4,482</td>
+<td><strong>+12%</strong></td>
+<td>100%</td>
+<td><strong>340</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报只分营收不分利润。上面分部利润是按各业务毛利率和费用结构估算的，只为看清「宠物是利润大头、摊销把整体利润吃掉一半」。整体 12% 的增速里有几个点是汇率（美元走弱）和一笔小并购，内生增长大约 7–8%。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p>Elanco 是<strong>账面亏</strong>：经营利润是正的 3.4 亿，自由现金流正的 3.8 亿，净利润却是 −1.99 亿。差在哪、哪些是真成本，要一项项剥。</p>
+<p><strong>股权激励（SBC）</strong>：TTM 7,400 万，营收的 1.5%。不是问题。</p>
+<p><strong>一次性项目——「年年都有的一次性」的教科书案例</strong>：资产减值和重组费用 TTM 7,100 万；往前看：2025 年 7,100 万、2024 年 8,100 万、2023 年 10.74 亿（拜耳收购的商誉减值）、2022 年 8,100 万、2021 年 3.45 亿。<strong>六年没有一年没有。</strong>这不是一次性的，这是这家公司的常态成本，我不剔。</p>
+<p><strong>无形资产摊销——真正的账面亏损来源</strong>：TTM 折旧摊销 6.67 亿，其中约 5 亿是收购拜耳带来的无形资产摊销（专利、品牌、客户关系按年摊进费用），不花现金。经营利润 3.4 亿是扣掉这 5 亿之后的数字。<strong>这 5 亿要不要当真实成本？</strong>一半一半：摊销的是 2020 年买拜耳时付的钱，那钱确实花了、而且当年买贵了（2023 年减了 10.7 亿商誉）；但它不会再花第二次。看「生意本身」，用摊销前的经营利润（EBITA）约 8.4 亿；看「股东真正拿到的」，用自由现金流 3.8 亿。两个都要看。</p>
+<p><strong>经营利润之下的窟窿</strong>：经营利润 +3.4 亿，税前却是 −1.66 亿，中间差 5 亿。其中利息约 2.5 亿（42 亿债务，平均利率约 6%），剩下 2.5 亿是其他费用——财报页上看不出明细，2025 年公司做过一次债务再融资（发了 26.5 亿新债还了 29.2 亿旧债），这类操作通常会产生提前还款损失；另外拜耳带过来的 Seresto 项圈在美国有一场关于宠物安全的集体诉讼在打。<strong>这 2.5 亿单期口径无法判断是否年年发生。</strong></p>
+<p><strong>资本化的支出</strong>：研发全费用化。</p>
+<p><strong>回购与稀释</strong>：没有回购，股本一年增加约 0.5%。42 亿债在身上，没资格回购。</p>
+<p><strong>利润和现金流的差</strong>：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>百万美元</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−199</td>
+<td></td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+693</td>
+<td>其中约 500 是收购摊销</td>
+</tr>
+<tr>
+<td>加：减值和重组</td>
+<td>+71</td>
+<td>年年有</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+74</td>
+<td></td>
+</tr>
+<tr>
+<td>减：其他非现金</td>
+<td>−67</td>
+<td>递延税等</td>
+</tr>
+<tr>
+<td>加：应付增加</td>
+<td>+147</td>
+<td>压供应商账期</td>
+</tr>
+<tr>
+<td>减：应收和存货增加</td>
+<td>−69</td>
+<td></td>
+</tr>
+<tr>
+<td>减：其他营运资金</td>
+<td>−33</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>617</td>
+<td></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−238</td>
+<td>建新厂（Zenrelia 和 Quattro 的产能）</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>379</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>自由现金流 3.8 亿里有 1.47 亿是压供应商账期挤出来的，底层大约 2.3–2.5 亿。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>Elanco 是账面亏，所以照常做市盈率表，GAAP 那行写「亏损」，主角是剔除摊销后的真实利润和自由现金流。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>市值 ÷ 净利润 −1.99 亿</td>
+<td>亏损，无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>市值 ÷ 调整后净利润约 5.2 亿（公司口径每股约 1.05 美元，加回摊销、重组、诉讼）</td>
+<td>约 23.5 倍</td>
+<td>4.3 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>EBITA 8.4 亿 − 利息 2.5 亿 − 重组 0.7 亿 = 税前 5.6 亿，税 21% → 4.4 亿（SBC 已扣）</td>
+<td><strong>27.8 倍</strong></td>
+<td><strong>3.6 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ 3.79 亿（底层约 2.4 亿则为 51 倍）</td>
+<td>32.3 倍</td>
+<td>3.1 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（122.4 + 37.0 净负债）÷ 3.4 亿</td>
+<td>46.9 倍（按 EBITA 8.4 亿则 19 倍）</td>
+<td>2.1 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>市值 ÷ 三年平均自由现金流 2.7 亿（净利润三年平均为负，不可用）</td>
+<td>45.3 倍</td>
+<td>2.2 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：</strong>你今天投 100 块进去，按最保守的真实口径（剔掉收购摊销但扣掉利息和年年有的重组）公司一年替你赚 3.6 块。这 3.6 块<strong>一分钱都不会回到你口袋</strong>：不分红、不回购，全部拿去还债（TTM 净还债 3 亿）和建厂（资本开支 2.4 亿）。还债本身不是坏事——每还掉 10 亿债，一年省 6,000 万利息，利润就多 6,000 万；但按现在的速度，把 42 亿债降到舒服的 20 亿要五六年。</p>
+<p><strong>这个 3.6 块未来会变大还是变小？</strong>大概率慢慢变大：Quattro 和 Zenrelia 在放量、牛价周期在高位、利息在下降。但硕腾同样的生意做到 37% 经营利润率，Elanco 摊销前只有 17%——差距不是产品，是<strong>它的销售费用、生产成本、组织效率全面比硕腾差一截</strong>，六年重组没重组出来。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>动物保健是好行业，Elanco 是这个好行业里那个负债累累、效率垫底、年年重组的老二——真实 28 倍、现金流 32 倍买一门 17% 利润率、42 亿债务的生意，不便宜，偏贵。</strong></p>
+<p>它不会死（自由现金流为正、债务在减），亏损是摊销和利息的账面亏，生意本身赚钱。但你买它是在赌两件事：新产品能不能把利润率从 17% 拉向 25%、债能不能在利率不涨的情况下还掉一半。这两件事哪一件成了它都值 30 美元以上，哪一件也没成它就是一家永远 20 多倍、永远不分红的公司。<strong>硕腾贵是贵在它是行业最好的，Elanco 贵是贵在市场提前给了它一个还没兑现的翻身预期。</strong>等它连续两年利润率往上走再说。</p><script src="user.js"></script>
+</div></body></html>

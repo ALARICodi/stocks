@@ -1,0 +1,332 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RVMD · Revolution Medicines（革命医药）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RVMD</a></div>
+<div class="mine" data-t="RVMD"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">药是真突破,450亿已计入首个适应症峰值,每年稀释10%</div><h1>RVMD · Revolution Medicines（革命医药）</h1>
+<p>市值 450 亿美元 / 股价 210 美元 / 行业：生物科技（RAS 靶向抗癌药） / TTM 截止 2026-06-30 / 任务5 第 16 名</p>
+<blockquote>
+<p>这是一家<strong>亏损公司</strong>，而且是任务5 里最极端的一种：TTM 营收为零。但它跟一般烧钱的生物科技又不一样——2026 年 4 月它的核心药物三期试验成功，8 月底 FDA 批准上市。所以下面用「真亏」口径写，但结论要回答的不是「它会不会死」，而是「一颗刚获批的药值不值 450 亿」。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>财报上它只做<strong>一件事，而且这件事还没开始收钱</strong>：研发一类叫 RAS(ON) 抑制剂的口服抗癌药。TTM 营收一栏是空的，2023 年那 1158 万美元是合作收入，早就没了。</p>
+<h3>这件事到底是什么</h3>
+<p>人体细胞里有一个叫 RAS 的开关蛋白，正常情况下开一下关一下，控制细胞什么时候分裂。大约 30% 的癌症是这个开关卡在「开」的位置上——细胞收到「不停分裂」的信号，就成了肿瘤。胰腺癌里 90% 以上是 RAS 突变，肺癌里约 30%，结直肠癌里约 50%。</p>
+<p>RAS 这个靶点在制药界有个外号叫「不可成药」：四十年来没人做出能直接关掉它的药。原因是 RAS 蛋白表面太光滑，找不到能让药物分子扒住的口袋。2021 年安进的 Lumakras 是第一个突破，但它只能对付 RAS 的一种突变（KRAS G12C，主要在肺癌里），而且是趁 RAS 处于「关」的状态时把它锁死。</p>
+<p>Revolution Medicines 的办法不一样：它的药不去抓 RAS 本身，而是先跟细胞里一个叫 cyclophilin A 的蛋白结合，形成一个「药 + 伴侣蛋白」的组合体，这个组合体再去卡住处于「开」状态的 RAS。这就是「RAS(ON)」这个名字的来历。好处是<strong>一个药能同时对付多种 RAS 突变</strong>（G12D、G12V、G12R……），而胰腺癌恰好是这些突变的大杂烩。</p>
+<p>它的三个主要药：</p>
+<ul>
+<li><strong>daraxonrasib（商品名 RASONQUE，代号 RMC-6236）</strong>：泛 RAS 抑制剂，也就是「什么突变都管」的那一款。这是公司的命根子。</li>
+<li><strong>elironrasib（RMC-6291）</strong>：专门对付 G12C 突变，跟安进、百时美的药抢同一个肺癌市场。</li>
+<li><strong>zoldonrasib（RMC-9805）</strong>：专门对付 G12D 突变，胰腺癌里最常见的一种，目前没有任何已上市的药。</li>
+</ul>
+<h3>2026 年发生了什么</h3>
+<ul>
+<li><strong>4 月 13 日</strong>：daraxonrasib 在「经治转移性胰腺癌」的三期试验 RASolute 302 成功。这个试验把病人分两组，一组吃它的药，一组打标准化疗。结果：吃药的一组中位总生存期 13.2 个月，化疗组 6.7 个月，死亡风险降低 60%（风险比 0.40）。<strong>在转移性胰腺癌这个病种里，把生存期翻倍是几十年没见过的事</strong>——过去二十年这个病的新药基本都是「多活一两个月」的级别。</li>
+<li><strong>8 月底</strong>：FDA 批准上市，适应症是「至少接受过一线系统治疗的转移性胰腺腺癌」。这就是为什么股价一年涨了 428%。</li>
+</ul>
+<p>现在它的收钱方式跟任何肿瘤药一样：病人（实际是医保和商业保险）按月买药。RAS 口服靶向药的美国定价一般在每月 2 万到 3 万美元；美国每年新增转移性胰腺癌病人约 5 万到 6 万，二线治疗的病人大约一半，也就是每年两三万个人有资格用它。按每人平均用药 8 到 10 个月算，<strong>这一个适应症的美国峰值销售大约 40 亿到 60 亿美元/年</strong>（估算，公司没给指引）。后面排队的是一线胰腺癌（RASolute 303 三期进行中）、肺癌、结直肠癌，每一个都比二线胰腺癌大。</p>
+<h3>钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（截止 2026-06-30）</th>
+<th>上年同期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>研发 + 管理费用（即经营亏损）</td>
+<td>−16.27 亿美元</td>
+<td>−8.5 亿美元左右</td>
+</tr>
+<tr>
+<td>净亏损</td>
+<td>−17.68 亿美元</td>
+<td>−8 亿美元左右</td>
+</tr>
+<tr>
+<td>员工</td>
+<td>883 人</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>经营亏损从 2024 年全年 6.9 亿、2025 年全年 11.8 亿，涨到 TTM 的 16.3 亿。<strong>亏损每年翻倍</strong>，是因为同时跑着好几个三期试验，加上为上市组建销售队伍。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2.19 亿美元，比 2025 年全年的 1.18 亿翻了近一倍。没有利润可比，占经营费用 13%。当真实成本扣，它已经在 GAAP 亏损里了。</li>
+<li><strong>一次性项目</strong>：TTM 净亏损 17.68 亿比经营亏损 16.27 亿多出 1.4 亿，主要是「其他经营项目」2.39 亿的非现金支出，很可能跟 Royalty Pharma 那笔融资的负债公允价值变动有关（那笔钱是「未来销售分成换现金」的结构，会计上按负债处理，股价涨了负债就要重估）。单期口径分不清这是否年年都有——股价继续涨它就会继续出现。</li>
+<li><strong>资本化的支出</strong>：没有。研发全部费用化，资本开支只有 910 万美元。</li>
+<li><strong>回购与稀释</strong>：零回购。TTM 增发股票拿了 <strong>22.98 亿美元</strong>，股本一年膨胀 10.45%，最近一个季度就膨胀 6.46%。另外 2025 年跟 Royalty Pharma 签了最高 20 亿美元的融资，TTM 里「其他融资活动」2.39 亿加「有息负债」从 4.3 亿涨到 11.9 亿，就是这笔钱在到账。<strong>股东现在付的钱是每年被稀释 10%</strong>，这是 TTM 全部的「股东回报」。</li>
+<li><strong>利润和现金流的差</strong>：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净亏损</td>
+<td>−17.68</td>
+</tr>
+<tr>
+<td>加 折旧摊销</td>
+<td>+0.18</td>
+</tr>
+<tr>
+<td>加 SBC</td>
+<td>+2.19</td>
+</tr>
+<tr>
+<td>加 其他非现金项目（负债重估等）</td>
+<td>+2.39</td>
+</tr>
+<tr>
+<td>减 投资收益（利息，已收现金）</td>
+<td>−0.18</td>
+</tr>
+<tr>
+<td>加 营运资金变化（应付款增加）</td>
+<td>+0.87</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>−12.23</td>
+</tr>
+<tr>
+<td>减 资本开支</td>
+<td>−0.09</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>−12.32</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>真实烧钱比账面亏损少 5 亿多，因为 SBC 和负债重估不用付现。<strong>一年真金白银烧 12.3 亿美元</strong>，而且下半年会比上半年多（销售队伍刚建）。</p>
+<h2>第三部分：亏损公司的口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>0</td>
+<td>8 月底获批，2026 年三季度才会有第一笔药品收入</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>−16.27 亿美元</td>
+<td>同比恶化约 90%</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>−12.23 亿 / −12.32 亿美元</td>
+<td>亏损里有 5 亿是 SBC 和非现金重估</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>12.3 亿美元</strong>，并在加速</td>
+<td>2024 年烧 5.7 亿，2025 年烧 9.1 亿</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>39.4 亿 − 11.9 亿 = <strong>27.5 亿美元</strong></td>
+<td>现金里有 TTM 增发拿的 23 亿</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td><strong>约 2 年</strong>（27.5 ÷ 12.3）</td>
+<td>但药已获批，烧钱会从 2027 年起被收入抵消；Royalty Pharma 还有额度没提</td>
+</tr>
+<tr>
+<td>SBC 占营收比例 / 股本一年膨胀</td>
+<td>营收为零无法算 / <strong>+10.45%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>做到成熟利润率能赚多少</td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>「假想市盈率」这一行没法按公式算——营收是零，任何利润率乘零都是零。换个算法：<strong>倒推它需要卖多少药才配得上 450 亿美元。</strong></p>
+<p>拿成熟的单品种抗癌/专科药公司做参照：Vertex 净利率约 35%–40%，Regeneron 约 30%。按 35% 净利率、25 倍市盈率（成熟专科药企的常见水平）算，450 亿市值要求净利润 18 亿，对应<strong>年销售额约 51 亿美元</strong>。</p>
+<p>这个数字意味着：</p>
+<ul>
+<li>光靠已批的「二线胰腺癌」适应症，估算美国峰值 40 亿到 60 亿——<strong>刚好够</strong>，但要到峰值至少三四年，中间还有欧洲、日本审批和医保谈判。</li>
+<li>也就是说，<strong>今天 450 亿的价格已经把第一个适应症的峰值销售全部算进去了</strong>。你买它，买的是一线胰腺癌、肺癌、结直肠癌这些还没出三期数据的东西。</li>
+<li>从现在到峰值，按最近的节奏每年被稀释 10%，三年下来你手里的股份缩水四分之一——等它真赚到 18 亿的时候，你分到的是 13.5 亿的份额，市盈率相当于 33 倍。</li>
+</ul>
+<p>大白话说：<strong>假设它三年后就做到 51 亿销售、35% 净利率，你今天投 100 块，三年后每年能分到大约 3 块</strong>。如果肺癌和一线胰腺癌的三期也成了，这个数能翻两三倍；如果只有二线胰腺癌一个适应症，那就是 3 块封顶。</p>
+<p>三年平均利润口径：过去三年全是亏损，无意义。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>它会不会死？</strong> 不会。27.5 亿净现金够烧两年，Royalty Pharma 的额度还没用完，药已经批了，2027 年开始有真收入，而且股价在天上、随时能再增发。这是任务5 里少见的「烧钱但不缺钱」。</p>
+<p><strong>就算活成了值不值这个价？</strong> 不值。它做成了一件几十年没人做成的事——把 RAS 变成可成药靶点，把胰腺癌生存期翻倍——这是真本事，不是故事。但 450 亿美元的价格已经把第一个适应症卖到峰值的情形全部计入，往后还要每年稀释 10%。<strong>你今天买的不是那颗获批的药，而是三个还没出三期数据的适应症</strong>。药是真的，价格是提前透支的：好公司，贵价格，现在买是替早期投资人接棒。</p>
+<hr />
+<p>数据来源：stockanalysis.com（S&amp;P Global Market Intelligence），TTM 截止 2026-06-30，市值取 2026-09-05。临床与审批信息：公司公告（RASolute 302 顶线数据 2026-04-13；FDA 批准 RASONQUE 2026 年 8 月）。</p><script src="user.js"></script>
+</div></body></html>

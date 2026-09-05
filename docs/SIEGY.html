@@ -1,0 +1,455 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SIEGY · 西门子</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">SIEGY</a></div>
+<div class="mine" data-t="SIEGY"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">好生意</span></div><div class="note">27倍买6-8%增速的工业集团,三年翻三倍是市盈率涨出来的,等18-20倍</div><h1>SIEGY · 西门子</h1>
+<p>市值 2433 亿美元（约 2130 亿欧元，按 1 欧元 = 1.1425 美元）/ ADR 158.14 美元（1 份 ADR = 半股，折合约 277 欧元/股）/ 工业自动化与基础设施 / TTM 截止 2026-06-30（财年 10 月–9 月，季报，全文用欧元）</p>
+<blockquote>
+<p>任务4 海外巨头第 7 名。财报按 IFRS 以欧元编制，市值按 stockanalysis 当天美元市值折成欧元后再算倍数。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>西门子已经不是你印象里那个「什么都造」的老工业巨头了。过去十年它把发电（Siemens Energy）、风电、电机（Innomotics）、燃气轮机全部拆掉或卖掉，剩下四门主业，外加一个自家的融资部门。<strong>先说结论：真正值钱的是前两门（数字工业 + 智能基础设施），它们贡献集团六成以上的利润；医疗是并表的上市子公司，2026 年要分拆出去；轨道交通是块大而薄的生意。</strong></p>
+<h3>生意 A：数字工业（Digital Industries）——工厂的大脑和神经</h3>
+<p><strong>这是什么：</strong> 一家汽车厂要建一条新的焊装线，几百台机器人、几千个传感器、传送带、拧螺丝的工位，全部要有人指挥它们按毫秒级配合。指挥的东西叫 PLC（可编程逻辑控制器），西门子的 SIMATIC 系列是全球第一，一台从几百欧元到几万欧元不等，一条产线要几十上百台，加上驱动电机的变频器、人机界面屏幕，一条产线的控制系统卖几百万欧元。这门生意的护城河在于：工程师从大学起学的就是西门子的 TIA Portal 软件，换牌子等于让整个厂的工程师重新学一遍，所以一旦装上二三十年不换。</p>
+<p>第二块是工业软件：产品设计用的 NX、仿真用的 Simcenter、管理产品全生命周期的 Teamcenter，还有 2025 年花 100 亿美元买的 Altair（仿真和 AI 计算）、51 亿美元买的 Dotmatics（生命科学研发软件）。一家飞机零部件公司买一套 NX + Teamcenter，几百个工程师席位，一年订阅费几百万欧元，这几年西门子正在把软件从一次性卖断改成订阅制，营收暂时被压低、以后更稳。</p>
+<p>2023 年是这门生意的顶峰（206 亿欧元），2024 年因为客户在疫情期间囤了太多 PLC 和变频器、要消化库存，营收掉了 10%，利润率从 22% 掉到 15% 左右。TTM 已经回到 191 亿、比上一整年增长 7.5%，库存去化结束了。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>数字工业</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>191.1 亿欧元</td>
+</tr>
+<tr>
+<td>比上一整年（2025 财年 177.9 亿）</td>
+<td>+7.5%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>24%</td>
+</tr>
+<tr>
+<td>分部利润率（估算）</td>
+<td>约 16%（顶峰时 22%）</td>
+</tr>
+<tr>
+<td>贡献分部利润（估算）</td>
+<td>约 30 亿欧元</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>西门子在季报里披露各分部利润，但 stockanalysis 只有营收。下面各分部的利润率取西门子近几个季度披露的分部利润率区间中值，标为估算。</p>
+</blockquote>
+<h3>生意 B：智能基础设施（Smart Infrastructure）——楼宇和电网的配电、控制</h3>
+<p><strong>这是什么：</strong> 一座数据中心要从电网拉进来几十兆瓦的电，需要中低压开关柜、断路器、变压器、配电系统，一个大型数据中心的配电设备订单几千万到上亿欧元。西门子在这行跟施耐德、ABB 三分天下。第二块是楼宇自动化：一栋写字楼的空调、照明、门禁、消防的控制系统，装完之后每年还要收维护和软件服务费。第三块是电网设备：给电力公司卖变电站里的东西。</p>
+<p>这门生意这几年赶上了两个顺风：AI 数据中心疯狂建设需要配电，欧美电网老化需要更新。营收从 2021 年的 150 亿涨到 TTM 的 241 亿，利润率从 11% 涨到 18% 左右，是集团现在最好的一门生意，也是市场给西门子高估值的主要理由。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>智能基础设施</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>241.0 亿欧元</td>
+</tr>
+<tr>
+<td>比上一整年（2025 财年 229.9 亿）</td>
+<td>+4.8%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>分部利润率（估算）</td>
+<td>约 18%</td>
+</tr>
+<tr>
+<td>贡献分部利润（估算）</td>
+<td>约 43 亿欧元</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 C：西门子医疗（Siemens Healthineers）——并表的上市子公司，即将分拆</h3>
+<p><strong>这是什么：</strong> CT 机、核磁共振、X 光机、超声机，以及体外诊断试剂和放疗设备（2021 年 164 亿美元买的 Varian）。一台高端 CT 卖 100–200 万欧元，医院买了之后每年再付设备价 8%–10% 的维护费，装机量越大后面的服务费越稳。全球影像设备三巨头（西门子医疗、GE 医疗、飞利浦）里它是第一。</p>
+<p>关键点：<strong>西门子只持有 Healthineers 约 67% 的股份</strong>，但因为控股所以 100% 并进集团报表。2025 年 11 月西门子宣布把手里约 30% 的股份直接分给西门子股东，持股降到约 37%，计划在 2026 年内完成，届时不再并表。TTM 数据还是并表口径，所以<strong>你看到的集团营收和利润里有三分之一的医疗利润其实不属于西门子股东</strong>，这一点在算市盈率时要扣掉。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>西门子医疗</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>231.7 亿欧元</td>
+</tr>
+<tr>
+<td>比上一整年（2025 财年 233.8 亿）</td>
+<td>−0.9%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>29%</td>
+</tr>
+<tr>
+<td>分部利润率（估算）</td>
+<td>约 15%</td>
+</tr>
+<tr>
+<td>贡献分部利润（估算）</td>
+<td>约 35 亿欧元（西门子股东只占其中 67%）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 D：交通（Mobility）——火车、信号系统</h3>
+<p><strong>这是什么：</strong> 造高铁列车（德国 ICE、Velaro 平台）、地铁、机车，以及铁路信号和控制系统。一列 ICE 4 高铁大概 3000 万欧元，德国铁路一次订几十列；信号系统项目动辄十几亿欧元、做五到十年。这是典型的「大订单、长周期、薄利润」生意：在手订单超过 500 亿欧元，够做四年，但利润率只有 8%–9%，稍微延期或者出质量问题就吃掉一年利润。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>交通</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>126.7 亿欧元</td>
+</tr>
+<tr>
+<td>比上一整年（2025 财年 124.4 亿）</td>
+<td>+1.8%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>16%</td>
+</tr>
+<tr>
+<td>分部利润率（估算）</td>
+<td>约 8.5%</td>
+</tr>
+<tr>
+<td>贡献分部利润（估算）</td>
+<td>约 11 亿欧元</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 E：西门子金融服务（SFS）</h3>
+<p>给客户买西门子设备提供贷款和租赁，以及做一些基础设施股权投资。营收（利差收入）只有 2.9 亿欧元，但利润几亿欧元。<strong>它的存在扭曲了集团资产负债表</strong>：集团 499 亿欧元有息负债里，大约一半是 SFS 放贷用的钱，对应的是贷款资产，不是真的工业负债。</p>
+<h3>五门生意合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>合计（TTM 截止 2026-06-30）</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>811.1 亿欧元（比 2025 财年 +3.6%）</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>39.4%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>100.2 亿欧元，利润率 12.4%</td>
+</tr>
+<tr>
+<td>净利润（归西门子股东）</td>
+<td>79.5 亿欧元，利润率 9.8%</td>
+</tr>
+</tbody>
+</table></div>
+<p>分部利润估算合计约 120 亿欧元，减去总部费用、收购带来的无形资产摊销（约 15 亿）、以及 Healthineers 少数股东那份，落到集团经营利润 100 亿、股东净利润 79 亿。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）：</strong> 现金流量表没有单列。西门子年报披露的股权激励费用大约 3–4 亿欧元一年，占净利润 4%–5%，比美国科技公司低一个数量级，但不是零。股本一年减少 1.17%，回购确实压过了发股。</p>
+<p><strong>一次性项目：</strong> 这是西门子最需要小心的地方。</p>
+<ul>
+<li>TTM 现金流量表里有 <strong>9.4 亿欧元「资产出售收益」</strong>，主要是分批卖掉 Siemens Energy 股份的收益。2025 财年有 8.3 亿、2024 财年 9.2 亿、2023 财年 9.8 亿——<strong>年年都有，这是「年年发生的一次性收益」的典型</strong>。西门子手里还剩不到 10% 的 Siemens Energy 股份，卖完就没了。真实市盈率里我把它扣掉。</li>
+<li>2025 财年净利润 96.2 亿含卖掉电机业务 Innomotics 的约 20 亿欧元一次性收益，所以 TTM 净利润 79.5 亿比上一财年「下跌 18.8%」是假摔，把 Innomotics 那笔剔掉后 TTM 其实是微增的。</li>
+<li>收购 Altair、Dotmatics 带来的无形资产摊销每年十几亿欧元，是真实成本的会计影子，不加回。</li>
+</ul>
+<p><strong>资本化的支出：</strong> 软件研发有一部分资本化，但金额相对 60 多亿欧元的研发总投入不大，不构成问题。</p>
+<p><strong>回购与稀释：</strong> TTM 回购 34.7 亿欧元，分红 41.7 亿欧元。SBC 约 3–4 亿，回购 ÷ SBC 约 9–10 倍，是真回购。股本一年减 1.17%。</p>
+<p><strong>利润和现金流的差：</strong> 净利润 79.5 亿，经营现金流 143.4 亿，自由现金流 118.5 亿。差 40 多亿，对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>从净利润到经营现金流（TTM，亿欧元）</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东）</td>
+<td>约 91</td>
+<td>79.5 归股东 + 约 11.5 归 Healthineers 少数股东</td>
+</tr>
+<tr>
+<td>+ 折旧与摊销</td>
+<td>33.2</td>
+<td>含收购无形资产摊销</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>1.8</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资产出售收益（非经营）</td>
+<td>−9.4</td>
+<td>Siemens Energy 股份变现，钱记在投资活动里</td>
+</tr>
+<tr>
+<td>+ 其他经营调整</td>
+<td>35.1</td>
+<td><strong>这一行大</strong>：主要是 SFS 贷款业务的应收变动、递延税、拨备，单期口径看不清全部构成</td>
+</tr>
+<tr>
+<td>+ 营运资金变化</td>
+<td>3.0</td>
+<td>预收款增加 10.5 亿（交通订单预付款）抵掉了应收和存货的增加</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>143.4</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−24.9</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>118.5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>自由现金流 118.5 亿看起来比净利润多 50%，但要打两个折扣：第一，这里面有 Healthineers 100% 的现金流，西门子股东只占 67%，扣掉少数股东那份约 12 亿；第二，「其他经营调整」35 亿里有 SFS 金融业务的现金流，性质更像银行，不能当成工业利润看。<strong>打完折的真自由现金流约 95–100 亿欧元</strong>，跟净利润 80 亿比，多出来的部分主要是收购摊销（真实成本不需要再花现金）。这是干净的差异，不是障眼法。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 2130 亿欧元。净负债 390 亿欧元（有息负债 499 亿、现金 109 亿），但其中约一半是 SFS 的放贷资金，<strong>工业口径净负债约 150–200 亿</strong>。EV/EBIT 我用工业口径。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2130 ÷ 79.5</td>
+<td>26.8 倍</td>
+<td>3.7 元</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>西门子用「工业业务利润」和「剔除 PPA 摊销的 EPS」，TTM 约 12.0 欧元/股</td>
+<td>约 23 倍</td>
+<td>4.3 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>2130 ÷（79.5 − Siemens Energy 变现收益税后约 7）</td>
+<td><strong>29.4 倍</strong></td>
+<td><strong>3.4 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（扣少数股东和 SFS）</td>
+<td>2130 ÷ 约 97</td>
+<td>22 倍</td>
+<td>4.6 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（2130 + 工业净负债约 175）÷ 100.2</td>
+<td>23 倍</td>
+<td>4.3 元（税前）</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2130 ÷ 三年平均净利润 86.2（2023 财年 79.5、2024 财年 83.0、2025 财年 96.2）</td>
+<td>24.7 倍</td>
+<td>4.0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均口径那行要说明一句：2025 财年的 96.2 亿含 Innomotics 一次性收益，三年平均被抬高了；剔掉后三年平均约 80 亿，跟 TTM 差不多，<strong>说明现在的利润既不是顶峰也不是谷底，就是正常水平</strong>。</p>
+<p><strong>大白话：你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 3.4 块。</strong></p>
+<p>这 3.4 块里：分红拿走约 1.9 块（每股 5.20 欧元），回购再还你 1.6 块，加起来 3.5 块——<strong>分红加回购已经超过真实利润</strong>，多出来的是用 Siemens Energy 股份变现的钱在填。剩下的再投资几乎为零，而 TTM 花了 44 亿欧元收购（Dotmatics 等），钱是借的。</p>
+<p><strong>这个 3.4 块未来变大还是变小？</strong> 大概率缓慢变大，但速度配不上 27 倍的市盈率。数字工业从库存周期底部回来了，智能基础设施吃着数据中心红利，这两门生意合计利润增速能有 8%–10%。但医疗要分拆出表（分拆后市值和利润同时减少，倍数不变但你手里多了一份 Healthineers 股票），交通利润薄、SFS 是金融业务，把这些拼在一起，集团层面每股利润增速很难超过 6%–8%。分析师给的三年 EPS 增速预测是 4.8%。</p>
+<p><strong>市场为什么给 27 倍：</strong> 因为西门子这几年被重新讲成了「工业软件 + AI + 数据中心」的故事——Altair、Dotmatics 收购，Xcelerator 软件平台，智能基础设施的数据中心订单。市值从 2022 年 9 月的 784 亿美元涨到现在 2433 亿美元，三年翻了三倍，其中利润只涨了一倍多，剩下的是市盈率从 13.5 倍涨到 26.8 倍涨出来的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好公司，不便宜，现在的价格没有便宜可占。</strong> 27 倍市盈率、真实口径 29 倍，买的是一家利润增速 6%–8%、真实回报 3.4% 的多元化工业集团。数字工业和智能基础设施是真正的好生意，护城河实打实，但它们被交通、金融服务和即将分拆的医疗稀释了；而年年靠卖 Siemens Energy 股份贴出来的收益快卖完了。三年前 13.5 倍的西门子是好机会，今天 27 倍的西门子是把未来五年的增长提前付了钱。等它回到 18–20 倍再看。</p><script src="user.js"></script>
+</div></body></html>

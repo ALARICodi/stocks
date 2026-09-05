@@ -1,0 +1,277 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IREN · IREN Limited（比特币矿场转型 AI 算力出租）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IREN</a></div>
+<div class="mine" data-t="IREN"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">微软合同全上线也只是77倍假想市盈率，一年稀释42%，SBC占营收29%</div><h1>IREN · IREN Limited（比特币矿场转型 AI 算力出租）</h1>
+<p>市值 176 亿美元 / 股价约 44.7 美元 / 科技服务·数据中心 / TTM 截止 2026-06-30（财年在 6 月结束，TTM = 2026 财年）/ 分析日 2026-09-05</p>
+<blockquote>
+<p>TTM 净亏损 7.0 亿美元，经营亏损 3.8 亿，自由现金流 −22.3 亿。经营现金流虽然显示 +21 亿，其中 18.4 亿是微软的预付款。<strong>这是「真亏」</strong>：两门生意都还没赚钱，扩张全靠发股和借债。第三部分用亏损公司的口径。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>一家澳大利亚公司，在美国德州和加拿大有几个自建的、用便宜电力的大型电站+数据中心，做两件事：</p>
+<h3>1. 挖比特币（TTM 营收 5.8 亿，占 82%）</h3>
+<p>在德州 Childress 建了一个 750 兆瓦的园区，里面塞满比特币矿机（专用芯片，除了算比特币哈希什么都干不了），24 小时开机，靠算力抢记账权拿比特币奖励。它的算力约 50 EH/s，占全网约 5%。挖到的币当天就卖，不囤（跟 MSTR 正好相反）。</p>
+<p>这门生意的账很简单：<strong>收入 = 挖到的币 × 币价；成本 = 电费 + 矿机折旧。</strong> 它的优势是电便宜（自建变电站，接德州风电光伏，每度电约 3 美分），所以毛利率 69%。但矿机三年就落后一代要换，折旧是真实的损耗；而收入完全看币价——2026 上半年比特币从 11 万美元跌到 6 万，营收翻倍是因为算力翻了两倍多，单位算力的收入其实腰斩了。</p>
+<p>比特币每四年「减半」一次（挖同样的算力，奖励减半，上次 2024 年 4 月），意味着这门生意的收入在结构上每四年砍一刀，只能靠币价涨和抢别人份额补。矿业公司普遍在做的事就是——找一条出路。</p>
+<h3>2. AI 算力出租（TTM 营收 1.3 亿，占 18%，但决定了公司的估值）</h3>
+<p>同一个园区、同样的便宜电，把矿机换成英伟达 GPU（B200、B300、GB300），租给做 AI 的公司。这是它转型的方向，也是市值 176 亿的全部理由。</p>
+<p>2025 年 11 月的关键合同：<strong>微软签了 5 年 97 亿美元</strong>，租用 Childress 园区约 200 兆瓦的 GB300 算力，并预付 20%（约 19 亿美元）——这就是资产负债表上 18.4 亿「长期递延收入」和经营现金流 21 亿的来源。为了履约，IREN 向戴尔下了 58 亿美元的 GPU 采购单，钱从可转债、GPU 抵押贷款和增发来。合同全部上线后，光微软一年就是约 19 亿营收，是现在总营收的 2.7 倍。</p>
+<p>除了微软，它还在 Sweetwater 建一个 2 吉瓦（2000 兆瓦）的新园区，目标是给更多 AI 客户当「房东」。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收(百万美元)</th>
+<th>2025 财年</th>
+<th>增速</th>
+<th>占比</th>
+<th>经营利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>比特币挖矿</td>
+<td>578</td>
+<td>485</td>
+<td>+19%</td>
+<td>82%</td>
+<td>财报不披露</td>
+</tr>
+<tr>
+<td>AI 算力出租</td>
+<td>129</td>
+<td>16</td>
+<td>+686%</td>
+<td>18%</td>
+<td>财报不披露</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>707</strong></td>
+<td><strong>501</strong></td>
+<td><strong>+41%</strong></td>
+<td>100%</td>
+<td>−379（GAAP）</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报不按分部披露利润。整体毛利率 69%，但经营亏损 3.8 亿——毛利 4.9 亿盖不住 4.2 亿折旧、2.1 亿股权激励和为微软项目提前招人建设施的费用。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2.05 亿美元，<strong>占营收 29%</strong>，去年 0.43 亿，一年翻了近五倍。685 名员工，人均股票薪酬 30 万美元。GAAP 已扣，当成现金成本。</li>
+<li><strong>一次性项目</strong>：财报页没有单独的减值或重组项。税前亏损 7.1 亿 比 经营亏损 3.8 亿多出 3.3 亿非经营损失，主要是 78 亿债务的利息和可转债相关的公允价值变动（估算，财报页无法拆分）。<strong>单期口径无法判断这 3.3 亿里有多少会年年发生</strong>，但利息这部分只会随债务增加而增加。</li>
+<li><strong>资本化的支出</strong>：资本开支 43.3 亿，是营收的 6 倍。这不是障眼法，是它的生意本身，但要知道 GPU 也是三四年就折旧完的资产。</li>
+<li><strong>回购与稀释</strong>：回购 0。TTM 增发普通股 47.5 亿美元，<strong>股本一年膨胀 41.6%</strong>。你去年持有的 1%，现在是 0.71%。</li>
+<li><strong>利润和现金流的差</strong>：净利润 −7.0 亿，经营现金流 +21.0 亿，差 28 亿，必须对账：净亏损 −7.0 → 加折旧 +4.2 → 加 SBC +2.1 → 减其他非现金收益 −4.4（公允价值重估等，估算）→ <strong>加微软预付款 +18.4</strong> → 其他营运资金 +7.7 → 经营现金流 +21.0。<strong>剔掉微软预付的 18.4 亿，经营现金流约 2.6 亿；再减 43.3 亿资本开支，一年净烧约 41 亿。</strong> 缺口靠净借债 55.6 亿 + 增发 47.5 亿填上，多出来的 60 亿趴在账上（现金 59 亿 + 受限现金 16.7 亿）等着付戴尔的 GPU 货款。</li>
+</ul>
+<h2>第三部分：亏损公司口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>7.07 亿，+41%</td>
+<td>亏损公司唯一硬的东西；但 82% 来自看币价的挖矿</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>−3.8 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>+21.0 亿 / −22.3 亿</td>
+<td>经营现金流里 18.4 亿是微软预付</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td>约 41 亿（剔除预付款后）</td>
+<td>全部是买 GPU、建园区</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>59 亿（另有 16.7 亿受限）− 78.4 亿 = <strong>−19.4 亿</strong></td>
+<td>现金是刚融来还没花的</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>账上现金够付戴尔订单，之后每一步扩张都要再融</td>
+<td>靠资本市场持续开门</td>
+</tr>
+<tr>
+<td>SBC 占营收 / 股本膨胀</td>
+<td><strong>29% / 一年 +41.6%</strong></td>
+<td>股东真正在付的钱</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>「成熟利润率」拿谁比？GPU 出租最接近的成熟生意是数据中心 REIT（Equinix 经营利润率约 20%）到 AWS（约 35%），取 25%（估算）。分两种情形算：</p>
+<ul>
+<li><strong>按今天的营收</strong>：7.07 亿 × 25% = 1.8 亿假想经营利润；EV 195 亿 ÷ 1.8 亿 = <strong>108 倍</strong>；再减 78 亿债务的利息（可转债票息低，GPU 贷款贵，混合约 5%，估算）约 3.9 亿——<strong>普通股股东的利润是负的，假想市盈率算不出来。</strong></li>
+<li><strong>按微软合同全部上线后</strong>：挖矿 5.8 亿 + 微软 19.4 亿 + 其他 AI 客户 2 亿（估算）≈ 27 亿营收 × 25% = 6.8 亿；减利息 3.9 亿 = 税前 2.9 亿，税后约 2.3 亿；市值 176 亿 ÷ 2.3 亿 = <strong>假想市盈率 77 倍，投 100 块一年赚 1.3 块。</strong></li>
+</ul>
+<p><strong>大白话：假设微软合同明天就全部上线、利润率也一步到位，你投 100 块一年赚 1.3 块；而它离那一天还差两年建设、几十亿再融资，这期间去年一年你被稀释了 42%，今年大概率还要再来一轮。</strong> 而且这 1.3 块建立在两个假设上：微软五年都按合同付钱，以及比特币不跌到让挖矿业务变成负担。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>它会不会死？</strong> 一两年内不会：微软预付了 19 亿，账上现金够付 GPU 货款，可转债 2028 年后才到期。但它没有靠自己活下去的能力，整个转型建立在「资本市场继续给钱 + 微软一家客户」上，而它的对手（CoreWeave、Nebius、Crusoe 和一堆同样在转型的矿企）都在抢同一批客户和同一批 GPU。</p>
+<p><strong>就算活成了值不值？</strong> 不值。微软合同全上线也只是 77 倍的假想市盈率，代价是每年 40% 的稀释和 29% 营收的股票工资。它是一个用比特币矿场的地和电、赌 AI 算力租金能高于 GPU 折旧加利息的杠杆押注——赌对了股价还能翻倍，赌错了普通股在 78 亿债后面垫底。很贵，有硬伤。</p><script src="user.js"></script>
+</div></body></html>

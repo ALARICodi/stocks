@@ -1,0 +1,312 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FLUT · Flutter Entertainment（FanDuel 的母公司，全球最大在线博彩集团）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">FLUT</a></div>
+<div class="mine" data-t="FLUT"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">跌66%后真实FCF仍35倍，126亿净债，预测市场正在动它的州牌照护城河</div><h1>FLUT · Flutter Entertainment（FanDuel 的母公司，全球最大在线博彩集团）</h1>
+<p>市值 174 亿美元 / 股价 100.11 美元（一年跌了 66%）/ 消费服务·博彩 / TTM 截止 2026-06-30 / 分析日 2026-09-05</p>
+<blockquote>
+<p>TTM 净亏损 7.5 亿美元，经营利润 −0.8 亿，但经营现金流 +13.3 亿。<strong>这是「账面亏」为主</strong>：5.6 亿资产减值、16.7 亿折旧摊销（大头是收购来的品牌和客户名单按年摊）。但剥掉这些之后，真实利润也只是勉强打平——126 亿美元的债一年要吃掉七八亿利息。第三部分照常做市盈率表。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>一句话：<strong>开网上赌场和体育彩票站，全球几十个牌子，美国的 FanDuel 是招牌。</strong> 财报按「美国 / 国际」两个地区各分三块，实质是两门生意：体育博彩（sportsbook）和网络赌场（iGaming）。</p>
+<h3>1. 体育博彩（2025 全年营收 86 亿，占 53%）</h3>
+<p>一个新泽西的球迷在 NFL 比赛前打开 FanDuel App，押 100 美元「酋长队赢」，赔率 1.91。赢了拿回 191，输了 100 归 FanDuel。<strong>FanDuel 的利润来自赔率里预埋的差价</strong>：如果两边各有一半人下注，无论谁赢它都赚约 4.5%；再加上「串关」（parlay，一次押多场，赔率诱人但极难全中）这种毛利 20%–30% 的产品，整体从投注额里留下约 12%–14%（行业叫 hold rate）。一个活跃用户一年在它这里输掉几百到上千美元。</p>
+<p>美国是主战场：FanDuel 在已开放的 20 多个州占约 40% 份额，是第一；DraftKings 第二。国际上是 Sky Bet、Paddy Power、Betfair（英国和爱尔兰）、Sportsbet（澳大利亚第一）、Sisal 和 2025 年花 23 亿美元买下的 Snai（意大利）、NSX（巴西）。</p>
+<p>客户为什么用它而不是别家：App 好用、开赛后的即时投注选项多、促销（首注免费）砸钱狠。这是靠规模堆出来的——它一年营销费用几十亿美元，小玩家跟不起。</p>
+<h3>2. 网络赌场 iGaming（2025 全年营收 72 亿，占 44%）</h3>
+<p>同一个 App 里点进去，老虎机、21 点、轮盘，24 小时开着。这门生意比体育博彩好赚得多：老虎机的返奖率是设定好的（一般 95%–96%），玩家玩得越多输得越确定，而且不像体育博彩那样有赛季和「客户运气好赔率翻车」的风险。国际部分（意大利、英国）iGaming 已经是最大的收入线，51 亿；美国只有 7 个州允许网络赌场，21 亿，增长快但受限于立法进度。</p>
+<h3>3. 其他（2025 全年营收 5.4 亿，占 3%）</h3>
+<p>FanDuel 的每日梦幻体育（DFS，起家业务）、赛马、扑克、彩票。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部（2025 全年，财报页 TTM 分部列未更新）</th>
+<th>营收(百万美元)</th>
+<th>2024 全年</th>
+<th>增速</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国·体育博彩</td>
+<td>4,633</td>
+<td>4,013</td>
+<td>+15%</td>
+<td>28%</td>
+</tr>
+<tr>
+<td>美国·iGaming</td>
+<td>2,095</td>
+<td>1,524</td>
+<td>+37%</td>
+<td>13%</td>
+</tr>
+<tr>
+<td>美国·其他</td>
+<td>239</td>
+<td>261</td>
+<td>−8%</td>
+<td>1%</td>
+</tr>
+<tr>
+<td>国际·体育博彩</td>
+<td>3,999</td>
+<td>3,816</td>
+<td>+5%</td>
+<td>24%</td>
+</tr>
+<tr>
+<td>国际·iGaming</td>
+<td>5,112</td>
+<td>4,130</td>
+<td>+24%（含 Snai 并表）</td>
+<td>31%</td>
+</tr>
+<tr>
+<td>国际·其他</td>
+<td>305</td>
+<td>304</td>
+<td>0%</td>
+<td>2%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>16,409</strong></td>
+<td><strong>14,057</strong></td>
+<td>+17%</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 总营收 171.6 亿，比 2025 全年多 4.6%——增速从 17% 骤降到个位数，这是股价跌 66% 的第一个原因。财报不披露分部利润；整体毛利率 42.5%（去年 45.2%，再往前 47.7%，逐年下滑——各州加税、意大利业务毛利低），经营利润 −0.8 亿。</p>
+<p><strong>股价为什么腰斩再腰斩：</strong> 2026 年 2 月，2025 年营收 164 亿低于自己 167 亿的目标，2026 年指引 184 亿低于市场预期的 193 亿，当天跌 14%；5 月下调指引，说要砸钱做「FanDuel Predicts」应对预测市场；FanDuel 的 CEO 离职；8 月中报再次不及预期、再换高管。背后的实质威胁是 <strong>Kalshi、Polymarket 这类「预测市场」</strong>：它们在联邦层面拿的是商品期货牌照，可以在全美 50 个州让人「买卖某队会不会赢的合约」，绕开各州的博彩牌照和税，6 月单月成交约 100 亿美元；DraftKings 用户里同时用 Kalshi 的比例从 1 月的 4% 涨到 9.5%。这动摇的是 FanDuel 最核心的护城河——「州牌照 + 先发规模」。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2.5 亿美元，占营收 1.4%，不算重。GAAP 已扣。</li>
+<li><strong>一次性项目</strong>：TTM 资产减值与重组 5.6 亿（2025 全年同为 5.6 亿，发生在 2025 下半年）。<strong>单期口径无法判断是否年年发生</strong>，但它 2023 年也计过 7.3 亿减值，五年三次，把它当作「买贵了的并购隔几年集中清算一次」比较稳妥。</li>
+<li><strong>资本化的支出</strong>：<strong>这是它最大的一个障眼法。</strong> TTM「购买无形资产」7.4 亿——主要是自研软件开发费用资本化和购买牌照、内容。这笔钱不在资本开支里，所以财报页的自由现金流 12.4 亿是虚高的：<strong>真实自由现金流 = 13.3 亿经营现金流 − 0.9 亿资本开支 − 7.4 亿无形资产 = 5.0 亿。</strong></li>
+<li><strong>回购与稀释</strong>：TTM 回购 8.0 亿，SBC 2.5 亿，<strong>比值 3.2</strong>，股本减少 1.95%。这是真回购。但同期另有 17.1 亿「其他融资流出」，是买断 Boyd Gaming 手里 FanDuel 5% 股权的对价——也就是说 TTM 花了 25 亿回购自己和子公司的股份，钱从哪来？净新增借款 21.6 亿。<strong>借钱回购。</strong></li>
+<li><strong>利润和现金流的差</strong>：净利润 −7.5 亿，经营现金流 +13.3 亿，差 20.8 亿，对账：净亏损 −7.5 → 加折旧摊销 +16.7 → 加减值重组 +5.6 → 加 SBC +2.5 → 减其他非现金收益 −6.9（主要是 Fox 期权、或有对价等按公允价值重估的账面收益，估算）→ 营运资金变化 +2.8 → 经营现金流 +13.3。折旧摊销 16.7 亿里，真正对应设备磨损的只有约 3 亿（资本开支才 0.9 亿），其余十几亿是收购来的品牌、客户关系按年摊——这部分是「已经付过的钱」，不是未来还要花的。</li>
+</ul>
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>亏损</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的调整后 EBITDA</td>
+<td>经营利润 −0.8 亿 + 折旧摊销 16.7 亿 + SBC 2.5 亿 + 减值 5.6 亿 ≈ 24 亿（估算）；EV 283 亿</td>
+<td>11.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>经营利润 −0.8 + 一次性减值 5.6 = 经营利润 4.8 亿；减利息约 7.5 亿（126 亿债按约 6%，估算）= <strong>税前 −2.7 亿</strong></td>
+<td><strong>仍然亏损</strong></td>
+<td><strong>0 元</strong></td>
+</tr>
+<tr>
+<td>真实口径再加回收购无形资产摊销</td>
+<td>上一行 + 约 7 亿收购摊销（估算）= 税前 4.3 亿，税后约 3.2 亿</td>
+<td>54 倍</td>
+<td>1.8 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（财报页）</td>
+<td>市值 174 亿 ÷ 12.4 亿</td>
+<td>14 倍</td>
+<td>7.1 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣掉资本化的无形资产）</strong></td>
+<td>174 亿 ÷ 5.0 亿</td>
+<td><strong>35 倍</strong></td>
+<td><strong>2.9 元</strong></td>
+</tr>
+<tr>
+<td>真实 FCF 再扣 SBC</td>
+<td>174 亿 ÷（5.0 − 2.5）= 2.5 亿</td>
+<td>69 倍</td>
+<td>1.4 元</td>
+</tr>
+<tr>
+<td>EV/EBIT（剔除减值）</td>
+<td>283 亿 ÷ 4.8 亿</td>
+<td>59 倍</td>
+<td>1.7 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2024 年 +0.4 亿、2025 年 −3.1 亿、TTM −7.5 亿</td>
+<td>三年平均为负</td>
+<td>0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，按剔除障眼法但把利息算进去的真实口径，公司一年不替你赚钱；把收购摊销当作沉没成本，一年赚 1.8 块；按真实自由现金流算 2.9 块。</strong> 这 2.9 块里，TTM 以回购形式回到你口袋的相当于 4.6 块（8 亿 ÷ 174 亿）——比它赚的还多，差额是借的。</p>
+<p>这个数未来会变大还是变小？两股力量对着拉。往上的：美国 iGaming 每多开一个州就是几亿利润，意大利 Snai 并表后的协同，营销费用占比随规模下降。往下的：预测市场绕开州牌照抢客户是结构性的，公司自己承认要「砸钱应对」，2026 年指引已经砍过一次；各州加税（伊利诺伊州按每注收税）直接吃毛利。<strong>净结论：一两年内利润大概率不涨，要看预测市场这一仗打成什么样。</strong></p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>好生意被打了个问号，价格从离谱回到了「不便宜」。</strong> 一年前 260 美元时它是 90 倍真实现金流；现在 100 美元，真实自由现金流 35 倍、扣 SBC 69 倍、126 亿净债、加税和预测市场两头夹击，利润三年没涨。规模护城河还在，但不再是理所当然的。不值得现在买，值得盯着——如果预测市场被监管收紧、或者股价再跌三成到真实现金流 20 倍出头，就是另一回事。偏贵。</p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,371 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CNC · 森特尼（Centene）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CNC</a></div>
+<div class="mine" data-t="CNC"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">亏损是67亿商誉减值,真实16.8倍踩在1.9%谷底利润率上,费率归政府管</div><h1>CNC · 森特尼（Centene）</h1>
+<p>市值 331.2 亿美元 ｜ 股价 67.04 美元（2026-09-04 收盘）｜ 管理式医疗保险 ｜ TTM 截止 2026-06-30 ｜ 任务5 · 亏损口径</p>
+<blockquote>
+<p>这是一家<strong>账面亏</strong>的公司：TTM 净亏 51 亿美元，但其中 67 亿是商誉减值（一笔不出现金的账面注销），经营利润 33.6 亿是正的，经营现金流 97.5 亿是正的。下面第三部分照常做市盈率表，主角是「剔除障眼法后的真实市盈率」。</p>
+</blockquote>
+<h2>第一部分：它到底做几件事</h2>
+<p>Centene 是美国最大的<strong>政府医保承包商</strong>。它自己不开医院、不雇医生，做的事是：政府把一群人的医疗费用打包给它，按人头每月付固定的钱，它负责替这群人买医疗服务，医疗费花得比政府给的少，差额就是利润；花超了，亏损自己扛。财报按四个分部披露：Medicaid（穷人医保）、Medicare（老人医保）、Commercial（商业保险，主要是奥巴马医保交易所）、Other。</p>
+<h3>生意 A：Medicaid——替各州政府管穷人的医保，58% 的营收</h3>
+<p>Medicaid 是美国给低收入人群的免费医保，联邦和州政府出钱，但大多数州不想自己经营，就外包给 Centene 这样的公司。它在 30 多个州拿有合同，覆盖约 1,300 万人，是全美第一。</p>
+<p>怎么收钱：举个例子，德州跟 Centene 签合同，把某个片区 50 万 Medicaid 人口交给它。州政府按"每人每月"付费，一个健康成年人每月付它 300 到 400 美元，一个残障或长期护理老人每月付几千美元。Centene 拿了钱，去跟当地医院、诊所、药房谈价签约，会员看病由它买单。行业规矩是医疗费用要占到保费的 88%–90%（叫医疗成本率），剩下 10% 出头付行政费用和利润，<strong>净利润率正常年份只有 2%–3%</strong>。这是一门靠规模和精算吃饭的薄利生意：一年 1,170 亿美元流水，赚 2% 就是 23 亿。</p>
+<p>为什么州政府非用它不可：一个州自己运营要养几千人的理赔和谈判团队，外包给 Centene 按人头付固定价，预算可控、超支风险转出去。为什么 Centene 危险：<strong>费率是政府定的，不是市场定的</strong>。2024–2025 年疫情期间"暂停清退"结束后，各州把健康的人清出 Medicaid，留下的是病得重的，人均医疗费飙升，但州政府的费率调整慢半拍——Centene 在这中间垫了两年。</p>
+<h3>生意 B：Medicare——替联邦政府管老人的医保，20% 的营收</h3>
+<p>品牌叫 <strong>WellCare</strong>。两块：Medicare Advantage（老人把传统联邦医保换成 Centene 的私营套餐，联邦政府按人头每月付它 1,000 多美元，它提供比传统医保多的福利如牙科、健身房）和 Part D 处方药计划（约 700 多万人买它的老人药品保险，是全美最大的 PDP 之一）。</p>
+<p>这门生意是 Centene 的伤疤。2025 年联邦政府大幅压低了 Medicare Advantage 的费率增长和质量评级奖金，Centene 的 MA 业务连续两年亏损，<strong>TTM 里那笔 67 亿美元的商誉减值主要就是给 WellCare 这个 2020 年花 170 亿美元买来的资产打折</strong>。</p>
+<h3>生意 C：Commercial——奥巴马医保交易所，20% 的营收</h3>
+<p>品牌叫 <strong>Ambetter</strong>，是美国最大的"奥巴马医保"（ACA 交易所）保险商，覆盖约 500 万人。客户是没有雇主保险、又不够穷到进 Medicaid 的人：小店主、自由职业者、零工。他们在政府网站上挑保险，联邦政府按收入补贴保费，个人每月自付几十到几百美元。</p>
+<p>怎么赚钱：跟 Medicaid 一样是"保费 − 医疗费"，但多了一个致命机制叫<strong>风险调整</strong>：交易所里各家保险公司之间要按投保人的健康程度互相转移资金，你的客户比行业平均健康，你就要给别人钱。2025 年 7 月 Centene 突然发现自己的投保人比预想的健康（意味着要往外付钱）、同时医疗费用又比预想高，一次性下调全年盈利预期 18 亿美元，股价当天跌了 40%。这就是它进入亏损榜的直接原因。2026 年起联邦的增强补贴到期，交易所投保人数在缩。</p>
+<h3>生意 D：Other——2.5% 的营收</h3>
+<p>监狱医疗（Centurion，替州监狱系统提供囚犯医疗服务）、专科药房、给其他保险公司做的第三方服务。小生意，凑数。</p>
+<h3>四门生意的钱</h3>
+<p>财报按分部披露营收和分部经营利润，分部经营利润下面是<strong>按 2025 年以来各分部医疗成本率的估算</strong>，不是精确数。分部营收合计 2,029 亿是内部交易抵消前的口径，对外报表营收 1,803 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>同比增速*</th>
+<th>占分部合计</th>
+<th>经营利润率（估算）</th>
+<th>贡献利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Medicaid</td>
+<td>116,861</td>
+<td>+8.9%</td>
+<td>57.6%</td>
+<td>约 1.5%</td>
+<td>约 1,750</td>
+</tr>
+<tr>
+<td>Medicare</td>
+<td>40,384</td>
+<td>+61.6%（PDP 大扩张）</td>
+<td>19.9%</td>
+<td>约 −1%（MA 亏损、PDP 微利）</td>
+<td>约 −400</td>
+</tr>
+<tr>
+<td>Commercial</td>
+<td>40,696</td>
+<td>+24.6%</td>
+<td>20.1%</td>
+<td>约 3%</td>
+<td>约 1,200</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>4,997</td>
+<td>+1.6%</td>
+<td>2.5%</td>
+<td>约 2%</td>
+<td>约 100</td>
+</tr>
+<tr>
+<td>未分摊 / 抵消</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 710</td>
+</tr>
+<tr>
+<td><strong>合计（对外报表）</strong></td>
+<td><strong>180,304</strong></td>
+<td><strong>+12.9%</strong></td>
+<td></td>
+<td><strong>1.86%</strong></td>
+<td><strong>3,360</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>*分部同比用 FY2025 对 FY2024（分部只有年度数据）；整体 +12.9% 是 TTM 对上年同期。</p>
+<p>关键数字：<strong>经营利润率 1.86%，历史正常水平是 3.2%–3.5%</strong>。营收还在涨（政府把更多人交给它管），但每一块钱营收赚的钱只剩正常年份的一半多。</p>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 2.36 亿美元，占经营利润 7%。GAAP 已扣，不加回。</li>
+<li><strong>一次性项目</strong>：这是全篇的核心。TTM 利润表从"经营利润 33.6 亿"走到"税前 −46.3 亿"，中间是：利息支出 −6.55 亿（年年有，不算一次性），<strong>商誉减值 −67.2 亿</strong>（WellCare 那笔，纯账面注销、不出一分现金），资产处置损失 −5.0 亿，并购重组费 −0.95 亿，资产减记 −0.2 亿。剔掉这四项，<strong>税前利润是 27.1 亿</strong>。商誉减值是真一次性——商誉减完就没了，不会年年减。但资产处置损失和并购费用在它过去五年每年都有（2022 年一次就是 18.4 亿重组费），单期口径下我把它们当经常性成本处理，不加回。</li>
+<li><strong>资本化的支出</strong>：资本开支 7.98 亿，主要是 IT 系统，跟折旧 12.5 亿相比不多，没有明显的资本化藏费用。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 3,500 万美元 ÷ SBC 2.36 亿 = <strong>0.15</strong>，也就是这一年基本没回购——2025 年出事后公司把钱捂住了。但股本还是少了 2.5%，那是上一年 4.75 亿回购的余波。2024 年回购 31 亿、2023 年 16 亿，它历史上是真回购的，只是今年停了。</li>
+<li><strong>利润和现金流的差</strong>：净亏 51 亿，经营现金流 +97.5 亿，差 148 亿，逐项对账（百万美元）：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−5,100</td>
+</tr>
+<tr>
+<td>加：商誉减值（非现金）</td>
+<td>+6,723</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+1,246</td>
+</tr>
+<tr>
+<td>加：资产处置损失（非现金）</td>
+<td>+501</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+236</td>
+</tr>
+<tr>
+<td>加：应收账款减少（州政府结清了拖欠的款）</td>
+<td>+3,275</td>
+</tr>
+<tr>
+<td>加：应付账款增加（医疗费账单还没付出去）</td>
+<td>+3,383</td>
+</tr>
+<tr>
+<td>加：保险准备金增加</td>
+<td>+259</td>
+</tr>
+<tr>
+<td>减：其他经营资产变动</td>
+<td>−841</td>
+</tr>
+<tr>
+<td>加：其他</td>
+<td>+67</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>9,749</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−798</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>8,951</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说明 P/FCF 3.7 倍是假的。</strong> 97.5 亿经营现金流里，66 亿来自应收和应付的时点变化——政府某个季度多打了钱、医院账单某个季度晚付了，这在保险公司是常态，第二年会反过来（2024 年经营现金流只有 1.5 亿，就是同一件事的另一头）。剔掉营运资金变动后的经营现金流约 36 亿，减资本开支后的<strong>真实自由现金流约 28 亿</strong>，跟剔除减值后的税前利润是一个数量级。另外，保险公司账上 241.5 亿"现金及投资"里，大部分是各州监管要求锁在子公司里的法定资本，不是母公司能随便拿去回购的钱。</p>
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 331.2 亿美元。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>331.2 亿 ÷ −51.0 亿</td>
+<td>亏损，无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司口径调整后 EPS 约 5 美元 × 4.94 亿股 ≈ 24.7 亿（估算：剔减值、处置损失、无形资产摊销）</td>
+<td>约 13.4 倍</td>
+<td>7.5 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>331.2 亿 ÷（税前 27.1 亿 − 并购/减记 1.2 亿 ＝ 25.9 亿，按 24% 税率 → 净利 19.7 亿）</td>
+<td><strong>16.8 倍</strong></td>
+<td><strong>6.0 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（报表数）</td>
+<td>331.2 亿 ÷ 89.5 亿</td>
+<td>3.7 倍</td>
+<td>27.0 元（假的，见第二部分）</td>
+</tr>
+<tr>
+<td>自由现金流口径（剔营运资金）</td>
+<td>331.2 亿 ÷ 约 28 亿</td>
+<td>约 11.8 倍</td>
+<td>8.5 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>250.7 亿 ÷ 33.6 亿（网站口径，把 80 亿净现金全算成可分配，实际大部分是法定资本）</td>
+<td>7.5 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>331.2 亿 ÷（2023 年 27.0 亿 + 2024 年 33.1 亿 + 2025 年剔减值后约 4.6 亿）÷ 3 ＝ 21.6 亿</td>
+<td><strong>15.3 倍</strong></td>
+<td>6.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 6 块。</strong> 这 6 块里，今年一分钱都没回到你口袋——不分红，回购也停了；钱留在公司里补法定资本、还债（TTM 净还债 14.9 亿）。</p>
+<p>这个 6 块未来会变大还是变小？<strong>大概率变大，但不由它自己决定。</strong> 1.86% 的经营利润率是踩在坑底的数字：Medicaid 费率各州正在按 2025 年的实际病情重新定价（管理层说 2026 年费率调整已基本到位），Medicare Advantage 在砍掉亏损的县和产品，交易所业务 2026 年整体提价了 20% 以上。如果利润率回到 3%，经营利润就是 54 亿，税后约 37 亿，市盈率变成 9 倍，投 100 块赚 11 块。反过来的风险也是真的：2025 年通过的联邦预算法案要求 Medicaid 受益人从 2027 年起满足工作要求，会清退几百万人；交易所增强补贴 2025 年底到期后投保人正在流失。<strong>营收的天花板是国会定的。</strong></p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>它会不会死：不会</strong>，这不是那种烧钱公司。经营现金流为正，债务 161 亿对应 46 亿 EBITDA（3.4 倍，偏高但保险公司常态），利息覆盖 5 倍。</p>
+<p><strong>值不值这个价：公道，不便宜也不贵。</strong> 16.8 倍买的是一门利润率被政府压到谷底的生意——利润率修复到正常水平就是 9 倍，明显便宜；但 2025 年这场事故证明了它的利润率是华盛顿和 30 个州政府说了算的，而且股价从 2025 年低点已经涨了一倍多（52 周 +123%），修复预期已经付了一半的钱。这是一门"合格但不好"的生意：护城河是规模和跟政府的合同关系，不是定价权。<strong>值得放进观察名单</strong>，等两件事：2026 年三季度、四季度的医疗成本率是不是真的回到 89% 以下，以及回购是不是重新开始。这两件事出现一件，16.8 倍就变成便宜。</p><script src="user.js"></script>
+</div></body></html>

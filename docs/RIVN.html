@@ -1,0 +1,341 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RIVN · Rivian（电动皮卡/SUV）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RIVN</a></div>
+<div class="mine" data-t="RIVN"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">每卖一辆亏一辆，靠大众打款填坑，最乐观2028年也只值普通价</div><h1>RIVN · Rivian（电动皮卡/SUV）</h1>
+<p>市值 227.9 亿美元 · 股价 15.74 美元 · 汽车制造 · TTM 截止 2026-06-30（2026-09-05 分析，任务5 · 亏损公司）</p>
+<p><strong>这是一家真亏的公司</strong>：经营本身不赚钱，靠账上现金、大众汽车分期打款和美国能源部贷款活着。下面第三部分不做市盈率，改用「烧钱口径」。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报按两个分部披露：<strong>汽车</strong>、<strong>软件与服务</strong>。实质上是两门生意——一门是卖车（亏），一门是把自己的电子架构卖给大众（赚）。</p>
+<h3>A. 卖车：R1 皮卡/SUV + 亚马逊送货车（TTM 营收 40.3 亿，占 69%）</h3>
+<p>Rivian 在伊利诺伊州 Normal 镇一座原三菱工厂里造三种车：
+- <strong>R1T 电动皮卡、R1S 电动 SUV</strong>，售价 7 万到 10 万美元，卖给美国有钱的户外爱好者——车顶帐篷、露营厨房、涉水一米深。这是它的招牌，但一年只卖三四万辆，市场太窄。
+- <strong>EDV 电动送货车</strong>，专门为亚马逊定制，亚马逊承诺到 2030 年买 10 万辆，目前已交付两万多辆。这是保底订单，但价格是大客户价，利润薄。
+- <strong>R2 中型 SUV</strong>，售价约 4.5 万美元，2026 年上半年从 Normal 工厂开始交付。这是公司的命——R1 太贵卖不动量，R2 才是冲 10 万辆以上的车型。为了 R2 之后的更大产能，佐治亚州还在建第二座工厂，靠美国能源部 66 亿美元贷款（2025 年 1 月批下来），计划 2028 年投产。</p>
+<p>怎么收钱：一辆 R1 卖 8 万美元，Rivian 收车款；但造一辆的材料+人工+工厂折旧多年来一直高于售价，也就是<strong>每卖一辆亏一辆</strong>。2024 年四季度才第一次做到卖车毛利转正，而且是靠着卖监管积分和大众打款才转正的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>汽车分部</th>
+<th>TTM（2026-06）</th>
+<th>FY2025 全年</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>40.3 亿</td>
+<td>38.3 亿</td>
+<td>略增（R2 刚开始交付）</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>69%</td>
+<td>71%</td>
+<td></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>财报未按分部披露，估算仍为负</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>B. 软件与服务：把电子架构卖给大众 + 卖积分 + 售后（TTM 营收 18.5 亿，占 31%）</h3>
+<p>这个分部从 2024 年的 4.8 亿跳到 2025 年的 15.6 亿、TTM 18.5 亿，几乎全靠一件事：<strong>大众汽车合资公司</strong>。</p>
+<p>2024 年大众和 Rivian 成立合资公司「Rivian and VW Group Technologies」，大众看中的是 Rivian 的「区域式电子电气架构」——通俗说，传统车企一辆车里有上百个小电脑各管各的，Rivian 把它压缩成几个大电脑加一套软件，大众自己搞了好几年（Cariad）搞砸了，干脆买 Rivian 的。大众总共承诺投 58 亿美元，分期到 2027 年：先买 10 亿可转债，合资时付 13 亿买技术授权，2025 年 6 月又花 10 亿买股票（条件是 Rivian 连续两季毛利为正，做到了），剩下约 20 多亿在 2026–2027 年按里程碑到账（估算）。Rivian 从合资公司收「服务费」，这笔钱进这个分部，毛利率高。</p>
+<p>其他几项：<strong>监管积分</strong>（美国各州要求车企卖一定比例零排放车，卖不够的传统车企花钱找 Rivian 买额度，一年几亿美元，纯利润，但特朗普政府 2025 年砍了联邦罚则，这块以后会缩）；<strong>二手车再销售、维修保养、充电网络、车险、给亚马逊的车队管理软件 FleetOS</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>软件与服务分部</th>
+<th>TTM（2026-06）</th>
+<th>FY2025 全年</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>18.5 亿</td>
+<td>15.6 亿</td>
+<td>+19%</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>31%</td>
+<td>29%</td>
+<td></td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>财报未按分部披露，估算约 25–30%</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>整体 TTM 毛利 4.4 亿（毛利率 7.5%），是上市以来第一次全年为正</strong>，但这 4.4 亿基本是大众打款和积分撑出来的，卖车本身还没赚到钱。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 7.97 亿，占营收 13.5%。一家造车的公司发股票给员工的钱相当于营收的七分之一，这是硅谷成本结构套在底特律生意上。一律当现金成本扣。</p>
+<p><strong>一次性项目</strong>：现金流量表里有一笔「权益投资收益 5.06 亿」（TTM），是跟大众合资相关的账面收益，不是卖车赚的。剔掉它，真实亏损比报表上还多 5 亿。单期口径无法判断明年还有没有。</p>
+<p><strong>资本化的支出</strong>：没有大额资本化软件费，研发全部费用化。</p>
+<p><strong>回购与稀释</strong>：回购为零。TTM 增发股票收到 13.6 亿（主要是大众那 10 亿），加上 SBC，<strong>股本一年膨胀 15.2%</strong>——你持有的每一股在一年里被稀释了 13%。</p>
+<p><strong>利润和现金流的差</strong>（单位：百万美元，TTM）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−3,233</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+819</td>
+</tr>
+<tr>
+<td>− 权益投资账面收益（非现金）</td>
+<td>−506</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+797</td>
+</tr>
+<tr>
+<td>+ 存货减少、应付增加等营运资金变化</td>
+<td>+282</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>−1,845</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,644</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>−3,489</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>意思是：账面亏 32 亿，其中 13 亿是折旧和发股票这种不掏钱的，真掏出去的经营现金 18 亿，再加上建厂买设备 16 亿，<strong>一年净烧 35 亿美元现金</strong>。比 2025 全年的 25 亿更多，因为 R2 上量和佐治亚工厂在花钱。</p>
+<hr />
+<h2>第三部分：烧钱口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>58.8 亿，+14.2%</td>
+<td>增长大半来自大众打款，不是卖车</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>−35.3 亿</td>
+<td>亏损率 −60%</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>−18.5 亿 / −34.9 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>34.9 亿</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>53.1 亿 − 53.5 亿 = <strong>−0.4 亿</strong></td>
+<td>净现金已经归零</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>只看账上现金：<strong>1.5 年</strong>；加上大众剩余约 20 多亿分期 + 能源部 66 亿贷款（只能花在佐治亚工厂）：约 3–4 年（估算）</td>
+<td></td>
+</tr>
+<tr>
+<td>SBC 占营收、股本膨胀</td>
+<td>13.5%、一年 +15.2%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>按丰田约 10%、通用约 7%，取 8% 经营利润率 × 58.8 亿 = 4.7 亿假想利润；228 亿 ÷ 4.7 亿 = <strong>假想市盈率 48 倍</strong> → 投 100 块年回报 <strong>2.1 块</strong></td>
+<td>这是「今天就变成丰田」的假设</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：<strong>假设它明天就做到丰田的利润率，你投 100 块一年也只能赚 2 块。</strong> 而它离那一天差得很远——现在经营利润率是 −60%，要从 −60% 走到 +8%；营收要靠 R2 至少翻一倍（R2 一年卖 15 万辆 × 4.5 万美元 ≈ 67 亿）才谈得上规模；这期间每年被稀释 10–15%。就算 2028 年 R2 大成、营收 126 亿、利润率 8%，利润 10 亿，按今天市值也是 23 倍，投 100 块赚 4.4 块——<strong>最乐观的情形也只是个普通价格</strong>。</p>
+<p>现金去向：TTM 投资活动净流出 8.4 亿（资本开支 16.4 亿，卖了 9 亿短期证券补血），融资活动净流入 14.7 亿，几乎全是大众的钱。没有任何钱回到股东口袋，也不可能有。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它两年内不会死</strong>——大众的分期款和能源部贷款把它托住了，这是它跟其他亏损电动车公司最大的区别。<strong>但 228 亿市值买的是「R2 大卖 + 利润率从 −60% 翻正」这一整套还没发生的事</strong>：今天的生意是每卖一辆亏一辆，靠卖技术给大众填坑，账上净现金已经归零，一年烧 35 亿，股本一年膨胀 15%。最乐观的 2028 年剧本算下来也只值一个普通价，而中间每一步都可能出岔子。<strong>贵，而且是「好故事坏生意」的那种贵。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com 利润表 / 现金流量表 / 估值页 / 比率页，TTM 截止 2026-06-30。分部毛利率、大众剩余款项、成熟利润率均为估算，文中已标注。</em></p><script src="user.js"></script>
+</div></body></html>

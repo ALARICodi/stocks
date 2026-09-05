@@ -1,0 +1,437 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RLLCF / RYCEY · 罗尔斯·罗伊斯（Rolls-Royce Holdings plc）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RLLCF</a></div>
+<div class="mine" data-t="RLLCF"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">好生意</span></div><div class="note">宽体机发动机双寡头+25年小时费，账干净真回购，但41倍/三年平均63倍</div><h1>RLLCF / RYCEY · 罗尔斯·罗伊斯（Rolls-Royce Holdings plc）</h1>
+<p>市值 1,671 亿美元 ≈ <strong>1,257 亿英镑</strong>（按 1 英镑 = 1.33 美元）｜ADR 价 20.12 美元（1 ADR = 1 股普通股）｜行业：航空发动机 / 国防 / 动力系统｜TTM 截止 2026-06-30（财年 = 自然年）｜财报货币：英镑，<strong>全文数字统一用英镑</strong></p>
+<blockquote>
+<p>说明：筛选榜上的代号 RLLCF 是普通股场外线，数据源没有这条线的财报页；同一家公司的 ADR 代号 RYCEY 数据齐全，本文数字全部取自 RYCEY 页面。两条线对应同一份财报、同一个市值。</p>
+<p>这家公司跟汽车「劳斯莱斯」没关系——汽车品牌 1998 年就卖给宝马了。这是造飞机发动机的那个罗尔斯·罗伊斯。2020 年疫情它差点破产，以 32 便士一股贱卖新股融资 20 亿英镑，2022 年还在亏；2023 年新 CEO 上台，三年把经营利润率从 5.6% 拉到 20.7%，股价涨了 18 倍。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>数据源的分部只按「卖新机 / 售后服务」拆，公司自己按业务线分四块。两种拆法都要看，因为<strong>罗尔斯·罗伊斯的商业模式核心就在「卖新机」和「售后」的关系上</strong>。</p>
+<h3>先看收钱方式：新机 44%、售后 56%</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>收入来源</th>
+<th>TTM（2026-06）</th>
+<th>上财年（2025）</th>
+<th>变化</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卖新设备（发动机、柴油机、反应堆）</td>
+<td>101.21 亿英镑</td>
+<td>91.03 亿</td>
+<td>+11%</td>
+<td>44%</td>
+</tr>
+<tr>
+<td>售后服务（维修、大修、按小时收费）</td>
+<td>130.44 亿英镑</td>
+<td>121.04 亿</td>
+<td>+8%</td>
+<td>56%</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>231.65 亿</td>
+<td>212.07 亿</td>
+<td>+9%</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说的是：<strong>它一半以上的收入来自已经卖出去的机器</strong>，而这些机器在天上要飞 25 年。</p>
+<h3>生意一：民用航空发动机——约占一半，核心中的核心</h3>
+<p><strong>这件事是什么</strong>：给宽体客机（就是双通道的大飞机，飞洲际航线那种）造发动机。全球能造大型宽体机发动机的只有两家：美国 GE 和罗尔斯·罗伊斯。具体到机型：空客 A350 只能装 Rolls 的 Trent XWB（独家，没得选），A330neo 只能装 Trent 7000（独家），波音 787 可以选 Rolls 的 Trent 1000 或 GE 的 GEnx。一台 Trent XWB 目录价约 3,000 万美元，一架 A350 装两台。</p>
+<p><strong>怎么收钱——这是理解这家公司的关键</strong>：新发动机基本是亏本或平价卖的。真正赚钱的是「TotalCare」服务合同：航空公司按发动机每飞一小时付一笔钱（几百美元一小时），罗尔斯负责这台发动机 25 年内所有的维护、大修、换件。一台发动机一生要进厂大修三到四次，每次几百万美元，全部包在那个小时费里。</p>
+<p>为什么航空公司非签不可：发动机热端的涡轮叶片是单晶合金加特殊冷却孔，只有原厂能造能修，没有第三方。而且发动机不飞就不收钱，航空公司也乐意把风险转给制造商。</p>
+<p>这个模式的后果是：<strong>装机量 × 飞行小时 = 收入</strong>。疫情期间宽体机停飞，小时费收不到，公司差点死掉；现在国际航线飞行小时已超过 2019 年，装机量还在涨（A350 订单排到 2030 年后），收入就跟着涨。新 CEO 做的最重要一件事，是把老合同重新谈价——过去为了抢装机，小时费定得太低，现在到期一份涨一份。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>民用航空（公司口径，估算）</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>约 115 亿英镑（占 50%）</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>约 21%（估算）</td>
+</tr>
+<tr>
+<td>贡献利润</td>
+<td>约 24 亿英镑（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意二：国防——约占 22%，最稳的一块</h3>
+<p><strong>这件事是什么</strong>：三样东西。第一，英国所有核潜艇的核反应堆——Rolls-Royce Submarines 是唯一供应商，从 1960 年代到现在没换过，正在造的 Dreadnought 级和英美澳 AUKUS 计划的下一代攻击核潜艇都用它的反应堆，一艘潜艇的反应堆是十亿英镑级的合同，排产排到 2040 年代。第二，军用飞机发动机：F-35B 垂直起降那套升力风扇是它造的，美军 B-52 轰炸机换发动机选了它的 F130（76 架、每架 8 台），欧洲台风战斗机的发动机它占一份。第三，军用运输机和舰船的发动机。</p>
+<p><strong>怎么收钱</strong>：政府长期合同，价格锁定、按进度付款，利润率不高但几乎不会丢。现在欧洲各国国防开支从 GDP 的 2% 往 3.5% 加，这块只会涨。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>国防（估算）</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>约 52 亿英镑（占 22%）</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>约 15%（估算）</td>
+</tr>
+<tr>
+<td>贡献利润</td>
+<td>约 8 亿英镑（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意三：动力系统（MTU）——约占 23%，意外的 AI 受益者</h3>
+<p><strong>这件事是什么</strong>：德国 MTU 品牌的大型柴油机和燃气机，装在游艇、货船、火车、矿山卡车上，还有一块是<strong>数据中心备用发电机组</strong>。数据中心不能断电，每个机房都配柴油发电机组，一个大型 AI 数据中心要配几十台、一台上百万美元。2024 年起这块订单翻倍增长，成了 MTU 最大的增长来源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>动力系统（估算）</th>
+<th>TTM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>约 54 亿英镑（占 23%）</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>约 14%（估算）</td>
+</tr>
+<tr>
+<td>贡献利润</td>
+<td>约 7.5 亿英镑（估算）</td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意四：小型模块化核反应堆（SMR）——现在不赚钱，是未来的故事</h3>
+<p>把潜艇反应堆的技术放大，做成工厂预制、现场组装的 4.7 亿瓦小型核电站。2025 年被英国政府选为首批三座 SMR 的供应商，捷克也签了意向。2030 年前不会有收入，现在每年往里投几亿。</p>
+<p><strong>分部利润说明</strong>：数据源只披露「新机 / 售后」两分的营收，不披露按业务线的营收和利润。上面四块的营收占比和利润率按公司过往披露的分部数据比例估算，四块贡献利润加总后再扣集团费用，凑到 TTM 经营利润 47.99 亿英镑。<strong>全部标注为估算。</strong></p>
+<p><strong>整体</strong>：TTM 营收 231.65 亿英镑（+9%），毛利率 28.8%，经营利润率 20.7%（2022 年是 5.6%），净利润 30.38 亿（净利率 13.1%）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 0.87 亿英镑，占净利润 2.9%。英国公司发股少，<strong>不是问题</strong>。GAAP 里已扣，不加回。</p>
+<p><strong>一次性项目——这家公司的问题不在经营利润，在经营利润以下那一截</strong>：TTM 经营利润率 20.7%，税前利润率却只有 17.4%，中间差了约 7.7 亿英镑的非经营损失。罗尔斯·罗伊斯有一本巨大的外汇对冲账（它用英镑发工资、收美元货款，锁了几百亿美元的远期合约），汇率一动，这本账的公允价值就在利润表里大幅波动，<strong>跟真实生意毫无关系</strong>。TTM 是亏的方向（英镑走弱），FY2025 是赚的方向——<strong>FY2025 净利润 58.41 亿英镑里，有约 27 亿是这种账面浮盈</strong>，那一年税前利润率 32.7% 而经营利润率只有 19.8%。所以看这家公司<strong>不能看净利润，要看经营利润</strong>。单期口径判断不了这种波动每年往哪个方向，但它每年都有、方向随机，这一点是确定的。</p>
+<p><strong>资本化的支出</strong>：TTM 资本化了 3.45 亿英镑的开发费（现金流量表「购买无形资产」那一行，主要是新发动机研发）。同期无形资产摊销 3.04 亿，两边大致相抵，利润表没被明显美化。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 17.26 亿英镑 ÷ SBC 0.87 亿 = <strong>20 倍，是真回购</strong>，股本一年减少 0.70%。另派息 7.95 亿（2020 年停发、2024 年恢复）。回购是 2025 年才开始的，公司 2020 年那次 20 亿英镑的贱价增发让股本膨胀了 39.5%，现在每年买回 0.7%，要买 50 年才能买回来——记着这个。</p>
+<p><strong>利润和现金流的差</strong>：净利润 30.38 亿，经营现金流 51.17 亿，自由现金流 44.61 亿。差距大，拆开：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 项目</th>
+<th>亿英镑</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>30.38</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>5.91</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 无形资产摊销</td>
+<td>3.04</td>
+<td>对应资本化的研发</td>
+</tr>
+<tr>
+<td>+ SBC</td>
+<td>0.87</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他非现金调整</td>
+<td>11.12</td>
+<td><strong>主要就是上面说的对冲账浮亏，账面亏了、没花现金</strong></td>
+</tr>
+<tr>
+<td>− 减值 / 出售 / 权益投资收益 净额</td>
+<td>−0.33</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 应收款减少</td>
+<td>8.36</td>
+<td>航空公司按小时预付，收得比记账快</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−5.68</td>
+<td>备货交新机</td>
+</tr>
+<tr>
+<td>− 其他营运资本</td>
+<td>−2.50</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>51.17</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−6.56</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流（数据源口径）</td>
+<td>44.61</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本化的研发</td>
+<td>−3.45</td>
+<td>数据源没扣，我扣</td>
+</tr>
+<tr>
+<td>− 租赁付款</td>
+<td>−2.80</td>
+<td>IFRS 把租金算成还债，我算回成本</td>
+</tr>
+<tr>
+<td>= <strong>真实自由现金流</strong></td>
+<td><strong>约 38.4 亿</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>结论：现金流比净利润高，<strong>主要因为净利润被 11 亿账面对冲浮亏压低了</strong>，现金流才是真面目。把资本化研发和租赁扣掉后，真实自由现金流约 38 亿，跟「经营利润税后 + 折旧」的量级对得上。<strong>这家公司的账是干净的，只是净利润那一行被汇率噪音搅得看不清。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 1,257 亿英镑算。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP（IFRS）TTM 市盈率</td>
+<td>1,257 亿 ÷ 30.38 亿</td>
+<td><strong>41.4 倍</strong></td>
+<td>2.4 元</td>
+</tr>
+<tr>
+<td>公司自己吹的「基础利润」（underlying）</td>
+<td>剔掉对冲浮盈亏后的经营利润 47.99 亿，按 24.4% 税率、扣约 1.5 亿净利息 ≈ 34.8 亿（估算）</td>
+<td>36 倍</td>
+<td>2.8 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>净利润 30.38 亿加回约 6 亿税前对冲浮亏的税后影响 4.5 亿 ≈ 34.9 亿；SBC 不加回</td>
+<td><strong>36 倍</strong></td>
+<td><strong>2.8 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（数据源）</td>
+<td>1,257 亿 ÷ 44.61 亿</td>
+<td>28.2 倍</td>
+<td>3.5 元</td>
+</tr>
+<tr>
+<td>自由现金流口径（扣资本化研发和租赁）</td>
+<td>1,257 亿 ÷ 38.4 亿</td>
+<td>32.7 倍</td>
+<td>3.1 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(1,257 − 21 净现金) ÷ 47.99 亿</td>
+<td>25.8 倍</td>
+<td>3.9 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY2023–2025 三年经营利润各按税后、扣利息清洗（12.4 / 16.9 / 30.3 亿），平均 <strong>约 20 亿</strong></td>
+<td><strong>63 倍</strong></td>
+<td>1.6 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行说明：当期 36 倍，三年平均 63 倍——<strong>现在的利润是三年翻了近三倍之后的数字</strong>。这不是周期顶点（宽体机装机量和飞行小时都还在涨），而是利润率从 11% 到 21% 的一次性修复：老合同涨价、成本削减、疫情后复飞。修复完了，后面只剩装机量增长的 8–10%，没有第二次翻倍。市场给的远期市盈率 33 倍，说明它已经把这个算进去了。</p>
+<p><strong>大白话说：你现在投 100 块进去，按剔除障眼法的真实口径算，公司一年替你赚 2.8 块。</strong> 这 2.8 块里，以分红回到你口袋的 0.6 块、以回购回来的 1.4 块，合计 2 块（真实自由现金流 38 亿几乎全部还给了股东，因为账上已经净现金 21 亿、不缺钱）。留在公司里再投资的：资本开支 6.6 亿加资本化研发 3.5 亿，投向新发动机（UltraFan）、SMR 和产能。</p>
+<p><strong>这 2.8 块未来大概率会变大，但变大的速度是每年 10% 上下，不是过去三年那种</strong>：A350 产量爬坡、数据中心发电机组、国防开支上涨，三个方向都是确定的顺风；老服务合同还有一批没重谈完。<strong>风险</strong>：宽体机是航空业里最周期性的一段，下一次全球衰退或油价飙升，飞行小时一跌，小时费收入立刻缩；Trent 1000 那批发动机的可靠性问题（2018 年曾让几十架 787 停飞）每隔几年出一次；英镑对美元每动 10%，对冲账就在利润表里制造几十亿的噪音。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一门真正的好生意，价格却是为完美剧本定的。</strong> 宽体机发动机是全球两家分的生意，A350 和 A330neo 独家，卖出去的每台机器绑定 25 年小时费，售后占收入 56%——这是最接近「印钞机」的工业模式。账干净、净现金、真回购、新管理层三年把利润率翻了四倍，这些都是真的。但 41 倍 GAAP、36 倍真实、63 倍三年平均，投 100 块一年赚 2.8 块，买的是「利润率修复已经完成、以后每年再涨 10%」这个剧本，而修复完成恰恰意味着最快的那段增长已经过去。它的报表比西门子能源干净得多（西门子能源的现金流是客户预付款堆的，它的是真的），护城河也深得多——但价格一样贵。<strong>好公司，等一次航空业的坏消息再买。</strong></p>
+<p><strong>归篮：很贵 / 好生意。</strong></p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,323 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BAX · 百特医疗(Baxter International)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BAX</a></div>
+<div class="mine" data-t="BAX"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">账面亏,真实27倍;8%利润率、4.8倍杠杆、五年四次减值、股息砍96%,好转的钱先归债主</div><h1>BAX · 百特医疗(Baxter International)</h1>
+<p>市值 134 亿美元 / 股价 25.83 美元 / 医疗器械与耗材 / TTM 截止 2026-06-30 / 任务5(主板亏损公司)第 55 名</p>
+<blockquote>
+<p>亏 10.6 亿,但经营利润 9.3 亿、自由现金流 8.2 亿,<strong>是「账面亏」</strong>——亏损来自减值和重组,不是生意本身。剥掉之后,它是一家经营利润率只有 8%、负债是 EBITDA 4.8 倍、刚把股息砍掉 96% 的公司。五年前市值 430 亿,现在 134 亿。</p>
+</blockquote>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>百特是全球医院里最「不起眼」的供应商之一:输液袋、输液泵、病床、手术止血材料——<strong>病人躺在病床上时身边一半的塑料东西可能是它的。</strong> 2021 年花 105 亿买了病床公司 Hillrom,2023 年卖掉了生物制药代工业务(42.5 亿),2025 年初把肾病透析业务(Vantive)卖给凯雷(38 亿)。现在剩三个分部。TTM 分部披露口径刚改过(把注射剂并进了输液线),下面按 2025 财年数字拆比例,总营收用 TTM。</p>
+<h3>生意一:医疗产品与疗法(Medical Products &amp; Therapies),2025 财年 53.0 亿,占 47%</h3>
+<p><strong>这件事是什么。</strong> 两块:输液和外科。输液这块是百特的祖业——医院里挂在架子上的那袋生理盐水、葡萄糖、抗生素溶液,以及把液体按每小时多少毫升精确推进血管的输液泵。美国医院用的静脉输液袋,百特一家占了大约六成;它在北卡罗来纳州的一个工厂供应全美六成的输液袋,2024 年飓风把这个厂淹了,全国医院立刻缺盐水,那次事故让所有人意识到这门生意有多集中。输液泵叫 Novum IQ,是 2024 年才拿到批准的新一代产品,靠泵+专用管路绑定收钱:泵卖给医院几千美元一台,之后每天每个病人用的一次性管路一套几美元到几十美元,<strong>耗材是利润的主体</strong>。2025 年这款泵出过软件问题,一度暂停发货,拖了整个板块的增长。</p>
+<p>外科这块叫 Advanced Surgery,卖手术中止血用的材料——Floseal、Tisseel 这类止血凝胶和纤维蛋白胶,一支几百美元,外科医生一场大手术用几支。2025 财年 12.0 亿,+8.5%,是全公司增速最好的一条线。</p>
+<p><strong>客户为什么非买不可。</strong> 输液是「没有就死人」的品类,医院买的不是产品是供应保障;一家医院一旦全院泵都是百特的、护士都培训过、药房系统对接好了,换牌子是一件大工程。这是护城河,<strong>但它换来的只是 8% 的经营利润率</strong>——因为盐水就是盐水,医院集采压价压了几十年。</p>
+<h3>生意二:医疗系统与技术(Healthcare Systems &amp; Technologies),2025 财年 30.7 亿,占 27%</h3>
+<p><strong>这件事是什么。</strong> 这就是 2021 年买来的 Hillrom:医院病床(能自动称重、监测病人翻身、防褥疮的电动床,一张 1 到 3 万美元)、护士呼叫系统、病房设备联网软件(Care &amp; Connectivity,19.1 亿),以及 Welch Allyn 品牌的生命体征监测仪、体温计、血压计、耳镜眼底镜这些诊所设备(Front Line Care,11.6 亿)。卖给医院的采购部门,病床按批换,一家 500 床医院一次换床订单几百万美元。</p>
+<p><strong>问题在哪。</strong> 这块 2025 财年 +3.1%,Front Line Care +2%——医院资本开支紧张,床能用就不换。百特当年花 105 亿买它,2022 年就减值了 31 亿,之后又陆续减。<strong>这笔并购是过去五年市值蒸发 300 亿的主因</strong>:借了 120 亿买一个增速 2 到 3% 的生意。</p>
+<h3>生意三:制药(Pharmaceuticals),2025 财年 24.9 亿,占 22%</h3>
+<p><strong>这件事是什么。</strong> 注射剂与麻醉(13.5 亿):预混好、直接可以挂的抗生素袋、麻醉药(七氟烷、地氟烷吸入麻醉剂),卖给医院药房。药物配制(11.4 亿):替医院把化疗药、营养液按病人剂量配好送过去,医院自己配不划算就外包给它。制药整体 2025 财年 +3.4%,吸入麻醉剂面临仿制药竞争,配制服务在长。</p>
+<h3>其他(2025 财年 3.8 亿):主要是卖掉肾病业务后,继续替 Vantive 代工的过渡性供货协议,会逐年缩小。</h3>
+<p><strong>钱的表(TTM,百万美元):</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>营收</th>
+<th>上年同期</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全公司</td>
+<td>11,470</td>
+<td>10,886</td>
+<td>+5.4%</td>
+<td>100%</td>
+<td>8.1%</td>
+<td>931</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>财报按分部披露利润,但 stockanalysis 不转载。</strong> 从公司历年披露看,医疗产品与疗法的分部利润率约 15% 到 17%,医疗系统与技术约 15%,制药约 10%——这三个数加起来远高于全公司 8%,差额是没分到任何分部的总部费用和<strong>并购来的无形资产摊销</strong>(Hillrom 留下的,一年六七亿)。所以「8% 经营利润率」里有一半是在为 2021 年那笔并购还账。<strong>以上分部利润率为估算。</strong></p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC):TTM 1.15 亿,占营收 1%。</strong> 正常水平,当现金扣,不影响结论。</p>
+<p><strong>一次性项目:这是亏损的全部来源,但它「年年一次性」。</strong> 经营利润 9.3 亿,税前利润 −4.8 亿,中间 14.1 亿的差:利息净支出约 3 亿(负债 97 亿),剩下约 11 亿是减值、重组和其他非经营损失——现金流量表里「资产减值与重组」一项 7.8 亿。再往前看:2025 财年 8.0 亿,2024 财年 5.2 亿,2022 财年 31.7 亿。<strong>这家公司过去五年里有四年在减值,单期口径不需要判断它是不是年年发生——它就是年年发生。</strong> 另外 TTM 交了 4.85 亿的所得税,税前是亏的却交这么多税,说明减值的大部分税务上不能抵扣(商誉减值就是这样),这钱是真花出去的。</p>
+<p><strong>资本化的支出:没有明显的。</strong> 研发费用化。</p>
+<p><strong>回购与稀释:TTM 回购 0,SBC 1.15 亿,股本 +0.68%。</strong> 五年没有回购。钱全部去还债:2025 财年净还了 38 亿(用卖肾病业务的钱),负债从 134 亿降到 97 亿。<strong>同时把股息从每股 1.16 美元砍到 0.04 美元</strong>——一年少付 5.5 亿,这是 2025 年最重要的一个决定,也是股价能从 19 反弹到 26 的原因:市场终于相信它会先还债了。</p>
+<p><strong>利润和现金流的差:差 24 亿,对账如下。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM(百万美元)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>−1,063</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+953</td>
+<td>其中约六七亿是 Hillrom 无形资产摊销,<strong>非现金但不是假的</strong>——它记录的是当年多付的钱</td>
+</tr>
+<tr>
+<td>+ 资产减值与重组</td>
+<td>+778</td>
+<td>非现金,五年里第四次</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+115</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他非现金</td>
+<td>+324</td>
+<td>含递延税</td>
+</tr>
+<tr>
+<td>+ 营运资金变化</td>
+<td>+236</td>
+<td>库存下降 1.2 亿、应付拉长,不可持续</td>
+</tr>
+<tr>
+<td>− 应收增加</td>
+<td>−96</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>1,319</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−504</td>
+<td>输液袋厂灾后重建仍在花钱</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>815</td>
+<td>剔营运资金后<strong>常态约 5.8 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>这家公司一年真实能拿出来的现金约 6 到 8 亿,其中 1.8 亿付了股息(砍之前的尾巴),剩下的全部还债。</strong> 股东今年一分钱没拿到,以后几年也别指望——97 亿负债对 19 亿 EBITDA 是 4.8 倍,评级机构要求它降到 3 倍以下,还要再还 40 亿。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<p><strong>先定性:账面亏。</strong> 经营赚钱、现金为正、亏损来自减值。照常做市盈率表,GAAP 那行写无意义。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>134 亿 ÷ −10.6 亿</td>
+<td>亏损,无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>公司「调整后 EPS」剔掉无形资产摊销、减值、重组;stockanalysis 汇总的远期倍数</td>
+<td>12.3 倍</td>
+<td>8.1 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>经营利润 9.3 亿 − 利息 3.0 亿 = 税前 6.3 亿,按 22% 税 → 净利 4.9 亿;134 亿 ÷ 4.9 亿</td>
+<td><strong>27.3 倍</strong></td>
+<td><strong>3.7 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>134 亿 ÷ 8.2 亿(剔营运资金 5.8 亿 → 23 倍)</td>
+<td>16.4 倍</td>
+<td>6.1 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(134 + 75 净负债)÷ 9.3 亿</td>
+<td>22.4 倍</td>
+<td>4.5 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>三年真实净利均值约 4.0 亿(2023 年 3.2、2024 年 3.8、TTM 4.9);134 ÷ 4.0</td>
+<td>33.5 倍</td>
+<td>3.0 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Non-GAAP 的 12 倍和真实的 27 倍差了一倍多,差在哪:</strong> 公司把 Hillrom 的无形资产摊销加回去了。这钱确实今天不用付现,但它是 2021 年真金白银付出去的 105 亿的一部分,加回去等于假装那笔并购没花钱。<strong>我不加回。</strong> 自由现金流口径(16 倍)比真实市盈率好看,是因为现金流里没有摊销——这两个数之间就是「并购花的钱要不要算」的分歧,你挑哪个取决于你信不信它以后不再乱买东西。</p>
+<p><strong>大白话:你现在投 100 块进去,按最保守的真实口径算,公司一年替你赚 3.7 块;按自由现金流算是 6.1 块,常态约 4.3 块。</strong> 这几块钱里:0.15 块以股息回到你口袋(每股 0.04 美元),其余全部拿去还债。<strong>未来这个数会变大</strong>——每还 10 亿债一年省 5,000 万利息,肾病业务剥离后的成本还在削——但变大的是「不再流失的利息」,不是生意本身变好:三大板块的增速是 3%、3%、5%,这是一家没有增长引擎、靠修补资产负债表创造利润的公司。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>不便宜,而且没有理由便宜之外的东西。</strong> 27 倍真实市盈率、22 倍 EV/EBIT,买的是一家 8% 经营利润率、4.8 倍杠杆、五年四次减值、刚砍掉股息、核心产品去年出过质量问题的公司。它不会死——输液袋医院离不了,现金流是真的,债在还——但把它修好需要三四年,修好之后也只是一家增速 3% 到 5% 的医疗耗材公司,那样的公司值 15 倍,不值 27 倍。<strong>劝等</strong>:等负债降到 EBITDA 3 倍以下、股息恢复,再看那时的价格。它是「烂公司好转中」的典型,好转的钱先归债主。</p><script src="user.js"></script>
+</div></body></html>

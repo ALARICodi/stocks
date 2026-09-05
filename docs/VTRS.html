@@ -1,0 +1,408 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VTRS · 晖致（Viatris，老牌药 + 仿制药）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VTRS</a></div>
+<div class="mine" data-t="VTRS"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">有硬伤</span></div><div class="note">10%现金收益率是真的，但五年营收掉18%、净债121亿，冰在化</div><h1>VTRS · 晖致（Viatris，老牌药 + 仿制药）</h1>
+<p>市值 194 亿美元 · 股价 16.88 美元（2026-09-04 收盘）· 行业：制药 · TTM 截止 2026-06-30 · 任务5 亏损口径</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>Viatris 是 2020 年底由两家公司拼出来的：<strong>Mylan</strong>（美国最大的仿制药厂之一，EpiPen 肾上腺素笔的东家）和 <strong>辉瑞的 Upjohn 部门</strong>（辉瑞把专利早就过期、但牌子还在卖的老药打包剥离，立普妥、络活喜、万艾可、乐瑞卡全在里面）。财报按「品牌药」和「仿制药」分两块，实质上就是两门生意。</p>
+<h3>生意 A：卖专利过期的老牌子药（品牌药，占 65%）</h3>
+<p>这是最好理解的一门生意。立普妥（降胆固醇）1997 年上市，2011 年专利到期，市面上有几十种一模一样的阿托伐他汀仿制药，价格是立普妥的十分之一。那为什么还有人买立普妥？因为在中国、日本、意大利、巴西这些地方，医生开药习惯写商品名，患者信牌子，医保也还在报销。辉瑞觉得这种生意增长为零、不值得自己养，就剥给了 Viatris。</p>
+<p>Viatris 手里这类牌子有几十个：立普妥、络活喜（降压）、乐瑞卡（神经痛）、万艾可、西乐葆（止痛）、怡诺思（抗抑郁）、赞安诺（镇静）、EpiPen（过敏急救笔）、Yupelri（慢阻肺吸入剂）、Dymista（鼻喷）。怎么收钱：跟普通药一样，卖给批发商和医院，一盒立普妥在中国带量采购之后卖十几块人民币、在日本卖几百日元。<strong>这门生意的本质是收租</strong>——不用研发，只要维持生产和一点营销，每年自然侵蚀 3–5%（患者慢慢换仿制药、各国医保集采压价），毛利率却高。</p>
+<p>这块营收 2021 年 108 亿，2024 年 92 亿，TTM 95 亿。看起来终于止跌，原因是 Yupelri 这种还在专利期内的新品在长，加上汇率帮忙。</p>
+<h3>生意 B：仿制药（占 35%）</h3>
+<p>Mylan 的老本行。别人专利到期了，它做一个化学成分完全一样的药，用自己的牌子或不打牌子卖，价格是原研的 10–30%。一款药动辄十几家仿制药厂同时做，年年砍价，毛利率二三十个点，靠规模和产能撑。Viatris 的强项是「复杂仿制药」——吸入剂、注射剂、透皮贴这些工艺难的品类，竞争者少、价格稳一点。</p>
+<p>这门生意 2021 年 70 亿，2024 年 55 亿，TTM 52 亿，<strong>四年掉了四分之一</strong>。2024 年底出了事：印度 Indore 工厂被 FDA 发警告信和进口禁令，这个厂供应美国市场十几种药，2025 年直接少了约 5 亿美元营收。</p>
+<p><strong>数字</strong>（TTM 截止 2026-06-30，百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部</th>
+<th>TTM 营收</th>
+<th>2025 财年</th>
+<th>2024 财年</th>
+<th>占比</th>
+<th>经营利润率（估）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>品牌药</td>
+<td>9,534</td>
+<td>9,184</td>
+<td>9,200</td>
+<td>65%</td>
+<td>约 15%（估）</td>
+</tr>
+<tr>
+<td>仿制药</td>
+<td>5,160</td>
+<td>5,066</td>
+<td>5,493</td>
+<td>35%</td>
+<td>约 3%（估）</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>14,737</strong>（同比 +4.4%）</td>
+<td>14,300</td>
+<td>14,739</td>
+<td>100%</td>
+<td><strong>10.6%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到营收，分部利润按整体利润率和产品结构估算。整体毛利率 40.3%，经营利润 15.7 亿。注意这个经营利润已经扣掉了 <strong>27 亿的折旧摊销</strong>——绝大部分是当年买这些药权时记的无形资产在逐年摊。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 1.72 亿，占营收 1.2%，不是问题。</p>
+<p><strong>一次性项目</strong>：这是全篇的关键。经营利润 15.7 亿，付完利息 4.8 亿、汇兑损失 3.5 亿、加上 4.5 亿其他收入，<strong>「剔除特殊项目前」的税前利润是 11.8 亿</strong>。然后特殊项目一口气扣了 18.1 亿：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>2025</th>
+<th>2024</th>
+<th>2023</th>
+<th>2022</th>
+<th>2021</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>并购重组费用</td>
+<td>−863</td>
+<td>−735</td>
+<td>−477</td>
+<td>−407</td>
+<td>−476</td>
+<td>−235</td>
+</tr>
+<tr>
+<td>其他特殊项目</td>
+<td>−513</td>
+<td>−173</td>
+<td>−265</td>
+<td>−14</td>
+<td>−321</td>
+<td>−388</td>
+</tr>
+<tr>
+<td>诉讼和解</td>
+<td>−179</td>
+<td>+69</td>
+<td>−351</td>
+<td>−112</td>
+<td>−4</td>
+<td>−329</td>
+</tr>
+<tr>
+<td>出售投资/资产损失</td>
+<td>−178</td>
+<td>−636</td>
+<td>−211</td>
+<td>−240</td>
+<td>+1,754</td>
+<td>0</td>
+</tr>
+<tr>
+<td>资产减值</td>
+<td>−74</td>
+<td>−74</td>
+<td>−177</td>
+<td>−32</td>
+<td>−174</td>
+<td>−103</td>
+</tr>
+<tr>
+<td>商誉减值</td>
+<td>0</td>
+<td>−2,937</td>
+<td>−321</td>
+<td>−580</td>
+<td>−117</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>六年里没有一年「一次性项目」低于 8 亿</strong>。并购重组费用年年有，而且越来越大；诉讼年年有；减值年年有。这不是一次性，这是这门生意的固定成本——公司每年花几亿关厂、裁人、跟各国打官司，才能维持住那个 15.7 亿的「经营利润」。<strong>单期口径本来分不清真假一次性，但这里有六年记录，可以下结论：重组、诉讼、其他特殊项目平均每年约 8.4 亿是常态支出，只有商誉减值和出售投资损失算真一次性。</strong> 2025 年那笔 29 亿商誉减值，是公司承认 2020 年合并时对这些老药的估值高估了。</p>
+<p><strong>资本化的支出</strong>：没有值得注意的。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 3.58 亿，SBC 1.72 亿，<strong>回购 ÷ SBC = 2.1</strong>，股本一年减少 2.4%。另外分红 5.58 亿（每股 0.48 美元，收益率 2.8%）。这算真回馈，分红加回购一年 9.2 亿，约合市值的 4.7%。</p>
+<p><strong>利润和现金流的差</strong>：净亏损 4.1 亿，经营现金流 +23.3 亿，差了 27 亿，对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>−411</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+2,725</td>
+<td><strong>主要是收购来的药权在摊销，非现金</strong></td>
+</tr>
+<tr>
+<td>+ 减值与重组（非现金部分）</td>
+<td>+115</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 出售资产损失</td>
+<td>+34</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+172</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他非现金</td>
+<td>+228</td>
+<td>递延税等</td>
+</tr>
+<tr>
+<td>− 营运资金增加</td>
+<td>−532</td>
+<td>存货和应收在涨</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>2,331</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−376</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>1,955</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>问题就集中在那 27 亿摊销上。<strong>它是不是真成本？</strong> 会计上说：这些药权是当年花真金白银（和股票）买来的，价值随着专利过期、患者流失逐年消失，所以要摊。现实上说：摊销不花现金，公司每年确实有 19.5 亿现金进账。两边都对——<strong>这 27 亿代表的是「你手里这堆老药每年在贬值」</strong>，钱是真收到了，但资产也在真萎缩。所以正确的做法不是把摊销全加回来（公司的 Non-GAAP 就是这么干的），而是问：为了不让营收继续掉，每年要花多少钱买新药权？答案在投资活动里：TTM 买无形资产 1.4 亿，2023 年花 6.7 亿收购（Oyster Point 眼药和 Idorsia 的两个心血管管线）、2024 年 3.5 亿，五年平均每年约 3 亿。<strong>自由现金流 19.5 亿减掉这 3 亿「续命采购」，真正属于股东的现金约 16.5 亿。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>定性：<strong>账面亏</strong>。经营现金流 23 亿为正，亏损来自摊销和年年都有的「一次性」费用。所以照常做市盈率表，GAAP 那行作废，主角是现金流口径。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>194 亿 ÷ −4.1 亿</td>
+<td>亏损，无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>194 亿 ÷ 约 27.8 亿（调整后 EPS 约 2.4 美元，把 27 亿摊销和 18 亿特殊项目全加回来）</td>
+<td><strong>约 7 倍</strong></td>
+<td>14.3 块（假的）</td>
+</tr>
+<tr>
+<td>剔除障眼法后的真实市盈率（会计口径）</td>
+<td>194 亿 ÷ 约 2.7 亿（11.8 亿税前 − 8.4 亿常态化重组诉讼 − 税，摊销照扣）</td>
+<td><strong>约 72 倍</strong></td>
+<td>1.4 块</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>194 亿 ÷ 19.5 亿</td>
+<td><strong>9.9 倍</strong></td>
+<td>10.1 块</td>
+</tr>
+<tr>
+<td><strong>扣掉续命采购的股东现金</strong></td>
+<td>194 亿 ÷ 约 16.5 亿</td>
+<td><strong>约 11.8 倍</strong></td>
+<td><strong>8.5 块</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>（194 亿 + 121 亿净负债）÷ 15.7 亿</td>
+<td>20.1 倍</td>
+<td>5.0 块</td>
+</tr>
+<tr>
+<td>三年平均自由现金流口径</td>
+<td>194 亿 ÷ 19.6 亿（2024–TTM 平均）</td>
+<td>9.9 倍</td>
+<td>10.1 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>两个极端都不对：Non-GAAP 的 7 倍把资产贬值当不存在，会计口径的 72 倍把每年 19 亿真现金当不存在。<strong>中间那行「扣掉续命采购的股东现金」是最诚实的：你现在投 100 块，公司一年替你赚约 8.5 块现金。</strong> 这 8.5 块里，约 4.7 块以分红和回购的形式真的回到你手上，剩下约 4 块拿去还债——TTM 净还了 9.2 亿，总债务从 2021 年的 234 亿降到 136 亿，但<strong>净负债仍有 121 亿，是市值的 60%，每年利息 4.8 亿</strong>。</p>
+<p>这个 8.5 块未来是变大还是变小？<strong>大概率缓慢变小</strong>。五年营收 179 亿 → 143 亿，自由现金流 2021–2023 年是 25 亿、2024 年起掉到 19.5 亿。TTM +4.4% 是五年来第一次增长，但里面有汇率和 Indore 工厂恢复的低基数。公司押注的三个新药（selatogrel 心梗急救、cenerimod 红斑狼疮、老花眼滴眼液）2027 年后才可能上市，能不能填上老药的坑，现在没人知道。三年平均和当期几乎一样，说明当期不是高点，但也说明没有增长。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜是真的</strong>：10% 的现金收益率、5% 的股东回报率、EV/EBITDA 7 倍，这在任务5 榜单上算最便宜的一档。<strong>但这是一块在化的冰</strong>：五年营收掉了 18%，仿制药那块掉了 25%，六年来每年要烧 8 亿多重组诉讼费才能维持现状，2025 年刚认了 29 亿商誉减值，还背着 121 亿净债。股价过去一年涨了 60%，已经把「Indore 工厂恢复 + 营收止跌」这两件事涨进去了。</p>
+<p>如果你要的是一个现金奶牛，它是——只是这头牛每年瘦一点。<strong>统计上便宜，商业上在萎缩，不属于「留着观察」那一类，属于「知道它便宜就行了」那一类。</strong></p><script src="user.js"></script>
+</div></body></html>

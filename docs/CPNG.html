@@ -1,0 +1,367 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CPNG · Coupang(酷澎)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CPNG</a></div>
+<div class="mine" data-t="CPNG"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">韩国电商真垄断,但五年利润率没过2%,泄露罚掉一年利润</div><h1>CPNG · Coupang(酷澎)</h1>
+<p>市值 274.8 亿美元 / 股价 15.29 美元 / 零售(韩国电商)/ TTM 截止 2026-06-30 / 任务5 · 亏损公司第 26 名</p>
+<p><strong>它属于哪种亏:账面亏。</strong> TTM 经营亏损 6.03 亿美元,但 2025 全年还赚 4.98 亿。翻转的原因只有一件事:2025 年 11 月它泄露了 3000 多万用户的个人信息,2026 年上半年一次性计提了韩国监管机构 4.1 亿美元的罚款和给用户的优惠券赔偿(面值约 1.7 万亿韩元、折 12 亿美元),上半年经营亏损 7.98 亿。TTM 经营现金流仍然是正的 14 亿。剔掉这件事,它是一家利润率 1–2% 的微利公司,不是一家亏损公司——但也仅仅是微利。</p>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>财报分两个部门:Product Commerce(商品零售)和 Developing Offerings(培育中的业务)。实质是<strong>一门做成了的生意,加一堆还在烧钱的新生意</strong>。</p>
+<h3>生意 A:Product Commerce —— 韩国的「亚马逊」</h3>
+<p><strong>它是什么。</strong> 韩国 5100 万人口里,Coupang 有 2470 万活跃买家——几乎每两个韩国人就有一个每季度在上面买东西。它的核心产品叫「火箭配送」(Rocket Delivery):晚上 12 点前下单,第二天早上 7 点前送到家门口,生鲜也一样(Rocket Fresh)。做到这一点靠的是自建:全国 100 多个物流中心、自己的送货员(不用第三方快递)、自己的仓储系统,2021 年上市以来累计砸了 50 多亿美元资本开支建这张网。韩国国土小、人口密集、七成人住公寓,一辆车一晚上能送几百单,这是同样模式在美国跑不通、在韩国跑得通的根本原因。</p>
+<p><strong>怎么收钱。</strong> 四条路:
+1. <strong>自营零售</strong>:大部分商品是自己买断、自己卖,赚进销差价。这是营收的主体。
+2. <strong>第三方平台</strong>:商家入驻卖货,Coupang 抽佣金,还可以付费用它的仓储配送(类似亚马逊 FBA)。
+3. <strong>WOW 会员</strong>:每月 7890 韩元(约 5.6 美元),会员享受免费火箭配送、免费退货、外卖免配送费、看 Coupang Play 的影视内容。会员超过 1400 万,是把用户锁死的关键。
+4. <strong>广告</strong>:商家花钱买搜索排名和展示位。这部分利润率最高,是近三年利润改善的主要来源。</p>
+<p><strong>为什么非买不可。</strong> 一个首尔的双职工家庭,晚上 11 点发现明早没牛奶和尿布,在 Coupang 上下单,早上 6 点半送到门口;退货只要把东西放门口点一下手机,送货员顺路取走。这种体验一旦习惯了就回不去,韩国没有第二家能做到同样的覆盖和速度——本土竞争对手 Naver 是搜索起家没有自建物流,新进入者中国的 Temu、AliExpress 便宜但送货要一周以上。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM(截止 2026-06)</th>
+<th>FY2025</th>
+<th>增速(FY2025 对 FY2024)</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product Commerce 营收</td>
+<td>299.9 亿美元</td>
+<td>295.9 亿美元</td>
+<td>+10.8%</td>
+<td>85%</td>
+</tr>
+</tbody>
+</table></div>
+<p>财报只披露到营收和「调整后 EBITDA」,不给经营利润。按公司历年披露的部门调整后 EBITDA 利润率约 7.5–8% 估算,这个部门 TTM 调整后 EBITDA 约 23 亿美元;扣掉折旧摊销和股权激励(大头都在这个部门)后,<strong>真实经营利润估算约 12–14 亿美元,利润率 4% 出头</strong>。这是整家公司唯一赚钱的地方。</p>
+<h3>生意 B:Developing Offerings —— 四个还在烧钱的新摊子</h3>
+<p><strong>它是什么。</strong> 四件事打包在一个部门里:
+1. <strong>Coupang Eats(外卖)</strong>:2019 年上线,对标韩国老大 Baemin。打法是 WOW 会员免配送费——这一招 2024 年把它的市场份额从 10% 出头拉到 20% 以上,代价是每单都在补贴。
+2. <strong>台湾</strong>:2021 年进入,把韩国的火箭配送整套搬到台湾,建仓库、自建配送。台湾是它目前增长最快、烧钱也最多的地方。
+3. <strong>Farfetch(奢侈品电商)</strong>:2024 年 1 月花 5 亿美元买下的伦敦奢侈品电商平台,买的时候就是烂摊子(年亏几亿美元),Coupang 一直在砍成本止血。
+4. <strong>Coupang Play(流媒体)和 Coupang Pay(支付)</strong>:前者是给 WOW 会员的赠品,买了韩国棒球联赛、英超转播权;后者是内部支付工具。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM(截止 2026-06)</th>
+<th>FY2025</th>
+<th>增速(FY2025 对 FY2024)</th>
+<th>占总营收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Developing Offerings 营收</td>
+<td>54.7 亿美元</td>
+<td>49.4 亿美元</td>
+<td>+38.5%</td>
+<td>15%</td>
+</tr>
+</tbody>
+</table></div>
+<p>同样只有调整后 EBITDA:这个部门过去两年每季度亏 1.5–2 亿美元,<strong>TTM 亏损估算 6–7 亿美元</strong>。营收的高增速主要靠 Farfetch 并表和台湾扩张,不是内生盈利能力。</p>
+<h3>两门生意合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总营收</td>
+<td>354.6 亿美元</td>
+<td>同比 +9.9%(上年同期 322.6 亿);但 2026 年二季度单季只增 4%</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>28.4%</td>
+<td>零售业里算高的,靠广告和第三方佣金拉起来</td>
+</tr>
+<tr>
+<td>经营利润(GAAP)</td>
+<td>−6.03 亿美元</td>
+<td>含数据泄露的一次性计提</td>
+</tr>
+<tr>
+<td>经营利润(剔一次性,估算)</td>
+<td>+4 到 +6 亿美元</td>
+<td>与 FY2025 的 4.98 亿一个量级,利润率 1.5% 左右</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC)</strong>:TTM 5.24 亿美元,只占营收 1.5%,但<strong>是剔除一次性后经营利润的一倍</strong>。这家公司如果不发股票给员工,利润就翻倍;反过来说,现在的微利有一半是被员工拿走了。当成现金成本扣。</p>
+<p><strong>一次性项目</strong>:就是数据泄露那件事。2025 年 11 月黑客拿走了 3000 多万用户的姓名、地址、电话,韩国个人信息保护委员会 2026 年 6 月开出 6247 亿韩元(4.1 亿美元)的历史最高罚单;公司另给所有受影响用户发了面值约 1.7 万亿韩元的优惠券。两项加起来估算入账 10–12 亿美元(优惠券按预计核销率计提,公司没单独披露)。这是真一次性——但它暴露了两件不是一次性的事:韩国政府对它的态度(2024 年公平交易委员会已经因搜索排名操纵罚过 1400 亿韩元)和用户流失(活跃用户从 2470 万掉下去再回到 2470 万,花了两个季度)。单期口径无法判断监管罚款以后会不会年年来。</p>
+<p><strong>资本化的支出</strong>:没有软件或内容资本化。但要注意<strong>融资租赁</strong>:物流中心大部分是租的,租赁负债 30.3 亿美元记在总负债 56.3 亿里。租赁本金每年还约 5 亿美元,走的是融资活动现金流,<strong>不在自由现金流的减项里</strong>——下面说这个。</p>
+<p><strong>回购与稀释</strong>:TTM 回购 10.93 亿美元,是 SBC 的 2.1 倍,股本一年减少 1.9%。这是真回购,而且是在股价腰斩后买的。但钱哪来的?同期净新增借款 9.5 亿美元,短期借款从 9.6 亿翻到 19.9 亿——<strong>回购基本是借钱做的</strong>,净现金从 16.8 亿掉到 4.8 亿。</p>
+<p><strong>利润和现金流的差</strong>:净亏损 −7.67 亿,经营现金流 +14.25 亿,差了 22 亿。对账:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM(亿美元)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净亏损</td>
+<td>−7.67</td>
+</tr>
+<tr>
+<td>加:折旧摊销</td>
+<td>+5.57</td>
+</tr>
+<tr>
+<td>加:股权激励(非现金)</td>
+<td>+5.24</td>
+</tr>
+<tr>
+<td>加:其他非现金项目(租赁资产摊销、递延税、<strong>计提了但还没付出去的赔偿和罚款</strong>)</td>
+<td>+10.21</td>
+</tr>
+<tr>
+<td>加:营运资金变化(应付账款 +6.65 抵掉其他项 −5.75)</td>
+<td>+0.90</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>+14.25</td>
+</tr>
+<tr>
+<td>减:资本开支</td>
+<td>−13.26</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>+0.99</strong></td>
+</tr>
+<tr>
+<td>减:融资租赁本金(估算)</td>
+<td>约 −5</td>
+</tr>
+<tr>
+<td>= 把租赁算进去的真实自由现金流</td>
+<td><strong>约 −4</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两个结论。第一,那 10 亿「其他非现金项目」里有一大块是罚款和赔偿——已经从利润里扣了、但还没真付钱,所以经营现金流暂时好看,下半年付出去的时候现金流会难看。第二,<strong>资本开支 13.3 亿把经营现金流吃干净了</strong>,再算上租赁,它其实每年还在净流出现金——这就是为什么账上有 61 亿现金、却要借 20 亿短期债的原因。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>亏损</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的口径</td>
+<td>调整后 EBITDA(把 SBC、折旧、一次性全加回)约 16 亿</td>
+<td>17 倍</td>
+<td>5.9 元(假的,折旧和 SBC 都是真成本)</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>市值 ÷ 剔一次性后的净利润(估算 2.5–4 亿,参考 FY2025 的 2.08 亿)</td>
+<td><strong>70–110 倍</strong></td>
+<td><strong>0.9–1.4 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>市值 ÷ 0.99 亿</td>
+<td>278 倍</td>
+<td>0.4 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>270 亿 ÷ 剔一次性后经营利润 5 亿</td>
+<td>54 倍</td>
+<td>1.9 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>(1.54 + 2.08 + 估算 3)÷ 3 ≈ 2.2 亿</td>
+<td>125 倍</td>
+<td>0.8 元</td>
+</tr>
+<tr>
+<td><strong>假想成熟利润率口径</strong></td>
+<td>拿亚马逊北美零售部门 6% 经营利润率算:354.6 亿 × 6% = 21.3 亿,扣 25% 税 = 16 亿</td>
+<td><strong>17 倍</strong></td>
+<td><strong>5.8 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>你现在投 100 块进去,按剔掉罚款后的真实口径算,公司一年只替你赚 1 块多。</strong> 而且这 1 块一分都不回你口袋——没有分红;回购是有,但是借钱回购,等于左手借右手。钱都去了哪?13 亿资本开支:台湾的仓库、韩国新的物流中心、自动化设备。</p>
+<p>它未来会变大还是变小?管理层说 2027 年中利润率能恢复到泄露前的水平——<strong>注意「恢复」是回到 1.5–2%,不是往 6% 走</strong>。2021 年以来这家公司的经营利润率最高就是 1.9%(2023 年),五年没有突破过 2%。假想的 17 倍要它把利润率翻三倍;它离那一天差的不是营收(营收够大了),是从没证明过自己能在补贴外卖、开拓台湾、养 Farfetch 的同时赚出 6%。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>这是一门真做成了的生意——韩国电商没有第二家能跟它比配送,2470 万人每季度在上面花钱——但它做成了五年,从来没赚过像样的钱:利润率没过 2%,资本开支年年吃光现金流,再被一场数据泄露罚掉一整年利润。275 亿美元的市值是按「有一天能赚 6%」定的,按它实际赚到的钱算是 70–110 倍;股价一年跌了 46%,不等于便宜,只是从很贵变成了偏贵。要等它连续四个季度证明利润率在往上走,现在没有便宜可占。</strong></p><script src="user.js"></script>
+</div></body></html>

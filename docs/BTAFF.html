@@ -1,0 +1,384 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BTAFF · 英美烟草</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BTAFF</a></div>
+<div class="mine" data-t="BTAFF"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">真实利润三年一条直线,14倍+6%股息公道;债325亿英镑,美国卷烟年缩8%</div><h1>BTAFF · 英美烟草</h1>
+<p><strong>市值</strong> 1,203 亿美元（约 907 亿英镑） | <strong>股价</strong> 约 55 美元（BTAFF 是伦敦普通股的场外线，纽交所 ADR 代号 BTI，1 份 ADR = 1 股，价格一致） | <strong>行业</strong> 非耐用消费品 · 烟草 | <strong>TTM 截止</strong> 2026-06-30 | <strong>财报货币</strong> 英镑（GBP），市值为美元，本文按 <strong>1 英镑 = 1.327 美元</strong>（由数据源自身的营收换算反推）统一折成英镑计算</p>
+<blockquote>
+<p>任务4 · 海外巨头榜第 29 名（全榜 491 家）｜分析日 2026-09-05｜数据取自纽交所 BTI 线（同一家公司，财报完全相同）</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>英美烟草（BAT）是全世界第二大烟草公司，仅次于菲利普莫里斯。它的财报按<strong>地区</strong>分（美国 / 欧洲中东非洲 AME / 亚太中东非洲 APMEA），按<strong>产品</strong>看则是三门生意：传统卷烟、新型烟草、口含烟。这三门生意的经济学完全不同，得分开讲。</p>
+<h3>1. 卖卷烟——美国（TTM 收入 121.6 亿英镑，占 47.2%）</h3>
+<p>2017 年 BAT 花 490 亿美元把美国的雷诺烟草（Reynolds）整个买下，从此美国变成它最大的市场。手里的牌子：<strong>Newport</strong>（美国薄荷烟第一，黑人和年轻烟民里占绝对优势）、<strong>Camel</strong>（骆驼）、<strong>Natural American Spirit</strong>（"天然无添加"的高端烟）、Pall Mall（廉价烟）。</p>
+<p>这门生意怎么赚钱：<strong>一包烟出厂价大约 5 美元，其中烟叶、纸、滤嘴的物料成本不到 0.5 美元。</strong> 剩下的是消费税（联邦 1 美元 + 各州 0.2–5 美元）和 BAT 的利润。毛利率 82%，这不是印钞机是什么。</p>
+<p>但美国这门生意有个致命问题：<strong>销量每年掉 8–10%。</strong> 烟民在老去、在戒烟、在转向一次性电子烟（尤其是从中国非法进口的、不交税的那种，美国便利店里一半的电子烟是这类黑货）。BAT 靠每年提价 5–7% 来对冲，一涨一跌，美国收入勉强持平（TTM 比 2025 全年只多 2%）。这是一场<strong>提价速度和销量下滑速度的赛跑</strong>，过去十年 BAT 赢了，但每年赢得越来越勉强。</p>
+<p>2023 年 BAT 做了一件坦白的事：<strong>把美国卷烟品牌的账面价值一次性减掉 273 亿英镑</strong>，理由是"美国卷烟业务不再是永续资产，寿命大约还有 30 年"。全球烟草公司里，它是第一个白纸黑字承认这一点的。</p>
+<h3>2. 卖卷烟——美国以外（AME 收入 96.7 亿 + APMEA 收入 47.5 亿，合计占 56%，其中大部分是卷烟）</h3>
+<p>牌子换成 <strong>Dunhill（登喜路）、Kent（健牌）、Lucky Strike（好彩）、Rothmans（乐富门）、Pall Mall</strong>，在 180 个国家卖。欧洲（德国、法国、意大利、波兰）、巴西、南非、日本、韩国、印尼、巴基斯坦是大市场。</p>
+<p>这门生意跟美国那门的区别：<strong>单包利润低得多</strong>（新兴市场一包烟 1–2 美元，税负也重），但<strong>销量下滑慢得多</strong>（新兴市场烟民基数还在增长）。APMEA 这块 TTM 收入 47.5 亿，比 2025 全年的 49.6 亿少了 4%，主要是澳大利亚（非法烟泛滥，合法市场萎缩三分之一）和土耳其（货币暴跌）拖累。</p>
+<p>这里还藏着一份<strong>印度 ITC 公司的股权</strong>。ITC 是印度最大的烟草公司（也卖饼干、酒店、纸），BAT 原来持股 29%，2024–2025 年分两次卖掉一部分套现约 35 亿英镑，现在还剩约 23%。这笔股权每年给 BAT 贡献几亿英镑的分红和权益法利润，是 BAT 的"存钱罐"——账上现金紧的时候就卖一点。</p>
+<h3>3. 新型烟草——Velo、Vuse、glo（估算收入约 35 亿英镑，占 14%）</h3>
+<p>这是 BAT 的未来，也是它跟菲利普莫里斯拉开差距的地方。三个产品：</p>
+<ul>
+<li><strong>Velo 尼古丁袋</strong>：一个小茶包大小的袋子，含尼古丁但不含烟草，放上嘴唇下面，没有烟、没有味道、办公室里也能用。一罐 20 袋卖 5–7 美元。这是<strong>全球增长最快的尼古丁产品</strong>（年增 30% 以上），Velo 在美国以外是第一名，在美国是菲利普莫里斯 Zyn 之后的第二名（2024 年 BAT 在美国重推 Velo Plus 正面对刚 Zyn）。</li>
+<li><strong>Vuse 电子烟</strong>：换弹式电子烟，全球合法电子烟第一品牌。但它的对手不是别的大公司，是<strong>非法的一次性电子烟</strong>——那些产品不交税、不受监管、口味花哨、价格便宜一半。合法电子烟在美国已经三年没增长。</li>
+<li><strong>glo 加热不燃烧</strong>：把烟草加热到不着火的温度，产生烟雾但没有燃烧的焦油。这个品类是菲利普莫里斯 IQOS 的天下（日本占 40% 份额），glo 是长期的老二，连年落后。</li>
+</ul>
+<p>新型烟草 2024 年首次做到整体盈利，2025 年贡献了几亿英镑经营利润——但<strong>它的利润率远低于卷烟</strong>（卷烟 40% 以上，新型烟草大约 5–10%）。每 1 英镑从卷烟流失到 Velo，BAT 少赚 0.3 英镑。这是所有烟草公司的共同困境：<strong>转型是对的，但转型本身在毁灭利润率。</strong></p>
+<h3>4. 传统口含烟——Grizzly、Camel Snus（美国，估算收入约 15 亿英镑）</h3>
+<p>美国的湿烟丝（放嘴里嚼的），Grizzly 是第一品牌。销量稳定下滑但利润率极高，一门安静的现金牛。</p>
+<h3>钱的分布</h3>
+<p>财报只按地区披露利润，不按产品分。下表的利润率是按 BAT 历年披露的地区经营利润率估算：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 收入（亿英镑）</th>
+<th>比 2025 全年</th>
+<th>占比</th>
+<th>经营利润率（估算）</th>
+<th>贡献经营利润（估算）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>美国（卷烟 + 口含烟 + Vuse/Velo 美国）</td>
+<td>121.6</td>
+<td>+2.1%</td>
+<td>47.2%</td>
+<td>约 47%</td>
+<td>约 57 亿</td>
+</tr>
+<tr>
+<td>欧洲中东非洲 AME</td>
+<td>96.7</td>
+<td>+1.3%</td>
+<td>37.5%</td>
+<td>约 33%</td>
+<td>约 32 亿</td>
+</tr>
+<tr>
+<td>亚太 APMEA</td>
+<td>47.5</td>
+<td>−4.2%</td>
+<td>18.4%</td>
+<td>约 28%</td>
+<td>约 13 亿</td>
+</tr>
+<tr>
+<td>集团费用、减值等</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 −13 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>257.8</strong></td>
+<td><strong>+0.7%</strong></td>
+<td></td>
+<td><strong>34.7%</strong></td>
+<td><strong>89.5 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>一句话：<strong>这是一家美国赚一半利润、靠美国薄荷烟撑着的公司。</strong> Newport 一个牌子撑起集团三分之一的利润。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励 SBC</strong>：财报页没有单列，BAT 年报披露的股份支付每年约 1 亿英镑上下，占净利润不到 2%。烟草公司不靠发股留人，这项可以忽略。</p>
+<p><strong>一次性项目（TTM）</strong>：
+- 资产减值和重组 2.61 亿英镑（2025 全年 3.33 亿，2024 年 8.67 亿，2023 年 46.5 亿）——<strong>年年都有，不算一次性</strong>，不加回。
+- 股权投资收益 3.96 亿（2025 全年 16.8 亿，2024 年 19.0 亿）——这是<strong>卖 ITC 股份的收益</strong>，是真一次性收益，要扣掉。
+- 最大的一笔在<strong>现金流</strong>而不是利润表上：2025 年 BAT 的加拿大子公司为几十年的健康诉讼跟加拿大各省达成和解，BAT 承担约 60 亿英镑，2024 年已经计提进利润（所以 2024 年净利润只有 30 亿），<strong>2025 年开始真金白银往外付</strong>。现金流量表里"其他经营资产变动"2025 年 −32.6 亿、TTM −26.2 亿，主要就是这笔付款。后续还有分期，从加拿大子公司的利润里逐年扣。</p>
+<p><strong>资本化的支出</strong>：没有值得一提的。烟草公司资本开支一年只有 5.8 亿英镑（营收的 2.3%）。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 22.96 亿英镑，SBC 约 1 亿，比值 20 以上——<strong>真回购</strong>。股本一年减少 1.22%。（现金流量表里 TTM 有一笔 10.5 亿的"发行股票"，BAT 不发新股，这是数据源对 ITC 股份处置的分类，不影响判断。）</p>
+<p><strong>利润和现金流的差</strong>：净利润 63.5 亿 vs 经营现金流 74.4 亿 vs 自由现金流 68.5 亿。差额不算大，但 <strong>经营现金流比 2024 年的 101 亿少了 27 亿</strong>，得对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM 金额（亿英镑）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>64.4</td>
+<td>含少数股东</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>23.4</td>
+<td>2017 年收购雷诺留下的品牌摊销为主，不是现金</td>
+</tr>
+<tr>
+<td>+ 减值重组</td>
+<td>2.6</td>
+<td></td>
+</tr>
+<tr>
+<td>− ITC 股权收益</td>
+<td>−4.0</td>
+<td>非现金 / 投资活动的钱</td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>11.3</td>
+<td>主要是递延税、拨备计提</td>
+</tr>
+<tr>
+<td>− 应收增加</td>
+<td>−4.0</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 存货减少</td>
+<td>3.6</td>
+<td></td>
+</tr>
+<tr>
+<td>− <strong>其他经营资产变动</strong></td>
+<td><strong>−26.2</strong></td>
+<td><strong>加拿大和解付款为主</strong></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>74.4</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−5.8</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>68.5</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>还有一件事必须说清：BAT 用 IFRS，把付出去的利息记在筹资活动里，不在经营活动里。</strong> 筹资活动里"其他"一项 TTM 是 −17.9 亿，基本就是利息。所以<strong>表上的 68.5 亿自由现金流是没扣利息的</strong>，扣完利息真正能分给股东的现金约 <strong>50.7 亿</strong>。而 TTM 分红 53.2 亿 + 回购 23.0 亿 = <strong>76.2 亿，比扣息后的自由现金流多了 25 亿</strong>。缺口从哪来？卖 ITC 股份收回 7.4 亿、账上现金从 38.4 亿花到 25.3 亿、净负债从 312 亿升到 325 亿。</p>
+<p><strong>这一年是特殊的一年</strong>（加拿大付款），把 26 亿加回去，正常年份扣息后自由现金流约 75–80 亿，够付分红加回购。但正常年份也就是刚刚够，<strong>没有余量</strong>。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值按 1 英镑 = 1.327 美元折为 <strong>907 亿英镑</strong>，企业价值约 1,241 亿英镑（净负债 325 亿 + 租赁和少数股东）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP（IFRS）TTM 市盈率</td>
+<td>907 ÷ 63.5</td>
+<td><strong>14.3 倍</strong></td>
+<td>7.00 元</td>
+</tr>
+<tr>
+<td>公司自己吹的"调整后"</td>
+<td>907 ÷ 约 68（加回减值、摊销、诉讼等；BAT 自报的调整后 EPS 约 3.9 美元/股）</td>
+<td>约 13.3 倍</td>
+<td>约 7.5 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>907 ÷ 62.1（63.5 − ITC 收益 4.0 + 减值 2.6；减值年年有本可不加，这里算它一次）</td>
+<td><strong>14.6 倍</strong></td>
+<td><strong>6.85 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径（表面）</td>
+<td>907 ÷ 68.5</td>
+<td>13.2 倍</td>
+<td>7.55 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（扣利息、加回加拿大付款，正常年份）</strong></td>
+<td>907 ÷ 约 77</td>
+<td><strong>约 11.8 倍</strong></td>
+<td><strong>约 8.5 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>1,241 ÷ 89.5</td>
+<td>13.9 倍</td>
+<td>7.2 元</td>
+</tr>
+<tr>
+<td><strong>三年平均真实利润口径</strong></td>
+<td>907 ÷ 63（2024 年约 65、2025 年约 62、TTM 62.1 的平均，均已剔除减值/诉讼计提/ITC 收益）</td>
+<td><strong>14.4 倍</strong></td>
+<td><strong>6.9 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行是全表最有信息量的一行：<strong>BAT 报表上的净利润三年里从 −144 亿到 30 亿再到 77 亿，像坐过山车；但剥掉减值、诉讼拨备、卖 ITC 的收益之后，真实利润三年都是 62–65 亿，几乎一条直线。</strong> 这家公司的经营本身极其稳定，报表的波动全是会计项目造成的。所以当期 14.6 倍和三年平均 14.4 倍几乎一样——<strong>现在的利润既不是高点也不是低点，就是它的正常水平。</strong></p>
+<p><strong>大白话</strong>：你投 100 块进去，按最保守的真实口径，公司一年替你赚 6.85 块。这 6.85 块里：</p>
+<ul>
+<li><strong>5.9 块以分红形式直接打到你账上</strong>（股息率 5.95%，一年四次），另外约 <strong>1.2 块用来回购</strong>，合计 7.1 块——<strong>分红加回购比真实利润还多</strong>，公司把赚的全给你了还倒贴。</li>
+<li>留在公司再投资的：<strong>几乎是零</strong>。资本开支只有营收的 2.3%，不建新厂、不搞大并购。</li>
+<li>这个 6.85 块未来会变大还是变小？<strong>大概率在原地小幅波动</strong>：卷烟提价能对冲销量下滑还能撑几年，新型烟草在增长但利润薄，两者一抵消，真实利润大约一年增长 0–3%。风险在于下行——美国 FDA 若真的禁薄荷烟（拖了五年，目前搁置），Newport 那三分之一利润会挨一刀；美国非法电子烟若继续泛滥，卷烟销量下滑会从 8% 加速到 12%。</li>
+</ul>
+<p><strong>还得说债</strong>：净负债 325 亿英镑，是真实利润的 5 倍多，每年利息约 18 亿。这笔债是 2017 年买雷诺欠下的，八年来只还了不到 100 亿。<strong>它不是危险，但它决定了 BAT 永远没有余钱做别的事</strong>——每年赚的现金先付利息、再付分红、剩一点回购，年年如此。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>14 倍市盈率、6% 股息率、真实利润三年一条直线——这个价格是公道的，不是便宜。</strong> 便宜的时候是 2023 年底（市值 650 亿美元、9 倍），那时候一年 12% 的股息率，市场把它当成要死的公司。现在市值涨了 85%，市场承认了它不会死，价格也就回到了"一家销量每年缩 8%、靠提价撑着、背着 325 亿英镑债、每年把全部利润分光"的公司应有的水平。买它拿的是那 7% 的分红加回购，别指望利润增长。菲利普莫里斯在新型烟草上跑得更快（IQOS + Zyn 双第一），BAT 是那个稳稳的老二，所以它比菲利普莫里斯便宜 30% 是应该的，不是错价。</p><script src="user.js"></script>
+</div></body></html>
