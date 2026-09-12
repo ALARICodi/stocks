@@ -1,0 +1,44 @@
+# 52周低位榜:每个交易日美股收盘后重扫一次,把最新 data.json 推到单独的 data 分支。
+# 只写 data 分支,不碰 main,所以跟本地 deploy.ps1 的推送互不干扰。
+# 页面 docs/52w/index.html 打开时先显示内嵌快照,再从 data 分支拉最新数据替换。
+name: low52-refresh
+on:
+  schedule:
+    - cron: "40 21 * * 2-6"   # UTC 21:40 = 美东 17:40(夏令时)/ 16:40(冬令时),周二到周六对应美股周一到周五收盘后
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/low52.yml"
+      - "low52/scan.py"
+permissions:
+  contents: write
+concurrency:
+  group: low52-data
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: scan
+        run: python low52/scan.py 15 0
+      - name: push data branch
+        run: |
+          set -e
+          test -s low52/data.json
+          python -c "import json;d=json.load(open('low52/data.json'));assert d['meta']['hits']>50, d['meta']"
+          mkdir -p /tmp/out && cp low52/data.json low52/52周新低.csv /tmp/out/
+          git config user.name "low52-bot"
+          git config user.email "low52-bot@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git fetch origin data && git checkout data
+          else
+            git checkout --orphan data && git rm -rf -q . || true
+          fi
+          cp /tmp/out/* .
+          git add data.json 52周新低.csv
+          git commit -m "data $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "no change"; exit 0; }
+          git push origin data

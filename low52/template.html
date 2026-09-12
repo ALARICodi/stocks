@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>52周低位榜</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f2f4f7;--card:#ffffff;--fg:#141a21;--muted:#5d6b7a;--line:#dbe1e8;--line2:#eef1f5;
+  --accent:#1d6fa5;--accent-ink:#ffffff;--chip:#e7eef6;
+  --red:#c2382b;--green:#1f8a4c;--track:#dfe5ec;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1216;--card:#161b22;--fg:#e3e8ee;--muted:#8d9aab;--line:#28323d;--line2:#1e262f;
+    --accent:#5aa7dd;--accent-ink:#0b1219;--chip:#1b2530;
+    --red:#f0736a;--green:#4fc47f;--track:#2a3541;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1216;--card:#161b22;--fg:#e3e8ee;--muted:#8d9aab;--line:#28323d;--line2:#1e262f;
+  --accent:#5aa7dd;--accent-ink:#0b1219;--chip:#1b2530;
+  --red:#f0736a;--green:#4fc47f;--track:#2a3541;
+}
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:14px/1.45 "IBM Plex Sans",-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-variant-numeric:tabular-nums}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+header{padding:16px 16px 10px;position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+h1{font-size:19px;font-weight:600;margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+h1 small{font-weight:400;color:var(--muted);font-size:13px;margin-left:8px}
+.sub{color:var(--muted);font-size:12px}
+.sub .fresh{color:var(--green)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.lbl{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:0 2px 0 6px}
+.lbl:first-child{margin-left:0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;user-select:none;line-height:1.3}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip:focus-visible,select:focus-visible,input:focus-visible,th:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select,input[type=search]{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 9px;font:inherit;font-size:13px}
+input[type=search]{flex:1;min-width:150px}
+.count{font-size:12px;color:var(--muted);margin-left:auto}
+.count b{color:var(--fg);font-weight:600}
+/* 距离滑杆 */
+.slide{display:flex;align-items:center;gap:10px;flex:1;min-width:240px;max-width:460px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 6px}
+.slide .val{font-weight:600;font-size:15px;min-width:52px;text-align:center;color:var(--accent);font-variant-numeric:tabular-nums}
+.slide input[type=range]{flex:1;accent-color:var(--accent);height:22px;margin:0;cursor:pointer}
+.slide .end{font-size:11px;color:var(--muted)}
+main{padding:10px 10px 48px}
+.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 9px;border-bottom:1px solid var(--line2);text-align:right;white-space:nowrap;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+th{font-weight:500;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:var(--card);border-bottom:1px solid var(--line);user-select:none}
+th.s{color:var(--fg)}
+th.s::after{content:" ▾"}th.s.asc::after{content:" ▴"}
+td.l,th.l{text-align:left}
+.t{font-weight:600;font-size:13.5px;letter-spacing:.01em}
+.n{color:var(--muted);font-size:12px;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.neg{color:var(--red)}.pos{color:var(--green)}
+.tag{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:5px;background:var(--chip);color:var(--muted);margin-left:5px;vertical-align:1px}
+.rg{display:inline-block;position:relative;width:64px;height:6px;border-radius:3px;background:var(--track);vertical-align:middle}
+.rg i{position:absolute;top:-2px;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-left:-5px;box-shadow:0 0 0 2px var(--card)}
+.rg.lo i{background:var(--red)}
+.foot{color:var(--muted);font-size:12px;padding:12px 6px 0;line-height:1.6;max-width:68ch}
+@media (max-width:640px){
+  th.hm,td.hm{display:none}
+  th,td{padding:7px 6px;font-size:13px}
+  header{padding:12px 12px 8px}
+  main{padding:8px 6px 40px}
+  .slide{max-width:none}
+}
+@media (prefers-reduced-motion:no-preference){.chip{transition:border-color .15s,background .15s}}
+</style>
+</head>
+<body>
+<header>
+  <h1>52周低位榜<small>美股主板 · 现价贴着 52 周最低点的公司</small></h1>
+  <div class="sub" id="meta"></div>
+  <div class="row">
+    <span class="lbl">距最低 ≤</span>
+    <label class="slide">
+      <span class="val" id="pctv">10%</span>
+      <span class="end">1</span>
+      <input type="range" id="pct" min="1" max="15" step="1" value="10" aria-label="距 52 周最低点的百分比上限">
+      <span class="end">15</span>
+    </label>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="row">
+    <span class="lbl">市值</span>
+    <span class="chip on" data-k="mcap" data-v="0">全部</span>
+    <span class="chip" data-k="mcap" data-v="2e9">≥20亿</span>
+    <span class="chip" data-k="mcap" data-v="1e10">≥100亿</span>
+    <span class="chip" data-k="mcap" data-v="1e11">≥1000亿</span>
+    <span class="lbl">盈亏</span>
+    <span class="chip on" data-k="loss" data-v="all">全部</span>
+    <span class="chip" data-k="loss" data-v="0">盈利</span>
+    <span class="chip" data-k="loss" data-v="1">亏损</span>
+    <select id="sector" aria-label="板块"><option value="">全部板块</option></select>
+    <select id="country" aria-label="国家"><option value="">全部国家</option></select>
+    <input type="search" id="q" placeholder="搜代号 / 公司名" aria-label="搜索">
+  </div>
+</header>
+<main>
+<div class="wrap"><table id="tb"><thead><tr>
+  <th class="l" data-s="ticker" tabindex="0">代号 / 公司</th>
+  <th data-s="mcap" class="s" tabindex="0">市值 亿$</th>
+  <th data-s="price" tabindex="0">现价</th>
+  <th data-s="low52" class="hm" tabindex="0">52周低</th>
+  <th data-s="dist" tabindex="0">距最低</th>
+  <th class="hm" title="圆点位置 = 现价在 52 周最低(左)到最高(右)之间的位置">52周区间</th>
+  <th data-s="off_high" tabindex="0">距最高</th>
+  <th data-s="perf1y" class="hm" tabindex="0">1年</th>
+  <th data-s="perf3m" class="hm" tabindex="0">3月</th>
+  <th data-s="pe" class="hm" tabindex="0">PE</th>
+  <th data-s="divy" class="hm" tabindex="0">股息</th>
+  <th class="l hm" data-s="sector" tabindex="0">板块</th>
+</tr></thead><tbody></tbody></table></div>
+<p class="foot">距最低 = (现价 − 52周最低价) ÷ 52周最低价。52周最低价本身包含当天,所以没有负值,0% 就是今天收在最低价上。同一家公司多类股只留市值最大的一只;名单含少量优先股(代号多以 P 结尾)。数据来自 TradingView 扫描接口,价格为最近一个交易日收盘;每个交易日收盘后自动重扫一次,打开页面时会自动换成最新一份。</p>
+</main>
+<script>
+const EMBED = /*__DATA__*/null;
+let rows = EMBED.rows, meta = EMBED.meta;
+const st = {mcap:0, pct:10, loss:'all', sector:'', country:'', q:'', sort:'mcap', asc:false};
+const $ = id=>document.getElementById(id);
+function showMeta(fresh){
+  $('meta').innerHTML = `数据 ${meta.generated}(北京时间)· 扫描纽交所 / 纳斯达克 / 美交所 ${meta.universe} 家 · 距 52 周最低 ≤${meta.pct}% 的共 ${meta.hits} 家` + (fresh?` <span class="fresh">· 已自动更新到最新一期</span>`:'');
+}
+function fillSelects(){
+  for (const [id,key] of [['sector','sector'],['country','country']]){
+    const sel=$(id), keep=sel.value; sel.length=1;
+    for (const v of [...new Set(rows.map(r=>r[key]).filter(Boolean))].sort()) sel.insertAdjacentHTML('beforeend', `<option>${v}</option>`);
+    sel.value = keep;
+  }
+}
+document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
+  const k=ch.dataset.k; document.querySelectorAll(`.chip[data-k=${k}]`).forEach(x=>x.classList.remove('on'));
+  ch.classList.add('on'); st[k]= k==='loss'?ch.dataset.v:+ch.dataset.v; draw();
+});
+$('pct').oninput=e=>{st.pct=+e.target.value; $('pctv').textContent=st.pct+'%'; draw();};
+$('sector').onchange=e=>{st.sector=e.target.value;draw()};
+$('country').onchange=e=>{st.country=e.target.value;draw()};
+$('q').oninput=e=>{st.q=e.target.value.trim().toLowerCase();draw()};
+document.querySelectorAll('th[data-s]').forEach(th=>{
+  const go=()=>{const k=th.dataset.s; if(st.sort===k) st.asc=!st.asc; else {st.sort=k; st.asc=(k==='ticker'||k==='sector');}
+    document.querySelectorAll('th').forEach(x=>x.classList.remove('s','asc')); th.classList.add('s'); if(st.asc) th.classList.add('asc'); draw();};
+  th.onclick=go; th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+});
+const f1=v=>v==null?'—':v.toFixed(1), f2=v=>v==null?'—':v.toFixed(2);
+const sp=v=>v==null?'—':(v>0?'+':'')+f1(v)+'%';
+const cls=v=>v==null?'':v<0?'neg':v>0?'pos':'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function range(r){
+  if(!r.high52||r.high52<=r.low52) return '—';
+  const p=Math.min(100,Math.max(0,(r.price-r.low52)/(r.high52-r.low52)*100));
+  return `<span class="rg${p<=2?' lo':''}" title="低 ${f2(r.low52)} · 现 ${f2(r.price)} · 高 ${f2(r.high52)}"><i style="left:${p.toFixed(1)}%"></i></span>`;
+}
+function draw(){
+  let list = rows.filter(r=>(r.mcap||0)>=st.mcap && Math.abs(r.dist)<=st.pct+1e-9
+    && (st.loss==='all' || (st.loss==='1')===!!r.loss)
+    && (!st.sector || r.sector===st.sector) && (!st.country || r.country===st.country)
+    && (!st.q || r.ticker.toLowerCase().includes(st.q) || (r.name||'').toLowerCase().includes(st.q)));
+  list.sort((a,b)=>{let x=a[st.sort],y=b[st.sort]; if(x==null)x=st.asc?Infinity:-Infinity; if(y==null)y=st.asc?Infinity:-Infinity;
+    if(typeof x==='string') return st.asc?x.localeCompare(y):y.localeCompare(x); return st.asc?x-y:y-x;});
+  $('count').innerHTML = `<b>${list.length}</b> 家`;
+  document.querySelector('#tb tbody').innerHTML = list.map(r=>`<tr>
+    <td class="l"><span class="t mono">${esc(r.ticker)}</span>${r.loss?'<span class="tag">亏损</span>':''}<div class="n" title="${esc(r.name)}">${esc(r.name)}</div></td>
+    <td>${(r.mcap/1e8).toFixed(r.mcap>=1e10?0:1)}</td>
+    <td>${f2(r.price)}</td>
+    <td class="hm">${f2(r.low52)}</td>
+    <td class="${r.dist<=0?'neg':''}">${r.dist>0?'+':''}${f2(r.dist)}%</td>
+    <td class="hm">${range(r)}</td>
+    <td class="${cls(r.off_high)}">${sp(r.off_high)}</td>
+    <td class="hm ${cls(r.perf1y)}">${sp(r.perf1y)}</td>
+    <td class="hm ${cls(r.perf3m)}">${sp(r.perf3m)}</td>
+    <td class="hm">${r.pe==null?'—':f1(r.pe)}</td>
+    <td class="hm">${r.divy?f1(r.divy)+'%':'—'}</td>
+    <td class="l hm">${esc(r.sector)||'—'}<div class="n">${esc(r.industry)}</div></td>
+  </tr>`).join('');
+}
+showMeta(false); fillSelects(); draw();
+
+// 每个交易日收盘后 GitHub Actions 重扫一次,结果放在仓库的 data 分支;这里拉最新一份替换内嵌快照。
+const SRC = ['https://raw.githubusercontent.com/ALARICodi/stocks/data/data.json',
+             'https://cdn.jsdelivr.net/gh/ALARICodi/stocks@data/data.json'];
+Promise.allSettled(SRC.map(u=>fetch(u,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(r.status))))
+  .then(rs=>{
+    const ok = rs.filter(x=>x.status==='fulfilled' && x.value && x.value.meta && Array.isArray(x.value.rows) && x.value.rows.length>50).map(x=>x.value);
+    if(!ok.length) return;
+    const best = ok.sort((a,b)=>String(b.meta.generated).localeCompare(String(a.meta.generated)))[0];
+    if(String(best.meta.generated) <= String(meta.generated)) return;
+    rows = best.rows; meta = best.meta; showMeta(true); fillSelects(); draw();
+  }).catch(()=>{});
+</script>
+</body>
+</html>
