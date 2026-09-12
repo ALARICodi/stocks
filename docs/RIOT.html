@@ -1,0 +1,409 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RIOT · Riot Platforms（比特币矿场转 AI 数据中心）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">RIOT</a></div>
+<div class="mine" data-t="RIOT"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">挖矿靠卖币续命，80亿买还没建成的20年AI租约</div><h1>RIOT · Riot Platforms（比特币矿场转 AI 数据中心）</h1>
+<p>市值 80.6 亿美元 · 股价 21.47 美元（2026-09-11）· 比特币挖矿 / 数据中心 · TTM 截止 2026-06-30 · 任务5（主板亏损公司）第 98 名</p>
+<blockquote>
+<p>一句话背景：美国最大的比特币矿场之一，正在把矿场改成 AI 数据中心出租。TTM 营收 6.7 亿、账面亏 13.2 亿（大头是持仓比特币跌价的账面损失）、经营现金流 −4.9 亿——但挖矿收入是以比特币入账的，看现金流量表必须把「卖币」加回来才是真相。2026 年 8 月签了一份 20 年 91 亿美元的 AI 租约，股价一天涨 17%，现在这 80 亿市值买的就是这份租约。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报按三块披露：比特币挖矿、工程（电气设备）、其他产品。加上 2026 年刚起步的 AI 数据中心租赁，实质上是三门生意，一门老的在萎缩、一门新的还没开始收钱。</p>
+<h3>生意 A：挖比特币（TTM 营收 5.18 亿，占 77%）</h3>
+<p><strong>这件事是什么。</strong> 比特币网络每十分钟出一个新区块，奖励 3.125 个比特币（2024 年减半后的数字）给算出那道数学题的矿工。全世界的矿机在比拼算力，你的算力占全网的比例，就是你能分到的比特币比例。Riot 在德州 Rockdale（原来叫 Whinstone，700 兆瓦）和 Corsicana（1 吉瓦，2024 年起投产）建了巨型矿场，加上肯塔基的几个小场，装了几十万台矿机，算力大约占全网的 4–5%。TTM 挖了大约 6,200 个比特币，2026 年二季度挖了 1,587 个。</p>
+<p><strong>怎么收钱。</strong> 挖到的比特币直接进公司账户，<strong>不是现金，是币</strong>——所以利润表上 5.18 亿「营收」在现金流量表上要先减掉，卖了币才有现金进来。挖矿的成本主要是电费：Riot 在 Rockdale 有一份长期固定价电力合同（每度电大概 2.5 美分，比德州工业电价便宜一半），德州电网用电高峰时它还能<strong>停机把电卖回给电网</strong>，一年能拿几千万美元的「电力返还」，直接冲减成本。这是 Riot 比同行强的地方。</p>
+<p><strong>账怎么算。</strong> TTM 挖 6,200 个币、收入 5.18 亿，平均一个币按 8.3 万美元入账。电费加托管加运维，每个币的现金成本估计 5–6 万美元（按挖矿毛利率 30% 出头倒推，<strong>估算</strong>）。再加上矿机折旧——矿机三四年就淘汰，TTM 折旧 3.8 亿——<strong>每个币的全成本超过 11 万美元，比 TTM 的币价高</strong>。也就是说，按全成本算，Riot 挖一个币亏一个币；按现金成本算，一个币赚两三万。</p>
+<p><strong>比特币减半的问题。</strong> 2024 年 4 月减半后，同样的算力挖到的币少了一半，全行业的利润被压扁。2026 年二季度挖矿收入比去年同期跌 19%，币价跌是主因。这门生意的利润完全由「币价 − 电价」决定，Riot 控制不了币价。</p>
+<h3>生意 B：电气工程（ESS Metron，TTM 营收 1.0 亿，占 15%）</h3>
+<p>2021 年买的一家丹佛的电气设备公司，做数据中心和工业用的高压开关柜、配电系统。原本是为了给自己矿场做配电，现在 AI 数据中心热潮把这类设备的订单推起来了，TTM 营收比 2025 全年涨了 54%。利润率低（毛利率估计 10% 上下），但它是 Riot 转型 AI 数据中心时自己手里的一支施工队。</p>
+<h3>生意 C：AI 数据中心租赁（TTM 营收约 0.57 亿其他收入，主角还没登场）</h3>
+<p><strong>这是全篇的重点，也是 80 亿市值的全部理由。</strong> 比特币矿场有两样东西 AI 数据中心最缺：<strong>大量已经批下来的电力（Riot 手里有 2 吉瓦以上的电网接入）和已经建好的厂房、变电站</strong>。把矿机搬走、换成 GPU 服务器机柜和液冷系统，就能租给 AI 公司。</p>
+<p><strong>2026 年 8 月 10 日，Riot 宣布和一家前沿 AI 实验室（后被确认为 Anthropic）签了 20 年租约：Rockdale 园区 191 兆瓦的 IT 容量，整个租期合同总额约 91 亿美元。</strong> 平均一年 4.55 亿美元——比 Riot 现在整个挖矿业务的营收还少一点，但<strong>这是签了 20 年的固定租金，不随币价涨跌</strong>。此前 Riot 已经和 AMD 签过一份小一些的租约，也在 Rockdale。同一天还宣布 Corsicana 整个园区签了意向书（LOI），大约 1 吉瓦 IT 容量——如果落地，是 Rockdale 那份的五倍。</p>
+<p><strong>怎么收钱。</strong> 数据中心租赁的模式是：Riot 出钱建机房（电力、冷却、机柜，每兆瓦建设成本大概 800–1,200 万美元，191 兆瓦就是 15–25 亿美元），租户自带 GPU 服务器，按兆瓦付月租，租期 20 年。这类「powered shell / 托管」业务成熟后 EBITDA 利润率能到 70% 以上。<strong>但要先花 20 亿建，2027–2028 年才分批交付，租金 2028 年才有规模。</strong></p>
+<p><strong>钱从哪来。</strong> 这就是 Riot 2026 年上半年卖了 9,665 个比特币（约 8 亿美元）的原因——把币换成建数据中心的钱。8 月底还剩 11,380 个币，值 8.9 亿。要把 Rockdale 191 兆瓦建完还差十几亿，Corsicana 那 1 吉瓦更是几十亿——<strong>必然要靠项目贷款、可转债或者增发，或者三样都来。</strong></p>
+<h3>三门生意合起来</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收（百万美元）</th>
+<th>2025 全年</th>
+<th>2024 全年</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A · 比特币挖矿</td>
+<td>518</td>
+<td>576</td>
+<td>321</td>
+<td>TTM 比 2025 全年少 58，币价跌</td>
+</tr>
+<tr>
+<td>B · 电气工程</td>
+<td>100</td>
+<td>65</td>
+<td>38</td>
+<td>+54%</td>
+</tr>
+<tr>
+<td>C · 数据中心/其他（未拆）</td>
+<td>约 57</td>
+<td>6</td>
+<td>17</td>
+<td>刚起步</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>675</strong></td>
+<td><strong>647</strong></td>
+<td><strong>377</strong></td>
+<td><strong>+24.5%</strong></td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>28%</td>
+<td>38%</td>
+<td>30%</td>
+<td>币价跌、电费没跌</td>
+</tr>
+<tr>
+<td>GAAP 经营利润</td>
+<td>−1,280</td>
+<td>−516</td>
+<td>+92</td>
+<td>2024 年靠币价涨出来的账面利润</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>财报没有分部利润。三年经营利润从 +0.9 亿到 −5.2 亿到 −12.8 亿，<strong>全部是比特币按市价重估的账面损益在摆动</strong>——2024 年币价大涨，持仓重估赚了几亿进利润表；TTM 币价跌，重估亏了七八亿（从现金流量表倒推的<strong>估算</strong>）。剔掉这个，挖矿本身在 TTM 币价下是「现金微赚、全成本亏」。</p>
+</blockquote>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）。</strong> TTM 1.41 亿，<strong>占营收 21%</strong>——这个比例在这批公司里是最高的。股本一年膨胀 9.6%（还包括 8,900 万的增发）。矿工不赚钱，管理层照样拿股票。</p>
+<p><strong>一次性项目。</strong> 矿机和设备减值 5,800 万（老矿机淘汰）。<strong>比特币按市价重估的损益不是「一次性」，是年年都有、方向随机的</strong>——它是这家公司利润表的主角，但不是经营出来的：TTM 是大额损失，2024 年是大额收益，2027 年谁也不知道。分析时必须整个剔掉，只看「挖出来的币按当期价卖了值多少 − 成本」。</p>
+<p><strong>资本化的支出。</strong> 矿机和数据中心是重资产，TTM 资本开支 4.53 亿加上 1.48 亿买地（Corsicana 周边），合计 6 亿。往后建 AI 数据中心这个数字会变成每年十几亿。</p>
+<p><strong>回购与稀释。</strong> 回购 600 万，SBC 1.41 亿，<strong>比值 0.04</strong>——等于没有回购。</p>
+<p><strong>利润和现金流的差——矿工的现金流量表必须这样读。</strong> 净亏 13.2 亿，经营现金流 −4.9 亿，投资活动现金流居然是 <strong>+6.3 亿</strong>。逐项对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>−1,324</td>
+<td></td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+386</td>
+<td>矿机三四年报废，这是真成本</td>
+</tr>
+<tr>
+<td>加：矿机减值</td>
+<td>+58</td>
+<td></td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+141</td>
+<td></td>
+</tr>
+<tr>
+<td>减：出售投资收益等</td>
+<td>−32</td>
+<td></td>
+</tr>
+<tr>
+<td>加：<strong>其他非现金项</strong></td>
+<td><strong>+356</strong></td>
+<td><strong>= 减掉「以币入账的挖矿收入」5.18 亿 + 加回「持仓比特币重估损失」约 8 亿 + 零碎</strong></td>
+</tr>
+<tr>
+<td>减：营运资金</td>
+<td>−77</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>−492</strong></td>
+<td><strong>这个数字对矿工没有意义：挖到的币不算现金</strong></td>
+</tr>
+<tr>
+<td>加：<strong>卖比特币的现金</strong>（记在投资活动）</td>
+<td><strong>+1,134</strong></td>
+<td>上半年卖了 9,665 个币</td>
+</tr>
+<tr>
+<td><strong>= 把卖币算进来的真实经营现金流</strong></td>
+<td><strong>+642</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−453</td>
+<td>矿机 + 数据中心</td>
+</tr>
+<tr>
+<td>减：买地</td>
+<td>−148</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 真实自由现金流</strong></td>
+<td><strong>+41</strong></td>
+<td><strong>但这是靠卖掉比特币库存换来的，卖的币（9,665 个）比挖的币（约 3,100 个）多两倍</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说的是：</strong> Riot TTM 没有从经营里赚到现金，它是在<strong>清库存</strong>——把 2024–2025 年攒下的比特币卖了 11 亿，付了 6 亿的资本开支，剩下的堆在账上准备建数据中心。如果只算「TTM 挖的币按 TTM 价格卖掉」（约 5.2 亿）减电费等现金成本（约 3.3 亿）减现金管理费用（约 1 亿）：<strong>挖矿业务的现金利润大约 1 亿，不够覆盖 4.5 亿的矿机更新。</strong></p>
+<p><strong>资产负债表。</strong> 现金 4.71 亿；比特币 11,380 个，8 月底值 8.94 亿；有息负债 8.78 亿（5.94 亿可转债 2030 年到期、2 亿用比特币抵押从 Coinbase 借的信用额度、其他）。<strong>现金 + 币 − 债 = 4.9 亿净流动资产</strong>。股东权益 21.9 亿，市净率 3.7 倍——账面上大部分是矿场、土地和电力设施。</p>
+<hr />
+<h2>第三部分：亏损公司的口径</h2>
+<p>这是<strong>真亏</strong>：剔掉比特币重估后经营层面按全成本算也是亏的，现金靠卖库存币，未来要靠融资建数据中心。按表来：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>6.75 亿，+24.5%</td>
+<td>增长来自工程和数据中心，挖矿在跌</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>−12.8 亿</td>
+<td>其中约 8 亿是比特币重估（估算）；剔掉后约 −4.8 亿，含 3.9 亿折旧</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>−4.9 亿 / −9.5 亿（stockanalysis 口径）</td>
+<td>加回卖币 11.3 亿后真实自由现金流 +0.4 亿</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td>不卖币的话烧 9.5 亿；靠卖币填平</td>
+<td>卖的币是过去的积累，卖完就没了</td>
+</tr>
+<tr>
+<td>账上现金 + 比特币 − 有息负债</td>
+<td>4.71 + 8.94 − 8.78 = <strong>+4.9 亿</strong></td>
+<td>比特币值多少看当天币价</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>现金加币 13.7 亿 ÷ 9.5 亿 ≈ <strong>1.4 年</strong>；这还没算建 AI 数据中心的十几亿</td>
+<td><strong>2027 年之前必然大额融资</strong></td>
+</tr>
+<tr>
+<td>SBC 占营收、股本一年膨胀</td>
+<td><strong>21%</strong>、<strong>+9.6%</strong></td>
+<td>两个数字都是这批公司里最差的</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>挖矿按 TTM 币价全成本算 ≈ 0；AI 租约按合同 4.55 亿/年、EBITDA 利润率 75%、扣 20 年折旧和利息后净利约 <strong>2.4 亿/年</strong>，从 2028 年起；市值 80.6 亿 ÷ 2.4 亿 = <strong>假想市盈率 34 倍</strong></td>
+<td>投 100 块年回报 <strong>3.0 元</strong>，2028 年起算</td>
+</tr>
+<tr>
+<td>如果 Corsicana 1 吉瓦意向书全部落地</td>
+<td>按 Rockdale 同样单价，约 1 吉瓦 × 每兆瓦每年 240 万 ≈ 24 亿/年租金，净利约 12 亿</td>
+<td>假想市盈率 7 倍——<strong>但要先花五六十亿建，钱从股东身上出</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话说。</strong> 你现在投 100 块进去：
+- 按挖矿这门生意，TTM 币价下全成本算是 0 块，币价翻倍才有得赚，币价再跌一半矿场就是负资产。
+- 按已经签了的 AI 租约，从 2028 年起每年赚 3 块——前提是 Riot 能在两年内找到十几亿把机房建好，而且不把股本再稀释太多。
+- 按「Corsicana 意向书全部变成合同」这个大梦想，能到每年 14 块——但那需要五六十亿的建设资金，Riot 现在全部市值才 80 亿，意味着要么大幅增发、要么背几十亿的项目贷款。<strong>这个 14 块里，你能分到多少取决于稀释了多少。</strong></p>
+<p><strong>它会不会死。</strong> 短期不会（有 13.7 亿现金加币、有一份 20 年的顶级租约做抵押去借钱）。<strong>但它 2027 年前必须融资，融资的价格决定老股东剩多少。</strong> 它的历史就是不断增发：2021 年 6.9 亿、2023 年 7.8 亿、2024 年 9.8 亿、2025 年 2.1 亿，股本从 2021 年至今翻了几倍。</p>
+<p><strong>这个数字未来会变大还是变小。</strong> 会变大——AI 租约是真合同、租户是真有钱的公司、电力是真批下来的。问题在于<strong>「每股」会不会变大</strong>：从 0 到 3 块要等到 2028 年，中间稀释 20–30% 是保守估计。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Riot 挖矿这门生意在现在的币价下不赚钱，TTM 靠卖掉 9,665 个比特币维持现金流；80 亿市值买的是 2026 年 8 月那份 20 年 91 亿美元的 AI 数据中心租约，以及 Corsicana 那份还只是意向书的 1 吉瓦梦想。按已签的合同算，2028 年起假想市盈率 34 倍，而建机房的十几亿还没着落、股本每年膨胀 10%。这是一个「用还没建成的数据中心给一个不赚钱的矿场重新定价」的故事——贵，而且贵在你看不见的地方（稀释）。想参与 AI 数据中心，等它把融资方案公布、看清楚老股东被稀释多少之后再看。</strong></p>
+<p>三个要盯的点：
+- <strong>Rockdale 191 兆瓦的融资和交付时间表</strong>——项目贷款还是增发，2027 年能不能交付第一批。
+- <strong>Corsicana 意向书什么时候变成合同</strong>——变了是 1 吉瓦，不变就只有 191 兆瓦。
+- <strong>比特币还剩多少</strong>——11,380 个是最后的家底，卖完了就只能靠融资；币价再跌，抵押给 Coinbase 的那 2 亿信用额度会先出问题。</p><script src="user.js"></script>
+</div></body></html>

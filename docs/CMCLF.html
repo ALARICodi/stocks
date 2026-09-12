@@ -1,0 +1,381 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CMCLF · 洛阳钼业</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CMCLF</a></div>
+<div class="mine" data-t="CMCLF"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">10.7倍全球最便宜的大型铜钴矿商,折价的名字叫刚果和钴配额</div><h1>CMCLF · 洛阳钼业</h1>
+<p>市值（按 H 股价算）3,422 亿港元 ≈ 2,977 亿人民币 ≈ 439 亿美元；（按 A 股价算）3,708 亿人民币 ≈ 549 亿美元 / 股价 H 股 16.00 港元（港交所 3993）、A 股 18.15 元（上交所 603993），2026-09-11 / 行业：铜钴矿业 + 金属贸易 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>财报取自 A 股主上市页 stockanalysis.com/quote/sha/603993（港股页没有财报），货币人民币。<strong>场外代号 CMCLF 对应的是 H 股</strong>，所以下面所有倍数按 H 股价折算的市值算（213.9 亿股 × 16.00 港元 × 0.87 = 2,977 亿人民币，按 1 港元 = 0.87 人民币）；H 股比 A 股便宜 23%，A 股口径的倍数在表里另标一列。全文数字一律人民币。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>名字叫"洛阳钼业"，但它今天九成的利润来自一万公里外的刚果（金）。财报分四个分部，实质上是<strong>三门矿业生意加一家贸易公司</strong>。分部利润财报不披露，下面按各分部毛利结构估算，标注"估算"。</p>
+<h3>1. 刚果（金）铜钴：全球第一大钴矿商、前七大铜矿商</h3>
+<p>两座矿，都在刚果（金）南部的卢阿拉巴省：<strong>TFM</strong>（Tenke Fungurume，2016 年花 26.5 亿美元从美国自由港手里买的，持 80%，刚果国家矿业公司 Gécamines 持 20%）和 <strong>KFM</strong>（Kisanfu，2020 年花 5.5 亿美元也是从自由港买的，持 71%，宁德时代持 25%，2023 年投产）。两座矿 2025 年合计产铜约 65 万吨、钴约 11 万吨——铜排全球第六七位，<strong>钴是全球第一，比嘉能可还多</strong>。</p>
+<p>怎么赚钱：矿石挖出来在当地冶炼成铜阴极板和粗制氢氧化钴，铜卖给全球电线电缆厂和贸易商（2025–2026 年铜价每吨 9,000–10,000 美元以上），钴卖给电池材料厂。刚果的矿是高品位氧化矿，一吨铜的完全成本不到 4,000 美元，卖一万，<strong>这就是毛利率能到 60–70% 的原因</strong>。</p>
+<p>这门生意的两个命门都在刚果政府手里。一是 2023 年跟 Gécamines 为 TFM 的权益金吵了一年多，最后赔了 8 亿美元了事。二是<strong>钴出口配额</strong>：刚果 2025 年 2 月突然禁止钴出口（为了托价），10 月改成配额制，2026、2027 年全国每年只准出口 9.66 万吨，洛钼分到的份额远低于它的产量——结果是钴价从每磅 10 美元翻到 20 美元以上（利好），但挖出来的钴运不出去、堆在仓库里变成存货（这就是第二部分里营运资金吃掉 235 亿现金的原因）。</p>
+<p>TTM 营收 655 亿，估算经营利润约 420 亿、占 <strong>80%</strong>。</p>
+<h3>2. 河南钼钨：老本行，现在是配角</h3>
+<p>洛阳栾川的三道庄钼矿是全球最大的单体钼矿，加上上房沟矿，副产钨。钼是炼特种钢的（不锈钢、风电塔筒、油气管道），钨是做硬质合金刀具的。2025–2026 年钼价在每磅 20 美元以上的高位，钨因为中国出口管制涨到历史新高。TTM 营收 118 亿、较 2025 全年增长 35%，估算经营利润约 50 亿、占 <strong>10%</strong>。稳定、赚钱、不长。</p>
+<h3>3. 巴西铌磷：全球第二大铌生产商</h3>
+<p>2016 年从英美资源手里买的，铌铁（炼高强度钢的添加剂，全球第二，仅次于巴西 CBMM）加磷肥（卖给巴西农民）。TTM 营收约 106 亿（数据库 TTM 列缺失，按总数倒推，含其他杂项），估算经营利润约 45 亿、占 <strong>9%</strong>。另外 2025 年花约 30 亿人民币买了厄瓜多尔的 Lumina Gold（金矿，还在建设期，没产出）。</p>
+<h3>4. IXM：日内瓦的金属贸易商</h3>
+<p>2019 年花 4.95 亿美元从路易达孚手里买的，是全球第三大基本金属贸易商（仅次于嘉能可和托克），一年倒手七八百万吨铜精矿、锌精矿、精炼金属。TTM 名义营收 2,176 亿（占报表营收的 88%！），但毛利率只有 2% 左右，估算经营利润约 20 亿、占 <strong>4%</strong>。它的作用不是赚钱，是给洛钼的矿产品找销路、给公司看市场。<strong>读洛钼的报表一定要把 IXM 剥掉</strong>：2,472 亿营收里 2,176 亿是贸易过手，"营收增长 20%"这个数没意义，看矿业分部才有意义。</p>
+<h3>钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(亿元)</th>
+<th>较2025全年</th>
+<th>估算经营利润(亿)</th>
+<th>利润占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>刚果（金）铜钴</td>
+<td>655</td>
+<td>+7%</td>
+<td>420</td>
+<td>80%</td>
+</tr>
+<tr>
+<td>河南钼钨</td>
+<td>118</td>
+<td>+35%</td>
+<td>50</td>
+<td>10%</td>
+</tr>
+<tr>
+<td>巴西铌磷及其他</td>
+<td>106</td>
+<td>+37%</td>
+<td>45</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>IXM 金属贸易</td>
+<td>2,176</td>
+<td>+21%</td>
+<td>20</td>
+<td>4%</td>
+</tr>
+<tr>
+<td>内部抵消 / 总部</td>
+<td>−587</td>
+<td></td>
+<td>−9</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>2,472</strong></td>
+<td><strong>+20%</strong></td>
+<td><strong>526</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 净利润 278 亿、同比 +66%；2025 全年 203 亿、同比 +50%；2024 年 135 亿、同比 +65%。三年翻了三倍多，一半是 KFM 投产和 TFM 扩产带来的产量翻番（铜从 25 万吨到 65 万吨），一半是铜价和钴价。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：现金流量表里没有这一行，可以忽略。</p>
+<p><strong>一次性项目</strong>：TTM "投资损失" −66 亿，2025 全年 −77 亿——这是<strong>对冲亏损</strong>：洛钼和 IXM 常年对铜钴做期货套保，铜价往上涨时套保头寸就亏，五年里四年为负（2021 年 −34 亿、2022 年 −16 亿、2024 年 −14 亿），年均 −23 亿。它是矿价上涨的影子，年年有，<strong>不当一次性、不加回</strong>。其他一次性项目（处置、减值）合计不到 1 亿。</p>
+<p><strong>资本化的支出</strong>：矿业公司的探矿和基建开支资本化是常规，TTM 资本开支 83 亿、折旧 77 亿，两者相当，没有异常。</p>
+<p><strong>回购与稀释</strong>：TTM 没有回购，<strong>股本反而增加了 1.8%</strong>（可转债转股），稀释了股东。分红 88 亿，按 H 股市值算股息率 3.0%（TTM 每股 0.381 元，含 2026 年新开始的中期分红），派息率 32%。</p>
+<p><strong>利润和现金流的差</strong>——这是全篇最重要的一张表：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM(亿元)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润（含少数股东）</td>
+<td>326</td>
+<td>归母 278 + 少数股东 48（Gécamines 的 20%、宁德时代的 25%）</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>77</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他非现金项目</td>
+<td>84</td>
+<td>含对冲的公允价值亏损转回等</td>
+</tr>
+<tr>
+<td>− 营运资金变化</td>
+<td><strong>−235</strong></td>
+<td><strong>应收 −118、存货 −112</strong>、应付 +83、其他 −65</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>252</strong></td>
+<td>只有净利润的 77%</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−83</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>169</strong></td>
+<td>只有归母净利润的 61%</td>
+</tr>
+<tr>
+<td>− 收购 + 证券投资</td>
+<td>−131</td>
+<td>Lumina Gold 约 30 亿、买了 71 亿理财和股权</td>
+</tr>
+<tr>
+<td>− 分红</td>
+<td>−88</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>缺口</strong></td>
+<td><strong>约 −50</strong></td>
+<td><strong>靠借债补</strong>：TTM 净借债 +183 亿，总债从 311 亿涨到 463 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>账面赚 278 亿，实际到手 169 亿，差的 110 亿全卡在营运资金里：<strong>存货多了 112 亿</strong>——就是运不出刚果的钴堆在仓库；<strong>应收多了 118 亿</strong>——铜卖出去了钱还没回来（IXM 贸易的账期加上矿价涨了应收自然涨）。这不是造假，是被配额卡住的真实成本；配额不放松，这些钴就是一堆按 20 美元/磅记账、卖不出去的库存，一旦刚果放开出口钴价就掉。账上还有 129 亿净现金（现金 592 亿、债 463 亿），缓冲是够的，但注意"净现金"是借了 183 亿新债之后维持的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>按 H 股市值 2,977 亿人民币算，A 股口径（3,708 亿）另标。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数（H 股）</th>
+<th>投100块年回报</th>
+<th>A 股口径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>2,977 ÷ 278</td>
+<td>10.7 倍</td>
+<td>9.3 元</td>
+<td>13.3 倍</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>A 股公司没这套</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>对冲亏损年年有不加回，其他一次性可忽略，<strong>等于 GAAP</strong></td>
+<td><strong>10.7 倍</strong></td>
+<td><strong>9.3 元</strong></td>
+<td>13.3 倍</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>2,977 ÷ 169</td>
+<td>17.6 倍</td>
+<td>5.7 元</td>
+<td>21.9 倍</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(2,977 − 129 净现金 + 约 350 少数股东权益) ÷ 526</td>
+<td>6.1 倍</td>
+<td>16.4 元</td>
+<td>7.5 倍</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2,977 ÷ 140（2023/24/25：82、135、203）</td>
+<td><strong>21.2 倍</strong></td>
+<td><strong>4.7 元</strong></td>
+<td>26.4 倍</td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行是全表最值钱的一句：<strong>当期 10.7 倍，三年平均 21.2 倍，差了一倍</strong>。三年前铜价 8,000 多、钴价 15 美元、KFM 还没投产，利润只有今天的三成。今天的利润里，产量翻番那部分是永久的（矿建好了不会消失），铜价 10,000 和钴价 20 美元那部分是周期的。如果铜回到 8,000、钴回到 12 美元，净利润大概砍半到 140 亿，市盈率就变成 21 倍。</p>
+<p><strong>大白话</strong>：你现在投 100 块进去（按 H 股价），按真实口径公司一年替你赚 9.3 块，但实际收到现金只有 5.7 块（差额堆在刚果的钴库存里）。这 9.3 块里，<strong>约 3 块以分红回到你口袋</strong>，其余留在公司——留下的钱一部分建矿（2028 年目标铜产量 80–100 万吨）、一部分买矿（厄瓜多尔金矿）、一部分买了理财。这个 9.3 块未来往哪走：产量还会涨三到五成，这是确定的；铜价在历史高位，钴价靠刚果配额托着，这两个往下的概率不小。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>便宜，但便宜的理由叫刚果。</strong> 全球第一钴矿商、前七铜矿商，ROIC 42%、净现金、产量还在涨，卖 10.7 倍市盈率、6 倍 EV/EBIT，是全世界大型铜矿公司里最便宜的（自由港 25 倍、南方铜业 30 倍、紫金 15 倍）——这个折价就是刚果（金）的政治风险和钴出口配额的价格，八成利润来自一个政府说话不算数的国家。三年平均口径 21 倍也在提醒你现在是周期高点。接受这两条，这个价格是真便宜；不接受，再便宜也别碰。</p><script src="user.js"></script>
+</div></body></html>

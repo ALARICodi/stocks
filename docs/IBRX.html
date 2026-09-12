@@ -1,0 +1,331 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IBRX · ImmunityBio</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">IBRX</a></div>
+<div class="mine" data-t="IBRX"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">假想144倍,一年烧3亿稀释27%,资不抵债,创始人既是老板又是债主</div><h1>IBRX · ImmunityBio</h1>
+<p>市值 83.8 亿美元 · 股价 7.91 美元 · 生物科技(膀胱癌免疫药) · TTM 截止 2026-06-30</p>
+<p>这是亏损公司,TTM 净亏 9.92 亿美元,第三部分用「亏损口径」。先分类:<strong>真亏</strong>——经营亏 2.52 亿、经营现金流 −2.81 亿,靠不停卖股票和向创始人借钱活着。9.92 亿里有 6.3 亿是非现金的账面损失(第二部分会剥掉),但剥完仍然是一年真烧近 3 亿的公司。</p>
+<h2>第一部分:它到底做几件事</h2>
+<p>一件事:卖一款药,叫 <strong>Anktiva</strong>(通用名 nogapendekin alfa inbakicept,代号 N-803)。营收 99% 来自这款药的产品销售(1.65 亿),其他不到 100 万。</p>
+<p><strong>这款药是什么</strong>:它是一种「IL-15 超级激动剂」——白介素 15 是人体里刺激免疫细胞(NK 细胞和记忆 T 细胞)增殖的信号分子,Anktiva 是把这个信号放大了的改造版蛋白。2024 年 4 月 FDA 批准它用于一种很具体的病:<strong>BCG 治疗无效的非肌层浸润性膀胱癌原位癌(NMIBC CIS)</strong>。</p>
+<p>翻成人话:膀胱癌里最常见的早期类型,标准治疗是往膀胱里灌一种叫 BCG 的减毒结核杆菌(就是卡介苗),靠它激起免疫反应杀癌细胞。大约三四成病人对 BCG 没反应或复发,这些人以前的选择只剩两个——把膀胱整个切掉,或者用默沙东的 K 药(完全缓解率四成上下、持续时间不长)。Anktiva 的用法是<strong>跟 BCG 一起灌进膀胱</strong>,临床试验里完全缓解率 71%,而且一部分人缓解能维持两三年——这让病人有机会保住膀胱。</p>
+<p><strong>怎么收钱</strong>:典型的美国处方药「买断再报销」模式(buy-and-bill)。泌尿科诊所或医院从经销商买药,给病人灌注,然后向 Medicare 或商业保险报销药费加操作费。疗程是:头 6 周每周灌一次(诱导期),之后每隔几周维持一次,最长可以做到三年多。一个病人一年的药费在几十万美元量级。病人绝大多数是 65 岁以上的老人,主要付款方是 Medicare——2025 年起有了专属的报销编码(J-code),这是销量 2025 年开始起量的直接原因。</p>
+<p><strong>卖得怎么样</strong>:季度收入(按 TTM 差值倒推,估算):2025 年一季度约 1,650 万、二季度 2,650 万、三季度 3,200 万、四季度 3,800 万,2026 年一季度 4,400 万、二季度约 5,100 万。<strong>同比翻倍,环比每季涨 15% 上下</strong>——上市第二年一款药做到年化 2 亿美元,在膀胱癌这个小适应症里算成功的。但增速在放缓,环比从一年前的 60% 降到 15%。</p>
+<p><strong>它的天花板</strong>:BCG 无效的原位癌在美国一年新增病人是几千人的量级,不是大适应症。要撑起 84 亿美元市值,它必须拿下更多适应症——公司申报的第二个膀胱癌适应症(BCG 无效的乳头状肿瘤)被 FDA 拒绝受理过一次,还在补数据;肺癌、胰腺癌、脑胶质瘤、自研的重组 BCG 都在临床里,<strong>这些目前全部是故事,营收里一分钱都没有</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>利润率</th>
+<th>贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anktiva 产品销售</td>
+<td>1.65 亿美元</td>
+<td>+193%(基数小)</td>
+<td>99%</td>
+<td>毛利率 99%;经营利润率 −152%</td>
+<td>毛利 1.65 亿,扣完 2.44 亿研发 + 1.73 亿销售管理,经营亏损 2.52 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>一个细节:毛利率 99% 是因为生产成本极低(蛋白药,一剂的制造成本几百美元),每多卖一剂几乎全是毛利。这意味着<strong>只要销量够,这家公司的利润率弹性极大</strong>——这是看多的人的核心逻辑,也是它市值能到 84 亿的原因。</p>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC)</strong>:TTM 3,430 万美元,占营收 21%,占经营亏损 14%。跟同规模生物科技比不算离谱,但它是在股本一年膨胀 27% 的基础上。</p>
+<p><strong>一次性项目——全篇最大的一笔在这里</strong>:利润表里「其他非经营性损失」TTM <strong>−6.29 亿美元</strong>,是经营亏损的 2.5 倍。它是什么?现金流量表里「其他经营项目」加回了 +6.80 亿,说明<strong>这 6.3 亿一分钱现金都没流出</strong>,是账面重估:公司过去几年给创始人的关联方发过认股权证、可转债一类按市价重估的负债,股价一年涨了 208%,这些负债的公允价值跟着膨胀,差额记成亏损。单期口径看不出具体是哪几张纸,但性质确定——<strong>股价涨,报表亏损就放大;股价跌,反而会出现「账面盈利」</strong>。这类项目跟经营无关,整个剥掉。剥掉之后的真实亏损:经营亏损 2.52 亿 + 净利息 1.05 亿 ≈ <strong>−3.6 亿美元</strong>。</p>
+<p><strong>资本化的支出</strong>:没有。研发全部费用化。资本开支 TTM 只有 700 万美元(2022 年建厂高峰时 7,800 万,产能已经建完)。</p>
+<p><strong>回购与稀释</strong>:没有回购(那 800 万的「回购」是员工缴税代扣)。TTM 通过 ATM 在市场上卖了 <strong>4.30 亿美元</strong>的新股,加权股数从一年前的 7.93 亿股涨到 10.04 亿股,现在流通 10.6 亿股,<strong>一年膨胀 26.6%</strong>。这就是它的融资模式:股价涨了就卖股票。另外还有一个特殊安排——<strong>它的最大债主是它的创始人</strong>。12.3 亿美元有息负债里大头是创始人 Patrick Soon-Shiong 旗下实体借给公司的票据(外加 2023 年跟 Oberland 签的 2 亿多美元收入分成融资)。创始人既是最大股东(估值页显示内部人持股 28%,可自由流通的只占总股本 38%)又是最大债主,公司缺钱他就借、股价高就让公司卖股票——这家公司事实上是一个人的公司。空头持仓占流通盘 31%。</p>
+<p><strong>利润和现金流的差</strong>:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>亿美元</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−9.92</td>
+</tr>
+<tr>
+<td>+ 负债公允价值重估等非现金损失</td>
+<td>+6.80</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+0.34</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+0.17</td>
+</tr>
+<tr>
+<td>+ 减值</td>
+<td>+0.14</td>
+</tr>
+<tr>
+<td>− 投资收益</td>
+<td>−0.06</td>
+</tr>
+<tr>
+<td>− 应收账款增加(卖了药还没收到钱)</td>
+<td>−0.31</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−0.12</td>
+</tr>
+<tr>
+<td>+ 应付及其他营运资金</td>
+<td>+0.16</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>−2.81</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−0.07</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−2.88</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>现金利息 vs 账面利息</strong>:利息费用 1.14 亿,实际付现 0.77 亿,差的 0.37 亿是滚进本金的(欠创始人的债利息可以不付、加到本金上)。所以有息负债从 2025 年底的 8.45 亿涨到 12.3 亿,半年多了 3.8 亿,而新借的只有 0.78 亿——剩下是利息滚存和上面说的公允价值重估。<strong>负债在自己长大。</strong>账面净资产 <strong>−10.5 亿美元</strong>,资不抵债。</p>
+<h2>第三部分:亏损口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比</td>
+<td>1.66 亿美元,+193%</td>
+<td>最近一季约 5,100 万,环比 +15%</td>
+</tr>
+<tr>
+<td>TTM 经营亏损</td>
+<td>−2.52 亿(−152%)</td>
+<td>一年前 −2.85 亿;研发 2.44 亿是大头</td>
+</tr>
+<tr>
+<td>经营现金流 / 自由现金流</td>
+<td>−2.81 亿 / −2.88 亿</td>
+<td>比 GAAP 亏损好 7 亿,因为 6.8 亿是非现金重估</td>
+</tr>
+<tr>
+<td>一年净烧多少</td>
+<td><strong>2.88 亿美元</strong></td>
+<td>一年前 3.57 亿,烧钱速度在降</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>3.57 − 12.28 = <strong>−8.71 亿</strong></td>
+<td>资不抵债;债主主要是创始人</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>3.57 ÷ 2.88 ≈ <strong>1.2 年</strong></td>
+<td>只看现金;但它每年从市场上卖 4 亿多股票</td>
+</tr>
+<tr>
+<td>SBC 占营收 / 股本膨胀</td>
+<td>21% / <strong>一年 +26.6%</strong></td>
+<td>你的股份每年缩水四分之一</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>成熟利润率:拿 Regeneron、Vertex、Gilead 这类已经赚钱的生物药公司 35% 左右的经营利润率做基准:
+- 按 TTM 营收:1.66 亿 × 35% = 0.58 亿假想利润(有巨额亏损结转,近几年不用交税)→ 假想市盈率 <strong>144 倍</strong>,投 100 块年回报 <strong>0.7 块</strong>
+- 按最近一季年化(2.05 亿):0.72 亿 → <strong>117 倍</strong>,0.9 块
+- 反过来算:要让现在 84 亿市值对应 20 倍市盈率,需要 4.2 亿净利润,也就是 <strong>12 亿营收——是现在的 7 倍</strong></p>
+<p>大白话:<strong>假设它明天就做到 Regeneron 的利润率,你投 100 块一年只能赚 7 毛钱。</strong>它离那一天差多远?营收要翻 7 倍才配得上现在的市值,而 BCG 无效的原位癌这一个适应症撑不起 12 亿——必须靠还没批的适应症。这期间它每年烧 3 亿、每年增发 27%、负债自己滚利息。就算三年后营收真到了 12 亿(需要年化增速 90%),你手里的股份到那时也只剩现在的一半。这 7 毛钱里没有一分钱会回到你口袋,全部要再投进临床试验。</p>
+<h2>第四部分:一句话结论</h2>
+<p><strong>会不会死</strong>:一两年内不会——不是因为它有钱(现金只够烧 14 个月),而是因为它有一台印钞机:股价涨了就 ATM 卖股票,一年卖 4.3 亿;卖不动了创始人再借。这个模式的前提是股价维持高位,一旦股价跌一半,ATM 效率减半、欠创始人的债又资不抵债,死法就是稀释到死。</p>
+<p><strong>活成了值不值</strong>:不值。一款年化 2 亿美元、增速正在放缓的膀胱癌药,84 亿美元市值,假想市盈率 144 倍,资不抵债,创始人既是老板又是债主。Anktiva 是好药,ImmunityBio 是坏价格加坏结构。</p><script src="user.js"></script>
+</div></body></html>

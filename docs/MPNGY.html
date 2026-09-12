@@ -1,0 +1,365 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MPNGY · 美团（Meituan）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">MPNGY</a></div>
+<div class="mine" data-t="MPNGY"></div><div class="tags"><span class="bg cheap">便宜</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">现金占市值四成不会死，按打完仗的利润11-15倍；赌阿里何时停补贴</div><h1>MPNGY · 美团（Meituan）</h1>
+<p>市值 4,015 亿人民币（约 591 亿美元 / 4,635 亿港币） / 股价 75.10 港币（香港 HKG:3690，美国场外 MPNGY） / 行业 外卖 · 即时零售 · 到店酒旅 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>全文数字来自香港主上市的财报页，<strong>币种一律是人民币</strong>（财报以百万人民币列示）。市值原始口径是港币 4,635 亿，按 stockanalysis 统计页隐含的汇率 1 港币 = 0.866 人民币折算成 4,015 亿人民币，所有倍数用这个数算。<strong>这是一家 TTM 亏损的公司，第三部分用「亏损口径」而不是市盈率</strong>——但它 18 个月前还是一年赚 358 亿的印钞机，亏损是补贴战打出来的，不是生意本身不赚钱，这个背景决定了怎么看它。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>美团是中国人手机里「吃喝玩乐、30 分钟送到家」的那个入口。财报分两个分部：<strong>核心本地商业</strong>（赚钱的主业）和<strong>新业务</strong>（长年烧钱的试验田）。</p>
+<h3>1. 核心本地商业——外卖、闪购、到店酒旅</h3>
+<p><strong>外卖是什么、怎么收钱。</strong> 你在美团点一份 32 块的麻辣烫，商家付给美团两笔钱：技术服务费（订单金额的 6%–8%，约 2 块）和配送服务费（约 5–7 块，如果用美团的骑手）。美团把配送费转付给骑手，自己留下技术服务费加配送费的差额，正常年景一单净赚 1–1.5 块。再加上商家为了排名靠前买的广告位（按点击付费）。美团的骑手网络是全国最大的——七百多万注册骑手、高峰期一天送一亿多单，这个密度决定了它一单的配送成本比任何对手都低，<strong>这就是它过去的护城河</strong>。</p>
+<p><strong>闪购是外卖的延伸。</strong> 同一批骑手，送的不是饭而是超市里的饮料、药、数码配件、鲜花，来自便利店、连锁超市和美团自建的「闪电仓」（只做线上、不接待顾客的小型仓库，全国已有几万个）。客单价比外卖高、增速比外卖快，是主业里唯一还在高速增长的部分。</p>
+<p><strong>到店酒旅是最肥的一块。</strong> 商家在美团上卖团购券（一家火锅店挂「双人餐 158 元」，美团抽 3%–6%），酒店在美团上卖房（抽 8%–10%），再加上商家买的广告。这一块不需要骑手、没有配送成本，历史上经营利润率 35% 以上，过去每年给美团贡献一半以上的利润。抖音从 2023 年起用直播和短视频抢团购，逼美团降佣、加补贴。</p>
+<p><strong>2025 年 4 月起发生了什么。</strong> 京东宣布进外卖、给骑手上社保、烧百亿补贴；7 月阿里把饿了么并进淘宝做「淘宝闪购」、宣布 500 亿补贴。美团只能跟：一单饭补 5–10 块、请骑手加班发奖金，一天订单冲到 1.5 亿单——<strong>但每一单都在亏钱</strong>。销售费用（主要是补贴和营销）从 2024 年的 747 亿涨到 TTM 的 1,260 亿，多出来的 513 亿就是这场仗的直接账单；毛利率从 38% 掉到 29%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>核心本地商业</th>
+<th>TTM</th>
+<th>2025 年</th>
+<th>2025 年增速</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>2,667 亿</td>
+<td>2,608 亿</td>
+<td>+4.2%</td>
+<td>70%</td>
+<td>估算 -8% 到 -10%</td>
+<td><strong>估算 -200 到 -270 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>2024 年这个分部经营利润 524 亿、利润率 21%（公司披露）。财报 TTM 只披露到分部营收，利润按公司整体亏损和两个分部 2025 年披露的走势估算——<strong>一年之内 700 多亿的利润转身</strong>。</p>
+<h3>2. 新业务——海外外卖、自营超市、社区团购</h3>
+<p><strong>Keeta</strong>：美团的海外外卖品牌，2023 年从香港起步，2024 年进沙特、2025 年进巴西、卡塔尔、阿联酋。打法和国内一样——补贴换份额，每进一个国家先亏两三年。<strong>小象超市</strong>：美团自营的前置仓生鲜超市（自己进货、自己囤在仓里、自己送），对标叮咚买菜和盒马。<strong>美团优选</strong>：社区团购，2020–2022 年烧了几百亿，2025 年大幅收缩、改造成「快乐猴」折扣超市。还有给餐馆送食材的快驴、共享单车和充电宝、餐饮 SaaS。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>新业务</th>
+<th>TTM</th>
+<th>2025 年</th>
+<th>2025 年增速</th>
+<th>占总营收</th>
+<th>经营利润率</th>
+<th>贡献利润</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>1,154 亿</td>
+<td>1,040 亿</td>
+<td>+19.1%</td>
+<td>30%</td>
+<td>估算 -10%</td>
+<td><strong>估算 -100 到 -120 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>2024 年这个分部亏 227 亿，2025 年上半年已经收窄到一个季度亏 20 亿上下，然后 Keeta 大举进巴西又把亏损拉回来。这块生意十年没证明过自己能赚钱。</p>
+<p><strong>合计：</strong> TTM 营收 3,828 亿、<strong>+6.3%</strong>（一年前增速是 22%，补贴战把增长也打没了）；TTM 经营亏损 461 亿、利润率 <strong>-12.1%</strong>；净亏损 384 亿。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 60 亿，占营收 1.6%。公司亏损，没法算占净利润的比例；它是真成本，下面的现金流对账里已经扣掉。</li>
+<li><strong>一次性项目</strong>：卖投资收益 +47 亿（TTM 里唯一的「非常项」），没有它净亏损是 431 亿。补贴不是一次性项目——它记在销售费用里，是经营亏损的主体，<strong>单期口径无法判断它明年是否还在</strong>，这正是这家公司的全部问题。</li>
+<li><strong>资本化的支出</strong>：没有。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 3.6 亿，SBC 60 亿，<strong>回购 ÷ SBC = 0.06</strong>，等于没回购。2024 年回购了 261 亿（那年赚钱），2025 年一打仗就停了。股本一年膨胀 0.74%。</li>
+<li><strong>利润和现金流的差</strong>：净亏 384 亿，经营现金流 -260 亿，自由现金流 -393 亿：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿人民币）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>-384</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+114</td>
+</tr>
+<tr>
+<td>+ 股权激励（非现金）</td>
+<td>+60</td>
+</tr>
+<tr>
+<td>− 卖投资收益（非现金）</td>
+<td>-35</td>
+</tr>
+<tr>
+<td>+ 应付账款增加（欠商家和骑手的钱）</td>
+<td>+78</td>
+</tr>
+<tr>
+<td>− 存货、应收增加</td>
+<td>-20</td>
+</tr>
+<tr>
+<td>− 其他经营资产变化</td>
+<td>-74</td>
+</tr>
+<tr>
+<td>− 其他</td>
+<td>-3</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td><strong>-260</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>-133</td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td><strong>-393</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>一年烧掉 393 亿现金，靠三件事补上：卖掉 396 亿理财产品、净借了 228 亿新债、其他融资流入 181 亿。<strong>有息负债从 2024 年底的 615 亿涨到 958 亿</strong>，账上现金和投资 1,683 亿，净现金 725 亿（2024 年底 1,067 亿）。</p>
+<p><strong>亏损收窄的证据（倒推，不是公司直接披露的数字）：</strong> TTM 亏 384 亿、2025 全年亏 234 亿，两者只差一个「2026 年上半年换掉 2025 年上半年」；而 2025 年上半年是赚钱的（一季度净利 101 亿、二季度 4 亿）。倒推出来 <strong>2026 年上半年净亏约 47 亿</strong>，对比 2025 年下半年亏了 338 亿——<strong>最猛的仗已经在 2025 年下半年打完，2026 年上半年亏损缩到了七分之一</strong>。</p>
+<hr />
+<h2>第三部分：亏损口径</h2>
+<p>先分清是哪种亏：经营现金流 -260 亿，<strong>是真亏</strong>，不是减值造出来的账面亏。但它是「主动打仗的亏」——2024 年同一门生意经营现金流 +571 亿、自由现金流 +461 亿。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>3,828 亿、+6.3%</td>
+<td>打仗打掉了增速，没打掉规模</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>-461 亿</td>
+<td>2024 年 +332 亿</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>-260 亿 / -393 亿</td>
+<td>真烧钱</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td>393 亿</td>
+<td>倒推 2026 上半年已大幅收窄</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>1,683 亿 − 958 亿 = <strong>725 亿</strong></td>
+<td>另有 40 亿的回购额度没用</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>按 TTM 节奏 <strong>1.8 年</strong>；按 2026 上半年节奏 7 年以上</td>
+<td>不会死</td>
+</tr>
+<tr>
+<td>SBC 占营收、股本膨胀</td>
+<td>1.6%、+0.74%</td>
+<td>稀释轻</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>假想利润，两种算法：</strong>
+- <strong>回到 2024 年的自己</strong>：核心本地商业按 2024 年 21% 的经营利润率 × 2,667 亿 = 560 亿，新业务亏 100 亿，总部和税扣 60 亿 → 净利约 400 亿；也可以直接用 2024 年实际净利 358 亿。<strong>假想市盈率 4,015 ÷ 358 = 11.2 倍，投 100 块一年赚 8.9 块。</strong>
+- <strong>保守：仗打完但格局变了</strong>。阿里和京东不会退出，美团份额从 70% 掉到 55%–60%，核心本地商业利润率只能回到 15% → 400 亿，新业务亏 100 亿，净利约 270 亿。<strong>假想市盈率 14.9 倍，投 100 块一年赚 6.7 块。</strong></p>
+<p><strong>大白话：</strong> 假设它明天就止血、回到 2024 年的利润，你投 100 块一年赚 9 块；就算格局永久变差、只回到七成，也有 6.7 块。它离那一天差的不是营收（营收还在涨）也不是规模，差的是<strong>阿里什么时候停止补贴</strong>——这件事不由美团决定。这期间你每年被稀释不到 1%，公司账上的 1,683 亿现金够它把这场仗再打两年。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>它不会死，而且按打完仗的利润算，11–15 倍是便宜的。</strong> 账上 1,683 亿现金、市值的四成，一年最狠的时候烧 393 亿，倒推 2026 年上半年亏损已经缩到 47 亿。生意的护城河被证明比想象的薄——对手真的能用钱买走份额——所以别指望它回到 2024 年 21% 的利润率；但一个一天送一亿单、七亿人在用的平台，按保守假想 15 倍、投 100 块赚 6.7 块，是<strong>便宜的</strong>。买它就是赌一件事：阿里的补贴在 2026 年内结束。目前的证据（亏损缩到七分之一）说这个赌注在往对的方向走。</p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,445 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PCOR · Procore（Procore Technologies）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PCOR</a></div>
+<div class="mine" data-t="PCOR"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">80%毛利真护城河，但2.4亿真现金流全被2.5亿SBC吃光</div><h1>PCOR · Procore（Procore Technologies）</h1>
+<p>市值 80.9 亿美元 · 股价 53.26 美元（2026-09-11）· 建筑管理软件（SaaS）· TTM 截止 2026-06-30 · 任务5（主板亏损公司）第 97 名</p>
+<blockquote>
+<p>一句话背景：给建筑工地用的云软件，行业老大。TTM 营收 14.2 亿、涨 15%、毛利率 80%、自由现金流 3 亿——看着像赚钱公司，但 GAAP 亏 3,900 万。亏的原因只有一个：<strong>一年发了 2.48 亿股票给员工</strong>。这是典型的「现金流全被股权激励吃掉」的 SaaS。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只有一个分部，按地区拆成美国（85%）和海外（15%）。所以我按「它卖的是什么、怎么收钱」来讲。</p>
+<h3>这件事是什么</h3>
+<p>一个建筑工地上有几十家公司在协作：业主、设计院、总包、几十家分包、材料商、监理。传统上他们用邮件、Excel、纸质图纸、微信群沟通，图纸改了一版没通知到分包，就得砸掉重做——建筑行业每年因为信息传错浪费的钱是天文数字。</p>
+<p>Procore 做的是把这一切搬到一个云平台上。举个具体例子：一家总包在建一座 2 亿美元的医院。项目经理在 Procore 里建项目，上传全套图纸；现场主管拿着 iPad 每天填施工日志、拍照片、记录来了多少工人；电工分包发现图纸上一根管道和梁打架，在 Procore 里提一个 RFI（技术问询），自动流转给设计院，设计院三天内回复，改动版图纸自动标记到所有人的平板上；每个月分包在系统里提交进度款申请（pay application），总包审批，业主在仪表盘上看到进度和花了多少钱。</p>
+<p>它的模块大致分几块：
+- <strong>项目管理</strong>（核心，最老的产品）：图纸、RFI、变更单、日志、照片、会议纪要。
+- <strong>财务管理</strong>：预算、合同、变更、发票、进度款——这是把总包的钱袋子搬进来了，粘性最强。
+- <strong>质量与安全</strong>：巡检、整改单、安全事故记录、工时。
+- <strong>前期</strong>（Preconstruction）：招投标、算量、BIM 三维模型协调。
+- <strong>Procore Pay</strong>（2023 年起）：直接在平台上给分包付款，顺带做留置权豁免（lien waiver）这类法律文件——这是从「软件公司」往「金融服务」迈的一步，抽的是交易的钱。
+- <strong>AI</strong>（Procore Helix）：2025 年起在往里塞，比如自动从图纸里找冲突、自动写日志摘要。</p>
+<h3>怎么收钱——这是它最特别的地方</h3>
+<p><strong>Procore 不按用户数收费，按「你一年干了多少钱的工程」收费</strong>（Annual Construction Volume，ACV）。一家一年做 5 亿美元项目的总包，年费大概几十万到一百万美元；一家做 5,000 万的专业分包，年费几万到十万。<strong>用户数不限</strong>——总包买了，它的所有分包、设计院、业主都可以免费上来用。</p>
+<p>这个模式的厉害之处：一家总包买了 Procore，它手下 50 家分包被迫学会了 Procore；这些分包下次去另一家总包的项目，会说「你们怎么不用 Procore」；分包自己做大了，也买一份。<strong>平台上有几百万用户，绝大多数不付钱，但他们把付钱的人锁死了。</strong> 加上项目财务数据都在里面，换系统等于把在建项目的账本搬家，几乎没人换——毛留存率 94–95%，也就是说一年只流失 5% 左右的客户。</p>
+<p>付费客户一万七八千家，其中两千多家年付 10 万美元以上，这些大客户贡献了大部分营收。客户结构：总包（最核心）、业主/开发商（政府、医院、大学、数据中心）、专业分包。竞争对手是欧特克（Autodesk Construction Cloud）、甲骨文（Aconex/Primavera）、天宝（Viewpoint）——在总包这个核心市场，Procore 是公认的第一。</p>
+<h3>钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>全公司</th>
+<th>TTM（截止 2026-06）</th>
+<th>2025 全年</th>
+<th>2024 全年</th>
+<th>增速</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>14.22 亿</td>
+<td>13.23 亿</td>
+<td>11.52 亿</td>
+<td>TTM +15.4%</td>
+</tr>
+<tr>
+<td>其中美国</td>
+<td>12.09 亿（85%）</td>
+<td>11.28 亿</td>
+<td>9.82 亿</td>
+<td>+15% 左右</td>
+</tr>
+<tr>
+<td>其中海外</td>
+<td>2.14 亿（15%）</td>
+<td>1.95 亿</td>
+<td>1.70 亿</td>
+<td>+16% 左右</td>
+</tr>
+<tr>
+<td>毛利率</td>
+<td>80.1%</td>
+<td>79.6%</td>
+<td>82.2%</td>
+<td></td>
+</tr>
+<tr>
+<td>GAAP 经营利润</td>
+<td>−0.51 亿（−3.6%）</td>
+<td>−1.18 亿（−8.9%）</td>
+<td>−1.34 亿（−11.7%）</td>
+<td>亏损在收窄</td>
+</tr>
+<tr>
+<td>GAAP 净利润</td>
+<td>−0.39 亿</td>
+<td>−1.01 亿</td>
+<td>−1.06 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>自由现金流</td>
+<td>3.05 亿（21.5%）</td>
+<td>2.37 亿</td>
+<td>1.47 亿</td>
+<td>翻倍在涨</td>
+</tr>
+</tbody>
+</table></div>
+<p>三个观察：
+1. <strong>增速从 40% → 32% → 21% → 15% 一路往下。</strong> 2024 年公司改了销售组织（按地区和行业设总经理），增速掉了一档，之后没再回去。建筑业本身不是高增长行业，它已经是老大，剩下的空间是把现有客户的模块卖多一点、海外卖多一点。
+2. <strong>亏损收窄靠的是控费</strong>，不是营收加速——经营利润率三年从 −22% 走到 −3.6%。
+3. <strong>美国占 85%</strong>，海外做了十年只有 15%，说明它的模式在美国以外没那么好复制（各国建筑规范、付款习惯不一样）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）——全篇的核心。</strong> TTM 2.48 亿，<strong>占营收 17.5%，是净亏损的 6.4 倍</strong>。换句话说，如果不发股票，Procore 的经营利润是 +1.97 亿、利润率 14%。这就是 GAAP 亏损和「非 GAAP 盈利」之间的全部差别。SBC 占营收的比例 2023 年 18.4%、2024 年 16.2%、2025 年 18.0%、TTM 17.5%——<strong>四年没下来</strong>。这不是「早期公司过渡期」的 SBC，是常态。一律当成真实成本扣掉：<strong>扣完，它就是亏的。</strong></p>
+<p><strong>一次性项目。</strong> 重组 300 万，可以忽略。有 1,220 万投资收益（现金买证券的利息和差价），非经营。没有减值。TTM 花了 1.17 亿现金做了一笔收购（2026 年上半年），会带来后续的无形资产摊销。</p>
+<p><strong>资本化的支出——这里藏了一笔。</strong> 现金流量表上「购买无形资产」6,720 万，这是<strong>资本化的软件开发费</strong>——程序员的工资没进利润表，进了资产负债表，以后按年摊销。stockanalysis 算的自由现金流 3.05 亿只扣了 6,255 万固定资产开支，没扣这 6,720 万。<strong>真自由现金流 = 3.05 − 0.67 = 2.38 亿。</strong></p>
+<p><strong>回购与稀释。</strong> TTM 回购 2.00 亿，SBC 2.48 亿，<strong>比值 0.8</strong>——回购花的钱连员工发的股票都没抵完，股本还是涨了 1.1%。这 2 亿回购不是回馈股东，是在填 SBC 的坑。换个角度：<strong>公司一年赚的真自由现金流 2.38 亿，几乎一分不剩全用来买回发给员工的股票了。</strong></p>
+<p><strong>利润和现金流的差。</strong> 净亏 3,900 万，经营现金流 +3.68 亿，差 4 亿——必须对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>−39</td>
+<td></td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+116</td>
+<td>含资本化软件的摊销、收购来的无形资产摊销</td>
+</tr>
+<tr>
+<td>加：<strong>股权激励</strong></td>
+<td><strong>+248</strong></td>
+<td>不出现金，但股东被稀释——差额的 6 成来自这里</td>
+</tr>
+<tr>
+<td>减：投资收益</td>
+<td>−12</td>
+<td>非经营</td>
+</tr>
+<tr>
+<td>加：其他</td>
+<td>−5</td>
+<td></td>
+</tr>
+<tr>
+<td>加：<strong>递延收入增加</strong></td>
+<td><strong>+113</strong></td>
+<td>客户年费预付，先收钱后确认收入</td>
+</tr>
+<tr>
+<td>减：应收增加</td>
+<td>−48</td>
+<td></td>
+</tr>
+<tr>
+<td>减：其他营运资金</td>
+<td>−5</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+368</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：固定资产开支</td>
+<td>−63</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= stockanalysis 口径自由现金流</strong></td>
+<td><strong>+305</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：资本化软件开发</td>
+<td>−67</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 真自由现金流</strong></td>
+<td><strong>+238</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减：股权激励（当成现金成本）</td>
+<td>−248</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>= 扣掉 SBC 的自由现金流</strong></td>
+<td><strong>−10</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表说的是：</strong> 3.05 亿的自由现金流，2.48 亿是员工工资换成了股票、1.13 亿是客户预付的年费（这部分是真的、可持续的，SaaS 都这样）。<strong>把发股票当成发工资算，Procore 一年真正给股东剩下的钱是零。</strong></p>
+<p><strong>资产负债表。</strong> 现金 6.56 亿，债务 6,800 万（主要是租赁），净现金 5.88 亿。没有财务风险。净现金一年从 7.32 亿掉到 5.88 亿，花在了回购和那笔 1.17 亿的收购上。</p>
+<hr />
+<h2>第三部分：亏损公司的口径</h2>
+<p>这家公司<strong>不烧钱</strong>，账面亏损全是 SBC——但按本文规矩 SBC 就是成本，所以它是「真实口径刚好打平」的公司。分类上归到亏损公司的表，但多加几行现金流口径，因为它有真实的现金流可以算：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>14.22 亿，+15.4%</td>
+<td>增速四年逐级下台阶</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>−0.51 亿（−3.6%）</td>
+<td>剔 SBC 后 +1.97 亿（+14%）</td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>+3.68 亿 / +3.05 亿（真口径 +2.38 亿）</td>
+<td>现金流为正、利润为负，差的就是 SBC</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>不烧钱</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>+5.88 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>不适用</td>
+<td></td>
+</tr>
+<tr>
+<td>SBC 占营收、股本一年膨胀</td>
+<td><strong>17.5%</strong>、+1.1%（回购 2 亿后的净值）</td>
+<td>没有回购的话股本一年涨 3–4%</td>
+</tr>
+<tr>
+<td>市值 ÷ stockanalysis 自由现金流</td>
+<td>80.9 ÷ 3.05 = <strong>26.5 倍</strong></td>
+<td>投 100 块年回报 3.8 元</td>
+</tr>
+<tr>
+<td>市值 ÷ 真自由现金流（扣资本化软件）</td>
+<td>80.9 ÷ 2.38 = <strong>34 倍</strong></td>
+<td>投 100 块年回报 2.9 元</td>
+</tr>
+<tr>
+<td>市值 ÷ 扣掉 SBC 的自由现金流</td>
+<td>80.9 ÷ (−0.1)</td>
+<td><strong>0 元</strong></td>
+</tr>
+<tr>
+<td>公司自己吹的非 GAAP（分析师远期）</td>
+<td>远期市盈率 26.6 倍</td>
+<td>3.8 元——把 2.48 亿 SBC 加回去算的</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>拿欧特克、成熟 SaaS 的 GAAP 经营利润率 25% × 14.22 亿 = 3.55 亿，税后约 2.85 亿；市值 80.9 亿 ÷ 2.85 亿 = <strong>假想市盈率 28 倍</strong></td>
+<td>投 100 块年回报 <strong>3.5 元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话说。</strong> 你投 100 块进去：
+- 按公司和分析师喜欢的算法（把发股票不当钱），一年赚 3.8 块。
+- 按真实算法（发股票就是发工资），一年赚 <strong>0 块</strong>——公司赚的 2.4 亿现金，正好被 2.5 亿的员工股票吃光。
+- 假设它明天就做到成熟软件公司的利润率（GAAP 经营利润率 25%，意味着 SBC 占比要从 17.5% 降到 8% 以下，或者营收翻倍而 SBC 不涨），一年赚 3.5 块。</p>
+<p>这 3.5 块离现在有多远？营收 15% 的增速，SBC 四年没降——<strong>它没有在往那个方向走，至少数据上没有。</strong> 现在的经营亏损收窄是靠砍销售费用，不是靠 SBC 降。</p>
+<p><strong>它会不会死。</strong> 不会。5.9 亿净现金、正现金流、94% 留存率、行业第一，是这批亏损公司里最安全的一家。</p>
+<p><strong>这个数字未来会变大还是变小。</strong> 会缓慢变大：营收 15% 的增速会带来利润率的自然扩张，Procore Pay 这类抽交易费的业务如果做起来利润率更高。但<strong>「缓慢」是关键词</strong>——它已经过了高增长期，剩下的是一个 15% 增长的软件公司慢慢把 SBC 摊薄的故事。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>Procore 是一门真好生意（建筑软件的行业第一、94% 留存、80% 毛利、净现金 6 亿、不烧钱），但它每年 2.5 亿的股票工资把 2.4 亿的真自由现金流吃得一分不剩，股东现在实际拿到的是零；就算按成熟利润率算也要 28 倍，而它 15% 的增速和四年不降的 SBC 占比说明「成熟」还远。80 亿是在为一个还没发生的利润率买单——偏贵，没有便宜可占。等它增速稳住、SBC 占比真的开始往下走，或者股价再跌三成，再看。</strong></p>
+<p>三个要盯的点：
+- <strong>SBC 占营收的比例</strong>——什么时候从 17% 降到 12% 以下，这家公司的「非 GAAP 盈利」才开始变成真的。
+- <strong>营收增速</strong>——15% 是底吗？再掉到 10%，估值逻辑要从「成长股」换成「价值股」，那时候 5.7 倍市销率撑不住。
+- <strong>Procore Pay 的交易量</strong>——这是它从「按工程量收年费」变成「从每一笔付款里抽钱」的唯一增量故事。</p><script src="user.js"></script>
+</div></body></html>

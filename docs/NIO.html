@@ -1,0 +1,360 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NIO · 蔚来</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NIO</a></div>
+<div class="mine" data-t="NIO"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">假想11倍不贵,但四季度赚过一次上半年又亏,年稀释15%靠供应商账期活</div><h1>NIO · 蔚来</h1>
+<p>市值 92.4 亿美元(约 627 亿元人民币,按 1 美元 = 6.79 元) · 股价 3.69 美元 · 电动车 · TTM 截止 2026-06-30(财报为人民币,全文用人民币)</p>
+<p>这是一家亏损公司(TTM 净亏 47.6 亿元),第三部分用「亏损口径」而不是市盈率。先定性:蔚来属于<strong>从真亏往盈亏平衡爬的中间态</strong>——经营亏损从一年前的 226 亿收窄到 38 亿,2025 年四季度第一次单季赚钱,但 2026 年上半年又亏回去 12 亿。</p>
+<h2>第一部分:它到底做几件事</h2>
+<p>财报按产品把营收分成「卖车」和「其他」两块,其他里再拆成配件售后、换电充电、其他三小块。实质上是两门生意:卖车,和围绕车的服务。</p>
+<h3>生意一:卖电动车(占营收 90%)</h3>
+<p>蔚来现在有三个牌子,盖住三个价位:
+- <strong>蔚来(NIO)</strong>:30 万到 80 万元的高端车。ET5/ET5T 是入门轿车和旅行车,ES6/EC6 是主力 SUV,ES8/ET7/ET9 往上走。买家是一二线城市、原来开奔驰宝马奥迪的人。
+- <strong>乐道(ONVO)</strong>:20 万到 30 万元的家用车,L60 打特斯拉 Model Y,L90 是三排大 SUV。买家是要一台大空间家用车的普通中产。
+- <strong>萤火虫(firefly)</strong>:十几万元的小车,对标 MINI 和比亚迪海豚,也是出口欧洲的主力。</p>
+<p>怎么收钱:主要是一次性卖车。但蔚来有个别人没有的花样叫 <strong>BaaS(电池租用)</strong>:你可以不买电池,车价直接便宜几万块,然后每个月付几百到一千出头的电池租金。电池不归蔚来,归一家蔚来参股的电池资产公司(蔚能),不在蔚来自己的报表里——这个安排第二部分会再提。</p>
+<p>举个具体例子:一个客户买一台乐道 L60,不带电池 14.99 万,每月 599 元租电池;蔚来这一单确认 15 万的车辆收入,毛利按 2026 年二季度 18.4% 的整体毛利率算大约 2.7 万;之后每个月的电池租金大部分归蔚能,蔚来只从换电服务里再赚一点。</p>
+<p>规模有多大:车辆收入 TTM 1,026.5 亿元,比一年前的 602.5 亿涨了 70%。财报页不给交付量,按平均车价 22–25 万元倒推,一年卖了大约 42–47 万台(估算)。这个增速是三个牌子同时放量的结果——乐道 L90、萤火虫和换代的 ES8 都是 2025 年下半年起的量。</p>
+<p>利润:财报只披露到分部营收,毛利按整体口径。整体毛利率 TTM 17.4%,二季度 18.4%,一年前只有 10%。车的毛利率通常比整体低一两个点(服务和配件毛利更高),估算车辆毛利率 16% 上下。</p>
+<h3>生意二:围绕车的服务(占营收 10%)</h3>
+<p>TTM 114.6 亿元,同比 +25%。三小块(用 2025 年全年的拆分):
+- <strong>配件和售后</strong>(41.7 亿):修车、保养、卖轮毂脚垫这类。跟 4S 店一样的生意,只是蔚来是直营,一台车一年在这上面花两三千块。
+- <strong>换电和充电(Power)</strong>(24.6 亿):蔚来在全国建了三千多座换电站,三分钟换一块满电电池。换电有免费额度,超出按次收几十块;充电桩也对外开放,别的品牌的车也能用,按度电收费。这一块是重资产——每座换电站一两百万元级别的投入,是资本开支的大头之一。
+- <strong>其他</strong>(39.7 亿):二手车、卖给第三方的技术服务、电池和储能之类杂项。</p>
+<p>这块生意的意义不在利润,在于它是买蔚来的理由——换电体系是蔚来跟比亚迪、特斯拉最大的差异化,也是最烧钱的地方。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(亿元)</th>
+<th>同比</th>
+<th>占比</th>
+<th>毛利率</th>
+<th>贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卖车</td>
+<td>1,026.5</td>
+<td>+70%</td>
+<td>90%</td>
+<td>估算 16%</td>
+<td>毛利约 164 亿(估算)</td>
+</tr>
+<tr>
+<td>服务及其他</td>
+<td>114.6</td>
+<td>+25%</td>
+<td>10%</td>
+<td>估算 30%</td>
+<td>毛利约 34 亿(估算)</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>1,141.1</td>
+<td>+64%</td>
+<td>100%</td>
+<td>17.4%</td>
+<td>毛利 198.1 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p>毛利 198 亿之后,是 156.7 亿的销售管理费用和 84.3 亿的研发,经营亏损 38.1 亿。<strong>研发从一年前的 128.9 亿砍到 84.3 亿,砍了 35%;销售管理费用从 171.9 亿降到 156.7 亿。</strong>亏损收窄一半靠毛利翻倍(71 亿→198 亿),一半靠砍费用(299 亿→236 亿)。</p>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC)</strong>:蔚来的现金流量表只按半年披露,TTM 拿不到,用 2025 年全年:17.9 亿元,占营收 2%。相对 TTM 47.6 亿的净亏损它占 38%——公司的 Non-GAAP 口径把它加回去,亏损就只剩 30 亿出头,好看很多。这里不加回,SBC 就是发给员工的股票,你的股份被稀释了。</p>
+<p><strong>一次性项目</strong>:经营亏损以外有几笔不小的东西:
+- 联营企业亏损 −9.0 亿:蔚来参股的公司(电池资产公司蔚能是最大的一家)按持股比例把亏损带回蔚来账上。这项连续七个季度为负、越来越大,不是一次性,是 BaaS 模式的隐形成本——电池租赁的亏损没有消失,只是放到了表外。
+- 「其他非常项目」−6.7 亿:每一期都有 3 到 7 亿的这种损失,单看 TTM 分不清具体是什么,但既然年年有,就当经常性成本。
+- 并购重组项目 +4.4 亿:是收益不是费用,单期口径看不出来源。
+- 利息:付 8.8 亿、收 5.8 亿,净付 3 亿——账上净现金 141 亿的公司居然是净付利息,因为 290 亿的债利率高、431 亿的现金收益低。</p>
+<p><strong>资本化的支出</strong>:蔚来按美国会计准则做账,研发全部费用化,没有资本化的软件开发费。资本开支 2025 年 60.7 亿元(工厂、换电站),比 2023 年 143 亿的高峰砍了一半多。</p>
+<p><strong>回购与稀释</strong>:没有回购。2025 年增发融资 119.5 亿元,过去一年股本膨胀 15.3%(加权股数从 21.1 亿到 24.4 亿,现在流通 25 亿股)。<strong>每年 15% 的稀释是蔚来股东真正在付的钱</strong>——报表上的亏损在收窄,但你手里每一股代表的公司份额每年缩水 15%。</p>
+<p><strong>利润和现金流的差</strong>:用 2025 年全年(TTM 现金流拿不到):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>亿元</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−155.7</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+93.8</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+17.9</td>
+</tr>
+<tr>
+<td>+ 联营亏损、投资损益等非现金项</td>
+<td>+15.9</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td><strong>+182.5</strong></td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−31.2</td>
+</tr>
+<tr>
+<td>− 其他经营资产变动</td>
+<td>−96.6</td>
+</tr>
+<tr>
+<td>+ 应收、税项等</td>
+<td>+3.4</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+29.9</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−60.7</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>−30.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表最重要的一行是应付账款 +182.5 亿。<strong>蔚来 2025 年经营现金流为正,完全是因为欠供应商的钱多了 182 亿。</strong>卖车收的是现金,给供应商的账期拖长,中间的时间差就成了现金流。这不是骗人,车企都这么干,但要明白:这笔钱是供应商借给蔚来的,销量一停增长,这个水池就不再往里灌水,甚至会倒流。流动比率 1.02、速动比率 0.68,短期负债跟短期资产刚好打平。</p>
+<p>TTM 的自由现金流按估值页的美元数折算约 −31 亿元,跟 2025 年全年几乎一样——也就是 2026 年上半年的自由现金流跟 2025 年上半年打平,并没有随着亏损收窄而好转。</p>
+<p>2026 年上半年净现金从 0.7 亿变成 141 亿。增发只能解释其中四五十亿(股本半年多了约 1.5 亿股),剩下的主要来自营运资金——多半又是一轮供应商账期。上半年的现金流量表财报页还没有,这里只能这么推。</p>
+<h2>第三部分:亏损口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比</td>
+<td>1,141 亿元,+64%</td>
+<td>三个品牌同时放量</td>
+</tr>
+<tr>
+<td>TTM 经营亏损</td>
+<td>−38.1 亿元(−3.3%)</td>
+<td>一年前 −226 亿(−33%);分季度:25Q3 −32.3 亿、25Q4 <strong>+5.1 亿</strong>、26Q1 −3.1 亿、26Q2 −3.5 亿</td>
+</tr>
+<tr>
+<td>经营现金流 / 自由现金流</td>
+<td>2025 年 +29.9 亿 / −30.7 亿;TTM 自由现金流约 −31 亿</td>
+<td>经营现金流为正靠的是应付账款 +182 亿</td>
+</tr>
+<tr>
+<td>一年净烧多少</td>
+<td>约 31 亿元</td>
+<td>按自由现金流</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>430.9 − 290.0 = <strong>+140.9 亿</strong></td>
+<td>2025 年底只有 0.7 亿</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>140.9 ÷ 31 ≈ 4.5 年</td>
+<td>前提是供应商账期不收紧</td>
+</tr>
+<tr>
+<td>SBC 占营收 / 股本膨胀</td>
+<td>2.0% / <strong>一年 +15.3%</strong></td>
+<td>这才是股东付的钱</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>成熟利润率:拿比亚迪和理想稳态时 5–7% 的经营利润率做基准,取 6%:
+- 假想经营利润 = 1,141 × 6% = 68.5 亿;按 15% 的高新技术企业税率,假想净利润约 58 亿
+- 假想市盈率 = 627 ÷ 58 ≈ <strong>10.8 倍</strong>,投 100 块年回报 <strong>9.3 块</strong>
+- 按企业价值算(扣掉 141 亿净现金):486 ÷ 58 ≈ 8.4 倍
+- 敏感性:4% 利润率 → 16 倍(6.2 块);8% → 8 倍(12.4 块)</p>
+<p>大白话:<strong>假设蔚来明天就做到比亚迪的利润率,你投 100 块一年赚 9 块多——这个价不贵。</strong>但它离那一天差什么?经营利润率要从 −3.3% 走到 +6%,差 9 个点。好消息是这 9 个点里最难的一段已经走完(一年前是 −33%),2025 年四季度实际做到过 +1.5%。坏消息是 2026 年上半年又退回 −1%,盈利没站稳;而且这期间每年还要被稀释 15%——如果稀释不停,假想的 9 块回报到你手里要打八五折,年年打。这 9 块里没有一分钱会以分红或回购的形式回到你口袋,全部留在公司里建工厂、建换电站。</p>
+<h2>第四部分:一句话结论</h2>
+<p><strong>会不会死</strong>:三年内不会。141 亿净现金、一年烧 31 亿、还能增发——但要清楚这条命是供应商账期(欠了 182 亿)和股东稀释(一年 15%)一起续的,销量一旦停止增长,应付账款这个水池会反向抽水。</p>
+<p><strong>活成了值不值</strong>:0.55 倍市销率、假想 11 倍市盈率,这是给一家「可能刚刚学会赚钱」的车企的公道价,不便宜——便宜的前提是它连续四个季度盈利,现在只做到过一个。观察点就一个:<strong>2026 年下半年能不能再交出盈利的季度,毛利率能不能站稳 18% 以上</strong>。做到了,这个价是便宜的;做不到,15% 的年稀释会把一切吃掉。</p><script src="user.js"></script>
+</div></body></html>

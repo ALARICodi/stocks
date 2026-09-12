@@ -1,0 +1,375 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CYTK · 细胞动力(Cytokinetics)</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">CYTK</a></div>
+<div class="mine" data-t="CYTK"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">103亿买上市半年的药,假想433倍;年烧5.8亿、净资产为负、SBC是营收1.9倍</div><h1>CYTK · 细胞动力(Cytokinetics)</h1>
+<p>市值 102.6 亿美元 / 股价 73.77 美元 / 行业:生物制药(心脏肌肉药) / TTM 截止 2026-06-30(数据日 2026-09-11)</p>
+<blockquote>
+<p>这是一家「真亏」的公司:TTM 净亏 8.94 亿美元,自由现金流 −5.81 亿,净资产是负的。它成立 28 年,2025 年 12 月才第一次有药获批上市。第三部分用亏损口径。</p>
+</blockquote>
+<h2>第一部分:它到底做几件事</h2>
+<p>Cytokinetics 只做一件事:<strong>研究让心脏肌肉「收缩得更用力」或「放松一点」的小分子药</strong>。心脏是一块肌肉,肌肉收缩靠一种叫肌球蛋白的马达分子拉扯肌丝。这家公司二十多年就盯着这个马达——马达太弱(心衰)就给它加油,马达太猛(肥厚型心肌病)就给它踩刹车。它现在有一个刚上市的药、一个二次冲关的药、和几个早期项目。</p>
+<h3>生意 A:Myqorzo(aficamten)——刚上市的肥厚型心肌病药</h3>
+<p><strong>病是什么</strong>:肥厚型心肌病(HCM)是一种遗传病,大约每 500 人里有 1 个,心脏肌肉长得太厚、收缩太猛,把血液流出心脏的通道堵住了(「梗阻型」),病人爬两层楼就喘、胸痛、晕厥,年轻运动员猝死很多是这个病。以前只有β受体阻滞剂这类几十年的老药,效果一般,不行就得开胸做心肌切除手术。</p>
+<p><strong>药是什么</strong>:aficamten 是一种「心肌肌球蛋白抑制剂」,一天一粒,直接让心肌马达少使点劲,通道就通了。三期试验里病人的运动耐量、症状评分都显著改善;2025 年的 MAPLE-HCM 试验更关键——它跟标准老药美托洛尔头对头,赢了,这意味着它可以争取做<strong>一线用药</strong>而不是老药无效后的备选。FDA 在 2025 年 12 月批准了它,商品名 Myqorzo,适应症是有症状的梗阻型 HCM。</p>
+<p><strong>怎么收钱</strong>:处方药,定价对标竞争对手,一个病人一年大约 9 万美元量级(估算),由商业保险和 Medicare 买单。美国确诊的梗阻型 HCM 病人约十几万,真正符合用药条件、被心脏科医生管起来的大概几万人——每多 1 万个病人稳定用药,就是一年 9 亿美元的收入。</p>
+<p><strong>对手是谁</strong>:百时美施贵宝(BMS)的 Camzyos(mavacamten),2022 年 4 月获批,先跑了三年半,2025 年销售额已经十亿美元量级。Cytokinetics 的卖点是:半衰期短、剂量调得快、心脏超声监测的频次少、对肝药酶相互作用少——医生用起来省事。<strong>这是一场「第二个进场的药能不能靠更好用抢走市场」的仗</strong>,历史上这种仗有赢的(有更好用就能翻盘),也有输的(先发者已经把医生习惯占住)。</p>
+<p><strong>扩展空间</strong>:ACACIA-HCM 试验在测非梗阻型 HCM(占 HCM 病人约三分之一),2026 年内出结果。BMS 的 Camzyos 在非梗阻型上 2025 年失败了,如果 aficamten 成了,就是没有对手的市场,病人池子直接翻倍。这是接下来最大的一张牌。</p>
+<p><strong>海外</strong>:中国权益给了赛诺菲(从之前的合作方箭心手里接过去的),日本给了拜耳,Cytokinetics 收里程碑款和销售分成。</p>
+<p>TTM 营收 6767 万美元里,合作方付的研发服务费 1062 万,里程碑款为零(2025 财年有 7935 万里程碑,不在 TTM 窗口里),<strong>剩下约 5700 万是 Myqorzo 上市头半年的产品销售(估算,财报分部表没单列产品收入)</strong>。上市半年卖 5700 万,换算成年化约 1.1–1.5 亿——起步不慢,但离十亿很远。</p>
+<h3>生意 B:omecamtiv mecarbil——二次冲关的心衰药</h3>
+<p>这是公司的第一代产品,思路相反:让衰弱的心脏马达多使点劲,治射血分数降低的心衰(HFrEF)。三期试验 GALACTIC-HF 有效但效果小,2023 年 2 月被 FDA 拒了(要求补一个试验)。现在正在做 COMET-HF 试验,专挑病情更重的病人,预计 2026–2027 年出结果。如果成了,心衰病人是 HCM 病人的几十倍,但这个药的效果尺寸小、竞争药多,市场不会给它太高期望。TTM 对营收贡献为零,消耗研发费。</p>
+<h3>生意 C:早期管线</h3>
+<ul>
+<li><strong>ulacamten(CK-586)</strong>:另一个心肌肌球蛋白抑制剂,针对射血分数保留型心衰(HFpEF),二期。</li>
+<li><strong>CK-089</strong>:骨骼肌激活剂,针对肌营养不良,一期。</li>
+</ul>
+<p>这些现在只花钱不赚钱,合计一年研发费约 5 亿美元。</p>
+<h3>三门生意的钱</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(百万美元)</th>
+<th>2025 财年</th>
+<th>2024 财年</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Myqorzo 产品销售(估算)</td>
+<td>~57</td>
+<td>~0</td>
+<td>0</td>
+<td>2025 年 12 月获批,上市约半年</td>
+</tr>
+<tr>
+<td>合作研发服务费</td>
+<td>10.6</td>
+<td>8.7</td>
+<td>3.5</td>
+<td>赛诺菲、拜耳付的</td>
+</tr>
+<tr>
+<td>里程碑款</td>
+<td>0</td>
+<td>79.4</td>
+<td>15.0</td>
+<td>一次性,时有时无</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>67.7</strong></td>
+<td><strong>88.0</strong></td>
+<td><strong>18.5</strong></td>
+<td>TTM 同比 −21%,因为里程碑没了</td>
+</tr>
+</tbody>
+</table></div>
+<p>利润:全公司经营亏损 7.08 亿,研发费约 5 亿、销售管理费约 2 亿多(上市要建心脏科销售团队)。没有任何一门生意是赚钱的。</p>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC)</strong>:TTM 1.273 亿美元,<strong>是营收的 188%</strong>。这家公司每卖 1 块钱药,就给员工发 1.9 块钱股票。占亏损的 14%。</p>
+<p><strong>一次性项目</strong>:没有减值、重组。但净亏损 8.94 亿比经营亏损 7.08 亿多出 1.86 亿,这块是<strong>融资成本</strong>:可转债利息、以及 Royalty Pharma 那笔「研发资助负债」按会计规则每年计提的非现金利息(现金流量表里「其他非现金项目」加回了 2.04 亿,就是它)。这不是一次性,只要那笔负债在,每年都有。</p>
+<p><strong>资本化支出</strong>:资本开支 2530 万,新建了办公实验楼,规模不大。研发全部费用化,没有资本化的花招。</p>
+<p><strong>回购与稀释</strong>:没有回购(430 万的「回购」是员工行权代扣税)。TTM <strong>增发普通股 8.31 亿美元</strong>,股本一年膨胀 5.1%,最近一个季度就膨胀了 7.2%——获批后趁股价高做了一轮大增发。2021 年以来每年稀释 5%–19%,五年累计股本翻了一倍多。</p>
+<p><strong>利润和现金流的差</strong>:净亏损 8.94 亿,经营现金流 −5.55 亿,自由现金流 −5.81 亿。差在哪(TTM,百万美元):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净亏损</td>
+<td>−894.0</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+12.6</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+127.3</td>
+<td>给员工的股票,不花现金但稀释你</td>
+</tr>
+<tr>
+<td>+ 非现金利息及其他</td>
+<td>+203.6</td>
+<td>Royalty Pharma 负债的账面利息</td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−16.0</td>
+<td>药卖出去了钱还没收回</td>
+</tr>
+<tr>
+<td>+ 应付账款及其他</td>
+<td>+11.4</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>−555.5</td>
+<td>(含约 −0.4 的其他微调)</td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−25.3</td>
+<td></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>−580.7</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>真金白银一年烧 5.8 亿美元</strong>,比 2024 财年的 4.0 亿、2025 财年的 5.3 亿还在涨——上市要花钱。</p>
+<p>钱从哪来:TTM 增发股票 8.31 亿 + 净举债 3.15 亿 + Royalty Pharma 研发资助 1 亿 = 融资进账 12.4 亿。账上现金及投资 11.66 亿,有息负债 14.24 亿(两批可转债加 Royalty Pharma 的负债),<strong>净负债 2.59 亿,净资产 −1.73 亿</strong>。一家市值 100 亿的公司,账面上股东权益是负的。</p>
+<h2>第三部分:亏损口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收、同比增速</td>
+<td>6767 万美元,−21%</td>
+<td>里程碑没了;产品销售从零起步</td>
+</tr>
+<tr>
+<td>TTM 经营亏损(GAAP)</td>
+<td>−7.08 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>−5.55 亿 / −5.81 亿</td>
+<td>亏的是真现金,不是账面</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>5.81 亿</strong></td>
+<td>还在上升</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>11.66 亿 − 14.24 亿 = <strong>−2.59 亿</strong></td>
+<td>净资产 −1.73 亿</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>按毛现金算 <strong>2.0 年</strong>;净现金已是负数</td>
+<td>靠不断增发续命,TTM 增发 8.3 亿</td>
+</tr>
+<tr>
+<td>SBC 占营收、股本膨胀</td>
+<td><strong>188%</strong>、+5.1%/年(最近一季 +7.2%)</td>
+<td>股东真正在付的钱</td>
+</tr>
+<tr>
+<td>市销率</td>
+<td>152 倍(远期 41 倍)</td>
+<td>远期 41 倍意味着市场预期明年营收约 2.5 亿</td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>拿成熟的专科药公司福泰制药(Vertex)比,正常年份 GAAP 经营利润率约 35%:35% × 6767 万 = 2370 万假想利润 → 102.6 亿 ÷ 0.237 亿 = <strong>假想市盈率 433 倍</strong></td>
+<td><strong>投 100 块一年赚 0.23 块</strong></td>
+</tr>
+<tr>
+<td>同上,按明年 2.5 亿营收</td>
+<td>35% × 2.5 亿 = 8750 万</td>
+<td>117 倍,0.85 块</td>
+</tr>
+<tr>
+<td>同上,要落到 25 倍</td>
+<td>需要净利 4.1 亿 = 营收 11.7 亿</td>
+<td>营收要翻 17 倍</td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话:<strong>假设 Cytokinetics 明天就做到福泰那样的成熟利润率,你投 100 块一年也只能赚 0.23 块;它离那一天还差:营收要从 0.68 亿翻到 12 亿以上(翻 17 倍),利润率要从 −1046% 走到 +35%,这期间每年还要被稀释 5%–7%。</strong> 从一个刚上市半年的药到年销 12 亿,乐观也要 4–5 年;这 4–5 年里烧掉的现金和发出去的股票,会把今天买入的人手里那份再切掉四分之一以上。</p>
+<p>市场给 103 亿是怎么算的?华尔街对 aficamten 的峰值销售预测普遍在 20–30 亿美元(梗阻型 + 非梗阻型都成、拿下一半市场),25 亿 × 35% = 8.75 亿净利,按今天市值 11.7 倍——也就是说,<strong>今天的价格已经把「五年后大获全胜」的结果按 12 倍市盈率打包卖给你了</strong>,没有一分钱为失败留余地。11.7% 的股份被做空,不是没人看到这一点。</p>
+<h2>第四部分:一句话结论</h2>
+<p><strong>会不会死</strong>:两年内不会——账上 11.7 亿现金,药已经上市在卖,股价高的时候还能增发。但净资产已经是负的,活着的方式是每年发 5% 以上的新股。</p>
+<p><strong>活成了值不值</strong>:不值。103 亿买一个上市半年、年化销售一亿多、对手已经卖到十亿的药,假想市盈率 433 倍;就算五年后 aficamten 卖到 25 亿、非梗阻型也批了、稀释也不算,今天的价格也只是「刚好合理」。科学是真的,MAPLE-HCM 赢了美托洛尔是硬本事,但<strong>好药和好股票是两回事,这个价格里没有你的那份。</strong></p><script src="user.js"></script>
+</div></body></html>

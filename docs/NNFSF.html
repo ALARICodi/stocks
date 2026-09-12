@@ -1,0 +1,372 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NNFSF · 农夫山泉</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NNFSF</a></div>
+<div class="mine" data-t="NNFSF"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">22.6倍买全球最赚钱饮料公司,茶还在长30%;账干净但一人独大</div><h1>NNFSF · 农夫山泉</h1>
+<p>市值 4,442 亿港元 ≈ 3,865 亿人民币 ≈ 570 亿美元（按 1 港元 = 0.87 人民币、1 美元 = 7.8 港元） / 股价 39.50 港元（港交所 9633，2026-09-11） / 行业：包装水与软饮料 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>数据取自港股主上市页 stockanalysis.com/quote/hkg/9633（场外代号 NNFSF 无财报页）。财报货币是人民币，<strong>全文数字一律人民币</strong>，市值已按 0.87 折成人民币再算倍数。港股半年报公司，TTM = 2025 年下半年 + 2026 年上半年；现金流量表数据库只更新到 2025 全年，现金流部分用 2025 年全年数字，会明确标出。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报按产品分五个分部，实质上是<strong>四门生意加一个杂项</strong>。五门生意共用同一套东西：十几个水源地和工厂、四千多个经销商、两百多万个小卖部和便利店货架、以及"农夫山泉"这个牌子。</p>
+<h3>1. 卖水：一瓶两块钱，水本身几乎不要钱</h3>
+<p>农夫山泉的红瓶 550 毫升天然水零售价 2 块钱。它不是自来水过滤的（那是纯净水，怡宝、娃哈哈走那条路），而是从千岛湖、长白山、丹江口、万绿湖、峨眉山、太白山这十几个水源地取地表水或地下水，就地建厂灌装。因为水要从水源地运到你家楼下小卖部，运输占成本大头，所以工厂必须建在水源地边上，这十几块地方就是它的护城河——好的天然水源地是稀缺的、要拿采矿许可的，后来者复制不了。</p>
+<p>一瓶水的钱怎么分：零售 2 元，小卖部拿走大约 0.5–0.6 元，经销商拿 0.2–0.3 元，农夫山泉出厂价约 1.1–1.2 元。出厂价里，PET 瓶子和瓶盖约 0.3 元，水和加工不到 0.1 元，运输约 0.15 元，剩下的是毛利——<strong>毛利率 60% 左右</strong>，这在食品饮料里是顶级水平（可口可乐装瓶商只有 30% 多）。除了红瓶，还有给家庭送的大桶水、给婴儿的母婴水、高端的"长白雪"，以及 2024 年 4 月为了打价格战推出的<strong>绿瓶纯净水</strong>（一度卖到 1 块钱一瓶，专门去抢怡宝的地盘）。</p>
+<p>这门生意 2024 年出过大事：2024 年 2 月娃哈哈创始人宗庆后去世，网上掀起一场针对农夫山泉和钟睒睒的舆论围攻，水的销量当年掉了 21%（202 亿 → 160 亿）。2025 年恢复到 187 亿，但<strong>2026 年上半年只增长 2%</strong>（推算 96 亿），复苏停住了——纯净水价格战没有出口，怡宝、娃哈哈、康师傅都在 1 元档硬拼。</p>
+<h3>2. 卖茶：东方树叶，十年冷板凳换一个 250 亿的生意</h3>
+<p>东方树叶 2011 年上市，无糖、无添加，前十年被网友评为"最难喝的饮料"，销量常年几个亿，公司硬是没砍。2021 年之后年轻人开始追无糖健康，这瓶茶一年翻一倍：茶饮料分部营收 2021 年 46 亿 → 2025 年 216 亿，四年涨了 4.7 倍，<strong>2025 年起超过水，成为公司第一大业务</strong>。TTM 246 亿，2026 年上半年推算 131 亿、同比增长 30%，还在加速。</p>
+<p>产品就两条线：东方树叶（无糖茶，500 毫升卖 5–6 元、900 毫升卖 6–7 元，有绿茶、茉莉花茶、乌龙、青柑普洱、龙井新茶等口味）和茶π（有糖果味茶，卖给不喝无糖的年轻人，2016 年上市）。东方树叶在中国无糖即饮茶里的份额估计在六成上下，三得利乌龙茶是第二名，2024–2025 年康师傅、统一、元气森林、果子熟了全冲进来了，但没人撼动它的位置。</p>
+<p>为什么茶比水更赚钱：一瓶东方树叶卖 5–6 元，瓶子、运输的成本跟 2 元的水差不了多少，多出来的售价里茶叶原料只占一点点，所以毛利率比水还高、大概在 65% 以上。这是公司整体经营利润率从 2022 年的 28% 一路抬到现在 37.6% 的最大原因。</p>
+<h3>3. 卖功能饮料：尖叫和维他命水</h3>
+<p>尖叫（运动饮料，1998 年就有，跟脉动、佳得乐抢跑步打球的人）和力量帝维他命水（2010 年推出，对标国外的 Vitaminwater），零售 4–6 元一瓶。TTM 62 亿，2026 年上半年推算增长 16%。这是一门稳稳当当每年涨 10–15% 的生意，没有故事，但也没有压力。</p>
+<h3>4. 卖果汁：从水溶 C100 到 NFC</h3>
+<p>农夫果园（2003）、水溶 C100（2008，柠檬味维 C 饮料）、17.5°NFC 橙汁（2016，非浓缩还原、需要冷藏的高端果汁，300 毫升卖 10 块以上）、100% NFC 果汁。TTM 55 亿，2026 年上半年推算增长 14%。果汁毛利率最低（水果原料贵、NFC 要冷链），大约 40% 出头，赚钱能力在四门里最弱，但 NFC 这条线是国内做得最大的。</p>
+<h3>5. 杂项：植物酸奶、咖啡、苏打水、大米、苹果</h3>
+<p>炭仌咖啡、植物基酸奶、苏打水、打奶茶、东北大米、阿克苏 17.5° 苹果——都是试水，TTM 合计 14 亿，占 2.4%，五年没长过。</p>
+<h3>钱</h3>
+<p>财报只披露分部营收，<strong>分部利润按各产品毛利结构估算</strong>（水 37%、茶 44%、功能饮料 35%、果汁 20%、其他 0%，合计对得上整体 37.6% 的经营利润率）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收(亿)</th>
+<th>2026H1 同比(推算)</th>
+<th>占比</th>
+<th>估算经营利润率</th>
+<th>估算贡献利润(亿)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>包装饮用水</td>
+<td>189</td>
+<td>+2%</td>
+<td>33%</td>
+<td>37%</td>
+<td>70</td>
+</tr>
+<tr>
+<td>茶饮料</td>
+<td>246</td>
+<td>+30%</td>
+<td>43%</td>
+<td>44%</td>
+<td>108</td>
+</tr>
+<tr>
+<td>功能饮料</td>
+<td>62</td>
+<td>+16%</td>
+<td>11%</td>
+<td>35%</td>
+<td>22</td>
+</tr>
+<tr>
+<td>果汁</td>
+<td>55</td>
+<td>+14%</td>
+<td>10%</td>
+<td>20%</td>
+<td>11</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>14</td>
+<td>略增</td>
+<td>2%</td>
+<td>~0%</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>566</strong></td>
+<td><strong>+16%</strong></td>
+<td>100%</td>
+<td>37.6%</td>
+<td><strong>213</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 营收 566 亿、同比 +22%（TTM 对 TTM）；其中 2026 年上半年 297 亿、同比 +16%，比 2025 全年的 +22.5% 慢了一截，慢的那块全是水。<strong>茶一门生意贡献了一半的利润</strong>，这家公司现在实质上是"一家茶饮公司附带卖水"。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：2025 年全年 0.77 亿，占净利润 0.5%。可以忽略——钟睒睒持股 84%，不需要拿股票哄人。</p>
+<p><strong>一次性项目</strong>：TTM 出售投资收益 1.7 亿、处置资产损失 0.2 亿、汇兑损失 3.8 亿，加起来不到净利润的 2%。没有减值、没有重组、没有诉讼。另有"其他非经营收益"10.5 亿和利息收入 5.6 亿，年年都有，来源是账上 320 亿现金和理财——这是真钱，不是障眼法，但它是"钱生钱"不是"卖水赚钱"，占税前利润 7%。</p>
+<p><strong>资本化的支出</strong>：没有。饮料公司没东西可资本化。</p>
+<p><strong>回购与稀释</strong>：2025 年回购 2.2 亿，SBC 0.77 亿，比值 2.9——但绝对额太小，回购基本等于零，股本一年只减 0.02%。<strong>回报股东的渠道是分红</strong>：2025 年度每股派 0.99 元、合计 111 亿，派息率 70%，按现价折算股息率约 2.9%。</p>
+<p><strong>利润和现金流的差</strong>（2025 全年，TTM 现金流数据库未更新）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>2025 全年(亿)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>159</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>34</td>
+<td>工厂和产线</td>
+</tr>
+<tr>
+<td>+ 营运资金变化</td>
+<td>+17</td>
+<td>预收款 +6、其他经营资产 +19、存货 −9</td>
+</tr>
+<tr>
+<td>+ 其他非现金</td>
+<td>+1</td>
+<td></td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>211</td>
+<td><strong>是净利润的 1.33 倍</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−65</td>
+<td>折旧只有 34，<strong>开支是折旧的两倍，在扩产</strong></td>
+</tr>
+<tr>
+<td>= 自由现金流</td>
+<td>147</td>
+<td>是净利润的 92%</td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流远高于利润，因为经销商要先打款再提货（预收款）、消费者买水付现金、供应商的账期可以拖——这是"别人的钱先到我手里"的生意。自由现金流略低于利润，是因为它还在建新工厂（2025 年资本开支 65 亿创历史新高，主要是茶饮产能和新水源地）。<strong>净现金从 2025 年底 143 亿涨到 2026 年 6 月底 269 亿</strong>，半年增加 126 亿——而 2025 年度分红要 7 月以后才付，所以这 126 亿基本就是上半年的自由现金流，比全年利润的一半还多。账很干净。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 3,865 亿人民币（4,442 亿港元 × 0.87）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>3,865 ÷ 171.3</td>
+<td>22.6 倍</td>
+<td>4.4 元</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP</td>
+<td>港股公司没这套，年报里的净利润就是净利润</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>3,865 ÷ 170（剔出售投资收益、加回汇兑损失和资产处置，净调整 −1 亿）</td>
+<td><strong>22.7 倍</strong></td>
+<td><strong>4.4 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>3,865 ÷ 147（2025 全年 FCF）</td>
+<td>26.3 倍</td>
+<td>3.8 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(3,865 − 269 净现金) ÷ 213</td>
+<td>16.9 倍</td>
+<td>5.9 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>3,865 ÷ 133.5（2023/24/25 年均：121、121、159）</td>
+<td>28.9 倍</td>
+<td>3.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均 28.9 倍和当期 22.6 倍差得不算大，说明现在的利润不是周期高点，是台阶式上去的——2023、2024 两年利润原地踏步（舆论风波那年靠茶顶住了水的下滑），2025 年一步跳上来 31%，2026 年上半年又长 17%。</p>
+<p><strong>大白话</strong>：你现在投 100 块进去，按真实口径公司一年替你赚 4.4 块。这 4.4 块里，<strong>约 3.1 块以分红形式回到你口袋</strong>（70% 派息率），剩下 1.3 块留在公司——看 2025 年投资活动，65 亿建厂、48 亿买理财，也就是留下的钱一半扩产、一半躺在账上生利息。账上 320 亿现金加理财、只有 53 亿债，钱多到花不完。</p>
+<p>这个 4.4 块未来大概率变大：茶还在以 30% 的速度长，功能饮料和果汁 15%，只有水停了。分析师预期未来三年利润年均涨 12–13%，如果茶不减速这个数字偏保守。<strong>风险不在报表里，在两件事上</strong>：一是 2024 年那场舆论风波证明了"农夫山泉"这个牌子在中国互联网上是可以被一夜之间围攻的，而钟睒睒本人的言行就是导火索；二是 84% 的股份在一个人手里，你是搭车的少数股东，公司分不分红、怎么花 320 亿现金，都是他一个人说了算——过去他分得很大方，但这是习惯不是承诺。</p>
+<p>股价过去一年跌了 25%（从 53 港元跌到 39.5），而利润涨了 27%，市盈率从 30 倍压到 22.6 倍。跌的原因大概是市场原本指望 20% 以上的增速，2026 年上半年 16% 让人失望，加上水的价格战和无糖茶赛道涌进来一堆对手。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>值这个价，还略带一点便宜。</strong> 全世界最能赚钱的饮料公司（经营利润率 37.6%、投入资本回报率 157%、净现金 269 亿）、第一大业务还在以 30% 增长，卖 22.6 倍、股息率 2.9%，这个价格对这种质量是公道的；可口可乐 5% 的增速都卖 24 倍。它不便宜到让人抢，因为你要接受两件事：一个人说了算的公司治理，和一个随时可能被舆论点着的品牌。如果这两条你不介意，现在的价格不用等。</p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,466 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VSAT · 卫讯（Viasat, Inc.）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VSAT</a></div>
+<div class="mine" data-t="VSAT"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">51.9亿净债务，利息保障0.30，股本年膨胀4.94%把FCF全稀释掉</div><h1>VSAT · 卫讯（Viasat, Inc.）</h1>
+<p><strong>市值</strong> 107.1 亿美元 ｜ <strong>股价</strong> 约 77.7 美元 ｜ <strong>行业</strong> 电子科技 · 卫星通信（NASDAQ）
+<strong>TTM 口径截止</strong> 2026 年 6 月 30 日（公司财年 3 月底）｜ <strong>企业价值 159.0 亿美元</strong> ｜ <strong>净负债 51.9 亿美元</strong>
+<strong>任务5 · 主板亏损公司</strong> ｜ TTM 净亏损 2939 万美元</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报只按 Product（产品）和 Service（服务）两个口径披露营收——<strong>产品 13.45 亿、服务 32.80 亿</strong>——但这个划分对理解生意没什么用，它只是在区分"卖硬件"和"收月费"。真正要看的是这家公司在三个完全不同的市场里做三门生意。</p>
+<p>这里先说一件事：Viasat 2023 年花大价钱吞下了英国的 Inmarsat（国际海事卫星组织的商业化实体），营收从 25.6 亿一步跳到 42.8 亿——现在这家公司实质上是"美国 Viasat + 英国 Inmarsat"的合体，也是 51.9 亿净债务的由来。</p>
+<h3>生意一：飞机上网（航空机上宽带）</h3>
+<p><strong>这是它最值钱、也最被市场讨论的资产。</strong> 具体是这么运作的：航空公司决定给自己的机队装上网服务，Viasat 把一套天线装在机身顶部——那个鼓包——加上机舱里的接入点和服务器。飞机飞到哪，天线就对准哪颗卫星，把整机的上网流量打上去。</p>
+<p>钱怎么收：主流的是<strong>按每架飞机每月收固定费用</strong>，一架窄体机一个月几千美元量级；也有航空公司选择按乘客使用量分成，或者干脆自己买单让全舱免费上网（捷蓝、达美走的路子），Viasat 收的是批发流量费。装机量目前在四千架商用飞机以上，是这个市场里装机数最多的一家。</p>
+<p>为什么航空公司愿意付：机上 Wi-Fi 现在是航司之间比较服务的少数几个可见指标之一，尤其是常旅客最在意的。而换供应商的代价极高——每架飞机拆装天线要进机库停飞，还要重新做适航认证。</p>
+<p><strong>但这块的对手是 Starlink。</strong> SpaceX 用低轨星座做同一件事，延迟更低、带宽更大，已经拿下了联合航空、卡塔尔航空等大客户。这是这家公司未来五年最硬的一堵墙。</p>
+<h3>生意二：政府与国防通信</h3>
+<p><strong>这是最赚钱、最稳、最不受 Starlink 影响的一块。</strong> 卖的东西包括：Link 16 战术数据链电台（北约标准的战场数据链，让战斗机、军舰、地面站互相看到对方的战术画面）、加密卫星终端、军用网络安全设备，以及卖给美国国防部的专用卫星带宽。</p>
+<p>具体的收钱方式：美军的采购合同，一份几千万到几亿美元，交付周期几年，订单可见度很好。这块生意的护城河是资质——要做美军的加密通信，供应商要过一整套安全审查和认证，全世界能做的公司数得过来。<strong>Product 那 13.45 亿营收的主力就是这里</strong>，毛利显著高于公司平均。</p>
+<h3>生意三：海事、能源与固定宽带（Inmarsat 带来的那一半）</h3>
+<p><strong>海事</strong>：给远洋商船、邮轮、油气平台提供卫星宽带。这里有一个被低估的护城河——<strong>GMDSS（全球海上遇险与安全系统）是国际海事组织强制要求的</strong>，任何一艘远洋商船都必须装，而 Inmarsat 是这套系统里被 IMO 正式认可的服务商之一。这是法规给的生意，不是竞争来的。</p>
+<p><strong>固定宽带</strong>：给美国和欧洲农村地区的家庭提供卫星上网，一个月八十到一百五十美元。<strong>这块正在被 Starlink 系统性吃掉</strong>，用户在流失，这是过去几年 Viasat 收入结构里最难看的一块。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>分部（财报口径）</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Service（服务费、订阅）</td>
+<td>32.80 亿</td>
+<td>+1.7%</td>
+<td>70.9%</td>
+</tr>
+<tr>
+<td>Product（硬件、政府合同）</td>
+<td>13.45 亿</td>
+<td>+0.4%</td>
+<td>29.1%</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>46.26 亿</strong></td>
+<td><strong>+1.35%</strong></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这张表本身就是一句判决：营收只增长 1.35%。</strong> 政府和航空在涨，固定宽带在掉，两边基本抵消。这不是一家成长股。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>TTM（截至 26/6/30）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>46.26 亿（+1.35%）</td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>15.37 亿（毛利率 33.2%）</td>
+</tr>
+<tr>
+<td><strong>EBITDA</strong></td>
+<td><strong>13.90 亿</strong></td>
+</tr>
+<tr>
+<td>折旧摊销</td>
+<td><strong>−12.89 亿</strong></td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td><strong>1.031 亿（经营利润率仅 2.2%）</strong></td>
+</tr>
+<tr>
+<td>净亏损</td>
+<td>−0.294 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>这五行是理解整家公司的关键：EBITDA 有 13.9 亿，看着很壮观；但折旧摊销就吃掉 12.89 亿，经营利润只剩 1.03 亿。</strong> 折旧占营收的 27.9%。这是卫星生意的本质——一颗 ViaSat-3 级别的高通量卫星造价加发射费在七八亿美元量级，寿命十几年，摊到每年就是几千万上亿的折旧。<strong>这个折旧不是会计游戏，它对应的是卫星真的会老、真的要换。</strong></p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：TTM 9055 万美元，占营收 2.0%，占经营利润 <strong>88%</strong>。比例本身不高，但因为经营利润薄，它几乎等于全部利润。一律当真实成本扣掉，不加回。</p>
+<p><strong>一次性项目</strong>：TTM 有一笔 <strong>1.681 亿美元的投资处置收益</strong>——卖掉某项投资赚的钱。<strong>这笔要减掉。</strong> 它正是税前利润（1.416 亿）反而高于经营利润（1.031 亿）的原因。<strong>剔掉这笔一次性收益，TTM 税前是亏 2648 万，不是赚 1.42 亿。</strong> 另有 1991 万的资产处置损失（小额）。</p>
+<p><strong>税率的怪象</strong>：税前赚 1.416 亿，交税 1.327 亿，<strong>有效税率 93.74%</strong>。跨国经营（美英合体）加上历史亏损结转的限制，交的税几乎等于赚的钱，这也是净利润被推成负数的直接原因。</p>
+<p><strong>资本化的支出</strong>：卫星建造成本资本化是行业惯例，正常。但要意识到这意味着<strong>造卫星的钱不进利润表，只进资产负债表和现金流的投资端</strong>——所以看 Viasat 千万不能只看利润表。</p>
+<p><strong>回购与稀释——这里有全篇最刺眼的一个数字</strong>：TTM 回购 4239 万美元，SBC 9055 万，<strong>回购/SBC = 0.47</strong>，回购连股权激励的一半都抵不上。但更严重的是：<strong>股本一年增加了 4.94%。</strong> 9055 万的 SBC 按 77.7 美元股价只能解释约 120 万股的增发，而 4.94% 对应的是 680 万股。差额那 560 万股不是股权激励发的，这几页财报没披露来源（可转债转股或增发是最可能的解释）。</p>
+<p><strong>这 4.94% 意味着什么</strong>：按 107.1 亿市值算，你手上的份额一年被摊薄掉约 <strong>5.3 亿美元的价值</strong>。而同期公司创造的自由现金流是 5.78 亿。<strong>换句话说，这一年赚到的现金，几乎全部被新发的股份抵消了。</strong></p>
+<p><strong>利润和现金流的差</strong>：净亏 2939 万，经营现金流 <strong>+15.92 亿</strong>，差了 16.2 亿。对账：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（百万美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净亏损</td>
+<td>−29.39</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+1,289.00</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+37.90</td>
+</tr>
+<tr>
+<td>+ 资产处置损失</td>
+<td>+19.91</td>
+</tr>
+<tr>
+<td>− 投资处置收益（一次性）</td>
+<td>−168.06</td>
+</tr>
+<tr>
+<td>+ 股权激励 SBC（非现金）</td>
+<td>+90.55</td>
+</tr>
+<tr>
+<td>+ 其他经营项</td>
+<td>+71.32</td>
+</tr>
+<tr>
+<td><strong>= 非现金调整后小计</strong></td>
+<td><strong>+1,311.23</strong></td>
+</tr>
+<tr>
+<td>− 应收账款增加</td>
+<td>−62.05</td>
+</tr>
+<tr>
+<td>− 存货增加</td>
+<td>−10.71</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>+59.04</td>
+</tr>
+<tr>
+<td><strong>+ 其他经营性资产变动</strong></td>
+<td><strong>+294.54</strong></td>
+</tr>
+<tr>
+<td><strong>= 营运资金合计</strong></td>
+<td><strong>+280.82</strong></td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+1,592.05</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−1,014.00</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>+578.29</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表要看三处：</p>
+<ol>
+<li><strong>12.89 亿的折旧是这 15.9 亿经营现金流的绝大部分来源。</strong> 而资本开支 10.14 亿——也就是说，公司每年从折旧里"收回"的钱，有八成要立刻投回去造新卫星。这不是自由的现金。</li>
+<li><strong>"其他经营性资产变动" 一项贡献了 2.945 亿</strong>，这是营运资金的一次性释放（多半是预收款/递延收入的变动）。<strong>这部分不可持续。剔掉它，TTM 自由现金流是 2.84 亿，不是 5.78 亿。</strong></li>
+<li>FCF 转正是刚刚发生的事：FY2023 −7.96 亿、FY2024 −8.51 亿、FY2025 −1.22 亿、FY2026 +5.97 亿。<strong>股价一年涨 162%，涨的就是这个拐点。</strong></li>
+</ol>
+<hr />
+<h2>第三部分：亏损口径 + 估值多口径</h2>
+<p>Viasat 属于<strong>账面亏但不是障眼法造成的假亏</strong>——它的亏损不来自一次性减值，来自"重资产 + 高杠杆"这个结构本身：12.89 亿折旧 + 约 3.4 亿利息（利息保障倍数 0.30，即 EBIT 只有利息费用的三成），把 13.9 亿 EBITDA 消耗殆尽。所以下面两张表都要看。</p>
+<h3>估值多口径</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>亏损</td>
+<td><strong>无意义</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前 1.416 亿 − 一次性收益 1.681 亿 = <strong>仍亏 0.26 亿</strong></td>
+<td><strong>仍亏损，无意义</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>自由现金流口径（报表值）</td>
+<td>107.1 亿 ÷ 5.783 亿</td>
+<td>18.5 倍</td>
+<td>5.40 元</td>
+</tr>
+<tr>
+<td><strong>自由现金流口径（剔除营运资金一次性释放）</strong></td>
+<td>107.1 亿 ÷ 2.838 亿</td>
+<td><strong>37.7 倍</strong></td>
+<td><strong>2.65 元</strong></td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>159.0 亿 ÷ 1.031 亿</td>
+<td><strong>154.2 倍</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBITDA（卫星业常用）</td>
+<td>159.0 亿 ÷ 13.90 亿</td>
+<td>11.4 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>FY24 −10.69 亿、FY25 −5.75 亿、FY26 −0.34 亿，平均 <strong>−5.59 亿</strong></td>
+<td><strong>三年平均是亏的</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最后一行的意义</strong>：过去三年这家公司平均每年亏 5.6 亿美元。它现在刚刚爬到盈亏平衡线附近，"扭亏"这件事只发生了一个财年，还没有被第二年验证过。</p>
+<h3>生存与债务</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 经营现金流 / 自由现金流</td>
+<td>+15.92 亿 / <strong>+5.78 亿</strong></td>
+<td>剔掉一次性营运资金释放后是 +2.84 亿</td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td><strong>不烧了</strong>，但也没剩下</td>
+<td>FCF 全部拿去还债（TTM 净还债 1.89 亿）</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>17.36 亿 − <strong>69.26 亿</strong> = <strong>净负债 51.90 亿</strong></td>
+<td>债务是市值的一半</td>
+</tr>
+<tr>
+<td>Debt / EBITDA</td>
+<td><strong>4.53 倍</strong></td>
+<td>高杠杆区间</td>
+</tr>
+<tr>
+<td><strong>利息保障倍数</strong></td>
+<td><strong>0.30</strong></td>
+<td><strong>经营利润只够付三成利息</strong>——这是全篇最危险的数字</td>
+</tr>
+<tr>
+<td>SBC 占营收 / 股本膨胀</td>
+<td>2.0% / <strong>+4.94%</strong></td>
+<td>股东每年被摊薄近 5%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>做到成熟利润率能赚多少</h3>
+<p>拿谁比？成熟的卫星运营商（SES、Eutelsat）经营利润率在 10–15% 区间，且都长期挣扎；国防通信业务（如 L3Harris）能到 13–15%。取 <strong>13%</strong> 作为"这门生意做熟了该有的经营利润率"：</p>
+<ul>
+<li>假想经营利润 = 46.26 亿 × 13% = <strong>6.01 亿美元</strong></li>
+<li>减去年利息约 3.44 亿 = 税前 2.57 亿，按 25% 税率 = <strong>净利 1.93 亿</strong></li>
+<li><strong>假想市盈率 = 107.1 亿 ÷ 1.93 亿 = 55.5 倍 → 投 100 块年回报 1.80 元</strong></li>
+<li>企业价值口径 = 159.0 亿 ÷ 6.01 亿 = <strong>26.5 倍 EV/EBIT</strong></li>
+</ul>
+<p><strong>大白话：假设 Viasat 明天就把经营利润率从 2.2% 做到卫星行业成熟水平的 13%——营收一分不涨，纯靠效率——你投 100 块一年也只赚 1 块 8。</strong> 而它离那一天要跨过 10.8 个百分点的利润率，也就是每年多出 5 亿美元的经营利润，而它现在的营收只增长 1.35%。这钱只能从降成本里来，而它的成本大头是折旧（卫星），降不了。</p>
+<p><strong>这 100 块里有多少回到你口袋？负数。</strong> 不分红。回购 4239 万只占市值的 0.40%，而股本一年膨胀 4.94%——<strong>净稀释 4.5%。</strong> 那 5.78 亿自由现金流一分钱没到股东手里，全部拿去还了债（TTM 净还债 1.89 亿，其余留在账上）。这是完全合理的经营决策——51.9 亿净债务确实该先还——但你要清楚：<strong>作为股东，你在未来好几年里的角色是等，等公司先把债主喂饱。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>这是一家在给债主打工的公司，股价却按成长股在定价。</strong></p>
+<p>先把它的好处说完：政府与国防通信是真资产，美军加密通信的资质别人拿不到；海事的 GMDSS 是法规强制的生意；航空机上宽带装机四千架，换供应商要停飞进机库。EBITDA 13.9 亿是真的，自由现金流转正也是真的。</p>
+<p>但把这几件好事放进算术里，结果就没那么好看了：46 亿营收只增长 1.35%；12.89 亿折旧把 13.9 亿 EBITDA 削到只剩 1.03 亿经营利润；<strong>这 1.03 亿只够付利息的三成</strong>；三年平均每年亏 5.6 亿；5.78 亿自由现金流里有 2.95 亿是不可持续的营运资金释放，剩下的全部拿去还债；而你手上的股份一年还要被稀释 4.94%——<strong>稀释掉的价值（约 5.3 亿）和公司一年赚的自由现金流（5.78 亿）几乎一样多。</strong></p>
+<p><strong>它会不会死？</strong> 短期不会。FCF 转正了，账上 17.4 亿现金，债务在往下走。但 4.53 倍的 Debt/EBITDA 和 0.30 的利息保障倍数意味着它没有任何犯错的余地——一次卫星发射失败、一个大航司转投 Starlink、一轮利率上行，账就重算。</p>
+<p><strong>就算活成了值不值这个价？</strong> 假设它做到卫星行业成熟的 13% 经营利润率，也是 55 倍市盈率、投 100 块年回报 1 块 8。而它现在的股价已经涨了 162%，市场把"FCF 转正可持续 + 债务顺利去杠杆 + Starlink 打不进来"三件事同时付了钱。这三件事里第三件最没把握——SpaceX 正把低轨星座往它最赚钱的航空和海事业务上推，而 Viasat 的高轨卫星在延迟和带宽上没法正面赢。</p>
+<p><strong>不值。这不是"好公司坏价格"，这是一家杠杆很高、增长停滞、被更好的技术从两头挤压的公司，挂了一个赌它翻身的价格。</strong></p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,341 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AAL · 美国航空集团</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AAL</a></div>
+<div class="mine" data-t="AAL"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">有硬伤</span></div><div class="note">三年平均利润14.5倍,油价一动利润归零;净资产-40亿,利息付不出,不分红不回购</div><h1>AAL · 美国航空集团</h1>
+<p>市值 86.1 亿美元 / 股价 13.01 美元 / 航空运输 / TTM 截止 2026-06-30 / 任务5 第 89 名</p>
+<p><strong>先说亏损的性质:它不是不会赚钱,是赚的钱不够付利息。</strong> TTM 经营利润 11.4 亿,利息支出 16.6 亿,一进一出净亏 3.26 亿。2026 年燃油价格暴涨把它从「勉强盈利」推到了「勉强亏损」——二季度燃油费同比多花 22 亿(涨 83%),公司说全年燃油比去年多花约 60 亿,全年指引调整后每股盈利在 −0.65 到 +0.65 美元之间,中值是零。</p>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>财报按地区分航线,不按业务分,下面这三门生意是按收入性质拆的,利润分配是估算。</p>
+<h3>生意一:开飞机卖机票(营收约 530 亿,占 91%)</h3>
+<p>美国三大全服务航空之一(另两家是达美、联合),每天约 6,700 个航班,一年运两亿多人次。枢纽在达拉斯(总部,最大枢纽)、夏洛特、迈阿密、芝加哥、凤凰城、费城、华盛顿、洛杉矶。</p>
+<p>怎么赚钱:一张达拉斯飞纽约的经济舱票 300 美元,坐满的话一架 160 座的 737 一趟收 4.8 万;但要付机长副驾两人、空乘四人的工资,烧掉约 1.2 万美元的燃油,付机场起降费、飞机折旧和租金。<strong>航空公司的经济学就是一句话:每个座位飞一英里的成本(CASM)和收入(RASM)之间那不到一分钱的差价。</strong> TTM 营收 583 亿,经营利润 11.4 亿,利润率 1.96%——每 100 美元票款只剩 2 美元。</p>
+<p>分航线大致是:国内约七成,拉美约一成半(迈阿密枢纽是它独有的护城河,飞加勒比和南美没人比它航线多),跨大西洋约一成(跟英航、西班牙航空搞了联营,伦敦线一起分钱),太平洋线很弱(这是它跟联合最大的差距)。</p>
+<p>成本结构里最大的三块是人工(约 35%)、燃油(正常年份 20–25%,今年更高)、飞机(折旧 + 租赁 + 维修)。<strong>人工和飞机是固定的,燃油是它管不了的</strong>——2026 年油价一涨,二季度收入创历史新高(167 亿,同比 +16%)也没用,成本涨了 26%。公司说涨价只对冲了燃油上涨的一半。</p>
+<h3>生意二:卖里程给银行(营收约 46 亿,占 8%)</h3>
+<p>这是真正赚钱的部分。AAdvantage 是全球最大的常旅客计划之一。它的商业模式:花旗银行发「美国航空联名信用卡」,持卡人每刷 1 美元得 1 里程,花旗按每里程约一分五到两分钱的价格从美国航空买这些里程。持卡人攒够里程换机票时,美国航空拿一个空座位兑付——边际成本接近零。</p>
+<p>2026 年起花旗成了独家发卡行(之前跟巴克莱分),公司说这份新合约会让里程收入每年涨约 10%。报表上「其他收入」TTM 45.7 亿,比 2025 全年涨 10%,就是它。这块的经营利润率业内估算在 50% 以上——<strong>也就是说,美国航空的全部经营利润(11.4 亿)可能都来自卖里程,开飞机本身是赔钱的。</strong> 这是估算,财报不拆。</p>
+<p>资产负债表上有一个副产品:「递延收入」211 亿(流动 139 亿 + 长期 72 亿),主要是已售未飞的机票和已卖未兑的里程。这 211 亿是客户先付的钱,相当于一笔无息贷款,是它现金流比利润好看的重要原因。</p>
+<h3>生意三:货运(营收约 8 亿,占 1%)</h3>
+<p>客机肚子里的货舱顺带拉货,不值得展开。</p>
+<h3>三门生意汇总</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>经营利润(估算)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客运 + 货运(报表「营业收入」)</td>
+<td>537.6 亿</td>
+<td>+6.5%</td>
+<td>92%</td>
+<td>约 −10 亿</td>
+</tr>
+<tr>
+<td>里程及其他(报表「其他收入」)</td>
+<td>45.7 亿</td>
+<td>+10%</td>
+<td>8%</td>
+<td>约 +20 亿</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>583.4 亿</strong></td>
+<td><strong>+7.5%</strong></td>
+<td></td>
+<td><strong>11.4 亿(报表数)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>同比按 TTM 对 FY2025 全年估算。</p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励(SBC)</strong>:TTM 0.57 亿,占营收万分之一,可以忽略。航空公司是蓝领企业,不用股票发工资。</li>
+<li><strong>一次性项目</strong>:TTM 合计 −1.79 亿(重组 −0.44、投资亏损 −0.35、诉讼 −0.12、其他 −0.88)。金额不大,而且<strong>过去五年每年都有</strong>(2024 年 −6.5 亿、2023 年 −12.4 亿,主要是劳资合同签约奖金和债务提前清偿损失)。这是「年年都有的一次性」,不应该加回。公司的「调整后」口径把它们全加回去了——二季度 GAAP 每股 0.11、调整后 0.15,差的就是这个。</li>
+<li><strong>资本化的支出</strong>:没有异常。资本开支 40.9 亿全是买飞机和发动机,是真实支出,而且比折旧(22.3 亿)高出近一倍——它在扩机队。</li>
+<li><strong>回购与稀释</strong>:TTM 没有回购。统计页显示「股本减少 4.36%」是假象:那是 2025 年 10 亿美元可转债到期还掉,稀释股本从 7.21 亿回到 6.61 亿,基本股本其实从 6.57 亿微涨到 6.62 亿。<strong>这家公司现在不给股东任何回报</strong>:不分红、不回购,现金全部拿去还债和买飞机。</li>
+<li><strong>利润和现金流的差</strong>:净亏 3.26 亿,经营现金流 +43.7 亿,差 47 亿。对账:</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净亏损</td>
+<td>−3.26 亿</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+22.3 亿</td>
+</tr>
+<tr>
+<td>+ 递延收入增加(先收的票款和里程款)</td>
+<td>约 +9 亿</td>
+</tr>
+<tr>
+<td>+ 应付账款增加、其他营运资金</td>
+<td>约 +8 亿</td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>约 +7 亿</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>43.7 亿</td>
+</tr>
+<tr>
+<td>− 资本开支(买飞机)</td>
+<td>−40.9 亿</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>2.85 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>注意:stockanalysis 的 TTM 营运资金明细跟 FY2025 完全相同,是数据源没更新,上表中间几行按结构估算,总数是准的。</p>
+<p>43.7 亿经营现金流听起来很多,但 40.9 亿马上花在飞机上,剩 2.85 亿;然后 TTM 还净还了 11.6 亿债——<strong>所以账上现金其实是在减少的(84 亿→83.6 亿),靠的是变卖短期投资</strong>。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>86.1 亿 ÷ (−3.26 亿)</td>
+<td>亏损,无意义</td>
+<td>0</td>
+</tr>
+<tr>
+<td>公司自己的调整后口径</td>
+<td>加回一次性项目后仍亏约 1.9 亿;2026 全年指引中值为零</td>
+<td>亏损,无意义</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>一次性项目年年有,不加回</td>
+<td>亏损</td>
+<td>0</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>86.1 ÷ 2.85</td>
+<td>30 倍</td>
+<td>3.3 块</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(86.1 + 273.7 净负债) ÷ 11.4</td>
+<td>31.5 倍</td>
+<td>3.2 块</td>
+</tr>
+<tr>
+<td><strong>三年平均利润口径</strong></td>
+<td>86.1 ÷ [(8.22 + 8.46 + 1.11) ÷ 3 = 5.93 亿]</td>
+<td><strong>14.5 倍</strong></td>
+<td><strong>6.9 块</strong></td>
+</tr>
+<tr>
+<td>2024 年(油价正常年)口径</td>
+<td>86.1 ÷ 8.46</td>
+<td>10.2 倍</td>
+<td>9.8 块</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话:你现在投 100 块进去,今年公司一分钱不替你赚(指引中值为零)。按过去三年平均,一年替你赚 6.9 块;按油价正常的 2024 年算,赚 9.8 块。</strong> 但这 6.9 块或 9.8 块,<strong>一分钱都不会回到你口袋</strong>——不分红、不回购,全部拿去还债(净负债 274 亿)和买飞机。</p>
+<p>这个数字未来变大还是变小,取决于两个你控制不了的东西:<strong>油价</strong>(每桶涨 10 美元,一年多花约 15 亿,相当于把三年平均利润全吃掉)和<strong>利率</strong>(357 亿总负债里有一大块是浮动利率或要在几年内再融资的)。</p>
+<p>再看一眼资产负债表:总负债 682 亿,总资产 642 亿,<strong>净资产 −40 亿</strong>,有形净资产 −101 亿。营运资本 −125 亿。利息保障倍数 0.69(经营利润不够付利息)。Altman Z 值 0.66(小于 1.8 就算「破产风险区」)。它 2011 年破产过一次,2020 年靠政府救助才没破第二次。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>这不是股票,是一张油价看跌期权,还带破产尾部风险。</strong> 86 亿市值是 360 亿企业价值上薄薄的一片:油价跌、利率降,利润能从零回到 8 亿,股价翻倍;油价再涨一波,利息付不出来,这 86 亿可以归零。按三年平均利润 14.5 倍,对一家净资产为负、经营利润率 2%、不给股东任何回报的公司来说,不便宜。真正值钱的是 AAdvantage 里程业务,但它被埋在 357 亿债务下面,你买不到它。</p><script src="user.js"></script>
+</div></body></html>

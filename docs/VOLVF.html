@@ -1,0 +1,443 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VOLVF · 沃尔沃集团（AB Volvo）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">VOLVF</a></div>
+<div class="mine" data-t="VOLVF"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">19倍买的是卡车周期谷底利润,三年平均15倍,3.8%股息全是真钱,股本五年没动</div><h1>VOLVF · 沃尔沃集团（AB Volvo）</h1>
+<p>市值 739 亿美元（6,925 亿瑞典克朗）/ 场外价 36.35 美元（斯德哥尔摩 B 股 340.50 克朗）/ 重卡·工程机械·客车·船用发动机 / TTM 截止 2026-06-30</p>
+<blockquote>
+<p>海外公司三个注意：财报是瑞典克朗（SEK），市值按 <strong>1 美元 = 9.37 克朗</strong> 折算，场外价和斯德哥尔摩价一致，没有溢价。IFRS 报表，公司自报「调整后经营利润」当 Non-GAAP 用。取数走斯德哥尔摩主上市页（VOLV.B）。</p>
+<p><strong>先澄清一个中国读者最容易混的事：这家不是造轿车的沃尔沃。</strong> 轿车沃尔沃（Volvo Cars）1999 年卖给福特、2010 年卖给吉利，跟这家没有股权关系。这家 AB Volvo 是「沃尔沃集团」，造卡车、挖掘机、大巴和船用发动机，全球第二大重卡集团（第一是戴姆勒卡车）。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>财报按六块分部披露营收（TTM 数），分部经营利润 stockanalysis 不提供，下面的利润率是按公司历年披露的量级估算，全部标「估算」。</p>
+<h3>一、卡车（Trucks）——68% 的收入，命脉</h3>
+<p>旗下四个品牌：<strong>Volvo Trucks</strong>（欧洲高端重卡，标志车型 FH）、<strong>Renault Trucks</strong>（法国，中型和重型）、<strong>Mack</strong>（美国，工地和垃圾车之王）、<strong>Eicher</strong>（印度合资，中卡）。此外持有日本 UD Trucks 的联盟关系（2021 年 UD 卖给了五十铃，保留技术合作）。</p>
+<p><strong>怎么运作、怎么收钱：</strong> 一台沃尔沃 FH 牵引车在欧洲卖 120–150 万克朗（约 13–15 万美元）。德国一家物流公司要换 50 台，订单 7,000 万克朗，通常连带签 5 年的维修合同（Volvo Gold Contract，按公里收费，一台车一年两三万克朗），车款则由集团自己的金融公司（下面第六块）放贷。集团一年交付大约 18–20 万台卡车，<strong>卖车只是入口，赚钱的是后面</strong>：零配件和维修服务占卡车业务收入约 30%，毛利率是整车的两倍以上，而且经济差的时候车不换、修车照修，这一块是周期里的压舱石。</p>
+<p>重卡是典型周期行业：物流公司赚钱就换车、亏钱就不换，欧洲和北美的重卡订单每三四年一个来回。<strong>眼下正在下行段</strong>：2023 年是顶（营收 5,523 亿、经营利润率 14.6%），北美 2025–26 年因为关税和货运衰退订单大跌，TTM 营收比顶部少了 15%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>卡车</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>3,217 亿克朗（FY2024 全年 3,606 亿，下行中）</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>68%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>11% 左右，顶部时 15%</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 350 亿，占集团七成</td>
+</tr>
+</tbody>
+</table></div>
+<h3>二、工程机械（Volvo Construction Equipment）——16%</h3>
+<p>挖掘机、轮式装载机、铰接式自卸车（全球第一，矿山和大工地用的六轮大卡车）、压路机。中国用 SDLG（山东临工）品牌做低端。一台 EC950 大型挖掘机 60 万美元左右，客户是采石场、矿山、大型承包商。这块比卡车更周期，且中国房地产拖累了 SDLG，TTM 营收比 2023 年顶部跌了 26%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>工程机械</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>775 亿克朗（上年 FY2024 883 亿，−12%）</td>
+</tr>
+<tr>
+<td>占比</td>
+<td>16%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>11–12%</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>约 90 亿</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三、客车（Buses）——5%</h3>
+<p>Volvo Buses 做城市公交和长途大巴的底盘和整车，北美的 Prevost 做高端长途大巴和房车底盘。一台电动公交 300–400 万克朗，客户是各国市政公交公司，走招标。利润薄。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>客车</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>253 亿（+3%）</td>
+</tr>
+<tr>
+<td>占比</td>
+<td>5%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>6–7%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>四、沃尔沃遍达（Volvo Penta）——4%</h3>
+<p>船用发动机（游艇、渔船、工作船，IPS 吊舱推进系统是游艇界的标配）和工业发动机（发电机组、矿山机械）。一台游艇双机 IPS 系统几十万克朗。小而稳，利润率是集团里最高的。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>遍达</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收</td>
+<td>208 亿（+5%）</td>
+</tr>
+<tr>
+<td>占比</td>
+<td>4%</td>
+</tr>
+<tr>
+<td>经营利润率（估算）</td>
+<td>14%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>五、其他工业业务——1%</h3>
+<p>剩下的零碎（Arquus 军车已卖掉），50 亿，可忽略。</p>
+<h3>六、金融服务（Volvo Financial Services）——5.5%，但结构上很重要</h3>
+<p>集团自己的「银行」：客户买车 30% 首付，剩下 70% 由 VFS 放贷或融资租赁，赚利差。贷款组合两千多亿克朗，<strong>资金来源是集团发债</strong>——所以合并报表上 2,604 亿有息负债，绝大部分是这块的，背后对应客户的应收车款，<strong>不是工业业务欠的钱</strong>。工业业务自身是净现金状态（公司按惯例单独披露，常年几百亿克朗以上）。看沃尔沃的杠杆必须把这块拆出来，否则会误判它「负债累累」。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>金融服务</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收（利息收入）</td>
+<td>260 亿</td>
+</tr>
+<tr>
+<td>经营利润（估算）</td>
+<td>35–40 亿</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>一句话：沃尔沃集团实质是两门生意——「重卡+工程机械的周期性制造+高毛利售后」，加一个给客户放贷的内部银行。</strong> 客车、遍达是配角。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：瑞典公司基本不发股票薪酬，股本 20.33 亿股五年一股没变。没有。</li>
+<li><strong>一次性项目</strong>：TTM 有 18.4 亿资产出售收益（税后约 13 亿）和 1.8 亿重组费用。三年前 FY2023 有 60 亿法律和解、FY2024 有 4.8 亿商誉减值——<strong>卡车行业的「一次性」几乎年年有，单期口径无法判断，本文按剔除处理但心里要有数</strong>。</li>
+<li><strong>资本化的支出——这是本篇的重点</strong>：IFRS 允许把开发费资本化。TTM 费用化研发 242 亿，<strong>另外资本化了 93 亿</strong>（现金流量表「无形资产购买」），摊销回来的约一半（估算）。净效果是利润被美化约 40 亿克朗，占经营利润 8%。电动卡车和自动驾驶的开发正在高峰，这个数以后只会更大。</li>
+<li><strong>回购与稀释</strong>：不回购，也不增发，股本纹丝不动。回馈股东全靠分红：常规 8.5 克朗 + 特别 4.5 克朗 = 每股 13 克朗，按 20.33 亿股是 264 亿克朗，<strong>占 TTM 净利润 74%</strong>。上一年更狠，8.0 + 10.5 特别 = 18.5 克朗。沃尔沃的传统是工业业务净现金超过某个线就一次性发掉，不囤钱、不乱并购，这是它比多数周期股干净的地方。</li>
+<li><strong>利润和现金流的差</strong>：净利润 358 亿，经营现金流 498 亿，自由现金流 326 亿。看着现金流比利润好，其实有两个反向的东西打架，对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流（TTM，亿克朗）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>358</td>
+</tr>
+<tr>
+<td>+ 折旧</td>
+<td>98</td>
+</tr>
+<tr>
+<td>+ 摊销（含资本化开发费和租赁车队的摊销）</td>
+<td>121</td>
+</tr>
+<tr>
+<td>− 资产出售收益</td>
+<td>−18</td>
+</tr>
+<tr>
+<td>+ 减值、重组、坏账计提、权益法亏损</td>
+<td>54</td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>14</td>
+</tr>
+<tr>
+<td>− 应收和存货增加</td>
+<td>−56</td>
+</tr>
+<tr>
+<td>+ 应付账款增加</td>
+<td>55</td>
+</tr>
+<tr>
+<td>− 金融服务放贷规模扩大（钱借给客户了）</td>
+<td>−129</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>498</strong></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−173</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流（报表口径）</strong></td>
+<td><strong>326</strong></td>
+</tr>
+<tr>
+<td>− 资本化开发费（本质是研发支出）</td>
+<td>−93</td>
+</tr>
+<tr>
+<td><strong>= 真自由现金流</strong></td>
+<td><strong>233</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>两个打架的东西：金融服务扩表吃掉 129 亿现金（这是放贷，不是亏），资本化研发藏了 93 亿支出（这是真花掉了）。两个大致抵消，<strong>报表自由现金流 326 亿可以当真的用</strong>，但要知道它是这么凑出来的。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>「真实净利润」：358 亿 − 资产出售收益税后 13 亿 + 重组税后 1 亿 − 资本化研发净美化税后约 29 亿 ≈ <strong>317 亿克朗</strong>。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>6,925 ÷ 358</td>
+<td>19.3 倍</td>
+<td>5.2 元</td>
+</tr>
+<tr>
+<td>公司自己的「调整后」</td>
+<td>剔资产出售和重组，净利润约 346 亿</td>
+<td>20.0 倍</td>
+<td>5.0 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>6,925 ÷ 317</td>
+<td><strong>21.8 倍</strong></td>
+<td><strong>4.6 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>6,925 ÷ 326</td>
+<td>21.3 倍</td>
+<td>4.7 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>合并口径 (6,925 + 2,133 净负债) ÷ 490 = 18.5 倍，<strong>但净负债是放贷的钱</strong>；把金融服务当银行单看，工业业务净现金，EV ≈ 市值</td>
+<td>约 14 倍</td>
+<td>7.1 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>6,925 ÷ 449（FY2023–2025 平均）</td>
+<td>15.4 倍</td>
+<td>6.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均这一行<strong>跟前两家海外公司方向相反</strong>：TTM 358 亿是周期低位，2023–2024 年都赚 500 亿。按三年平均看只有 15 倍——今天买的是谷底利润。反过来说，如果你信卡车周期会回来（北美 2027 年新排放法规前的抢购潮、欧洲降息后的换车），正常年份沃尔沃赚 450–500 亿，对应 14–15 倍。</p>
+<p><strong>大白话：你现在投 100 块进去，按最保守的真实口径算，公司一年替你赚 4.6 块。</strong> 这 4.6 块里，<strong>3.8 块直接以分红打到你账上</strong>（含特别股息，常规部分 2.5 块）——沃尔沃几乎是把能发的都发了，留在公司里的只有 1 块钱不到，用于电动卡车研发和金融服务放贷。这个 4.6 块未来两三年<strong>大概率变大</strong>：现在是周期低点，利润率 10.4% 对比顶部 14.6%，只要北美订单回暖，利润回 450 亿就是 6.5 块。风险是周期底还没到（欧洲经济、关税、中国工程机械），以及电动化转型要烧的研发。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>周期底部的好公司，价格公道。</strong> 19 倍买的是谷底利润，三年平均 15 倍，3.8% 的股息全是真金白银，股本五年一股没动，工业业务净现金。它不便宜到需要抢，但对一个不想猜时点的人来说，在周期底部按公道价买全球第二的重卡集团、拿着 3–4% 股息等周期回来，是划算的等待。值得放在观察名单里，往下跌就是机会。</p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,429 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NTDOF · 任天堂 Nintendo Co., Ltd.</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">NTDOF</a></div>
+<div class="mine" data-t="NTDOF"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">好生意</span><span class="bg star">⭐ 值得观察</span></div><div class="note">剔汇兑22倍、剥现金16.5倍EV/EBIT,周期第2年零负债零SBC,值这个价</div><h1>NTDOF · 任天堂 Nintendo Co., Ltd.</h1>
+<p>市值 9.33 万亿日元(约 612 亿美元,按 1 美元 = 152 日元) / 东京主板股价 8,093 日元(约 53 美元;场外代号 NTDOF 是同一股票) / 消费电子·游戏 / TTM 截止 2026 年 6 月 30 日(财年 4 月起,FY2026 = 2025 年 4 月至 2026 年 3 月)</p>
+<p><strong>先说清楚数据口径</strong>:财报是日元、日本会计准则;stockanalysis 主上市页市值也是日元,倍数直接算,不用换汇。任天堂一季报不披露现金流量表,所以现金流只有 FY2026 全年(截至 2026 年 3 月)的数字,利润表用 TTM(截至 2026 年 6 月)。</p>
+<hr />
+<h2>第一部分:它到底做几件事</h2>
+<p>任天堂财报按「Switch 平台 / 其他游戏平台 / 手游与 IP 相关 / 其他(扑克牌等)」四个分部披露营收,但实质上只有<strong>两门生意</strong>:卖游戏机和游戏(占九成),以及把马力欧、宝可梦、塞尔达这些 IP 租给别人赚钱(占一成不到,但利润率极高)。</p>
+<h3>生意 A:Switch 平台——先把机器塞进你家,再一年卖你三四款游戏</h3>
+<p>这是一门「剃须刀 + 刀片」生意,机器是刀架,游戏是刀片。</p>
+<p><strong>机器</strong>:Switch 2 于 2025 年 6 月 5 日上市,美国定价 449.99 美元,日本国内限定版 49,980 日元。上一代 Switch(2017 年上市)累计卖了超过 1.5 亿台,是史上第三畅销的游戏机。新机上市第一年,任天堂自己给的目标是 1900 万台量级(公司口径),FY2026 实际落在这个量级。<strong>机器本身几乎不赚钱</strong>——上市初期硬件定价贴着成本走,这也是 FY2026 毛利率从上年的 61% 掉到 39% 的原因:一年里卖了太多低毛利的机器。</p>
+<p><strong>游戏才是利润来源</strong>,分三层:
+- <strong>自研游戏</strong>(第一方):《马力欧赛车 世界》(Switch 2 首发,79.99 美元)、《咚奇刚 蕉力全开》、《宝可梦传说 Z-A》、《星之卡比 飞天赛车》、《密特罗德 究极4》。一款自研大作零售价 60–80 美元,数字版全归任天堂;实体卡带扣掉卡带成本和渠道分成,任天堂还能拿走五成多。一款卖 3000 万份的马力欧赛车,就是二三十亿美元的收入,而开发成本只是零头。上一代 Switch 一年卖 1.5 亿份软件,其中八成是任天堂自己的游戏——<strong>这个比例在整个行业里独一无二</strong>(索尼、微软主机上第一方占比只有两三成)。
+- <strong>第三方游戏分成</strong>:卡普空、世嘉、史克威尔在 Switch 上卖游戏,数字版任天堂抽 30%,实体版收卡带制造费加授权费。
+- <strong>Nintendo Switch Online 订阅</strong>:基础版一年 19.99 美元、扩展包 49.99 美元,能联机、能玩 NES/SNES/N64/GameCube 老游戏。订阅用户 3400 万以上,一年稳稳几百亿日元,纯利润。</p>
+<p><strong>为什么客户非买不可</strong>:任天堂的游戏只在任天堂的机器上有。你想玩马力欧、塞尔达、动物森友会、宝可梦正作,没有第二个地方。这是全世界游戏公司里最硬的独占——索尼的独占可以移植 PC,任天堂的从来不。</p>
+<p><strong>周期性是这门生意的命门</strong>:主机生命周期 6–8 年,新机上市第 1 年机器卖得多但利润薄,第 2–4 年软件装机量起来、利润冲顶,第 5 年以后往下走。FY2025(Switch 1 末年)净利润 2788 亿日元,FY2024 是 4906 亿——同一家公司,一年差 43%,就是周期。<strong>现在是 Switch 2 上市第 2 年,按历史规律利润还在往上走的阶段</strong>。</p>
+<h3>生意 B:手游与 IP 授权——让别人花钱把马力欧搬上银幕和乐园</h3>
+<p>这块 FY2025 营收 677 亿日元,只占 6%,但成本几乎为零。
+- <strong>电影</strong>:《超级马力欧兄弟大电影》(2023)全球票房 13.6 亿美元,任天堂是联合出品方,分票房和衍生品;《超级马力欧银河大电影》2026 年 4 月上映。
+- <strong>主题乐园</strong>:环球影城的「超级任天堂世界」已开在大阪、好莱坞、奥兰多(2025 年 5 月 Epic Universe 开园),任天堂收授权费。
+- <strong>手游</strong>:《马力欧赛车 巡回》《火焰纹章英雄》,任天堂自己做的手游一直半死不活,这块主要靠合作方。
+- <strong>宝可梦</strong>:注意宝可梦公司(The Pokémon Company)不是任天堂子公司,任天堂持股约三分之一,<strong>收益走权益法记在营业外</strong>,不在营收里。2024–2025 年宝可梦卡牌大爆发,这笔权益法收益是任天堂营业外收入里实打实的一块。</p>
+<h3>生意 C:扑克牌、花札——公司 1889 年的老本行</h3>
+<p>FY2025 营收 137 亿日元,占 1%,略过。</p>
+<h3>钱在哪里</h3>
+<p>财报分部只更新到 FY2025(2025 年 3 月,Switch 2 上市前),FY2026 和 TTM 的分部数据 stockanalysis 还没有。用 FY2025 看结构,再拿 TTM 总数看现在的规模:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>FY2025 营收(亿日元)</th>
+<th>占比</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Switch 平台(机器 + 游戏 + 订阅)</td>
+<td>10,503</td>
+<td>90%</td>
+<td>Switch 1 末年,机器卖得少</td>
+</tr>
+<tr>
+<td>其他游戏平台</td>
+<td>332</td>
+<td>3%</td>
+<td>老机器的尾巴</td>
+</tr>
+<tr>
+<td>手游与 IP 授权</td>
+<td>677</td>
+<td>6%</td>
+<td>电影、乐园、手游</td>
+</tr>
+<tr>
+<td>扑克牌等</td>
+<td>137</td>
+<td>1%</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>11,649</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>TTM 整体(截至 2026-06)</th>
+<th>亿日元</th>
+<th>同比</th>
+<th>利润率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>22,585</td>
+<td>+51.5%</td>
+<td></td>
+</tr>
+<tr>
+<td>毛利</td>
+<td>10,052</td>
+<td></td>
+<td>44.5%</td>
+</tr>
+<tr>
+<td>经营利润</td>
+<td>4,458</td>
+<td></td>
+<td>19.7%</td>
+</tr>
+<tr>
+<td>税前利润</td>
+<td>6,463</td>
+<td></td>
+<td>28.6%</td>
+</tr>
+<tr>
+<td>净利润</td>
+<td>4,754</td>
+<td></td>
+<td>21.1%</td>
+</tr>
+</tbody>
+</table></div>
+<p>营收从 FY2025 的 1.16 万亿翻到 FY2026 的 2.31 万亿,就是 Switch 2 上市。<strong>分部利润财报不披露</strong>,按行业常识估算:硬件毛利接近零,自研软件毛利 70% 以上,整体经营利润基本全来自软件、订阅和 IP 授权——机器只是获客成本。</p>
+<p>一个值得注意的推算:TTM 减去 FY2026 全年,得到的是「2026 年 4–6 月这一季减去去年同期」。去年同期(Switch 2 首发季)营收约 5723 亿、经营利润约 569 亿;算下来<strong>今年 4–6 月营收约 5180 亿(比首发季少一成),经营利润却约 1430 亿(是去年的 2.5 倍)</strong>。机器卖得少了,利润反而翻倍——这正是「硬件退、软件进」的周期规律在兑现。</p>
+<hr />
+<h2>第二部分:把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励(SBC)</strong>:没有。任天堂的董事限制性股票奖励一年几亿日元,对 4754 亿净利润可以忽略。日本公司普遍如此,这是跟美股相比最干净的一点。</li>
+<li><strong>一次性项目</strong>:没有减值、重组、诉讼。<strong>但有一个更隐蔽的东西:营业外收入。</strong> TTM 经营利润 4458 亿,税前利润却有 6463 亿,中间差了 2005 亿营业外净收入——净利润(4754 亿)居然比经营利润还高。这 2005 亿由三块组成:① 2 万亿现金(大部分是美元存款)的利息,估算 500–700 亿,这是真的、会持续;② 宝可梦公司等权益法收益,FY2026 现金流量表里「权益投资收益」一项是 828 亿,这也是真生意;③ <strong>汇兑收益</strong>——任天堂海外收入占八成、持有大量外币,日元贬值就出汇兑利得,FY2026 现金流量表里「汇率变动对现金的影响」是 +725 亿,说明这一年日元是贬的,汇兑利得估算在 500–800 亿之间。<strong>汇兑这块不是经营能力,日元一升值就反过来变亏损</strong>。单期口径分不清精确数,我按 700 亿税前、约 500 亿税后当作「不可持续」剔除。旁证:任天堂自己给 FY2027 的股息指引是每股 162 日元(比 FY2026 的 219 日元低 26%),它按 50% 派息率算,等于公司自己预计 FY2027 净利润在 3700 亿上下,比 TTM 的 4754 亿低——公司自己也没把汇兑和投资收益当常态。</li>
+<li><strong>资本化的支出</strong>:没有。任天堂在日本准则下游戏开发费直接费用化,不像美国同行把开发成本挂在资产负债表上慢慢摊。这是<strong>又一个干净点</strong>。</li>
+<li><strong>回购与稀释</strong>:FY2026 回购 999 亿日元,SBC 约为零,<strong>比值无穷大,是真回购</strong>。股本一年减少 0.98%。另外派息 1479 亿。回购加派息 2478 亿,占 FY2026 净利润的 58%。</li>
+<li><strong>利润和现金流的差</strong>:FY2026 净利润 4241 亿,经营现金流只有 2898 亿,自由现金流 2626 亿——<strong>差了 1600 亿,必须对账</strong>。日本准则的现金流量表从税前利润起算,所以表头是 5682 亿:</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目(FY2026,亿日元)</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>税前利润</td>
+<td>5,682</td>
+<td>日本准则从这里起算</td>
+</tr>
+<tr>
+<td>加:折旧摊销</td>
+<td>+159</td>
+<td>轻资产,折旧极少</td>
+</tr>
+<tr>
+<td>减:权益投资收益(非现金)</td>
+<td>−828</td>
+<td>宝可梦公司的利润记了账,但钱在宝可梦公司账上</td>
+</tr>
+<tr>
+<td>减:其他经营项目(主要是交税)</td>
+<td>−1,063</td>
+<td>全年缴税 1054 亿</td>
+</tr>
+<tr>
+<td>减:应收账款增加</td>
+<td>−748</td>
+<td>Switch 2 铺货,零售商还没付钱</td>
+</tr>
+<tr>
+<td>减:存货增加</td>
+<td>−276</td>
+<td>备货</td>
+</tr>
+<tr>
+<td>加:应付账款增加</td>
+<td>+730</td>
+<td>欠供应商的钱也多了</td>
+</tr>
+<tr>
+<td>减:其他营运资产变化</td>
+<td>−758</td>
+<td>预付、其他流动项目</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>2,898</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>减:资本开支</td>
+<td>−272</td>
+<td>新研发大楼等</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>2,626</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>结论:1600 亿差额里,828 亿是宝可梦的权益法利润(真赚了、但钱没进任天堂口袋,只是每年分红回来一部分),剩下约 1050 亿是新机上市铺货造成的营运资金占用(应收 + 存货 − 应付 + 其他)。<strong>后者是周期性的</strong>——Switch 1 时代 FY2024 经营现金流 4621 亿比净利润 4906 亿只低 6%,新机铺货期一过,现金流会追回来。不是利润造假,是新机上市年份的正常现象。</p>
+<hr />
+<h2>第三部分:市盈率,多口径</h2>
+<p>市值 93,298 亿日元。企业价值 = 市值 − 净现金 19,679 亿 = 73,631 亿(<strong>无有息负债</strong>,账上现金和投资 1.97 万亿,占市值 21%)。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投 100 块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>93,298 ÷ 4,754</td>
+<td>19.6 倍</td>
+<td>5.1 元</td>
+</tr>
+<tr>
+<td>公司自己的口径</td>
+<td>日本公司无 Non-GAAP;「经常利益」6463 亿就是税前利润,等同 GAAP</td>
+<td>19.6 倍</td>
+<td>5.1 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>93,298 ÷(4,754 − 约 500 亿税后汇兑利得)= 93,298 ÷ 4,250</td>
+<td><strong>22.0 倍</strong></td>
+<td><strong>4.5 元</strong></td>
+</tr>
+<tr>
+<td>只算经营利润(最保守)</td>
+<td>93,298 ÷(4,458 × 0.735 税后)= 93,298 ÷ 3,277</td>
+<td>28.5 倍</td>
+<td>3.5 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>93,298 ÷ 2,626(FY2026,铺货期压低)</td>
+<td>35.5 倍</td>
+<td>2.8 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>73,631 ÷ 4,458</td>
+<td>16.5 倍</td>
+<td>6.1 元(税前)</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>93,298 ÷ 平均(4,906 / 2,788 / 4,241)= 93,298 ÷ 3,978</td>
+<td>23.5 倍</td>
+<td>4.3 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>几行怎么读:
+- <strong>真实口径 22 倍</strong>是主口径:汇兑剥掉,但利息和宝可梦权益收益留着——那是真钱。
+- <strong>「只算经营利润」28.5 倍</strong>是把营业外全部当零,过于苛刻,因为 2 万亿现金的利息和三分之一个宝可梦公司都是实打实的资产。但它告诉你:<strong>卖游戏这门主业本身,现在是 28 倍</strong>。
+- <strong>EV/EBIT 16.5 倍</strong>才是「买下整家公司、把现金拿走之后」的价格,这个数比表面市盈率好看得多——21% 的市值是现金。
+- <strong>三年平均 23.5 倍</strong>跟真实口径几乎一样,说明<strong>TTM 不是周期顶点</strong>。这一点跟 NVDA 那种「当期 34 倍、三年平均 73 倍」完全相反——任天堂 FY2025 是谷底,现在是从谷底往上爬的第二年,历史上 Switch 1 第 2–4 年(FY2019–FY2021)净利润从 1940 亿涨到 4800 亿,翻了 2.5 倍。
+- <strong>自由现金流 35.5 倍</strong>是最难看的一行,但上面对过账:一半是宝可梦的权益法利润没进口袋,一半是铺货期的营运资金,FY2027 大概率收敛到 20 倍出头。</p>
+<p><strong>大白话</strong>:你现在投 100 块进去,按剔除汇兑的真实口径,公司一年替你赚 4.5 块;要是只认卖游戏的主业,3.5 块;要是把公司账上那 21 块现金先拿走再算,主业的税前回报是 6.1 块。</p>
+<p>这 4.5 块里,FY2026 有 58% 以分红加回购的形式实际回到你口袋(每股 219 日元股息,2.7% 的股息率,加上 1% 的回购),剩下 42% 留在公司——但任天堂留钱基本就是存银行,不搞并购、不扩产能,资本开支一年只有 272 亿(营收的 1.2%),现金堆到 2 万亿是它几十年的风格。</p>
+<p>这 4.5 块未来大概率<strong>变大</strong>:① Switch 2 装机量从 2000 万台往 5000 万、8000 万台走,每台机器后面跟着 8–10 份软件;② 硬件成本随规模下降、利润率修复(今年 4–6 月经营利润已经是去年同期的 2.5 倍);③ 《马力欧银河大电影》和奥兰多乐园贡献授权收入。会<strong>变小</strong>的风险只有两个:日元大幅升值(汇兑利得反转,加上海外收入折算缩水)、以及 Switch 2 后劲不足——但从软件销量和订阅数看,后者暂时没有迹象。分析师给的一年后市盈率 27 倍看着比现在高,那是把公司自己的保守指引直接拿来算的,任天堂几十年来指引一贯给低。</p>
+<hr />
+<h2>第四部分:一句话结论</h2>
+<p><strong>值这个价,不便宜也不贵——剔掉汇兑 22 倍,剥掉现金 16.5 倍 EV/EBIT,买的是一个在周期第 2 年、账上零负债、利润几乎全是真现金的独家 IP 生意</strong>。股价一年跌了 41%,跌的是 2025 年新机上市时的过度兴奋,现在的价格已经回到「按周期中段利润算合理」的位置。它不会让你一年赚 30%,但你也不需要担心任何一张报表在骗你:没有 SBC、没有资本化、没有商誉、没有债。想等更便宜,得等日元升值或市场对 Switch 2 后劲的恐慌,这两个都不是基本面问题。</p><script src="user.js"></script>
+</div></body></html>

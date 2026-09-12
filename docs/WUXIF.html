@@ -1,0 +1,386 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WUXIF · 药明康德（WuXi AppTec）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">WUXIF</a></div>
+<div class="mine" data-t="WUXIF"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">真实29倍买的是多肽缺货撑出的历史最高毛利率,H股还比A股贵25%</div><h1>WUXIF · 药明康德（WuXi AppTec）</h1>
+<p>市值 750 亿美元（场外 H 股口径，折合约 5,330 亿元）/ 场外价 26.70 美元（上海 A 股 151.24 元）/ 医药研发生产外包（CRDMO）/ TTM 截止 2026-06-30</p>
+<blockquote>
+<p>海外公司三个注意：财报是人民币，市值按 <strong>1 美元 ≈ 7.1 元</strong> 折算。WUXIF 是在美国场外交易的 <strong>H 股</strong>，H 股价折成人民币约 190 元，比同一天的 A 股 151 元<strong>贵约 25%</strong>——买 WUXIF 的人为同一份权益多付了四分之一。下面所有倍数按 H 股口径算，A 股口径在表后单列。取数走上海主上市页（603259），场外页没有财报。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>药明康德是全球最大的「药物研发和生产外包」公司之一。药企有一个想法（比如「做一个能同时降血糖又减肥的分子」），从想法到药片，中间要合成几千个候选分子、做毒性实验、做临床、再把中标分子放大到吨级生产——药明康德把这整条流水线拆成一段一段，按段收费，谁来都能用。财报按四块分部披露营收（只到营收，不披露分部利润，下面的利润率是估算）。</p>
+<h3>一、化学业务（WuXi Chemistry）——80% 的收入，也是全部的故事</h3>
+<p>这是「研（R）—开发（D）—生产（M）」三段一体的小分子业务，加上近两年爆发的 <strong>TIDES（多肽与寡核苷酸）</strong>。</p>
+<p><strong>怎么运作、怎么收钱：</strong>
+- <strong>研（R）</strong>：波士顿一家生物科技公司有一个苗头分子，想知道改哪个基团能让它更有效、毒性更低。它把项目包给药明康德上海的化学团队，按「FTE」收费——一个化学家一年大约 12–15 万美元，包 20 个化学家一年就是 250–300 万美元。这些化学家一年合成上千个类似物，寄回美国做筛选。全球小分子新药的候选分子，有相当一部分是在药明康德的通风橱里合成的。
+- <strong>开发（D）</strong>：分子选定后进临床，需要几公斤到几十公斤符合 GMP 的原料药。工艺开发要解决「实验室做 10 克很容易，做 10 公斤会爆炸」的问题。按项目收，一个项目几百万到上千万元。
+- <strong>生产（M）</strong>：药上市后，常州、泰兴的工厂按吨供货，一个商业化项目一年几千万到几亿元，一签就是多年。关键是<strong>客户几乎不会换</strong>：换供应商要重新向 FDA 报批，耗时一两年，没人愿意冒这个险。截至 2025 年药明康德的商业化项目有 70 多个，管线里有 3,000 多个分子，从早期一路「漏斗」到商业化，这就是它增长的确定性来源。
+- <strong>TIDES</strong>：GLP-1 减肥药（司美格鲁肽、替尔泊肽这类）是多肽，多肽合成的固相反应器产能全球紧缺。药明康德在常州和泰兴建了全球最大的多肽固相合成产能（2024 年底 41,000 升），大药厂排队订。公司披露 2024 年 TIDES 收入 58 亿元，增速 70%，2025 年继续高增长。这一块是 TTM 毛利率从 36% 拉到 54% 的主因——多肽产能稀缺，价格硬。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>化学业务</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2025 营收</td>
+<td>364.7 亿元（上年 290.5 亿，+25.5%）</td>
+</tr>
+<tr>
+<td>占持续经营总营收</td>
+<td>约 84%（不含已出售业务）</td>
+</tr>
+<tr>
+<td>毛利率（估算）</td>
+<td>55% 左右，靠 TIDES 和商业化生产拉高</td>
+</tr>
+<tr>
+<td>贡献利润（估算）</td>
+<td>经营利润的 90% 以上</td>
+</tr>
+</tbody>
+</table></div>
+<h3>二、测试业务（WuXi Testing）——9%</h3>
+<p>药上人体前，必须做动物毒性实验（比如 28 天大鼠+犬毒理）、药代动力学、生物分析。苏州的安评中心是中国最大、通过 FDA/OECD 认证的实验室，一个 IND 前的完整安评套餐几千万元。此外还有临床 CRO 和 SMO（派人驻医院管临床试验现场）。这块在国内卷价格，增速慢。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>测试业务</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2025 营收</td>
+<td>40.4 亿元（上年 38.6 亿，+4.7%）</td>
+</tr>
+<tr>
+<td>占比</td>
+<td>约 9%</td>
+</tr>
+<tr>
+<td>毛利率（估算）</td>
+<td>30–35%</td>
+</tr>
+</tbody>
+</table></div>
+<h3>三、生物学业务（WuXi Biology）——6%</h3>
+<p>发现阶段的生物学服务：把客户合成的分子放到细胞、动物模型里测活性，DNA 编码化合物库（DEL）筛选，体外体内药理。按 FTE 和项目收费。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生物学业务</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FY2025 营收</td>
+<td>26.8 亿元（上年 25.4 亿，+5.2%）</td>
+</tr>
+<tr>
+<td>占比</td>
+<td>约 6%</td>
+</tr>
+<tr>
+<td>毛利率（估算）</td>
+<td>40% 左右</td>
+</tr>
+</tbody>
+</table></div>
+<h3>四、已出售 / 其他</h3>
+<p>细胞与基因治疗业务（WuXi ATU，美国和英国的工厂）2025 年卖掉了，财报里记作「终止经营」，FY2025 贡献 20.4 亿收入和 14.3 亿净利润（含出售收益）。以后没有了。「其他」2.4 亿可忽略。</p>
+<p><strong>一句话：药明康德实质上是一门生意——小分子+多肽的研发生产外包——外加两块打辅助的实验室服务。</strong> 客户 60% 以上在美国，这是它最大的护城河（大药厂离不开）也是最大的风险（美国《生物安全法案》点名药明，2024 年众议院通过后卡在参议院，至今是悬在头顶的剑）。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：A 股财报页不单列 SBC，药明历年披露的股权激励费用在几亿元量级，占净利润不到 5%，这里不做调整。</li>
+<li><strong>一次性项目——这是本篇的重点</strong>：TTM 净利润 217.7 亿里，<strong>不是主业赚的部分不少</strong>。（1）「利息与投资收益」31.3 亿——里面大头是减持药明合联（WuXi XDC）等股权的收益，FY2025 这一行高达 64.2 亿；（2）投资处置收益 7.3 亿；（3）终止经营（卖掉的 ATU）贡献 14.3 亿。现金流量表里「投资出售收益」调减了 54.9 亿，和上面三项加起来（约 53 亿）对得上。<strong>单期口径无法判断减持合联股份会不会年年发生</strong>——药明手里还有合联的股份，可以继续卖，但那是卖家当，不是主业。</li>
+<li><strong>资本化的支出</strong>：没有。研发费 11.5 亿全部费用化。</li>
+<li><strong>回购与稀释</strong>：TTM 回购 41.1 亿，<strong>但同期增发了 70.5 亿</strong>（2025 年 H 股配售），股本一年膨胀 3.35%。回购是在给增发打掩护，净效果是稀释，不是回馈。</li>
+<li><strong>利润和现金流的差</strong>：净利润 217.7 亿，经营现金流 194.7 亿，自由现金流 130.7 亿。差得多，逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>净利润 → 经营现金流（TTM，亿元）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>217.7</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>37.4</td>
+</tr>
+<tr>
+<td>− 投资出售收益（不是经营赚的）</td>
+<td>−54.9</td>
+</tr>
+<tr>
+<td>+ 坏账计提及其他非现金项</td>
+<td>15.5</td>
+</tr>
+<tr>
+<td>− 应收账款增加（客户还没付钱）</td>
+<td>−46.0</td>
+</tr>
+<tr>
+<td>− 存货增加（多肽原料备货）</td>
+<td>−39.9</td>
+</tr>
+<tr>
+<td>+ 应付账款增加（自己也欠着供应商）</td>
+<td>56.9</td>
+</tr>
+<tr>
+<td>+ 其他营运项目</td>
+<td>9.3</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>194.7</strong></td>
+</tr>
+<tr>
+<td>− 资本开支（多肽产能扩建）</td>
+<td>−64.0</td>
+</tr>
+<tr>
+<td><strong>= 自由现金流</strong></td>
+<td><strong>130.7</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看懂这张表就看懂了药明：<strong>账面利润里有 55 亿是卖股票赚的，主业营运资金一年吃掉 30 亿，再花 64 亿扩产能——217 亿利润最后落袋 131 亿，六成。</strong> 这不是造假，是一家高速扩产的制造企业的正常形态，但估值时要用 131 而不是 217。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>先定「真实净利润」：经营利润 223.3 亿，减非经营支出 5.5 亿，加合理的现金利息收入约 10 亿（账上 480 亿现金），按 19.7% 税率、扣少数股东 1.3 亿 ≈ <strong>182 亿元</strong>。剔掉的是：投资减持收益、终止经营收益、一次性处置损益。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数（H 股口径）</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>5,330 ÷ 217.7</td>
+<td>24.5 倍</td>
+<td>4.1 元</td>
+</tr>
+<tr>
+<td>公司自己的 Non-IFRS</td>
+<td>药明的「经调整 Non-IFRS 净利润」会剔掉投资收益、加回 SBC，反而<strong>比 GAAP 低</strong>，约等于下一行</td>
+<td>≈ 29 倍</td>
+<td>≈ 3.4 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>5,330 ÷ 182</td>
+<td><strong>29.3 倍</strong></td>
+<td><strong>3.4 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>5,330 ÷ 130.7</td>
+<td>40.8 倍</td>
+<td>2.5 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>(5,330 − 329 净现金) ÷ 223.3</td>
+<td>22.4 倍</td>
+<td>4.5 元</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>5,330 ÷ 127.4（FY2023–2025 平均，含投资收益）</td>
+<td>41.8 倍</td>
+<td>2.4 元</td>
+</tr>
+</tbody>
+</table></div>
+<p>A 股口径（市值 4,490 亿）所有倍数乘 0.84：GAAP 20.6 倍、真实 24.7 倍、自由现金流 34 倍、三年平均 35 倍。</p>
+<p>三年平均那一行还要再打折：FY2023–2025 三年报表利润平均 127 亿，里面 FY2025 就含了六十多亿投资收益，<strong>剔掉后真实三年平均只有 100 亿出头，对应 H 股 50 倍以上</strong>。这句话是全篇最重要的一句：<strong>今天的 182 亿真实利润，是 GLP-1 多肽缺产能把毛利率推到历史最高（54%，三年前 36%）的结果，三年前这家公司一年只赚 80 亿。</strong></p>
+<p><strong>大白话：你现在投 100 块买 WUXIF，按最保守的真实口径算，公司一年替你赚 3.4 块（买 A 股是 4.1 块）。</strong> 这 3.4 块里，分红回你 1.25 块（股息率 1.25%），回购被增发抵掉还倒欠——实际回你口袋的只有分红那 1 块多。剩下的两块多留在公司扩多肽产能（一年 64 亿资本开支）和买理财（TTM 买了 110 亿证券）。这个 3.4 块未来两三年<strong>大概率还会变大</strong>——多肽订单能见度很高，管线漏斗在往下漏；但<strong>五年维度看要打折</strong>——多肽产能全球都在建（三星、龙沙、药明自己），稀缺溢价会消失，毛利率回到 40–45% 是正常状态。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>好生意，不便宜，而且买 WUXIF 比买 A 股多付 25%。</strong> 真实口径 29 倍买的是历史最高毛利率上的利润，三年平均口径 50 倍；主业现金转化率六成，回购被增发抵消；头顶还悬着《生物安全法案》。它值得放在名单上等——等多肽溢价消退把毛利率打回去、或者等法案风险落地打出一个坑——但不是现在这个价，更不是通过 H 股这个价。</p><script src="user.js"></script>
+</div></body></html>

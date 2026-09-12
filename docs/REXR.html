@@ -1,0 +1,351 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>REXR · Rexford 工业地产信托</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">REXR</a></div>
+<div class="mine" data-t="REXR"></div><div class="tags"><span class="bg fair">公道</span><span class="bg q">一般</span><span class="bg star">⭐ 值得观察</span></div><div class="note">16.8倍FFO+4.7%股息,租金停涨、7亿减值、卖楼回购,等换约租金回升</div><h1>REXR · Rexford 工业地产信托</h1>
+<p>市值 87.9 亿美元 · 股价 37.36 美元 · 工业物流地产 REIT(只做南加州) · TTM 截止 2026-06-30</p>
+<p><strong>这是地产企业(REIT),下面用 FFO(营运现金利润)口径而不是市盈率,原因是 REIT 的净利润被房子的折旧和一次性减值扭曲——仓库没有真的每年贬值 3 亿,而 TTM 那 7.2 亿减值也不是今年的经营结果。</strong> TTM 账面净亏 4.0 亿美元,全部来自减值,经营本身赚钱,属于<strong>账面亏</strong>。</p>
+<h2>第一部分:它到底做几件事</h2>
+<p>一门生意:在南加州买仓库、租仓库。营收 98% 是租金(9.75 亿),剩下是利息收入(0.16 亿)和替第三方管理物业的服务费(可以忽略)。</p>
+<p><strong>它是什么</strong>:Rexford 只在一个地方投资——南加州的洛杉矶、橙县、内陆帝国、圣迭戈、文图拉,专做「填充式」(infill)工业地产。意思是:不去沙漠里盖百万平方英尺的超级物流中心,而是在城市建成区里买那些几万到几十万平方英尺的中小仓库——这些地方已经没有空地可以盖新的,老仓库反而成了稀缺品。它手里大约四百多处物业、五千万平方英尺上下(财报页没给,量级按公开资料),两百五十来个员工管这些。</p>
+<p><strong>租给谁</strong>:租户很散,没有一家占比大。典型租户是替电商做最后一公里配送的第三方物流、食品饮料分销商、给航空航天和汽车供货的小制造商、服装批发、建材经销……说白了就是南加州两千多万人日常消费品的仓储环节。</p>
+<p><strong>怎么收钱</strong>:签 3 到 7 年的租约,租金每年固定涨 3–4%,而且是「三净租约」(NNN)——物业税、保险、维修都由租户承担,Rexford 收的是净租金。举个例子:一家做冷链配送的公司在洛杉矶东部租一个 10 万平方英尺的仓库,南加州填充式仓库的月租大约每平方英尺 1.5 到 2 美元,一年租金 180 万到 240 万美元,期间每年涨 3.5%;五年后到期,如果市场租金涨了,新签约直接跳到市场价。<strong>Rexford 过去十年的故事就是「到期换新租约时租金跳涨」</strong>——2021、2022 年这个跳涨幅度是 50% 以上,那时候营收一年涨 40%。</p>
+<p>还有一个附加动作叫「翻新增值」:低价买下老旧、半空置的仓库,花一两年翻新,重新按市场价出租。这是它跟普洛斯(Prologis)那种买现成大仓库的模式最大的区别。</p>
+<p><strong>现在的问题</strong>:这套模式的燃料是南加州租金往上涨,而南加州工业租金从 2022 年高点回落了。营收增速从 2025 年一季度的 +18% 一路掉到 TTM 的 +0.6%——<strong>增长停了</strong>。分析师对未来三年营收的预测是每年 −3%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>同比</th>
+<th>占比</th>
+<th>物业净收入率</th>
+<th>贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>租金</td>
+<td>9.75 亿美元</td>
+<td>+0.7%</td>
+<td>98%</td>
+<td>76%(租金 − 物业费 2.30 亿)</td>
+<td>物业净收入 7.45 亿</td>
+</tr>
+<tr>
+<td>利息及管理费</td>
+<td>0.17 亿</td>
+<td>—</td>
+<td>2%</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>9.92 亿</td>
+<td>+0.6%</td>
+<td>100%</td>
+<td></td>
+<td>经营利润 3.91 亿(扣完折旧 3.04 亿、总部费用 0.68 亿)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分:把会计障眼法剥掉</h2>
+<p><strong>股权激励(SBC)</strong>:TTM 8,550 万美元,一年前同期是 4,130 万,<strong>翻了一倍</strong>。2025 年四季度那一个季度就冲了六千万左右,大概率是高管变动带来的加速归属,单期口径无法判断会不会年年这样。它占 FFO 的 16%,对一家 256 人的公司来说是很重的数——不过 FFO 已经把它当费用扣掉了(它在总部费用里),下面的倍数不用再调。</p>
+<p><strong>一次性项目</strong>:
+- <strong>资产减值 −7.21 亿美元</strong>:2025 年四季度 0.89 亿、2026 年一季度 0.07 亿、<strong>二季度一口气 6.25 亿</strong>。这是 Rexford 官方承认「我们手里的楼比账面值便宜」——减值通常是准备出售的物业市场价低于成本触发的。这一项是 TTM 净亏损的全部来源,是真一次性(不是现金流出),但它传递的信息比数字本身重要:资产价格在跌。
+- 卖楼收益 +0.97 亿:TTM 卖了 3.34 亿的楼,赚了近 1 亿——卖出去的楼是有账面利润的,被减值的是留在手里的。
+- 其他非常项目 −0.61 亿:单期看不出是什么,量级不大。</p>
+<p><strong>资本化的支出</strong>:REIT 的装修、租户改造、租赁佣金都是资本化的,不进 FFO。stockanalysis 不拆这项,估算每年 4,000 万到 6,000 万美元(按同类工业 REIT FFO 的 10% 左右),这也是 FFO 和 AFFO(真正能分给股东的现金)之间的差。</p>
+<p><strong>回购与稀释</strong>:这是全篇最有意思的地方。截至 2025 年中的一年里,Rexford 还在增发——发了 8.4 亿美元的股票买楼。<strong>一年后掉头:TTM 回购了 5.72 亿美元,是 SBC 的 6.7 倍,股本一个季度减 2%。</strong>回购的钱从哪来:卖楼 3.34 亿、少买楼(收购从一年前的 6.4 亿降到 2.82 亿)、账上现金从 1.68 亿花到 0.41 亿。管理层这是在说「我们的楼在市场上卖 X,股票只卖 0.8X,那就卖楼买股票」。方向是对的,但注意它同时在缩表——一个靠买楼扩张的 REIT 开始净卖楼,增长故事就换了。</p>
+<p><strong>利润和现金流的差</strong>:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>亿美元</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润(含少数股东)</td>
+<td>−3.88</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+2.87</td>
+</tr>
+<tr>
+<td>+ 资产减值(非现金)</td>
+<td>+7.21</td>
+</tr>
+<tr>
+<td>− 卖楼收益(归投资活动)</td>
+<td>−0.97</td>
+</tr>
+<tr>
+<td>+ 股权激励</td>
+<td>+0.86</td>
+</tr>
+<tr>
+<td>+ 其他摊销</td>
+<td>+0.05</td>
+</tr>
+<tr>
+<td>− 营运资金及其他</td>
+<td>−1.05</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>+5.09</strong></td>
+</tr>
+<tr>
+<td>付给普通股股东的分红</td>
+<td>−4.15</td>
+</tr>
+<tr>
+<td>付给优先股</td>
+<td>−0.09</td>
+</tr>
+<tr>
+<td><strong>= 分红后剩下</strong></td>
+<td><strong>+0.85</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>经营现金流 5.09 亿,分红花掉 4.24 亿,剩 0.85 亿;再扣掉估算 0.5 亿的维护性资本开支,<strong>真正自由的钱一年只有三四千万美元</strong>。回购的 5.7 亿全靠卖楼和花存量现金,不是经营赚出来的。</p>
+<p><strong>债务</strong>:有息负债 32.7 亿,现金 0.41 亿,净负债 32.3 亿;净负债/EBITDA 4.8 倍,利息保障 3.7 倍。工业 REIT 里算中等偏稳,不是问题,但也没有再加杠杆回购的空间。到期结构和出租率 stockanalysis 不给,这里不编数。</p>
+<h2>第三部分:REIT 口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 市盈率</td>
+<td>市值 ÷ 净利润</td>
+<td>亏损,无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>市值 / FFO</strong></td>
+<td>87.9 ÷ 5.24(每股 2.28)</td>
+<td><strong>16.8 倍</strong></td>
+<td><strong>6.0 块</strong></td>
+</tr>
+<tr>
+<td>市值 / AFFO(估算)</td>
+<td>FFO − 估 0.5 亿维护性开支 = 4.74 亿</td>
+<td>18.5 倍</td>
+<td>5.4 块</td>
+</tr>
+<tr>
+<td>股息率</td>
+<td>每股 1.74 ÷ 37.36</td>
+<td>—</td>
+<td><strong>4.7 块</strong>(现金到手)</td>
+</tr>
+<tr>
+<td>FFO 派息率</td>
+<td>1.73 ÷ 2.28</td>
+<td>76%</td>
+<td>剩 24% 留在公司</td>
+</tr>
+<tr>
+<td>企业价值 / EBITDA</td>
+<td>(87.9 + 32.3) ÷ 6.77</td>
+<td>17.8 倍</td>
+<td>—</td>
+</tr>
+<tr>
+<td>市净率</td>
+<td>减值后账面净资产每股 33.22</td>
+<td>1.15 倍(估值页口径)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均 FFO 口径</td>
+<td>2023–2025 平均 5.12 亿</td>
+<td>17.2 倍</td>
+<td>5.8 块</td>
+</tr>
+</tbody>
+</table></div>
+<p>三年平均那一行说明 FFO 没有在高点——2023 年 4.75、2024 年 5.43、2025 年 5.19、TTM 5.24 亿,已经两年不涨了。</p>
+<p>大白话:<strong>你现在投 100 块,按 FFO 算公司一年替你赚 6 块,其中 4.7 块以分红形式当季就打到你账上,剩下 1.3 块留在公司。</strong>留下的钱加上卖楼的钱现在都拿去回购了,回购价 36–38 美元比账面净资产 33 美元贵一点,比管理层自己估的资产净值应该便宜不少(否则他们不会卖楼回购)。这个 6 块未来会变大还是变小?短期变小的概率更大:营收零增长、租金还在市场底部磨、分析师预期三年 FFO 每年降 4–5%,每年到期换约的租约现在换约租金已经不再跳涨。等南加州工业租金重新上行它才会重新变大——那是这门生意的周期,不是它坏了。</p>
+<h2>第四部分:一句话结论</h2>
+<p>Rexford 是一门真生意——南加州填充式仓库是真稀缺,账也干净(FFO 已扣掉股权激励,负债 4.8 倍 EBITDA 不激进,减值是诚实的)。但它现在是一家<strong>增长停了、正在缩表的 REIT</strong>:营收 +0.6%、7 亿减值承认资产在跌、管理层用卖楼的钱回购。16.8 倍 FFO、4.7% 股息,对一家增长归零的工业 REIT 是<strong>公道价</strong>——比它自己 30 倍的历史便宜得多,但便宜的原因是增长没了,不是市场看错了。留着观察,等两个信号:换约租金重新上涨,或者减值停止。</p><script src="user.js"></script>
+</div></body></html>

@@ -1,0 +1,384 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PRAX · Praxis Precision Medicines（普拉克西斯精准医药）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">PRAX</a></div>
+<div class="mine" data-t="PRAX"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">有硬伤</span></div><div class="note">零营收，93亿已按两个药都卖到十亿级的2030年定价，还没扣每年30%稀释</div><h1>PRAX · Praxis Precision Medicines（普拉克西斯精准医药）</h1>
+<p>市值 93.4 亿美元 · 股价 334.58 美元（2026-09-11 收盘）· 生物科技（神经系统：震颤、癫痫）· TTM 截止 2026-06-30 · <strong>零营收的亏损公司，第三部分用亏损口径</strong></p>
+<h2>第一部分：它到底做几件事</h2>
+<p>一件事：<strong>给神经元上的「离子通道」做药</strong>，专攻震颤和癫痫。营收是零，所以下面按管线讲，讲每个药治什么病、病人现在怎么熬、这个药凭什么值钱。</p>
+<h3>先说清楚它的技术路线</h3>
+<p>神经元靠细胞膜上的钠通道、钙通道、钾通道开开关关来放电。放电太多、太齐，就是癫痫发作；丘脑里一小群神经元按固定节律放电，就是震颤。Praxis 的药就是调这些开关——不是把通道整个堵死（那样病人会昏睡、走不了路，老一代抗癫痫药的副作用就是这么来的），而是只压住「放电过度」的那部分，正常放电不碰。它有两套工具：小分子口服药（Cerebrum 平台）和反义寡核苷酸（Solidus 平台，一种能关掉特定基因的注射药）。168 个员工，自己不生产，临床试验外包。</p>
+<h3>A. Ulixacaltamide——六十年没新药的特发性震颤</h3>
+<p>特发性震颤是最常见的运动障碍病，美国约 700 万人，比帕金森多好几倍。典型病人是一个六十多岁的人，端咖啡杯手抖得洒出来，签名签不成字，在饭馆不敢拿筷子。现在能用的药是两个 1960 年代的老药：普萘洛尔（降压药）和扑米酮（抗癫痫药），一半人吃了没用或者受不了副作用（心率慢、犯困），再往后只剩脑部手术。<strong>几十年没有一个专门为这个病开发的新药上市过。</strong></p>
+<p>Ulixacaltamide 是一个 T 型钙通道阻断剂，T 型钙通道正是丘脑里那个「震颤节拍器」的开关。三期项目叫 Essential3，两个研究，2025 年下半年读出正面数据，股价就是从那时候起的——一年涨 732%。公司计划 2026 年递交上市申请，顺利的话 2027 年上市。</p>
+<p>这个药值多少钱：美国确诊并在治疗的特发性震颤患者约 100 万。假设定价每年 1.5 万美元（比老药贵得多，但比专科新药便宜），10 万人用就是 15 亿美元一年。这是市场给 93 亿市值的主要依据。</p>
+<h3>B. Relutrigine（PRAX-562）——让「一天几十次发作」的孩子停下来</h3>
+<p>发育性癫痫性脑病（DEE）是一组由单基因突变引起的儿童重症癫痫，比如 SCN2A、SCN8A 基因突变的孩子，每天发作几十次，现有药物压不住，智力发育停滞，很多活不过青春期。Relutrigine 是一个「功能选择性」钠通道调节剂，专压过度放电。EMBOLD 研究的结果在这类病里是罕见的：发作频率比安慰剂减少约一半，约三成患者在一段时间内<strong>完全不发作</strong>——对这些家庭来说是从没见过的事。拿了 FDA 突破性疗法认定。另有一个更大的 EMERALD 三期在更广的 DEE 人群里做。</p>
+<p>值多少钱：罕见病定价通常每人每年 30–50 万美元，美国患者几千人，做成了也是 10 亿美元级别的药，而且几乎没有竞争。</p>
+<h3>C. Vormatrigine（PRAX-628）——成人局灶性癫痫</h3>
+<p>跟 B 同一类机制，但目标是大病种：成人局灶性癫痫，美国 100 多万人用现有药控制不住。二/三期研究 POWER1 在推进。如果成，这是三个药里天花板最高的；但这个市场竞争者多（UCB、Xenon、SK 生物都在做），定价压力大。</p>
+<h3>D. Elsunersen（PRAX-222）——基因层面关掉 SCN2A</h3>
+<p>反义寡核苷酸，鞘内注射（打进脊髓腔），专治 SCN2A 功能获得型的 DEE，直接把那个出错的基因表达调低。注册研究 EMBRAVE3 在做。患者极少，是 B 的补充。</p>
+<p>另外和比利时药企 UCB 有一个 KCNT1 基因的合作，2024 年那 855 万美元营收就是从这来的，TTM 已经归零。</p>
+<h3>钱的表</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>生意</th>
+<th>TTM 营收</th>
+<th>上年同期</th>
+<th>阶段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. Ulixacaltamide 特发性震颤</td>
+<td>0</td>
+<td>0</td>
+<td>三期完成，准备申报</td>
+<td>主要估值来源</td>
+</tr>
+<tr>
+<td>B. Relutrigine 单基因 DEE</td>
+<td>0</td>
+<td>0</td>
+<td>注册研究</td>
+<td>罕见病，高定价</td>
+</tr>
+<tr>
+<td>C. Vormatrigine 局灶性癫痫</td>
+<td>0</td>
+<td>0</td>
+<td>二/三期</td>
+<td>大病种，竞争多</td>
+</tr>
+<tr>
+<td>D. Elsunersen SCN2A</td>
+<td>0</td>
+<td>0</td>
+<td>注册研究</td>
+<td>极罕见</td>
+</tr>
+<tr>
+<td><strong>营收合计</strong></td>
+<td><strong>0</strong></td>
+<td>0.09 亿</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>研发费用</td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 2.91 亿（估算：营收减毛利）</td>
+</tr>
+<tr>
+<td>管理费用</td>
+<td></td>
+<td></td>
+<td></td>
+<td>约 0.87 亿</td>
+</tr>
+<tr>
+<td><strong>经营亏损</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>−3.78 亿</strong></td>
+</tr>
+<tr>
+<td>利息收入</td>
+<td></td>
+<td></td>
+<td></td>
+<td>+0.39 亿（13.7 亿现金的利息）</td>
+</tr>
+<tr>
+<td><strong>净亏损</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>−3.39 亿</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h2>第二部分：把会计障眼法剥掉</h2>
+<ul>
+<li><strong>股权激励（SBC）</strong>：TTM 4,580 万美元，占经营亏损 12%。零营收没法算占比，按人头算是每个员工 27 万美元的股票。当真实成本扣。</li>
+<li><strong>一次性项目</strong>：没有。账很干净——零营收公司没什么可粉饰的。</li>
+<li><strong>资本化的支出</strong>：没有。资本开支 31 万美元，全公司就是办公室和外包合同。</li>
+<li><strong>回购与稀释</strong>：回购 1,410 万（基本是员工行权时代扣税款，不算真回购）。<strong>TTM 增发 12.47 亿美元</strong>，2025 全年 7.04 亿，2024 年 5.15 亿——三年从股东手里拿了 25 亿。股本一年膨胀 29.6%，2023 年 11 月还做过 1 比 15 的缩股。另一个值得记一笔的数字：按 stockanalysis 统计，<strong>内部人持股只有 0.19%</strong>——管理层的身家几乎不在这只股票里，靠的是期权。</li>
+<li><strong>利润和现金流的差</strong>：净亏 3.39 亿，经营现金流 −3.05 亿，差 3,400 万，逐项对账：</li>
+</ul>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额（亿美元）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净亏损</td>
+<td>−3.39</td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>+0.00</td>
+</tr>
+<tr>
+<td>+ 股权激励（不花现金）</td>
+<td>+0.46</td>
+</tr>
+<tr>
+<td>− 投资收益（归投资活动）</td>
+<td>−0.03</td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>+0.01</td>
+</tr>
+<tr>
+<td>− 应付款减少（付掉了去年欠 CRO 的钱）</td>
+<td>−0.06</td>
+</tr>
+<tr>
+<td>− 其他经营资产变动</td>
+<td>−0.05</td>
+</tr>
+<tr>
+<td><strong>= 经营现金流</strong></td>
+<td><strong>−3.05</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>真实烧钱速度每年 3.05 亿，比 2025 全年的 2.49 亿快了 22%，因为三期和注册研究同时在跑。上市申报和商业化团队组建会让 2027 年的烧钱再上一个台阶。</p>
+<h2>第三部分：亏损口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTM 营收 / 增速</td>
+<td><strong>0</strong></td>
+<td>没有产品</td>
+</tr>
+<tr>
+<td>TTM 经营亏损（GAAP）</td>
+<td>−3.78 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>经营现金流 / 自由现金流</td>
+<td>−3.05 亿 / −3.05 亿</td>
+<td></td>
+</tr>
+<tr>
+<td>一年净烧多少现金</td>
+<td>3.05 亿美元</td>
+<td>且在加速</td>
+</tr>
+<tr>
+<td>账上现金 − 有息负债</td>
+<td>13.74 − 0.01 = <strong>13.73 亿</strong></td>
+<td>无债</td>
+</tr>
+<tr>
+<td>还能烧几年</td>
+<td>按当前速度 <strong>4.5 年</strong>；加上上市前后的商业化投入，实际 <strong>3 年左右</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>SBC / 股本一年膨胀</td>
+<td>4,580 万 / <strong>+29.6%</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>做到成熟利润率能赚多少</strong></td>
+<td>营收为零，假想利润为零，<strong>假想市盈率无穷大</strong>。反推：93.4 亿市值要值 20 倍，需净利 4.67 亿，按成熟神经药企（对照 Neurocrine、Vertex）30% 净利率，要 <strong>15.6 亿美元年营收</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>大白话：它现在一分钱都不卖，所以「假设明天就做到成熟利润率」这句话没法说。只能倒着算：这 93 亿要说得通，需要它在几年后变成一家年销 15 亿美元、净利率 30% 的公司。这相当于 A 药（震颤）成为 10 亿美元级的药、B 药（DEE）再贡献 5 亿——两个都得成，而且是在 2029–2030 年才能到那个规模。从现在到那时，你每年被稀释 15–30%，也就是你今天买的 100 块，到 2030 年只剩 40–50 块的公司份额去分那 4.67 亿。</p>
+<p>把它折回来：假设 2030 年真做到 4.67 亿净利、按 20 倍值 93 亿，但股本已经翻倍，你手里那份只值今天的一半——<strong>这个价，是把最好的结果先按今天的股本算了一遍，还没扣稀释</strong>。</p>
+<p>再看两个数：分析师目标价 639 美元、评级「强烈买入」，19 家覆盖；做空占股本 13.4%。市场分成两半：一半按「六十年首个震颤新药 + 罕见病突破」定价，一半在赌上市申报、定价、保险覆盖这一路会出岔子。</p>
+<h2>第四部分：一句话结论</h2>
+<p><strong>它会不会死</strong>：不会。13.7 亿净现金、零负债，烧到 2029 年不用借钱，中间大概率再增发一两次。</p>
+<p><strong>活成了值不值</strong>：不值这个价。管线是实打实的——特发性震颤六十年没新药，DEE 里三成零发作是行内没见过的数据，这两条都不是画饼。但 93 亿市值已经把「两个药都上市、都卖到十亿美元级别」的 2030 年算进了今天的价格，还没扣中间 30%/年的稀释，而它连第一份上市申请都还没递。一年涨 7 倍之后，往前看的每一步——申报被拒、定价谈崩、保险不覆盖、竞品先上——都是往下的，往上的空间要等销售数据来证明。等 2027 年上市后看头两个季度的处方量，比现在赌便宜得多。</p><script src="user.js"></script>
+</div></body></html>
