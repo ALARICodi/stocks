@@ -33,8 +33,10 @@ jobs:
           mkdir -p /tmp/out && cp low52/data.json low52/52周新低.csv /tmp/out/
           git config user.name "low52-bot"
           git config user.email "low52-bot@users.noreply.github.com"
+          # scan 改写了 main 里跟踪的 low52/data.json,普通 checkout 会被「本地改动会被覆盖」挡住,所以先丢掉工作区改动再切分支
+          git checkout -- . && git clean -fdq
           if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
-            git fetch origin data && git checkout data
+            git fetch origin data && git checkout -f -B data FETCH_HEAD
           else
             git checkout --orphan data && git rm -rf -q . || true
           fi
