@@ -40,6 +40,8 @@ h1 small{font-weight:400;color:var(--muted);font-size:13px;margin-left:8px}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer;user-select:none;line-height:1.3}
 .chip:hover{border-color:var(--accent)}
 .chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.resub{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center;padding-left:8px;margin-left:2px;border-left:2px solid var(--line)}
+.chip.sm{font-size:11.5px;padding:3px 9px}
 .chip:focus-visible,select:focus-visible,input:focus-visible,th:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 select,input[type=search]{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 9px;font:inherit;font-size:13px}
 input[type=search]{flex:1;min-width:150px}
@@ -101,6 +103,16 @@ td.l,th.l{text-align:left}
     <span class="chip on" data-k="loss" data-v="all">全部</span>
     <span class="chip" data-k="loss" data-v="0">盈利</span>
     <span class="chip" data-k="loss" data-v="1">亏损</span>
+    <span class="lbl">主题</span>
+    <span class="chip on" data-k="re" data-v="">全部</span>
+    <span class="chip" data-k="re" data-v="all">🏠 房地产</span>
+    <span id="resub" class="resub" hidden>
+      <span class="chip sm on" data-k="resub" data-v="">四类全含</span>
+      <span class="chip sm" data-k="resub" data-v="reit">REIT 收租</span>
+      <span class="chip sm" data-k="resub" data-v="dev">开发商</span>
+      <span class="chip sm" data-k="resub" data-v="home">住宅建筑商</span>
+      <span class="chip sm" data-k="resub" data-v="mat">建材</span>
+    </span>
     <select id="sector" aria-label="板块"><option value="">全部板块</option></select>
     <select id="country" aria-label="国家"><option value="">全部国家</option></select>
     <input type="search" id="q" placeholder="搜代号 / 公司名" aria-label="搜索">
@@ -126,7 +138,12 @@ td.l,th.l{text-align:left}
 <script>
 const EMBED = /*__DATA__*/null;
 let rows = EMBED.rows, meta = EMBED.meta;
-const st = {mcap:0, pct:10, loss:'all', sector:'', country:'', q:'', sort:'mcap', asc:false};
+const st = {mcap:0, pct:10, loss:'all', re:'', resub:'', sector:'', country:'', q:'', sort:'mcap', asc:false};
+// 🏠 房地产主题 = TradingView 行业分类里的这四类(REIT / 开发商 / 住宅建筑商 / 建材)
+const RE = {reit:['Real Estate Investment Trusts'], dev:['Real Estate Development'],
+            home:['Homebuilding'], mat:['Building Products','Construction Materials']};
+RE.all = Object.values(RE).flat();
+const inRE = r => !st.re || RE[st.resub||'all'].includes(r.industry);
 const $ = id=>document.getElementById(id);
 function showMeta(fresh){
   $('meta').innerHTML = `数据 ${meta.generated}(北京时间)· 扫描纽交所 / 纳斯达克 / 美交所 ${meta.universe} 家 · 距 52 周最低 ≤${meta.pct}% 的共 ${meta.hits} 家` + (fresh?` <span class="fresh">· 已自动更新到最新一期</span>`:'');
@@ -140,7 +157,9 @@ function fillSelects(){
 }
 document.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
   const k=ch.dataset.k; document.querySelectorAll(`.chip[data-k=${k}]`).forEach(x=>x.classList.remove('on'));
-  ch.classList.add('on'); st[k]= k==='loss'?ch.dataset.v:+ch.dataset.v; draw();
+  ch.classList.add('on'); st[k]= k==='mcap'?+ch.dataset.v:ch.dataset.v;
+  if(k==='re'){ $('resub').hidden=!st.re; if(st.re){ st.sector=''; $('sector').value=''; } }
+  draw();
 });
 $('pct').oninput=e=>{st.pct=+e.target.value; $('pctv').textContent=st.pct+'%'; draw();};
 $('sector').onchange=e=>{st.sector=e.target.value;draw()};
@@ -163,7 +182,7 @@ function range(r){
 function draw(){
   let list = rows.filter(r=>(r.mcap||0)>=st.mcap && Math.abs(r.dist)<=st.pct+1e-9
     && (st.loss==='all' || (st.loss==='1')===!!r.loss)
-    && (!st.sector || r.sector===st.sector) && (!st.country || r.country===st.country)
+    && inRE(r) && (!st.sector || r.sector===st.sector) && (!st.country || r.country===st.country)
     && (!st.q || r.ticker.toLowerCase().includes(st.q) || (r.name||'').toLowerCase().includes(st.q)));
   list.sort((a,b)=>{let x=a[st.sort],y=b[st.sort]; if(x==null)x=st.asc?Infinity:-Infinity; if(y==null)y=st.asc?Infinity:-Infinity;
     if(typeof x==='string') return st.asc?x.localeCompare(y):y.localeCompare(x); return st.asc?x-y:y-x;});
