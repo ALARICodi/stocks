@@ -1,0 +1,481 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AMSYF · 安赛乐米塔尔（ArcelorMittal，纽交所 MT）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AMSYF</a></div>
+<div class="mine" data-t="AMSYF"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">21个月涨3倍，真实39倍、EV/EBITDA 12倍配谷底利润，FCF为负；回购狠、市净率0.94是唯一便宜处</div><h1>AMSYF · 安赛乐米塔尔（ArcelorMittal，纽交所 MT）</h1>
+<p>市值 <strong>532 亿美元</strong> / 股价 71.30 美元 / 行业：钢铁与铁矿 / <strong>TTM 截止 2026 年 6 月 30 日</strong></p>
+<p>AMSYF 是这家公司在美国场外挂的卢森堡普通股线，跟纽交所的 MT 是同一股票，流动性在 MT 那边。公司用美元记账，全文不用换汇。</p>
+<blockquote>
+<p>先看一眼股价：2024 年底 22.69 美元，2025 年底 45.31，今天 71.30。<strong>21 个月涨了 3.1 倍，市值从 182 亿涨到 532 亿。</strong> 同一时间段公司的净利润从 13 亿到 18 亿，营收从 624 亿到 628 亿。涨的不是利润，是预期——欧盟 2025 年 10 月宣布把钢铁进口配额砍一半、配额外关税从 25% 提到 50%，美国 232 条款钢铁关税 50%，两堵关税墙把这家全球最大的欧洲钢厂重新定价了。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>安赛乐米塔尔是全球产量第二大的钢铁公司（仅次于中国宝武），一年出 5,800 万吨左右粗钢，业务按地区分板块，再加一个采矿板块和一个下游加工板块。钢铁的生意逻辑很简单：铁矿石 + 焦煤 + 电，炼成钢坯，轧成板材或型材，卖给汽车厂、建筑商、家电厂、油气管道商。产品差异不大，赚不赚钱由三件事决定：<strong>钢价减原料价的价差、开工率、你所在市场有没有关税保护</strong>。</p>
+<h3>生意 A：欧洲 —— 一半的营收，关税墙的直接受益者</h3>
+<p><strong>这件事是什么。</strong> 法国敦刻尔克和福斯、比利时根特、德国不来梅和艾森许滕施塔特、西班牙阿斯图里亚斯、波兰东布罗瓦——欧洲最大的一批高炉钢厂都是它的。主打<strong>扁平材</strong>（热轧卷、冷轧卷、镀锌板）卖给汽车厂（大众、Stellantis、雷诺）、家电厂、包装厂；<strong>长材</strong>（螺纹钢、型钢、线材）卖给建筑。</p>
+<p><strong>怎么收钱。</strong> 汽车板是跟车企签年度或半年度合同，一辆车用 800–1,000 公斤钢，一家年产 100 万辆的车厂一年要买 80–100 万吨，按吨价 800–900 欧元算是七八亿欧元的单。建筑钢按现货价卖给贸易商。<strong>欧洲钢厂的问题是成本</strong>：碳排放要买配额（每吨钢约 1.8 吨二氧化碳，配额 70 欧元/吨），电价和气价比美国贵得多，土耳其、印度、中国的钢运到鹿特丹都比本地便宜。过去三年欧洲板块利润率被压到 5% 左右，安赛乐米塔尔把敦刻尔克和根特的电炉改造计划推迟了，明说了"等政策"。</p>
+<p><strong>政策来了。</strong> 2025 年 10 月欧盟委员会提案：钢铁免税进口配额砍 47%，配额外关税从 25% 提到 50%，2026 年起生效；同时 2026 年 1 月碳边境税（CBAM）正式收钱，进口钢也得为碳排放付费。这两条直接把欧洲钢价托起来，安赛乐米塔尔是欧洲最大的受益者——这就是股价三倍的主要来源。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>欧洲（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>291.7 亿美元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>287.9 亿 → +1.3%</td>
+</tr>
+<tr>
+<td>占各板块营收合计（剔内部抵消前）</td>
+<td>40.6%</td>
+</tr>
+<tr>
+<td>EBITDA 率（估算）</td>
+<td>约 5%</td>
+</tr>
+<tr>
+<td>贡献 EBITDA（估算）</td>
+<td><strong>约 14 亿美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>钢铁公司按板块披露 EBITDA 而不是经营利润，stockanalysis 只有营收。下面各板块 EBITDA 是按公司历年披露的板块利润率结构套到 TTM 营收上的估算，合计约 55 亿，跟 stockanalysis 算的集团 EBITDA 54.5 亿对得上。折旧摊销全集团一年 29 亿，扣完就是 25.8 亿经营利润。</p>
+</blockquote>
+<h3>生意 B：北美 —— 墨西哥、加拿大，加上 2025 年全资拿下的美国 Calvert</h3>
+<p><strong>这件事是什么。</strong> 加拿大汉密尔顿的 Dofasco（汽车板，供底特律三大车企和丰田本田的北美厂），墨西哥拉萨罗卡德纳斯（板坯和长材，2024 年新投了一条热轧线），以及<strong>美国阿拉巴马州的 Calvert</strong>——本来是跟日本制铁各持 50% 的合资厂，日本制铁 2025 年为了收购美国钢铁被迫退出，安赛乐米塔尔把另一半买下来变成全资，Calvert 新建的电炉也在这时候投产。</p>
+<p><strong>为什么这块现在值钱。</strong> 美国 232 条款对进口钢征 50% 关税，Calvert 在美国境内，它买墨西哥和巴西运来的板坯（关税照交）轧成汽车板卖，享受美国国内的高钢价；美国热轧卷比欧洲贵 200–300 美元一吨。加拿大 Dofasco 反过来是受害者——它出口到美国要交关税。合起来北美是集团里利润率第二好的板块。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>北美（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>133.2 亿美元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>123.4 亿 → +8.0%（Calvert 并表）</td>
+</tr>
+<tr>
+<td>占各板块营收合计</td>
+<td>18.5%</td>
+</tr>
+<tr>
+<td>EBITDA 率（估算）</td>
+<td>约 10%</td>
+</tr>
+<tr>
+<td>贡献 EBITDA（估算）</td>
+<td><strong>约 13 亿美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 C：巴西 —— 集团里利润率最好的钢厂</h3>
+<p><strong>这件事是什么。</strong> 图巴朗（板坯，全球最大的板坯出口厂之一）、蒙莱瓦迪和茹伊斯迪福拉（长材）、佩塞姆和 Vega（镀锌汽车板），加上阿根廷的 Acindar。巴西有自己的铁矿、水电便宜、进口钢有关税保护，加上南美汽车和建筑市场，这个板块的 EBITDA 率长期是集团最高的两位数。<strong>风险是巴西正在被中国钢材冲击</strong>：2024–25 年中国钢出口创纪录，巴西政府 2024 年给了 25% 关税配额保护，但不如欧盟那堵墙厚。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>巴西（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>116.7 亿美元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>111.7 亿 → +4.4%</td>
+</tr>
+<tr>
+<td>占各板块营收合计</td>
+<td>16.2%</td>
+</tr>
+<tr>
+<td>EBITDA 率（估算）</td>
+<td>约 12%</td>
+</tr>
+<tr>
+<td>贡献 EBITDA（估算）</td>
+<td><strong>约 14 亿美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 D：采矿 —— 加拿大和利比里亚的铁矿，利润率最高但体量小</h3>
+<p><strong>这件事是什么。</strong> 加拿大魁北克 Mont-Wright 铁矿（AMMC，持股 85%，一年 2,500 万吨精矿和球团）和利比里亚 Yekepa 铁矿（2025–26 年新选矿厂投产，产能从 500 万吨扩到 2,000 万吨）。一半矿卖给自家钢厂，一半卖给第三方，按普氏 62% 铁矿指数定价。铁矿是这门生意里唯一"挖出来就有 30–40% 利润率"的东西，但只占营收 5%。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>采矿（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>33.4 亿美元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>32.3 亿 → +3.2%</td>
+</tr>
+<tr>
+<td>占各板块营收合计</td>
+<td>4.6%</td>
+</tr>
+<tr>
+<td>EBITDA 率（估算）</td>
+<td>约 32%</td>
+</tr>
+<tr>
+<td>贡献 EBITDA（估算）</td>
+<td><strong>约 10.5 亿美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 E：可持续解决方案 —— 下游加工和分销，薄利跑量</h3>
+<p><strong>这件事是什么。</strong> 把钢再加工一道：Industeel 特种厚板（核电、海工用）、钢管、建筑用彩涂板和钢结构（AM Construction）、以及欧洲的钢材分销网络（AMDS，几百个仓库配送中心，把卷板裁成客户要的尺寸再送货）。这是服务生意的利润率——3% 上下。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>可持续解决方案（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>108.1 亿美元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>105.0 亿 → +2.9%</td>
+</tr>
+<tr>
+<td>占各板块营收合计</td>
+<td>15.1%</td>
+</tr>
+<tr>
+<td>EBITDA 率（估算）</td>
+<td>约 3%</td>
+</tr>
+<tr>
+<td>贡献 EBITDA（估算）</td>
+<td><strong>约 3 亿美元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 F：其他 + 合资公司 —— 乌克兰，以及最重要的印度</h3>
+<p><strong>"其他"板块</strong>（营收 35.5 亿）：乌克兰克里沃罗格的厂（战争影响下开工率低）、南非（长材业务在收缩）、波黑、摩洛哥这些。EBITDA 估算不到 1 亿。</p>
+<p><strong>印度不在营收里，但它是这家公司未来十年最大的增长点。</strong> AMNS India 是跟日本制铁 60/40 的合资公司（安赛乐米塔尔 60%），古吉拉特邦哈吉拉的厂正在从 900 万吨扩到 1,500 万吨（2026 年完成），下一步到 2,400 万吨。因为是合资，它的营收和 EBITDA 不并表，只在利润表"股权投资收益"里体现——TTM <strong>8.3 亿美元</strong>（含 Calvert 并表前的份额和中国湖南华菱合资公司 VAMA）。印度钢需求以每年 8–10% 增长，AMNS 是印度第四大钢厂。<strong>这 8.3 亿是账面利润，不是现金——合资公司在扩产，没分红。</strong></p>
+<h3>六门生意拼起来</h3>
+<p>各板块营收合计 718 亿，内部互相卖（矿卖给钢厂、板坯卖给下游）抵消 90 亿，集团营收 <strong>628.5 亿美元，同比 +3.7%</strong>。EBITDA 54.5 亿（8.7%），折旧摊销 28.7 亿，经营利润 25.8 亿（<strong>4.1%</strong>），股权投资收益 8.3 亿，利息净支出 4.4 亿，汇兑亏损 2.6 亿，税前 20.8 亿，所得税只交了 2.2 亿（10.4%，用的是过去几年亏损留下的递延税资产），少数股东 0.5 亿，<strong>净利润 18.1 亿</strong>。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：现金流量表没有单列，规模对 600 亿营收可以忽略。没有。</p>
+<p><strong>一次性项目</strong>：
+- <strong>资产减值 2.0 亿、出售投资亏损 0.8 亿</strong>（TTM）：往前翻——2022 年减值 15.3 亿、2023 年 8.4 亿、2024 年 1.2 亿、2025 年 2.0 亿。年年有，当经常性成本，不加回。
+- <strong>2025 年那笔 18.6 亿"其他非经常性收益"</strong>不在 TTM 里，但要提一句：stockanalysis 不写明细，从时间和金额看是把 Calvert 从合资变全资时、对原持有 50% 股权按新价格重估出来的账面收益，非现金。2025 年 31.5 亿净利润里有 18.6 亿是这个，<strong>真实是 13 亿左右</strong>。谁拿 2025 年的 4.11 美元每股收益说"市盈率才 17 倍"，那是被这笔骗了。
+- <strong>所得税</strong>：账面 2.2 亿（10.4%），<strong>现金实交 6.6 亿</strong>。差额是递延税资产在抵——欧洲和卢森堡过去的亏损结转。账面税率迟早要回到 20–25%，我下面按现金税算真实利润。</p>
+<p><strong>资本化的支出</strong>：没有软件或开发费资本化。但要说一句资本开支的结构：TTM 48.6 亿里，公司自己说维持性开支大约 30 亿，其余 18 亿左右是增长项目——利比里亚扩矿、Calvert 电炉、墨西哥热轧线、巴西 Vega 扩产，2026 年是这轮增长投资的高峰。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 4.8 亿，SBC 约为零，<strong>回购是真回购</strong>，股本一年减 1.2%。往前看更狠：2021 年 11.05 亿股，现在 7.54 亿股，<strong>五年注销了 32% 的股本</strong>（2021–22 超级周期赚的 240 亿净利润大半拿去回购了）。派息 4.4 亿（每股 0.60 美元，收益率 0.7%）。这是这家公司最值得称道的一点：赚了钱不乱扩产，拿去消灭股份。</p>
+<p><strong>利润和现金流的差</strong>：净利润 18.1 亿，经营现金流 47.0 亿，<strong>自由现金流 −1.6 亿</strong>。逐项对账（TTM，亿美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润</td>
+<td>18.1</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>31.2</td>
+<td></td>
+</tr>
+<tr>
+<td>− 股权投资收益</td>
+<td>−8.3</td>
+<td>印度等合资公司的账面利润，一分钱现金没收到</td>
+</tr>
+<tr>
+<td>+ 减值、处置亏损</td>
+<td>1.3</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 其他非现金项</td>
+<td>5.5</td>
+<td>递延税、拨备</td>
+</tr>
+<tr>
+<td>− 营运资金增加</td>
+<td>−0.8</td>
+<td>应收 +6.0、存货 +8.2、应付 −9.4、其他 −5.6</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>47.0</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−48.6</td>
+<td>其中维持性约 30 亿、增长性约 18 亿</td>
+</tr>
+<tr>
+<td>= <strong>自由现金流</strong></td>
+<td><strong>−1.6</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>一家市值 532 亿的公司，过去一年自由现金流是负的。派息回购的 9.2 亿是借来的（净新增债务 5.6 亿 + 花掉现金 5.1 亿）。如果只算维持性资本开支，"正常化"自由现金流大约 17 亿——这是公司自己爱用的口径，它假设增长投资都会有回报。</p>
+<p><strong>债务</strong>：有息负债 144.2 亿，现金 48.5 亿，净负债 95.7 亿（stockanalysis 口径含租赁），EBITDA 的 1.8 倍，净资产 568 亿，负债率 0.25。<strong>资产负债表是安全的</strong>，这一点跟 2015 年差点破产时完全不同。市净率 0.94，市值比账面净资产还低。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 532 亿美元；企业价值 647 亿美元（含净负债 96 亿和少数股东权益等）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>532 ÷ 18.1 亿</td>
+<td><strong>29.3 倍</strong></td>
+<td>3.4 元</td>
+</tr>
+<tr>
+<td>公司自己吹的</td>
+<td>安赛乐米塔尔不发调整后净利润，它吹的是 EBITDA：EV ÷ 54.5 亿</td>
+<td>11.9 倍 EV/EBITDA</td>
+<td>——</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>532 ÷ 13.7 亿（税前 20.8 − 现金税 6.6 − 少数股东 0.5；减值当经常性成本不加回；股权投资收益保留但它不是现金）</td>
+<td><strong>38.8 倍</strong></td>
+<td><strong>2.6 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>532 ÷ −1.6 亿（正常化 17 亿）</td>
+<td>负 / 31 倍</td>
+<td>0 元 / 3.2 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>647 ÷ 25.8 亿</td>
+<td>25.1 倍</td>
+<td>——</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>532 ÷ 15.0 亿（2024 年 21.1、2025 年 10.2、TTM 13.7 的平均，均按现金税、剔 2025 年 18.6 亿重估收益）</td>
+<td><strong>35.5 倍</strong></td>
+<td>2.8 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>用大白话说：你今天投 100 块进去，按剔除障眼法后的真实口径，公司一年替你赚 2.6 块——而且这 2.6 块里有 1.6 块是印度合资厂的账面数字，没有现金。真正落袋的现金，过去一年是零，因为全花在建厂扩矿上了。</strong></p>
+<p>回到你口袋的：派息 4.4 亿 + 回购 4.8 亿 = 9.2 亿，对 532 亿市值是 1.7%，折成 100 块是 1.7 块——比公司赚的多，差额借的。</p>
+<p><strong>这个 2.6 块未来变大还是变小？</strong> 市场给的前瞻市盈率 12 倍，意思是华尔街认为明年利润要翻 2.4 倍到 44 亿。理由有三条，每条都是真的，但每条都已经在 71 美元里了：欧盟 50% 关税 + 碳边境税把欧洲钢价托起来（欧洲板块 EBITDA 率从 5% 回到 10% 就是多 15 亿）；印度扩到 1,500 万吨（股权收益翻倍）；增长性资本开支 2026 年见顶后自由现金流转正。<strong>看空的三条</strong>：钢铁是全球最典型的周期股——2021 年赚 150 亿、2023 年赚 9 亿，谁也不知道 2027 年是哪一头；中国 2025 年出口 1.1 亿吨钢，关税墙挡得住欧洲市场挡不住钢价；EV/EBITDA 11.9 倍是钢铁公司在周期顶部才有的估值（正常年份 4–6 倍），现在利润明明在底部，估值却在顶部。</p>
+<p>一个反过来的角度：市净率 0.94，532 亿市值买到 568 亿账面净资产、5,800 万吨产能和 60% 的印度 AMNS。重置成本远高于市值。如果按 2021–2025 五年平均净利润 59 亿算，市盈率只有 9 倍。这就是"钢铁股在周期底部看着贵、按资产看便宜"的经典局面——<strong>问题是这个价格已经把关税红利当成永久的了。</strong></p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>安赛乐米塔尔是全球钢铁公司里资产负债表最干净、回购最狠、地理分布最好的一家，但 21 个月涨三倍之后，它现在的价格是在为"欧盟关税墙永远不倒 + 印度扩产一切顺利 + 钢铁周期从此不再往下"付钱。</strong> 真实市盈率 39 倍、三年平均 35 倍、EV/EBITDA 12 倍、自由现金流是负的——这是周期顶部的估值配周期底部的利润。市净率 0.94 是唯一说它便宜的数字，但钢厂的账面价值在下一轮减值里说没就没。<strong>不便宜。周期股要在市盈率高得离谱、利润在谷底的时候买——问题是 2026 年 6 月这个 18 亿的利润，还不知道是谷底还是关税推起来的半山腰。等它回到 45 美元以下、EV/EBITDA 8 倍，或者等欧洲板块用两个季度证明关税真的进了利润表。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com 纽交所 MT 页面（TTM 至 2026-06-30，利润表、现金流量表、统计页、历史比率页），AMSYF 场外线为同一股票。各板块 EBITDA 为估算值；2025 年 18.6 亿非经常性收益的性质为按时间和金额的推断。</em></p><script src="user.js"></script>
+</div></body></html>

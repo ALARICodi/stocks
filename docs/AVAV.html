@@ -1,0 +1,379 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AVAV · AeroVironment（无人机与巡飞弹）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">AVAV</a></div>
+<div class="mine" data-t="AVAV"></div><div class="tags"><span class="bg expensive">很贵</span><span class="bg q">一般</span></div><div class="note">无人机故事真但账更真：真实利润仅2千万，5年FCF全负，买BlueHalo一年就减值</div><h1>AVAV · AeroVironment（无人机与巡飞弹）</h1>
+<p>市值 80.4 亿美元 / 股价 158.55 美元 / 航空航天与国防电子 / TTM 截止 2026-08-01（财年 4 月底，本文 TTM = 2025-08 到 2026-07 四个季度）</p>
+<p><strong>先说这是哪种亏。</strong> TTM 净亏 2.03 亿美元，但里面塞着一笔 2.41 亿的商誉减值（不花现金、一次性）。把它剔掉，税前还剩 2,060 万利润。所以这是「账面亏」，不是烧钱等死的公司。但剔完之后的真实利润薄得像纸：营收 20 亿，真赚 2,000 万，利润率 1%。</p>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>2025 年 5 月之前，AeroVironment 只有一门生意：小型无人机加巡飞弹。2025 年 5 月 1 日它用约 41 亿美元（几乎全是股票）吞下 BlueHalo，一下子多出太空、反无人机、激光武器、网络战四块。现在财报分两个分部。</p>
+<h3>生意 A：自主系统 AxS（无人机、巡飞弹、反无人机）—— 占营收 71%</h3>
+<p><strong>巡飞弹 Switchblade</strong> 是它的招牌。大白话：一根士兵背在身上的发射筒，弹射出去一架带炸药的小飞机，在目标上空盘旋 15 到 40 分钟，摄像头传回画面，操作员确认后它俯冲撞上去。300 型打人员和轻型车辆，600 型带反坦克战斗部打装甲。一发几万到十几万美元，比一枚标枪导弹便宜、比一枚炮弹贵，但它能「看着打」，也能中途取消。乌克兰战场用了几千发，美国陆军 2024 年给了一份近 10 亿美元的多年期采购合同（LASSO 项目，让每个步兵营都配上），台湾、立陶宛等也在买。<strong>客户为什么非买不可</strong>：目前美军装备体系里，「单兵能带、能盘旋、能取消」的巡飞弹它是唯一大规模列装的，竞争者还在测试阶段。</p>
+<p><strong>侦察无人机</strong>：Puma（手抛的小型侦察机，四五公斤，飞两三个小时，全球卖了上万架）、JUMP 20（垂直起降的中型机，能替换直升机做侦察）、P550（新一代，正在竞标陆军的换代项目）、Red Dragon（2025 年发布的自主单程攻击无人机，往「便宜、大量、不依赖 GPS」的方向走）。收钱方式是卖整机加地面站，再靠训练、备件、升级持续收费。</p>
+<p><strong>反无人机</strong>（BlueHalo 带进来的）：Titan 系统，用射频侦测周围的敌方小无人机并干扰它。美国陆军选了它做单兵携带的反无人机方案。现在全世界每个军队都在补这一课，需求很硬。</p>
+<p><strong>收钱模式</strong>：绝大多数是美国国防部合同，产品是固定价格（做多了赚、做砸了赔），服务是成本加成（保底薄利）。海外军售通过美国政府转手。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>2026 财年</th>
+<th>2025 财年（当时整家公司就这一块）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>14.19 亿</td>
+<td>13.58 亿</td>
+<td>8.21 亿</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>71%</td>
+<td>69%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>财报只披露到营收，<strong>估算</strong> 10%–12%（并购摊销前）</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>TTM 比 2026 财年多 6,100 万，说明最近一个季度（2026 年 5–7 月）同比在涨。但 14.19 亿对 8.21 亿这个 +73% 不干净，BlueHalo 的反无人机业务并进了这个分部，纯内生增速看不出来。</p>
+<h3>生意 B：太空、网络与定向能 SCDE（BlueHalo 带进来的）—— 占营收 29%</h3>
+<p><strong>太空</strong>：卫星之间用激光互相通信的终端；地面上跟卫星联络的相控阵天线站（BADGER 项目，美国太空军 2022 年给了 14 亿美元的合同，替换老式碟形天线）；追踪太空里有什么东西在飞的「太空态势感知」软件。</p>
+<p><strong>定向能</strong>：LOCUST 激光武器，一台车载激光炮，几秒钟烧掉一架来袭无人机，一发的成本是几美元的电，对比拦截导弹几万美元一发。陆军在测试列装。</p>
+<p><strong>网络与电子战</strong>：给国防部和情报机构做网络安全、信号情报，基本是「派工程师驻场、按人头收费」的成本加成合同。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th></th>
+<th>TTM</th>
+<th>2026 财年（并表后第一个完整财年）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>5.84 亿</td>
+<td>6.19 亿</td>
+</tr>
+<tr>
+<td>占总营收</td>
+<td>29%</td>
+<td>31%</td>
+</tr>
+<tr>
+<td>经营利润率</td>
+<td>财报未披露，<strong>估算</strong> 5%–8%（服务合同为主，天然薄）</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>TTM 比 2026 财年少了 3,500 万，也就是最近一个季度同比在缩。</strong> 花 41 亿买来的东西，一年后营收在往下走，这跟下面的商誉减值是一回事。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励</strong>：TTM 3,183 万，占营收 1.6%。对国防公司来说不算过分。</p>
+<p><strong>一次性项目</strong>：
+- <strong>商誉减值 2.41 亿</strong>。买 BlueHalo 花了约 41 亿，成交一年内就把其中 2.41 亿（约 6%）从账上划掉，等于承认「买贵了」。这笔不花现金、是真一次性，但它是管理层的自白书。
+- <strong>投资收益 2,650 万</strong>（股权投资收益 1,750 万加出售投资 900 万），这是一次性的赚，要剔掉。
+- 单期口径分不清减值会不会年年发生。SCDE 营收在缩，下次再减值不奇怪。</p>
+<p><strong>并购摊销（最大的一笔）</strong>：折旧摊销 TTM 2.31 亿，并购前一年只有 4,100 万，多出来的约 1.9 亿几乎全是 BlueHalo 无形资产（客户合同、技术）的摊销，<strong>估算</strong>。公司的 Non-GAAP 口径把它加回去，GAAP 扣掉。我们按 GAAP：这 1.9 亿虽然今年不花现金，但对应的是去年实实在在发出去的 41 亿股票。</p>
+<p><strong>资本化的支出</strong>：购买无形资产（软件、许可）1,975 万，不大。</p>
+<p><strong>回购与稀释</strong>：回购 971 万 ÷ SBC 3,183 万 = <strong>0.3 倍</strong>。股本一年 <strong>+52%</strong>：BlueHalo 换股发了约 1,850 万股，2025 年 6 月又增发了 9.73 亿美元的普通股，外加 6.9 亿零息可转债。你去年持有 1% 的公司，今年只剩 0.66%。</p>
+<p><strong>利润和现金流的差</strong>（差得大，逐项对账，单位百万美元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>净利润</td>
+<td>−202.8</td>
+</tr>
+<tr>
+<td>加：折旧摊销</td>
+<td>+230.8</td>
+</tr>
+<tr>
+<td>加：商誉减值（非现金）</td>
+<td>+240.7</td>
+</tr>
+<tr>
+<td>加：股权激励</td>
+<td>+31.8</td>
+</tr>
+<tr>
+<td>减：投资收益（非现金）</td>
+<td>−27.4</td>
+</tr>
+<tr>
+<td>加：坏账、处置损失、其他</td>
+<td>+27.9</td>
+</tr>
+<tr>
+<td><strong>非现金调整后</strong></td>
+<td><strong>+301.0</strong></td>
+</tr>
+<tr>
+<td>应收账款增加（客户还没付钱）</td>
+<td>−137.2</td>
+</tr>
+<tr>
+<td>存货增加（备货）</td>
+<td>−199.2</td>
+</tr>
+<tr>
+<td>应付账款增加（先欠着供应商）</td>
+<td>+70.5</td>
+</tr>
+<tr>
+<td>税和其他营运项目</td>
+<td>+23.6</td>
+</tr>
+<tr>
+<td><strong>经营现金流</strong></td>
+<td><strong>+58.8</strong></td>
+</tr>
+<tr>
+<td>减：资本开支</td>
+<td>−83.9</td>
+</tr>
+<tr>
+<td><strong>自由现金流</strong></td>
+<td><strong>−25.0</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>看懂这张表：赚的钱（3 亿非现金调整后）全变成了应收和存货（3.36 亿），最后连资本开支都覆盖不了。营收翻倍时这可以理解。但翻到前面看：<strong>2022 到 2026 五个财年，自由现金流全是负的。这家公司上市以来就没给股东产生过一分钱自由现金流。</strong></p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>亏损</td>
+<td>无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>公司自己吹的 Non-GAAP（<strong>估算</strong>）</td>
+<td>−2.03 + 减值 2.41 + 并购摊销约 1.9 + SBC 0.32 − 投资收益 0.27 ≈ 2.3 亿</td>
+<td>约 35 倍</td>
+<td>2.9 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>税前剔除减值和投资收益 = 2,060 万，按 5% 税率（有亏损抵扣）≈ 1,950 万</td>
+<td><strong>412 倍</strong></td>
+<td><strong>0.24 元</strong></td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>−2,500 万</td>
+<td>负，无意义</td>
+<td>—</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>EBIT 为 −1,200 万</td>
+<td>无意义（EV/EBITDA 38 倍）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>2024 财年 5,967 万、2025 财年 4,362 万、TTM 剔减值 1,950 万，平均 4,090 万</td>
+<td>197 倍</td>
+<td>0.5 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>大白话：你现在投 100 块进去，按最保守的真实口径，公司一年替你赚 2 毛 4。</strong> 就算按公司自己那套加回一切的算法，也只有 2 块 9。而且这 2 块 9 里没有一分钱回到你口袋：不分红，回购金额比发给员工的股票还少，赚的钱全押成了存货和应收。</p>
+<p>这个数字未来会变大还是变小？营收大概率继续涨：无人机是这轮战争形态变化的主角，美国陆军要给每个营配巡飞弹，反无人机是全球军队的必修课，预算有。但<strong>毛利率从 39% 掉到 26%</strong>（BlueHalo 的服务合同拉低、库存重估和摊销进了成本），这个能不能回到 35% 以上，决定它是「20 亿营收赚 2 亿」还是「20 亿营收赚 2,000 万」。华尔街的远期市盈率 48 倍是按前者算的。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>贵。</strong> 80 亿市值买的是一家真实利润 2,000 万、五年自由现金流全负、刚花 41 亿买了个一年就减值的公司、一年把股东稀释 52% 的企业。无人机的故事是真的，甚至是这十年最真的国防故事，但今天的价格已经把十年后的故事全算进去了，并且假设整合不会再出问题。想买这个故事，等它证明毛利率能回去。</p><script src="user.js"></script>
+</div></body></html>

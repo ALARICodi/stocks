@@ -1,0 +1,532 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BASFY · 巴斯夫（BASF SE，法兰克福 BAS）</title><style>
+:root{
+  --bg:#faf8f4; --card:#fff; --fg:#1c1a17; --muted:#6b6560;
+  --line:#e6e0d8; --accent:#b4552d; --good:#2f7d4f; --bad:#b03a2e;
+  --c-fg:#1c6b45; --c-bg:#dcf3e6; --c-bd:#a8ddc2;
+  --f-fg:#2a5b86; --f-bg:#dcebf8; --f-bd:#a9cde8;
+  --r-fg:#8a5a12; --r-bg:#faedd4; --r-bd:#e6cb96;
+  --e-fg:#8f2f24; --e-bg:#fadfdc; --e-bd:#e8b0a9;
+  --s-fg:#7d5806; --s-bg:#fbf0cf; --s-bd:#e6d08a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+    --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+    --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+    --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+    --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+    --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+    --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+  }
+}
+:root[data-theme=dark]{
+  --bg:#161513; --card:#201e1b; --fg:#eae6df; --muted:#9c948a;
+  --line:#332f2a; --accent:#e07a4a; --good:#5fbc86; --bad:#e0705f;
+  --c-fg:#8fe0b4; --c-bg:#17331f; --c-bd:#2f5f40;
+  --f-fg:#9ac9ef; --f-bg:#152838; --f-bd:#2d4b66;
+  --r-fg:#e8bc6e; --r-bg:#332714; --r-bd:#5e4823;
+  --e-fg:#f09a8c; --e-bg:#361b18; --e-bd:#63332c;
+  --s-fg:#ecc95f; --s-bg:#332b12; --s-bd:#5e5124;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:19px/1.85 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:820px;margin:0 auto;padding:20px 18px 80px}
+h1{font-size:1.85em;line-height:1.35;margin:.4em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.35em;margin:1.9em 0 .5em;padding-top:.7em;border-top:2px solid var(--line)}
+h3{font-size:1.12em;margin:1.5em 0 .4em;color:var(--accent)}
+p,li{font-size:1em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+strong{font-weight:650}
+code{background:var(--line);padding:.12em .4em;border-radius:4px;font-size:.88em}
+blockquote{
+  margin:1.2em 0;padding:.7em 1.1em;border-left:4px solid var(--accent);
+  background:var(--card);border-radius:0 8px 8px 0;color:var(--muted)
+}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.2em 0;
+  border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.94em;min-width:420px}
+th,td{padding:.6em .8em;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--bg);font-weight:650;font-size:.9em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.top a{text-decoration:none;font-size:.9em;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9em;margin:.2em 0 1.6em}
+.card{display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
+.card .t{font-size:1.15em;font-weight:650;margin-bottom:2px}
+.card .s{color:var(--muted);font-size:.88em}
+.nums{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.nums span{font-size:.9em;color:var(--muted)}
+.nums b{color:var(--fg);font-weight:650}
+
+/* ---- 价格档徽章 ---- */
+.tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 2px}
+.bg{display:inline-block;font-size:.8em;font-weight:650;line-height:1;
+  padding:.4em .6em;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.bg.cheap{color:var(--c-fg);background:var(--c-bg);border-color:var(--c-bd)}
+.bg.fair{color:var(--f-fg);background:var(--f-bg);border-color:var(--f-bd)}
+.bg.rich{color:var(--r-fg);background:var(--r-bg);border-color:var(--r-bd)}
+.bg.expensive{color:var(--e-fg);background:var(--e-bg);border-color:var(--e-bd)}
+.bg.star{color:var(--s-fg);background:var(--s-bg);border-color:var(--s-bd)}
+.bg.q{color:var(--muted);background:transparent;border-color:var(--line)}
+.note{color:var(--muted);font-size:.9em;margin-top:6px;line-height:1.5}
+
+/* ---- 筛选条 ---- */
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:10px 0 12px;margin:0 -2px 4px;border-bottom:1px solid var(--line)}
+.filters .row{display:flex;gap:8px;flex-wrap:wrap}
+.filters .row+.row{margin-top:7px}
+.fb{font:inherit;font-size:.9em;font-weight:650;cursor:pointer;
+  padding:.5em .85em;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);-webkit-tap-highlight-color:transparent}
+.fb[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{color:var(--muted);font-size:.9em;margin:10px 0 2px}
+.card[hidden]{display:none}
+
+/* ---- 搜索:代号前缀 / 公司名(中英文)包含,纯前端,毫秒级 ---- */
+.srch{position:relative;margin-bottom:8px}
+.srch input{width:100%;box-sizing:border-box;font:inherit;font-size:1em;padding:.55em 2.2em .55em .9em;
+  border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);outline:none}
+.srch input:focus{border-color:var(--accent)}
+.srch .sx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;
+  color:var(--muted);font-size:1.1em;cursor:pointer;padding:.2em .5em;-webkit-tap-highlight-color:transparent}
+.srch .sx[hidden]{display:none}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);overflow:hidden}
+.sug[hidden]{display:none}
+.sug a{display:flex;gap:10px;align-items:baseline;padding:.6em .9em;color:inherit;text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.sug a:last-child{border-bottom:0}
+.sug a.on,.sug a:hover{background:var(--bg)}
+.sug b{font-weight:650;min-width:4.5em}
+.sug span{color:var(--muted);font-size:.9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sug mark{background:transparent;color:var(--accent);font-weight:650}
+/* 手机上这条是 sticky 的,三行太占屏,收紧到两行 */
+@media (max-width:520px){
+  .filters{padding:8px 0 9px}
+  .filters .row{gap:6px}
+  .fb{font-size:.82em;padding:.45em .6em}
+}
+
+/* ---- 用户自己的东西:文件夹 + 备注(存浏览器 localStorage,user.js 负责) ---- */
+.card{position:relative}
+.card .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0}   /* 整张卡片可点 */
+.card .hd .t{flex:1 1 auto;min-width:0}
+.card .side{position:relative;z-index:1;flex:0 0 auto;max-width:46%;
+  display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.side .row2{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+.mynote{font:inherit;font-size:.86em;line-height:1.45;text-align:left;cursor:pointer;
+  color:var(--s-fg);background:var(--s-bg);border:1px solid var(--s-bd);border-radius:8px;
+  padding:.35em .6em;max-width:100%;word-break:break-word;white-space:pre-wrap;
+  -webkit-tap-highlight-color:transparent}
+.nb{font:inherit;font-size:.78em;cursor:pointer;color:var(--muted);background:transparent;
+  border:1px dashed var(--line);border-radius:999px;padding:.3em .6em;white-space:nowrap;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--f-fg);background:var(--f-bg);border:1px solid var(--f-bd)}
+/* 文件夹行永远单行,多了横向滑,别把置顶筛选条越撑越高 */
+.filters #frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;margin-right:-18px;padding-right:18px}
+.filters #frow::-webkit-scrollbar{display:none}
+.filters #frow .fb{flex:none;white-space:nowrap}
+.filters #frow .fmg{flex:none;width:auto}
+.fb.fb-new{border-style:dashed;background:transparent}
+@media (max-width:520px){ .nb{max-width:150px} }
+.fb small{font-weight:400;opacity:.8}
+.fmg{width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  color:var(--muted);font-size:.9em;margin-top:4px}
+.mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}
+.mine .mynote{font-size:.95em}
+.mine .nb{font-size:.85em}
+/* 底部弹层 */
+.sh-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;
+  display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--card);color:var(--fg);width:100%;max-width:560px;
+  border-radius:16px 16px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 30px rgba(0,0,0,.2);max-height:85vh;overflow:auto}
+.sh-h{font-weight:650;margin-bottom:10px}
+.sh-ta{width:100%;min-height:110px;font:inherit;font-size:.95em;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.sh-btns{display:flex;gap:8px;margin-top:12px;align-items:center}
+.sh-row{display:flex;align-items:center;gap:10px;padding:10px 4px;
+  border-bottom:1px solid var(--line);cursor:pointer}
+.sh-row input{width:20px;height:20px;flex:none}
+.sh-n{margin-left:auto;color:var(--muted);font-size:.85em}
+.sh-new{display:flex;gap:8px;margin-top:12px}
+.sh-in{flex:1;font:inherit;font-size:.95em;padding:.45em .8em;border:1px solid var(--line);
+  border-radius:999px;background:var(--bg);color:var(--fg);min-width:0}
+.sh-empty{color:var(--muted);font-size:.9em;padding:8px 0}
+.sh-tip{color:var(--muted);font-size:.85em;line-height:1.5;margin:6px 0}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">&larr; 全部公司</a><a href="#">BASFY</a></div>
+<div class="mine" data-t="BASFY"></div><div class="tags"><span class="bg rich">偏贵</span><span class="bg q">一般</span></div><div class="note">7.7倍是卖涂料做出来的，真实29倍；ROIC 3.8%低于资本成本，股息靠拆家变卖</div><h1>BASFY · 巴斯夫（BASF SE，法兰克福 BAS）</h1>
+<p>市值 512 亿美元 ≈ <strong>448 亿欧元</strong>（按 1 欧元 = 1.14 美元，即 stockanalysis 统计页美元营收 703.6 亿 ÷ 财报欧元营收 615.9 亿的隐含汇率） / 股价约 50.8 欧元（ADR BASFY 14.89 美元，一份 ADR = 1/4 股） / 行业：综合化工 / <strong>TTM 截止 2026 年 6 月 30 日</strong></p>
+<p>财报是欧元，全文数字统一用欧元；市值已按上面的汇率折成欧元再算倍数。</p>
+<blockquote>
+<p>开头先把最大的一个坑说了：<strong>GAAP 净利润 58 亿欧元，其中 37 亿是"已终止经营"——涂料业务卖给凯雷（Carlyle）的处置收益。</strong> 那笔钱是一次性的，卖完就没了。stockanalysis 首页挂的 7.7 倍市盈率就是这么来的，它是假的。下面所有真实口径都从"持续经营"那 21 亿起算。</p>
+</blockquote>
+<hr />
+<h2>第一部分：它到底做几件事</h2>
+<p>巴斯夫是全球最大的化工公司，路德维希港（Ludwigshafen）那个厂区是它的心脏：10 平方公里、200 多个工厂用管道串起来，一个装置的副产品是下一个装置的原料，这套东西叫"一体化（Verbund）"，是它百年来最大的成本优势。财报分六个板块加一个"其他"，我按生意的性质把它归成六门，越往下游、越专用的东西利润率越高，越上游、越大宗的越薄。</p>
+<h3>生意 A：Chemicals 基础化学品 —— 烧石脑油炼乙烯，整个集团的原料车间</h3>
+<p><strong>这件事是什么。</strong> 蒸汽裂解装置把石脑油或乙烷高温裂开，出来乙烯、丙烯、丁二烯、苯，再往下做成环氧乙烷、丙烯酸、胺、溶剂、增塑剂这些"中间体"。巴斯夫在路德维希港、安特卫普、美国得州 Port Arthur、南京（跟中石化合资）各有一套裂解装置，2025–26 年广东湛江那套 100 亿欧元的新一体化基地正在投产。</p>
+<p><strong>怎么收钱。</strong> 一半左右是卖给集团内部下游板块当原料，另一半卖给外部：比如一家做塑料薄膜的厂每月买 5,000 吨聚乙烯原料，按当月市场价结算。这是纯大宗商品生意，价格由全球供需定，巴斯夫没有定价权，能赚的只是"我的一体化成本比你低"那一截。<strong>2023 年以来欧洲天然气价格是美国的三到四倍，路德维希港的裂解装置成本上已经打不过中东和美国，这几年巴斯夫在欧洲关了十几套装置。</strong></p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Chemicals（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>110.3 亿欧元</td>
+</tr>
+<tr>
+<td>对比 2025 全年（半年前）</td>
+<td>100.6 亿 → +9.7%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>17.9%</td>
+</tr>
+<tr>
+<td>特殊项目前 EBIT 率（估算）</td>
+<td>约 6%</td>
+</tr>
+<tr>
+<td>贡献 EBIT（估算）</td>
+<td><strong>约 7 亿欧元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>巴斯夫按板块披露"特殊项目前 EBIT"，但 stockanalysis 只有营收；下面各板块的利润都是按公司历年披露的板块利润率结构、套到 TTM 营收上的估算，合计约 37 亿，跟"GAAP 经营利润 30.1 亿 + 计入经营费用的特殊项目约 7 亿"对得上。</p>
+</blockquote>
+<h3>生意 B：Materials 材料 —— 聚氨酯和尼龙的原料，卖给汽车、床垫、建筑</h3>
+<p><strong>这件事是什么。</strong> 两块。<strong>单体（Monomers）</strong>：MDI 和 TDI 这两种异氰酸酯，是做聚氨酯泡沫的核心原料——你家的床垫、沙发、汽车座椅、冰箱保温层、建筑外墙保温板，全是聚氨酯；另外还有己内酰胺和聚酰胺 6（尼龙 6）。<strong>高性能材料（Performance Materials）</strong>：把上面这些原料做成工程塑料（Ultramid 尼龙、Ultradur 聚酯）和聚氨酯系统解决方案，卖给宝马做发动机周边件、卖给运动鞋厂做鞋底（阿迪达斯 Boost 中底最早就是巴斯夫的 Infinergy）。</p>
+<p><strong>怎么收钱。</strong> MDI 是全球只有五六家能做的东西（巴斯夫、万华、科思创、亨斯迈、陶氏），一年几百万吨的量按季度合同价卖；工程塑料是跟车企按车型项目签三五年的供货协议，一款车型每辆用十几公斤，一个项目几千万欧元。<strong>这门生意最怕两件事：中国万华化学的 MDI 产能扩张压价，以及欧洲汽车产量下滑。</strong> 两件事这几年同时发生了。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Materials（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>130.8 亿欧元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>127.4 亿 → +2.7%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>21.2%</td>
+</tr>
+<tr>
+<td>特殊项目前 EBIT 率（估算）</td>
+<td>约 7%</td>
+</tr>
+<tr>
+<td>贡献 EBIT（估算）</td>
+<td><strong>约 9 亿欧元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 C：Industrial Solutions 工业解决方案 —— 添加剂和分散体，集团里最稳的一块</h3>
+<p><strong>这件事是什么。</strong> <strong>分散体与树脂</strong>：丙烯酸乳液，是水性涂料、胶粘剂、纸张涂布、建筑砂浆里让东西"粘住"的那个成分；一家做乳胶漆的厂每年买几万吨。<strong>高性能化学品</strong>：塑料添加剂（抗氧剂、光稳定剂——没有它塑料晒几个月就脆）、燃油和润滑油添加剂、油田化学品、矿用化学品、水处理剂。</p>
+<p><strong>怎么收钱。</strong> 这些东西在客户成本里占比很小（一桶漆里添加剂几毛钱），但没有它产品就不合格，所以客户不太会为了省这几毛钱换供应商——这是巴斯夫少数有定价权的板块，利润率两位数，周期性也最弱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Industrial Solutions（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>85.9 亿欧元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>85.9 亿 → 持平</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>13.9%</td>
+</tr>
+<tr>
+<td>特殊项目前 EBIT 率（估算）</td>
+<td>约 11%</td>
+</tr>
+<tr>
+<td>贡献 EBIT（估算）</td>
+<td><strong>约 9.5 亿欧元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 D：Surface Technologies 表面技术 —— 卖掉涂料之后只剩催化剂</h3>
+<p><strong>这件事是什么。</strong> 涂料（给宝马奔驰喷车漆那块，一年 40 亿欧元营收）2026 年上半年以 77 亿欧元企业价值卖给了凯雷，剩下的是<strong>催化剂</strong>：汽车尾气催化剂（汽油车的三元催化器、柴油车的 SCR，巴斯夫是全球前三），化工过程催化剂，电池正极材料（2024–25 年大幅收缩），以及<strong>贵金属交易</strong>——催化剂要用铂、钯、铑，巴斯夫顺带做贵金属回收和买卖，这部分营收几十亿但几乎不赚钱，把整个板块的利润率拉得很低。</p>
+<p><strong>这门生意的问题是方向。</strong> 尾气催化剂只装在燃油车上，电动车一台都不用，这是一门注定萎缩的生意；正极材料本来是想接班的，结果电池行业价格战让巴斯夫在 2024 年减值、收缩、放弃了独立上市的计划。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Surface Technologies（TTM 至 2026-06，不含已出售的涂料）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>94.5 亿欧元（其中大半是贵金属过手）</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>89.7 亿 → +5.4%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>15.4%</td>
+</tr>
+<tr>
+<td>特殊项目前 EBIT 率（估算）</td>
+<td>约 3%</td>
+</tr>
+<tr>
+<td>贡献 EBIT（估算）</td>
+<td><strong>约 3 亿欧元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 E：Nutrition &amp; Care 营养与护理 —— 洗发水里的表面活性剂、饲料里的维生素</h3>
+<p><strong>这件事是什么。</strong> <strong>护理化学品</strong>：表面活性剂（洗发水、洗衣液起泡去污的成分）、润肤剂、防晒剂（UV 过滤剂，欧莱雅、拜尔斯道夫的防晒霜用它）、香料原料（柠檬醛、薄荷醇，巴斯夫是全球最大的合成薄荷醇厂）。<strong>营养与健康</strong>：维生素 A、维生素 E、类胡萝卜素，主要卖给饲料厂（鸡猪牛的饲料添加剂），也卖给食品和药厂。</p>
+<p><strong>怎么收钱。</strong> 护理化学品是跟宝洁、联合利华这种大客户按年签供货合同，量大价稳；维生素是大宗商品，价格随中国厂商（新和成、浙江医药）的开工率大幅波动，2023–24 年价格跌到谷底，这块几乎不赚钱。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Nutrition &amp; Care（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>65.5 亿欧元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>65.1 亿 → +0.6%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>10.6%</td>
+</tr>
+<tr>
+<td>特殊项目前 EBIT 率（估算）</td>
+<td>约 4%</td>
+</tr>
+<tr>
+<td>贡献 EBIT（估算）</td>
+<td><strong>约 2.5 亿欧元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>生意 F：Agricultural Solutions 农业解决方案 —— 杀菌剂、除草剂和种子，2027 年要独立上市</h3>
+<p><strong>这件事是什么。</strong> 农药三大类：<strong>杀菌剂</strong>（Revysol 氯氟醚菌唑、Xemium 氟唑菌酰胺，防小麦大豆的叶斑病锈病，巴斯夫是全球杀菌剂头号玩家）、<strong>除草剂</strong>（Liberty 草铵膦，配套自家的抗草铵膦种子）、<strong>杀虫剂</strong>。加上<strong>种子</strong>：InVigor 油菜籽（加拿大市场第一）、棉花种子、Xitavo 大豆、Nunhems 蔬菜种子。再加数字农业平台 xarvio。</p>
+<p><strong>怎么收钱。</strong> 一个美国中西部种 5,000 英亩大豆的农场主，每英亩每年花 30–50 美元买杀菌剂和除草剂，一年就是 20 万美元；种子按袋卖，油菜籽每袋几百加元且每年得重新买。农药是有专利的（Revysol 到 2030 年代），专利期内利润率高；巴斯夫在这个行业排全球第三（拜耳、先正达之后）。<strong>公司已经宣布农业板块 2027 年在法兰克福独立上市</strong>，这是整个巴斯夫"拆分值更多"故事里最核心的一步。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Agricultural Solutions（TTM 至 2026-06）</th>
+<th>金额</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营收</td>
+<td>95.0 亿欧元</td>
+</tr>
+<tr>
+<td>对比 2025 全年</td>
+<td>95.9 亿 → −0.9%</td>
+</tr>
+<tr>
+<td>占集团营收</td>
+<td>15.4%</td>
+</tr>
+<tr>
+<td>特殊项目前 EBIT 率（估算）</td>
+<td>约 10%</td>
+</tr>
+<tr>
+<td>贡献 EBIT（估算）</td>
+<td><strong>约 9.5 亿欧元</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>其他</h3>
+<p>"其他"板块营收 33.8 亿（原料贸易、剩余业务），EBIT 估算 <strong>−7 亿</strong>（总部费用、集中研发、保险等）。</p>
+<h3>六门生意拼起来</h3>
+<p>集团营收 <strong>615.9 亿欧元，同比 +1.0%</strong>——这个"+1.0%"里涂料已经剔除了，对比基数也剔除了，所以是真实持平。六个板块 EBIT 估算合计约 44 亿，减总部 7 亿 ≈ 37 亿"特殊项目前 EBIT"，GAAP 经营利润 30.1 亿，<strong>经营利润率 4.9%</strong>。一家 616 亿营收的公司一年赚 30 亿经营利润，这就是欧洲化工今天的处境。</p>
+<hr />
+<h2>第二部分：把会计障眼法剥掉</h2>
+<p><strong>股权激励（SBC）</strong>：现金流量表没有单列这一项，巴斯夫的长期激励主要是现金结算的，规模相对 600 亿营收可以忽略。没有。</p>
+<p><strong>一次性项目——三笔大的，方向相反</strong>：
+- <strong>已终止经营收益 37.1 亿欧元</strong>：涂料卖给凯雷，投资现金流里"处置收入"64.3 亿就是收到的钱。全部剔掉。
+- <strong>资产处置收益 7.5 亿</strong>（持续经营内，2025 全年 6.7 亿）：卖掉的零散资产和股权。剔掉，税后按 30% 算约 5.3 亿。
+- <strong>重组费用 14.9 亿</strong>：这是全篇最难判断的一笔。往前翻：2021 年 4.6 亿、2022 年 4.9 亿、2023 年 6.3 亿、2024 年 6.8 亿、2025 年 11.1 亿、TTM 14.9 亿——<strong>六年连续增长，年年都有，一年比一年大</strong>。巴斯夫从 2023 年起在路德维希港持续关装置、裁人（目标到 2026 年底省 21 亿欧元成本），这些费用就是关厂裁员的代价。按规矩，年年发生的"一次性"不是一次性，我当经常性成本，<strong>不加回</strong>。如果你相信 2026 年底重组结束、以后不再有，可以自己加回 10 亿（税后），真实市盈率会从 29 倍降到 17 倍——但过去六年每一年管理层都说"快结束了"。
+- <strong>股权投资收益 15.1 亿</strong>（2025 全年 10.6 亿、2024 年 6.5 亿）：主要是持有的 Harbour Energy 39.6% 股权（2024 年把油气子公司 Wintershall Dea 换给 Harbour 得来的）、南京扬子石化-巴斯夫合资公司等。这是持续的，但它跟油价挂钩、跟化工主业无关，而且<strong>公司明说了要逐步卖掉 Harbour 股权</strong>。我留在真实利润里，但你要知道真实利润里有一大块是油气分红，不是化工赚的。</p>
+<p><strong>资本化的支出</strong>：没有单独的软件或开发费资本化项目，研发 19.5 亿全部费用化。没有。</p>
+<p><strong>回购与稀释</strong>：TTM 回购 15 亿（卖涂料后启动的回购计划），SBC 约等于零，所以<strong>回购是真回购</strong>，股本一年减了 1.05%。派息 20.4 亿（每股 2.25 欧元——<strong>2025 年从 3.40 砍到 2.25</strong>，砍了 34%，因为之前那 30 亿派息是借钱发的）。回购加派息 35.4 亿，而 TTM 自由现金流只有 10.5 亿——<strong>差的 25 亿来自卖涂料的钱</strong>。卖资产发股息，这一年是这样；涂料卖完了，明年没得卖。</p>
+<p><strong>利润和现金流的差</strong>：GAAP 净利润 58.0 亿，经营现金流 47.3 亿，自由现金流 10.5 亿。逐项对账（TTM，亿欧元）：</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>金额</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP 净利润（含已终止经营）</td>
+<td>58.0</td>
+<td></td>
+</tr>
+<tr>
+<td>+ 折旧摊销</td>
+<td>35.6</td>
+<td>一年 36 亿的折旧，跟经营利润差不多大——重资产生意</td>
+</tr>
+<tr>
+<td>− 资产处置收益（含涂料）</td>
+<td>−35.4</td>
+<td>现金在投资活动里</td>
+</tr>
+<tr>
+<td>+ 减值与重组的非现金部分</td>
+<td>4.2</td>
+<td></td>
+</tr>
+<tr>
+<td>− 股权投资收益（非现金部分）</td>
+<td>−1.8</td>
+<td></td>
+</tr>
+<tr>
+<td>− 其他非现金调整</td>
+<td>−8.4</td>
+<td>递延税、拨备变动等</td>
+</tr>
+<tr>
+<td>− 营运资金增加</td>
+<td>−6.7</td>
+<td>应收 −9.8、存货 −5.8、应付 +6.1、其他 +2.7</td>
+</tr>
+<tr>
+<td>= 经营现金流</td>
+<td>47.3</td>
+<td></td>
+</tr>
+<tr>
+<td>− 资本开支</td>
+<td>−36.9</td>
+<td>2024 年 62 亿、2025 年 43 亿、TTM 37 亿，湛江建完了在往下走</td>
+</tr>
+<tr>
+<td>= <strong>自由现金流</strong></td>
+<td><strong>10.5</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>自由现金流 10.5 亿对 448 亿市值，收益率 2.3%。资本开支正从湛江高峰回落，公司说 2026 年要压到 33 亿左右，维持性资本开支大约 30 亿，所以"正常年份"自由现金流大概能到 20–25 亿——那也只有 5% 的现金收益率。</p>
+<p><strong>债务</strong>：有息负债 266.9 亿，现金 78.9 亿，<strong>净负债 188 亿</strong>（stockanalysis 口径含租赁），是 EBITDA（65.7 亿）的 2.9 倍，利息覆盖倍数 3.2 倍，TTM 现金利息 8.2 亿。对一家周期股来说这个杠杆不轻松，卖涂料的 64 亿一半拿去回购派息了，只有一半去还债。</p>
+<hr />
+<h2>第三部分：市盈率，多口径</h2>
+<p>市值 448 亿欧元；企业价值 646 亿欧元（738 亿美元 ÷ 1.14，含净负债、养老金缺口、少数股东权益）。</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>口径</th>
+<th>怎么算</th>
+<th>倍数</th>
+<th>投100块年回报</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAAP TTM 市盈率</td>
+<td>448 ÷ 58.0 亿</td>
+<td>7.7 倍</td>
+<td>13.0 元（<strong>假的，含 37 亿卖涂料</strong>）</td>
+</tr>
+<tr>
+<td>持续经营 GAAP</td>
+<td>448 ÷ 20.9 亿（21.7 亿减少数股东 0.8 亿）</td>
+<td>21.4 倍</td>
+<td>4.7 元</td>
+</tr>
+<tr>
+<td>公司自己吹的"特殊项目前"口径</td>
+<td>448 ÷ 约 30 亿（估算：特殊项目前 EBIT 37 亿 − 净利息 5 亿 + 股权投资 15 亿 − 汇兑 1.7 亿，税率 28%，减少数股东）</td>
+<td>约 15 倍</td>
+<td>6.7 元</td>
+</tr>
+<tr>
+<td><strong>剔除障眼法后的真实市盈率</strong></td>
+<td>448 ÷ 15.7 亿（持续经营 20.9 − 资产处置收益税后 5.3；重组当经常性成本不加回）</td>
+<td><strong>28.6 倍</strong></td>
+<td><strong>3.5 元</strong></td>
+</tr>
+<tr>
+<td>同上，若把重组当一次性加回</td>
+<td>448 ÷ 26.1 亿</td>
+<td>17.2 倍</td>
+<td>5.8 元</td>
+</tr>
+<tr>
+<td>自由现金流口径</td>
+<td>448 ÷ 10.5 亿</td>
+<td>42.9 倍</td>
+<td>2.3 元</td>
+</tr>
+<tr>
+<td>企业价值口径 EV/EBIT</td>
+<td>646 ÷ 30.1 亿 GAAP 经营利润</td>
+<td>21.5 倍</td>
+<td>——</td>
+</tr>
+<tr>
+<td>三年平均利润口径</td>
+<td>448 ÷ 12.6 亿（2024 年 12.5、2025 年 9.7、TTM 15.7 的平均，均剔处置收益和已终止经营）</td>
+<td><strong>35.5 倍</strong></td>
+<td>2.8 元</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>用大白话说：你今天投 100 块进去，按剔除障眼法后的真实口径，公司一年替你赚 3.5 块；这 3.5 块里还有大约 1 块是 Harbour Energy 那笔油气股权的分红，化工主业自己赚的只有 2.5 块左右。</strong></p>
+<p>这 3.5 块有多少回到你口袋：派息 20.4 亿对市值 448 亿是 4.6%，回购 15 亿又是 3.3%——合计 7.9 块，<strong>比公司赚的 3.5 块多一倍多</strong>。多出来的钱是卖涂料的。明年涂料没得卖了，公司承诺的是"每股至少 2.25 欧元 + 2025–28 年累计 40 亿回购"，靠什么付：一是资本开支从 62 亿降到 33 亿省下来的钱，二是再卖资产（Harbour 股权、2027 年农业板块上市套现）。所以巴斯夫接下来几年给股东的钱，<strong>本质上是拆家变卖的钱，不是化工赚的钱</strong>。</p>
+<p><strong>这个 3.5 块未来变大还是变小？</strong> 看多的理由：湛江一体化基地投产会加 10 亿左右 EBITDA，欧洲关厂省 21 亿成本，资本开支下来了，如果化工周期反转（2022 年经营利润曾是 68.6 亿），利润能翻倍。看空的理由：欧洲天然气比美国贵三四倍不是周期是结构，中国化工产能过剩（MDI、维生素、基础化学品全在压价）也不是周期是结构，ROIC 3.8% 已经连续三年低于 6.2% 的资本成本——<strong>一家投入资本回报率低于资本成本的公司，每多投一块钱就是在毁一块钱价值</strong>，这就是为什么它要拆。</p>
+<hr />
+<h2>第四部分：一句话结论</h2>
+<p><strong>巴斯夫现在的价格，是在为"周期反转 + 拆分套现"付全款，而它眼前的化工主业只是一门 616 亿营收赚 16 亿、回报率低于资本成本的生意。</strong> 7.7 倍是卖涂料做出来的幻觉，真实市盈率 29 倍、三年平均 35 倍、自由现金流 43 倍，股息看着有 4.6% 但它是靠变卖资产付的。农业板块 2027 年上市、Harbour 股权卖掉、湛江投产，这些都是真的，也都已经在 51 欧元这个价格里了。工业解决方案和农业那两块是好生意，但你买不到单独的它们，你买到的是整个路德维希港。<strong>不便宜。等 2027 年农业板块拆出来单独看，或者等股价回到 40 欧元以下、真实市盈率 20 倍出头再说。</strong></p>
+<hr />
+<p><em>数据来源：stockanalysis.com BASFY 场外页面（TTM 至 2026-06-30，利润表、现金流量表、统计页、历史比率页，财报欧元、市值美元）。各板块 EBIT 为估算值；重组费用六年序列来自利润表历史列。</em></p><script src="user.js"></script>
+</div></body></html>
